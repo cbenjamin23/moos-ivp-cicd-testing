@@ -1,0 +1,10 @@
+.LastOpenedMOOSLogDirectory
+*~
+*.bhvx
+*.moos++
+*.moosx
+LOG*
+MOOSLog_*
+XLOG_*
+results.txt
+targ_*

@@ -1,0 +1,3 @@
+case=baseline_pass  expected=pass  actual=pass  status=ok  grade=pass  arrived=true  seen=true  closest=intruder  range=120  mhash=[GLIB-NATE]
+case=strict_fail  expected=fail  actual=fail  status=ok  grade=fail  arrived=true  seen=false  closest=intruder  range=121  mhash=[DUMB-RAUL]
+case=strict_near_pass  expected=pass  actual=pass  status=ok  grade=pass  arrived=true  seen=true  closest=intruder  range=120  mhash=[IDLE-DART]

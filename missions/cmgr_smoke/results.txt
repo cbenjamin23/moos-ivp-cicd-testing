@@ -1,0 +1,2 @@
+form=cmgr_harness  mmod=strict_near_pass  
+grade=pass  arrived=true  seen=true  closest=intruder  range=120  mhash=[IDLE-DART]
