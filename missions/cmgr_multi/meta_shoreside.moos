@@ -71,11 +71,12 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = CONTACT_SEEN = true
+  pass_condition = CONTACTS_COUNT = 2
+  pass_condition = CONTACT_CLOSEST = alpha
 
   result_flag  = MISSION_EVALUATED = true
-  mission_form = cmgr_smoke
-  mission_mod  = detect_baseline_pass
+  mission_form = cmgr_multi
+  mission_mod  = multi_baseline_pass
 
   prereport_column = form=$[MISSION_FORM]
   prereport_column = mmod=$[MMOD]
@@ -84,6 +85,8 @@ ProcessConfig = pMissionEval
   report_column    = seen=$[CONTACT_SEEN]
   report_column    = closest=$[CONTACT_CLOSEST]
   report_column    = range=$[CONTACT_CLOSEST_RANGE]
+  report_column    = count=$[CONTACTS_COUNT]
+  report_column    = list=$[CONTACTS_LIST]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

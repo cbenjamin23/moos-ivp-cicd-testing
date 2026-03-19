@@ -1,0 +1,35 @@
+//-------------------------------------------------
+// Vehicle Helm config file
+// Charles Benjamin
+
+initialize  DEPLOY       = false
+initialize  ARRIVED      = false
+initialize  CONTACT_SEEN = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+//----------------------------------------------
+Behavior = BHV_Waypoint
+{ 
+  name      = waypt_transit
+  pwt       = 100
+  condition = MODE == ACTIVE
+
+  endflag   = ARRIVED = true
+  endflag   = DEPLOY = false
+
+  speed          = $(STOCK_SPD)
+  capture_line   = true
+  capture_radius = 5.0
+  slip_radius    = 15.0
+  point          = $(DEST_POS)
+  repeat         = 0
+
+  visual_hints = nextpt_color=yellow
+  visual_hints = nextpt_vertex_size=8
+  visual_hints = nextpt_lcolor=off
+  visual_hints = vertex_color=dodger_blue, edge_color=white
+  visual_hints = vertex_size=5, edge_size=1
+}

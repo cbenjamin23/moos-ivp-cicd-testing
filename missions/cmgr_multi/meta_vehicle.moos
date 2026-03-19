@@ -93,7 +93,7 @@ ProcessConfig = pContactMgrV20
   contact_max_age = 45
 
   alert = id=track, on_flag=CONTACT_SEEN=true
-  alert = id=track, alert_range=80, cpa_range=100
+  alert = id=track, alert_range=30, cpa_range=35
 
   post_closest_range   = true
   hold_alerts_for_helm = false
@@ -127,7 +127,8 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY = true
 
-  event = var=SPOOF, val="name=intruder,x=0,y=16,hdg=180,spd=0.2,vsource=ais,color=green", time=4
+  event = var=SPOOF, val="name=alpha,x=0,y=10,hdg=180,spd=0.2,vsource=ais,color=green", time=4
+  event = var=SPOOF, val="name=bravo,x=0,y=20,hdg=180,spd=0.2,vsource=ais,color=orange", time=5
 }
 
 //--------------------------------------------------

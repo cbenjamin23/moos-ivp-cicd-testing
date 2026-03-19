@@ -22,7 +22,7 @@ CMD_ARGS=""
 TIME_WARP=10
 VERBOSE=""
 JUST_MAKE=""
-MAX_TIME="50"
+MAX_TIME="60"
 NOGUI="--nogui"
 
 #------------------------------------------------------------

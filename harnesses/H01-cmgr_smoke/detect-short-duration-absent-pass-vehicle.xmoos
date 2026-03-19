@@ -1,0 +1,41 @@
+ProcessConfig = pContactMgrV20
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  app_logging = true
+
+  decay           = 15,30
+  contact_max_age = 45
+
+  alert = id=track, on_flag=CONTACT_SEEN=true
+  alert = id=track, alert_range=20, cpa_range=20
+
+  post_closest_range   = true
+  hold_alerts_for_helm = false
+}
+
+ProcessConfig = pSpoofNode
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  refresh_interval = 1
+  default_length   = 5
+  default_vtype    = kayak
+  default_vsource  = ais
+  default_color    = green
+  default_duration = 2
+  default_hdg      = 180
+  default_spd      = 0.2
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY = true
+
+  event = var=SPOOF, val="name=intruder,x=30,y=16,hdg=180,spd=0.2,vsource=ais,color=green", time=4
+}

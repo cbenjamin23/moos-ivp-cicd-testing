@@ -1,12 +1,12 @@
 #=======================================================================
-# FILE:  moos-ivp-extend/CMakeLists.txt
+# FILE:  moos-ivp-cicd-testing/CMakeLists.txt
 # DATE:  2012/07/24
-# INFO:  Top-level CMakeLists.txt file for the moos-ivp-extend project
+# INFO:  Top-level CMakeLists.txt file for the moos-ivp-cicd-testing project
 # NAME:  Maintained by Mike Benjamin - Original setup by Christian Convey
 #        Chris Gagner, and tips borrowed from Dave Billin
 #=======================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 PROJECT( IVP_EXTEND )
 
 set (CMAKE_CXX_STANDARD 11)

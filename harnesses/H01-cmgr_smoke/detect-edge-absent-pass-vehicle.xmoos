@@ -9,7 +9,7 @@ ProcessConfig = pContactMgrV20
   contact_max_age = 45
 
   alert = id=track, on_flag=CONTACT_SEEN=true
-  alert = id=track, alert_range=10, cpa_range=15
+  alert = id=track, alert_range=14, cpa_range=14
 
   post_closest_range   = true
   hold_alerts_for_helm = false
