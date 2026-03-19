@@ -1,0 +1,25 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = CONTACT_SEEN = true
+  pass_condition = CONTACT_CLOSEST = intruder
+  pass_condition = CONTACT_CLOSEST_RANGE > 12
+  pass_condition = CONTACT_CLOSEST_RANGE < 16
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = cmgr_tests_harness
+  mission_mod  = range_tight_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = seen=$[CONTACT_SEEN]
+  report_column    = closest=$[CONTACT_CLOSEST]
+  report_column    = range=$[CONTACT_CLOSEST_RANGE]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

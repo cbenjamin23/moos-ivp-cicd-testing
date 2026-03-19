@@ -1,0 +1,17 @@
+ProcessConfig = pContactMgrV20
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  app_logging = true
+
+  decay           = 15,30
+  contact_max_age = 45
+
+  alert = id=track, on_flag=CONTACT_SEEN=true
+  alert = id=track, alert_range=80, cpa_range=100
+  alert = id=track, match_type=ship
+
+  post_closest_range   = true
+  hold_alerts_for_helm = false
+}

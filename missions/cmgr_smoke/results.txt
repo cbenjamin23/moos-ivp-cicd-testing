@@ -1,1 +1,0 @@
-form=cmgr_harness  mmod=range_tight_pass  grade=pass  eval=true  seen=true  closest=intruder  range=14  mhash=[VICE-TROY]

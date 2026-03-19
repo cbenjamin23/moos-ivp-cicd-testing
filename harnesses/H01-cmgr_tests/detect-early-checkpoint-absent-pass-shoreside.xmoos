@@ -1,0 +1,31 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=2
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  fail_condition = CONTACT_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = cmgr_tests_harness
+  mission_mod  = detect_early_checkpoint_absent_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = seen=$[CONTACT_SEEN]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

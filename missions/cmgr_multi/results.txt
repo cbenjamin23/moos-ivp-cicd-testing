@@ -1,2 +1,0 @@
-form=cmgr_multi_harness  mmod=alpha_far_bravo_only_pass  grade=pass  eval=true  count=1  list=alpha,bravo  closest=bravo  range=8  mhash=[EASY-EDGE]
-form=cmgr_multi  mmod=multi_baseline_pass  form=cmgr_multi  mmod=multi_baseline_pass  grade=pass  eval=true  seen=true  closest=alpha  range=8  count=2  list=alpha,bravo  mhash=[IDLE-CRIS]

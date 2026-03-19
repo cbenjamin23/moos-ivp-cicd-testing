@@ -1,8 +1,0 @@
-case=count_two_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=count_two_pass  grade=pass  eval=true  seen=true  count=2  list=alpha,bravo  closest=alpha  range=8  mhash=[FIRM-DESI]
-case=list_alpha_bravo_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=list_alpha_bravo_pass  grade=pass  eval=true  count=2  list=alpha,bravo  closest=alpha  range=8  mhash=[CUTE-COMB]
-case=closest_alpha_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=closest_alpha_pass  grade=pass  eval=true  count=2  list=alpha,bravo  closest=alpha  range=8  mhash=[NINE-KARL]
-case=closest_bravo_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=closest_bravo_pass  grade=pass  eval=true  count=2  list=alpha,bravo  closest=bravo  range=8  mhash=[COOL-PLAN]
-case=bravo_far_count_one_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=bravo_far_count_one_pass  grade=pass  eval=true  count=1  list=alpha,bravo  closest=alpha  range=8  mhash=[RICH-RYAN]
-case=late_bravo_count_two_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=late_bravo_count_two_pass  grade=pass  eval=true  count=2  list=alpha,bravo  closest=alpha  range=12  mhash=[MEEK-LYLE]
-case=stale_bravo_drop_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=stale_bravo_drop_pass  grade=pass  eval=true  count=1  list=alpha  closest=alpha  range=15  mhash=[HOLY-KODY]
-case=alpha_far_bravo_only_pass  expected=pass  actual=pass  status=ok  form=cmgr_multi_harness  mmod=alpha_far_bravo_only_pass  grade=pass  eval=true  count=1  list=alpha,bravo  closest=bravo  range=8  mhash=[EASY-EDGE]
