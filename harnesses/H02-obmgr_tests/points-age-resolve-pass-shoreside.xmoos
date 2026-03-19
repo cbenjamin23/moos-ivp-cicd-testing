@@ -1,0 +1,31 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=10
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = OBM_RESOLVED = rock_a
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests_harness
+  mission_mod  = points_age_resolve_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = resolved=$[OBM_RESOLVED]
+  report_column    = dist=$[OBM_DIST_TO_OBJ]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

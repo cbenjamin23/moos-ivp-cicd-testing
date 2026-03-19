@@ -1,0 +1,1 @@
+form=obmgr_tests_harness  mmod=expunge_obstacle_pass  grade=pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=expunge  mhash=[DULL-CRAB]

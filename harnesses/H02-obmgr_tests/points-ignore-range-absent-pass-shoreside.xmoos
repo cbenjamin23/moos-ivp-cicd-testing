@@ -1,0 +1,24 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  fail_condition = OBM_DIST_TO_OBJ = ROCK_A,18.0
+  fail_condition = OBSTACLE_ALERT = name=avd_rock_a#poly=pts={18,-2:22,-2:22,2:18,2},label=rock_a#id=rock_a
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests_harness
+  mission_mod  = points_ignore_range_absent_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = dist=$[OBM_DIST_TO_OBJ]
+  report_column    = mindist=$[OBM_MIN_DIST_EVER]
+  report_column    = alert=$[OBSTACLE_ALERT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

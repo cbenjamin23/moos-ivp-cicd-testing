@@ -39,6 +39,14 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   fire.
 - `closest_contact_pass`
   `CONTACT_CLOSEST` should be `intruder`.
+- `post_all_ranges_pass`
+  This case turns on the `CONTACT_RANGES` report path. It is a reporting-only
+  branch, so the key point is that the mission now publishes the full list of
+  current alerted ranges instead of just the closest one.
+- `post_closest_relbng_pass`
+  This turns on the closest-relative-bearing report path. It is useful because
+  it exercises a distinct output variable, `CONTACT_CLOSEST_RELBNG`, rather
+  than just re-checking the same closest-contact geometry.
 - `runtime_alert_add_pass`
   No static alert is configured in the patched mission for this case. Instead
   the harness posts a `BCM_ALERT_REQUEST` at runtime and expects that dynamic
@@ -51,6 +59,21 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   This is a representative alert-filter case. The alert is constrained to
   `match_type=ship`, while the spoofed contact remains the default `kayak`, so
   the contact should still be tracked but should not count as alerted.
+- `disable_contact_pass`
+  This exercises the `disable_var` path directly. In this timing setup the
+  contact is already seen before the disable request is posted, so the case is
+  specifically checking that contact manager emits the expected
+  `BHV_ABLE_FILTER` disable message, not that the disable request suppresses an
+  earlier alert retroactively. The mission grades on a confirmation flag posted
+  when `BHV_ABLE_FILTER` mail is seen on this case's disable path.
+- `enable_contact_pass`
+  This is the matching `enable_var` path. It is a message-path case proving
+  contact manager emits the expected `BHV_ABLE_FILTER` enable request for a
+  named contact under controlled timing. As above, the mission grades on a
+  confirmation flag triggered by the case-specific filter mail.
+- `early_warning_pass`
+  This is the early-warning branch. The case checks that the mission posts the
+  configured warning flag before the main contact evaluation completes.
 - `count_one_pass`
   `CONTACTS_COUNT` should be exactly `1`.
 - `list_intruder_pass`
@@ -128,6 +151,12 @@ Typical multi-contact reporting line:
 case=count_two_pass  expected=pass  actual=pass  status=ok  form=cmgr_tests_harness  mmod=count_two_pass  grade=pass  eval=true  count=2  list=alpha,bravo  closest=alpha  range=8  mhash=[MILD-SVEN]
 ```
 
+Typical extended reporting line:
+
+```text
+case=post_all_ranges_pass  expected=pass  actual=pass  status=ok  form=cmgr_tests_harness  mmod=post_all_ranges_pass  grade=pass  eval=true  count=2  list=alpha,bravo  ranges=8.7,18.9  closest=alpha  mhash=[TAME-THOR]
+```
+
 Typical dynamic/reporting line:
 
 ```text
@@ -164,6 +193,11 @@ Field anatomy:
   The closest reported contact, when that column is included by the case.
 - `range`
   The closest reported range, when that column is included by the case.
+- `ranges`
+  The complete `CONTACT_RANGES` list, when that column is included by the case.
+- `relbng`
+  The closest contact's rounded relative bearing, when that column is included
+  by the case.
 - `count`
   The alerted-contact count, when that column is included by the case.
 - `list`
@@ -171,6 +205,12 @@ Field anatomy:
   included by the case.
 - `report`
   The value posted by a case-specific `BCM_REPORT_REQUEST`, when included.
+- `filter`
+  The `BHV_ABLE_FILTER` message for contact enable/disable cases.
+- `filter_seen`
+  Mission-side confirmation that a case-specific filter message was observed.
+- `warn`
+  The early-warning flag value when the warning branch is enabled.
 - `retired`
   The retired-contact publication, when included.
 - `mhash`
@@ -218,8 +258,9 @@ Why both `actual` and `grade` appear in harness output:
 
 Validated on March 19, 2026:
 
-- full 28-case matrix at warp `10`: `204` seconds wall clock
-- roughly `7` seconds per case on average
+- full 33-case matrix passed at warp `10`
+- the suite is still dominated by launch and teardown overhead rather than the
+  case logic itself
 
 The suite exits on `MISSION_EVALUATED`, so fixed launch and teardown work is a
 larger wall-clock cost than the case logic itself. Lowering `--max_time`

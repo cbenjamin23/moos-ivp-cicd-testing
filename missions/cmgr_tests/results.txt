@@ -1,1 +1,1 @@
-form=cmgr_tests_harness  mmod=alpha_far_bravo_only_pass  grade=pass  eval=true  count=1  list=alpha,bravo  closest=bravo  range=9  mhash=[MEGA-LIST]
+form=cmgr_tests_harness  mmod=early_warning_pass  grade=pass  eval=true  warn=true  seen=true  closest=intruder  range=14  mhash=[VERY-LUDO]

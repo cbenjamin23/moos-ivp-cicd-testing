@@ -4,7 +4,9 @@ Fast contact-manager stem mission for `pContactMgrV20`.
 
 This mission is the one shared stem for the contact-manager CI suite. It is
 kept intentionally small and deterministic, and the harness patches this same
-stem into both single-contact and multi-contact cases.
+stem into both single-contact and multi-contact cases, plus a few report-only
+branches such as `CONTACT_RANGES`, `CONTACT_CLOSEST_RELBNG`, `BHV_ABLE_FILTER`,
+and the early-warning flag path.
 
 ## Default Stem Behavior
 
@@ -72,13 +74,17 @@ Simple field meanings:
 - `seen`: whether contact detection happened by the checkpoint
 - `closest`: closest reported contact name, when reported
 - `range`: closest reported contact range, when reported
+- `ranges`: full `CONTACT_RANGES` list, when reported
+- `relbng`: closest-contact relative bearing, when reported
+- `filter`: contact enable/disable requests, when reported
+- `warn`: early-warning flag, when reported
 - `mhash`: short mission hash
 
 ## Current Harness On This Stem
 
 - harness: `harnesses/H01-cmgr_tests`
-- matrix size: `28` cases
-- validation on March 19, 2026: `204` seconds wall clock at warp `10`
+- matrix size: `33` cases
+- validation on March 19, 2026: full matrix passed at warp `10`
 
 Most of that wall-clock time is launch and teardown overhead rather than mission
 logic.

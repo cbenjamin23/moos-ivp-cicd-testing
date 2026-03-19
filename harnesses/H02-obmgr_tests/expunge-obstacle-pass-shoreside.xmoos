@@ -1,0 +1,23 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ABLE_FILTER#OB_FILTER_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = OB_FILTER_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests_harness
+  mission_mod  = expunge_obstacle_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = filter_seen=$[OB_FILTER_SEEN]
+  report_column    = filter=$[BHV_ABLE_FILTER]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

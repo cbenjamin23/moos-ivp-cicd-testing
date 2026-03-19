@@ -140,6 +140,14 @@ get_case_config() {
     elif [ "$CASE_NAME" = "closest_contact_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/closest-contact-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "post_all_ranges_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/post-all-ranges-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/post-all-ranges-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "post_closest_relbng_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/post-closest-relbng-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/post-closest-relbng-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_alert_add_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/runtime-alert-add-pass-shoreside.xmoos"
@@ -152,6 +160,18 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/filter-match-type-absent-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/filter-match-type-absent-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "disable_contact_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/disable-contact-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/disable-contact-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "enable_contact_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/enable-contact-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/enable-contact-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "early_warning_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/early-warning-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/early-warning-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "range_report_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/range-report-pass-shoreside.xmoos"
@@ -279,7 +299,7 @@ trap cleanup EXIT
 
 : > "$RESULTS_FILE"
 
-CASES="detect_baseline_pass detect_strict_absent_pass detect_edge_pass detect_edge_absent_pass detect_delayed_spoof_pass detect_short_duration_absent_pass detect_early_checkpoint_absent_pass detect_far_spoof_absent_pass detect_near_spoof_pass detect_cpa_only_pass closest_contact_pass runtime_alert_add_pass runtime_alert_disable_absent_pass filter_match_type_absent_pass count_one_pass list_intruder_pass range_report_pass report_request_pass range_tight_pass count_two_pass list_alpha_bravo_pass closest_alpha_pass closest_bravo_pass bravo_far_count_one_pass late_bravo_count_two_pass stale_bravo_drop_pass reject_range_retire_pass alpha_far_bravo_only_pass"
+CASES="detect_baseline_pass detect_strict_absent_pass detect_edge_pass detect_edge_absent_pass detect_delayed_spoof_pass detect_short_duration_absent_pass detect_early_checkpoint_absent_pass detect_far_spoof_absent_pass detect_near_spoof_pass detect_cpa_only_pass closest_contact_pass post_all_ranges_pass post_closest_relbng_pass runtime_alert_add_pass runtime_alert_disable_absent_pass filter_match_type_absent_pass disable_contact_pass enable_contact_pass early_warning_pass count_one_pass list_intruder_pass range_report_pass report_request_pass range_tight_pass count_two_pass list_alpha_bravo_pass closest_alpha_pass closest_bravo_pass bravo_far_count_one_pass late_bravo_count_two_pass stale_bravo_drop_pass reject_range_retire_pass alpha_far_bravo_only_pass"
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 fi

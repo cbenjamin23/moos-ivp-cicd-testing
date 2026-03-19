@@ -1,0 +1,6 @@
+//-------------------------------------------------
+// Vehicle Helm config file
+// Charles Benjamin
+
+initialize  DEPLOY  = false
+initialize  ARRIVED = false

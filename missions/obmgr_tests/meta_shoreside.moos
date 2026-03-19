@@ -1,0 +1,185 @@
+//--------------------------------------------------------
+// Shoreside Config file
+// Charles Benjamin
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//--------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = uProcessWatch   @ NewConsole = false
+  Run = pShare          @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+  Run = uTimerScript    @ NewConsole = false
+  Run = pMissionEval    @ NewConsole = false
+  Run = pAutoPoke       @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer   @ NewConsole = false
+#else
+  Run = pMissionHash    @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=8
+}
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = OBM_NEW_GIVEN = true
+  pass_condition = OBM_DIST_TO_OBJ = OB_NEAR,18.0
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests
+  mission_mod  = given_baseline_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = new_given=$[OBM_NEW_GIVEN]
+  report_column    = dist=$[OBM_DIST_TO_OBJ]
+  report_column    = mindist=$[OBM_MIN_DIST_EVER]
+  report_column    = resolved=$[OBM_RESOLVED]
+  report_column    = alert=$[OBSTACLE_ALERT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}
+
+//--------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  auto_bridge_appcast = true
+
+  qbridge  = DEPLOY, MOOS_MANUAL_OVERRIDE, NODE_REPORT, NODE_MESSAGE
+  bridge   = src=MISSION_HASH, alias=MISSION_HASH
+}
+
+//--------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+
+  view_node_rpt_pulses = false
+}
+
+//--------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  LogAuxSrc = true
+  WildCardLogging = true
+
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//--------------------------------------------------------
+// pMarineViewer Config Block
+
+ProcessConfig = pMarineViewer
+{
+  AppTick    = 4
+  CommsTick  = 4
+
+  watch_cluster = key=basic, vars=MISSION_HASH
+
+  tiff_file            = forrest19.tif
+  set_pan_x            = -90
+  set_pan_y            = -280
+  zoom                 = 0.65
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode      = appcast
+  realmcast_channel = mission_top
+
+  appcast_color_scheme = indigo
+  appcast_font_size    = large
+  procs_font_size      = large
+  nodes_font_size      = large
+
+  scope = TEST_EVAL_READY
+  scope = OBM_NEW_GIVEN
+  scope = OBM_DIST_TO_OBJ
+  scope = OBM_MIN_DIST_EVER
+  scope = OBM_RESOLVED
+
+  cmd = label=DEPLOY, var=DEPLOY, sval=true, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=MOOS_MANUAL_OVERRIDE, sval=false, receivers=all:$(VNAMES)
+
+  button_1 = DEPLOY # DEPLOY_ALL=true
+  button_1 = MOOS_MANUAL_OVERRIDE_ALL=false
+}
