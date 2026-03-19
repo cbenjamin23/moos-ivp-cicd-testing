@@ -20,7 +20,7 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - [missions/cmgr_tests/README.md](./missions/cmgr_tests/README.md) for the stem mission details
 - [harnesses/H01-cmgr_tests/README.md](./harnesses/H01-cmgr_tests/README.md) for the test matrix
 - [missions/first_draft/README.md](./missions/first_draft/README.md) for the baseline mission
-- [src/lib_behaviors-test/README](./src/lib_behaviors-test/README) for the legacy behavior-library note
+- [PARALLELIZATION_IDEA.md](./PARALLELIZATION_IDEA.md) for future harness scaling notes
 
 ## Notes
 
