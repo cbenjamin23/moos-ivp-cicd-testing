@@ -4,11 +4,17 @@
 #   Author: Charles Benjamin
 #   LastEd: Mar 2026
 #------------------------------------------------------------
+#  Part 1: Set convenience functions for producing terminal
+#          debugging output, and catching SIGINT (ctrl-c).
+#------------------------------------------------------------
 vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
 on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
 trap on_exit SIGINT
 trap "echo zlaunch.sh has received sigterm" SIGTERM
 
+#------------------------------------------------------------
+#  Part 2: Set global variable default values
+#------------------------------------------------------------
 ME=`basename "$0"`
 CMD_ARGS=""
 TIME_WARP=10
@@ -17,6 +23,9 @@ JUST_MAKE=""
 MAX_TIME="60"
 NOGUI="--nogui"
 
+#------------------------------------------------------------
+#  Part 3: Check for and handle command-line arguments
+#------------------------------------------------------------
 for ARGI; do
     CMD_ARGS+=" ${ARGI}"
     if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
@@ -48,11 +57,20 @@ for ARGI; do
     fi
 done
 
+#------------------------------------------------------------
+#  Part 4: Prepare for headless execution
+#------------------------------------------------------------
 : > results.txt
 vecho "Launching with max_time=$MAX_TIME"
 
+#------------------------------------------------------------
+#  Part 5: Run the mission through shared xlaunch.sh
+#------------------------------------------------------------
 xlaunch.sh --max_time=$MAX_TIME $NOGUI $JUST_MAKE $VERBOSE $TIME_WARP
 
+#------------------------------------------------------------
+#  Part 6: Ensure clean exit before returning to caller
+#------------------------------------------------------------
 if [ "${JUST_MAKE}" = "" ]; then
     sleep 0.5
     ktm

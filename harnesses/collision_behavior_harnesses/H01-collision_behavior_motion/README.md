@@ -76,13 +76,24 @@ Field anatomy:
 
 ```bash
 ./zlaunch.sh
+./zlaunch.sh --jobs=2 10
 ./zlaunch.sh --case=head_on_resolve_pass 10
 ./zlaunch.sh --just_make 10
 ```
+
+Wave mode notes:
+
+- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
+- each live case in a wave gets its own temp mission directory and unique port
+  block
+- the harness uses one `ktm` barrier between waves, not after every case
+- this mode is intended for CI wall-clock reduction, not for interactive use
+  alongside other MOOS missions
 
 Latest validation:
 
 - March 20, 2026
 - full matrix: `6/6` passing
 - warp: `10`
-- wall clock: `65.16` seconds
+- serial wall clock: `63.82` seconds
+- `--jobs=2` wall clock: `43.62` seconds

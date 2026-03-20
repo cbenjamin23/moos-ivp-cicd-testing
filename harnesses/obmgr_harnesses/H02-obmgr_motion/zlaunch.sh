@@ -4,11 +4,17 @@
 #   Author: Charles Benjamin
 #   LastEd: Mar 2026
 #------------------------------------------------------------
+#  Part 1: Set convenience functions for producing terminal
+#          debugging output, and catching SIGINT (ctrl-c).
+#------------------------------------------------------------
 vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
 on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
 trap on_exit SIGINT
 trap "echo zlaunch.sh has received sigterm" SIGTERM
 
+#------------------------------------------------------------
+#  Part 2: Set global variable default values
+#------------------------------------------------------------
 ME=`basename "$0"`
 CMD_ARGS=""
 VERBOSE=""
@@ -28,6 +34,9 @@ VEHICLE_STEM="$MISSION_DIR/meta_vehicle.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 VEHICLE_XFILE="$MISSION_DIR/meta_vehicle.moosx"
 
+#------------------------------------------------------------
+#  Part 3: Check for and handle command-line arguments
+#------------------------------------------------------------
 for ARGI; do
     CMD_ARGS+="${ARGI} "
     if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
@@ -65,6 +74,10 @@ for ARGI; do
     fi
 done
 
+#------------------------------------------------------------
+#  Part 4: Set convenience functions for managing x-files
+#          and per-run cleanup.
+#------------------------------------------------------------
 clear_xfiles() {
     rm -f "$SHORE_XFILE" "$VEHICLE_XFILE"
 }
@@ -79,6 +92,10 @@ cleanup() {
     cd "$start_dir"
 }
 
+#------------------------------------------------------------
+#  Part 5: Determine the expected outcome and patch files
+#          for one named case.
+#------------------------------------------------------------
 get_case_config() {
     CASE_NAME="$1"
     EXPECTED=""
@@ -115,6 +132,9 @@ get_case_config() {
     return 0
 }
 
+#------------------------------------------------------------
+#  Part 6: Apply case-specific nspatch overlays.
+#------------------------------------------------------------
 apply_case_patches() {
     clear_xfiles
 
@@ -128,6 +148,9 @@ apply_case_patches() {
 
 }
 
+#------------------------------------------------------------
+#  Part 7: Execute one case and append its summary line.
+#------------------------------------------------------------
 run_case() {
     local case_name="$1"
     get_case_config "$case_name" || return 1
@@ -174,6 +197,9 @@ run_case() {
 
 trap cleanup EXIT
 
+#------------------------------------------------------------
+#  Part 8: Select the case set, run the matrix, and report.
+#------------------------------------------------------------
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else

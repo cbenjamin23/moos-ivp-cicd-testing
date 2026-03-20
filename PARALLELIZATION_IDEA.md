@@ -183,3 +183,56 @@ Good first version:
 - report the best stable `jobs` value observed
 
 That is preferable to rediscovering the method ad hoc every time.
+
+## Collision Behavior Prototype Notes
+
+A small prototype was attempted first on:
+
+- `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion`
+
+Main findings:
+
+- The stem itself needed hardening before parallelization work was meaningful.
+  The original `uTimerScript` flow depended on one-shot deploy mail and could
+  miss that mail at startup. Making the timer sequence launch-relative was a
+  necessary stability fix even for serial harness runs.
+- The reliable unit of isolation is the single-case mission invocation, not a
+  long-lived worker process that reuses one mission directory repeatedly.
+- Per-case temp workdirs and per-case port blocks still look like the right
+  shape, but the orchestration layer should probably be built around child
+  single-case runs rather than one shell process trying to manage many live
+  case transitions directly.
+- `xlaunch.sh` teardown is not strong enough by itself for repeated isolated
+  case execution. Any future parallel harness will need explicit case-local
+  cleanup logic in addition to unique ports.
+
+Practical implication:
+
+- When parallelization resumes, start from a harness that already has stable
+  single-case `--case=<name>` execution and treat that child invocation as the
+  building block for `--jobs=<N>`.
+
+## Wave-Based Compromise
+
+The first successful implementation in this repo is a simpler compromise:
+
+- run a wave of up to `N` isolated cases in parallel
+- each live case gets:
+  - its own temp mission copy
+  - its own patch sidecars
+  - its own target files
+  - its own `results.txt`
+  - its own port block
+- wait for the whole wave to finish
+- call `ktm` once as a global batch barrier
+- then start the next wave
+
+This is not fully general parallelism, because `ktm` still makes it unsuitable
+to overlap with unrelated MOOS missions. But it is much simpler and can still
+reduce harness wall clock substantially.
+
+Current measured example:
+
+- `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion`
+  - serial: about `63.82` seconds wall clock at warp `10`
+  - wave mode with `--jobs=2`: about `43.62` seconds wall clock at warp `10`
