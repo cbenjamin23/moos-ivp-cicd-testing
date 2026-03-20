@@ -107,11 +107,21 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ```bash
 ./zlaunch.sh
+./zlaunch.sh --jobs=4 10
 ./zlaunch.sh --case=given_baseline_pass 10
 ./zlaunch.sh --case=points_cluster_dist_pass 10
 ./zlaunch.sh --just_make 10
 ./zlaunch.sh --max_time=90 10
 ```
+
+Wave mode notes:
+
+- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
+- each live case in a wave gets its own temp mission directory and unique port
+  block
+- the harness uses one `ktm` barrier between waves, not after every case
+- this mode is intended for CI wall-clock reduction, not for interactive use
+  alongside other MOOS missions
 
 ## What `./zlaunch.sh` Does Here
 
@@ -126,6 +136,10 @@ mission's own `zlaunch.sh`. Instead it owns the full run:
 6. Compare `actual` against `expected`.
 7. Append one summary line to the harness `results.txt`.
 8. On harness exit, run one final `clean.sh` and `ktm`.
+
+In wave mode, those same steps happen inside per-case temporary mission copies.
+The shared stem directory remains the source for patches and the default serial
+execution path.
 
 ## Results Lines
 
@@ -218,6 +232,8 @@ comes from launch and teardown rather than the obstacle logic. Revalidation
 timings:
 
 - full 20-case matrix passed at warp `10`
+- serial wall clock: `138.31` seconds
+- `--jobs=4` wall clock: `59.65` seconds
 - launch and teardown still dominate the wall-clock cost
 
 As with the contact-manager harness, launch and teardown overhead is a larger

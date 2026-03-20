@@ -236,3 +236,13 @@ Current measured example:
 - `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion`
   - serial: about `63.82` seconds wall clock at warp `10`
   - wave mode with `--jobs=2`: about `43.62` seconds wall clock at warp `10`
+  - wave mode with `--jobs=6`: about `20.89` seconds wall clock at warp `10`
+
+The same wave-based pattern now works on the app-level harnesses too:
+
+- `harnesses/cmgr_harnesses/H01-cmgr_unit`
+  - serial: about `239.45` seconds wall clock at warp `10`
+  - wave mode with `--jobs=4`: about `110.56` seconds wall clock at warp `10`
+- `harnesses/obmgr_harnesses/H01-obmgr_unit`
+  - serial: about `138.31` seconds wall clock at warp `10`
+  - wave mode with `--jobs=4`: about `59.65` seconds wall clock at warp `10`
