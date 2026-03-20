@@ -12,6 +12,10 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - `harnesses/obmgr_harnesses/H01-obmgr_unit` - patch-driven obstacle-manager unit matrix
 - `missions/obmgr_missions/obmgr_motion` - moving obstacle-avoidance integration stem
 - `harnesses/obmgr_harnesses/H02-obmgr_motion` - moving obstacle integration matrix
+- `missions/collision_behavior_missions/collision_behavior_motion` - moving avoid-collision behavior stem
+- `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion` - moving avoid-collision behavior matrix
+- `missions/obstacle_behavior_missions/obstacle_behavior_motion` - moving avoid-obstacle behavior stem
+- `harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion` - moving avoid-obstacle behavior matrix
 - `missions/first_draft` - older obstacle-avoidance baseline mission kept for reference
 - `src/` - legacy template code still built by the repository
 
@@ -31,6 +35,10 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - [harnesses/obmgr_harnesses/H01-obmgr_unit/README.md](./harnesses/obmgr_harnesses/H01-obmgr_unit/README.md) for the obstacle-manager unit matrix
 - [missions/obmgr_missions/obmgr_motion/README.md](./missions/obmgr_missions/obmgr_motion/README.md) for the moving obstacle-avoidance stem
 - [harnesses/obmgr_harnesses/H02-obmgr_motion/README.md](./harnesses/obmgr_harnesses/H02-obmgr_motion/README.md) for the moving obstacle integration matrix
+- [missions/collision_behavior_missions/collision_behavior_motion/README.md](./missions/collision_behavior_missions/collision_behavior_motion/README.md) for the avoid-collision behavior stem
+- [harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/README.md](./harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/README.md) for the avoid-collision behavior matrix
+- [missions/obstacle_behavior_missions/obstacle_behavior_motion/README.md](./missions/obstacle_behavior_missions/obstacle_behavior_motion/README.md) for the avoid-obstacle behavior stem
+- [harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md](./harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md) for the avoid-obstacle behavior matrix
 - [missions/first_draft/README.md](./missions/first_draft/README.md) for the baseline mission
 - [PARALLELIZATION_IDEA.md](./PARALLELIZATION_IDEA.md) for future harness scaling notes
 
@@ -63,4 +71,15 @@ MOOS-IvP CI/CD workspace for mission-level tests.
   graded deterministically.
 - The full `H02-obmgr_motion` matrix currently has `6` cases and the latest
   full run passed at warp `10`.
+- `collision_behavior_motion` is the downstream moving correctness layer for
+  `BHV_AvoidCollision`. It keeps the synthetic-contact setup deterministic, but
+  grades on behavior-owned lifecycle and mission outcome rather than on raw
+  contact-manager outputs.
+- The full `H01-collision_behavior_motion` matrix currently has `6` cases and
+  the latest full run passed at warp `10` in about `65` seconds wall clock.
+- `obstacle_behavior_motion` is the downstream moving correctness layer for
+  `BHV_AvoidObstacleV24`. It keeps obstacle-manager input deterministic, but
+  grades on behavior engagement, completion, and clean transit.
+- The full `H01-obstacle_behavior_motion` matrix currently has `7` cases and
+  the latest full run passed at warp `10` in about `93` seconds wall clock.
 - The `src/` tree is kept only for legacy template compatibility and can be trimmed further if you no longer need those builds.

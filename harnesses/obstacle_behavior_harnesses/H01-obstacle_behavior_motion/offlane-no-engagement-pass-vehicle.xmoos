@@ -1,0 +1,12 @@
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  given_obstacle = pts={32,-8:44,-8:44,4:32,4},label=ob_off
+
+  obstacles_color = green
+  post_view_polys = true
+
+  given_max_duration = 1000
+}

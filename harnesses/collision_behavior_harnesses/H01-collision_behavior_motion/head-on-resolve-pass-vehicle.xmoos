@@ -1,0 +1,9 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY = true
+
+  event = var=SPOOF, val="x=70,y=-60,hdg=270,spd=1.2,vsource=ais,name=intruder,color=green,dur=45", time=2
+}

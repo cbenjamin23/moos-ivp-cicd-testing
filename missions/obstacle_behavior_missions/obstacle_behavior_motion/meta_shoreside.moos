@@ -1,0 +1,223 @@
+//--------------------------------------------------------
+// Shoreside Config file
+// Charles Benjamin
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//--------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uFldCollObDetect @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = OB_TOTAL_COLLISIONS=0
+  flag = OB_TOTAL_ENCOUNTERS=0
+  flag = OB_TOTAL_NEAR_MISSES=0
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=KNOWN_OBSTACLE, val="pts={29,-53:43,-53:43,-67:29,-67},label=ob_lane", time=1
+  event = var=TEST_EVAL_READY, val=true, time=68
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @OBM_ALERT_REQUEST#ALERT_REQUEST_SEEN=true
+  mailflag = @OBSTACLE_ALERT#OBSTACLE_ALERT_SEEN=true
+  mailflag = @OBM_RESOLVED#RESOLVED_SEEN=true
+  mailflag = @AVOID_RANGE_SEEN#RANGE_FLAG_SEEN=true
+  mailflag = @AVOID_CPA_SEEN#CPA_FLAG_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ALERT_REQUEST_SEEN = true
+  pass_condition = OBSTACLE_ALERT_SEEN = true
+  pass_condition = OBAVOIDING = end
+  pass_condition = ARRIVED = true
+  pass_condition = OB_TOTAL_COLLISIONS = 0
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = obstacle_behavior_motion_tests
+  mission_mod  = $(MMOD:=default_auto_request_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = obavoiding=$[OBAVOIDING]
+  report_column = alert_req_seen=$[ALERT_REQUEST_SEEN]
+  report_column = obstacle_alert_seen=$[OBSTACLE_ALERT_SEEN]
+  report_column = resolved_seen=$[RESOLVED_SEEN]
+  report_column = range_flag_seen=$[RANGE_FLAG_SEEN]
+  report_column = cpa_flag_seen=$[CPA_FLAG_SEEN]
+  report_column = resolved=$[OBM_RESOLVED]
+  report_column = arrived=$[ARRIVED]
+  report_column = collisions=$[OB_TOTAL_COLLISIONS]
+  report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
+  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//------------------------------------------------------
+// uFldCollObDetect Config Block
+
+ProcessConfig = uFldCollObDetect
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 12
+
+  encounter_flag = OB_TOTAL_ENCOUNTERS=$ENC_CNT
+  encounter_flag = OB_TOTAL_NEAR_MISSES=$MISS_CNT
+  encounter_flag = OB_TOTAL_COLLISIONS=$COLL_CNT
+  encounter_flag = OB_ENCOUNTER=$DIST
+  near_miss_flag = OB_NEAR_MISS=$DIST
+  collision_flag = OB_COLLISION=$DIST
+}
+
+//------------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = OBAVOIDING, OBM_ALERT_REQUEST, OBSTACLE_ALERT, OBM_RESOLVED
+  qbridge  = AVOID_RANGE_SEEN, AVOID_CPA_SEEN
+}
+
+//--------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//--------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//--------------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = 0
+  set_pan_y            = -300
+  zoom                 = 1.0
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode         = appcast
+  appcast_color_scheme = indigo
+  nodes_font_size      = large
+  procs_font_size      = large
+  appcast_font_size    = large
+
+  scope = ARRIVED
+  scope = TEST_EVAL_READY
+  scope = MISSION_EVALUATED
+  scope = OBAVOIDING
+  scope = ALERT_REQUEST_SEEN
+  scope = OBSTACLE_ALERT_SEEN
+  scope = RESOLVED_SEEN
+  scope = RANGE_FLAG_SEEN
+  scope = CPA_FLAG_SEEN
+  scope = OBM_RESOLVED
+  scope = OB_TOTAL_COLLISIONS
+  scope = OB_TOTAL_ENCOUNTERS
+
+  button_one = DEPLOY # DEPLOY_ALL=true
+  button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false
+}
