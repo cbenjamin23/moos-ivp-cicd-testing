@@ -8,8 +8,8 @@ Single-vehicle obstacle-avoidance mission for validating:
 
 Scenario:
 
-- the vehicle starts on the left at `(-80,-20)`
-- the goal waypoint is on the right at `(90,-20)`
+- the vehicle starts on the left at `(0,-60)`
+- the goal waypoint is on the right at `(170,-60)`
 - one static obstacle sits directly in the transit lane
 - `pAutoPoke` auto-deploys once the vehicle connects
 - `pAutoPoke` also publishes the static `KNOWN_OBSTACLE` used by shoreside grading

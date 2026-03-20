@@ -1,7 +1,7 @@
 #!/bin/bash
 #------------------------------------------------------------
 #   Script: launch_shoreside.sh
-#  Mission: first_draft
+#  Mission: obavoid_tests
 #   Author: Charles Benjamin
 #   LastEd: Mar 2026
 #------------------------------------------------------------
@@ -26,8 +26,8 @@ LAUNCH_GUI="yes"
 IP_ADDR="localhost"
 MOOS_PORT="9000"
 PSHARE_PORT="9200"
+MMOD=""
 VNAMES="abe"
-OBSTACLE_SPEC="pts={75,-52:88,-52:88,-68:75,-68},label=ob_0"
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -49,16 +49,16 @@ for ARGI; do
         echo "    Headless mode - no pMarineViewer etc       "
         echo "                                               "
         echo "  --ip=<localhost>                             "
-        echo "    Force pHostInfo to use this IP address     "
+        echo "    Force pHostInfo to use this IP Address     "
         echo "  --mport=<9000>                               "
-        echo "    Port number of this MOOSDB port            "
+        echo "    Port number of this vehicle's MOOSDB port  "
         echo "  --pshare=<9200>                              "
-        echo "    Port number of this pShare port            "
+        echo "    Port number of this vehicle's pShare port  "
+        echo "  --mmod=<mod>                                 "
+        echo "    Identify a mission variation/mod           "
         echo "                                               "
         echo "  --vnames=<vnames>                            "
-        echo "    Colon-separated list of vehicle names      "
-        echo "  --obstacle=<spec>                            "
-        echo "    Static obstacle spec for grading           "
+        echo "    Colon-separate list of all vehicle names   "
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 1 ]; then
         TIME_WARP=$ARGI
@@ -76,10 +76,10 @@ for ARGI; do
         MOOS_PORT="${ARGI#--mport=*}"
     elif [ "${ARGI:0:9}" = "--pshare=" ]; then
         PSHARE_PORT="${ARGI#--pshare=*}"
+    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
+        MMOD="${ARGI#--mmod=*}"
     elif [ "${ARGI:0:9}" = "--vnames=" ]; then
         VNAMES="${ARGI#--vnames=*}"
-    elif [ "${ARGI:0:11}" = "--obstacle=" ]; then
-        OBSTACLE_SPEC="${ARGI#--obstacle=*}"
     else
         echo "$ME: Bad Arg:[$ARGI]. Exit Code 1."
         exit 1
@@ -87,8 +87,8 @@ for ARGI; do
 done
 
 #------------------------------------------------------------
-#  Part 4: If not auto_launched and IP_ADDR has not been
-#          explicitly set, try to determine the local IP.
+#  Part 4: If not auto_launched and IP_ADDR has not be
+#          explicitly set, try to get it using the local script.
 #------------------------------------------------------------
 if [ "${AUTO_LAUNCHED}" = "no" -a "${IP_ADDR}" = "localhost" ]; then
     MAYBE_IP_ADDR=`ipaddrs.sh --blunt`
@@ -114,9 +114,9 @@ if [ "${VERBOSE}" = "yes" ]; then
     echo "MOOS_PORT =     [${MOOS_PORT}]    "
     echo "PSHARE_PORT =   [${PSHARE_PORT}]  "
     echo "LAUNCH_GUI =    [${LAUNCH_GUI}]   "
+    echo "MMOD =          [${MMOD}]         "
     echo "----------------------------------"
     echo "VNAMES =        [${VNAMES}]       "
-    echo "OBSTACLE_SPEC = [${OBSTACLE_SPEC}]"
     echo "----------------------------------"
     echo -n "Hit any key to continue launch "
     read ANSWER
@@ -133,17 +133,18 @@ fi
 nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT    \
        PSHARE_PORT=$PSHARE_PORT     LAUNCH_GUI=$LAUNCH_GUI  \
-       VNAMES=$VNAMES               OBSTACLE_SPEC=$OBSTACLE_SPEC
+       MMOD=$MMOD                   VNAMES=$VNAMES          \
+       AUTO_LAUNCHED=$AUTO_LAUNCHED
 
 if [ "${JUST_MAKE}" = "yes" ]; then
-    echo "$ME: Targ files made; exiting without launch."
+    echo "Targ files made; exiting without launch."
     exit 0
 fi
 
 #------------------------------------------------------------
 #  Part 7: Launch the shoreside MOOS community
 #------------------------------------------------------------
-echo "Launching Shoreside MOOS Community. WARP=$TIME_WARP"
+echo "Launching Shoreside MOOS Community. WARP="$TIME_WARP
 pAntler targ_shoreside.moos >& /dev/null &
 echo "Done Launching Shoreside Community"
 
@@ -155,7 +156,7 @@ if [ "${AUTO_LAUNCHED}" = "yes" ]; then
 fi
 
 #------------------------------------------------------------
-#  Part 9: Launch uMAC until the mission is quit
+# Part 9: Launch uMAC until the mission is quit
 #------------------------------------------------------------
 uMAC targ_shoreside.moos
 trap "" SIGINT

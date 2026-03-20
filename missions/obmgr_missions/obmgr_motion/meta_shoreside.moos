@@ -22,6 +22,7 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
   Run = uFldCollObDetect @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
   Run = pMissionEval     @ NewConsole = false
   Run = pAutoPoke        @ NewConsole = false
 #ifdef LAUNCH_GUI yes
@@ -45,12 +46,25 @@ ProcessConfig = pAutoPoke
 
   flag = DEPLOY_ALL=true
   flag = MOOS_MANUAL_OVERRIDE_ALL=false
-  flag = KNOWN_OBSTACLE=$(OBSTACLE_SPEC)
   flag = OB_TOTAL_COLLISIONS=0
   flag = OB_TOTAL_ENCOUNTERS=0
   flag = OB_TOTAL_NEAR_MISSES=0
 
   required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=KNOWN_OBSTACLE, val="pts={29,-53:43,-53:43,-67:29,-67},label=ob_lane", time=1
+  event = var=TEST_EVAL_READY, val=true, time=42
 }
 
 //----------------------------------------------------
@@ -61,24 +75,27 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = ARRIVED=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ARRIVED = true
   pass_condition = OB_TOTAL_COLLISIONS = 0
-  fail_condition = OB_TOTAL_COLLISIONS > 0
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
   fail_flag   = SAY_MOOS = fail
 
-  mission_form = first_draft
-  mission_mod  = left_to_right_obavoid
+  mission_form = obavoid_tests
+  mission_mod  = $(MMOD:=baseline_center_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = collisions=$[OB_TOTAL_COLLISIONS]
-  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = eval=$[TEST_EVAL_READY]
   report_column = arrived=$[ARRIVED]
+  report_column = collisions=$[OB_TOTAL_COLLISIONS]
+  report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
+  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = mhash=$[MHASH_SHORT]
 }
 
 //------------------------------------------------------
@@ -91,7 +108,7 @@ ProcessConfig = uFldCollObDetect
 
   collision_dist = 1
   near_miss_dist = 5
-  encounter_dist = 15
+  encounter_dist = 12
 
   encounter_flag = OB_TOTAL_ENCOUNTERS=$ENC_CNT
   encounter_flag = OB_TOTAL_NEAR_MISSES=$MISS_CNT
@@ -101,6 +118,7 @@ ProcessConfig = uFldCollObDetect
   collision_flag = OB_COLLISION=$DIST
 }
 
+//------------------------------------------------------
 // uFldShoreBroker Config Block
 
 ProcessConfig = uFldShoreBroker
@@ -170,9 +188,11 @@ ProcessConfig = pMarineViewer
   appcast_font_size    = large
 
   scope = ARRIVED
+  scope = TEST_EVAL_READY
   scope = MISSION_EVALUATED
   scope = MISSION_RESULT
   scope = OB_TOTAL_COLLISIONS
+  scope = OB_TOTAL_ENCOUNTERS
 
   button_one = DEPLOY # DEPLOY_ALL=true
   button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false

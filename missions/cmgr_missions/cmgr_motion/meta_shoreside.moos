@@ -13,21 +13,22 @@ ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 100
 
-  Run = MOOSDB           @ NewConsole = false
-  Run = pRealm           @ NewConsole = false
-  Run = pLogger          @ NewConsole = false
-  Run = uProcessWatch    @ NewConsole = false
-  Run = pShare           @ NewConsole = false
-  Run = pHostInfo        @ NewConsole = false
-  Run = uFldShoreBroker  @ NewConsole = false
-  Run = uFldNodeComms    @ NewConsole = false
-  Run = uFldCollObDetect @ NewConsole = false
-  Run = pMissionEval     @ NewConsole = false
-  Run = pAutoPoke        @ NewConsole = false
+  Run = MOOSDB             @ NewConsole = false
+  Run = pRealm             @ NewConsole = false
+  Run = pLogger            @ NewConsole = false
+  Run = uProcessWatch      @ NewConsole = false
+  Run = pShare             @ NewConsole = false
+  Run = pHostInfo          @ NewConsole = false
+  Run = uFldShoreBroker    @ NewConsole = false
+  Run = uFldNodeComms      @ NewConsole = false
+  Run = uFldCollisionDetect @ NewConsole = false
+  Run = uTimerScript       @ NewConsole = false
+  Run = pMissionEval       @ NewConsole = false
+  Run = pAutoPoke          @ NewConsole = false
 #ifdef LAUNCH_GUI yes
-  Run = pMarineViewer    @ NewConsole = false
+  Run = pMarineViewer      @ NewConsole = false
 #else
-  Run = pMissionHash     @ NewConsole = false
+  Run = pMissionHash       @ NewConsole = false
 #endif
 }
 
@@ -45,12 +46,24 @@ ProcessConfig = pAutoPoke
 
   flag = DEPLOY_ALL=true
   flag = MOOS_MANUAL_OVERRIDE_ALL=false
-  flag = KNOWN_OBSTACLE=$(OBSTACLE_SPEC)
-  flag = OB_TOTAL_COLLISIONS=0
-  flag = OB_TOTAL_ENCOUNTERS=0
-  flag = OB_TOTAL_NEAR_MISSES=0
+  flag = ENCOUNTER_TOTAL=0
+  flag = NEAR_MISS_TOTAL=0
+  flag = COLLISION_TOTAL=0
 
   required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=44
 }
 
 //----------------------------------------------------
@@ -61,46 +74,56 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = ARRIVED=true
-  pass_condition = OB_TOTAL_COLLISIONS = 0
-  fail_condition = OB_TOTAL_COLLISIONS > 0
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ARRIVED = true
+  pass_condition = COLLISION_TOTAL = 0
+  pass_condition = CONTACT_DETECTED = true
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
   fail_flag   = SAY_MOOS = fail
 
-  mission_form = first_draft
-  mission_mod  = left_to_right_obavoid
+  mission_form = cmgr_motion_tests
+  mission_mod  = $(MMOD:=baseline_crossing_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = collisions=$[OB_TOTAL_COLLISIONS]
-  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = eval=$[TEST_EVAL_READY]
   report_column = arrived=$[ARRIVED]
+  report_column = detected=$[CONTACT_DETECTED]
+  report_column = closest=$[CONTACT_CLOSEST]
+  report_column = range=$[CONTACT_CLOSEST_RANGE]
+  report_column = encounters=$[ENCOUNTER_TOTAL]
+  report_column = near_misses=$[NEAR_MISS_TOTAL]
+  report_column = collisions=$[COLLISION_TOTAL]
+  report_column = mhash=$[MHASH_SHORT]
 }
 
 //------------------------------------------------------
-// uFldCollObDetect Config Block
+// uFldCollisionDetect Config Block
 
-ProcessConfig = uFldCollObDetect
+ProcessConfig = uFldCollisionDetect
 {
   AppTick   = 2
   CommsTick = 2
 
-  collision_dist = 1
-  near_miss_dist = 5
-  encounter_dist = 15
+  encounter_range = 14
+  near_miss_range = 6
+  collision_range = 1.5
 
-  encounter_flag = OB_TOTAL_ENCOUNTERS=$ENC_CNT
-  encounter_flag = OB_TOTAL_NEAR_MISSES=$MISS_CNT
-  encounter_flag = OB_TOTAL_COLLISIONS=$COLL_CNT
-  encounter_flag = OB_ENCOUNTER=$DIST
-  near_miss_flag = OB_NEAR_MISS=$DIST
-  collision_flag = OB_COLLISION=$DIST
+  condition = DEPLOY_ALL = true
+
+  report_all_encounters = true
+  post_closest_range = true
+
+  encounter_flag = ENCOUNTER=$CPA
+  near_miss_flag = NEAR_MISS=$CPA
+  collision_flag = COLLISION=$CPA
 }
 
+//------------------------------------------------------
 // uFldShoreBroker Config Block
 
 ProcessConfig = uFldShoreBroker
@@ -108,8 +131,7 @@ ProcessConfig = uFldShoreBroker
   AppTick   = 1
   CommsTick = 1
 
-  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
-  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = DEPLOY, NODE_REPORT, NODE_MESSAGE, MOOS_MANUAL_OVERRIDE
 }
 
 //--------------------------------------------------
@@ -125,6 +147,8 @@ ProcessConfig = uFldNodeComms
   min_msg_interval = 15
   max_msg_length   = 1000
   groups           = true
+
+  view_node_rpt_pulses = false
 }
 
 //--------------------------------------------------
@@ -156,7 +180,7 @@ ProcessConfig = pMarineViewer
   AppTick   = 4
   CommsTick = 4
 
-  tiff_file            = MIT_SP.tif
+	tiff_file            = MIT_SP.tif
   set_pan_x            = 0
   set_pan_y            = -300
   zoom                 = 1.0
@@ -170,9 +194,14 @@ ProcessConfig = pMarineViewer
   appcast_font_size    = large
 
   scope = ARRIVED
+  scope = TEST_EVAL_READY
   scope = MISSION_EVALUATED
-  scope = MISSION_RESULT
-  scope = OB_TOTAL_COLLISIONS
+  scope = CONTACT_DETECTED
+  scope = CONTACT_CLOSEST
+  scope = CONTACT_CLOSEST_RANGE
+  scope = ENCOUNTER_TOTAL
+  scope = NEAR_MISS_TOTAL
+  scope = COLLISION_TOTAL
 
   button_one = DEPLOY # DEPLOY_ALL=true
   button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false

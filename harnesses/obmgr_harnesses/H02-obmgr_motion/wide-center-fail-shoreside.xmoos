@@ -1,0 +1,53 @@
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = OB_TOTAL_COLLISIONS=0
+  flag = OB_TOTAL_ENCOUNTERS=0
+  flag = OB_TOTAL_NEAR_MISSES=0
+
+  required_nodes = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=KNOWN_OBSTACLE, val="pts={25,-50:47,-50:47,-70:25,-70},label=ob_wide", time=1
+  event = var=TEST_EVAL_READY, val=true, time=42
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ARRIVED = true
+  pass_condition = OB_TOTAL_COLLISIONS = 0
+  pass_condition = OB_TOTAL_ENCOUNTERS = 1
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = obavoid_tests_harness
+  mission_mod  = wide_center_fail
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = arrived=$[ARRIVED]
+  report_column = collisions=$[OB_TOTAL_COLLISIONS]
+  report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
+  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = mhash=$[MHASH_SHORT]
+}

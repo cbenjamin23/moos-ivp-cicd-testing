@@ -1,0 +1,19 @@
+ProcessConfig = pContactMgrV20
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  app_logging = true
+
+  decay           = 20,40
+  contact_max_age = 35
+
+  alert_verbose = true
+
+  alert = id=avoid, var=CONTACT_INFO, val="name=avd_ # contact=$[VNAME]"
+  alert = id=avoid, on_flag=CONTACT_DETECTED=true
+  alert = id=avoid, alert_range=8, cpa_range=10
+
+  post_closest_range   = true
+  hold_alerts_for_helm = false
+}

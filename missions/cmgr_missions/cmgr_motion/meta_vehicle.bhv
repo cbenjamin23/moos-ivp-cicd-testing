@@ -1,0 +1,61 @@
+//-------------------------------------------------
+// Vehicle Helm config file
+// Charles Benjamin
+
+initialize  DEPLOY           = false
+initialize  ARRIVED          = false
+initialize  AVOID            = true
+initialize  CONTACT_DETECTED = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+//----------------------------------------------
+Behavior = BHV_Waypoint
+{
+  name      = waypt_transit
+  pwt       = 100
+  condition = MODE == ACTIVE
+
+  endflag   = ARRIVED = true
+  endflag   = AVOID = false
+
+  speed          = $(STOCK_SPD)
+  capture_line   = true
+  capture_radius = 4.0
+  slip_radius    = 12.0
+  point          = $(DEST_POS)
+  repeat         = 0
+
+  visual_hints = nextpt_color=yellow
+  visual_hints = nextpt_vertex_size=8
+  visual_hints = nextpt_lcolor=off
+  visual_hints = vertex_color=dodger_blue, edge_color=white
+  visual_hints = vertex_size=5, edge_size=1
+}
+
+//----------------------------------------------
+Behavior = BHV_AvoidCollision
+{
+  name       = avd_
+  pwt        = 130
+  condition  = MODE == ACTIVE
+  condition  = AVOID = true
+  updates    = CONTACT_INFO
+  templating = spawn
+  endflag    = CONTACT_RESOLVED = $[CONTACT]
+
+             contact = to-be-set
+    on_no_contact_ok = true
+         extrapolate = true
+               decay = 20,40
+
+        pwt_outer_dist = 24
+        pwt_inner_dist = 10
+        completed_dist = 30
+     min_util_cpa_dist = 6
+     max_util_cpa_dist = 16
+             pwt_grade = linear
+   bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
+}

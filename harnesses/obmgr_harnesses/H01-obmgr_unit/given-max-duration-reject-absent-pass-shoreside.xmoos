@@ -1,0 +1,23 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  fail_condition = OBM_NEW_GIVEN = true
+  fail_condition = OBSTACLE_ALERT = name=avd_ob_long#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_long#id=ob_long
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests_harness
+  mission_mod  = given_max_duration_reject_absent_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = new_given=$[OBM_NEW_GIVEN]
+  report_column    = alert=$[OBSTACLE_ALERT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

@@ -1,0 +1,48 @@
+ProcessConfig = pContactMgrV20
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  app_logging = true
+
+  decay           = 15,30
+  contact_max_age = 45
+
+  alert = id=track, on_flag=CONTACT_SEEN=true
+  alert = id=track, alert_range=80, cpa_range=100
+
+  enable_var = CONTACT_ENABLE
+  post_closest_range   = true
+  hold_alerts_for_helm = false
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY = true
+
+  event = var=CONTACT_ENABLE, val=intruder, time=6
+  event = var=SPOOF, val="name=intruder,x=20,y=-44,hdg=180,spd=0.2,vsource=ais,color=green", time=4
+}
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=ARRIVED
+  bridge = src=CONTACT_SEEN
+  bridge = src=CONTACT_CLOSEST
+  bridge = src=CONTACT_CLOSEST_RANGE
+  bridge = src=BHV_ABLE_FILTER
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+}

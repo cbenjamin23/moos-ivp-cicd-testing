@@ -1,0 +1,9 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = OBM_CONNECT = true
+
+  event = var=OBM_ALERT_REQUEST, val="name=avd_,update_var=OBSTACLE_ALERT,alert_range=16", time=1
+}
