@@ -246,3 +246,15 @@ The same wave-based pattern now works on the app-level harnesses too:
 - `harnesses/obmgr_harnesses/H01-obmgr_unit`
   - serial: about `138.31` seconds wall clock at warp `10`
   - wave mode with `--jobs=4`: about `59.65` seconds wall clock at warp `10`
+
+The same pattern now works on one contact-motion harness as well:
+
+- `harnesses/cmgr_harnesses/H02-cmgr_motion`
+  - serial: about `97.15` seconds wall clock at warp `10`
+  - wave mode with `--jobs=4`: about `45.46` seconds wall clock at warp `10`
+
+And it now works on the obstacle motion harness too:
+
+- `harnesses/obmgr_harnesses/H02-obmgr_motion`
+  - serial: about `65.77` seconds wall clock at warp `10`
+  - wave mode with `--jobs=4`: about `24.93` seconds wall clock at warp `10`

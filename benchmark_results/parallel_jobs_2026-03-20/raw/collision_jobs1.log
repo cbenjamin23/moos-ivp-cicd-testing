@@ -1,0 +1,192 @@
+XLaunchArgs: --max_time=70 --mmod=default_resolve_pass 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9300 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+XLaunchArgs: --max_time=70 --mmod=no_alert_request_absent_pass 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9300 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+XLaunchArgs: --max_time=70 --mmod=post_per_contact_info_pass 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9300 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+XLaunchArgs: --max_time=70 --mmod=behavior_filter_absent_pass 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9300 -  try 00001   contacting a MOOS server localhost:9300 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+XLaunchArgs: --max_time=70 --mmod=head_on_resolve_pass 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9300 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+XLaunchArgs: --max_time=70 --mmod=no_alert_request_fail 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9300 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+case=default_resolve_pass  expected=pass  actual=pass  status=ok    grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=0  near_misses=0  collisions=0  mhash=[HALF-HYDE]
+case=no_alert_request_absent_pass  expected=pass  actual=pass  status=ok    grade=pass  form=collision_behavior_motion_tests  mmod=no_alert_request_absent_pass  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[VILE-REST]
+case=post_per_contact_info_pass  expected=pass  actual=pass  status=ok    grade=pass  form=collision_behavior_motion_tests  mmod=post_per_contact_info_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=true  clsg_seen=true  resolved=intruder  arrived=true  collisions=0  mhash=[GORY-NORM]
+case=behavior_filter_absent_pass  expected=pass  actual=pass  status=ok    grade=pass  form=collision_behavior_motion_tests  mmod=behavior_filter_absent_pass  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[WILD-RAIN]
+case=head_on_resolve_pass  expected=pass  actual=pass  status=ok    grade=pass  form=collision_behavior_motion_tests  mmod=head_on_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  collisions=0  mhash=[SICK-PROP]
+case=no_alert_request_fail  expected=fail  actual=fail  status=ok    grade=fail  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  encounters=1  near_misses=0  collisions=1  mhash=[DULL-GOAL]

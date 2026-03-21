@@ -3,7 +3,7 @@ ProcessConfig = pObstacleMgr
   AppTick   = 4
   CommsTick = 4
 
-  given_obstacle = pts={25,-50:47,-50:47,-70:25,-70},label=ob_wide
+  given_obstacle = pts={22,-46:50,-46:50,-74:22,-74},label=ob_wide
 
   obstacles_color = green
   post_view_polys = true

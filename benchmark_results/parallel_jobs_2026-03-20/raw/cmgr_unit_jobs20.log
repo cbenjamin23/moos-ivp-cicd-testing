@@ -1,0 +1,1023 @@
+XLaunchArgs: --max_time=65 --shore_mport=9000 --veh_mport=9001 --shore_pshare=9200 --veh_pshare=9201 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9020 --veh_mport=9021 --shore_pshare=9220 --veh_pshare=9221 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9040 --veh_mport=9041 --shore_pshare=9240 --veh_pshare=9241 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9060 --veh_mport=9061 --shore_pshare=9260 --veh_pshare=9261 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9140 --veh_mport=9141 --shore_pshare=9340 --veh_pshare=9341 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9120 --veh_mport=9121 --shore_pshare=9320 --veh_pshare=9321 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9100 --veh_mport=9101 --shore_pshare=9300 --veh_pshare=9301 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9080 --veh_mport=9081 --shore_pshare=9280 --veh_pshare=9281 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9160 --veh_mport=9161 --shore_pshare=9360 --veh_pshare=9361 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9180 --veh_mport=9181 --shore_pshare=9380 --veh_pshare=9381 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9200 --veh_mport=9201 --shore_pshare=9400 --veh_pshare=9401 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9240 --veh_mport=9241 --shore_pshare=9440 --veh_pshare=9441 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9220 --veh_mport=9221 --shore_pshare=9420 --veh_pshare=9421 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9260 --veh_mport=9261 --shore_pshare=9460 --veh_pshare=9461 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9300 --veh_mport=9301 --shore_pshare=9500 --veh_pshare=9501 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9280 --veh_mport=9281 --shore_pshare=9480 --veh_pshare=9481 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9320 --veh_mport=9321 --shore_pshare=9520 --veh_pshare=9521 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9380 --veh_mport=9381 --shore_pshare=9580 --veh_pshare=9581 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9340 --veh_mport=9341 --shore_pshare=9540 --veh_pshare=9541 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9360 --veh_mport=9361 --shore_pshare=9560 --veh_pshare=9561 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9000 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9020 -  try 00001   contacting a MOOS server localhost:9020 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9040 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9040 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9060 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9060 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9140 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9120 -  try 00001   contacting a MOOS server localhost:9120 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9100 -  try 00001   contacting a MOOS server localhost:9100 -  try 00002 Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9080 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9160 -  try 00001   contacting a MOOS server localhost:9160 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9180 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9180 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9200 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9200 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9240 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9240 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9220 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9220 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9260 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9260 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9300 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9300 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9280 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9280 -  try 00002 Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9320 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9320 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9380 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9380 -  try 00002 Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9340 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9340 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9360 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+XLaunchArgs: --max_time=65 --shore_mport=9400 --veh_mport=9401 --shore_pshare=9600 --veh_pshare=9601 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9420 --veh_mport=9421 --shore_pshare=9620 --veh_pshare=9621 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9440 --veh_mport=9441 --shore_pshare=9640 --veh_pshare=9641 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9460 --veh_mport=9461 --shore_pshare=9660 --veh_pshare=9661 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9480 --veh_mport=9481 --shore_pshare=9680 --veh_pshare=9681 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9500 --veh_mport=9501 --shore_pshare=9700 --veh_pshare=9701 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9520 --veh_mport=9521 --shore_pshare=9720 --veh_pshare=9721 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9560 --veh_mport=9561 --shore_pshare=9760 --veh_pshare=9761 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9540 --veh_mport=9541 --shore_pshare=9740 --veh_pshare=9741 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9620 --veh_mport=9621 --shore_pshare=9820 --veh_pshare=9821 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9600 --veh_mport=9601 --shore_pshare=9800 --veh_pshare=9801 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9580 --veh_mport=9581 --shore_pshare=9780 --veh_pshare=9781 10 --nogui
+XLaunchArgs: --max_time=65 --shore_mport=9640 --veh_mport=9641 --shore_pshare=9840 --veh_pshare=9841 10 --nogui
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_vehicle.moosx
+Looking for:meta_vehicle.bhvx
+Launching abe MOOS Community. WARP=10
+Done Launching abe MOOS Community
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9400 -  try 00001   contacting a MOOS server localhost:9400 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9420 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9420 -  try 00002 Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9440 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9440 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9460 -  try 00001   contacting a MOOS server localhost:9460 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9480 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9500 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9520 -  try 00001   contacting a MOOS server localhost:9520 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9560 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9560 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9540 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9620 -  try 00001   contacting a MOOS server localhost:9620 -  try 00002 Looking for:meta_shoreside.moosx
+
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9600 -  try 00001 ***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+  contacting a MOOS server localhost:9600 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9580 -  try 00001 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+
+Looking for:meta_shoreside.moosx
+Launching Shoreside MOOS Community. WARP=10
+Done Launching Shoreside Community
+[32muMayFinish launching as uMayFinish
+[0m
+
+-------------- moos connect ----------------------
+  contacting a MOOS server localhost:9640 -  try 00001   contacting a MOOS server localhost:9640 -  try 00002 
+  Handshaking as uMayFinish             [1;32m[ok]
+[0m  DB reports async support is           [1;32m[on]
+[0m  DB is running on                      [1;32mbecker
+[0m  Timing skew estimation is             [33m[off] (not needed)
+[0m--------------------------------------------------
+
+***************************************************
+*  uMayFinish starting ...
+***************************************************
+uMayFinish is Running:
+ |-Baseline AppTick   @ 5.0 Hz
+ |--Comms is Full Duplex and Asynchronous
+ -Iterate Mode 0 :
+   |-Regular iterate and message delivery at 5 Hz
+	|-Time Warp @ 10.0 
+	|-Time Warp delay @ 4.0 ms 
+
+

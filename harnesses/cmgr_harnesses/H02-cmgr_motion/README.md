@@ -87,6 +87,7 @@ Field anatomy:
 
 ```bash
 ./zlaunch.sh
+./zlaunch.sh --jobs=4 10
 ./zlaunch.sh --case=head_on_pass 10
 ./zlaunch.sh --just_make 10
 ```
@@ -94,9 +95,19 @@ Field anatomy:
 This harness defaults to headless runs and uses the shared `xlaunch.sh`
 wrapper, just like the other CI harnesses in this repo.
 
+Wave mode notes:
+
+- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
+- each live case in a wave gets its own temp mission directory and unique port
+  block
+- the harness uses one `ktm` barrier between waves, not after every case
+- this mode is intended for CI wall-clock reduction, not for interactive use
+  alongside other MOOS missions
+
 Latest validation:
 
 - March 20, 2026
 - full matrix: `9/9` passing
 - warp: `10`
-- wall clock: about `97` seconds
+- serial wall clock: about `97.15` seconds
+- `--jobs=4` wall clock: about `45.46` seconds

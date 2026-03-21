@@ -19,7 +19,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=KNOWN_OBSTACLE, val="pts={25,-50:47,-50:47,-70:25,-70},label=ob_wide", time=1
+  event = var=KNOWN_OBSTACLE, val="pts={22,-46:50,-46:50,-74:22,-74},label=ob_wide", time=1
   event = var=TEST_EVAL_READY, val=true, time=42
 }
 

@@ -20,6 +20,7 @@ Run the full matrix:
 ```bash
 cd /Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obmgr_harnesses/H02-obmgr_motion
 ./zlaunch.sh 10
+./zlaunch.sh --jobs=4 10
 ```
 
 Run one case:
@@ -27,6 +28,15 @@ Run one case:
 ```bash
 ./zlaunch.sh --case=baseline_center_pass 10
 ```
+
+Wave mode notes:
+
+- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
+- each live case in a wave gets its own temp mission directory and unique port
+  block
+- the harness uses one `ktm` barrier between waves, not after every case
+- this mode is intended for CI wall-clock reduction, not for interactive use
+  alongside other MOOS missions
 
 Current cases:
 - `baseline_center_pass`: one obstacle blocks the lane and the vehicle is expected to arrive cleanly with zero collisions.
@@ -47,3 +57,11 @@ Key fields:
 - `actual` is the mission grade parsed from the mission `results.txt`.
 - `status` is the harness comparison result.
 - `grade`, `form`, `mmod`, and the trailing metrics come from the mission-level `pMissionEval` report.
+
+Latest validation:
+
+- March 20, 2026
+- full matrix: `6/6` passing
+- warp: `10`
+- serial wall clock: about `65.77` seconds
+- `--jobs=4` wall clock: about `24.93` seconds
