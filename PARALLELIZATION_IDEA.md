@@ -258,3 +258,25 @@ And it now works on the obstacle motion harness too:
 - `harnesses/obmgr_harnesses/H02-obmgr_motion`
   - serial: about `65.77` seconds wall clock at warp `10`
   - wave mode with `--jobs=4`: about `24.93` seconds wall clock at warp `10`
+
+## Sleep-Tuning Findings
+
+After the first wave-mode rollout, the fixed waits in the launch path were
+tested directly.
+
+Results:
+
+- the per-wave `sleep 1` after `ktm` in the harnesses was unnecessary on the
+  tested suites
+- the `sleep 0.5` gap between vehicle launch and shoreside launch in the stem
+  `launch.sh` files was also unnecessary on the tested suites
+- the `sleep 2` in the shared `xlaunch.sh` was too conservative, but removing
+  it entirely caused missing result lines on a motion harness
+- reducing that shared wait to about `0.25s` remained stable in the tested
+  runs and recovered most of the benefit
+
+Practical implication:
+
+- repo-local harness and stem sleeps can be removed where validated
+- the shared launcher still needs a small bounded wait unless it is replaced
+  with a real process-exit poll

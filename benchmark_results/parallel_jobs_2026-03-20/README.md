@@ -123,3 +123,37 @@ Observed takeaway:
 Raw `.log` and `.time` files from every run are stored in:
 
 - [`benchmark_results/parallel_jobs_2026-03-20/raw`](./raw)
+
+## Post-Tuning Checkpoint
+
+After the initial wave-mode rollout, the harness hot path was tuned further by:
+
+- removing the wave-barrier `sleep 1`
+- removing the stem `launch.sh` vehicle-to-shoreside `sleep 0.5`
+- reducing the local upstream `xlaunch.sh` post-kill sleep from `2.0s` to `0.25s`
+
+These are not full resweeps. They are representative reruns on the same
+machine with the same warp, using the previously chosen stable `jobs` values.
+
+Observed checkpoints:
+
+- [`harnesses/collision_behavior_harnesses/H01-collision_behavior_motion`](../../harnesses/collision_behavior_harnesses/H01-collision_behavior_motion)
+  - `jobs=6`: about `18.72s`
+- [`harnesses/cmgr_harnesses/H01-cmgr_unit`](../../harnesses/cmgr_harnesses/H01-cmgr_unit)
+  - `jobs=20`: about `38.64s`
+- [`harnesses/cmgr_harnesses/H02-cmgr_motion`](../../harnesses/cmgr_harnesses/H02-cmgr_motion)
+  - `jobs=4`: about `38.50s`
+- [`harnesses/obmgr_harnesses/H02-obmgr_motion`](../../harnesses/obmgr_harnesses/H02-obmgr_motion)
+  - `jobs=4`: about `23.40s`
+
+Interpretation:
+
+- the wave-barrier sleep was pure overhead on the tested harnesses
+- the per-stem vehicle/shore launch gap was also unnecessary on the tested
+  suites
+- the shared `xlaunch.sh` wait could not be removed entirely, but `0.25s`
+  stayed stable where `0s` did not
+
+The new helper script for future sweeps is:
+
+- [`scripts/benchmark_parallel.sh`](../../scripts/benchmark_parallel.sh)

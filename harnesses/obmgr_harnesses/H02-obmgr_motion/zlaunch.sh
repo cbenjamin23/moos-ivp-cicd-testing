@@ -367,7 +367,6 @@ else
         done
 
         ktm >/dev/null 2>&1 || true
-        sleep 1
     done
 
     for ONE_CASE in "${CASE_ARRAY[@]}"; do

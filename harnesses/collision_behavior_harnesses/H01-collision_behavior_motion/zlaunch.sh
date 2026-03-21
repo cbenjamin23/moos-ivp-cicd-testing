@@ -387,7 +387,6 @@ else
             wait "$pid" || ALL_OK="no"
         done
         ktm >/dev/null 2>&1 || true
-        sleep 1
     fi
 
     for result_file in $(find "$CASE_RESULT_DIR" -type f | sort); do

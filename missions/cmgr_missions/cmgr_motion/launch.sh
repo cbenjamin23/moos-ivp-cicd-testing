@@ -144,7 +144,6 @@ VARGS+=" --shore_pshare=$SHORE_PSHARE "
 VARGS+=" --destpos=${DESTPOS[0]}"
 vecho "Launching vehicle: $VARGS"
 ./launch_vehicle.sh $VARGS
-sleep 0.5
 
 #------------------------------------------------------------
 #  Part 7: Launch the Shoreside mission file
