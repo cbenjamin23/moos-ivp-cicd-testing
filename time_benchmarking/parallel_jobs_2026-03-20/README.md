@@ -118,11 +118,12 @@ Observed takeaway:
 - `H01-obmgr_unit` also benefits above `10`, but not all the way to `20`
   stably; `jobs=16` was the best stable point tested
 
-## Raw Data
+## Saved Artifacts
 
-Raw `.log` and `.time` files from every run are stored in:
+This directory now keeps the benchmark summary only.
 
-- [`benchmark_results/parallel_jobs_2026-03-20/raw`](./raw)
+The original raw `.log` and `.time` files were removed because they were mostly
+launcher noise and the important timing conclusions are already captured here.
 
 ## Post-Tuning Checkpoint
 
@@ -130,7 +131,8 @@ After the initial wave-mode rollout, the harness hot path was tuned further by:
 
 - removing the wave-barrier `sleep 1`
 - removing the stem `launch.sh` vehicle-to-shoreside `sleep 0.5`
-- reducing the local upstream `xlaunch.sh` post-kill sleep from `2.0s` to `0.25s`
+- temporarily reducing the local upstream `xlaunch.sh` post-kill sleep from
+  `2.0s` to `0.25s`
 
 These are not full resweeps. They are representative reruns on the same
 machine with the same warp, using the previously chosen stable `jobs` values.
@@ -157,3 +159,77 @@ Interpretation:
 The new helper script for future sweeps is:
 
 - [`scripts/benchmark_parallel.sh`](../../scripts/benchmark_parallel.sh)
+
+Typical usage:
+
+```bash
+./scripts/benchmark_parallel.sh \
+  --harness=/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/cmgr_harnesses/H01-cmgr_unit \
+  --jobs=1,2,4,8,16,20
+```
+
+Note:
+
+- the `xlaunch.sh` reduction was only a local experiment in the separate
+  `moos-ivp` checkout at `/Users/charlesbenjamin/moos-ivp/scripts/xlaunch.sh`
+- that foreign-repo change has been reverted
+- the timings above remain useful as evidence for what a smaller shared
+  launcher wait could buy if that upstream script is intentionally changed
+
+## Sleep Changes Applied Here
+
+Repo-local changes that were actually kept:
+
+- wave-harness `sleep 1` after `ktm`: removed from the active wave-enabled
+  harnesses in this repo
+- stem `launch.sh` vehicle-to-shoreside `sleep 0.5`: removed from the active
+  harnessed stems in this repo
+
+These were applied to the current automated mission families, not blindly to
+every mission in the workspace.
+
+They were kept in files such as:
+
+- [`missions/cmgr_missions/cmgr_unit/launch.sh`](../../missions/cmgr_missions/cmgr_unit/launch.sh)
+- [`missions/cmgr_missions/cmgr_motion/launch.sh`](../../missions/cmgr_missions/cmgr_motion/launch.sh)
+- [`missions/obmgr_missions/obmgr_unit/launch.sh`](../../missions/obmgr_missions/obmgr_unit/launch.sh)
+- [`missions/obmgr_missions/obmgr_motion/launch.sh`](../../missions/obmgr_missions/obmgr_motion/launch.sh)
+- [`missions/collision_behavior_missions/collision_behavior_motion/launch.sh`](../../missions/collision_behavior_missions/collision_behavior_motion/launch.sh)
+- [`harnesses/cmgr_harnesses/H01-cmgr_unit/zlaunch.sh`](../../harnesses/cmgr_harnesses/H01-cmgr_unit/zlaunch.sh)
+- [`harnesses/cmgr_harnesses/H02-cmgr_motion/zlaunch.sh`](../../harnesses/cmgr_harnesses/H02-cmgr_motion/zlaunch.sh)
+- [`harnesses/obmgr_harnesses/H01-obmgr_unit/zlaunch.sh`](../../harnesses/obmgr_harnesses/H01-obmgr_unit/zlaunch.sh)
+- [`harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh`](../../harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh)
+- [`harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh`](../../harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh)
+
+Recommended scope going forward:
+
+- keep applying those two repo-local reductions to harness hot-path stems and
+  wave-enabled harnesses after validation
+- do not assume the same is safe for unrelated or legacy missions without
+  testing
+
+## Shared `xlaunch.sh` Wait
+
+The separate shared launcher lives at:
+
+- [`/Users/charlesbenjamin/moos-ivp/scripts/xlaunch.sh`](/Users/charlesbenjamin/moos-ivp/scripts/xlaunch.sh)
+
+The relevant sequence is:
+
+1. `uMayFinish` waits for mission completion.
+2. `pkill -INT -P $$` asks the launched mission processes to stop.
+3. `sleep 2` gives them time to finish shutdown and flush files.
+4. `xlaunch.sh` then repairs a trailing newline in `results.txt` if needed and
+   runs optional post-processing.
+
+That sleep exists because `pMissionEval` and other mission processes may still
+be writing `results.txt` at shutdown time. In the local experiment:
+
+- reducing it from `2.0s` to `0.25s` stayed stable on the tested harnesses
+- removing it entirely caused `actual=missing` cases on a motion harness
+
+So the best tested interpretation is:
+
+- the shared launcher still needs a small bounded wait
+- the current upstream `2.0s` value is conservative
+- any change there should be managed in the separate `moos-ivp` repo, not here

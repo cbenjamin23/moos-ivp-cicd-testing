@@ -40,7 +40,9 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - [missions/obstacle_behavior_missions/obstacle_behavior_motion/README.md](./missions/obstacle_behavior_missions/obstacle_behavior_motion/README.md) for the avoid-obstacle behavior stem
 - [harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md](./harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md) for the avoid-obstacle behavior matrix
 - [missions/first_draft/README.md](./missions/first_draft/README.md) for the baseline mission
-- [PARALLELIZATION_IDEA.md](./PARALLELIZATION_IDEA.md) for future harness scaling notes
+- [time_benchmarking/PARALLELIZATION_STATUS.md](./time_benchmarking/PARALLELIZATION_STATUS.md) for the current harness parallelization model
+- [time_benchmarking/parallel_jobs_2026-03-20/README.md](./time_benchmarking/parallel_jobs_2026-03-20/README.md) for the current timing sweep and recommended `--jobs` values
+- [scripts/benchmark_parallel.sh](./scripts/benchmark_parallel.sh) for repeatable harness timing sweeps
 
 ## Notes
 

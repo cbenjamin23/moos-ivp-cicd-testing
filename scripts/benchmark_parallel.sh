@@ -55,7 +55,7 @@ if [ ! -d "$HARNESS" ] || [ ! -x "$HARNESS/zlaunch.sh" ]; then
 fi
 
 if [ -z "$OUT_ROOT" ]; then
-    OUT_ROOT="$(cd "$HARNESS/../.." && pwd)/benchmark_results"
+    OUT_ROOT="$(cd "$HARNESS/../.." && pwd)/time_benchmarking"
 fi
 
 STAMP="$(date +%Y-%m-%d_%H%M%S)"

@@ -3,3 +3,8 @@ This directory may contain developer utility scripts.
 The MyGenMOOSApp script is similar to that found in the moos-ivp/trunk/scripts/
 directory. Users are encouraged to tailor this one to their own needs.
 
+Current repo-specific helpers:
+
+- `benchmark_parallel.sh` runs repeatable wall-clock timing sweeps for a
+  harness across multiple `--jobs` values and writes the summary under
+  `time_benchmarking/`.
