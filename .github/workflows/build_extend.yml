@@ -1,5 +1,16 @@
 name: Build And Check Active Harnesses
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
@@ -108,7 +119,7 @@ jobs:
           cd "${{ matrix.harness }}"
           ./zlaunch.sh --just_make 10
 
-  runtime-smoke:
+  collision-correctness:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -133,10 +144,45 @@ jobs:
           echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
           echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
-      - name: Runtime smoke for active harnesses
+      - name: Run full collision correctness harness
+        id: collision_harness
+        continue-on-error: true
         run: |
           set -euo pipefail
           (
             cd harnesses/collision_behavior_harnesses/H01-collision_behavior_motion
-            ./zlaunch.sh --case=default_resolve_pass 10
+            ./zlaunch.sh 10
           )
+
+      - name: Upload collision harness results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: collision-correctness-results
+          path: harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/results.txt
+          if-no-files-found: warn
+
+      - name: Summarize collision harness results
+        id: collision_results
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/ci_harness_results_summary.py \
+            --results harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/results.txt \
+            --harness "H01-collision_behavior_motion" \
+            --expected-count 6 \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce collision harness success
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.collision_harness.outcome }}" != "success" ]; then
+            echo "Collision harness run failed before clean completion."
+            exit 1
+          fi
+          if [ "${{ steps.collision_results.outcome }}" != "success" ]; then
+            echo "Collision harness results were incomplete or contained failed cases."
+            exit 1
+          fi
