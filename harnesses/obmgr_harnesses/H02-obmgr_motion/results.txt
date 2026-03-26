@@ -1,6 +1,0 @@
-case=baseline_center_pass  expected=pass  actual=pass  status=ok    grade=pass  form=obavoid_tests_harness  mmod=baseline_center_pass  eval=true  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[HARD-ZUMA]
-case=offset_clear_pass  expected=pass  actual=pass  status=ok    grade=pass  form=obavoid_tests_harness  mmod=offset_clear_pass  eval=true  arrived=true  collisions=0  near_misses=0  encounters=0  mhash=[FLAT-LUKA]
-case=tight_alert_pass  expected=pass  actual=pass  status=ok    grade=pass  form=obavoid_tests_harness  mmod=tight_alert_pass  eval=true  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[SOUR-BRIO]
-case=two_sequential_fail  expected=fail  actual=fail  status=ok    grade=fail  form=obavoid_tests_harness  mmod=two_sequential_fail  eval=true  arrived=true  collisions=1  near_misses=0  encounters=2  mhash=[MEAN-TWIT]
-case=wide_center_fail  expected=fail  actual=fail  status=ok    grade=fail  form=obavoid_tests_harness  mmod=wide_center_fail  eval=true  arrived=$[ARRIVED]  collisions=0  near_misses=0  encounters=1  mhash=[THEN-MIME]
-case=avoid_disabled_fail  expected=fail  actual=fail  status=ok    grade=fail  form=obavoid_tests_harness  mmod=avoid_disabled_fail  eval=true  arrived=true  collisions=1  near_misses=0  encounters=1  mhash=[DEAD-NEWS]

@@ -1,1 +1,1 @@
-  grade=fail  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  encounters=1  near_misses=0  collisions=1  mhash=[GORY-JUGS]
+  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=0  near_misses=0  collisions=0  mhash=[RUBY-SPAM]

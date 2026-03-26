@@ -27,6 +27,8 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
 - `cpa_flag_pass`
   The behavior is patched with `cpa_flag=AVOID_CPA_SEEN=true`. This is a more
   niche path because the flag only posts after a real CPA event is observed.
+  This case intentionally grades only the CPA helper path plus basic safety,
+  not late transit completion, so the verdict stays behavior-owned.
 - `offlane_no_engagement_pass`
   The obstacle is moved well above the lane. The behavior should still request
   its alert path, but it should never receive an obstacle alert or run.
@@ -82,7 +84,7 @@ Field anatomy:
 
 Latest validation:
 
-- March 20, 2026
-- full matrix: `7/7` passing
+- March 25, 2026
+- full matrix: `7/7` expected outcomes matched
+- isolated `cpa_flag_pass`: `6/6` passing
 - warp: `10`
-- wall clock: `92.96` seconds

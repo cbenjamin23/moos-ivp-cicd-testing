@@ -160,6 +160,10 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local line
+    local actual
+    local status
+    local launch_rc
     get_case_config "$case_name" || return 1
 
     vecho "Preparing case: $case_name"
@@ -180,11 +184,19 @@ run_case() {
 
     vecho "Running case [$case_name] with xlaunch args: $XARGS"
     xlaunch.sh $XARGS
+    launch_rc=$?
 
     if [ "$JUST_MAKE" = "yes" ]; then
         cd "$HARNESS_DIR"
-        return 0
+        if [ "$launch_rc" = 0 ]; then
+            return 0
+        fi
+        return 1
     fi
+
+    # Give pMissionEval/pLogger a moment to finish flushing results.txt
+    # before reading it from the harness-owned path.
+    sleep 1
 
     line=`tail -n 1 results.txt 2>/dev/null`
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
@@ -193,12 +205,23 @@ run_case() {
     fi
 
     status="ok"
-    if [ "$actual" != "$EXPECTED" ]; then
+    if [ "$launch_rc" != 0 ]; then
+        status="error"
+        actual="script_error"
+        ALL_OK="no"
+    elif [ "$actual" = "missing" ]; then
+        status="error"
+        ALL_OK="no"
+    elif [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
         ALL_OK="no"
     fi
 
-    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line" >> "$RESULTS_FILE"
+    if [ "$launch_rc" != 0 ]; then
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line" >> "$RESULTS_FILE"
+    else
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line" >> "$RESULTS_FILE"
+    fi
     cd "$HARNESS_DIR"
 }
 
