@@ -45,7 +45,10 @@ jobs:
 
       - name: Build repo
         run: |
-          ./build.sh
+          mkdir -p build
+          cd build
+          cmake -DMOOSIVP_SOURCE_TREE_BASE="${GITHUB_WORKSPACE}/moos-ivp" ..
+          make
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
