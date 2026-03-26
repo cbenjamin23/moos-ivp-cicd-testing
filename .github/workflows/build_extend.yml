@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Clone MOOS-IvP
         run: git clone https://github.com/moos-ivp/moos-ivp.git
@@ -16,7 +16,7 @@ jobs:
         run: echo "sha=$(git -C moos-ivp rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Restore build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             moos-ivp/build
@@ -53,7 +53,7 @@ jobs:
           make
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: workspace-build
           path: |
@@ -81,10 +81,10 @@ jobs:
           - harnesses/collision_behavior_harnesses/H01-collision_behavior_motion
           - harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: workspace-build
           path: .
@@ -112,10 +112,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: workspace-build
           path: .
