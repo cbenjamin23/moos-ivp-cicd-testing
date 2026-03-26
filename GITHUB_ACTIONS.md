@@ -39,6 +39,8 @@ The uploaded artifact is a curated runtime/build subset, not the whole workspace
 - `bin`
 - `lib`
 
+This subset is intentionally conservative for the current active harnesses, but it should not be treated as a guaranteed future-proof bundle for all later correctness or performance expansion. When new harness families or benchmark jobs are added, artifact sufficiency should be revalidated and the uploaded paths expanded deliberately if those jobs need additional built apps, libraries, or runtime assets.
+
 ## 2. `just-make`
 
 Runs a matrix of active harness generation checks on separate GitHub-hosted runners.
