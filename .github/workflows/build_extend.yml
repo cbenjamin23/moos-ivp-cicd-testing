@@ -1,21 +1,135 @@
-name: Build MOOS-IvP Extend repository
+name: Build And Check Active Harnesses
 on: [push]
 
 jobs:
 
-  build-extend:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
+      - name: Clone MOOS-IvP
+        run: git clone https://github.com/moos-ivp/moos-ivp.git
+
+      - name: Capture MOOS-IvP SHA
+        id: moos_sha
+        run: echo "sha=$(git -C moos-ivp rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore build cache
+        uses: actions/cache@v4
         with:
-          path: 'moos-ivp-extend'
-      - run: git clone https://github.com/moos-ivp/moos-ivp.git
+          path: |
+            moos-ivp/build
+            moos-ivp/bin
+            moos-ivp/lib
+            build
+            bin
+            lib
+          key: ${{ runner.os }}-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', '.github/workflows/build_extend.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-moos-${{ steps.moos_sha.outputs.sha }}-
+            ${{ runner.os }}-
+
       - name: Build MOOS-IvP
         working-directory: moos-ivp
         run: |
           ./build-moos.sh --minrobot --release
           ./build-ivp.sh --nogui
-      - name: Build moos-ivp-extend
-        working-directory: moos-ivp-extend
+
+      - name: Put MOOS-IvP tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Build repo
         run: |
           ./build.sh
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace-build
+          path: |
+            moos-ivp/bin
+            moos-ivp/scripts
+            moos-ivp/lib
+            build
+            bin
+            lib
+          if-no-files-found: error
+
+  just-make:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        harness:
+          - harnesses/cmgr_harnesses/H01-cmgr_unit
+          - harnesses/cmgr_harnesses/H02-cmgr_motion
+          - harnesses/obmgr_harnesses/H01-obmgr_unit
+          - harnesses/obmgr_harnesses/H02-obmgr_motion
+          - harnesses/collision_behavior_harnesses/H01-collision_behavior_motion
+          - harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Just-make one active harness
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.harness }}"
+          ./zlaunch.sh --just_make 10
+
+  runtime-smoke:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Runtime smoke for active harnesses
+        run: |
+          set -euo pipefail
+          (
+            cd harnesses/collision_behavior_harnesses/H01-collision_behavior_motion
+            ./zlaunch.sh --case=default_resolve_pass 10
+          )
