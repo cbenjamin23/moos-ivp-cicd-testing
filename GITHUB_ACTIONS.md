@@ -84,12 +84,13 @@ It does not run on ordinary `push` to `main`.
 Current command:
 
 - harness: `harnesses/performance_harnesses/P01-obstacle_gauntlet`
-- command: `./zlaunch.sh 10`
+- command: `./zlaunch.sh --jobs=2 10`
 
 This job is intended to catch:
 
 - performance regressions outside the checked-in baseline bands
 - runtime planner failures surfaced through the harness warning scan
+- wave-batch regressions in the parallelized performance harness path
 
 It uploads `results.txt` as `p01-obstacle-performance-results` and uses the same summary parser as the correctness job.
 
