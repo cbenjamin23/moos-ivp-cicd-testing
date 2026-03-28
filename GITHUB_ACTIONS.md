@@ -72,6 +72,27 @@ Runs one live correctness harness after `build`:
 
 This job is the current runtime correctness gate.
 
+## 4. `p01-obstacle-performance`
+
+Runs the first live performance harness after `build`, but only on:
+
+- `pull_request` targeting `main`
+- manual `workflow_dispatch`
+
+It does not run on ordinary `push` to `main`.
+
+Current command:
+
+- harness: `harnesses/performance_harnesses/P01-obstacle_gauntlet`
+- command: `./zlaunch.sh 10`
+
+This job is intended to catch:
+
+- performance regressions outside the checked-in baseline bands
+- runtime planner failures surfaced through the harness warning scan
+
+It uploads `results.txt` as `p01-obstacle-performance-results` and uses the same summary parser as the correctness job.
+
 ## Harness Result Handling
 
 The correctness job does more than rely on shell exit status:
@@ -89,6 +110,7 @@ The correctness job does more than rely on shell exit status:
    - any `status` is not `ok`
 
 For the current collision harness, the parser expects 6 case lines.
+For the current `P01` performance harness, the parser expects 3 case lines.
 
 ## Cache vs Artifact
 

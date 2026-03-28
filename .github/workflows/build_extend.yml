@@ -186,3 +186,72 @@ jobs:
             echo "Collision harness results were incomplete or contained failed cases."
             exit 1
           fi
+
+  p01-obstacle-performance:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Run P01 obstacle performance harness
+        id: p01_performance_harness
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          (
+            cd harnesses/performance_harnesses/P01-obstacle_gauntlet
+            ./zlaunch.sh 10
+          )
+
+      - name: Upload P01 performance results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: p01-obstacle-performance-results
+          path: harnesses/performance_harnesses/P01-obstacle_gauntlet/results.txt
+          if-no-files-found: warn
+
+      - name: Summarize P01 performance results
+        id: p01_performance_results
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/ci_harness_results_summary.py \
+            --results harnesses/performance_harnesses/P01-obstacle_gauntlet/results.txt \
+            --harness "P01-obstacle_gauntlet" \
+            --expected-count 3 \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce P01 performance success
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.p01_performance_harness.outcome }}" != "success" ]; then
+            echo "P01 performance harness run failed before clean completion."
+            exit 1
+          fi
+          if [ "${{ steps.p01_performance_results.outcome }}" != "success" ]; then
+            echo "P01 performance harness results were incomplete or contained failed cases."
+            exit 1
+          fi

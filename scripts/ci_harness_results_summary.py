@@ -66,24 +66,26 @@ def build_summary(
     lines.extend(
         [
             "",
-            "| case | expected | actual | status | grade |",
-            "| --- | --- | --- | --- | --- |",
+            "| case | expected | actual | status | perf_status | warning_count | grade |",
+            "| --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
 
     if rows:
         for row in rows:
             lines.append(
-                "| {case} | {expected} | {actual} | {status} | {grade} |".format(
+                "| {case} | {expected} | {actual} | {status} | {perf_status} | {warning_count} | {grade} |".format(
                     case=row.get("case", "?"),
                     expected=row.get("expected", "?"),
                     actual=row.get("actual", "?"),
                     status=row.get("status", "?"),
+                    perf_status=row.get("perf_status", "-"),
+                    warning_count=row.get("warning_count", "-"),
                     grade=row.get("grade", "?"),
                 )
             )
     else:
-        lines.append("| _none_ | - | - | - | - |")
+        lines.append("| _none_ | - | - | - | - | - | - |")
 
     if issues:
         lines.extend(["", "#### Issues", ""])

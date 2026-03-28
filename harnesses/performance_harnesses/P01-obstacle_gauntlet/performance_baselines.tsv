@@ -1,0 +1,4 @@
+# case wall_min wall_max cycles_min cycles_max collisions_max near_min near_max encounters_min encounters_max obavoiding timeout warning_max
+baseline_field_pass 16.5 20.0 1 1 0 0 6 1 8 end false 0
+dense_field_pass 16.5 20.0 1 1 0 0 6 1 8 end false 0
+endurance_random_pass 145.0 180.0 10 10 0 20 70 50 80 end false 0

@@ -1,0 +1,185 @@
+//-------------------------------------------------
+// Vehicle MOOS config file
+// P01 obstacle gauntlet, based on missions-auto/02-obavoid
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = $(VNAME)
+
+#include plugs.moos <origin_warp>
+
+//-------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = uSimMarine     @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePID     @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pObstacleMgr   @ NewConsole = false
+}
+
+#include plugs.moos <pShare>
+#include plugs.moos <pHostInfo>
+#include plugs.moos <uProcessWatch>
+#include plugs.moos <uLoadWatch>
+
+//----------------------------------------------------
+ProcessConfig = pHelmIvP
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  app_logging = true
+
+  behaviors = targ_$(VNAME).bhv
+  verbose   = false
+  domain    = course:0:359:360
+  domain    = speed:0:$(MAX_SPD):delta=0.1
+
+  pmgen = alg=dubins # radius=$(MODEL_RAD) # degs=10
+}
+
+//--------------------------------------------------
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=localhost:$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=VIEW_SEGLR
+  bridge = src=APPCAST
+  bridge = src=OBAVOIDING
+  bridge = src=OBM_ALERT_REQUEST
+  bridge = src=OBM_RESOLVED
+  bridge = src=OBSTACLE_ALERT
+  bridge = src=TRACKED_FEATURE
+  bridge = src=WPT_CYCLES
+  bridge = src=WPT_HASH
+  bridge = src=ARRIVED
+  bridge = src=NODE_REPORT_LOCAL, alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+}
+
+//------------------------------------------------------
+ProcessConfig = uSimMarine
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = $(START_POS), 0
+  prefix    = NAV
+
+  deprecated_ok = true
+}
+
+//-------------------------------------------------
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  platform_type  = kayak
+  platform_color = $(COLOR)
+  terse_reports  = true
+}
+
+//-----------------------------------------------------
+ProcessConfig = pMarinePID
+{
+  AppTick    = 10
+  CommsTick  = 10
+
+  VERBOSE       = true
+  DEPTH_CONTROL = false
+  ACTIVE_START  = true
+
+  deprecated_ok = true
+
+  YAW_PID_KP             = 0.4
+  YAW_PID_KD             = 0.1
+  YAW_PID_KI             = 0.0
+  YAW_PID_INTEGRAL_LIMIT = 0.07
+
+  SPEED_PID_KP             = 1.0
+  SPEED_PID_KD             = 0.0
+  SPEED_PID_KI             = 0.0
+  SPEED_PID_INTEGRAL_LIMIT = 0.07
+
+  MAXRUDDER = 100
+  MAXTHRUST = 100
+
+  SPEED_FACTOR = 20
+}
+
+//-------------------------------------------------------
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  point_var = TRACKED_FEATURE
+
+  app_logging = true
+  obstacles_color = green
+  post_view_polys = false
+  given_max_duration = 1000
+  general_alert = update_var=OBSTACLE_ALERT, alert_range=40000
+}
+
+//--------------------------------------------------
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = LOG_%(VNAME)
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+  Log = OBAVOIDING @ 0 nosync
+  Log = OBM_ALERT_REQUEST @ 0 nosync
+  Log = OBM_RESOLVED @ 0 nosync
+  Log = OBSTACLE_ALERT @ 0 nosync
+  Log = WPT_CYCLES @ 0 nosync
+  Log = ARRIVED @ 0 nosync
+
+  LogAuxSrc = true
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = APPCAST
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+  WildCardOmitPattern = SIMULATION_MODE
+  WildCardOmitPattern = NAV_YAW
+  WildCardOmitPattern = NAV_Z
+  WildCardOmitPattern = TRUE_X
+  WildCardOmitPattern = TRUE_Y
+  WildCardOmitPattern = NAV_SPEED_OVER_GROUND
+  WildCardOmitPattern = NAV_HEADING_OVER_GROUND
+  WildCardOmitPattern = NAV_PITCH
+  WildCardOmitPattern = NAV_DEPTH
+  WildCardOmitPattern = NAV_LAT
+  WildCardOmitPattern = NAV_LONG
+  WildCardOmitPattern = DB_QOS
+  WildCardOmitPattern = PSHARE_OUTPUT_SUMMARY
+  WildCardOmitPattern = PID_REPORT
+}

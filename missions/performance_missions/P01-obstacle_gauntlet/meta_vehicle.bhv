@@ -1,0 +1,76 @@
+//---------------------------------------------------
+// Helm Behavior file
+
+initialize   DEPLOY     = false
+initialize   AVOID      = true
+initialize   OBAVOIDING = idle
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+Behavior = BHV_PModelView
+{
+  name      = pmview
+  pwt       = 100
+  condition = DEPLOY = true
+  updates   = UP_PMVIEW
+}
+
+Behavior = BHV_Waypoint
+{
+  name      = wpt_transit
+  pwt       = 100
+
+  condition = DEPLOY = true
+  updates   = WPT_UPDATE
+  perpetual = true
+  speed     = $(STOCK_SPD)
+
+  draw_path_loop = true
+  capture_line   = true
+  capture_radius = 5
+  slip_radius    = 15
+  polygon        = oval: x=5.7,y=-47.1, rad=15, len=130, ang=64
+  order          = reverse
+  repeat         = 10000
+
+  cycleflag = WPT_CYCLES=$[CTR]
+  cycleflag = WPT_HASH=$[HASH]
+
+  visual_hints = nextpt_color=yellow
+  visual_hints = nextpt_vertex_size=8
+  visual_hints = nextpt_lcolor=gray70
+  visual_hints = vertex_color=light_green, edge_color=gray50
+  visual_hints = vertex_size=5, edge_size=1
+  visual_hints = trackpt_vertex_size=5
+  visual_hints = trackpt_vertex_color=yellow
+  visual_hints = trackpt_lcolor=off
+}
+
+Behavior = BHV_AvoidObstacleV24
+{
+  name       = avd_obs_
+  pwt        = 1000
+  condition  = DEPLOY = true
+  condition  = AVOID = true
+  templating = spawn
+  updates    = OBSTACLE_ALERT
+
+  idleflag     = OBAVOIDING = idle
+  activeflag   = OBAVOIDING = active
+  inactiveflag = OBAVOIDING = inactive
+  runflag      = OBAVOIDING = running
+  endflag      = OBAVOIDING = end
+
+  use_refinery      = true
+  allowable_ttc     = 5
+  min_util_cpa_dist = 2.5
+  max_util_cpa_dist = 5
+  pwt_outer_dist    = 15
+  pwt_inner_dist    = 5
+  completed_dist    = 15
+
+  visual_hints = gut_poly_vertex_color=off
+  visual_hints = gut_poly_edge_color=yellow
+}

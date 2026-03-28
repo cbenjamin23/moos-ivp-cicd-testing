@@ -1,0 +1,257 @@
+//--------------------------------------------------------
+// Shoreside Config file
+// Charles Benjamin
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//--------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uFldObstacleSim  @ NewConsole = false
+  Run = uFldCollObDetect @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = OB_TOTAL_COLLISIONS=0
+  flag = OB_TOTAL_ENCOUNTERS=0
+  flag = OB_TOTAL_NEAR_MISSES=0
+  flag = MISSION_DONE=false
+  flag = MISSION_TIMEOUT=false
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+#ifdef ENDURANCE_MODE true
+  event = var=MISSION_TIMEOUT, val=true, time=$(ENDURANCE_TIMEOUT_SECS:=2400)
+#else
+  event = var=MISSION_TIMEOUT, val=true, time=$(MISSION_TIMEOUT_SECS:=200)
+  event = var=MISSION_DONE, val=true, time=$(MISSION_TIMEOUT_SECS:=200)
+#endif
+}
+
+//----------------------------------------------------
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+#ifdef ENDURANCE_MODE true
+  lead_condition = (WPT_CYCLES >= $(ENDURANCE_TARGET_CYCLES:=10)) or (MISSION_TIMEOUT = true)
+#else
+  mailflag = @WPT_CYCLES#MISSION_DONE=true
+  mailflag = @WPT_CYCLES#MISSION_TIMEOUT=false
+#endif
+
+#ifdef ENDURANCE_MODE true
+  pass_condition = WPT_CYCLES >= $(ENDURANCE_TARGET_CYCLES:=10)
+  pass_condition = OB_TOTAL_COLLISIONS = 0
+  pass_condition = DB_UPTIME <= $(ENDURANCE_TIMEOUT_SECS:=1800)
+  pass_condition = MISSION_TIMEOUT = false
+#else
+  lead_condition = MISSION_DONE = true
+  pass_condition = WPT_CYCLES >= 1
+  pass_condition = OB_TOTAL_COLLISIONS = 0
+  pass_condition = OB_TOTAL_ENCOUNTERS >= 1
+  pass_condition = DB_UPTIME <= $(MISSION_TIMEOUT_SECS:=200)
+  pass_condition = MISSION_TIMEOUT = false
+#endif
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = obstacle_gauntlet
+  mission_mod  = $(MMOD:=baseline_field_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = cycles=$[WPT_CYCLES]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = obavoiding=$[OBAVOIDING]
+  report_column = wall_time=$[WALL_TIME]
+  report_column = collisions=$[OB_TOTAL_COLLISIONS]
+  report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
+  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = mhash=$[MHASH_SHORT]
+  report_column = date=$[DATE]
+  report_column = time=$[TIME]
+}
+
+//------------------------------------------------------
+ProcessConfig = uFldCollObDetect
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 12
+
+  encounter_flag = OB_TOTAL_ENCOUNTERS=$ENC_CNT
+  encounter_flag = OB_TOTAL_NEAR_MISSES=$MISS_CNT
+  encounter_flag = OB_TOTAL_COLLISIONS=$COLL_CNT
+  encounter_flag = OB_ENCOUNTER=$DIST
+  near_miss_flag = OB_NEAR_MISS=$DIST
+  collision_flag = OB_COLLISION=$DIST
+}
+
+//--------------------------------------------------
+ProcessConfig = uFldObstacleSim
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  obstacle_file = obstacles.txt
+
+  draw_region = true
+  region_edge_color = gray50
+
+  poly_fill_color = off
+  poly_vert_color = off
+  poly_edge_color = gray80
+  poly_vert_size  = 0
+  poly_edge_size  = 1
+
+  min_duration = 400
+  max_duration = 500
+  refresh_interval = 200
+
+  post_points = false
+  point_size  = 4
+
+  reuse_ids = true
+
+#ifdef DRESET true
+  reset_interval = 100
+  reset_range    = 10
+#endif
+}
+
+//------------------------------------------------------
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = OBAVOIDING, OBM_ALERT_REQUEST, OBSTACLE_ALERT, OBM_RESOLVED
+  qbridge  = TRACKED_FEATURE
+  qbridge  = WPT_CYCLES, WPT_HASH
+  qbridge  = ARRIVED
+
+  bridge   = src=GIVEN_OBSTACLE
+}
+
+//--------------------------------------------------
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+  view_node_rpt_pulses = false
+}
+
+//--------------------------------------------------
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//--------------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = 30
+  set_pan_y            = -340
+  zoom                 = 1.5
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  circle_viewable_all = false
+  polygon_viewable_labels = false
+  appcast_viewable = true
+  appcast_color_scheme = indigo
+
+  nodes_font_size = xlarge
+  procs_font_size = large
+  appcast_font_size = large
+
+  scope = WPT_CYCLES
+  scope = MISSION_DONE
+  scope = MISSION_TIMEOUT
+  scope = MISSION_EVALUATED
+  scope = OBAVOIDING
+  scope = OB_TOTAL_COLLISIONS
+  scope = OB_TOTAL_NEAR_MISSES
+  scope = OB_TOTAL_ENCOUNTERS
+
+  cmd = label=DEPLOY, var=DEPLOY, sval=true, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=MOOS_MANUAL_OVERRIDE, sval=false, receivers=all:$(VNAMES)
+}

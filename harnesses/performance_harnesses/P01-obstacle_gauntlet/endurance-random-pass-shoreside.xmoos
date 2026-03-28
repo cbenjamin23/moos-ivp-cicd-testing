@@ -1,0 +1,71 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+  event = var=MISSION_TIMEOUT, val=true, time=1800
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = (WPT_CYCLES >= 10) or (MISSION_TIMEOUT = true)
+  pass_condition = WPT_CYCLES >= 10
+  pass_condition = OB_TOTAL_COLLISIONS = 0
+  pass_condition = DB_UPTIME <= 1800
+  pass_condition = MISSION_TIMEOUT = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = obstacle_gauntlet
+  mission_mod  = $(MMOD:=baseline_field_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = cycles=$[WPT_CYCLES]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = obavoiding=$[OBAVOIDING]
+  report_column = wall_time=$[WALL_TIME]
+  report_column = collisions=$[OB_TOTAL_COLLISIONS]
+  report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
+  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = mhash=$[MHASH_SHORT]
+  report_column = date=$[DATE]
+  report_column = time=$[TIME]
+}
+
+ProcessConfig = uFldObstacleSim
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  obstacle_file = obstacles.txt
+
+  draw_region = true
+  region_edge_color = gray50
+
+  poly_fill_color = off
+  poly_vert_color = off
+  poly_edge_color = gray80
+  poly_vert_size  = 0
+  poly_edge_size  = 1
+
+  min_duration = 400
+  max_duration = 500
+  refresh_interval = 200
+
+  post_points = false
+  point_size  = 4
+
+  reuse_ids = true
+
+  reset_interval = 100
+  reset_range    = 10
+}
