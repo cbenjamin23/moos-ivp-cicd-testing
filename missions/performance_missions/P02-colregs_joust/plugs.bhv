@@ -1,0 +1,72 @@
+<tag><bhv_avd_colregs>
+//---------------------------------------------- 
+Behavior = BHV_AvdColregsV22
+{
+  name       = avdcol_
+  pwt        = 400
+
+  condition  = AVOID = true 
+  condition  = MODE==ACTIVE
+  condition  = MODE!=ACTIVE:STATION_KEEPING
+
+	updates    = CONTACT_INFO
+  endflag    = CONTACT_RESOLVED = $[CONTACT]
+  templating = spawn
+
+  spawnx_flag  = ENCOUNTER_START = os=$(VNAME),cn=$[CONTACT],rng=$[RANGE],rel_brg=$[OS_CN_REL_BNG],targ_ang=$[CN_OS_REL_BNG],time=$[UTC]
+  cnflag     = @cpa ENCOUNTER_END = os=$(VNAME), cn=$[CONTACT], rng=$[RANGE], rel_brg=$[OS_CN_REL_BNG], targ_ang=$[CN_OS_REL_BNG], time=$[UTC]
+
+             contact = to-be-set
+    on_no_contact_ok = true
+         extrapolate = true
+               decay = 10,20
+
+    giveway_bow_dist = 10
+        use_refinery = true
+
+      pwt_outer_dist = 25
+      pwt_inner_dist = 11
+      completed_dist = 25
+   min_util_cpa_dist = 8
+   max_util_cpa_dist = 15
+           pwt_grade = linear
+ bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
+
+	can_disable = true
+	}
+
+<tag><bhv_avd_cpa>
+//----------------------------------------------
+Behavior = BHV_AvoidCollision
+{
+  name       = avdcpa_
+  pwt        = 300
+
+  condition  = AVOID = true 
+  condition  = MODE==ACTIVE
+  condition  = MODE!=ACTIVE::STATION_KEEPING
+
+  updates    = CONTACT_INFO
+  endflag    = CONTACT_RESOLVED = $[CONTACT]
+  templating = spawn
+
+  spawnx_flag  = ENCOUNTER_START = os=$(VNAME),cn=$[CONTACT],rng=$[RANGE],rel_brg=$[OS_CN_REL_BNG],targ_ang=$[CN_OS_REL_BNG],time=$[UTC]
+  cnflag     = @cpa ENCOUNTER_END = os=$(VNAME), cn=$[CONTACT], rng=$[RANGE], rel_brg=$[OS_CN_REL_BNG], targ_ang=$[CN_OS_REL_BNG], time=$[UTC]
+
+             contact = to-be-set
+    on_no_contact_ok = true
+         extrapolate = true
+               decay = 30,60
+
+	 use_refinery = true
+        pwt_outer_dist = 35
+        pwt_inner_dist = 10
+        completed_dist = 35
+     min_util_cpa_dist = 8
+     max_util_cpa_dist = 15
+             pwt_grade = linear
+   bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
+
+           can_disable = true
+
+	}

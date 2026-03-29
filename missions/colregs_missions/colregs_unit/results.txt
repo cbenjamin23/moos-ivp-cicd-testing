@@ -1,0 +1,2 @@
+  
+grade=pass  form=colregs_unit  mmod=head_on_colregs_pass  min_util_cpa=5  eval=true  arrived=false  timeout=false  encounter_cpa=none  encounters=1  near_misses=0  collisions=0  wall_time=10.10  mhash=[PINK-NIAL]  utc=1774808991.27

@@ -1,0 +1,4 @@
+# Checked-in deterministic two-vehicle joust baseline
+cx=23,cy=-82,rad=32
+px1=48.353,py1=-62.47535,px2=-2.35327,py2=-101.52465,hdg=232.4,spd=2.00,vname=abe,vcolor=yellow
+px1=-8.97,py1=-80.60418,px2=54.96954,py2=-83.39582,hdg=92.5,spd=2.00,vname=ben,vcolor=red

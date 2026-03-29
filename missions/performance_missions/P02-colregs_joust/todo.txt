@@ -1,0 +1,34 @@
+
+o ensure plateaus enabled
+o implement dynamic patience in legrun or waypoint bhv
+o Enable extending legrun from JoustMgr
+
+o Create option for pair of vehicles to R14 Joust always
+
+o Create an overtaking mission
+
+o Release standon when down to zero speed
+
+o Split LegRunZ into parent/subclass
+
+o Shrinking min/max util range based on speed
+
+o uFldCollision detect that grades based on ROC during the encounter
+
+o Shoreside control to make:
+  - one vehicle CPA only
+  - one vehicle oblivious
+  - one vehicle slow/adversarial
+
+o See Notable4
+  one vehicle stuck in standon
+  one vehicle stuck in some other zero speed mode, perhaps fixable
+  with dynamic impatience
+
+o Find a way to have a behavior publish a behavior mode, submode,
+  and pull this into alogview IPFView and HelmPlot views
+
+o uFldCollisionDetect
+  - changing ranges based on ROC during encounter
+  - detect loop-arounds
+  - detect stalemates with configurable duration

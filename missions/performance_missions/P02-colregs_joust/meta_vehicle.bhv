@@ -1,0 +1,137 @@
+//--------    FILE: alpha.bhv  -------------
+
+initialize   DEPLOY  = false
+initialize   RETURN  = false
+initialize   TRANSIT = true
+initialize   AVOID   = true
+initialize   STATION_KEEP = false
+//initialize   VIEW_CIRCLE = "$(START_CIRCLE)$(CIRCLE_HINTS)"
+  
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = STATION_KEEPING {
+  MODE = ACTIVE
+  STATION_KEEP = true
+}                       
+
+set MODE = TRANSITING {
+  MODE = ACTIVE
+  RETURN != true
+  TRANSIT = true
+} 
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+} 
+
+//----------------------------------------------
+Behavior = BHV_LegRun
+{
+  name       = legrun
+  pwt        = 100
+  updates    = LR_UPDATE
+  condition  = MODE==TRANSITING
+  perpetual  = true
+
+ // Seed the initial joust leg from joust.txt so the vehicle has a
+ // valid route even if the first LR_UPDATE arrives before the bridge
+ // path is fully established.
+          vx1 = $(VX1_POS)
+          vx2 = $(VX2_POS)
+      turn1_bias = 0
+      turn2_bias = 0
+       turn1_dir = port
+       turn2_dir = port
+			 turn1_rad = 7
+			 turn2_rad = 7
+
+
+           speed = $(STOCK_SPD)
+        patience = 85
+  capture_radius = 6.0
+    capture_line = true
+     slip_radius = 10.0
+
+	mid_turn_pct = 45
+	
+     turn_pt_gap = 20
+
+   init_leg_mode = far_turn
+	
+//   offboard_tgap = 20
+	
+     visual_hints = turn_vertex_size  = 4   
+     visual_hints = turn_vertex_color = $(COLOR)
+     visual_hints = nextpt_label_color = $(COLOR)
+     visual_hints = legpt_label_color = $(COLOR)
+     visual_hints = turn_label_color = $(COLOR)
+}
+
+#ifdef COLAVD colregs
+  #include plugs.bhv <bhv_avd_colregs>
+#else
+  #include plugs.bhv <bhv_avd_cpa>
+#endif
+
+//----------------------------------------------
+Behavior = BHV_Waypoint
+{
+  name        = waypt_return
+  pwt         = 100
+  updates     = RETURN_UPDATES
+  condition   = MODE==RETURNING
+  perpetual   = true
+  endflag     = RETURN = false
+  endflag     = STATION_KEEP=true
+	spawnx_flag = RETURN_UPDATES=points=$[OSX],$[OSY]
+
+           speed = 2.0
+  capture_radius = 2.0
+     slip_radius = 8.0
+          points = start
+
+     visual_hints = vertex_size  = 4            
+     visual_hints = vertex_color = dodger_blue  
+     visual_hints = nextpt_label_color = $(COLOR)
+}
+
+//----------------------------------------------
+Behavior = BHV_StationKeep
+{
+  name         = station-keep
+  pwt          = 100
+  condition    = MODE==STATION_KEEPING
+	
+  center_activate = true
+     inner_radius = 5
+     outer_radius = 7.5
+      outer_speed = 0.6
+    transit_speed = 0.9
+       swing_time = 7
+     visual_hints = vertex_size=0, edge_color=gray40
+     visual_hints = label_color=gray50
+}
+
+//----------------------------------------------
+Behavior = BHV_OpRegionV24
+{
+  name      = opreg
+  pwt       = 300
+	condition = MODE==ACTIVE
+  updates   = RECOVER_UPDATES
+
+  core_poly = pts={60,10: -75.54,-54.26: -22,-167: 112,-107}
+
+  dynamic_region_var = RESCUE_REGION
+
+  visual_hints = edge_size = 1
+
+  visual_hints = save_edge_color = gray30
+  visual_hints = halt_edge_color = gray40
+
+  save_dist = 5
+  halt_dist = 10
+}

@@ -1,0 +1,89 @@
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+
+// MIT Sailing Pavilion 
+//LatOrigin  = 42.358456  
+//LongOrigin = -71.087589 
+LatOrigin = 42.358436
+LongOrigin = -71.087448
+
+
+<tag><pHostInfo>
+//--------------------------------------------------
+// pHostInfo Config Block
+
+ProcessConfig = pHostInfo
+{
+  AppTick 	= 1
+  CommsTick = 1
+
+  default_hostip_force = $(IP_ADDR)
+}
+
+<tag><pShare>
+//---------------------------------------------------------
+// pShare Config Block
+
+ProcessConfig = pShare
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  input = route = $(IP_ADDR):$(PSHARE_PORT)
+}
+
+<tag><uSimMarineV22>
+//------------------------------------------------------
+// uSimMarineV22 Config Block
+
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 6
+  CommsTick = 6
+
+  start_pos = $(START_POS)
+  prefix    = NAV
+	drift_x   = 0.02
+
+	max_deceleration = 0.8
+	
+	turn_rate = 99
+}
+
+<tag><uLoadWatch>
+//-------------------------------------------------------------
+// uLoadWatch Config Block
+
+ProcessConfig = uLoadWatch                                      
+{                                                               
+  AppTick   = 4                                                 
+  CommsTick = 4                                                 
+                                                                
+  thresh = app=pHelmIvP,  gapthresh=1.5
+  thresh = app=pHostInfo, gapthresh=100
+  //thresh = app=any,       gapthresh=2.0  
+
+  near_breach_thresh = 0.5
+}                                            
+
+<tag><uProcessWatch>
+//--------------------------------------------------
+// uProcessWatch Config Block
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 2
+  CommsTick = 2
+
+	watch_all = true
+
+  nowatch = uMAC*  
+  nowatch = uXMS*
+  nowatch = uPokeDB*
+  nowatch = uQueryDB*
+
+	allow_retractions = true
+	summary_wait = 10
+}
+
+
