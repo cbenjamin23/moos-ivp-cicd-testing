@@ -32,8 +32,9 @@ if [ "${VERBOSE}" = "-v" ]; then
     echo "Cleaning: $PWD"
 fi
 rm -rf  $VERBOSE   MOOSLog_*  XLOG_* LOG_* 
-rm -f   $VERBOSE   *~  *.moos++ results.log
+rm -f   $VERBOSE   *~  *.moos++ results.log results.txt
 rm -f   $VERBOSE   targ_* tmp_* *.tar
+rm -f   $VERBOSE   meta_*.moosx meta_*.bhvx
 rm -f   $VERBOSE   .LastOpenedMOOSLogDirectory
 rm -f   $VERBOSE   .mem_info* vloiterpos.txt vpositions.txt vdests.txt
 rm -f   $VERBOSE   vnames.txt vcolors.txt vcolors.txt vspeeds.txt

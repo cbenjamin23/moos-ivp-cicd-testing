@@ -124,6 +124,24 @@ ProcessConfig = uFldNodeBroker
   bridge = src=VIEW_POINT
   bridge = src=VIEW_SEGLIST
   bridge = src=ARRIVED
+  bridge = src=ARRIVED_abe
+  bridge = src=ARRIVED_ben
+  bridge = src=COLREGS_AVOID_MODE_ABE
+  bridge = src=COLREGS_AVOID_MODE_BEN
+  bridge = src=COLREGS_AVOID_IX_ABE
+  bridge = src=COLREGS_AVOID_IX_BEN
+  bridge = src=COLREGS_SUMMARY_ABE
+  bridge = src=COLREGS_SUMMARY_BEN
+  bridge = src=AVDCOL_RANGE_ABE
+  bridge = src=AVDCOL_RANGE_BEN
+  bridge = src=CN_FORE_OF_OS_ABE
+  bridge = src=CN_FORE_OF_OS_BEN
+  bridge = src=CN_PORT_OF_OS__ABE
+  bridge = src=CN_PORT_OF_OS__BEN
+  bridge = src=CN_CROSSED_OS_PORT_STAR_ABE
+  bridge = src=CN_CROSSED_OS_PORT_STAR_BEN
+  bridge = src=COLREGS_CONTACT_HDG_ABE
+  bridge = src=COLREGS_CONTACT_HDG_BEN
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }

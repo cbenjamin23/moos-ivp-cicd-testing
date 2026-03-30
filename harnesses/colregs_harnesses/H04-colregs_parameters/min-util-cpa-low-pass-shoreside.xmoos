@@ -1,0 +1,42 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=MISSION_TIMEOUT, val=true, time=180
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick    = 4
+  CommsTick  = 4
+
+  lead_condition = (COLREGS_AVOID_IX_BEN = 10) or (MISSION_TIMEOUT = true)
+  pass_condition = COLREGS_AVOID_IX_BEN = 10
+  pass_condition = COLLISION_TOTAL = 0
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = UCD_CLOSEST_RANGE_EVER > 10
+
+  result_flag   = MISSION_EVALUATED = true
+  pass_flag     = SAY_MOOS = pass
+  fail_flag     = SAY_MOOS = fail
+  mission_form  = colregs_parameters
+  mission_mod   = min_util_cpa_low_pass
+
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = colregs_mode=$[COLREGS_AVOID_MODE_BEN]
+  report_column = colregs_ix=$[COLREGS_AVOID_IX_BEN]
+  report_column = closest_range_ever=$[UCD_CLOSEST_RANGE_EVER]
+  report_column = near_misses=$[NEAR_MISS_TOTAL]
+  report_column = collisions=$[COLLISION_TOTAL]
+  report_column = wall_time=$[WALL_TIME]
+  report_column = mhash=$[MHASH_SHORT]
+  report_column = utc=$[MHASH_UTC]
+
+  column_format = csp
+  report_file   = results.txt
+}

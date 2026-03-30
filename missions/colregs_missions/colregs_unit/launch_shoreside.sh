@@ -30,8 +30,8 @@ PSHARE_PORT="9200"
 MMOD=""
 
 VNAMES="abe:ben"
-MIN_UTIL_CPA="5"
-MAX_UTIL_CPA="40"
+MIN_UTIL_CPA="10"
+MAX_UTIL_CPA="18"
 MMOD="head_on_colregs_pass"
 
 #------------------------------------------------------------ 
@@ -149,6 +149,8 @@ NSFLAGS="--strict --force"
 if [ "${AUTO_LAUNCHED}" = "no" ]; then
     NSFLAGS="--interactive --force"
 fi
+
+NSFLAGS="$NSFLAGS -x"
 
 nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT    \

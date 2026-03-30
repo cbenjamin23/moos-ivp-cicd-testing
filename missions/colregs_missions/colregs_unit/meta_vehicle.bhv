@@ -46,12 +46,16 @@ Behavior = BHV_AvdColregsV22
 	exit_on_filter_group = true
 	
   use_refinery = true
+  giveway_bow_dist = 10
+  post_per_contact_info = true
+  post_status_info_on_idle = true
+  can_disable = true
 
-        pwt_outer_dist = 60
-        pwt_inner_dist = 30
-        completed_dist = 65
-     min_util_cpa_dist = $(MIN_UTIL_CPA)
-     max_util_cpa_dist = $(MAX_UTIL_CPA)
+        pwt_outer_dist = 40
+        pwt_inner_dist = 20
+        completed_dist = 45
+     min_util_cpa_dist = $(MIN_UTIL_CPA:=10)
+     max_util_cpa_dist = $(MAX_UTIL_CPA:=18)
              pwt_grade = linear
    bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
 }
@@ -66,6 +70,7 @@ Behavior = BHV_Waypoint
   endflag     = STATION = true
   endflag     = AVOID = false
   endflag     = ARRIVED = true
+  endflag     = ARRIVED_$(VNAME) = true
 	
   crs_spd_zaic_ratio = 70
 
@@ -74,6 +79,9 @@ Behavior = BHV_Waypoint
   nm_radius = 25.0
       point = $(VDEST_POS)
        lead = 8
+  visual_hints = edge_color=$(COLOR)
+  visual_hints = vertex_color=$(COLOR)
+  visual_hints = nextpt_color=$(COLOR)
 }
 
 //----------------------------------------------
@@ -91,8 +99,10 @@ Behavior = BHV_Waypoint
       speed = 1.3
      radius = 3.0
   nm_radius = 15.0
-      point = 0,0
+           point = 0,0
        lead = 8
+  visual_hints = edge_color=dodger_blue
+  visual_hints = vertex_color=dodger_blue
 }
 
 //----------------------------------------------
@@ -113,4 +123,3 @@ Behavior = BHV_StationKeep
           swing_time = 7
         visual_hints = vertex_size=0, edge_color=gray50
 }
-

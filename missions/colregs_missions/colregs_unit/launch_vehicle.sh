@@ -40,8 +40,8 @@ MAX_SPD="2"
 
 # Custom
 DEST_POS="50,-50"  
-MIN_UTIL_CPA="5"
-MAX_UTIL_CPA="40"
+MIN_UTIL_CPA="10"
+MAX_UTIL_CPA="18"
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -197,6 +197,8 @@ if [ "${AUTO_LAUNCHED}" = "no" ]; then
     NSFLAGS="--interactive --force"
 fi
 
+NSFLAGS="$NSFLAGS -x"
+
 nsplug meta_vehicle.moos targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT \
        PSHARE_PORT=$PSHARE_PORT     SHORE_IP=$SHORE_IP   \
@@ -209,6 +211,7 @@ nsplug meta_vehicle.moos targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \
 nsplug meta_vehicle.bhv targ_$VNAME.bhv $NSFLAGS  \
        START_POS=$START_POS         VNAME=$VNAME  \
        STOCK_SPD=$STOCK_SPD         MMOD=$MMOD    \
+       COLOR=$COLOR                               \
        VDEST_POS=$VDEST_POS                       \
        MIN_UTIL_CPA=$MIN_UTIL_CPA                 \
        MAX_UTIL_CPA=$MAX_UTIL_CPA

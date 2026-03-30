@@ -3,7 +3,7 @@
 // Charles Benjamin
 
 ServerHost = localhost
-ServerPort = 9000
+ServerPort = $(MOOS_PORT)
 Community  = shoreside
 
 #include plugs.moos <origin_warp>
@@ -47,12 +47,27 @@ ProcessConfig = pAutoPoke
   flag = DEPLOY_ALL=true 
   flag = MOOS_MANUAL_OVERRIDE_ALL=false
   flag = ARRIVED=false
+  flag = ARRIVED_abe=false
+  flag = ARRIVED_ben=false
   flag = ENCOUNTER=none
   flag = MISSION_TIMEOUT=false
   flag = TEST_EVAL_READY=false
   flag = ENCOUNTER_TOTAL=0
   flag = NEAR_MISS_TOTAL=0
   flag = COLLISION_TOTAL=0
+  flag = UCD_CLOSEST_RANGE_EVER=-1
+  flag = COLREGS_AVOID_MODE_ABE=none
+  flag = COLREGS_AVOID_MODE_BEN=none
+  flag = COLREGS_AVOID_IX_ABE=0
+  flag = COLREGS_AVOID_IX_BEN=0
+  flag = COLREGS_SUMMARY_ABE=mode=none:none
+  flag = COLREGS_SUMMARY_BEN=mode=none:none
+  flag = CN_FORE_OF_OS_ABE=0
+  flag = CN_FORE_OF_OS_BEN=0
+  flag = CN_PORT_OF_OS__ABE=0
+  flag = CN_PORT_OF_OS__BEN=0
+  flag = CN_CROSSED_OS_PORT_STAR_ABE=0
+  flag = CN_CROSSED_OS_PORT_STAR_BEN=0
 
   required_nodes = 2
 }
@@ -99,6 +114,14 @@ ProcessConfig = pMissionEval
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = encounter_cpa=$[ENCOUNTER]
   report_column = encounters=$[ENCOUNTER_TOTAL]
+  report_column = colregs_mode=$[COLREGS_AVOID_MODE_BEN]
+  report_column = colregs_ix=$[COLREGS_AVOID_IX_BEN]
+  report_column = colregs_summary=$[COLREGS_SUMMARY_BEN]
+  report_column = avdcol_range=$[AVDCOL_RANGE_BEN]
+  report_column = closest_range_ever=$[UCD_CLOSEST_RANGE_EVER]
+  report_column = cn_port=$[CN_PORT_OF_OS__BEN]
+  report_column = cn_fore=$[CN_FORE_OF_OS_BEN]
+  report_column = cn_crossed=$[CN_CROSSED_OS_PORT_STAR_BEN]
   report_column = near_misses=$[NEAR_MISS_TOTAL]
   report_column = collisions=$[COLLISION_TOTAL]
   report_column = wall_time=$[WALL_TIME]
@@ -284,6 +307,7 @@ ProcessConfig = uFldCollisionDetect
   collision_range = 5           // in meters       
                                                                 
   post_closest_range = true     // default is false             
+  post_closest_range_ever = true
 
 	//verbose = true
 	
