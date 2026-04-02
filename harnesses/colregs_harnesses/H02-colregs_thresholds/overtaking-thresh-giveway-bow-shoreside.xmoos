@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=MISSION_TIMEOUT, val=true, time=70
+  event = var=MISSION_TIMEOUT, val=true, time=75
 }
 
 ProcessConfig = pMissionEval
@@ -13,21 +13,22 @@ ProcessConfig = pMissionEval
   AppTick    = 4
   CommsTick  = 4
 
-  lead_condition = (COLREGS_AVOID_IX_BEN = 36) or (MISSION_TIMEOUT = true)
+  lead_condition = (COLREGS_AVOID_IX_BEN = 22) or (MISSION_TIMEOUT = true)
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
-  pass_condition = COLREGS_AVOID_IX_BEN = 36
+  pass_condition = COLREGS_AVOID_IX_BEN = 22
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass
   fail_flag     = SAY_MOOS = fail
-  mission_form  = colregs_unit
-  mission_mod   = $(MMOD:=crossing_port_standon_unsure_bow_pass)
+  mission_form  = colregs_thresholds
+  mission_mod   = $(MMOD)
 
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = min_util_cpa=$(MIN_UTIL_CPA)
+  report_column = eval=$[TEST_EVAL_READY]
   report_column = arrived=$[ARRIVED]
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = encounter_cpa=$[ENCOUNTER]

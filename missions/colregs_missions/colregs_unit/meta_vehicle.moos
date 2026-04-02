@@ -140,6 +140,10 @@ ProcessConfig = uFldNodeBroker
   bridge = src=CN_PORT_OF_OS__BEN
   bridge = src=CN_CROSSED_OS_PORT_STAR_ABE
   bridge = src=CN_CROSSED_OS_PORT_STAR_BEN
+  bridge = src=XCN_BOW_DIST_ABE
+  bridge = src=XCN_BOW_DIST_BEN
+  bridge = src=XCN_BOW_TURN_GAP_ABE
+  bridge = src=XCN_BOW_TURN_GAP_BEN
   bridge = src=COLREGS_CONTACT_HDG_ABE
   bridge = src=COLREGS_CONTACT_HDG_BEN
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT

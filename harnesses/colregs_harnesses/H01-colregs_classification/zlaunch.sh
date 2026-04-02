@@ -48,6 +48,7 @@ for ARGI; do
         echo "                     crossing_starboard_giveway_pass"
         echo "                     crossing_starboard_giveway_far_pass"
         echo "                     crossing_starboard_giveway_close_pass"
+        echo "                     crossing_starboard_giveway_bow_pass"
         echo "                     crossing_port_standon_pass"
         echo "                     crossing_port_standon_unsure_bow_pass"
         echo "                     crossing_port_standon_stern_pass"
@@ -62,6 +63,8 @@ for ARGI; do
         echo "                     overtaking_starboard_large_gap_pass"
         echo "                     overtaking_starboard_mirror_small_gap_pass"
         echo "                     overtaking_starboard_mirror_large_gap_pass"
+        echo "                     overtaken_port_standon_pass"
+        echo "                     overtaken_starboard_standon_pass"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
         TIME_WARP=$ARGI
@@ -127,6 +130,9 @@ cleanup() {
         ktm >/dev/null 2>&1 || true
     fi
     cd "$start_dir"
+    if [ "$JUST_MAKE" = "yes" ] && [ -f "$RESULTS_FILE" ]; then
+        rm -f "$RESULTS_FILE"
+    fi
     if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ]; then
         rm -rf "$RUN_ROOT"
     fi
@@ -165,6 +171,8 @@ get_case_config() {
          [ "$CASE_NAME" = "crossing_starboard_giveway_far_pass" ] || \
          [ "$CASE_NAME" = "crossing_starboard_giveway_close_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/crossing-starboard-giveway-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "crossing_starboard_giveway_bow_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/crossing-starboard-giveway-bow-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "crossing_port_standon_pass" ] || \
          [ "$CASE_NAME" = "crossing_port_standon_far_pass" ] || \
          [ "$CASE_NAME" = "crossing_port_standon_close_pass" ]; then
@@ -185,6 +193,10 @@ get_case_config() {
          [ "$CASE_NAME" = "overtaking_starboard_mirror_small_gap_pass" ] || \
          [ "$CASE_NAME" = "overtaking_starboard_mirror_large_gap_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/overtaking-starboard-mirror-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "overtaken_port_standon_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/overtaken-port-standon-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "overtaken_starboard_standon_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/overtaken-starboard-standon-pass-shoreside.xmoos"
     else
         echo "$ME: Unknown case [$CASE_NAME]"
         exit 2
@@ -206,7 +218,9 @@ run_case() {
     if [ "$SHORE_PATCH" != "" ]; then
         nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
     fi
-    : > results.txt
+    if [ "$JUST_MAKE" != "yes" ]; then
+        : > results.txt
+    fi
     xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
 
     if [ "$JUST_MAKE" = "yes" ]; then
@@ -265,19 +279,8 @@ run_case_isolated() {
     (
         cd "$case_dir"
         : > results.txt
-        ./launch.sh --xlaunched --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
         launch_rc=$?
-
-        if [ "$JUST_MAKE" != "yes" ] && [ "$launch_rc" = 0 ]; then
-            uMayFinish --alias="uMayFinish_${case_idx}" --max_time=${MAX_TIME} targ_shoreside.moos
-            launch_rc=$?
-            pkill -INT -P $$ >/dev/null 2>&1 || true
-            sleep 2
-            if [ ! -z "$(tail -c 1 <"results.txt" 2>/dev/null)" ]; then
-                echo "" >> results.txt
-            fi
-        fi
-
         echo "$launch_rc" > launch_rc.txt
     )
     launch_rc=$(cat "$case_dir/launch_rc.txt" 2>/dev/null || echo "1")
@@ -315,9 +318,13 @@ run_case_isolated() {
     [ "$status" = "ok" ]
 }
 
-CASES="head_on_colregs_pass head_on_cpa_fallback_pass head_on_port_offset_pass head_on_starboard_offset_pass crossing_starboard_giveway_pass crossing_starboard_giveway_far_pass crossing_starboard_giveway_close_pass crossing_port_standon_pass crossing_port_standon_unsure_bow_pass crossing_port_standon_stern_pass crossing_port_standon_far_pass crossing_port_standon_far_unsure_bow_pass crossing_port_standon_close_pass crossing_port_standon_close_unsure_bow_pass crossing_port_standon_unsure_pass overtaking_starboard_pass overtaking_starboard_small_gap_pass overtaking_starboard_large_gap_pass overtaking_starboard_mirror_pass overtaking_starboard_mirror_small_gap_pass overtaking_starboard_mirror_large_gap_pass"
+CASES="head_on_colregs_pass head_on_cpa_fallback_pass head_on_port_offset_pass head_on_starboard_offset_pass crossing_starboard_giveway_pass crossing_starboard_giveway_far_pass crossing_starboard_giveway_close_pass crossing_port_standon_pass crossing_port_standon_unsure_bow_pass crossing_port_standon_stern_pass crossing_port_standon_far_pass crossing_port_standon_close_pass crossing_port_standon_close_unsure_bow_pass crossing_port_standon_unsure_pass overtaking_starboard_pass overtaking_starboard_small_gap_pass overtaking_starboard_large_gap_pass overtaking_starboard_mirror_pass overtaking_starboard_mirror_small_gap_pass overtaking_starboard_mirror_large_gap_pass overtaken_port_standon_pass overtaken_starboard_standon_pass"
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
+fi
+
+if [ "$JUST_MAKE" = "yes" ]; then
+    RESULTS_FILE=$(mktemp "$HARNESS_DIR/.just_make_results_XXXXXX")
 fi
 
 : > "$RESULTS_FILE"

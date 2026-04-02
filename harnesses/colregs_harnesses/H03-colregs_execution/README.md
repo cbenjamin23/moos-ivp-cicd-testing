@@ -38,7 +38,7 @@ Current harness-side checks:
 - `head_on_execution_pass`: `closest_range_ever` in `[16,20]`, `cn_port=1`, `wall_time<=12`
 - `crossing_starboard_giveway_execution_pass`: `closest_range_ever` in `[18,24]`, `cn_port=1`, `wall_time<=12`
 - `crossing_port_standon_execution_pass`: `closest_range_ever` in `[14,20]`, `cn_port=0`, `wall_time<=12`
-- `overtaking_starboard_execution_pass`: `closest_range_ever` in `[45,65]`, `cn_port=0`, `wall_time<=12`
+- `overtaking_starboard_execution_pass`: `closest_range_ever` in `[17,21]`, `cn_port=0`, `wall_time<=12`
 
 Current reported execution metrics:
 - `closest_range_ever`

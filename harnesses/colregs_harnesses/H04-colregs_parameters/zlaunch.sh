@@ -149,28 +149,28 @@ get_case_config() {
     if [ "$CASE_NAME" = "min_util_cpa_low_pass" ]; then
         MMOD="head_on_colregs_pass"
         SHORE_PATCH="$HARNESS_DIR/min-util-cpa-low-pass-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/min-util-cpa-low-avdcol.bhvx"
+        BHV_PATCH="$HARNESS_DIR/min-util-cpa-low-avdcol.xbhv"
     elif [ "$CASE_NAME" = "min_util_cpa_default_pass" ]; then
         MMOD="head_on_colregs_pass"
         SHORE_PATCH="$HARNESS_DIR/min-util-cpa-default-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "min_util_cpa_high_pass" ]; then
         MMOD="head_on_colregs_pass"
         SHORE_PATCH="$HARNESS_DIR/min-util-cpa-high-pass-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/min-util-cpa-high-avdcol.bhvx"
+        BHV_PATCH="$HARNESS_DIR/min-util-cpa-high-avdcol.xbhv"
     elif [ "$CASE_NAME" = "headon_only_false_pass" ]; then
         MMOD="crossing_starboard_giveway_pass"
         SHORE_PATCH="$HARNESS_DIR/headon-only-false-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "headon_only_true_pass" ]; then
         MMOD="crossing_starboard_giveway_pass"
         SHORE_PATCH="$HARNESS_DIR/headon-only-true-pass-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/headon-only-true-avdcol.bhvx"
+        BHV_PATCH="$HARNESS_DIR/headon-only-true-avdcol.xbhv"
     elif [ "$CASE_NAME" = "refinery_on_pass" ]; then
         MMOD="crossing_starboard_giveway_pass"
         SHORE_PATCH="$HARNESS_DIR/refinery-on-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "refinery_off_pass" ]; then
         MMOD="crossing_starboard_giveway_pass"
         SHORE_PATCH="$HARNESS_DIR/refinery-off-pass-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/refinery-off-avdcol.bhvx"
+        BHV_PATCH="$HARNESS_DIR/refinery-off-avdcol.xbhv"
     else
         echo "$ME: Unknown case [$CASE_NAME]"
         exit 2
@@ -246,19 +246,8 @@ run_case_isolated() {
     (
         cd "$case_dir"
         : > results.txt
-        ./launch.sh --xlaunched --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
         launch_rc=$?
-
-        if [ "$JUST_MAKE" != "yes" ] && [ "$launch_rc" = 0 ]; then
-            uMayFinish --alias="uMayFinish_h04_${case_idx}" --max_time=${MAX_TIME} targ_shoreside.moos
-            launch_rc=$?
-            pkill -INT -P $$ >/dev/null 2>&1 || true
-            sleep 2
-            if [ ! -z "$(tail -c 1 <"results.txt" 2>/dev/null)" ]; then
-                echo "" >> results.txt
-            fi
-        fi
-
         echo "$launch_rc" > launch_rc.txt
     )
     launch_rc=$(cat "$case_dir/launch_rc.txt" 2>/dev/null || echo "1")

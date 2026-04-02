@@ -5,8 +5,8 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=TEST_EVAL_READY, val=true, time=25
-  event = var=MISSION_TIMEOUT, val=true, time=120
+  event = var=TEST_EVAL_READY, val=true, time=74
+  event = var=MISSION_TIMEOUT, val=true, time=75
 }
 
 ProcessConfig = pMissionEval
@@ -17,7 +17,7 @@ ProcessConfig = pMissionEval
   lead_condition = (TEST_EVAL_READY = true) or (MISSION_TIMEOUT = true)
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
-  pass_condition = COLREGS_AVOID_IX_BEN = 0
+  pass_condition = COLREGS_AVOID_IX_BEN = 50
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass

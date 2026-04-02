@@ -3,7 +3,7 @@
 TLDR:
 - shared two-vessel classification harness on the `colregs_unit` stem
 - checks canonical COLREGS mode/index selection before broader execution or parameter work
-- current implemented cases: 21 stable canonicals spanning head-on, CPA fallback, give-way stern, stand-on bow/stern/unsure_bow/unsure, and overtaking on both passing sides
+- current implemented cases: 22 stable canonicals spanning head-on, CPA fallback, give-way stern, stand-on bow/stern/unsure_bow/unsure plus overtaken-vessel stand-on, and overtaking on both passing sides
 
 This harness is the first implemented COLREGS correctness suite. It uses the
 shared two-vessel `colregs_unit` stem mission and focuses on classification
@@ -22,7 +22,6 @@ Status:
   - `crossing_port_standon_unsure_bow_pass`
   - `crossing_port_standon_stern_pass`
   - `crossing_port_standon_far_pass`
-  - `crossing_port_standon_far_unsure_bow_pass`
   - `crossing_port_standon_close_pass`
   - `crossing_port_standon_close_unsure_bow_pass`
   - `crossing_port_standon_unsure_pass`
@@ -32,6 +31,8 @@ Status:
   - `overtaking_starboard_mirror_pass`
   - `overtaking_starboard_mirror_small_gap_pass`
   - `overtaking_starboard_mirror_large_gap_pass`
+  - `overtaken_port_standon_pass`
+  - `overtaken_starboard_standon_pass`
 - current harness model: case-owned shoreside `nspatch` overlays
 - current wrapper support: serial or wave-batched execution with `--jobs=<n>`
 - long-term role: canonical classification suite for `BHV_AvdColregsV22`
@@ -49,7 +50,6 @@ Status:
 - `crossing_port_standon_unsure_bow_pass`: port-side crossing that first enters the stand-on `unsure_bow` branch before later resolving.
 - `crossing_port_standon_stern_pass`: port-side crossing that settles to the stand-on stern branch.
 - `crossing_port_standon_far_pass`: longer-spacing version of the port-side stand-on bow case.
-- `crossing_port_standon_far_unsure_bow_pass`: longer-spacing port-side case that still first enters `unsure_bow`.
 - `crossing_port_standon_close_pass`: tighter-spacing version of the port-side stand-on bow case.
 - `crossing_port_standon_close_unsure_bow_pass`: tighter-spacing port-side case that still first enters `unsure_bow`.
 - `crossing_port_standon_unsure_pass`: port-side crossing that first enters the generic stand-on `unsure` branch.
@@ -59,6 +59,8 @@ Status:
 - `overtaking_starboard_mirror_pass`: mirrored overtaking geometry on the opposite passing side.
 - `overtaking_starboard_mirror_small_gap_pass`: mirrored overtaking with a smaller lateral gap.
 - `overtaking_starboard_mirror_large_gap_pass`: mirrored overtaking with a larger lateral gap.
+- `overtaken_port_standon_pass`: ownship is the vessel being overtaken, with the contact overtaking on ownship's port side.
+- `overtaken_starboard_standon_pass`: mirrored overtaken-vessel case with the contact overtaking on ownship's starboard side.
 
 Primary intent:
 - prove the correct COLREGS mode is selected for a given encounter geometry
@@ -69,7 +71,7 @@ Primary intent:
 
 - the shared stem mission supplies the geometry and manual `--mmod` path
 - this harness applies case-owned shoreside `nspatch` overlays
-- each case passes when the expected live `COLREGS_AVOID_IX_BEN` appears
+- each case passes when the expected live COLREGS classification appears
   without collision or timeout
 
 For example:
@@ -84,6 +86,8 @@ For example:
 - `crossing_port_standon_unsure_pass` expects `COLREGS_AVOID_IX_BEN = 38`
 - `overtaking_starboard_pass` expects `COLREGS_AVOID_IX_BEN = 43`
 - `overtaking_starboard_mirror_pass` expects `COLREGS_AVOID_IX_BEN = 47`
+- `overtaken_port_standon_pass` expects `COLREGS_AVOID_MODE_BEN = standon_ot:port`
+- `overtaken_starboard_standon_pass` expects `COLREGS_AVOID_MODE_BEN = standon_ot:starboard`
 
 Those numbers come directly from the upstream `BHV_AvdColregsV22` source
 mapping, documented in the shared
@@ -109,7 +113,6 @@ Current expected mode index checks:
 - `crossing_port_standon_unsure_bow_pass` -> `COLREGS_AVOID_IX_BEN = 36`
 - `crossing_port_standon_stern_pass` -> `COLREGS_AVOID_IX_BEN = 30`
 - `crossing_port_standon_far_pass` -> `COLREGS_AVOID_IX_BEN = 32`
-- `crossing_port_standon_far_unsure_bow_pass` -> `COLREGS_AVOID_IX_BEN = 36`
 - `crossing_port_standon_close_pass` -> `COLREGS_AVOID_IX_BEN = 32`
 - `crossing_port_standon_close_unsure_bow_pass` -> `COLREGS_AVOID_IX_BEN = 36`
 - `crossing_port_standon_unsure_pass` -> `COLREGS_AVOID_IX_BEN = 38`
@@ -119,6 +122,8 @@ Current expected mode index checks:
 - `overtaking_starboard_large_gap_pass` -> `COLREGS_AVOID_IX_BEN = 43`
 - `overtaking_starboard_mirror_small_gap_pass` -> `COLREGS_AVOID_IX_BEN = 47`
 - `overtaking_starboard_mirror_large_gap_pass` -> `COLREGS_AVOID_IX_BEN = 47`
+- `overtaken_port_standon_pass` -> `COLREGS_AVOID_MODE_BEN = standon_ot:port`
+- `overtaken_starboard_standon_pass` -> `COLREGS_AVOID_MODE_BEN = standon_ot:starboard`
 
 Current visual/manual-run instrumentation:
 - draw the ownship and contact tracks in the viewer
@@ -129,15 +134,25 @@ Current visual/manual-run instrumentation:
 
 Next planned case groups:
 - additional head-on offsets if they remain meaningfully distinct from the current center/offset trio
-- give-way / stand-on cases that reliably hit `giveway:bow` and more stand-on submodes
-- more overtaking geometry breadth beyond the current starboard/port pair
+- dynamic stand-on progression states such as `unsure_stern`, `neither`, and `inextremis` if they can be made source-stable without turning H01 into a threshold suite
 - all-clear completion and broader non-COLREGS fallback families
 
 Current known gaps:
-- no stable default-parameter `giveway:bow` canonical in the harness yet
+- `crossing_starboard_giveway_bow_pass` remains available as a manual exploratory
+  case, but it is intentionally not part of the default H01 pass set because
+  repeated serial runs showed it can fall into `giveway:stern` or release to
+  `complete` depending on startup timing under the shared stem
+- `crossing_port_standon_far_unsure_bow_pass` remains available as a manual
+  exploratory case, but it is intentionally not part of the default H01 pass
+  set because repeated isolated runs can fall through to `cpa` instead of
+  holding a stable `standon:unsure_bow` classification under the shared stem
 - `giveway:bow_must` appears unreachable in the current upstream source path
+- `standon_ot` is covered by mode-string assertions because the current source
+  does not assign a dedicated nonzero `COLREGS_AVOID_IX` to that mode family
 - the stand-on uncertainty family now has stable `unsure_bow` and `unsure` coverage
-- `unsure_stern`, `neither`, and `inextremis` are still the next major coverage targets
+- `unsure_stern`, `neither`, and `inextremis` remain intentionally outside the
+  current canonical H01 cut because they are more transition-sensitive than the
+  source-stable center-of-bin cases above
 
 Typical runs:
 

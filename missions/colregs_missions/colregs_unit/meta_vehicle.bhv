@@ -74,7 +74,7 @@ Behavior = BHV_Waypoint
 	
   crs_spd_zaic_ratio = 70
 
-      speed = 1.3
+      speed = $(STOCK_SPD)
      radius = 1.0
   nm_radius = 25.0
       point = $(VDEST_POS)
@@ -96,7 +96,7 @@ Behavior = BHV_Waypoint
   spawnx_flag = RETURN_UPDATES=point=$[OSX],$[OSY]	
 
 	
-      speed = 1.3
+      speed = $(STOCK_SPD)
      radius = 3.0
   nm_radius = 15.0
            point = 0,0
@@ -119,7 +119,7 @@ Behavior = BHV_StationKeep
         outer_radius = 10 
          outer_speed = 1.0
 
-       transit_speed = 1.3
+       transit_speed = $(STOCK_SPD)
           swing_time = 7
         visual_hints = vertex_size=0, edge_color=gray50
 }
