@@ -1,4 +1,0 @@
-yellow
-red
-dodger_blue
-green
