@@ -9,19 +9,8 @@
 #          debugging output, and catching SIGINT (ctrl-c).
 #------------------------------------------------------------
 vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
-HALTING="no"
-on_exit() {
-    if [ "$HALTING" = "yes" ]; then
-        exit 0
-    fi
-    HALTING="yes"
-    trap "" SIGINT SIGTERM
-    echo
-    echo "$ME: Halting all apps"
-    kill -- -$$
-}
+on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
 trap on_exit SIGINT
-trap on_exit SIGTERM
 
 #------------------------------------------------------------
 #  Part 2: Set global variable default values

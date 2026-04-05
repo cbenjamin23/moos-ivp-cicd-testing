@@ -1,1 +1,0 @@
-  grade=pass  form=colregs_motion  mmod=lanes_colregs_pass  eval=true  done=true  timeout=false  encounters=1  closest_range_ever=29.09  near_misses=0  collisions=0  wall_time=23.10  mhash=[COZY-FISH]
