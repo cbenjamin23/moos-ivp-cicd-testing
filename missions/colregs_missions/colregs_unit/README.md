@@ -75,7 +75,7 @@ Reuse an existing `--mmod` when:
 
 - the encounter topology is the same
 - the harness only needs a different threshold-side assertion
-- the difference is a small geometry nudge or a parameter overlay
+- the difference is a small geometry nudge, not a behavior-parameter overlay
 
 Add a new `--mmod` when:
 
@@ -170,7 +170,28 @@ Implemented manual `--mmod` values:
 - `overtaking_starboard_mirror_small_gap_pass`
 - `overtaking_starboard_mirror_large_gap_pass`
 - `overtaken_port_standon_pass`
+- `overtaken_port_standon_range_far_pass`
+- `overtaken_port_standon_range_edge_pass`
+- `overtaken_port_standon_range_close_pass`
+- `overtaken_port_standon_cpa_wide_pass`
+- `overtaken_port_standon_cpa_edge_pass`
+- `overtaken_port_standon_cpa_above_pass`
+- `overtaken_port_standon_gate_below_pass`
+- `overtaken_port_standon_gate_edge_pass`
+- `overtaken_port_standon_gate_above_pass`
+- `crossing_port_standon_cpa_wide_pass`
+- `crossing_port_standon_cpa_edge_pass`
+- `crossing_port_standon_cpa_above_pass`
+- `crossing_port_standon_band315_unsure_pass`
+- `crossing_port_standon_band315_unsure_bow_pass`
+- `crossing_port_standon_band315_bow_pass`
+- `crossing_port_standon_band270_bow_probe`
+- `crossing_port_standon_band270_mid_probe`
+- `crossing_port_standon_band270_near_probe`
 - `overtaken_starboard_standon_pass`
+- `overtaken_starboard_standon_gate_below_pass`
+- `overtaken_starboard_standon_gate_edge_pass`
+- `overtaken_starboard_standon_gate_above_pass`
 
 Notes:
 - the shared unit stem currently has stable canonicals for `headon`, `cpa`,
@@ -195,6 +216,27 @@ Notes:
   `crossing_port_standon_turn_unsure_stern_below_pass`,
   `crossing_port_standon_turn_unsure_stern_edge_pass`, and
   `crossing_port_standon_turn_unsure_stern_above_pass`
+- the shared stem now also has a dedicated turn-based CPA pocket:
+  `crossing_port_standon_cpa_edge_pass` and
+  `crossing_port_standon_cpa_above_pass`
+- `crossing_port_standon_cpa_wide_pass` remains the stable stern-side anchor
+  for the stand-on CPA below case if H02 needs to revisit the wider offset
+- the shared stem now also has a supported Band #2 (`315 < rel_bng <= 350`)
+  family:
+  `crossing_port_standon_band315_unsure_pass`,
+  `crossing_port_standon_band315_unsure_bow_pass`, and
+  `crossing_port_standon_band315_bow_pass`
+- the shared stem now also has a Band #3 (`270 <= rel_bng <= 315`)
+  probe family kept for calibration:
+  `crossing_port_standon_band270_bow_probe`,
+  `crossing_port_standon_band270_mid_probe`, and
+  `crossing_port_standon_band270_near_probe`
+- H02 uses the stern anchor for CPA-below and the turn-based pocket for
+  CPA edge/above so the split stays geometry-backed instead of reusing the
+  same stern probe for every label
+- the H02 overtaken-entry threshold aliases are geometry-only and keep the
+  stock utility defaults fixed, rather than changing `min_util_cpa_dist` or
+  `max_util_cpa_dist`
 - that family is the first source-backed stem geometry in this repo to hit the
   real `standon:unsure_stern` (`34`) branch; it avoids the old dead-end
   straight-line geometry by starting just outside the head-on window and then
@@ -231,6 +273,8 @@ Notes:
 - the shared unit stem now also has stable timing/offset breadth within those
   families, so the harness can test canonical geometry variation without
   leaving the default source-backed mode family
+- `overtaken_port_standon_range_edge_pass` is the H02 range-edge pocket;
+  `overtaken_port_standon_range_close_pass` is the above pocket
 - the first overtaking threshold cut now also shows that falling out of the
   overtaking aft-sector does not necessarily mean a handoff to `cpa`; on the
   upper-side threshold the same closing geometry can hand off to `giveway:bow`

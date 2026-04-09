@@ -2,11 +2,12 @@
 
 TLDR:
 - threshold-edge harness on the shared `colregs_unit` stem
-- proves that small geometry or parameter changes flip classification where the source says they should
+- proves that small geometry changes flip classification where the source says they should
 - intended to absorb the unstable edge-space that does not belong in `H01`
+- current active gate is a geometry-first 58-case threshold sweep with wave-mode support
 
 This harness uses the shared `colregs_unit` stem mission to probe the exact
-geometry and parameter boundaries that decide COLREGS classification in
+geometry boundaries that decide COLREGS classification in
 `BHV_AvdColregsV22`.
 
 Primary intent:
@@ -29,6 +30,10 @@ Developer note:
   `--group=overtaken`, `--group=overtaken_mirror`, `--group=giveway`,
   `--group=turngap`, or `--group=standon` to iterate on one family without
   running the full H02 gate
+- `./zlaunch.sh --jobs=2 10` runs isolated wave batches with unique port blocks;
+  a small set of known-sensitive supported edge cases currently run as solo
+  waves, with a short settle pause between waves, to keep the stock geometry
+  honest instead of retuning it into different scenarios
 
 ## How To Read Case Names
 
@@ -40,8 +45,12 @@ of the threshold the geometry is expected to land on.
 - `*_above_pass`: just above the cutoff; should land on the post-flip side
 - `*_mirror_pass`: same idea as the base case, but rotated or mirrored to prove
   the opposite-side geometry is behaving symmetrically
-- `band315`, `band270`, `band350`: representative stand-on cases pinned to the
-  source bearing bands in `BHV_AvdColregsV22`
+- `band350`: supported band-specific stand-on cases pinned to the source
+  bearing band in `BHV_AvdColregsV22`
+- `band270`: the stern reference is currently supported in the active gate;
+  the bow/unsure variants remain calibration-only
+- `band315`: supported geometry-backed stand-on band #2 cases pinned to the
+  source bearing band in `BHV_AvdColregsV22`
 - `southwest`: a custom stern-adjacent contact track added after calibration
   showed the older stern probes were a poor fit for the stock source
 
@@ -65,7 +74,6 @@ of the threshold the geometry is expected to land on.
 - change one thing at a time:
   - geometry
   - speed ratio
-  - behavior parameter
 - prefer `below / edge / above` triplets
 - mirror families when port/starboard symmetry matters
 - allow `H02` to use stronger fixture control than `H01` when needed:
@@ -184,6 +192,9 @@ Notes:
 - the supported family now uses a diagonal `115 / 330` base geometry and its
   180-degree mirror so the first useful Rule 16 classification lands with
   `xcn_bow_dist < 10` while `xcn_turn_gap` walks the real stock threshold
+- the active gate keeps a longer pre-motion hold on this family so the
+  turn-gap split is sampled after contact exchange settles under both serial
+  and wave-mode validation
 - repeated cold starts on the calibrated base family held the split at:
   - below / edge -> `20`
   - above -> `22`
@@ -203,12 +214,6 @@ Current implemented cases:
 - `standon_unsurebow_below_pass`
 - `standon_unsurebow_edge_pass`
 - `standon_unsurebow_above_pass`
-- `standon_band315_unsure_pass`
-- `standon_band315_unsurebow_pass`
-- `standon_band315_bow_pass`
-- `standon_band270_unsure_pass`
-- `standon_band270_unsurebow_pass`
-- `standon_band270_bow_pass`
 - `standon_band350_unsurebow_pass`
 - `standon_band350_unsurebow_alt_pass`
 - `standon_band350_bow_pass`
@@ -220,65 +225,48 @@ What each implemented case means:
   `standon:unsure_bow`
 - `standon_unsurebow_above_pass`: small increase on the bow side that reaches
   `standon:bow`
-- `standon_band315_unsure_pass`: Band #2 (`315 < rel_bng <= 350`) case pinned
-  in `standon:unsure`
-- `standon_band315_unsurebow_pass`: Band #2 case pinned in
-  `standon:unsure_bow`
-- `standon_band315_bow_pass`: Band #2 case pinned in `standon:bow`
-- `standon_band270_unsure_pass`: Band #3 (`270 <= rel_bng <= 315`) case pinned
-  in `standon:unsure`
-- `standon_band270_unsurebow_pass`: Band #3 case pinned in
-  `standon:unsure_bow`
-- `standon_band270_bow_pass`: Band #3 case pinned in `standon:bow`
 - `standon_band350_unsurebow_pass`: Band #1 (`rel_bng > 350`) case pinned in
   `standon:unsure_bow`
 - `standon_band350_unsurebow_alt_pass`: alternate Band #1 geometry that lands
   in the same branch and helps keep this narrow slice from being under-sampled
 - `standon_band350_bow_pass`: Band #1 case pinned in `standon:bow`
 
-Still-planned later expansions:
-- `standon_bowdist_minutil_below_pass`
-- `standon_bowdist_minutil_edge_pass`
-- `standon_bowdist_minutil_above_pass`
-- `standon_bowdist_halfutil_below_pass`
-- `standon_bowdist_halfutil_edge_pass`
-- `standon_bowdist_halfutil_above_pass`
-- `standon_bowdist_maxutil_below_pass`
-- `standon_bowdist_maxutil_edge_pass`
-- `standon_bowdist_maxutil_above_pass`
-- `standon_bearing_350_below_pass`
-- `standon_bearing_350_edge_pass`
-- `standon_bearing_350_above_pass`
-- `standon_bearing_315_below_pass`
-- `standon_bearing_315_edge_pass`
-- `standon_bearing_315_above_pass`
-- `standon_bearing_270_below_pass`
-- `standon_bearing_270_edge_pass`
-- `standon_bearing_270_above_pass`
+Current implemented cases:
+- Band #2 (`315 < rel_bng <= 350`) cases pinned in each submode:
+  - `standon_band315_unsure_pass`
+  - `standon_band315_unsurebow_pass`
+  - `standon_band315_bow_pass`
+- Band #3 (`270 <= rel_bng <= 315`) cases pinned in each submode:
+  - `standon_band270_stern_pass`
+
+Note: earlier drafts of this harness included band270 cases, but they used
+axis-aligned geometries (`crossing_port_standon_unsure_pass`,
+`crossing_port_standon_close_pass`, `crossing_port_standon_far_pass`) that
+were not verified to land in the claimed band. Inspection confirmed they
+produced the same `mmod`, the same patch, and the same `colregs_ix` as the
+`standon_unsurebow_*` family — making them unverified duplicates. They remain
+removed until geometry that genuinely pins each bearing band is calibrated.
+The Band #3 stern case was preserved separately (see section 4).
 
 Expected behavior:
 - first representative progression family:
   - `standon_unsurebow_below_pass` -> `standon:unsure` (`38`)
   - `standon_unsurebow_edge_pass` -> `standon:unsure_bow` (`36`)
   - `standon_unsurebow_above_pass` -> `standon:bow` (`32`)
-- broader later-family coverage still depends on band and crossing distance:
-  - `standon:unsure`
-  - `standon:unsure_bow`
-  - `standon:bow`
-
-Notes:
-- this family is likely larger than the give-way bow family because the source
-  has several bearing bands with different thresholds
-- some planned cases may get culled once the cleanest representative band set
-  is identified
-- the first implemented cut uses existing stable stem geometries and treats the
-  family as an early-phase progression rather than an end-state classification
+- Band #1 cases:
+- `standon_band350_unsurebow_pass` -> `standon:unsure_bow` (`36`)
+- `standon_band350_unsurebow_alt_pass` -> `standon:unsure_bow` (`36`)
+- `standon_band350_bow_pass` -> `standon:bow` (`32`)
+- `standon_band315_unsure_pass` -> `standon:unsure` (`38`)
+- `standon_band315_unsurebow_pass` -> `standon:unsure_bow` (`36`)
+- `standon_band315_bow_pass` -> `standon:bow` (`32`)
 
 Status:
 - first representative `unsure -> unsure_bow -> bow` family implemented
-- additional stand-on band representative cases are now reasonable to carry in
-  `H02` even when they partially overlap the first progression family, because
-  they pin specific source-bearing slices for future work
+- Band #1 family implemented
+- Band #2 family implemented
+- only additional Band #3 bow/unsure/unsure_bow representatives remain removed
+  pending verified geometry
 
 ### 4. Stand-On `unsure` vs `stern` and `unsure_stern`
 
@@ -286,34 +274,41 @@ Purpose:
 - verify the stern-side stand-on branches that are still uncovered in `H01`
 
 Current implemented supported cases:
-- `standon_band315_stern_pass`
 - `standon_band270_stern_pass`
 - `standon_southwest_unsurebow_pass`
 - `standon_southwest_unsure_pass`
 - `standon_southwest_stern_pass`
-- `standon_stern_direct_pass`
 
 Exploratory cases kept off the supported gate:
+- `crossing_port_standon_band270_bow_probe`
+- `crossing_port_standon_band270_mid_probe`
+- `crossing_port_standon_band270_near_probe`
 - turn-driven stem probes:
   - `crossing_port_standon_turn_unsure_stern_below_pass`
   - `crossing_port_standon_turn_unsure_stern_edge_pass`
   - `crossing_port_standon_turn_unsure_stern_above_pass`
 - `standon_band350_unsure_stern_pass`
 
+Still-planned cases:
+- `standon_band315_stern_pass`: Band #2 stern-side reference case — removed
+  pending a geometry that is verified to land in Band #2 (`315 < rel_bng <= 350`)
+  at the time of classification. Earlier drafts used an axis-aligned geometry
+  that was not confirmed to be in that band.
+- `standon_stern_direct_pass`: simple direct stern anchor case — removed because
+  it was using the same mmod as the southwest family without offering distinct
+  coverage. Will be revisited if a genuinely distinct direct-stern geometry is
+  calibrated.
+
 What each supported case means:
-- `standon_band315_stern_pass`: Band #2 stern-side reference case showing that
-  the classifier does cleanly resolve to `standon:stern` once the contact is
-  on the stern side of the bow-stern line in that band
-- `standon_band270_stern_pass`: Band #3 stern-side reference case with the same
-  role for the next source bearing slice
+- `standon_band270_stern_pass`: Band #3 stern-side reference case; the contact
+  approaches from the southwest quadrant and the classifier resolves to
+  `standon:stern` (`30`) within the `270 <= rel_bng <= 315` bearing band
 - `standon_southwest_unsurebow_pass`: custom southwest-track geometry that
   approaches the stern-side transition but still lands in `standon:unsure_bow`
 - `standon_southwest_unsure_pass`: small southwest-track shift that lands in
   `standon:unsure`
 - `standon_southwest_stern_pass`: another small southwest-track shift that
   lands in `standon:stern`
-- `standon_stern_direct_pass`: simple direct stern reference case kept as an
-  easy-to-understand anchor for `standon:stern`
 
 What the unsupported exploratory cases are trying to do:
 - the turn-driven `crossing_port_standon_turn_unsure_stern_*` family is the
@@ -364,26 +359,25 @@ Notes:
 - the best current search direction is turn-driven rather than straight-line:
   the old straight-line Band #1 stern probes repeatedly fell into `headon`,
   `cpa`, or plain `stern` before they could prove the real `34` branch
-- a direct `standon:stern` probe is still worth carrying because it stays an
-  easy-to-understand reference while the threshold family is still being
-  calibrated
+- `standon_band315_stern_pass` and `standon_stern_direct_pass` were both
+  removed from the active harness: the former used an unverified axis-aligned
+  geometry that may not actually land in Band #2, and the latter duplicated
+  coverage already provided by the southwest family without adding a distinct
+  geometry anchor; both are planned for restoration once calibrated alternatives
+  are found
 
 Status:
-- a new supported southwest-track stern-adjacent family now covers the honest
+- the supported southwest-track stern-adjacent family covers the honest
   reachable progression under the stock source:
   - `standon_southwest_unsurebow_pass` -> `standon:unsure_bow` (`36`)
   - `standon_southwest_unsure_pass` -> `standon:unsure` (`38`)
   - `standon_southwest_stern_pass` -> `standon:stern` (`30`)
+- `standon_band270_stern_pass` is the one Band #3 stern reference kept because
+  it uses the same well-understood geometry (`crossing_port_standon_stern_pass`)
+  that H01 already validates
 - the new turn-driven stern probes are the first ones that can hit `34`, but
   they are still calibration-only because repeatability is not yet honest
   enough for the supported H02 gate
-- the old straight-line stern probes have been de-scoped from the active H02
-  harness surface for this checkpoint so the harness only advertises cases that
-  pass
-- the current best stern-side probe remains the dedicated diagonal stem mode
-  `crossing_port_standon_unsure_stern_diag_probe`, but it is still manual-only
-  because it is still useful source-study material alongside the newer
-  turn-driven `34` search
 - the `standon_unsurestern_*` / `standon_band350_unsure_stern_pass` overlays
   remain on disk as exploratory material and regression breadcrumbs for the
   older bad-fit search direction
@@ -551,28 +545,45 @@ because the source switches rule logic at those bearing boundaries.
 ### 5. Stand-On `neither` Transition
 
 Purpose:
-- verify the terminal branch where ownship has crossed to the contact's port
-  side
+- exploratory release-controlled search for the terminal branch where ownship
+  has crossed to the contact's port side
+- keep the release timing honest so the branch is reached as a transition case,
+  not as a static offset trick
+- this family was repeatedly probed and rejected as a supported H02 threshold
+  family; it remains calibration-only
 
-Planned cases:
+Exploratory cases kept off the supported gate:
 - `standon_neither_below_pass`
 - `standon_neither_edge_pass`
 - `standon_neither_above_pass`
 
-Expected behavior:
-- below threshold: prior stand-on submode
-- edge/above threshold: `standon:neither`
+What each exploratory case was trying to mean:
+- `standon_neither_below_pass`: stable stern-side anchor that should remain in
+  `standon:stern` (`30`) under the delayed release
+- `standon_neither_edge_pass`: release-controlled pocket that was intended to
+  land in `standon:neither` (`39`)
+- `standon_neither_above_pass`: earlier-release version of the same pocket
+  that was also intended to land in `standon:neither` (`39`)
 
 Notes:
-- likely requires careful trajectory design rather than only a static offset
+- this family deliberately used delayed release on the shared stem so the
+  transition could settle before the behavior was sampled
+- the search tried multiple pockets and release points, including southwest,
+  turn-driven, and band315 midpoints; none produced a clean, repeatable
+  `standon:neither` gate under hard reruns
+- release points tested during the search included 0, 1, 1.5, 1.75, 1.9, and
+  2 seconds, plus the older 4/8 second variants; no combination was promoted
+- the best stable anchor remained `crossing_port_standon_southwest_stern_pass`
 
 ### 6. In-Extremis Entry
 
 Purpose:
 - verify entry into `standon:inextremis` and `standon_ot:inextremis` when range
   and current CPA collapse together
+- the stock `min_util_cpa_dist` and `max_util_cpa_dist` defaults stay fixed;
+  geometry carries the below/edge/above split
 
-Planned cases:
+Current implemented cases:
 - `standon_inextremis_range_below_pass`
 - `standon_inextremis_range_edge_pass`
 - `standon_inextremis_range_above_pass`
@@ -587,12 +598,44 @@ Planned cases:
 - `standon_ot_inextremis_cpa_above_pass`
 
 Expected behavior:
-- below threshold: non-inextremis stand-on mode
-- edge/above threshold: `standon:inextremis` or `standon_ot:inextremis`
+- standon below threshold: `standon:stern`
+- standon edge/above threshold: `standon:inextremis`
+- standon CPA below threshold: `standon:stern`
+- standon CPA edge/above threshold: `standon:inextremis`
+- standon_ot below threshold: `standon_ot:port`
+- standon_ot edge/above threshold: `standon_ot:inextremis`
 
 Notes:
-- this family is probably more useful than trying to force `inextremis` into
-  `H01`
+- the supported split keeps the stock utility defaults fixed at
+  `min_util_cpa_dist=10` and `max_util_cpa_dist=18`
+- the standon bank uses the turn-driven stern probes:
+  `crossing_port_standon_stern_pass`,
+  `crossing_port_standon_turn_unsure_stern_below_pass`,
+  `crossing_port_standon_turn_unsure_stern_edge_pass`, and
+  `crossing_port_standon_turn_unsure_stern_above_pass`
+- the standon CPA below case anchors on the stable stern seed:
+  `crossing_port_standon_stern_pass`
+- the standon CPA edge/above cases use the dedicated turn-based CPA pocket:
+  `crossing_port_standon_cpa_edge_pass` and
+  `crossing_port_standon_cpa_above_pass`
+- `crossing_port_standon_cpa_wide_pass` remains available as a calibration
+  alias if the wider CPA offset needs to be revisited later
+- the `standon_ot` range bank uses
+  `overtaken_port_standon_range_far_pass`,
+  `overtaken_port_standon_range_edge_pass`, and
+  `overtaken_port_standon_range_close_pass`
+- `overtaken_port_standon_range_edge_pass` is the H02 range-edge pocket;
+  `overtaken_port_standon_range_close_pass` is the above pocket
+- the `standon_ot` CPA bank uses
+  `overtaken_port_standon_cpa_wide_pass`,
+  `overtaken_port_standon_cpa_edge_pass`, and
+  `overtaken_port_standon_cpa_above_pass`
+- the `standon_ot` range and CPA banks are both clean geometry-backed
+  threshold families
+- this family is more useful here than trying to force `inextremis` into `H01`
+
+Status:
+- implemented and passing under serial cold-start validation
 
 ### 7. Overtaking Aft-Sector Entry
 
@@ -624,10 +667,6 @@ Planned harness cases:
 - `standon_band315_unsure_pass`
 - `standon_band315_unsurebow_pass`
 - `standon_band315_bow_pass`
-- `standon_band315_stern_pass`
-- `standon_band270_unsure_pass`
-- `standon_band270_unsurebow_pass`
-- `standon_band270_bow_pass`
 - `standon_band270_stern_pass`
 - `standon_band350_unsurebow_pass`
 - `standon_band350_unsurebow_alt_pass`
@@ -636,9 +675,6 @@ Planned harness cases:
 - `standon_southwest_unsure_pass`
 - `standon_southwest_stern_pass`
 - `standon_stern_direct_pass`
-- `giveway_bowdist_below_pass`
-- `giveway_bowdist_edge_pass`
-- `giveway_bowdist_above_pass`
 
 Expected behavior:
 - upper-bound family:
@@ -672,27 +708,53 @@ Expected behavior:
 
 Notes:
 - this gives `standon_ot` a true boundary suite instead of only H01 canonicals
-- the overtaken port/starboard geometries both sit near the same observed CPA,
-  so the family is parameterized with `max_util_cpa_dist` overlays
-- the H02 checkpoint now treats both the port and mirror families as supported
+- the stock utility defaults stay fixed; the split is carried by geometry only
+- the H02 checkpoint treats both the port and mirror families as supported
   gate cases
-- the behavior overlays for this family use `.xbhv` patch inputs so `nspatch`
-  generates a live `meta_vehicle.bhvx` sidecar before launch
+- the geometry anchors behind this family are the new overtaken-entry pockets:
+  `overtaken_port_standon_gate_below_pass`,
+  `overtaken_port_standon_gate_edge_pass`,
+  `overtaken_port_standon_gate_above_pass`,
+  `overtaken_starboard_standon_gate_below_pass`,
+  `overtaken_starboard_standon_gate_edge_pass`, and
+  `overtaken_starboard_standon_gate_above_pass`
 - current calibrated split:
   - `overtaken_thresh_below_pass` and `overtaken_thresh_below_mirror_pass`
     cleanly remain in `cpa`
   - edge and above cases cleanly enter `standon_ot:port` or
     `standon_ot:starboard`
 
-### 9. Activation and Release Distance Gates
+### 9. Outer Range Gate
 
 Purpose:
-- verify the range gates that turn classification authority on and off
+- verify the stock `pwt_outer_dist` cutoff using geometry only
+- keep the below/edge/above split honest without changing behavior
+  parameters
 
-Planned parameter-driven families:
+Current implemented cases:
 - `outer_dist_below_pass`
 - `outer_dist_edge_pass`
 - `outer_dist_above_pass`
+
+Expected behavior:
+- below and edge: `standon:stern`
+- above: `cpa`
+
+Notes:
+- the geometry anchor is the southwest stern pocket that already sits almost
+  exactly on the 40-unit outer range cutoff
+- the below/edge/above split comes from a 0.5 m translation of that pocket,
+  not from any `BHV_PATCH` or utility-threshold override
+- `outer_dist_edge_pass` is the current southwest stern pocket
+- `outer_dist_above_pass` is the slightly more distant translation that
+  should fall back to `cpa` instead of holding stand-on
+
+### 10. Deferred Activation and Release Gates
+
+Purpose:
+- these remain outside the supported geometry-only H02 pattern
+
+Deferred families:
 - `inner_dist_below_pass`
 - `inner_dist_edge_pass`
 - `inner_dist_above_pass`
@@ -701,21 +763,20 @@ Planned parameter-driven families:
 - `completed_dist_above_pass`
 
 Expected behavior:
-- outside `pwt_outer_dist`: mode should not activate
-- inside `pwt_outer_dist`: expected mode should activate
+- inside `pwt_inner_dist`: expected mode should activate
 - beyond `completed_dist`: contact should release cleanly
 
 Notes:
-- these may be implemented with `.xbhv` overlays rather than pure geometry
-- there is some overlap with `H04`, but `H02` should still own the decision
-  threshold semantics for the stock baseline parameters
+- if any of these ever become supported H02 cases, they must be rewritten as
+  geometry-first families rather than parameter overlays
+- otherwise they belong in a parameter-oriented harness, not H02
 
-### 10. CPA Utility Boundaries
+### 11. Deferred CPA Utility Boundaries
 
 Purpose:
-- verify transitions caused by `min_util_cpa_dist` and `max_util_cpa_dist`
+- these are not part of the supported geometry-only H02 pattern
 
-Planned cases:
+Deferred cases:
 - `cpa_minutil_below_pass`
 - `cpa_minutil_edge_pass`
 - `cpa_minutil_above_pass`
@@ -731,8 +792,9 @@ Expected behavior:
 - no spurious persistence of a prior COLREGS mode once utility is gone
 
 Notes:
-- some of these may end up as small families attached to specific canonical
-  encounters rather than one generic family
+- if a case can be expressed geometrically, it should stay in the geometry
+  pattern instead of becoming a parameter sweep
+- otherwise it belongs outside the supported H02 geometry harness
 
 ## Current Implemented Case List
 
@@ -750,21 +812,35 @@ Implemented and supported families:
 - Give-way bow-distance split:
   `giveway_bowdist_below_pass`, `giveway_bowdist_edge_pass`,
   `giveway_bowdist_above_pass`, and the three mirror variants
+- Give-way turn-gap split:
+  `giveway_turngap_below_pass`, `giveway_turngap_edge_pass`,
+  `giveway_turngap_above_pass`, and the three mirror variants
 - Stand-on representative `unsure -> unsure_bow -> bow` progression:
   `standon_unsurebow_below_pass`, `standon_unsurebow_edge_pass`,
   `standon_unsurebow_above_pass`
-- Stand-on per-band representatives:
-  `standon_band315_unsure_pass`, `standon_band315_unsurebow_pass`,
-  `standon_band315_bow_pass`, `standon_band315_stern_pass`,
-  `standon_band270_unsure_pass`, `standon_band270_unsurebow_pass`,
-  `standon_band270_bow_pass`, `standon_band270_stern_pass`,
+- Stand-on band350 representatives:
   `standon_band350_unsurebow_pass`, `standon_band350_unsurebow_alt_pass`,
   `standon_band350_bow_pass`
+- Stand-on band315 representatives:
+  `standon_band315_unsure_pass`, `standon_band315_unsure_bow_pass`,
+  `standon_band315_bow_pass`
+- Stand-on band270 stern reference:
+  `standon_band270_stern_pass`
 - Stand-on stern-adjacent southwest family:
   `standon_southwest_unsurebow_pass`, `standon_southwest_unsure_pass`,
   `standon_southwest_stern_pass`
-- Direct stern reference:
-  `standon_stern_direct_pass`
+- Outer range gate:
+  `outer_dist_below_pass`, `outer_dist_edge_pass`, `outer_dist_above_pass`
+- In-extremis entry family:
+  `standon_inextremis_range_below_pass`, `standon_inextremis_range_edge_pass`,
+  `standon_inextremis_range_above_pass`, `standon_inextremis_cpa_below_pass`,
+  `standon_inextremis_cpa_edge_pass`, `standon_inextremis_cpa_above_pass`,
+  `standon_ot_inextremis_range_below_pass`,
+  `standon_ot_inextremis_range_edge_pass`,
+  `standon_ot_inextremis_range_above_pass`,
+  `standon_ot_inextremis_cpa_below_pass`,
+  `standon_ot_inextremis_cpa_edge_pass`,
+  `standon_ot_inextremis_cpa_above_pass`
 
 ## Current Assertion Style
 
@@ -787,14 +863,14 @@ Implemented and supported families:
   - the rotated mirror family reuses the same expected split:
   - `20` below and at the current edge
   - `22` above the cutoff
+- give-way turn-gap family expects:
+  - `20` below and at the current edge
+  - `22` above the cutoff
+  - the rotated mirror family reuses the same split
 - stand-on representative additions expect:
   - `standon_band315_unsure_pass` -> `38`
-  - `standon_band315_unsurebow_pass` -> `36`
+  - `standon_band315_unsure_bow_pass` -> `36`
   - `standon_band315_bow_pass` -> `32`
-  - `standon_band315_stern_pass` -> `30`
-  - `standon_band270_unsure_pass` -> `38`
-  - `standon_band270_unsurebow_pass` -> `36`
-  - `standon_band270_bow_pass` -> `32`
   - `standon_band270_stern_pass` -> `30`
   - `standon_band350_unsurebow_pass` -> `36`
   - `standon_band350_unsurebow_alt_pass` -> `36`
@@ -802,7 +878,23 @@ Implemented and supported families:
   - `standon_southwest_unsurebow_pass` -> `36`
   - `standon_southwest_unsure_pass` -> `38`
   - `standon_southwest_stern_pass` -> `30`
-  - `standon_stern_direct_pass` -> `30`
+- outer range gate expects:
+  - `outer_dist_below_pass` -> `30`
+  - `outer_dist_edge_pass` -> `30`
+  - `outer_dist_above_pass` -> `cpa`
+- in-extremis additions expect:
+  - `standon_inextremis_range_below_pass` -> `30`
+  - `standon_inextremis_range_edge_pass` -> `31`
+  - `standon_inextremis_range_above_pass` -> `31`
+  - `standon_inextremis_cpa_below_pass` -> `30`
+  - `standon_inextremis_cpa_edge_pass` -> `31`
+  - `standon_inextremis_cpa_above_pass` -> `31`
+  - `standon_ot_inextremis_range_below_pass` -> `standon_ot:port`
+  - `standon_ot_inextremis_range_edge_pass` -> `standon_ot:inextremis`
+  - `standon_ot_inextremis_range_above_pass` -> `standon_ot:inextremis`
+  - `standon_ot_inextremis_cpa_below_pass` -> `standon_ot:port`
+  - `standon_ot_inextremis_cpa_edge_pass` -> `standon_ot:inextremis`
+  - `standon_ot_inextremis_cpa_above_pass` -> `standon_ot:inextremis`
 
 ## Planned Assertion Style
 
@@ -816,14 +908,12 @@ Implemented and supported families:
 ## Coverage Priorities
 
 Recommended next implementation order:
-1. either stabilize the turn-driven `standon:unsure_stern` probes or keep them
-   explicitly manual-only
-2. add one in-extremis family
-3. add one range-gate family
-4. add one CPA-utility family
+1. keep the supported geometry-first gate stable under both serial and wave-mode runs
+2. only promote a deferred activation/release or CPA-utility family if it can be kept geometry-first and stock-parameter honest
+3. otherwise move effort to `H03`, where the next useful question is maneuver quality after correct classification
 
-This keeps the suite moving from already-scaffolded work toward the largest
-currently uncovered semantic areas.
+This keeps `H02` focused on honest threshold coverage instead of expanding into
+parameter overlays or fragile exploratory pockets.
 
 ## Expected Suite Size
 

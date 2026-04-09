@@ -50,8 +50,12 @@ for ARGI; do
         echo "                       crossing_port_standon_close_unsure_bow_pass"
         echo "                       crossing_port_standon_unsure_pass"
         echo "                       crossing_port_standon_southwest_unsure_bow_pass"
+        echo "                       crossing_port_standon_southwest_neither_pass"
         echo "                       crossing_port_standon_southwest_unsure_pass"
         echo "                       crossing_port_standon_southwest_stern_pass"
+        echo "                       crossing_port_standon_southwest_outer_below_pass"
+        echo "                       crossing_port_standon_southwest_outer_edge_pass"
+        echo "                       crossing_port_standon_southwest_outer_above_pass"
         echo "                       overtaking_starboard_pass"
         echo "                       overtaking_starboard_mirror_pass"
         echo "                       overtaking_starboard_small_gap_pass"
@@ -59,7 +63,19 @@ for ARGI; do
         echo "                       overtaking_starboard_mirror_small_gap_pass"
         echo "                       overtaking_starboard_mirror_large_gap_pass"
         echo "                       overtaken_port_standon_pass"
+        echo "                       overtaken_port_standon_range_far_pass"
+        echo "                       overtaken_port_standon_range_edge_pass"
+        echo "                       overtaken_port_standon_range_close_pass"
+        echo "                       overtaken_port_standon_cpa_wide_pass"
+        echo "                       overtaken_port_standon_cpa_edge_pass"
+        echo "                       overtaken_port_standon_cpa_above_pass"
+        echo "                       overtaken_port_standon_gate_below_pass"
+        echo "                       overtaken_port_standon_gate_edge_pass"
+        echo "                       overtaken_port_standon_gate_above_pass"
         echo "                       overtaken_starboard_standon_pass"
+        echo "                       overtaken_starboard_standon_gate_below_pass"
+        echo "                       overtaken_starboard_standon_gate_edge_pass"
+        echo "                       overtaken_starboard_standon_gate_above_pass"
         echo "                     Thresholds:"
 	        echo "                       head_on_thresh_below_pass"
 	        echo "                       head_on_thresh_edge_pass"
@@ -85,15 +101,18 @@ for ARGI; do
 	        echo "                       giveway_turngap_below_mirror_pass"
 	        echo "                       giveway_turngap_edge_mirror_pass"
 	        echo "                       giveway_turngap_above_mirror_pass"
-	        echo "                     Calibration-only probes:"
-	        echo "                       crossing_port_standon_turn_unsure_stern_below_pass"
-	        echo "                       crossing_port_standon_turn_unsure_stern_edge_pass"
-	        echo "                       crossing_port_standon_turn_unsure_stern_above_pass"
-	        echo "                       crossing_port_standon_speed_unsure_stern_probe"
-	        echo "                       Note: this newer turn-driven family"
-	        echo "                       can hit 34, but it is not stable"
-	        echo "                       enough yet for the supported gate."
-	        echo "                       The new low-speed stern probe can"
+	        echo "                     Calibrated turn probes:"
+        echo "                       crossing_port_standon_turn_unsure_stern_below_pass"
+        echo "                       crossing_port_standon_turn_unsure_stern_edge_pass"
+        echo "                       crossing_port_standon_turn_unsure_stern_above_pass"
+        echo "                       crossing_port_standon_turn_neither_edge_pass"
+        echo "                       crossing_port_standon_turn_neither_above_pass"
+        echo "                       crossing_port_standon_speed_unsure_stern_probe"
+	        echo "                       Note: the turn-unsure-stern probes"
+	        echo "                       remain calibration-only, while the"
+	        echo "                       turn-neither pocket is the shorter"
+	        echo "                       release-controlled family used by H02."
+        echo "                       The new low-speed stern probe can"
 	        echo "                       also hit moving 34, but repeated"
 	        echo "                       cold starts still split across"
 	        echo "                       30 / 34 / 50."
@@ -106,6 +125,9 @@ for ARGI; do
 	        echo "                       crossing_port_standon_band350_unsure_bow_pass"
 	        echo "                       crossing_port_standon_band350_unsure_stern_pass"
 	        echo "                       crossing_port_standon_band350_bow_pass"
+	        echo "                       crossing_port_standon_band315_unsure_pass"
+	        echo "                       crossing_port_standon_band315_unsure_bow_pass"
+	        echo "                       crossing_port_standon_band315_bow_pass"
 	        echo "                     Note:"
 	        echo "                       H02 harness case names such as"
 	        echo "                       standon_band315_* and standon_band270_*"
@@ -412,6 +434,30 @@ case "$MMOD" in
         A_SPD="1.4"
         B_SPD="1.2"
         ;;
+    crossing_port_standon_cpa_wide_pass)
+        A_POS="-30,-90,90"
+        B_POS="-6,-92,244"
+        A_DEST="110,-90"
+        B_DEST="-144.638,-105.484"
+        A_SPD="1.4"
+        B_SPD="1.2"
+        ;;
+    crossing_port_standon_cpa_edge_pass)
+        A_POS="-30,-90,90"
+        B_POS="-6,-88,244"
+        A_DEST="110,-90"
+        B_DEST="-144.638,-105.484"
+        A_SPD="1.4"
+        B_SPD="1.2"
+        ;;
+    crossing_port_standon_cpa_above_pass)
+        A_POS="-30,-90,90"
+        B_POS="-6,-86,244"
+        A_DEST="110,-90"
+        B_DEST="-144.638,-105.484"
+        A_SPD="1.4"
+        B_SPD="1.2"
+        ;;
     crossing_port_standon_unsure_stern_pass)
         A_POS="-35,-80,90"
         B_POS="10,-76,180"
@@ -460,6 +506,30 @@ case "$MMOD" in
         A_SPD="1.4"
         B_SPD="1.3"
         ;;
+    crossing_port_standon_southwest_neither_pass)
+        A_POS="-30,-90,90"
+        B_POS="10,-79,225"
+        A_DEST="250,-90"
+        B_DEST="-89,-178"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_southwest_neither_edge_pass)
+        A_POS="10,-90,90"
+        B_POS="10,-79,225"
+        A_DEST="250,-90"
+        B_DEST="-89,-178"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_southwest_neither_above_pass)
+        A_POS="20,-90,90"
+        B_POS="10,-79,225"
+        A_DEST="250,-90"
+        B_DEST="-89,-178"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
     crossing_port_standon_southwest_unsure_pass)
         A_POS="-30,-90,90"
         B_POS="10,-76,225"
@@ -476,6 +546,30 @@ case "$MMOD" in
         A_SPD="1.4"
         B_SPD="1.3"
         ;;
+    crossing_port_standon_southwest_outer_below_pass)
+        A_POS="-30,-90,90"
+        B_POS="10,-70.5,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-169.5"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_southwest_outer_edge_pass)
+        A_POS="-30,-90,90"
+        B_POS="10,-70,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-169"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_southwest_outer_above_pass)
+        A_POS="-30,-90,90"
+        B_POS="10,-69,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-168"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
     crossing_port_standon_turn_unsure_stern_below_pass)
         A_POS="-30,-90,90"
         B_POS="-6,-86,244"
@@ -486,7 +580,7 @@ case "$MMOD" in
         ;;
     crossing_port_standon_turn_unsure_stern_edge_pass)
         A_POS="-30,-90,90"
-        B_POS="-6,-86,246"
+        B_POS="-6,-87,246"
         A_DEST="110,-90"
         B_DEST="-144.638,-105.484"
         A_SPD="1.4"
@@ -494,9 +588,65 @@ case "$MMOD" in
         ;;
     crossing_port_standon_turn_unsure_stern_above_pass)
         A_POS="-30,-90,90"
-        B_POS="-6,-86,246"
+        B_POS="-6,-87.5,246"
         A_DEST="110,-90"
-        B_DEST="-143.873,-110.311"
+        B_DEST="-144.638,-105.484"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_turn_neither_edge_pass)
+        A_POS="-30,-90,90"
+        B_POS="-6,-92,246"
+        A_DEST="250,-90"
+        B_DEST="-220,-117"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_turn_neither_above_pass)
+        A_POS="-30,-90,90"
+        B_POS="-6,-92.5,246"
+        A_DEST="250,-90"
+        B_DEST="-220,-117"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_turn_neither_portside_pass)
+        A_POS="10,-90,90"
+        B_POS="-6,-92,246"
+        A_DEST="250,-90"
+        B_DEST="-220,-117"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_neither_portside_edge_pass)
+        A_POS="-2,-80,90"
+        B_POS="0,-100,45"
+        A_DEST="250,-80"
+        B_DEST="60,-40"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_neither_portside_above_pass)
+        A_POS="2,-80,90"
+        B_POS="0,-100,45"
+        A_DEST="250,-80"
+        B_DEST="60,-40"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_neither_heading135_edge_pass)
+        A_POS="-1,-90,90"
+        B_POS="0,-80,135"
+        A_DEST="250,-90"
+        B_DEST="60,-120"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_neither_heading135_above_pass)
+        A_POS="0,-90,90"
+        B_POS="0,-80,135"
+        A_DEST="250,-90"
+        B_DEST="60,-120"
         A_SPD="1.4"
         B_SPD="1.3"
         ;;
@@ -537,6 +687,30 @@ case "$MMOD" in
         B_POS="10,-64,180"
         A_DEST="50,-80"
         B_DEST="10,-145"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band315_unsure_pass)
+        A_POS="-30,-90,90"
+        B_POS="0,-82,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-181"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band315_unsure_bow_pass)
+        A_POS="-30,-90,90"
+        B_POS="0,-80,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-179"
+        A_SPD="1.4"
+        B_SPD="1.2"
+        ;;
+    crossing_port_standon_band315_bow_pass)
+        A_POS="-35,-80,90"
+        B_POS="0,-64,180"
+        A_DEST="50,-80"
+        B_DEST="0,-145"
         A_SPD="1.4"
         B_SPD="1.3"
         ;;
@@ -596,6 +770,78 @@ case "$MMOD" in
         A_SPD="1.0"
         B_SPD="1.6"
         ;;
+    overtaken_port_standon_range_far_pass)
+        A_POS="-35,-80,90"
+        B_POS="-105,-76,90"
+        A_DEST="70,-80"
+        B_DEST="70,-76"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_range_edge_pass)
+        A_POS="-35,-80,90"
+        B_POS="-52,-76,90"
+        A_DEST="70,-80"
+        B_DEST="70,-76"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_range_close_pass)
+        A_POS="-35,-80,90"
+        B_POS="-50,-76,90"
+        A_DEST="70,-80"
+        B_DEST="70,-76"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_cpa_wide_pass)
+        A_POS="-35,-80,90"
+        B_POS="-70,-64,90"
+        A_DEST="70,-80"
+        B_DEST="70,-64"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_cpa_edge_pass)
+        A_POS="-35,-80,90"
+        B_POS="-50,-75,90"
+        A_DEST="70,-80"
+        B_DEST="70,-75"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_cpa_above_pass)
+        A_POS="-35,-80,90"
+        B_POS="-50,-76,90"
+        A_DEST="70,-80"
+        B_DEST="70,-76"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_gate_below_pass)
+        A_POS="-35,-80,90"
+        B_POS="-70,-58,90"
+        A_DEST="70,-80"
+        B_DEST="70,-58"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_gate_edge_pass)
+        A_POS="-35,-80,90"
+        B_POS="-70,-62,90"
+        A_DEST="70,-80"
+        B_DEST="70,-62"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_gate_above_pass)
+        A_POS="-35,-80,90"
+        B_POS="-70,-66,90"
+        A_DEST="70,-80"
+        B_DEST="70,-66"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
     overtaken_starboard_standon_pass)
         A_POS="-35,-80,90"
         B_POS="-70,-84,90"
@@ -603,6 +849,54 @@ case "$MMOD" in
         B_DEST="70,-84"
         A_SPD="1.0"
         B_SPD="1.6"
+        ;;
+    overtaken_starboard_standon_gate_below_pass)
+        A_POS="-35,-80,90"
+        B_POS="-70,-102,90"
+        A_DEST="70,-80"
+        B_DEST="70,-102"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_starboard_standon_gate_edge_pass)
+        A_POS="-35,-80,90"
+        B_POS="-70,-96.5,90"
+        A_DEST="70,-80"
+        B_DEST="70,-96.5"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_starboard_standon_gate_above_pass)
+        A_POS="-35,-80,90"
+        B_POS="-70,-94,90"
+        A_DEST="70,-80"
+        B_DEST="70,-94"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    crossing_port_standon_band270_bow_probe)
+        A_POS="-70,-80,90"
+        B_POS="0,120,225"
+        A_DEST="50,-80"
+        B_DEST="-99,21"
+        A_SPD="1.4"
+        B_SPD="1.2"
+        ;;
+    crossing_port_standon_band270_mid_probe)
+        A_POS="-70,-80,90"
+        B_POS="0,60,225"
+        A_DEST="50,-80"
+        B_DEST="-99,-39"
+        A_SPD="1.4"
+        B_SPD="1.2"
+        ;;
+    crossing_port_standon_band270_near_probe)
+        A_POS="-70,-80,90"
+        B_POS="0,30,225"
+        A_DEST="50,-80"
+        B_DEST="-99,-69"
+        A_SPD="1.4"
+        B_SPD="1.2"
         ;;
     *)
         echo "$ME: Unknown mmod: $MMOD. Exit Code 3."

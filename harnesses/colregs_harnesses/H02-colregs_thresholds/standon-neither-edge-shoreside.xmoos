@@ -3,7 +3,8 @@ ProcessConfig = pAutoPoke
   AppTick    = 2
   CommsTick  = 2
 
-  // Hold motion briefly so contact exchange settles before the turn-gap probe.
+  // Hold release briefly so the stand-on transition is sampled after the
+  // contact exchange has settled, but before it collapses into complete.
   flag = DEPLOY_ALL=false
   flag = MOOS_MANUAL_OVERRIDE_ALL=false
   flag = ARRIVED=false
@@ -26,6 +27,8 @@ ProcessConfig = pAutoPoke
   flag = CN_FORE_OF_OS_BEN=0
   flag = CN_PORT_OF_OS__ABE=0
   flag = CN_PORT_OF_OS__BEN=0
+  flag = OS_PORT_OF_CN__ABE=0
+  flag = OS_PORT_OF_CN__BEN=0
   flag = CN_CROSSED_OS_PORT_STAR_ABE=0
   flag = CN_CROSSED_OS_PORT_STAR_BEN=0
   flag = XCN_BOW_DIST_ABE=0
@@ -41,7 +44,7 @@ ProcessConfig = uTimerScript
   AppTick   = 2
   CommsTick = 2
 
-  event = var=DEPLOY_ALL, val=true, time=25
+  event = var=DEPLOY_ALL, val=true, time=0
   event = var=MISSION_TIMEOUT, val=true, time=120
 }
 
@@ -50,10 +53,11 @@ ProcessConfig = pMissionEval
   AppTick    = 4
   CommsTick  = 4
 
-  lead_condition = (COLREGS_AVOID_IX_BEN = 20) or (MISSION_TIMEOUT = true)
+  lead_condition = (COLREGS_AVOID_MODE_BEN = standon:neither) or (MISSION_TIMEOUT = true)
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
-  pass_condition = COLREGS_AVOID_IX_BEN = 20
+  pass_condition = COLREGS_AVOID_MODE_BEN = standon:neither
+  pass_condition = COLREGS_AVOID_IX_BEN = 39
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass
@@ -65,6 +69,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = min_util_cpa=$(MIN_UTIL_CPA)
+  report_column = max_util_cpa=$(MAX_UTIL_CPA)
   report_column = eval=$[TEST_EVAL_READY]
   report_column = arrived=$[ARRIVED]
   report_column = timeout=$[MISSION_TIMEOUT]
@@ -74,9 +79,8 @@ ProcessConfig = pMissionEval
   report_column = colregs_ix=$[COLREGS_AVOID_IX_BEN]
   report_column = colregs_summary=$[COLREGS_SUMMARY_BEN]
   report_column = avdcol_range=$[AVDCOL_RANGE_BEN]
-  report_column = xcn_bow_dist=$[XCN_BOW_DIST_BEN]
-  report_column = xcn_turn_gap=$[XCN_BOW_TURN_GAP_BEN]
   report_column = cn_fore=$[CN_FORE_OF_OS_BEN]
+  report_column = os_port=$[OS_PORT_OF_CN__BEN]
   report_column = cn_crossed=$[CN_CROSSED_OS_PORT_STAR_BEN]
   report_column = near_misses=$[NEAR_MISS_TOTAL]
   report_column = collisions=$[COLLISION_TOTAL]

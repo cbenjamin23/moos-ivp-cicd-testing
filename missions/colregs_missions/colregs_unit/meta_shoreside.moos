@@ -66,6 +66,8 @@ ProcessConfig = pAutoPoke
   flag = CN_FORE_OF_OS_BEN=0
   flag = CN_PORT_OF_OS__ABE=0
   flag = CN_PORT_OF_OS__BEN=0
+  flag = OS_PORT_OF_CN__ABE=0
+  flag = OS_PORT_OF_CN__BEN=0
   flag = CN_CROSSED_OS_PORT_STAR_ABE=0
   flag = CN_CROSSED_OS_PORT_STAR_BEN=0
   flag = XCN_BOW_DIST_ABE=0

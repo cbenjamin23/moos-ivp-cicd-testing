@@ -144,6 +144,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=XCN_BOW_DIST_BEN
   bridge = src=XCN_BOW_TURN_GAP_ABE
   bridge = src=XCN_BOW_TURN_GAP_BEN
+  bridge = src=OS_PORT_OF_CN__ABE
+  bridge = src=OS_PORT_OF_CN__BEN
   bridge = src=COLREGS_CONTACT_HDG_ABE
   bridge = src=COLREGS_CONTACT_HDG_BEN
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT

@@ -13,7 +13,7 @@ ME=`basename "$0"`
 TIME_WARP="10"
 VERBOSE=""
 JUST_MAKE=""
-MAX_TIME="140"
+MAX_TIME="160"
 CASE=""
 GROUP=""
 JOBS="1"
@@ -26,10 +26,11 @@ MISSION_DIR="$REPO_DIR/missions/colregs_missions/colregs_unit"
 ALL_OK="yes"
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
-BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
-BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
+MIN_UTIL_CPA=""
+MAX_UTIL_CPA=""
 RUN_ROOT=""
 CASE_RESULT_DIR=""
+WAVE_SERIAL_CASES="giveway_turngap_edge_pass giveway_turngap_above_pass giveway_turngap_edge_mirror_pass giveway_turngap_above_mirror_pass"
 
 for ARGI; do
     if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
@@ -52,8 +53,10 @@ for ARGI; do
         echo "  overtaking"
         echo "  giveway"
         echo "  standon"
+        echo "  outer_dist"
         echo "  overtaken"
         echo "  overtaken_mirror"
+        echo "  inextremis"
         echo "                     head_on_thresh_below_pass"
         echo "                     head_on_thresh_edge_pass"
         echo "                     head_on_thresh_above_pass"
@@ -81,21 +84,35 @@ for ARGI; do
         echo "                     standon_unsurebow_below_pass"
         echo "                     standon_unsurebow_edge_pass"
         echo "                     standon_unsurebow_above_pass"
-        echo "                     standon_band315_unsure_pass"
-        echo "                     standon_band315_unsurebow_pass"
-        echo "                     standon_band315_bow_pass"
-        echo "                     standon_band315_stern_pass"
-        echo "                     standon_band270_unsure_pass"
-        echo "                     standon_band270_unsurebow_pass"
-        echo "                     standon_band270_bow_pass"
         echo "                     standon_band270_stern_pass"
         echo "                     standon_band350_unsurebow_pass"
         echo "                     standon_band350_unsurebow_alt_pass"
         echo "                     standon_band350_bow_pass"
+        echo "                     standon_band315_unsure_pass"
+        echo "                     standon_band315_unsure_bow_pass"
+        echo "                     standon_band315_bow_pass"
         echo "                     standon_southwest_unsurebow_pass"
         echo "                     standon_southwest_unsure_pass"
         echo "                     standon_southwest_stern_pass"
-        echo "                     standon_stern_direct_pass"
+        echo "                     standon_neither_* (exploratory/manual only)"
+        echo "                     standon_neither_below_pass"
+        echo "                     standon_neither_edge_pass"
+        echo "                     standon_neither_above_pass"
+        echo "                     outer_dist_below_pass"
+        echo "                     outer_dist_edge_pass"
+        echo "                     outer_dist_above_pass"
+        echo "                     standon_inextremis_range_below_pass"
+        echo "                     standon_inextremis_range_edge_pass"
+        echo "                     standon_inextremis_range_above_pass"
+        echo "                     standon_inextremis_cpa_below_pass"
+        echo "                     standon_inextremis_cpa_edge_pass"
+        echo "                     standon_inextremis_cpa_above_pass"
+        echo "                     standon_ot_inextremis_range_below_pass"
+        echo "                     standon_ot_inextremis_range_edge_pass"
+        echo "                     standon_ot_inextremis_range_above_pass"
+        echo "                     standon_ot_inextremis_cpa_below_pass"
+        echo "                     standon_ot_inextremis_cpa_edge_pass"
+        echo "                     standon_ot_inextremis_cpa_above_pass"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
         TIME_WARP=$ARGI
@@ -150,8 +167,141 @@ wait_for_result_line() {
     return 1
 }
 
+wait_for_result_or_exit() {
+    local results_path="$1"
+    local root_pid="$2"
+    local line=""
+
+    while true; do
+        line=$(tail -n 1 "$results_path" 2>/dev/null)
+        if echo "$line" | grep -q 'grade='; then
+            echo "$line"
+            return 0
+        fi
+        if ! kill -0 "$root_pid" >/dev/null 2>&1; then
+            break
+        fi
+        sleep 0.25
+    done
+
+    wait_for_result_line "$results_path" 32
+}
+
+collect_descendant_pids() {
+    local root_pid="$1"
+    local child_pid
+
+    [ "$root_pid" = "" ] && return 0
+    echo "$root_pid"
+    for child_pid in $(pgrep -P "$root_pid" 2>/dev/null); do
+        collect_descendant_pids "$child_pid"
+    done
+}
+
+list_case_runtime_pids() {
+    local port
+    local listener_pid
+    local parent_pid
+
+    for port in "$@"; do
+        for listener_pid in $(lsof -nP -t -iTCP:"$port" -sTCP:LISTEN 2>/dev/null); do
+            echo "$listener_pid"
+            parent_pid=$(ps -o ppid= -p "$listener_pid" 2>/dev/null | tr -d ' ')
+            if [ "$parent_pid" != "" ]; then
+                echo "$parent_pid"
+            fi
+        done
+    done | awk 'NF' | sort -u
+}
+
+list_case_pids() {
+    local root_pid="$1"
+    shift
+
+    {
+        if [ "$root_pid" != "" ] && kill -0 "$root_pid" >/dev/null 2>&1; then
+            collect_descendant_pids "$root_pid"
+        fi
+        list_case_runtime_pids "$@"
+    } | awk 'NF' | sort -u
+}
+
+case_ports_quiet() {
+    local port
+    for port in "$@"; do
+        if lsof -nP -t -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+case_runtime_quiet() {
+    local root_pid="$1"
+    shift
+
+    if [ "$root_pid" != "" ] && kill -0 "$root_pid" >/dev/null 2>&1; then
+        return 1
+    fi
+    case_ports_quiet "$@"
+}
+
+stop_case_runtime() {
+    local root_pid="$1"
+    local attempts="${2:-24}"
+    shift 2
+    local runtime_pids=""
+    local attempt
+
+    runtime_pids=$(list_case_pids "$root_pid" "$@")
+    if [ "$runtime_pids" != "" ]; then
+        kill -INT $runtime_pids >/dev/null 2>&1 || true
+    fi
+
+    for attempt in $(seq 1 "$attempts"); do
+        if case_runtime_quiet "$root_pid" "$@"; then
+            return 0
+        fi
+        sleep 0.25
+    done
+
+    runtime_pids=$(list_case_pids "$root_pid" "$@")
+    if [ "$runtime_pids" != "" ]; then
+        kill -TERM $runtime_pids >/dev/null 2>&1 || true
+    fi
+
+    for attempt in $(seq 1 "$attempts"); do
+        if case_runtime_quiet "$root_pid" "$@"; then
+            return 0
+        fi
+        sleep 0.25
+    done
+
+    runtime_pids=$(list_case_pids "$root_pid" "$@")
+    if [ "$runtime_pids" != "" ]; then
+        kill -KILL $runtime_pids >/dev/null 2>&1 || true
+    fi
+
+    for attempt in $(seq 1 "$attempts"); do
+        if case_runtime_quiet "$root_pid" "$@"; then
+            return 0
+        fi
+        sleep 0.25
+    done
+
+    return 1
+}
+
+case_requires_solo_wave() {
+    local case_name="$1"
+    case " $WAVE_SERIAL_CASES " in
+        *" $case_name "*) return 0 ;;
+    esac
+    return 1
+}
+
 clear_xfiles() {
-    rm -f "$SHORE_XFILE" "$BHV_XFILE"
+    rm -f "$SHORE_XFILE"
 }
 
 cleanup() {
@@ -183,16 +333,14 @@ prepare_case_dir() {
     if [ "$SHORE_PATCH" != "" ]; then
         nspatch --stem="$shore_stem" "$SHORE_PATCH" --targ="$shore_xfile"
     fi
-    if [ "$BHV_PATCH" != "" ]; then
-        nspatch --stem="$bhv_stem" "$BHV_PATCH" --targ="$bhv_xfile"
-    fi
 }
 
 get_case_config() {
     CASE_NAME="$1"
     EXPECTED="pass"
     SHORE_PATCH=""
-    BHV_PATCH=""
+    MIN_UTIL_CPA=""
+    MAX_UTIL_CPA=""
     MMOD="$CASE_NAME"
 
     if [ "$CASE_NAME" = "head_on_thresh_below_pass" ]; then
@@ -221,28 +369,22 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/overtaking-thresh-below-shoreside.xmoos"
     elif [ "$CASE_NAME" = "overtaken_thresh_below_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/overtaken-thresh-cpa-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/overtaken-thresh-low-avdcol.xbhv"
-        MMOD="overtaken_port_standon_pass"
+        MMOD="overtaken_port_standon_gate_below_pass"
     elif [ "$CASE_NAME" = "overtaken_thresh_edge_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/overtaken-thresh-standonot-port-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/overtaken-thresh-edge-avdcol.xbhv"
-        MMOD="overtaken_port_standon_pass"
+        MMOD="overtaken_port_standon_gate_edge_pass"
     elif [ "$CASE_NAME" = "overtaken_thresh_above_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/overtaken-thresh-standonot-port-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/overtaken-thresh-high-avdcol.xbhv"
-        MMOD="overtaken_port_standon_pass"
+        MMOD="overtaken_port_standon_gate_above_pass"
     elif [ "$CASE_NAME" = "overtaken_thresh_below_mirror_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/overtaken-thresh-cpa-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/overtaken-thresh-low-avdcol.xbhv"
-        MMOD="overtaken_starboard_standon_pass"
+        MMOD="overtaken_starboard_standon_gate_below_pass"
     elif [ "$CASE_NAME" = "overtaken_thresh_edge_mirror_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/overtaken-thresh-standonot-starboard-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/overtaken-thresh-edge-avdcol.xbhv"
-        MMOD="overtaken_starboard_standon_pass"
+        MMOD="overtaken_starboard_standon_gate_edge_pass"
     elif [ "$CASE_NAME" = "overtaken_thresh_above_mirror_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/overtaken-thresh-standonot-starboard-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/overtaken-thresh-high-avdcol.xbhv"
-        MMOD="overtaken_starboard_standon_pass"
+        MMOD="overtaken_starboard_standon_gate_above_pass"
     elif [ "$CASE_NAME" = "giveway_bowdist_below_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/giveway-bowdist-stern-shoreside.xmoos"
     elif [ "$CASE_NAME" = "giveway_bowdist_edge_pass" ]; then
@@ -276,27 +418,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "standon_unsurebow_above_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
         MMOD="crossing_port_standon_far_pass"
-    elif [ "$CASE_NAME" = "standon_band315_unsure_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-shoreside.xmoos"
-        MMOD="crossing_port_standon_unsure_pass"
-    elif [ "$CASE_NAME" = "standon_band315_unsurebow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
-        MMOD="crossing_port_standon_close_pass"
-    elif [ "$CASE_NAME" = "standon_band315_bow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
-        MMOD="crossing_port_standon_far_pass"
-    elif [ "$CASE_NAME" = "standon_band315_stern_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-stern-shoreside.xmoos"
-        MMOD="crossing_port_standon_stern_pass"
-    elif [ "$CASE_NAME" = "standon_band270_unsure_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-shoreside.xmoos"
-        MMOD="crossing_port_standon_unsure_pass"
-    elif [ "$CASE_NAME" = "standon_band270_unsurebow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
-        MMOD="crossing_port_standon_close_pass"
-    elif [ "$CASE_NAME" = "standon_band270_bow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
-        MMOD="crossing_port_standon_far_pass"
     elif [ "$CASE_NAME" = "standon_band270_stern_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-stern-shoreside.xmoos"
         MMOD="crossing_port_standon_stern_pass"
@@ -309,6 +430,15 @@ get_case_config() {
     elif [ "$CASE_NAME" = "standon_band350_bow_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
         MMOD="crossing_port_standon_band350_bow_pass"
+    elif [ "$CASE_NAME" = "standon_band315_unsure_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-shoreside.xmoos"
+        MMOD="crossing_port_standon_band315_unsure_pass"
+    elif [ "$CASE_NAME" = "standon_band315_unsure_bow_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
+        MMOD="crossing_port_standon_band315_unsure_bow_pass"
+    elif [ "$CASE_NAME" = "standon_band315_bow_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
+        MMOD="crossing_port_standon_band315_bow_pass"
     elif [ "$CASE_NAME" = "standon_southwest_unsurebow_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
         MMOD="crossing_port_standon_southwest_unsure_bow_pass"
@@ -318,9 +448,60 @@ get_case_config() {
     elif [ "$CASE_NAME" = "standon_southwest_stern_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-stern-shoreside.xmoos"
         MMOD="crossing_port_standon_southwest_stern_pass"
-    elif [ "$CASE_NAME" = "standon_stern_direct_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-stern-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "outer_dist_below_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/outer-dist-below-shoreside.xmoos"
+        MMOD="crossing_port_standon_southwest_outer_below_pass"
+    elif [ "$CASE_NAME" = "outer_dist_edge_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/outer-dist-below-shoreside.xmoos"
+        MMOD="crossing_port_standon_southwest_outer_edge_pass"
+    elif [ "$CASE_NAME" = "outer_dist_above_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/outer-dist-above-shoreside.xmoos"
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+    elif [ "$CASE_NAME" = "standon_neither_below_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-neither-below-shoreside.xmoos"
+        MMOD="crossing_port_standon_southwest_neither_pass"
+    elif [ "$CASE_NAME" = "standon_neither_edge_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-neither-edge-shoreside.xmoos"
+        MMOD="crossing_port_standon_neither_heading135_edge_pass"
+    elif [ "$CASE_NAME" = "standon_neither_above_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-neither-above-shoreside.xmoos"
+        MMOD="crossing_port_standon_neither_heading135_above_pass"
+    elif [ "$CASE_NAME" = "standon_inextremis_range_below_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-below-shoreside.xmoos"
         MMOD="crossing_port_standon_stern_pass"
+    elif [ "$CASE_NAME" = "standon_inextremis_range_edge_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-edge-shoreside.xmoos"
+        MMOD="crossing_port_standon_turn_unsure_stern_edge_pass"
+    elif [ "$CASE_NAME" = "standon_inextremis_range_above_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-edge-shoreside.xmoos"
+        MMOD="crossing_port_standon_turn_unsure_stern_above_pass"
+    elif [ "$CASE_NAME" = "standon_inextremis_cpa_below_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-below-shoreside.xmoos"
+        MMOD="crossing_port_standon_stern_pass"
+    elif [ "$CASE_NAME" = "standon_inextremis_cpa_edge_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-edge-shoreside.xmoos"
+        MMOD="crossing_port_standon_cpa_edge_pass"
+    elif [ "$CASE_NAME" = "standon_inextremis_cpa_above_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-edge-shoreside.xmoos"
+        MMOD="crossing_port_standon_cpa_above_pass"
+    elif [ "$CASE_NAME" = "standon_ot_inextremis_range_below_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-below-shoreside.xmoos"
+        MMOD="overtaken_port_standon_range_far_pass"
+    elif [ "$CASE_NAME" = "standon_ot_inextremis_range_edge_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-edge-shoreside.xmoos"
+        MMOD="overtaken_port_standon_range_edge_pass"
+    elif [ "$CASE_NAME" = "standon_ot_inextremis_range_above_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-edge-shoreside.xmoos"
+        MMOD="overtaken_port_standon_range_close_pass"
+    elif [ "$CASE_NAME" = "standon_ot_inextremis_cpa_below_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-below-shoreside.xmoos"
+        MMOD="overtaken_port_standon_cpa_wide_pass"
+    elif [ "$CASE_NAME" = "standon_ot_inextremis_cpa_edge_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-edge-shoreside.xmoos"
+        MMOD="overtaken_port_standon_cpa_edge_pass"
+    elif [ "$CASE_NAME" = "standon_ot_inextremis_cpa_above_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-edge-shoreside.xmoos"
+        MMOD="overtaken_port_standon_cpa_above_pass"
     else
         echo "$ME: Unknown case [$CASE_NAME]"
         exit 2
@@ -331,19 +512,16 @@ run_case() {
     local case_name="$1"
     local line actual status
     local launch_rc
+    local cleanup_note=""
 
     get_case_config "$case_name"
 
     cd "$MISSION_DIR"
-    ktm >/dev/null 2>&1 || true
     ./clean.sh >/dev/null 2>&1 || true
     clear_xfiles
     nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
-    if [ "$BHV_PATCH" != "" ]; then
-        nspatch --stem="$BHV_STEM" "$BHV_PATCH" --targ="$BHV_XFILE"
-    fi
     : > results.txt
-    xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+    xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
     launch_rc=$?
 
     if [ "$JUST_MAKE" = "yes" ]; then
@@ -369,12 +547,16 @@ run_case() {
         ALL_OK="no"
     fi
 
-    if [ "$launch_rc" != "0" ]; then
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line" >> "$RESULTS_FILE"
-    else
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line" >> "$RESULTS_FILE"
+    if ! stop_case_runtime "" 24 9000 9001 9002 9200 9201 9202; then
+        cleanup_note=" cleanup=failed"
+        ALL_OK="no"
     fi
-    ktm >/dev/null 2>&1 || true
+
+    if [ "$launch_rc" != "0" ]; then
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line$cleanup_note" >> "$RESULTS_FILE"
+    else
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line$cleanup_note" >> "$RESULTS_FILE"
+    fi
     clear_xfiles
     cd "$HARNESS_DIR"
 }
@@ -393,6 +575,7 @@ run_case_isolated() {
     local actual
     local status
     local launch_rc
+    local cleanup_note=""
 
     get_case_config "$case_name"
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
@@ -412,13 +595,13 @@ run_case_isolated() {
     (
         cd "$case_dir"
         : > results.txt
-        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
-        launch_rc=$?
-        echo "$launch_rc" > launch_rc.txt
-    )
-    launch_rc=$(cat "$case_dir/launch_rc.txt" 2>/dev/null || echo "1")
+        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+    ) &
+    runtime_pid=$!
 
     if [ "$JUST_MAKE" = "yes" ]; then
+        wait "$runtime_pid"
+        launch_rc=$?
         if [ "$launch_rc" = "0" ]; then
             echo "case=$case_name  expected=just_make  actual=just_make  status=ok" > "$case_result_file"
             return 0
@@ -427,7 +610,7 @@ run_case_isolated() {
         return 1
     fi
 
-    line=$(wait_for_result_line "$case_dir/results.txt" 32)
+    line=$(wait_for_result_or_exit "$case_dir/results.txt" "$runtime_pid")
     actual=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -442,13 +625,28 @@ run_case_isolated() {
         status="mismatch"
     fi
 
-    if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line" > "$case_result_file"
-    else
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line" > "$case_result_file"
+    forced_stop="no"
+    if kill -0 "$runtime_pid" >/dev/null 2>&1; then
+        forced_stop="yes"
     fi
 
-    [ "$status" = "ok" ]
+    if ! stop_case_runtime "$runtime_pid" 24 "$shore_mport" "$veh_mport" "$((veh_mport+1))" \
+                           "$shore_pshare" "$veh_pshare" "$((veh_pshare+1))"; then
+        cleanup_note=" cleanup=failed"
+    fi
+    wait "$runtime_pid"
+    launch_rc=$?
+    if [ "$forced_stop" = "yes" ] && [ "$actual" != "missing" ]; then
+        launch_rc=0
+    fi
+
+    if [ "$launch_rc" != 0 ]; then
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line$cleanup_note" > "$case_result_file"
+    else
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line$cleanup_note" > "$case_result_file"
+    fi
+
+    [ "$status" = "ok" ] && [ "$cleanup_note" = "" ]
 }
 
 HEADON_CASES="head_on_thresh_below_pass head_on_thresh_edge_pass head_on_thresh_above_pass head_on_thresh_below_mirror_pass head_on_thresh_edge_mirror_pass head_on_thresh_above_mirror_pass"
@@ -457,13 +655,15 @@ OVERTAKEN_CASES="overtaken_thresh_below_pass overtaken_thresh_edge_pass overtake
 OVERTAKEN_MIRROR_CASES="overtaken_thresh_below_mirror_pass overtaken_thresh_edge_mirror_pass overtaken_thresh_above_mirror_pass"
 GIVEWAY_CASES="giveway_bowdist_below_pass giveway_bowdist_edge_pass giveway_bowdist_above_pass giveway_bowdist_below_mirror_pass giveway_bowdist_edge_mirror_pass giveway_bowdist_above_mirror_pass"
 TURNGAP_CASES="giveway_turngap_below_pass giveway_turngap_edge_pass giveway_turngap_above_pass giveway_turngap_below_mirror_pass giveway_turngap_edge_mirror_pass giveway_turngap_above_mirror_pass"
-STANDON_CASES="standon_unsurebow_below_pass standon_unsurebow_edge_pass standon_unsurebow_above_pass standon_band315_unsure_pass standon_band315_unsurebow_pass standon_band315_bow_pass standon_band315_stern_pass standon_band270_unsure_pass standon_band270_unsurebow_pass standon_band270_bow_pass standon_band270_stern_pass standon_band350_unsurebow_pass standon_band350_unsurebow_alt_pass standon_band350_bow_pass standon_southwest_unsurebow_pass standon_southwest_unsure_pass standon_southwest_stern_pass standon_stern_direct_pass"
+STANDON_CASES="standon_unsurebow_below_pass standon_unsurebow_edge_pass standon_unsurebow_above_pass standon_band270_stern_pass standon_band350_unsurebow_pass standon_band350_unsurebow_alt_pass standon_band350_bow_pass standon_band315_unsure_pass standon_band315_unsure_bow_pass standon_band315_bow_pass standon_southwest_unsurebow_pass standon_southwest_unsure_pass standon_southwest_stern_pass"
+OUTER_DIST_CASES="outer_dist_below_pass outer_dist_edge_pass outer_dist_above_pass"
+INEXTREMIS_CASES="standon_inextremis_range_below_pass standon_inextremis_range_edge_pass standon_inextremis_range_above_pass standon_inextremis_cpa_below_pass standon_inextremis_cpa_edge_pass standon_inextremis_cpa_above_pass standon_ot_inextremis_range_below_pass standon_ot_inextremis_range_edge_pass standon_ot_inextremis_range_above_pass standon_ot_inextremis_cpa_below_pass standon_ot_inextremis_cpa_edge_pass standon_ot_inextremis_cpa_above_pass"
 
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
     if [ "$GROUP" = "" ] || [ "$GROUP" = "all" ]; then
-        CASES="$HEADON_CASES $OVERTAKING_CASES $OVERTAKEN_CASES $OVERTAKEN_MIRROR_CASES $GIVEWAY_CASES $TURNGAP_CASES $STANDON_CASES"
+        CASES="$HEADON_CASES $OVERTAKING_CASES $OVERTAKEN_CASES $OVERTAKEN_MIRROR_CASES $GIVEWAY_CASES $TURNGAP_CASES $STANDON_CASES $OUTER_DIST_CASES $INEXTREMIS_CASES"
     elif [ "$GROUP" = "headon" ]; then
         CASES="$HEADON_CASES"
     elif [ "$GROUP" = "overtaking" ]; then
@@ -478,6 +678,10 @@ else
         CASES="$TURNGAP_CASES"
     elif [ "$GROUP" = "standon" ]; then
         CASES="$STANDON_CASES"
+    elif [ "$GROUP" = "outer_dist" ]; then
+        CASES="$OUTER_DIST_CASES"
+    elif [ "$GROUP" = "inextremis" ]; then
+        CASES="$INEXTREMIS_CASES"
     else
         echo "$ME: Unknown group [$GROUP]"
         exit 1
@@ -492,7 +696,6 @@ ktm >/dev/null 2>&1 || true
 if [ "$JOBS" -le 1 ]; then
     for ONE_CASE in $CASES; do
         run_case "$ONE_CASE" || ALL_OK="no"
-        ktm >/dev/null 2>&1 || true
     done
 else
     RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_colregs_thresholds_XXXXXX")
@@ -503,27 +706,39 @@ else
     wave_pids=""
     wave_count=0
     for ONE_CASE in $CASES; do
+        if case_requires_solo_wave "$ONE_CASE"; then
+	            if [ "$wave_pids" != "" ]; then
+	                for pid in $wave_pids; do
+	                    wait "$pid" || ALL_OK="no"
+	                done
+	                wave_pids=""
+	                wave_count=0
+	            fi
+	
+	            run_case_isolated "$case_idx" "$ONE_CASE" || ALL_OK="no"
+	            case_idx=$((case_idx + 1))
+	            continue
+	        fi
+
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
         case_idx=$((case_idx + 1))
 
-        if [ "$wave_count" -ge "$JOBS" ]; then
-            for pid in $wave_pids; do
-                wait "$pid" || ALL_OK="no"
-            done
-            wave_pids=""
-            wave_count=0
-            ktm >/dev/null 2>&1 || true
-        fi
-    done
-
-    if [ "$wave_pids" != "" ]; then
-        for pid in $wave_pids; do
-            wait "$pid" || ALL_OK="no"
-        done
-        ktm >/dev/null 2>&1 || true
-    fi
+	        if [ "$wave_count" -ge "$JOBS" ]; then
+	            for pid in $wave_pids; do
+	                wait "$pid" || ALL_OK="no"
+	            done
+	            wave_pids=""
+	            wave_count=0
+	        fi
+	    done
+	
+	    if [ "$wave_pids" != "" ]; then
+	        for pid in $wave_pids; do
+	            wait "$pid" || ALL_OK="no"
+	        done
+	    fi
 
     for ONE_CASE in $CASES; do
         case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
