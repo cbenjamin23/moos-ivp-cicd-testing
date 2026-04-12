@@ -132,6 +132,9 @@ ProcessConfig = uFldNodeBroker
   bridge = src=COLREGS_AVOID_IX_BEN
   bridge = src=COLREGS_AVOID_PWT_ABE
   bridge = src=COLREGS_AVOID_PWT_BEN
+  bridge = src=PLATEAU_CHECK_OK, alias=PLATEAU_CHECK_OK_$(VNAME)
+  bridge = src=BASIN_CHECK_OK, alias=BASIN_CHECK_OK_$(VNAME)
+  bridge = src=PLATEAU_LOGIC_CASE, alias=PLATEAU_LOGIC_CASE_$(VNAME)
   bridge = src=COLREGS_SUMMARY_ABE
   bridge = src=COLREGS_SUMMARY_BEN
   bridge = src=AVDCOL_RANGE_ABE

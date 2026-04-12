@@ -120,6 +120,14 @@ that posted avoidance weight for parameter families like `pwt_inner_dist` and
 `pwt_grade`, where the source effect is relevance shaping rather than a clean
 mode-entry split.
 
+The stem also now bridges refinery diagnostics per ownship:
+- `PLATEAU_CHECK_OK_<vname>`
+- `BASIN_CHECK_OK_<vname>`
+- `PLATEAU_LOGIC_CASE_<vname>`
+
+H04 uses those bridged variables to make `use_refinery` a real mission-visible
+diagnostic family instead of only a CPA stability check.
+
 Design expectations for this stem:
 - keep the geometry simple and comparable across many overlays
 - support `nspatch`-driven case variation rather than mission forks

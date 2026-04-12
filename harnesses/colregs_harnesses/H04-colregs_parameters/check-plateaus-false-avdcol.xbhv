@@ -14,8 +14,8 @@ Behavior = BHV_AvdColregsV22
 
   exit_on_filter_group = true
 
-  use_refinery = false
-  check_plateaus = true
+  use_refinery = true
+  check_plateaus = false
   giveway_bow_dist = 10
   post_per_contact_info = true
   post_status_info_on_idle = true

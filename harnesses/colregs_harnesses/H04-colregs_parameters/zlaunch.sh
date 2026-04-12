@@ -69,6 +69,10 @@ for ARGI; do
         echo "                     pts_port_turns_ok_false_pass"
         echo "                     turn_radius_default_pass"
         echo "                     turn_radius_high_pass"
+        echo "                     check_plateaus_false_pass"
+        echo "                     check_plateaus_true_pass"
+        echo "                     completed_dist_default_pass"
+        echo "                     completed_dist_high_pass"
         echo "                     refinery_on_pass"
         echo "                     refinery_off_pass"
         exit 0
@@ -260,9 +264,25 @@ get_case_config() {
         MMOD="giveway_turngap_edge_pass"
         SHORE_PATCH="$HARNESS_DIR/turn-radius-high-pass-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/turn-radius-high-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "check_plateaus_false_pass" ]; then
+        MMOD="head_on_cpa_fallback_pass"
+        SHORE_PATCH="$HARNESS_DIR/check-plateaus-false-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/check-plateaus-false-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "check_plateaus_true_pass" ]; then
+        MMOD="head_on_cpa_fallback_pass"
+        SHORE_PATCH="$HARNESS_DIR/check-plateaus-true-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/refinery-on-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "completed_dist_default_pass" ]; then
+        MMOD="head_on_cpa_fallback_pass"
+        SHORE_PATCH="$HARNESS_DIR/completed-dist-default-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "completed_dist_high_pass" ]; then
+        MMOD="head_on_cpa_fallback_pass"
+        SHORE_PATCH="$HARNESS_DIR/completed-dist-high-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/completed-dist-high-avdcol.xbhv"
     elif [ "$CASE_NAME" = "refinery_on_pass" ]; then
         MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/refinery-on-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/refinery-on-avdcol.xbhv"
     elif [ "$CASE_NAME" = "refinery_off_pass" ]; then
         MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/refinery-off-pass-shoreside.xmoos"
@@ -382,7 +402,7 @@ run_case_isolated() {
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="min_util_cpa_low_pass min_util_cpa_default_pass min_util_cpa_high_pass headon_only_false_pass headon_only_true_pass giveway_bow_dist_default_pass giveway_bow_dist_high_pass max_util_cpa_default_pass max_util_cpa_high_pass velocity_filter_off_pass velocity_filter_on_pass eval_tol_default_pass eval_tol_short_pass eval_tol_long_pass pwt_outer_dist_default_pass pwt_outer_dist_high_pass pwt_inner_dist_low_pass pwt_inner_dist_default_pass pwt_inner_dist_high_pass pwt_grade_linear_pass pwt_grade_quasi_pass pwt_grade_quadratic_pass pts_port_turns_ok_true_pass pts_port_turns_ok_false_pass turn_radius_default_pass turn_radius_high_pass refinery_on_pass refinery_off_pass"
+    CASES="min_util_cpa_low_pass min_util_cpa_default_pass min_util_cpa_high_pass headon_only_false_pass headon_only_true_pass giveway_bow_dist_default_pass giveway_bow_dist_high_pass max_util_cpa_default_pass max_util_cpa_high_pass velocity_filter_off_pass velocity_filter_on_pass eval_tol_default_pass eval_tol_short_pass eval_tol_long_pass pwt_outer_dist_default_pass pwt_outer_dist_high_pass pwt_inner_dist_low_pass pwt_inner_dist_default_pass pwt_inner_dist_high_pass pwt_grade_linear_pass pwt_grade_quasi_pass pwt_grade_quadratic_pass pts_port_turns_ok_true_pass pts_port_turns_ok_false_pass turn_radius_default_pass turn_radius_high_pass check_plateaus_false_pass check_plateaus_true_pass completed_dist_default_pass completed_dist_high_pass refinery_on_pass refinery_off_pass"
 fi
 
 : > "$RESULTS_FILE"

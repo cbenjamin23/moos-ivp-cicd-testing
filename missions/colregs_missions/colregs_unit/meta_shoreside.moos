@@ -62,6 +62,12 @@ ProcessConfig = pAutoPoke
   flag = COLREGS_AVOID_IX_BEN=0
   flag = COLREGS_AVOID_PWT_ABE=0
   flag = COLREGS_AVOID_PWT_BEN=0
+  flag = PLATEAU_CHECK_OK_abe=false
+  flag = PLATEAU_CHECK_OK_ben=false
+  flag = BASIN_CHECK_OK_abe=false
+  flag = BASIN_CHECK_OK_ben=false
+  flag = PLATEAU_LOGIC_CASE_abe=none
+  flag = PLATEAU_LOGIC_CASE_ben=none
   flag = COLREGS_SUMMARY_ABE=mode=none:none
   flag = COLREGS_SUMMARY_BEN=mode=none:none
   flag = CN_FORE_OF_OS_ABE=0

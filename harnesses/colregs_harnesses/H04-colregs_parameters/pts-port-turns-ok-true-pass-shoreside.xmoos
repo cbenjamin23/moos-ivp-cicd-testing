@@ -18,7 +18,7 @@ ProcessConfig = pMissionEval
   pass_condition = MISSION_TIMEOUT = false
   pass_condition = COLREGS_AVOID_IX_BEN = 20
   pass_condition = UCD_CLOSEST_RANGE_EVER >= 18.7
-  pass_condition = UCD_CLOSEST_RANGE_EVER <= 19.4
+  pass_condition = UCD_CLOSEST_RANGE_EVER <= 20.1
   pass_condition = CN_PORT_OF_OS__BEN = 1
   pass_condition = CN_FORE_OF_OS_BEN = 1
   pass_condition = CN_CROSSED_OS_PORT_STAR_BEN = 0

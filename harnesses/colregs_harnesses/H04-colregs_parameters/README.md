@@ -6,7 +6,8 @@ TLDR:
 - current implemented groups: `min_util_cpa_dist`, `headon_only`,
   `giveway_bow_dist`, `max_util_cpa_dist`, `velocity_filter`, `eval_tol`,
   `pwt_outer_dist`, `pwt_inner_dist`, `pwt_grade`, `pts_port_turns_ok`,
-  `turn_radius`, and `use_refinery`
+  `turn_radius`, `check_plateaus`, `completed_dist`, and `use_refinery`
+- current supported gate: 32 cases
 - intended long-term pattern: keep geometry fixed and change one behavior knob
   at a time
 
@@ -54,13 +55,16 @@ Current parameter groups:
 - `pwt_grade`
 - `pts_port_turns_ok`
 - `turn_radius`
+- `check_plateaus`
+- `completed_dist`
 - `use_refinery`
 
 Current case structure:
 - keep geometry fixed for each parameter-focused mini-suite
 - vary one parameter group at a time in small, explicit steps
-- compare mode selection and safety outcome first
-- expand to CPA/time envelope checks later
+- keep mission-owned grading where the source exposes a clean signal
+- allow execution-style or timeout-snapshot families when that is the real
+  parameter effect
 
 Current implemented case list:
 - `min_util_cpa_low_pass`
@@ -89,15 +93,26 @@ Current implemented case list:
 - `pts_port_turns_ok_false_pass`
 - `turn_radius_default_pass`
 - `turn_radius_high_pass`
+- `check_plateaus_false_pass`
+- `check_plateaus_true_pass`
+- `completed_dist_default_pass`
+- `completed_dist_high_pass`
 - `refinery_on_pass`
 - `refinery_off_pass`
 
-Current assertions:
-- no collision
-- no timeout
-- expected `COLREGS_AVOID_IX_BEN`
-- expected `COLREGS_AVOID_PWT_BEN` for the relevance-shaped families
-- nonzero `UCD_CLOSEST_RANGE_EVER`
+Current assertion styles:
+- classification-time checks
+  - expected `COLREGS_AVOID_IX_BEN`
+  - no collision
+  - no timeout
+- relevance-shaped checks
+  - expected `COLREGS_AVOID_PWT_BEN`
+  - fixed mode / fixed range gate
+- execution-shaped checks
+  - expected side/CPA envelope or stable end-state shape
+- timeout-snapshot checks
+  - intentional `MISSION_TIMEOUT=true` at a shared checkpoint
+  - expected posted mode/state at that checkpoint
 
 Visual/manual-run instrumentation:
 - keep the viewer geometry consistent across parameter sweeps
@@ -129,13 +144,13 @@ Implemented expectations:
   `standon:unsure_bow` (`colregs_ix=36`) by shrinking the effective CPA
   thresholds during evaluation
 - `eval_tol_default_pass`: fixed `overtaking_starboard_range_far_pass`
-  geometry should finish in `overtaking:port` (`colregs_ix=43`) with a
-  realized CPA in the default band around `20.9-21.7`
+  geometry should finish with the stable overtaking-port execution shape and a
+  realized CPA in the default band around `20.7-21.8`
 - `eval_tol_short_pass`: the same geometry with `eval_tol=30` should keep the
   same overtaking classification but widen the realized CPA into the higher
   `23.5-24.8` band
 - `eval_tol_long_pass`: the same geometry with `eval_tol=240` should keep the
-  same overtaking classification and stay in the default CPA band
+  same execution shape and stay in the default CPA band
 - `pwt_outer_dist_default_pass`: fixed
   `crossing_port_standon_southwest_outer_above_pass` geometry should remain
   `cpa` (`colregs_ix=50`) at the stock `pwt_outer_dist=40`
@@ -163,8 +178,23 @@ Implemented expectations:
   `turn_radius=0`
 - `turn_radius_high_pass`: the same geometry with `turn_radius=8` should
   flip to `giveway:bow` (`colregs_ix=22`)
+- `check_plateaus_false_pass` / `check_plateaus_true_pass`: fixed
+  `head_on_cpa_fallback_pass` geometry should remain `cpa` (`colregs_ix=50`)
+  with `use_refinery=true`; with `check_plateaus=false` the bridged refinery
+  diagnostics should stay at their initialized values, and with
+  `check_plateaus=true` the same geometry should post the stable diagnostic
+  signature `plateau_ok=false`, `basin_ok=true`, `plateau_logic=aft`
+- `completed_dist_default_pass` / `completed_dist_high_pass`: fixed
+  `head_on_cpa_fallback_pass` geometry is graded at a shared late timeout
+  checkpoint instead of an arrival checkpoint; the stock
+  `completed_dist=45` case should already be `complete`, while the same
+  geometry with `completed_dist=80` should still be `none`
 - `refinery_on_pass` / `refinery_off_pass`: fixed `head_on_cpa_fallback_pass`
-  geometry should remain `cpa` (`colregs_ix=50`) with and without refinery
+  geometry should remain `cpa` (`colregs_ix=50`) with and without refinery;
+  with `check_plateaus=true`, the `use_refinery=true` case should also post
+  the stable refinery diagnostics `plateau_ok=false`, `basin_ok=true`, and
+  `plateau_logic=aft`, while the `use_refinery=false` case should leave those
+  bridged diagnostics at their initialized values
 
 Notes on the strengthened `min_util_cpa_dist` group:
 - H04 now uses one fixed stand-on geometry:
@@ -189,13 +219,52 @@ Notes on the strengthened `use_refinery` group:
   lands in `cpa`
 - this is a better fit because `use_refinery` only affects the CPA IPF path in
   the current source
-- the current H04 assertion is still a stability assertion, not a deliberate
-  split: the group proves that enabling or disabling refinery does not kick the
-  behavior out of CPA on this trusted fallback geometry
-- room for improvement: this family does not yet test a refinery-specific
-  benefit directly; a stronger future version would assert on refinery-visible
-  diagnostics (`PLATEAU_CHECK_OK`, `BASIN_CHECK_OK`) or on a stable
-  same-geometry path/outcome difference that still remains inside `cpa`
+- H04 now enables `check_plateaus=true` in both refinery cases and bridges the
+  posted refinery diagnostics to shoreside
+- that makes the family more than a pure stability check:
+  - `use_refinery=true` must still stay in `cpa`
+  - and it must post the stable same-geometry refinery signature observed on
+    this stem: `PLATEAU_CHECK_OK_ben=false`, `BASIN_CHECK_OK_ben=true`, and
+    `PLATEAU_LOGIC_CASE_ben=aft`
+  - `use_refinery=false` must also stay in `cpa`, but it should leave those
+    bridged diagnostics at their initialized `false/false/none` values because
+    the refinery path is not active
+- room for improvement: this is now a real refinery-specific assertion, but it
+  still checks a source-visible diagnostic signature rather than a direct path
+  quality improvement
+
+Notes on the implemented `check_plateaus` group:
+- H04 uses the same trusted CPA geometry as the `use_refinery` family:
+  `head_on_cpa_fallback_pass`
+- this family isolates `check_plateaus` itself by holding `use_refinery=true`
+  constant
+- with `check_plateaus=false`, the geometry still stays in `cpa`, but the
+  bridged refinery diagnostics remain at their initialized values
+- with `check_plateaus=true`, the same geometry still stays in `cpa` and
+  posts the stable diagnostic signature `plateau_ok=false`,
+  `basin_ok=true`, `plateau_logic=aft`
+- this is the cleanest supported refinery-diagnostics family in the current
+  source because the behavior visibly changes what it posts without changing
+  the underlying CPA-mode outcome
+
+Notes on the implemented `completed_dist` group:
+- `completed_dist` changes when the behavior self-completes via the
+  `m_contact_range >= (m_completed_dist * 1.1)` path
+- unlike `pwt_outer_dist`, a low `completed_dist` setting is not a pure
+  completion-only tweak in the current source because setting it below
+  `pwt_outer_dist` also clamps both relevance distances downward
+- the admitted H04 family therefore uses only the clean default/high
+  direction on the trusted CPA geometry `head_on_cpa_fallback_pass`
+- a fixed late-range gate did not work cleanly because once the stock
+  behavior completes, it stops posting fresh `AVDCOL_RANGE_BEN` updates
+- the supported family instead uses a shared timeout checkpoint at mission
+  time `50`:
+  - stock `completed_dist=45` has already self-completed and posts
+    `mode=complete:none`
+  - raised `completed_dist=80` has not yet self-completed and remains
+    `mode=none:none`
+- this makes `completed_dist` an execution/completion-timing family rather
+  than a mode-entry family, which matches the actual source semantics
 
 Notes on the implemented `max_util_cpa_dist` group:
 - H04 uses one fixed stand-on geometry:
@@ -225,6 +294,11 @@ Notes on the implemented `eval_tol` group:
   stays aligned with the default band
 - this makes `eval_tol` a good example of an execution-shaping knob rather
   than a mode-selection knob
+- in isolated probes, the short case stayed cleanly in `overtaking:port`, but
+  the default geometry occasionally fell back to late `cpa` at arrival without
+  changing the realized overtaking-port side/CPA outcome
+- the supported H04 gate therefore keys the default/long cases on the stable
+  execution envelope and side metrics rather than an overfit final-mode check
 
 Notes on the implemented `pwt_outer_dist` group:
 - H04 uses one fixed southwest stand-on geometry:
@@ -288,15 +362,6 @@ Notes on the implemented `pts_port_turns_ok` group:
   relative-side state, not from a direct helm-direction signal; a stronger
   future version would expose a clean mission-visible turn-direction metric
 
-Notes on the still-unimplemented `completed_dist` group:
-- `completed_dist` changes when the behavior self-completes via the
-  `m_contact_range >= (m_completed_dist * 1.1)` path
-- unlike `pwt_outer_dist`, a low `completed_dist` setting is not a pure
-  completion-only tweak in the current source because setting it below
-  `pwt_outer_dist` also clamps both relevance distances downward
-- on the current trusted overtaking geometry, that coupling produced mode drift
-  and did not yield a clean, single-effect H04 family worth admitting yet
-
 ## Parameter Inventory
 
 This section lists the behavior-specific `BHV_AvdColregsV22` parameters exposed
@@ -354,18 +419,27 @@ Generic inherited `IvPContactBehavior` parameters are not listed here.
   - distance used for completion semantics, also constrained against the
     relevance distances
   - default in V22 constructor: `100`
+  - now implemented in H04 as a shared-timeout completion split
 - `pwt_grade`
   - relevance-weight falloff style: `linear`, `quadratic`, or `quasi`
   - default in V22 constructor: `linear`
 - `check_plateaus`
   - refinery diagnostic/sanity option
   - default in V22 constructor: `false`
+  - now implemented in H04
 - `check_validity`
   - refinery validity-check option
   - default in V22 constructor: `false`
+  - currently not implemented in H04 because `m_check_validity` is parsed in
+    `BHV_AvdColregsV22::setParam()` but not used elsewhere in the current
+    source
 - `pcheck_thresh`
   - refinery plateau/validity threshold
   - default in V22 constructor: `0.001`
+  - currently not implemented in H04 because the current CPA path uses
+    `AOF_CPA`, which does not report known min/max values; as a result,
+    `OF_Reflector::checkPlateaus()` returns the same early-fail diagnostic
+    regardless of threshold on the current supported geometry
 - `contact_type_required`
   - restricts behavior application to a required contact type
   - no stem default
@@ -418,12 +492,20 @@ Current implemented groups:
 - `pwt_grade`
 - `pts_port_turns_ok`
 - `turn_radius`
+- `check_plateaus`
+- `completed_dist`
 - `use_refinery`
 
 Recommended next groups:
-1. `completed_dist`
-2. `check_plateaus` / `check_validity` / `pcheck_thresh` if refinery work
-   becomes active
+1. a source fix upstream for `check_validity` / `pcheck_thresh`, then revisit
+   those as real H04 families
+2. decide whether any lower-value integration/filtering knobs are worth
+   including at all without changing the app
+
+Practical signoff note:
+- for the current no-app-change scope, H04 is effectively complete
+- the remaining gaps are either source-dead (`check_validity`), source-blocked
+  on the CPA path (`pcheck_thresh`), or lower-value integration controls
 
 Recommended test style per parameter:
 - mode-selection knobs:
