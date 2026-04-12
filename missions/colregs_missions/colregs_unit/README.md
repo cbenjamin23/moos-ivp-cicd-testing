@@ -152,6 +152,7 @@ Implemented manual `--mmod` values:
 - `crossing_port_standon_unsure_bow_pass`
 - `crossing_port_standon_stern_pass`
 - `crossing_port_standon_far_pass`
+- `crossing_port_standon_exec_far_pass`
 - `crossing_port_standon_far_unsure_bow_pass`
 - `crossing_port_standon_close_pass`
 - `crossing_port_standon_close_unsure_bow_pass`
@@ -164,12 +165,19 @@ Implemented manual `--mmod` values:
 - `crossing_port_standon_turn_unsure_stern_above_pass`
 - `crossing_port_standon_unsure_stern_diag_probe`
 - `overtaking_starboard_pass`
+- `overtaking_starboard_range_far_pass`
+- `overtaking_starboard_range_far_small_gap_pass`
+- `overtaking_starboard_range_far_large_gap_pass`
 - `overtaking_starboard_small_gap_pass`
 - `overtaking_starboard_large_gap_pass`
 - `overtaking_starboard_mirror_pass`
+- `overtaking_starboard_mirror_range_far_pass`
+- `overtaking_starboard_mirror_range_far_small_gap_pass`
+- `overtaking_starboard_mirror_range_far_large_gap_pass`
 - `overtaking_starboard_mirror_small_gap_pass`
 - `overtaking_starboard_mirror_large_gap_pass`
 - `overtaken_port_standon_pass`
+- `overtaken_port_standon_midrange_pass`
 - `overtaken_port_standon_range_far_pass`
 - `overtaken_port_standon_range_edge_pass`
 - `overtaken_port_standon_range_close_pass`
@@ -189,6 +197,8 @@ Implemented manual `--mmod` values:
 - `crossing_port_standon_band270_mid_probe`
 - `crossing_port_standon_band270_near_probe`
 - `overtaken_starboard_standon_pass`
+- `overtaken_starboard_standon_midrange_pass`
+- `overtaken_starboard_standon_range_far_pass`
 - `overtaken_starboard_standon_gate_below_pass`
 - `overtaken_starboard_standon_gate_edge_pass`
 - `overtaken_starboard_standon_gate_above_pass`
@@ -198,6 +208,21 @@ Notes:
   `giveway:stern`, `standon:bow`, `standon:stern`,
   `standon:unsure_bow`, `standon:unsure`, `standon_ot` on both passing
   sides, and overtaking on both passing sides
+- some overtaking/overtaken canonicals are intentionally compact and therefore
+  already largely side-resolved at mission start; if a harness needs stronger
+  pass-side evidence, prefer a longer-range stem geometry such as
+  `crossing_port_standon_exec_far_pass`,
+  `overtaking_starboard_range_far_pass`,
+  `overtaking_starboard_range_far_small_gap_pass`,
+  `overtaking_starboard_range_far_large_gap_pass`,
+  `overtaking_starboard_mirror_range_far_pass`,
+  `overtaking_starboard_mirror_range_far_small_gap_pass`,
+  `overtaking_starboard_mirror_range_far_large_gap_pass`,
+  `overtaken_port_standon_midrange_pass`, or
+  `overtaken_starboard_standon_midrange_pass`
+- `crossing_port_standon_exec_far_pass` is an H03-oriented longer-range
+  stand-on sibling kept because the exact H01 far canonical was not
+  completion-stable enough for the current execution harness
 - `crossing_starboard_giveway_bow_pass` remains useful as a manual/source
   probe, but it has not yet proven stable enough to stay in the default H01
   pass set under repeated serial runs

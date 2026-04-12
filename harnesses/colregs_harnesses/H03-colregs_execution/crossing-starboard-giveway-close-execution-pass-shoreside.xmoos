@@ -17,16 +17,17 @@ ProcessConfig = pMissionEval
   pass_condition = ARRIVED_ben = true
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
-  pass_condition = UCD_CLOSEST_RANGE_EVER >= 17
-  pass_condition = UCD_CLOSEST_RANGE_EVER <= 21
-  pass_condition = CN_PORT_OF_OS__BEN = 0
+  pass_condition = UCD_CLOSEST_RANGE_EVER >= 18
+  pass_condition = UCD_CLOSEST_RANGE_EVER <= 24
+  pass_condition = CN_PORT_OF_OS__BEN = 1
+  pass_condition = CN_FORE_OF_OS_BEN = 0
   pass_condition = CN_CROSSED_OS_PORT_STAR_BEN = 0
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass
   fail_flag     = SAY_MOOS = fail
   mission_form  = colregs_execution
-  mission_mod   = $(MMOD:=overtaking_starboard_pass)
+  mission_mod   = $(MMOD:=crossing_starboard_giveway_close_pass)
 
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]

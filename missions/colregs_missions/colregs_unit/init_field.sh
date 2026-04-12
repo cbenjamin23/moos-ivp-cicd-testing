@@ -45,6 +45,7 @@ for ARGI; do
         echo "                       crossing_port_standon_unsure_bow_pass"
         echo "                       crossing_port_standon_stern_pass"
         echo "                       crossing_port_standon_far_pass"
+        echo "                       crossing_port_standon_exec_far_pass"
         echo "                       crossing_port_standon_far_unsure_bow_pass"
         echo "                       crossing_port_standon_close_pass"
         echo "                       crossing_port_standon_close_unsure_bow_pass"
@@ -57,12 +58,19 @@ for ARGI; do
         echo "                       crossing_port_standon_southwest_outer_edge_pass"
         echo "                       crossing_port_standon_southwest_outer_above_pass"
         echo "                       overtaking_starboard_pass"
+        echo "                       overtaking_starboard_range_far_pass"
+        echo "                       overtaking_starboard_range_far_small_gap_pass"
+        echo "                       overtaking_starboard_range_far_large_gap_pass"
         echo "                       overtaking_starboard_mirror_pass"
+        echo "                       overtaking_starboard_mirror_range_far_pass"
+        echo "                       overtaking_starboard_mirror_range_far_small_gap_pass"
+        echo "                       overtaking_starboard_mirror_range_far_large_gap_pass"
         echo "                       overtaking_starboard_small_gap_pass"
         echo "                       overtaking_starboard_large_gap_pass"
         echo "                       overtaking_starboard_mirror_small_gap_pass"
         echo "                       overtaking_starboard_mirror_large_gap_pass"
         echo "                       overtaken_port_standon_pass"
+        echo "                       overtaken_port_standon_midrange_pass"
         echo "                       overtaken_port_standon_range_far_pass"
         echo "                       overtaken_port_standon_range_edge_pass"
         echo "                       overtaken_port_standon_range_close_pass"
@@ -73,6 +81,8 @@ for ARGI; do
         echo "                       overtaken_port_standon_gate_edge_pass"
         echo "                       overtaken_port_standon_gate_above_pass"
         echo "                       overtaken_starboard_standon_pass"
+        echo "                       overtaken_starboard_standon_midrange_pass"
+        echo "                       overtaken_starboard_standon_range_far_pass"
         echo "                       overtaken_starboard_standon_gate_below_pass"
         echo "                       overtaken_starboard_standon_gate_edge_pass"
         echo "                       overtaken_starboard_standon_gate_above_pass"
@@ -482,6 +492,14 @@ case "$MMOD" in
         A_SPD="1.4"
         B_SPD="1.3"
         ;;
+    crossing_port_standon_exec_far_pass)
+        A_POS="-76,-80,90"
+        B_POS="10,-12,180"
+        A_DEST="45,-80"
+        B_DEST="10,-138"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
     crossing_port_standon_close_pass|crossing_port_standon_close_unsure_bow_pass)
         A_POS="-60,-80,90"
         B_POS="10,-30,180"
@@ -722,10 +740,58 @@ case "$MMOD" in
         A_SPD="1.6"
         B_SPD="1.0"
         ;;
+    overtaking_starboard_range_far_pass)
+        A_POS="-105,-80,90"
+        B_POS="-35,-84,90"
+        A_DEST="60,-80"
+        B_DEST="60,-84"
+        A_SPD="1.6"
+        B_SPD="1.0"
+        ;;
+    overtaking_starboard_range_far_small_gap_pass)
+        A_POS="-105,-80,90"
+        B_POS="-35,-82,90"
+        A_DEST="60,-80"
+        B_DEST="60,-82"
+        A_SPD="1.6"
+        B_SPD="1.0"
+        ;;
+    overtaking_starboard_range_far_large_gap_pass)
+        A_POS="-105,-80,90"
+        B_POS="-35,-96,90"
+        A_DEST="60,-80"
+        B_DEST="60,-96"
+        A_SPD="1.6"
+        B_SPD="1.0"
+        ;;
     overtaking_starboard_mirror_pass)
         A_POS="-90,-84,90"
         B_POS="-35,-80,90"
         A_DEST="60,-84"
+        B_DEST="60,-80"
+        A_SPD="1.6"
+        B_SPD="1.0"
+        ;;
+    overtaking_starboard_mirror_range_far_pass)
+        A_POS="-105,-84,90"
+        B_POS="-35,-80,90"
+        A_DEST="60,-84"
+        B_DEST="60,-80"
+        A_SPD="1.6"
+        B_SPD="1.0"
+        ;;
+    overtaking_starboard_mirror_range_far_small_gap_pass)
+        A_POS="-105,-81,90"
+        B_POS="-35,-80,90"
+        A_DEST="60,-81"
+        B_DEST="60,-80"
+        A_SPD="1.6"
+        B_SPD="1.0"
+        ;;
+    overtaking_starboard_mirror_range_far_large_gap_pass)
+        A_POS="-105,-88,90"
+        B_POS="-35,-80,90"
+        A_DEST="60,-88"
         B_DEST="60,-80"
         A_SPD="1.6"
         B_SPD="1.0"
@@ -767,6 +833,14 @@ case "$MMOD" in
         B_POS="-70,-76,90"
         A_DEST="70,-80"
         B_DEST="70,-76"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_port_standon_midrange_pass)
+        A_POS="-35,-80,90"
+        B_POS="-75,-76,90"
+        A_DEST="50,-80"
+        B_DEST="50,-76"
         A_SPD="1.0"
         B_SPD="1.6"
         ;;
@@ -845,6 +919,22 @@ case "$MMOD" in
     overtaken_starboard_standon_pass)
         A_POS="-35,-80,90"
         B_POS="-70,-84,90"
+        A_DEST="70,-80"
+        B_DEST="70,-84"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_starboard_standon_midrange_pass)
+        A_POS="-35,-80,90"
+        B_POS="-85,-85,90"
+        A_DEST="50,-80"
+        B_DEST="54,-85"
+        A_SPD="1.0"
+        B_SPD="1.6"
+        ;;
+    overtaken_starboard_standon_range_far_pass)
+        A_POS="-35,-80,90"
+        B_POS="-105,-84,90"
         A_DEST="70,-80"
         B_DEST="70,-84"
         A_SPD="1.0"

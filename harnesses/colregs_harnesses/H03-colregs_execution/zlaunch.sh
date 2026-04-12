@@ -42,9 +42,29 @@ for ARGI; do
         echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "                     head_on_execution_pass"
+        echo "                     head_on_cpa_fallback_execution_pass"
+        echo "                     head_on_port_offset_execution_pass"
+        echo "                     head_on_starboard_offset_execution_pass"
         echo "                     crossing_starboard_giveway_execution_pass"
+        echo "                     crossing_starboard_giveway_far_execution_pass"
+        echo "                     crossing_starboard_giveway_close_execution_pass"
         echo "                     crossing_port_standon_execution_pass"
+        echo "                     crossing_port_standon_unsure_bow_execution_pass"
+        echo "                     crossing_port_standon_stern_execution_pass"
+        echo "                     crossing_port_standon_far_execution_pass"
+        echo "                     crossing_port_standon_close_execution_pass"
+        echo "                     crossing_port_standon_close_unsure_bow_execution_pass"
+        echo "                     crossing_port_standon_unsure_execution_pass"
         echo "                     overtaking_starboard_execution_pass"
+        echo "                     overtaking_starboard_range_far_execution_pass"
+        echo "                     overtaking_starboard_small_gap_execution_pass"
+        echo "                     overtaking_starboard_mirror_execution_pass"
+        echo "                     overtaking_starboard_mirror_range_far_execution_pass"
+        echo "                     overtaking_starboard_mirror_small_gap_execution_pass"
+        echo "                     overtaking_starboard_mirror_large_gap_execution_pass"
+        echo "                     overtaken_port_standon_execution_pass"
+        echo "                     overtaken_port_standon_midrange_execution_pass"
+        echo "                     overtaken_starboard_standon_midrange_execution_pass"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
         TIME_WARP=$ARGI
@@ -100,51 +120,11 @@ wait_for_result_line() {
 extract_field() {
     local line="$1"
     local key="$2"
-    echo "$line" | sed -n "s/.*${key}=\\([^ ]*\\).*/\\1/p"
-}
-
-float_lt() {
-    awk -v a="$1" -v b="$2" 'BEGIN { exit !(a < b) }'
+    echo "$line" | sed -n "s/.*$key=\\([^ ]*\\).*/\\1/p"
 }
 
 float_gt() {
     awk -v a="$1" -v b="$2" 'BEGIN { exit !(a > b) }'
-}
-
-validate_execution_line() {
-    local line="$1"
-    local closest
-    local cn_port
-    local wall_time
-    local notes=""
-
-    closest=$(extract_field "$line" "closest_range_ever")
-    cn_port=$(extract_field "$line" "cn_port")
-    wall_time=$(extract_field "$line" "wall_time")
-
-    if [ "$closest" = "" ] || [ "$cn_port" = "" ] || [ "$wall_time" = "" ]; then
-        echo "error|missing_metrics"
-        return 0
-    fi
-
-    if float_lt "$closest" "$MIN_CPA"; then
-        notes="${notes}cpa_low,"
-    fi
-    if float_gt "$closest" "$MAX_CPA"; then
-        notes="${notes}cpa_high,"
-    fi
-    if [ "$cn_port" != "$EXPECT_CN_PORT" ]; then
-        notes="${notes}wrong_side,"
-    fi
-    if float_gt "$wall_time" "$MAX_WALL"; then
-        notes="${notes}slow,"
-    fi
-
-    if [ "$notes" = "" ]; then
-        echo "ok|"
-    else
-        echo "exec_mismatch|${notes%,}"
-    fi
 }
 
 clear_xfiles() {
@@ -183,49 +163,90 @@ prepare_case_dir() {
 get_case_config() {
     CASE_NAME="$1"
     EXPECTED="pass"
-    SHORE_PATCH=""
-    MIN_CPA=""
-    MAX_CPA=""
-    EXPECT_CN_PORT=""
-    MAX_WALL=""
+    SHORE_PATCH="$HARNESS_DIR/${CASE_NAME//_/-}-shoreside.xmoos"
+    MAX_WALL="12"
 
-    if [ "$CASE_NAME" = "head_on_execution_pass" ]; then
-        MMOD="head_on_colregs_pass"
-        SHORE_PATCH="$HARNESS_DIR/head-on-execution-pass-shoreside.xmoos"
-        MIN_CPA="16"
-        MAX_CPA="20"
-        EXPECT_CN_PORT="1"
-        MAX_WALL="12"
-    elif [ "$CASE_NAME" = "crossing_starboard_giveway_execution_pass" ]; then
-        MMOD="crossing_starboard_giveway_pass"
-        SHORE_PATCH="$HARNESS_DIR/crossing-starboard-giveway-execution-pass-shoreside.xmoos"
-        MIN_CPA="18"
-        MAX_CPA="24"
-        EXPECT_CN_PORT="1"
-        MAX_WALL="12"
-    elif [ "$CASE_NAME" = "crossing_port_standon_execution_pass" ]; then
-        MMOD="crossing_port_standon_pass"
-        SHORE_PATCH="$HARNESS_DIR/crossing-port-standon-execution-pass-shoreside.xmoos"
-        MIN_CPA="14"
-        MAX_CPA="20"
-        EXPECT_CN_PORT="0"
-        MAX_WALL="12"
-    elif [ "$CASE_NAME" = "overtaking_starboard_execution_pass" ]; then
-        MMOD="overtaking_starboard_pass"
-        SHORE_PATCH="$HARNESS_DIR/overtaking-starboard-execution-pass-shoreside.xmoos"
-        MIN_CPA="17"
-        MAX_CPA="21"
-        EXPECT_CN_PORT="0"
-        MAX_WALL="12"
+    if [ "$CASE_NAME" = "head_on_execution_pass" ] || \
+       [ "$CASE_NAME" = "head_on_cpa_fallback_execution_pass" ] || \
+       [ "$CASE_NAME" = "head_on_port_offset_execution_pass" ] || \
+       [ "$CASE_NAME" = "head_on_starboard_offset_execution_pass" ]; then
+        case "$CASE_NAME" in
+            head_on_execution_pass) MMOD="head_on_colregs_pass" ;;
+            head_on_cpa_fallback_execution_pass) MMOD="head_on_cpa_fallback_pass" ;;
+            head_on_port_offset_execution_pass) MMOD="head_on_port_offset_pass" ;;
+            head_on_starboard_offset_execution_pass) MMOD="head_on_starboard_offset_pass" ;;
+        esac
+    elif [ "$CASE_NAME" = "crossing_starboard_giveway_execution_pass" ] || \
+         [ "$CASE_NAME" = "crossing_starboard_giveway_far_execution_pass" ] || \
+         [ "$CASE_NAME" = "crossing_starboard_giveway_close_execution_pass" ]; then
+        case "$CASE_NAME" in
+            crossing_starboard_giveway_execution_pass) MMOD="crossing_starboard_giveway_pass" ;;
+            crossing_starboard_giveway_far_execution_pass) MMOD="crossing_starboard_giveway_far_pass" ;;
+            crossing_starboard_giveway_close_execution_pass) MMOD="crossing_starboard_giveway_close_pass" ;;
+        esac
+    elif [ "$CASE_NAME" = "crossing_port_standon_execution_pass" ] || \
+         [ "$CASE_NAME" = "crossing_port_standon_unsure_bow_execution_pass" ] || \
+         [ "$CASE_NAME" = "crossing_port_standon_far_execution_pass" ] || \
+         [ "$CASE_NAME" = "crossing_port_standon_close_execution_pass" ] || \
+         [ "$CASE_NAME" = "crossing_port_standon_close_unsure_bow_execution_pass" ]; then
+        case "$CASE_NAME" in
+            crossing_port_standon_execution_pass) MMOD="crossing_port_standon_pass" ;;
+            crossing_port_standon_unsure_bow_execution_pass) MMOD="crossing_port_standon_unsure_bow_pass" ;;
+            crossing_port_standon_far_execution_pass) MMOD="crossing_port_standon_exec_far_pass" ;;
+            crossing_port_standon_close_execution_pass) MMOD="crossing_port_standon_close_pass" ;;
+            crossing_port_standon_close_unsure_bow_execution_pass) MMOD="crossing_port_standon_close_unsure_bow_pass" ;;
+        esac
+    elif [ "$CASE_NAME" = "crossing_port_standon_stern_execution_pass" ]; then
+        MMOD="crossing_port_standon_stern_pass"
+        MAX_WALL="16"
+    elif [ "$CASE_NAME" = "crossing_port_standon_unsure_execution_pass" ]; then
+        MMOD="crossing_port_standon_unsure_pass"
+        MAX_WALL="12.1"
+    elif [ "$CASE_NAME" = "overtaking_starboard_execution_pass" ] || \
+         [ "$CASE_NAME" = "overtaking_starboard_range_far_execution_pass" ] || \
+         [ "$CASE_NAME" = "overtaking_starboard_small_gap_execution_pass" ]; then
+        case "$CASE_NAME" in
+            overtaking_starboard_execution_pass) MMOD="overtaking_starboard_pass" ;;
+            overtaking_starboard_range_far_execution_pass) MMOD="overtaking_starboard_range_far_pass" ;;
+            overtaking_starboard_small_gap_execution_pass) MMOD="overtaking_starboard_range_far_small_gap_pass" ;;
+        esac
+    elif [ "$CASE_NAME" = "overtaking_starboard_mirror_execution_pass" ] || \
+         [ "$CASE_NAME" = "overtaking_starboard_mirror_range_far_execution_pass" ] || \
+         [ "$CASE_NAME" = "overtaking_starboard_mirror_small_gap_execution_pass" ] || \
+         [ "$CASE_NAME" = "overtaking_starboard_mirror_large_gap_execution_pass" ]; then
+        case "$CASE_NAME" in
+            overtaking_starboard_mirror_execution_pass) MMOD="overtaking_starboard_mirror_pass" ;;
+            overtaking_starboard_mirror_range_far_execution_pass) MMOD="overtaking_starboard_mirror_range_far_pass" ;;
+            overtaking_starboard_mirror_small_gap_execution_pass) MMOD="overtaking_starboard_mirror_range_far_small_gap_pass" ;;
+            overtaking_starboard_mirror_large_gap_execution_pass) MMOD="overtaking_starboard_mirror_range_far_large_gap_pass" ;;
+        esac
+    elif [ "$CASE_NAME" = "overtaken_port_standon_execution_pass" ]; then
+        MMOD="overtaken_port_standon_pass"
+    elif [ "$CASE_NAME" = "overtaken_port_standon_midrange_execution_pass" ]; then
+        MMOD="overtaken_port_standon_midrange_pass"
+        MAX_WALL="10"
+    elif [ "$CASE_NAME" = "overtaken_starboard_standon_midrange_execution_pass" ]; then
+        MMOD="overtaken_starboard_standon_midrange_pass"
+        MAX_WALL="10.3"
     else
         echo "$ME: Unknown case [$CASE_NAME]"
+        exit 2
+    fi
+
+    if [ "$CASE_NAME" = "crossing_starboard_giveway_far_execution_pass" ] || \
+       [ "$CASE_NAME" = "crossing_port_standon_far_execution_pass" ]; then
+        MAX_WALL="13"
+    fi
+
+    if [ ! -f "$SHORE_PATCH" ]; then
+        echo "$ME: Missing patch [$SHORE_PATCH]"
         exit 2
     fi
 }
 
 run_case() {
     local case_name="$1"
-    local line actual status exec_check exec_status exec_notes
+    local line actual status wall_time wall_note
 
     get_case_config "$case_name"
 
@@ -249,21 +270,25 @@ run_case() {
         actual="missing"
     fi
     status="ok"
-    exec_notes=""
-    if [ "$actual" != "$EXPECTED" ]; then
+    wall_note="wall_time_check=ok"
+    if [ "$actual" = "missing" ]; then
+        status="error"
+        ALL_OK="no"
+    elif [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
         ALL_OK="no"
-    else
-        exec_check=$(validate_execution_line "$line")
-        exec_status="${exec_check%%|*}"
-        exec_notes="${exec_check#*|}"
-        if [ "$exec_status" != "ok" ]; then
-            status="$exec_status"
+    elif [ "$EXPECTED" = "pass" ]; then
+        wall_time=$(extract_field "$line" "wall_time")
+        if [ "$wall_time" = "" ] || float_gt "$wall_time" "$MAX_WALL"; then
+            status="mismatch"
+            wall_note="wall_time_check=fail max_wall=$MAX_WALL"
             ALL_OK="no"
+        else
+            wall_note="wall_time_check=ok max_wall=$MAX_WALL"
         fi
     fi
 
-    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  exec_notes=$exec_notes  $line" >> "$RESULTS_FILE"
+    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $wall_note  $line" >> "$RESULTS_FILE"
     ktm >/dev/null 2>&1 || true
     clear_xfiles
     cd "$HARNESS_DIR"
@@ -283,9 +308,8 @@ run_case_isolated() {
     local actual
     local status
     local launch_rc
-    local exec_check
-    local exec_status
-    local exec_notes
+    local wall_time
+    local wall_note
 
     get_case_config "$case_name"
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
@@ -313,10 +337,10 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = "0" ]; then
-            echo "case=$case_name  expected=just_make  actual=just_make  status=ok  exec_notes=" > "$case_result_file"
+            echo "case=$case_name  expected=just_make  actual=just_make  status=ok" > "$case_result_file"
             return 0
         fi
-        echo "case=$case_name  expected=just_make  actual=script_error  status=error  exec_notes=" > "$case_result_file"
+        echo "case=$case_name  expected=just_make  actual=script_error  status=error" > "$case_result_file"
         return 1
     fi
 
@@ -326,24 +350,25 @@ run_case_isolated() {
         actual="missing"
     fi
     status="ok"
-    exec_notes=""
+    wall_note="wall_time_check=ok"
     if [ "$actual" = "missing" ]; then
         status="error"
         ALL_OK="no"
     elif [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
         ALL_OK="no"
-    else
-        exec_check=$(validate_execution_line "$line")
-        exec_status="${exec_check%%|*}"
-        exec_notes="${exec_check#*|}"
-        if [ "$exec_status" != "ok" ]; then
-            status="$exec_status"
+    elif [ "$EXPECTED" = "pass" ]; then
+        wall_time=$(extract_field "$line" "wall_time")
+        if [ "$wall_time" = "" ] || float_gt "$wall_time" "$MAX_WALL"; then
+            status="mismatch"
+            wall_note="wall_time_check=fail max_wall=$MAX_WALL"
             ALL_OK="no"
+        else
+            wall_note="wall_time_check=ok max_wall=$MAX_WALL"
         fi
     fi
 
-    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  exec_notes=$exec_notes  launch_rc=$launch_rc  $line" > "$case_result_file"
+    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $wall_note  launch_rc=$launch_rc  $line" > "$case_result_file"
     if [ "$launch_rc" != "0" ] && [ "$actual" = "missing" ]; then
         return 1
     fi
@@ -356,7 +381,7 @@ run_case_isolated() {
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="head_on_execution_pass crossing_starboard_giveway_execution_pass crossing_port_standon_execution_pass overtaking_starboard_execution_pass"
+CASES="head_on_execution_pass head_on_cpa_fallback_execution_pass head_on_port_offset_execution_pass head_on_starboard_offset_execution_pass crossing_starboard_giveway_execution_pass crossing_starboard_giveway_far_execution_pass crossing_starboard_giveway_close_execution_pass crossing_port_standon_execution_pass crossing_port_standon_unsure_bow_execution_pass crossing_port_standon_stern_execution_pass crossing_port_standon_far_execution_pass crossing_port_standon_close_execution_pass crossing_port_standon_close_unsure_bow_execution_pass crossing_port_standon_unsure_execution_pass overtaking_starboard_execution_pass overtaking_starboard_range_far_execution_pass overtaking_starboard_small_gap_execution_pass overtaking_starboard_mirror_execution_pass overtaking_starboard_mirror_range_far_execution_pass overtaking_starboard_mirror_small_gap_execution_pass overtaking_starboard_mirror_large_gap_execution_pass overtaken_port_standon_midrange_execution_pass overtaken_starboard_standon_midrange_execution_pass"
 fi
 
 : > "$RESULTS_FILE"
