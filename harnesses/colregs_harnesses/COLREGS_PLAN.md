@@ -21,8 +21,9 @@ Why:
 - the shared stem keeps manual-run behavior and viewer cues consistent
 
 The current `colregs_motion` stem is still useful, but it should be treated as
-the broader integration seed, not the base for `H01-H04`. It now maps to the
-separate `H05-colregs_motion` slot for the broader multi-vessel suite.
+the broader integration seed, not the base for `H01-H04`. Broader moving or
+multi-vessel coverage should be handled outside the core `H01-H04` correctness
+family, for example in the performance/integration harnesses.
 
 ## Core Principles
 
