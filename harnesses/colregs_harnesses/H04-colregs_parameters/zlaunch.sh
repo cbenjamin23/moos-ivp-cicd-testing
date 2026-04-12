@@ -48,6 +48,27 @@ for ARGI; do
         echo "                     min_util_cpa_high_pass"
         echo "                     headon_only_false_pass"
         echo "                     headon_only_true_pass"
+        echo "                     giveway_bow_dist_default_pass"
+        echo "                     giveway_bow_dist_high_pass"
+        echo "                     max_util_cpa_default_pass"
+        echo "                     max_util_cpa_high_pass"
+        echo "                     velocity_filter_off_pass"
+        echo "                     velocity_filter_on_pass"
+        echo "                     eval_tol_default_pass"
+        echo "                     eval_tol_short_pass"
+        echo "                     eval_tol_long_pass"
+        echo "                     pwt_outer_dist_default_pass"
+        echo "                     pwt_outer_dist_high_pass"
+        echo "                     pwt_inner_dist_low_pass"
+        echo "                     pwt_inner_dist_default_pass"
+        echo "                     pwt_inner_dist_high_pass"
+        echo "                     pwt_grade_linear_pass"
+        echo "                     pwt_grade_quasi_pass"
+        echo "                     pwt_grade_quadratic_pass"
+        echo "                     pts_port_turns_ok_true_pass"
+        echo "                     pts_port_turns_ok_false_pass"
+        echo "                     turn_radius_default_pass"
+        echo "                     turn_radius_high_pass"
         echo "                     refinery_on_pass"
         echo "                     refinery_off_pass"
         exit 0
@@ -147,14 +168,14 @@ get_case_config() {
     BHV_PATCH=""
 
     if [ "$CASE_NAME" = "min_util_cpa_low_pass" ]; then
-        MMOD="head_on_colregs_pass"
+        MMOD="crossing_port_standon_band350_bow_pass"
         SHORE_PATCH="$HARNESS_DIR/min-util-cpa-low-pass-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/min-util-cpa-low-avdcol.xbhv"
     elif [ "$CASE_NAME" = "min_util_cpa_default_pass" ]; then
-        MMOD="head_on_colregs_pass"
+        MMOD="crossing_port_standon_band350_bow_pass"
         SHORE_PATCH="$HARNESS_DIR/min-util-cpa-default-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "min_util_cpa_high_pass" ]; then
-        MMOD="head_on_colregs_pass"
+        MMOD="crossing_port_standon_band350_bow_pass"
         SHORE_PATCH="$HARNESS_DIR/min-util-cpa-high-pass-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/min-util-cpa-high-avdcol.xbhv"
     elif [ "$CASE_NAME" = "headon_only_false_pass" ]; then
@@ -164,11 +185,86 @@ get_case_config() {
         MMOD="crossing_starboard_giveway_pass"
         SHORE_PATCH="$HARNESS_DIR/headon-only-true-pass-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/headon-only-true-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "giveway_bow_dist_default_pass" ]; then
+        MMOD="giveway_bowdist_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/giveway-bow-dist-default-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "giveway_bow_dist_high_pass" ]; then
+        MMOD="giveway_bowdist_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/giveway-bow-dist-high-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/giveway-bow-dist-high-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "max_util_cpa_default_pass" ]; then
+        MMOD="crossing_port_standon_band315_bow_pass"
+        SHORE_PATCH="$HARNESS_DIR/max-util-cpa-default-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "max_util_cpa_high_pass" ]; then
+        MMOD="crossing_port_standon_band315_bow_pass"
+        SHORE_PATCH="$HARNESS_DIR/max-util-cpa-high-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/max-util-cpa-high-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "velocity_filter_off_pass" ]; then
+        MMOD="crossing_port_standon_band350_bow_pass"
+        SHORE_PATCH="$HARNESS_DIR/velocity-filter-off-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "velocity_filter_on_pass" ]; then
+        MMOD="crossing_port_standon_band350_bow_pass"
+        SHORE_PATCH="$HARNESS_DIR/velocity-filter-on-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/velocity-filter-on-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "eval_tol_default_pass" ]; then
+        MMOD="overtaking_starboard_range_far_pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-tol-default-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "eval_tol_short_pass" ]; then
+        MMOD="overtaking_starboard_range_far_pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-tol-short-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/eval-tol-short-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "eval_tol_long_pass" ]; then
+        MMOD="overtaking_starboard_range_far_pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-tol-long-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/eval-tol-long-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "pwt_outer_dist_default_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-outer-dist-default-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "pwt_outer_dist_high_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-outer-dist-high-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/pwt-outer-dist-high-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "pwt_inner_dist_low_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-inner-dist-low-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/pwt-inner-dist-low-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "pwt_inner_dist_default_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-inner-dist-default-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "pwt_inner_dist_high_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-inner-dist-high-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/pwt-inner-dist-high-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "pwt_grade_linear_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-grade-linear-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "pwt_grade_quasi_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-grade-quasi-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/pwt-grade-quasi-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "pwt_grade_quadratic_pass" ]; then
+        MMOD="crossing_port_standon_southwest_outer_above_pass"
+        SHORE_PATCH="$HARNESS_DIR/pwt-grade-quadratic-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/pwt-grade-quadratic-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "pts_port_turns_ok_true_pass" ]; then
+        MMOD="giveway_turngap_edge_pass"
+        SHORE_PATCH="$HARNESS_DIR/pts-port-turns-ok-true-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "pts_port_turns_ok_false_pass" ]; then
+        MMOD="giveway_turngap_edge_pass"
+        SHORE_PATCH="$HARNESS_DIR/pts-port-turns-ok-false-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/pts-port-turns-ok-false-avdcol.xbhv"
+    elif [ "$CASE_NAME" = "turn_radius_default_pass" ]; then
+        MMOD="giveway_turngap_edge_pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-radius-default-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "turn_radius_high_pass" ]; then
+        MMOD="giveway_turngap_edge_pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-radius-high-pass-shoreside.xmoos"
+        BHV_PATCH="$HARNESS_DIR/turn-radius-high-avdcol.xbhv"
     elif [ "$CASE_NAME" = "refinery_on_pass" ]; then
-        MMOD="crossing_starboard_giveway_pass"
+        MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/refinery-on-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "refinery_off_pass" ]; then
-        MMOD="crossing_starboard_giveway_pass"
+        MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/refinery-off-pass-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/refinery-off-avdcol.xbhv"
     else
@@ -286,7 +382,7 @@ run_case_isolated() {
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="min_util_cpa_low_pass min_util_cpa_default_pass min_util_cpa_high_pass headon_only_false_pass headon_only_true_pass refinery_on_pass refinery_off_pass"
+    CASES="min_util_cpa_low_pass min_util_cpa_default_pass min_util_cpa_high_pass headon_only_false_pass headon_only_true_pass giveway_bow_dist_default_pass giveway_bow_dist_high_pass max_util_cpa_default_pass max_util_cpa_high_pass velocity_filter_off_pass velocity_filter_on_pass eval_tol_default_pass eval_tol_short_pass eval_tol_long_pass pwt_outer_dist_default_pass pwt_outer_dist_high_pass pwt_inner_dist_low_pass pwt_inner_dist_default_pass pwt_inner_dist_high_pass pwt_grade_linear_pass pwt_grade_quasi_pass pwt_grade_quadratic_pass pts_port_turns_ok_true_pass pts_port_turns_ok_false_pass turn_radius_default_pass turn_radius_high_pass refinery_on_pass refinery_off_pass"
 fi
 
 : > "$RESULTS_FILE"
@@ -302,6 +398,7 @@ else
     mkdir -p "$CASE_RESULT_DIR"
 
     ktm >/dev/null 2>&1 || true
+    clear_xfiles
 
     case_idx=0
     wave_pids=""

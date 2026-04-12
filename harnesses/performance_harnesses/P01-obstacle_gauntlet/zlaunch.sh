@@ -29,7 +29,6 @@ RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
-BASELINE_FILE="$HARNESS_DIR/performance_baselines.tsv"
 RUN_ROOT=""
 CASE_RESULT_DIR=""
 
@@ -114,24 +113,6 @@ get_field() {
     echo "$line" | sed -n "s/.*[[:space:]]$key=\\([^ ]*\\).*/\\1/p"
 }
 
-load_baseline() {
-    local case_name="$1"
-    local row
-
-    row=$(awk -v target="$case_name" '
-        $0 !~ /^#/ && NF > 0 && $1 == target {print; exit}
-    ' "$BASELINE_FILE")
-
-    if [ "$row" = "" ]; then
-        echo "$ME: Missing baseline row for case [$case_name]"
-        return 1
-    fi
-
-    read -r _case WALL_MIN WALL_MAX CYCLES_MIN CYCLES_MAX COLLISIONS_MAX \
-        NEAR_MIN NEAR_MAX ENCOUNTERS_MIN ENCOUNTERS_MAX \
-        OBAVOIDING_EXPECT TIMEOUT_EXPECT WARNING_MAX <<< "$row"
-}
-
 value_in_range() {
     local value="$1"
     local min="$2"
@@ -189,59 +170,24 @@ scan_case_warnings() {
 }
 
 evaluate_performance() {
-    local case_name="$1"
-    local line="$2"
-    local run_dir="${3:-$MISSION_DIR}"
-    local cycles
-    local timeout
-    local obavoiding
+    local line="$1"
+    local run_dir="${2:-$MISSION_DIR}"
     local wall_time
-    local collisions
-    local near_misses
-    local encounters
     local warning_count
     local perf_notes=""
 
-    load_baseline "$case_name" || return 1
-
-    cycles=$(get_field "$line" "cycles")
-    timeout=$(get_field "$line" "timeout")
-    obavoiding=$(get_field "$line" "obavoiding")
     wall_time=$(get_field "$line" "wall_time")
-    collisions=$(get_field "$line" "collisions")
-    near_misses=$(get_field "$line" "near_misses")
-    encounters=$(get_field "$line" "encounters")
     warning_count=$(scan_case_warnings "$run_dir")
 
-    if [ "$cycles" = "" ] || [ "$timeout" = "" ] || [ "$obavoiding" = "" ] || \
-       [ "$wall_time" = "" ] || [ "$collisions" = "" ] || [ "$near_misses" = "" ] || \
-       [ "$encounters" = "" ]; then
+    if [ "$wall_time" = "" ]; then
         PERF_STATUS="error"
         PERF_NOTES="missing_metrics"
         PERF_WARNING_COUNT="$warning_count"
         return 0
     fi
 
-    if ! value_in_range "$cycles" "$CYCLES_MIN" "$CYCLES_MAX"; then
-        perf_notes="${perf_notes} cycles"
-    fi
-    if [ "$timeout" != "$TIMEOUT_EXPECT" ]; then
-        perf_notes="${perf_notes} timeout"
-    fi
-    if [ "$obavoiding" != "$OBAVOIDING_EXPECT" ]; then
-        perf_notes="${perf_notes} obavoiding"
-    fi
     if ! value_in_range "$wall_time" "$WALL_MIN" "$WALL_MAX"; then
         perf_notes="${perf_notes} wall_time"
-    fi
-    if ! value_in_range "$collisions" "0" "$COLLISIONS_MAX"; then
-        perf_notes="${perf_notes} collisions"
-    fi
-    if ! value_in_range "$near_misses" "$NEAR_MIN" "$NEAR_MAX"; then
-        perf_notes="${perf_notes} near_misses"
-    fi
-    if ! value_in_range "$encounters" "$ENCOUNTERS_MIN" "$ENCOUNTERS_MAX"; then
-        perf_notes="${perf_notes} encounters"
     fi
     if [ "$warning_count" = "missing" ]; then
         perf_notes="${perf_notes} missing_logs"
@@ -268,13 +214,29 @@ get_case_config() {
 
     if [ "$CASE_NAME" = "baseline_field_pass" ]; then
         EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/baseline-field-pass-shoreside.xmoos"
+        WALL_MIN="16.5"
+        WALL_MAX="20.0"
+        WARNING_MAX="0"
     elif [ "$CASE_NAME" = "dense_field_pass" ]; then
         EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/dense-field-pass-shoreside.xmoos"
+        WALL_MIN="16.5"
+        WALL_MAX="20.0"
+        WARNING_MAX="0"
     elif [ "$CASE_NAME" = "endurance_random_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/endurance-random-pass-shoreside.xmoos"
+        WALL_MIN="145.0"
+        WALL_MAX="180.0"
+        WARNING_MAX="0"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
+        return 1
+    fi
+
+    if [ ! -f "$SHORE_PATCH" ]; then
+        echo "$ME: Missing patch [$SHORE_PATCH]"
         return 1
     fi
     return 0
@@ -365,7 +327,7 @@ run_case() {
         status="mismatch"
         ALL_OK="no"
     else
-        evaluate_performance "$case_name" "$line"
+        evaluate_performance "$line"
         perf_status="$PERF_STATUS"
         perf_notes="$PERF_NOTES"
         perf_warning_count="$PERF_WARNING_COUNT"
@@ -461,7 +423,7 @@ run_case_isolated() {
     elif [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
     else
-        evaluate_performance "$case_name" "$line" "$case_dir"
+        evaluate_performance "$line" "$case_dir"
         perf_status="$PERF_STATUS"
         perf_notes="$PERF_NOTES"
         perf_warning_count="$PERF_WARNING_COUNT"

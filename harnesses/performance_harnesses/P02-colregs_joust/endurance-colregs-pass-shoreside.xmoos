@@ -1,0 +1,35 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = MISSION_DONE = true
+  pass_condition = COLLISION_TOTAL = 0
+  pass_condition = UCD_CLOSEST_RANGE_EVER >= 6
+  pass_condition = UCD_CLOSEST_RANGE_EVER <= 20
+  pass_condition = NEAR_MISS_TOTAL >= 0
+  pass_condition = NEAR_MISS_TOTAL <= 8
+  pass_condition = MISSION_TIMEOUT = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = colregs_joust
+  mission_mod  = $(MMOD:=endurance_colregs_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = done=$[MISSION_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = encounters=$[ENCOUNTER_TOTAL]
+  report_column = closest_range_ever=$[UCD_CLOSEST_RANGE_EVER]
+  report_column = near_misses=$[NEAR_MISS_TOTAL]
+  report_column = collisions=$[COLLISION_TOTAL]
+  report_column = wall_time=$[WALL_TIME]
+  report_column = mhash=$[MHASH_SHORT]
+}

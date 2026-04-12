@@ -2,7 +2,7 @@
 #------------------------------------------------------------
 #   Script: zlaunch.sh
 #   Author: Charles Benjamin
-#   LastEd: Mar 2026
+#   LastEd: Apr 2026
 #------------------------------------------------------------
 vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
 on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
@@ -25,7 +25,8 @@ RESULTS_FILE="$PWD/results.txt"
 HARNESS_DIR="$PWD"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/performance_missions/P02-colregs_joust"
-BASELINE_FILE="$HARNESS_DIR/performance_baselines.tsv"
+SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
+SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 ALL_OK="yes"
 RUN_ROOT=""
 CASE_RESULT_DIR=""
@@ -84,6 +85,7 @@ cleanup() {
     local start_dir="$PWD"
     if [ -d "$MISSION_DIR" ]; then
         cd "$MISSION_DIR"
+        rm -f "$SHORE_XFILE"
         ./clean.sh >/dev/null 2>&1 || true
         ktm >/dev/null 2>&1 || true
     fi
@@ -100,6 +102,12 @@ prepare_case_dir() {
         cd "$case_dir"
         ./clean.sh >/dev/null 2>&1 || true
     )
+
+    local shore_stem="$case_dir/meta_shoreside.moos"
+    local shore_xfile="$case_dir/meta_shoreside.moosx"
+    if [ "$SHORE_PATCH" != "" ]; then
+        nspatch --stem="$shore_stem" "$SHORE_PATCH" --targ="$shore_xfile"
+    fi
 }
 
 wait_for_result_line() {
@@ -125,24 +133,6 @@ get_field() {
     local line="$1"
     local key="$2"
     echo "$line" | sed -n "s/.*[[:space:]]$key=\\([^ ]*\\).*/\\1/p"
-}
-
-load_baseline() {
-    local case_name="$1"
-    local row
-
-    row=$(awk -v target="$case_name" '
-        $0 !~ /^#/ && NF > 0 && $1 == target {print; exit}
-    ' "$BASELINE_FILE")
-
-    if [ "$row" = "" ]; then
-        echo "$ME: Missing baseline row for case [$case_name]"
-        return 1
-    fi
-
-    read -r _case WALL_MIN WALL_MAX DONE_EXPECT TIMEOUT_EXPECT \
-        CLOSEST_MIN CLOSEST_MAX NEAR_MIN NEAR_MAX \
-        COLLISIONS_MAX WARNING_MAX <<< "$row"
 }
 
 value_in_range() {
@@ -181,35 +171,23 @@ scan_case_warnings() {
 }
 
 evaluate_performance() {
-    local case_name="$1"
-    local line="$2"
-    local run_dir="${3:-$MISSION_DIR}"
-    local done timeout wall_time closest_range_ever near_misses collisions warning_count notes=""
+    local line="$1"
+    local run_dir="${2:-$MISSION_DIR}"
+    local wall_time
+    local warning_count
+    local notes=""
 
-    load_baseline "$case_name" || return 1
-
-    done=$(get_field "$line" "done")
-    timeout=$(get_field "$line" "timeout")
     wall_time=$(get_field "$line" "wall_time")
-    closest_range_ever=$(get_field "$line" "closest_range_ever")
-    near_misses=$(get_field "$line" "near_misses")
-    collisions=$(get_field "$line" "collisions")
     warning_count=$(scan_case_warnings "$run_dir")
 
-    if [ "$done" = "" ] || [ "$timeout" = "" ] || [ "$wall_time" = "" ] || \
-       [ "$closest_range_ever" = "" ] || [ "$near_misses" = "" ] || [ "$collisions" = "" ]; then
+    if [ "$wall_time" = "" ]; then
         PERF_STATUS="error"
         PERF_NOTES="missing_metrics"
         PERF_WARNING_COUNT="$warning_count"
         return 0
     fi
 
-    [ "$done" = "$DONE_EXPECT" ] || notes="${notes} done"
-    [ "$timeout" = "$TIMEOUT_EXPECT" ] || notes="${notes} timeout"
     value_in_range "$wall_time" "$WALL_MIN" "$WALL_MAX" || notes="${notes} wall_time"
-    value_in_range "$closest_range_ever" "$CLOSEST_MIN" "$CLOSEST_MAX" || notes="${notes} closest_range_ever"
-    value_in_range "$near_misses" "$NEAR_MIN" "$NEAR_MAX" || notes="${notes} near_misses"
-    value_in_range "$collisions" "0" "$COLLISIONS_MAX" || notes="${notes} collisions"
     if [ "$warning_count" = "missing" ]; then
         notes="${notes} missing_logs"
     else
@@ -226,22 +204,61 @@ evaluate_performance() {
     fi
 }
 
+get_case_config() {
+    local case_name="$1"
+
+    EXPECTED="pass"
+    SHORE_PATCH="$HARNESS_DIR/${case_name//_/-}-shoreside.xmoos"
+    WARNING_MAX="0"
+
+    case "$case_name" in
+        baseline_colregs_pass)
+            WALL_MIN="27.5"
+            WALL_MAX="31.0"
+            ;;
+        dense_colregs_pass)
+            WALL_MIN="41.5"
+            WALL_MAX="45.0"
+            ;;
+        endurance_colregs_pass)
+            WALL_MIN="118.0"
+            WALL_MAX="124.0"
+            ;;
+        *)
+            echo "$ME: Unknown case [$case_name]"
+            return 1
+            ;;
+    esac
+
+    if [ ! -f "$SHORE_PATCH" ]; then
+        echo "$ME: Missing patch [$SHORE_PATCH]"
+        return 1
+    fi
+
+    return 0
+}
+
 run_case() {
     local case_name="$1"
-    local expected="pass"
     local line actual status launch_rc
+    local case_max_time="$MAX_TIME"
     local perf_status="skip"
     local perf_notes=""
     local perf_warning_count="na"
 
+    get_case_config "$case_name" || return 1
+
     cd "$MISSION_DIR"
     ktm >/dev/null 2>&1 || true
     ./clean.sh >/dev/null 2>&1 || true
+    rm -f "$SHORE_XFILE"
+    nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
     : > results.txt
-    local case_max_time="$MAX_TIME"
+
     if [ "$case_name" = "endurance_colregs_pass" ] && [ "$case_max_time" = "650" ]; then
         case_max_time="$ENDURANCE_MAX_TIME"
     fi
+
     XARGS="--max_time=$case_max_time --mmod=$case_name --colregs $TIME_WARP"
     if [ "$NOGUI" != "" ]; then
         XARGS="$XARGS $NOGUI"
@@ -277,11 +294,11 @@ run_case() {
     elif [ "$actual" = "missing" ]; then
         status="error"
         ALL_OK="no"
-    elif [ "$actual" != "$expected" ]; then
+    elif [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
         ALL_OK="no"
     else
-        evaluate_performance "$case_name" "$line"
+        evaluate_performance "$line"
         perf_status="$PERF_STATUS"
         perf_notes="$PERF_NOTES"
         perf_warning_count="$PERF_WARNING_COUNT"
@@ -292,10 +309,11 @@ run_case() {
     fi
 
     if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  expected=$expected  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  launch_rc=$launch_rc  $line" >> "$RESULTS_FILE"
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  launch_rc=$launch_rc  $line" >> "$RESULTS_FILE"
     else
-        echo "case=$case_name  expected=$expected  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  $line" >> "$RESULTS_FILE"
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  $line" >> "$RESULTS_FILE"
     fi
+    rm -f "$SHORE_XFILE"
     cd "$HARNESS_DIR"
 }
 
@@ -313,11 +331,12 @@ run_case_isolated() {
     local actual
     local status
     local launch_rc
-    local expected="pass"
     local case_max_time="$MAX_TIME"
     local perf_status="skip"
     local perf_notes=""
     local perf_warning_count="na"
+
+    get_case_config "$case_name" || return 1
 
     if [ "$case_name" = "endurance_colregs_pass" ] && [ "$case_max_time" = "650" ]; then
         case_max_time="$ENDURANCE_MAX_TIME"
@@ -328,7 +347,7 @@ run_case_isolated() {
     case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  expected=$expected  actual=script_error  status=error  perf_status=error  perf_notes=prepare_failed  warning_count=$perf_warning_count" > "$case_result_file"
+        echo "case=$case_name  expected=$EXPECTED  actual=script_error  status=error  perf_status=error  perf_notes=prepare_failed  warning_count=$perf_warning_count" > "$case_result_file"
         return 1
     }
 
@@ -375,10 +394,10 @@ run_case_isolated() {
         actual="script_error"
     elif [ "$actual" = "missing" ]; then
         status="error"
-    elif [ "$actual" != "$expected" ]; then
+    elif [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
     else
-        evaluate_performance "$case_name" "$line" "$case_dir"
+        evaluate_performance "$line" "$case_dir"
         perf_status="$PERF_STATUS"
         perf_notes="$PERF_NOTES"
         perf_warning_count="$PERF_WARNING_COUNT"
@@ -388,9 +407,9 @@ run_case_isolated() {
     fi
 
     if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  expected=$expected  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  launch_rc=$launch_rc  $line" > "$case_result_file"
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  launch_rc=$launch_rc  $line" > "$case_result_file"
     else
-        echo "case=$case_name  expected=$expected  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  $line" > "$case_result_file"
+        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  $line" > "$case_result_file"
     fi
 
     if [ "$status" = "ok" ]; then

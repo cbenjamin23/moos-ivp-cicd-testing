@@ -9,7 +9,7 @@ Current case set:
 
 The harness checks:
 - mission `grade`
-- selected reported metrics against `performance_baselines.tsv`
+- mission-side case-specific thresholds for MOOS-visible metrics
 - disallowed planner/runtime warning text in the newest vehicle `.alog`
 
 For these joust cases, the main pressure metric is
@@ -26,8 +26,37 @@ The current case split is:
   - longer-running three-vehicle joust with the same zero-collision and
     zero-warning requirements
 
-Each case uses a checked-in baseline band from `performance_baselines.tsv`
-rather than exact-value matching.
+Current split:
+- `pMissionEval` owns the MOOS-visible verdict through one case-specific
+  shoreside patch per launch
+- shell still checks only:
+  - `wall_time` bands
+  - disallowed warning text in the newest `.alog`
+
+Current mission-side case checks:
+- `baseline_colregs_pass`
+  - `MISSION_DONE=true`
+  - `MISSION_TIMEOUT=false`
+  - `COLLISION_TOTAL=0`
+  - `UCD_CLOSEST_RANGE_EVER` in `[5,20]`
+  - `NEAR_MISS_TOTAL` in `[0,5]`
+- `dense_colregs_pass`
+  - `MISSION_DONE=true`
+  - `MISSION_TIMEOUT=false`
+  - `COLLISION_TOTAL=0`
+  - `UCD_CLOSEST_RANGE_EVER` in `[6,20]`
+  - `NEAR_MISS_TOTAL` in `[0,8]`
+- `endurance_colregs_pass`
+  - `MISSION_DONE=true`
+  - `MISSION_TIMEOUT=false`
+  - `COLLISION_TOTAL=0`
+  - `UCD_CLOSEST_RANGE_EVER` in `[6,20]`
+  - `NEAR_MISS_TOTAL` in `[0,8]`
+
+Current shell-side case checks:
+- `baseline_colregs_pass`: `wall_time` in `[27.5,31.0]`, warning count `0`
+- `dense_colregs_pass`: `wall_time` in `[41.5,45.0]`, warning count `0`
+- `endurance_colregs_pass`: `wall_time` in `[118.0,124.0]`, warning count `0`
 
 Typical runs:
 

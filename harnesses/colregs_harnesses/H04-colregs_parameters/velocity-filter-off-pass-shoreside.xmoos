@@ -23,7 +23,7 @@ ProcessConfig = pMissionEval
   pass_flag     = SAY_MOOS = pass
   fail_flag     = SAY_MOOS = fail
   mission_form  = colregs_parameters
-  mission_mod   = min_util_cpa_low_pass
+  mission_mod   = velocity_filter_off_pass
 
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]

@@ -15,6 +15,11 @@ ProcessConfig = pMissionEval
   lead_condition = (WPT_CYCLES >= 10) or (MISSION_TIMEOUT = true)
   pass_condition = WPT_CYCLES >= 10
   pass_condition = OB_TOTAL_COLLISIONS = 0
+  pass_condition = OB_TOTAL_NEAR_MISSES >= 20
+  pass_condition = OB_TOTAL_NEAR_MISSES <= 70
+  pass_condition = OB_TOTAL_ENCOUNTERS >= 50
+  pass_condition = OB_TOTAL_ENCOUNTERS <= 80
+  pass_condition = OBAVOIDING = end
   pass_condition = DB_UPTIME <= 1800
   pass_condition = MISSION_TIMEOUT = false
 
@@ -23,7 +28,7 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = obstacle_gauntlet
-  mission_mod  = $(MMOD:=baseline_field_pass)
+  mission_mod  = $(MMOD:=endurance_random_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]

@@ -60,6 +60,8 @@ ProcessConfig = pAutoPoke
   flag = COLREGS_AVOID_MODE_BEN=none
   flag = COLREGS_AVOID_IX_ABE=0
   flag = COLREGS_AVOID_IX_BEN=0
+  flag = COLREGS_AVOID_PWT_ABE=0
+  flag = COLREGS_AVOID_PWT_BEN=0
   flag = COLREGS_SUMMARY_ABE=mode=none:none
   flag = COLREGS_SUMMARY_BEN=mode=none:none
   flag = CN_FORE_OF_OS_ABE=0

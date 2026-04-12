@@ -130,6 +130,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=COLREGS_AVOID_MODE_BEN
   bridge = src=COLREGS_AVOID_IX_ABE
   bridge = src=COLREGS_AVOID_IX_BEN
+  bridge = src=COLREGS_AVOID_PWT_ABE
+  bridge = src=COLREGS_AVOID_PWT_BEN
   bridge = src=COLREGS_SUMMARY_ABE
   bridge = src=COLREGS_SUMMARY_BEN
   bridge = src=AVDCOL_RANGE_ABE

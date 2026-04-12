@@ -1,16 +1,16 @@
-# P01 Performance Baselines
+# P01 Performance Checks
 
-This harness keeps an explicit performance baseline in
-[`performance_baselines.tsv`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/performance_harnesses/P01-obstacle_gauntlet/performance_baselines.tsv).
+P01 no longer keeps a separate `performance_baselines.tsv` file.
 
-The baseline file is intentionally range-based, not exact-match:
+Current split:
 
-- `baseline_field_pass` and `dense_field_pass` are deterministic comparison runs
-- `endurance_random_pass` is stochastic and is checked against broader bands
+- `pMissionEval` owns the MOOS-visible case verdict
+- shell owns only:
+  - `wall_time` bands
+  - disallowed warning text in the newest vehicle `.alog`
 
-The harness currently compares these result-snapshot metrics:
+The mission-side checks now cover:
 
-- `wall_time`
 - `cycles`
 - `collisions`
 - `near_misses`
@@ -18,13 +18,14 @@ The harness currently compares these result-snapshot metrics:
 - `obavoiding`
 - `timeout`
 
-It also scans the vehicle `.alog` `APP_LOG` output and fails the case if it sees
-disallowed planner/error text such as:
+Shell still checks:
 
-- `BHV_ERROR`
-- `obstacle unavoidable`
-- `Obstacle Breached`
-- `Unable to init AOF_AvoidObstacleV24`
+- `wall_time`
+- warning-count scans for:
+  - `BHV_ERROR`
+  - `obstacle unavoidable`
+  - `Obstacle Breached`
+  - `Unable to init AOF_AvoidObstacleV24`
 
 Important: the metrics in `results.txt` are evaluation-snapshot metrics from
 `pMissionEval`, not guaranteed end-of-teardown metrics. That distinction matters

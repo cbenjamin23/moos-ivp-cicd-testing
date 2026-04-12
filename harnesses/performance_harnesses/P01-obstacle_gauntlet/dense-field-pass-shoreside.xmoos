@@ -1,0 +1,40 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @WPT_CYCLES#MISSION_DONE=true
+  mailflag = @WPT_CYCLES#MISSION_TIMEOUT=false
+  lead_condition = MISSION_DONE = true
+  pass_condition = WPT_CYCLES = 1
+  pass_condition = OB_TOTAL_COLLISIONS = 0
+  pass_condition = OB_TOTAL_NEAR_MISSES >= 0
+  pass_condition = OB_TOTAL_NEAR_MISSES <= 6
+  pass_condition = OB_TOTAL_ENCOUNTERS >= 1
+  pass_condition = OB_TOTAL_ENCOUNTERS <= 8
+  pass_condition = OBAVOIDING = end
+  pass_condition = DB_UPTIME <= $(MISSION_TIMEOUT_SECS:=200)
+  pass_condition = MISSION_TIMEOUT = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = obstacle_gauntlet
+  mission_mod  = $(MMOD:=dense_field_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = cycles=$[WPT_CYCLES]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = obavoiding=$[OBAVOIDING]
+  report_column = wall_time=$[WALL_TIME]
+  report_column = collisions=$[OB_TOTAL_COLLISIONS]
+  report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
+  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = mhash=$[MHASH_SHORT]
+  report_column = date=$[DATE]
+  report_column = time=$[TIME]
+}

@@ -115,6 +115,11 @@ So when a harness says `COLREGS_AVOID_IX_BEN = 20`, it means:
 That check is not replacing pass/fail. It is the case-specific condition that
 defines pass/fail.
 
+The stem also now bridges `COLREGS_AVOID_PWT_<CONTACT>` to shoreside. H04 uses
+that posted avoidance weight for parameter families like `pwt_inner_dist` and
+`pwt_grade`, where the source effect is relevance shaping rather than a clean
+mode-entry split.
+
 Design expectations for this stem:
 - keep the geometry simple and comparable across many overlays
 - support `nspatch`-driven case variation rather than mission forks
