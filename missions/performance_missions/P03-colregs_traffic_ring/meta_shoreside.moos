@@ -1,0 +1,216 @@
+//*******************************************************
+// ShoreSide Configuration File
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+Processconfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB              @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer       @ NewConsole = false
+#else
+  Run = pMissionHash        @ NewConsole = false
+#endif
+  Run = pLogger             @ NewConsole = false
+  Run = pShare              @ NewConsole = false
+  Run = pHostInfo           @ NewConsole = false
+  Run = uFldShoreBroker     @ NewConsole = false
+  Run = uFldNodeComms       @ NewConsole = false
+  Run = uFldCollisionDetect @ NewConsole = false
+  Run = uTimerScript        @ NewConsole = false
+  Run = pMissionEval        @ NewConsole = false
+  Run = pAutoPoke           @ NewConsole = false
+  Run = uProcessWatch       @ NewConsole = false
+  Run = pRealm              @ NewConsole = false
+}
+
+#include plugs.moos <pShare>
+#include plugs.moos <pHostInfo>
+#include plugs.moos <uProcessWatch>
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=false
+  flag = MOOS_MANUAL_OVERRIDE_ALL=true
+  flag = MISSION_DONE=false
+  flag = MISSION_TIMEOUT=false
+  flag = TEST_EVAL_READY=false
+  flag = ENCOUNTER_TOTAL=0
+  flag = NEAR_MISS_TOTAL=0
+  flag = COLLISION_TOTAL=0
+  flag = TRAFFIC_BATCHES=0
+  flag = TRAFFIC_ASSIGN_FAILS=0
+  flag = TRAFFIC_ASSIGN_MODE=none
+
+  required_nodes = $(REQUIRED_NODES:=5)
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  event = var=DEPLOY_ALL, val=true, time=$(DEPLOY_DELAY_SECS:=15)
+  event = var=MOOS_MANUAL_OVERRIDE_ALL, val=false, time=$(DEPLOY_DELAY_SECS:=15)
+  event = var=MISSION_DONE, val=true, time=$(EVAL_TIME_SECS:=300)
+  event = var=TEST_EVAL_READY, val=true, time=$(EVAL_TIME_SECS:=300)
+  event = var=MISSION_TIMEOUT, val=true, time=$(MISSION_TIMEOUT_SECS:=420)
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = MISSION_DONE = true
+  pass_condition = COLLISION_TOTAL = 0
+  pass_condition = UCD_CLOSEST_RANGE_EVER >= $(CLOSEST_MIN:=5)
+  pass_condition = UCD_CLOSEST_RANGE_EVER <= $(CLOSEST_MAX:=30)
+  pass_condition = NEAR_MISS_TOTAL <= $(NEAR_MISS_MAX:=25)
+  pass_condition = TRAFFIC_BATCHES >= $(BATCHES_MIN:=5)
+  pass_condition = MISSION_TIMEOUT = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = colregs_traffic_ring
+  mission_mod  = $(MMOD:=baseline_circle_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = done=$[MISSION_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = encounters=$[ENCOUNTER_TOTAL]
+  report_column = closest_range_ever=$[UCD_CLOSEST_RANGE_EVER]
+  report_column = near_misses=$[NEAR_MISS_TOTAL]
+  report_column = collisions=$[COLLISION_TOTAL]
+  report_column = batches=$[TRAFFIC_BATCHES]
+  report_column = assign_fails=$[TRAFFIC_ASSIGN_FAILS]
+  report_column = assign_mode=$[TRAFFIC_ASSIGN_MODE]
+  report_column = wall_time=$[WALL_TIME]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = pTrafficManager
+{
+  AppTick         = 2
+  CommsTick       = 2
+
+  vnames          = $(VNAMES)
+  center_x        = $(CENTER_X:=23)
+  center_y        = $(CENTER_Y:=-82)
+  base_radius     = $(BASE_RADIUS:=38)
+  radius_jitter   = $(RADIUS_JITTER:=0)
+  min_target_sep  = $(MIN_TARGET_SEP:=14)
+  min_leg_len     = $(MIN_LEG_LEN:=20)
+  min_pred_cpa    = $(MIN_PRED_CPA:=10)
+  seed            = $(SEED:=17)
+  max_tries       = 1200
+  repost_interval = $(REPOST_INTERVAL:=10)
+}
+
+ProcessConfig = uFldCollisionDetect
+{
+  AppTick       = 4
+  CommsTick     = 4
+
+  app_logging = true
+  encounter_range = 40
+  collision_range = 4
+  near_miss_range = 12
+  condition = DEPLOY_ALL=true
+
+  report_all_encounters = true
+  post_closest_range_ever = true
+  encounter_rings = false
+
+  collision_flag = COLLISION = $CPA
+  near_miss_flag = NEAR_MISS = $CPA
+  encounter_flag = ENCOUNTER = $CPA
+  near_miss_flag = NEAR_MISS_$UP_V1 = $CPA
+  near_miss_flag = NEAR_MISS_$UP_V2 = $CPA
+  collision_flag = COLLISION_$UP_V1 = $CPA
+  collision_flag = COLLISION_$UP_V2 = $CPA
+}
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range = 75
+  critical_range = 50
+  min_msg_interval = 0
+  max_msg_length = 1000
+  view_node_rpt_pulses = false
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge = DEPLOY, NODE_REPORT, NODE_MESSAGE
+  qbridge = MOOS_MANUAL_OVERRIDE
+  qbridge = WPT_UPDATE_ABE, WPT_UPDATE_BEN, WPT_UPDATE_CAL, WPT_UPDATE_DEB, WPT_UPDATE_EVE
+  qbridge = WPT_STAT_ABE, WPT_STAT_BEN, WPT_STAT_CAL, WPT_STAT_DEB, WPT_STAT_EVE
+}
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+}
+
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = 23
+  set_pan_y            = -82
+  zoom                 = 1.20
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names+shortmode
+  polygon_viewable_all = true
+  polygon_viewable_labels = false
+  seglist_viewable_all = true
+  seglist_viewable_labels = false
+  point_viewable_all   = true
+  point_viewable_labels = true
+  circle_viewable_all  = false
+  circle_viewable_labels = false
+  comms_pulse_viewable_all = false
+  node_pulse_viewable_all  = false
+  trails_viewable      = true
+  trails_length        = 20
+  trails_color         = yellow
+  appcast_viewable     = true
+}

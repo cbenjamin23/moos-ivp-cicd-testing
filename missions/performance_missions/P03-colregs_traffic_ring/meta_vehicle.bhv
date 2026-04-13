@@ -1,0 +1,39 @@
+initialize   DEPLOY  = false
+initialize   AVOID   = true
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+Behavior = BHV_Waypoint
+{
+  name      = waypt_cycle
+  pwt       = 100
+  condition = MODE==ACTIVE
+  updates   = WPT_UPDATE_$(UP_VNAME)
+  perpetual = true
+
+  lead          = 8
+  lead_damper   = 1
+  lead_to_start = true
+  speed         = $(STOCK_SPD)
+  capture_line  = true
+  capture_radius = 5.0
+  slip_radius    = 15.0
+  point          = empty
+  draw_path_loop = false
+
+  wpt_status_var = WPT_STAT
+  post_suffix    = $(UP_VNAME)
+
+  // The coordinator posts the named waypoint marker; keep waypoint path
+  // visuals suppressed so only the intended target marker is visible.
+  visual_hints = nextpt_color=off
+  visual_hints = nextpt_label_color=off
+  visual_hints = nextpt_vertex_size=0
+  visual_hints = vertex_color=off, edge_color=off
+  visual_hints = label_color=off
+  visual_hints = vertex_size=0, edge_size=0
+}
+
+#include plugs.bhv <bhv_avd_colregs>
