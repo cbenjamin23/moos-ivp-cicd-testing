@@ -535,7 +535,7 @@ run_case() {
     if [ "$actual" = "" ]; then
         actual="missing"
     fi
-    status="ok"
+    status="success"
     if [ "$actual" = "missing" ]; then
         status="error"
         if [ "$launch_rc" != "0" ]; then
@@ -553,9 +553,9 @@ run_case() {
     fi
 
     if [ "$launch_rc" != "0" ]; then
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line$cleanup_note" >> "$RESULTS_FILE"
+        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  launch_rc=$launch_rc  $line$cleanup_note" >> "$RESULTS_FILE"
     else
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line$cleanup_note" >> "$RESULTS_FILE"
+        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line$cleanup_note" >> "$RESULTS_FILE"
     fi
     clear_xfiles
     cd "$HARNESS_DIR"
@@ -583,7 +583,7 @@ run_case_isolated() {
     case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  expected=$EXPECTED  actual=script_error  status=error" > "$case_result_file"
+        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
         return 1
     }
 
@@ -603,10 +603,10 @@ run_case_isolated() {
         wait "$runtime_pid"
         launch_rc=$?
         if [ "$launch_rc" = "0" ]; then
-            echo "case=$case_name  expected=just_make  actual=just_make  status=ok" > "$case_result_file"
+            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
             return 0
         fi
-        echo "case=$case_name  expected=just_make  actual=script_error  status=error" > "$case_result_file"
+        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
         return 1
     fi
 
@@ -615,7 +615,7 @@ run_case_isolated() {
     if [ "$actual" = "" ]; then
         actual="missing"
     fi
-    status="ok"
+    status="success"
     if [ "$actual" = "missing" ]; then
         status="error"
         if [ "$launch_rc" != "0" ]; then
@@ -641,12 +641,12 @@ run_case_isolated() {
     fi
 
     if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line$cleanup_note" > "$case_result_file"
+        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  launch_rc=$launch_rc  $line$cleanup_note" > "$case_result_file"
     else
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line$cleanup_note" > "$case_result_file"
+        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line$cleanup_note" > "$case_result_file"
     fi
 
-    [ "$status" = "ok" ] && [ "$cleanup_note" = "" ]
+    [ "$status" = "success" ] && [ "$cleanup_note" = "" ]
 }
 
 HEADON_CASES="head_on_thresh_below_pass head_on_thresh_edge_pass head_on_thresh_above_pass head_on_thresh_below_mirror_pass head_on_thresh_edge_mirror_pass head_on_thresh_above_mirror_pass"
@@ -743,11 +743,11 @@ else
     for ONE_CASE in $CASES; do
         case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
         if [ "$case_file" = "" ]; then
-            echo "case=$ONE_CASE  expected=unknown  actual=missing  status=error" >> "$RESULTS_FILE"
+            echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=missing" >> "$RESULTS_FILE"
             ALL_OK="no"
         else
             cat "$case_file" >> "$RESULTS_FILE"
-            grep -q " status=ok " "$case_file" || ALL_OK="no"
+            grep -q " case_result=success " "$case_file" || ALL_OK="no"
         fi
     done
 fi

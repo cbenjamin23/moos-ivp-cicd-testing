@@ -61,6 +61,10 @@ def parse_results_line(line: str) -> dict[str, str]:
             continue
         key, value = token.split("=", 1)
         fields[key] = value
+    if "case_result" not in fields and "status" in fields:
+        fields["case_result"] = "success" if fields["status"] == "ok" else fields["status"]
+    if "perf_status" not in fields and "perf_case_result" in fields:
+        fields["perf_status"] = fields["perf_case_result"]
     return fields
 
 
@@ -108,8 +112,8 @@ def main() -> int:
     for case in case_order:
         case_stats[case] = {
             "seen": 0,
-            "ok": 0,
-            "statuses": set(),
+            "success": 0,
+            "case_results": set(),
             "cn_ports": set(),
             "cn_fores": set(),
             "cn_crosseds": set(),
@@ -170,12 +174,12 @@ def main() -> int:
             seen_cases.add(case)
             stats = case_stats[case]
             stats["seen"] = int(stats["seen"]) + 1
-            status = row.get("status", "missing")
-            cast_statuses = stats["statuses"]
-            assert isinstance(cast_statuses, set)
-            cast_statuses.add(status)
-            if status == "ok":
-                stats["ok"] = int(stats["ok"]) + 1
+            case_result = row.get("case_result", "missing")
+            cast_case_results = stats["case_results"]
+            assert isinstance(cast_case_results, set)
+            cast_case_results.add(case_result)
+            if case_result == "success":
+                stats["success"] = int(stats["success"]) + 1
 
             for key, stat_key in (
                 ("cn_port", "cn_ports"),
@@ -229,8 +233,10 @@ def main() -> int:
             verdict_failures.append(
                 f"{case} appeared in {stats['seen']}/{args.runs} runs"
             )
-        if int(stats["ok"]) != args.runs:
-            verdict_failures.append(f"{case} was ok in {stats['ok']}/{args.runs} runs")
+        if int(stats["success"]) != args.runs:
+            verdict_failures.append(
+                f"{case} was successful in {stats['success']}/{args.runs} runs"
+            )
 
     summary_path = out_dir / "README.md"
     timestamp = dt.datetime.now().strftime("%B %d, %Y %H:%M:%S %Z")
@@ -278,7 +284,7 @@ def main() -> int:
             "",
             "Per-case summary:",
             "",
-            "| case | ok/runs | statuses | CPA range | wall range | cn_port values | cn_fore values | cn_crossed values | mode values | ix values |",
+            "| case | success/runs | case_results | CPA range | wall range | cn_port values | cn_fore values | cn_crossed values | mode values | ix values |",
             "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
@@ -286,11 +292,11 @@ def main() -> int:
     for case in case_order:
         stats = case_stats[case]
         lines.append(
-            "| {case} | {ok}/{runs} | {statuses} | {cpa} | {wall} | {cn_ports} | {cn_fores} | {cn_crosseds} | {modes} | {ixs} |".format(
+            "| {case} | {success}/{runs} | {case_results} | {cpa} | {wall} | {cn_ports} | {cn_fores} | {cn_crosseds} | {modes} | {ixs} |".format(
                 case=case,
-                ok=stats["ok"],
+                success=stats["success"],
                 runs=args.runs,
-                statuses=set_string(stats["statuses"]),  # type: ignore[arg-type]
+                case_results=set_string(stats["case_results"]),  # type: ignore[arg-type]
                 cpa=fmt_float_range(stats["cpa_values"]),  # type: ignore[arg-type]
                 wall=fmt_float_range(stats["wall_values"]),  # type: ignore[arg-type]
                 cn_ports=set_string(stats["cn_ports"]),  # type: ignore[arg-type]

@@ -216,7 +216,7 @@ run_case_isolated() {
   case_dir="$RUN_ROOT/$case_tag"
   case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
   prepare_case_dir "$case_dir" || {
-    echo "case=$case_name  expected=$EXPECTED  actual=script_error  status=error  perf_status=error  perf_notes=prepare_failed  warning_count=$perf_warning_count" > "$case_result_file"
+    echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error  perf_status=error  perf_notes=prepare_failed  warning_count=$perf_warning_count" > "$case_result_file"
     return 1
   }
 
@@ -244,10 +244,10 @@ run_case_isolated() {
 
   if [ "$JUST_MAKE" = "yes" ]; then
     if [ "$launch_rc" = 0 ]; then
-      echo "case=$case_name  expected=just_make  actual=just_make  status=ok  perf_status=skip  perf_notes=none  warning_count=na" > "$case_result_file"
+      echo "case=$case_name  case_result=success  expected=just_make  actual=just_make  perf_status=skip  perf_notes=none  warning_count=na" > "$case_result_file"
       return 0
     fi
-    echo "case=$case_name  expected=just_make  actual=script_error  status=error  perf_status=error  perf_notes=launch_failed  warning_count=na" > "$case_result_file"
+    echo "case=$case_name  case_result=error  expected=just_make  actual=script_error  perf_status=error  perf_notes=launch_failed  warning_count=na" > "$case_result_file"
     return 1
   fi
 
@@ -257,7 +257,7 @@ run_case_isolated() {
     actual="missing"
   fi
 
-  status="ok"
+  status="success"
   if [ "$launch_rc" != 0 ]; then
     status="error"
     actual="script_error"
@@ -275,8 +275,8 @@ run_case_isolated() {
     fi
   fi
 
-  echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  $line" > "$case_result_file"
-  [ "$status" = "ok" ]
+  echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  perf_status=$perf_status  perf_notes=$perf_notes  warning_count=$perf_warning_count  $line" > "$case_result_file"
+  [ "$status" = "success" ]
 }
 
 trap cleanup EXIT

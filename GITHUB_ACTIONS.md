@@ -108,7 +108,7 @@ The correctness job does more than rely on shell exit status:
    - the parsed case count is wrong
    - any case line is missing required fields
    - any `actual` value does not match `expected`
-   - any `status` is not `ok`
+   - any `case_result` is not `success`
 
 For the current collision harness, the parser expects 6 case lines.
 For the current `P01` performance harness, the parser expects 3 case lines.

@@ -22,7 +22,7 @@ It preserves the mission-owned report columns and wraps them in the usual harnes
 - `case`
 - `expected`
 - `actual`
-- `status`
+- `case_result`
 - `perf_status`
 - `perf_notes`
 - `warning_count`

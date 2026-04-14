@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 
 
-REQUIRED_KEYS = ("case", "expected", "actual", "status")
+REQUIRED_KEYS = ("case", "expected", "actual", "case_result")
 
 
 def parse_args() -> argparse.Namespace:
@@ -23,9 +23,11 @@ def parse_args() -> argparse.Namespace:
         help="Require this many result lines.",
     )
     parser.add_argument(
+        "--require-case-result",
         "--require-status",
-        default="ok",
-        help="Require every case to have this status value.",
+        dest="require_case_result",
+        default="success",
+        help="Require every case to have this case_result value.",
     )
     parser.add_argument(
         "--summary-path",
@@ -42,6 +44,10 @@ def parse_results_line(line: str) -> dict[str, str]:
             continue
         key, value = token.split("=", 1)
         fields[key] = value
+    if "case_result" not in fields and "status" in fields:
+        fields["case_result"] = "success" if fields["status"] == "ok" else fields["status"]
+    if "perf_status" not in fields and "perf_case_result" in fields:
+        fields["perf_status"] = fields["perf_case_result"]
     return fields
 
 
@@ -66,7 +72,7 @@ def build_summary(
     lines.extend(
         [
             "",
-            "| case | expected | actual | status | perf_status | warning_count | grade |",
+            "| case | case_result | expected | actual | perf_status | warning_count | grade |",
             "| --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
@@ -74,11 +80,11 @@ def build_summary(
     if rows:
         for row in rows:
             lines.append(
-                "| {case} | {expected} | {actual} | {status} | {perf_status} | {warning_count} | {grade} |".format(
+                "| {case} | {case_result} | {expected} | {actual} | {perf_status} | {warning_count} | {grade} |".format(
                     case=row.get("case", "?"),
+                    case_result=row.get("case_result", "?"),
                     expected=row.get("expected", "?"),
                     actual=row.get("actual", "?"),
-                    status=row.get("status", "?"),
                     perf_status=row.get("perf_status", "-"),
                     warning_count=row.get("warning_count", "-"),
                     grade=row.get("grade", "?"),
@@ -127,15 +133,15 @@ def main() -> int:
         case_name = row.get("case", "<missing>")
         expected = row.get("expected")
         actual = row.get("actual")
-        status = row.get("status")
+        case_result = row.get("case_result")
 
         if expected is not None and actual is not None and actual != expected:
             issues.append(
                 f"Case `{case_name}` expected `{expected}` but got `{actual}`."
             )
-        if status is not None and status != args.require_status:
+        if case_result is not None and case_result != args.require_case_result:
             issues.append(
-                f"Case `{case_name}` had status `{status}` instead of `{args.require_status}`."
+                f"Case `{case_name}` had case_result `{case_result}` instead of `{args.require_case_result}`."
             )
 
     summary = build_summary(args.harness, results_path, rows, issues)

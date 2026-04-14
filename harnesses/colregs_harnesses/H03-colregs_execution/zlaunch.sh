@@ -269,7 +269,7 @@ run_case() {
     if [ "$actual" = "" ]; then
         actual="missing"
     fi
-    status="ok"
+    status="success"
     wall_note="wall_time_check=ok"
     if [ "$actual" = "missing" ]; then
         status="error"
@@ -288,7 +288,7 @@ run_case() {
         fi
     fi
 
-    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $wall_note  $line" >> "$RESULTS_FILE"
+    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $wall_note  $line" >> "$RESULTS_FILE"
     ktm >/dev/null 2>&1 || true
     clear_xfiles
     cd "$HARNESS_DIR"
@@ -317,7 +317,7 @@ run_case_isolated() {
     case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  expected=$EXPECTED  actual=script_error  status=error" > "$case_result_file"
+        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
         return 1
     }
 
@@ -337,10 +337,10 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = "0" ]; then
-            echo "case=$case_name  expected=just_make  actual=just_make  status=ok" > "$case_result_file"
+            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
             return 0
         fi
-        echo "case=$case_name  expected=just_make  actual=script_error  status=error" > "$case_result_file"
+        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
         return 1
     fi
 
@@ -349,7 +349,7 @@ run_case_isolated() {
     if [ "$actual" = "" ]; then
         actual="missing"
     fi
-    status="ok"
+    status="success"
     wall_note="wall_time_check=ok"
     if [ "$actual" = "missing" ]; then
         status="error"
@@ -368,11 +368,11 @@ run_case_isolated() {
         fi
     fi
 
-    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $wall_note  launch_rc=$launch_rc  $line" > "$case_result_file"
+    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $wall_note  launch_rc=$launch_rc  $line" > "$case_result_file"
     if [ "$launch_rc" != "0" ] && [ "$actual" = "missing" ]; then
         return 1
     fi
-    if [ "$actual" != "$EXPECTED" ] || [ "$status" != "ok" ]; then
+    if [ "$actual" != "$EXPECTED" ] || [ "$status" != "success" ]; then
         return 1
     fi
     return 0
@@ -427,11 +427,11 @@ else
     for ONE_CASE in $CASES; do
         case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
         if [ "$case_file" = "" ]; then
-            echo "case=$ONE_CASE  expected=unknown  actual=missing  status=error" >> "$RESULTS_FILE"
+            echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=missing" >> "$RESULTS_FILE"
             ALL_OK="no"
         else
             cat "$case_file" >> "$RESULTS_FILE"
-            grep -q " status=ok " "$case_file" || ALL_OK="no"
+            grep -q " case_result=success " "$case_file" || ALL_OK="no"
         fi
     done
 fi

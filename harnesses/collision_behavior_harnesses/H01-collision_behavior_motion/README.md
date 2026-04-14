@@ -41,13 +41,13 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
 Typical pass line:
 
 ```text
-case=default_resolve_pass  expected=pass  actual=pass  status=ok  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  collisions=0  mhash=[WARM-ELMO]
+case=default_resolve_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  collisions=0  mhash=[WARM-ELMO]
 ```
 
 Typical fail line:
 
 ```text
-case=no_alert_request_fail  expected=fail  actual=fail  status=ok  grade=fail  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[...]
+case=no_alert_request_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[...]
 ```
 
 Field anatomy:
@@ -55,7 +55,7 @@ Field anatomy:
 - `case`: harness case name
 - `expected`: what the harness expected the mission to grade
 - `actual`: what the mission actually graded
-- `status`: `ok` when expected equals actual
+- `case_result`: `success` when expected equals actual
 - `grade`: mission-level pass/fail from `pMissionEval`
 - `form`: mission family name
 - `mmod`: case-specific mission mode

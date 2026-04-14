@@ -204,7 +204,7 @@ run_case() {
         actual="missing"
     fi
 
-    status="ok"
+    status="success"
     if [ "$launch_rc" != 0 ]; then
         status="error"
         actual="script_error"
@@ -218,9 +218,9 @@ run_case() {
     fi
 
     if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  launch_rc=$launch_rc  $line" >> "$RESULTS_FILE"
+        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  launch_rc=$launch_rc  $line" >> "$RESULTS_FILE"
     else
-        echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line" >> "$RESULTS_FILE"
+        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" >> "$RESULTS_FILE"
     fi
     cd "$HARNESS_DIR"
 }
@@ -240,7 +240,7 @@ fi
 
 for ONE_CASE in $CASES; do
     run_case "$ONE_CASE" || {
-        echo "case=$ONE_CASE  expected=unknown  actual=script_error  status=error" >> "$RESULTS_FILE"
+        echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
         ALL_OK="no"
         if [ "$JUST_MAKE" != "yes" ]; then
             break

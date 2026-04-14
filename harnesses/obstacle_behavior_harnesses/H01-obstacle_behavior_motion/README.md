@@ -52,13 +52,13 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
 Typical pass line:
 
 ```text
-case=default_auto_request_pass  expected=pass  actual=pass  status=ok  grade=pass  form=obstacle_behavior_motion_tests  mmod=default_auto_request_pass  eval=true  obavoiding=end  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=true  range_flag_seen=false  cpa_flag_seen=false  resolved=ob_lane  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[...]
+case=default_auto_request_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=obstacle_behavior_motion_tests  mmod=default_auto_request_pass  eval=true  obavoiding=end  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=true  range_flag_seen=false  cpa_flag_seen=false  resolved=ob_lane  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[...]
 ```
 
 Typical fail line:
 
 ```text
-case=avoid_disabled_fail  expected=fail  actual=fail  status=ok  grade=fail  form=obstacle_behavior_motion_tests  mmod=avoid_disabled_fail  eval=true  obavoiding=idle  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=false  range_flag_seen=false  cpa_flag_seen=false  resolved=  arrived=false  collisions=0  near_misses=0  encounters=1  mhash=[...]
+case=avoid_disabled_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=obstacle_behavior_motion_tests  mmod=avoid_disabled_fail  eval=true  obavoiding=idle  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=false  range_flag_seen=false  cpa_flag_seen=false  resolved=  arrived=false  collisions=0  near_misses=0  encounters=1  mhash=[...]
 ```
 
 Field anatomy:

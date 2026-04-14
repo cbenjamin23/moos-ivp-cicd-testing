@@ -53,13 +53,13 @@ and running a short `70m` eastbound corridor.
 Typical pass line:
 
 ```text
-case=baseline_crossing_pass  expected=pass  actual=pass  status=ok  grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[COLD-DUKE]
+case=baseline_crossing_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[COLD-DUKE]
 ```
 
 Typical fail line:
 
 ```text
-case=avoid_disabled_fail  expected=fail  actual=fail  status=ok  grade=fail  form=cmgr_motion_tests  mmod=avoid_disabled_fail  eval=true  arrived=true  detected=true  closest=intruder  range=81  encounters=1  near_misses=0  collisions=0  mhash=[VICE-SLUG]
+case=avoid_disabled_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=cmgr_motion_tests  mmod=avoid_disabled_fail  eval=true  arrived=true  detected=true  closest=intruder  range=81  encounters=1  near_misses=0  collisions=0  mhash=[VICE-SLUG]
 ```
 
 Field anatomy:
@@ -67,7 +67,7 @@ Field anatomy:
 - `case`: harness case name
 - `expected`: what the harness expected the mission to grade
 - `actual`: what the mission actually graded
-- `status`: `ok` when expected equals actual
+- `case_result`: `success` when expected equals actual
 - `grade`: mission-level pass/fail from `pMissionEval`
 - `form`: mission family name
 - `mmod`: case-specific mission mode

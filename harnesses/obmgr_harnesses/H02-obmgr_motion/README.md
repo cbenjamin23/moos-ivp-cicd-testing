@@ -49,13 +49,13 @@ Current cases:
 Typical results line:
 
 ```text
-case=baseline_center_pass  expected=pass  actual=pass  status=ok  grade=pass  form=obavoid_tests_harness  mmod=baseline_center_pass  eval=true  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[NEAR-TODD]
+case=baseline_center_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=obavoid_tests  mmod=baseline_center_pass  eval=true  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[NEAR-TODD]
 ```
 
 Key fields:
 - `expected` is the harness expectation for the case.
 - `actual` is the mission grade parsed from the mission `results.txt`.
-- `status` is the harness comparison result.
+- `case_result` is the harness comparison result.
 - `grade`, `form`, `mmod`, and the trailing metrics come from the mission-level `pMissionEval` report.
 
 Latest validation:

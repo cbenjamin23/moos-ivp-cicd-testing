@@ -313,13 +313,13 @@ run_case() {
         actual="missing"
     fi
 
-    status="ok"
+    status="success"
     if [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
         ALL_OK="no"
     fi
 
-    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line" >> "$RESULTS_FILE"
+    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" >> "$RESULTS_FILE"
     cd "$HARNESS_DIR"
 }
 
@@ -371,7 +371,7 @@ run_case_isolated() {
     case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  expected=$EXPECTED  actual=script_error  status=error" > "$case_result_file"
+        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
         return 1
     }
 
@@ -396,10 +396,10 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = 0 ]; then
-            echo "case=$case_name  expected=just_make  actual=just_make  status=ok" > "$case_result_file"
+            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
             return 0
         fi
-        echo "case=$case_name  expected=just_make  actual=script_error  status=error" > "$case_result_file"
+        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
         return 1
     fi
 
@@ -409,14 +409,14 @@ run_case_isolated() {
         actual="missing"
     fi
 
-    status="ok"
+    status="success"
     if [ "$launch_rc" != 0 ] || [ "$actual" != "$EXPECTED" ]; then
         status="mismatch"
     fi
 
-    echo "case=$case_name  expected=$EXPECTED  actual=$actual  status=$status  $line" > "$case_result_file"
+    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" > "$case_result_file"
 
-    if [ "$status" = "ok" ]; then
+    if [ "$status" = "success" ]; then
         return 0
     fi
     return 1
@@ -443,7 +443,7 @@ fi
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     for case_name in $CASES; do
         run_case "$case_name" || {
-            echo "case=$case_name  expected=unknown  actual=script_error  status=error" >> "$RESULTS_FILE"
+            echo "case=$case_name  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
             if [ "$JUST_MAKE" != "yes" ]; then
                 break
@@ -484,8 +484,8 @@ else
                 cat "$CASE_RESULT_DIR/${case_tag}.txt" >> "$RESULTS_FILE"
                 echo >> "$RESULTS_FILE"
                 line=`tail -n 2 "$RESULTS_FILE" | head -n 1`
-                status=`echo "$line" | sed -n 's/.*status=\([^ ]*\).*/\1/p'`
-                if [ "$status" != "ok" ]; then
+                case_result=`echo "$line" | sed -n 's/.*case_result=\([^ ]*\).*/\1/p'`
+                if [ "$case_result" != "success" ]; then
                     ALL_OK="no"
                 fi
             else
