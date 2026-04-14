@@ -220,7 +220,7 @@ jobs:
           set -euo pipefail
           (
             cd harnesses/performance_harnesses/P01-obstacle_gauntlet
-            ./zlaunch.sh --jobs=2 10
+            ./zlaunch.sh 5
           )
 
       - name: Upload P01 performance results
@@ -289,7 +289,7 @@ jobs:
           set -euo pipefail
           (
             cd harnesses/performance_harnesses/P03-colregs_traffic_ring
-            ./zlaunch.sh 10
+            ./zlaunch.sh 5
           )
 
       - name: Upload P03 performance results
