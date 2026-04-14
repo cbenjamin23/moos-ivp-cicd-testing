@@ -216,11 +216,13 @@ jobs:
       - name: Run P01 obstacle performance harness
         id: p01_performance_harness
         continue-on-error: true
+        env:
+          PERF_PROFILE: ci
         run: |
           set -euo pipefail
           (
             cd harnesses/performance_harnesses/P01-obstacle_gauntlet
-            ./zlaunch.sh 5
+            ./zlaunch.sh
           )
 
       - name: Upload P01 performance results
@@ -285,11 +287,13 @@ jobs:
       - name: Run P03 colregs traffic-ring harness
         id: p03_performance_harness
         continue-on-error: true
+        env:
+          PERF_PROFILE: ci
         run: |
           set -euo pipefail
           (
             cd harnesses/performance_harnesses/P03-colregs_traffic_ring
-            ./zlaunch.sh 5
+            ./zlaunch.sh
           )
 
       - name: Upload P03 performance results

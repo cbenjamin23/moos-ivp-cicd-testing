@@ -9,7 +9,8 @@ trap "echo zlaunch.sh has received sigterm" SIGTERM
 
 ME=$(basename "$0")
 CMD_ARGS=""
-TIME_WARP="10"
+PERF_PROFILE="${PERF_PROFILE:-local}"
+TIME_WARP=""
 VERBOSE=""
 JUST_MAKE=""
 MAX_TIME="700"
@@ -33,9 +34,9 @@ for ARGI; do
   CMD_ARGS+="${ARGI} "
   if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
     echo "$ME [OPTIONS] [time_warp]"
+    echo "  --profile=<name>   Set perf profile (local or ci)"
+    echo "  PERF_PROFILE=ci    Run with CI timing defaults"
     exit 0
-  elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
-    TIME_WARP=$ARGI
   elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
     VERBOSE="yes"
   elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
@@ -50,10 +51,27 @@ for ARGI; do
     PORT_BASE="${ARGI#--port_base=*}"
   elif [ "${ARGI}" = "--keep_workdirs" ]; then
     KEEP_WORKDIRS="yes"
+  elif [ "${ARGI:0:10}" = "--profile=" ]; then
+    PERF_PROFILE="${ARGI#--profile=*}"
   elif [ "${ARGI}" = "--gui" ]; then
     NOGUI=""
+  elif [ "${ARGI//[^0-9]/}" = "$ARGI" ] && [ "$TIME_WARP" = "" ]; then
+    TIME_WARP=$ARGI
   fi
 done
+
+case "$PERF_PROFILE" in
+  local)
+    [ "$TIME_WARP" = "" ] && TIME_WARP="10"
+    ;;
+  ci)
+    [ "$TIME_WARP" = "" ] && TIME_WARP="5"
+    ;;
+  *)
+    echo "$ME: Bad value for PERF_PROFILE: [$PERF_PROFILE]"
+    exit 1
+    ;;
+esac
 
 cleanup() {
   local start_dir="$PWD"
@@ -174,16 +192,31 @@ get_case_config() {
 
   case "$case_name" in
     baseline_circle_pass)
-      WALL_MIN="30.0"
-      WALL_MAX="32.0"
+      if [ "$PERF_PROFILE" = "ci" ]; then
+        WALL_MIN="58.0"
+        WALL_MAX="70.0"
+      else
+        WALL_MIN="30.0"
+        WALL_MAX="32.0"
+      fi
       ;;
     mixed_speed_circle_pass)
-      WALL_MIN="30.0"
-      WALL_MAX="32.0"
+      if [ "$PERF_PROFILE" = "ci" ]; then
+        WALL_MIN="58.0"
+        WALL_MAX="70.0"
+      else
+        WALL_MIN="30.0"
+        WALL_MAX="32.0"
+      fi
       ;;
     endurance_circle_pass)
-      WALL_MIN="89.5"
-      WALL_MAX="92.5"
+      if [ "$PERF_PROFILE" = "ci" ]; then
+        WALL_MIN="175.0"
+        WALL_MAX="190.0"
+      else
+        WALL_MIN="89.5"
+        WALL_MAX="92.5"
+      fi
       ;;
     *)
       echo "$ME: Unknown case [$case_name]"

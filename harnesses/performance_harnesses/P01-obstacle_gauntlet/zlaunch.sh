@@ -13,7 +13,8 @@ ME=`basename "$0"`
 CMD_ARGS=""
 VERBOSE=""
 JUST_MAKE=""
-TIME_WARP="10"
+PERF_PROFILE="${PERF_PROFILE:-local}"
+TIME_WARP=""
 MAX_TIME="480"
 NOGUI="--nogui"
 CASE=""
@@ -47,16 +48,16 @@ for ARGI; do
         echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
+        echo "  --profile=<name>   Set perf profile (local or ci)"
         echo ""
         echo "Examples:"
         echo "  ./zlaunch.sh"
+        echo "  PERF_PROFILE=ci ./zlaunch.sh"
         echo "  ./zlaunch.sh --case=baseline_field_pass"
         echo "  ./zlaunch.sh --case=dense_field_pass"
         echo "  ./zlaunch.sh --case=endurance_random_pass"
         echo "  ./zlaunch.sh --jobs=2"
         exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
-        TIME_WARP=$ARGI
     elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
         VERBOSE="yes"
     elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
@@ -71,8 +72,12 @@ for ARGI; do
         PORT_BASE="${ARGI#--port_base=*}"
     elif [ "${ARGI}" = "--keep_workdirs" ]; then
         KEEP_WORKDIRS="yes"
+    elif [ "${ARGI:0:10}" = "--profile=" ]; then
+        PERF_PROFILE="${ARGI#--profile=*}"
     elif [ "${ARGI}" = "--gui" ]; then
         NOGUI=""
+    elif [ "${ARGI//[^0-9]/}" = "$ARGI" ] && [ "$TIME_WARP" = "" ]; then
+        TIME_WARP=$ARGI
     else
         echo "$ME: Bad arg:" $ARGI "Exit Code 1."
         exit 1
@@ -88,6 +93,19 @@ if ! echo "$PORT_BASE" | grep -Eq '^[0-9]+$'; then
     echo "$ME: Bad value for --port_base: [$PORT_BASE]"
     exit 1
 fi
+
+case "$PERF_PROFILE" in
+    local)
+        [ "$TIME_WARP" = "" ] && TIME_WARP="10"
+        ;;
+    ci)
+        [ "$TIME_WARP" = "" ] && TIME_WARP="5"
+        ;;
+    *)
+        echo "$ME: Bad value for PERF_PROFILE: [$PERF_PROFILE]"
+        exit 1
+        ;;
+esac
 
 cleanup() {
     local start_dir="$PWD"
@@ -215,20 +233,35 @@ get_case_config() {
     if [ "$CASE_NAME" = "baseline_field_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/baseline-field-pass-shoreside.xmoos"
-        WALL_MIN="16.5"
-        WALL_MAX="20.0"
+        if [ "$PERF_PROFILE" = "ci" ]; then
+            WALL_MIN="33.0"
+            WALL_MAX="40.0"
+        else
+            WALL_MIN="16.5"
+            WALL_MAX="20.0"
+        fi
         WARNING_MAX="0"
     elif [ "$CASE_NAME" = "dense_field_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dense-field-pass-shoreside.xmoos"
-        WALL_MIN="16.5"
-        WALL_MAX="20.0"
+        if [ "$PERF_PROFILE" = "ci" ]; then
+            WALL_MIN="33.0"
+            WALL_MAX="40.0"
+        else
+            WALL_MIN="16.5"
+            WALL_MAX="20.0"
+        fi
         WARNING_MAX="0"
     elif [ "$CASE_NAME" = "endurance_random_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/endurance-random-pass-shoreside.xmoos"
-        WALL_MIN="145.0"
-        WALL_MAX="180.0"
+        if [ "$PERF_PROFILE" = "ci" ]; then
+            WALL_MIN="290.0"
+            WALL_MAX="360.0"
+        else
+            WALL_MIN="145.0"
+            WALL_MAX="180.0"
+        fi
         WARNING_MAX="0"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
