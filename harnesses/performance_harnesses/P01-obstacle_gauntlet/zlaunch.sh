@@ -99,7 +99,7 @@ case "$PERF_PROFILE" in
         [ "$TIME_WARP" = "" ] && TIME_WARP="10"
         ;;
     ci)
-        [ "$TIME_WARP" = "" ] && TIME_WARP="5"
+        [ "$TIME_WARP" = "" ] && TIME_WARP="2"
         ;;
     *)
         echo "$ME: Bad value for PERF_PROFILE: [$PERF_PROFILE]"
@@ -234,8 +234,8 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/baseline-field-pass-shoreside.xmoos"
         if [ "$PERF_PROFILE" = "ci" ]; then
-            WALL_MIN="33.0"
-            WALL_MAX="40.0"
+            WALL_MIN="80.0"
+            WALL_MAX="95.0"
         else
             WALL_MIN="16.5"
             WALL_MAX="20.0"
@@ -245,8 +245,8 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dense-field-pass-shoreside.xmoos"
         if [ "$PERF_PROFILE" = "ci" ]; then
-            WALL_MIN="33.0"
-            WALL_MAX="40.0"
+            WALL_MIN="80.0"
+            WALL_MAX="95.0"
         else
             WALL_MIN="16.5"
             WALL_MAX="20.0"
@@ -256,8 +256,8 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/endurance-random-pass-shoreside.xmoos"
         if [ "$PERF_PROFILE" = "ci" ]; then
-            WALL_MIN="290.0"
-            WALL_MAX="360.0"
+            WALL_MIN="780.0"
+            WALL_MAX="900.0"
         else
             WALL_MIN="145.0"
             WALL_MAX="180.0"
