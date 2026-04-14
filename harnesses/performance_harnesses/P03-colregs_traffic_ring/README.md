@@ -20,6 +20,11 @@ Current split:
   - `wall_time` bands
   - disallowed warning text in the newest `.alog`
 
+The harness has two timing profiles:
+- `local` is the default and keeps the original warp `10` timing bands.
+- `ci` is what GitHub Actions sets through `PERF_PROFILE=ci`; it uses warp `5`
+  and the relaxed wall-time bands below.
+
 Current supported envelopes:
 - `baseline_circle_pass`: `collisions=0`, `batches>=25`
 - `mixed_speed_circle_pass`: `collisions=0`, `batches>=25`
@@ -29,7 +34,18 @@ Notes:
 - `assign_fails` is still reported, but it is treated as coordinator health rather than the primary traffic verdict.
 - `closest_range_ever` and `near_misses` are still reported as telemetry, but they are not the primary gate for the async random traffic mission.
 - If a harness batch fails, the temp case directories are preserved and the wrapper prints the retained root path.
+- GitHub Actions runs this harness with `PERF_PROFILE=ci`.
 
 This is a seeded-random performance harness, not a correctness harness like
 `H01-H04`. The mission is randomized within a fixed seed so failures are
 replayable.
+
+Current shell-side checks:
+- `local`
+  - `baseline_circle_pass`: `wall_time` in `[30.0,32.0]`, warning count `0`
+  - `mixed_speed_circle_pass`: `wall_time` in `[30.0,32.0]`, warning count `0`
+  - `endurance_circle_pass`: `wall_time` in `[89.5,92.5]`, warning count `0`
+- `ci`
+  - `baseline_circle_pass`: `wall_time` in `[58.0,70.0]`, warning count `0`
+  - `mixed_speed_circle_pass`: `wall_time` in `[58.0,70.0]`, warning count `0`
+  - `endurance_circle_pass`: `wall_time` in `[175.0,190.0]`, warning count `0`
