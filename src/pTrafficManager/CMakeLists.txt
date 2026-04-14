@@ -13,7 +13,7 @@ ADD_EXECUTABLE(pTrafficManager ${SRC})
 TARGET_LINK_LIBRARIES(pTrafficManager
   ${MOOS_LIBRARIES}
   apputil
-  mbutil
   geometry
+  mbutil
   m
   pthread)
