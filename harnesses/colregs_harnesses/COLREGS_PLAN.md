@@ -3,11 +3,25 @@
 This document outlines the intended correctness-harness structure for the
 COLREGS family built around `BHV_AvdColregsV22`.
 
+Working follow-on items are tracked in [TODO.md](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/colregs_harnesses/TODO.md).
+
+## Current Status
+
+The core correctness family is currently treated as:
+- `H01-colregs_classification`: implemented and signed off
+- `H02-colregs_thresholds`: implemented and signed off
+- `H03-colregs_execution`: implemented and signed off
+- `H04-colregs_parameters`: implemented and effectively complete for the
+  current no-app-change scope
+
+This means the plan is no longer just aspirational. It is also a record of the
+current signed-off harness split.
+
 ## Mission Split
 
-Planned correctness split:
+Correctness split:
 - `H01-colregs_classification`: classification-centric canonical two-vessel encounters
-- `H02-colregs_thresholds`: geometry and parameter boundary checks
+- `H02-colregs_thresholds`: geometry and source-threshold boundary checks
 - `H03-colregs_execution`: realized maneuver quality checks
 - `H04-colregs_parameters`: behavior-parameter regression suite
 
@@ -34,7 +48,10 @@ family, for example in the performance/integration harnesses.
   - draw enough geometry to make port/starboard pass side readable
   - expose CPA / closest-range cues where possible
 - Mission-side evaluation should remain simple and robust.
-- Harness-side evaluation should own most case-specific assertions.
+- Prefer mission-side ownership of case-specific assertions when the source
+  exposes clean MOOS-visible signals.
+- Harness-side grading should be reserved for checks that are not cleanly
+  available through mission-side state.
 
 ## Planned Assertions By Suite
 
@@ -64,6 +81,14 @@ Primary questions:
 - Do important tuning knobs still behave sensibly?
 - Can we detect unsafe or qualitatively wrong regressions after parameter or
   source changes?
+
+## Scope Boundary
+
+This plan covers the core correctness family only.
+
+Broader moving, multi-vessel, endurance, or randomized traffic coverage should
+be handled outside `H01-H04`, typically in the performance/integration
+harnesses.
 
 ## Planned Metrics
 

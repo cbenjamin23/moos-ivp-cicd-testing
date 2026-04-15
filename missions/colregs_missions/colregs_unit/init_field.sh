@@ -138,6 +138,9 @@ for ARGI; do
 	        echo "                       crossing_port_standon_band315_unsure_pass"
 	        echo "                       crossing_port_standon_band315_unsure_bow_pass"
 	        echo "                       crossing_port_standon_band315_bow_pass"
+	        echo "                       crossing_port_standon_band350_to315_transition_below_pass"
+	        echo "                       crossing_port_standon_band350_to315_transition_edge_pass"
+	        echo "                       crossing_port_standon_band350_to315_transition_above_pass"
 	        echo "                     Note:"
 	        echo "                       H02 harness case names such as"
 	        echo "                       standon_band315_* and standon_band270_*"
@@ -729,6 +732,54 @@ case "$MMOD" in
         B_POS="0,-64,180"
         A_DEST="50,-80"
         B_DEST="0,-145"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band350_to315_transition_below_pass)
+        A_POS="-35,-80,90"
+        B_POS="-14.5,-74,180"
+        A_DEST="50,-80"
+        B_DEST="-14.5,-145"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band350_to315_transition_edge_pass)
+        A_POS="-35,-80,90"
+        B_POS="-14.5,-72.5,180"
+        A_DEST="50,-80"
+        B_DEST="-14.5,-145"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band350_to315_transition_above_pass)
+        A_POS="-35,-80,90"
+        B_POS="-14.5,-70.5,180"
+        A_DEST="50,-80"
+        B_DEST="-14.5,-145"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band270_to180_transition_below_pass)
+        A_POS="-30,-90,90"
+        B_POS="0,-84,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-181"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band270_to180_transition_edge_pass)
+        A_POS="-30,-90,90"
+        B_POS="0,-82,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-181"
+        A_SPD="1.4"
+        B_SPD="1.3"
+        ;;
+    crossing_port_standon_band270_to180_transition_above_pass)
+        A_POS="-30,-90,90"
+        B_POS="0,-80,225"
+        A_DEST="110,-90"
+        B_DEST="-89,-181"
         A_SPD="1.4"
         B_SPD="1.3"
         ;;

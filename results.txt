@@ -1,1 +1,0 @@
-case=baseline_center_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=obavoid_tests  mmod=baseline_center_pass  eval=true  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[NEAR-TODD]
