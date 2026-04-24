@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Avoid-Obstacle Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 Avoid-Obstacle Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_AvoidObstacleV24. These cases isolate the behavior-owned contract for obstacle alert requests, helper flags, lifecycle evidence, resolution signals, and clean transit outcomes.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one ownship through deterministic obstacle layouts with obstacle-manager input held stable. The cases focus on what BHV_AvoidObstacleV24 requests, flags, and resolves.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="obstacle-behavior-two-obstacles.gif">
+          <img src="../assets/gifs/obstacle-behavior-two-obstacles.gif" alt="Two Obstacles Clean GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Two Obstacles Clean</h3>
+          <p>Representative case: <code>two_obstacles_clean_pass</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="obstacle-behavior-avoid-disabled.gif">
+          <img src="../assets/gifs/obstacle-behavior-avoid-disabled.gif" alt="Avoid Disabled Fail GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Avoid Disabled Fail</h3>
+          <p>Representative case: <code>avoid_disabled_fail</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>default_auto_request_pass</code>
+          <p>Baseline one-obstacle case. The behavior should request alerts, engage, complete, and still arrive with zero collisions.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rng_flag_pass</code>
+          <p>The behavior is case-specific with rng_flag=&lt;20 AVOID_RANGE_SEEN=true. The mission passes only if that behavior-owned range flag is actually seen.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cpa_flag_pass</code>
+          <p>The behavior is case-specific with cpa_flag=AVOID_CPA_SEEN=true. This is a more niche path because the flag only posts after a real CPA event is observed. This...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>offlane_no_engagement_pass</code>
+          <p>The obstacle is moved well above the lane. The behavior should still request its alert path, but it should never receive an obstacle alert or run.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_refinery_pass</code>
+          <p>The behavior is case-specific with use_refinery=false. This keeps the same geometry, but exercises a different internal objective-building path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>two_obstacles_clean_pass</code>
+          <p>Two obstacles are placed in the corridor with one lower and one upper bias. This is the suite&#x27;s multi-obstacle clean-completion case: the vehicle should still...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>avoid_disabled_fail</code>
+          <p>The behavior is case-specific so its AVOID=true condition can never hold. The alert request still happens, but the avoid-obstacle lifecycle should fail to...</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/obstacle_behavior_missions/obstacle_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

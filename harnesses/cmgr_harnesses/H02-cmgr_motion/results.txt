@@ -1,0 +1,1 @@
+case=baseline_crossing_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=29  encounters=0  near_misses=0  collisions=0  mhash=[EPIC-CRIB]

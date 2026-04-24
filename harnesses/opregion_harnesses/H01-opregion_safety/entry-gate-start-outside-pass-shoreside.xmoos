@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_POLYGON, val="pts={-10,-152:47,-152:47,-90:-10,-90},label=opreg_core_fixed,edge_color=white,vertex_size=0,edge_size=2,duration=9999", time=1
+  event = var=VIEW_POLYGON, val="pts={-15,-157:52,-157:52,-85:-15,-85},label=opreg_halt_fixed,edge_color=white,vertex_size=0,edge_size=1,duration=9999", time=1
+}

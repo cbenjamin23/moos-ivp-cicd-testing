@@ -1,6 +1,7 @@
-//----------------------------------------------------
-// Vehicle MOOS config file
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_vehicle.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -79,7 +80,7 @@ ProcessConfig = pNodeReporter
   terse_reports  = true
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 // pContactMgrV20 Config Block
 
 ProcessConfig = pContactMgrV20
@@ -102,7 +103,7 @@ ProcessConfig = pContactMgrV20
   hold_alerts_for_helm = false
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pSpoofNode Config Block
 
 ProcessConfig = pSpoofNode
@@ -119,7 +120,7 @@ ProcessConfig = pSpoofNode
   default_vsource  = ais
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uTimerScript Config Block
 
 ProcessConfig = uTimerScript
@@ -132,7 +133,7 @@ ProcessConfig = uTimerScript
   event = var=SPOOF, val="name=intruder,x=39,y=-60,hdg=180,spd=0,vsource=ais,color=green,dur=45", time=2
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeBroker Config Block
 
 ProcessConfig = uFldNodeBroker
@@ -159,7 +160,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }
 
-//-----------------------------------------------------
+//----------------------------------------------------
 // pMarinePIDV22 Config Block
 
 ProcessConfig = pMarinePIDV22
@@ -186,7 +187,7 @@ ProcessConfig = pMarinePIDV22
   speed_factor = 20
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger

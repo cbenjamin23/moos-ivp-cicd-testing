@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P01 Obstacle Gauntlet | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Performance</p>
+      <h1>P01 Obstacle Gauntlet</h1>
+      <p class="lede">Performance and endurance tests for obstacle avoidance. These cases exercise repeated obstacle-field traversal and grade completion, collision safety, warning cleanliness, and wall-time behavior.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission is a repeatable obstacle-field loop. Individual cases change field density or duration so the same avoidance stack can be tested under baseline, dense, and longer-running pressure.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="performance-obstacle-gauntlet-baseline.gif">
+          <img src="../assets/gifs/performance-obstacle-gauntlet-baseline.gif" alt="Baseline Field GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Field</h3>
+          <p>Representative case: <code>baseline_field_pass</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="performance-obstacle-gauntlet-endurance.gif">
+          <img src="../assets/gifs/performance-obstacle-gauntlet-endurance.gif" alt="Endurance Random GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Endurance Random</h3>
+          <p>Representative case: <code>endurance_random_pass</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>baseline_field_pass</code>
+          <p>Covers baseline field expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dense_field_pass</code>
+          <p>Covers dense field expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>endurance_random_pass</code>
+          <p>Covers endurance random expected pass.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/performance_harnesses/P01-obstacle_gauntlet/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/performance_missions/P01-obstacle_gauntlet/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

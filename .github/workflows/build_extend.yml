@@ -1,18 +1,212 @@
 name: Build And Check Active Harnesses
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      dispatch_mode:
+        description: "full, family_run, correctness_subset, or just_make_subset"
+        required: true
+        type: choice
+        default: full
+        options:
+          - full
+          - family_run
+          - correctness_subset
+          - just_make_subset
+      family:
+        description: "Family for family_run: cmgr, obmgr, colregs, collision_behavior, obstacle_behavior, opregion, or performance"
+        required: false
+        type: choice
+        default: colregs
+        options:
+          - cmgr
+          - obmgr
+          - colregs
+          - collision_behavior
+          - obstacle_behavior
+          - opregion
+          - performance
+      targets:
+        description: "Comma-separated target keys for correctness_subset or just_make_subset modes"
+        required: false
+        default: "colregs_h01,colregs_h03"
+      time_warp:
+        description: "Time warp for manual runs that do not use a harness-specific CI profile"
+        required: false
+        default: "10"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+
+  select-targets:
+    if: ${{ inputs.dispatch_mode != 'full' }}
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+    steps:
+      - name: Select requested harness targets
+        id: select
+        env:
+          DISPATCH_MODE: ${{ inputs.dispatch_mode }}
+          FAMILY: ${{ inputs.family }}
+          TARGETS: ${{ inputs.targets }}
+        run: |
+          python3 <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import os
+          import sys
+
+          dispatch_mode = os.environ["DISPATCH_MODE"]
+          family = os.environ["FAMILY"]
+          raw_targets = os.environ["TARGETS"]
+          wanted = [item.strip() for item in raw_targets.split(",") if item.strip()]
+          all_targets = [
+              {
+                  "key": "cmgr_h01",
+                  "path": "harnesses/cmgr_harnesses/H01-cmgr_unit",
+                  "harness": "H01-cmgr_unit",
+                  "expected_count": 33,
+                  "artifact": "manual-cmgr-h01-results",
+                  "families": ["cmgr"],
+              },
+              {
+                  "key": "cmgr_h02",
+                  "path": "harnesses/cmgr_harnesses/H02-cmgr_motion",
+                  "harness": "H02-cmgr_motion",
+                  "expected_count": 9,
+                  "artifact": "manual-cmgr-h02-results",
+                  "families": ["cmgr"],
+              },
+              {
+                  "key": "obmgr_h01",
+                  "path": "harnesses/obmgr_harnesses/H01-obmgr_unit",
+                  "harness": "H01-obmgr_unit",
+                  "expected_count": 20,
+                  "artifact": "manual-obmgr-h01-results",
+                  "families": ["obmgr"],
+              },
+              {
+                  "key": "obmgr_h02",
+                  "path": "harnesses/obmgr_harnesses/H02-obmgr_motion",
+                  "harness": "H02-obmgr_motion",
+                  "expected_count": 6,
+                  "artifact": "manual-obmgr-h02-results",
+                  "families": ["obmgr"],
+              },
+              {
+                  "key": "colregs_h01",
+                  "path": "harnesses/colregs_harnesses/H01-colregs_classification",
+                  "harness": "H01-colregs_classification",
+                  "expected_count": 22,
+                  "artifact": "manual-colregs-h01-results",
+                  "families": ["colregs"],
+              },
+              {
+                  "key": "colregs_h02",
+                  "path": "harnesses/colregs_harnesses/H02-colregs_thresholds",
+                  "harness": "H02-colregs_thresholds",
+                  "expected_count": 58,
+                  "artifact": "manual-colregs-h02-results",
+                  "families": ["colregs"],
+              },
+              {
+                  "key": "colregs_h03",
+                  "path": "harnesses/colregs_harnesses/H03-colregs_execution",
+                  "harness": "H03-colregs_execution",
+                  "expected_count": 23,
+                  "artifact": "manual-colregs-h03-results",
+                  "families": ["colregs"],
+              },
+              {
+                  "key": "colregs_h04",
+                  "path": "harnesses/colregs_harnesses/H04-colregs_parameters",
+                  "harness": "H04-colregs_parameters",
+                  "expected_count": 32,
+                  "artifact": "manual-colregs-h04-results",
+                  "families": ["colregs"],
+              },
+              {
+                  "key": "collision_h01",
+                  "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion",
+                  "harness": "H01-collision_behavior_motion",
+                  "expected_count": 6,
+                  "artifact": "manual-collision-h01-results",
+                  "families": ["collision_behavior"],
+              },
+              {
+                  "key": "obstacle_behavior_h01",
+                  "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion",
+                  "harness": "H01-obstacle_behavior_motion",
+                  "expected_count": 7,
+                  "artifact": "manual-obstacle-behavior-h01-results",
+                  "families": ["obstacle_behavior"],
+              },
+              {
+                  "key": "opregion_h01",
+                  "path": "harnesses/opregion_harnesses/H01-opregion_safety",
+                  "harness": "H01-opregion_safety",
+                  "expected_count": 15,
+                  "artifact": "manual-opregion-h01-results",
+                  "families": ["opregion"],
+              },
+              {
+                  "key": "p01_obstacle",
+                  "path": "harnesses/performance_harnesses/P01-obstacle_gauntlet",
+                  "harness": "P01-obstacle_gauntlet",
+                  "expected_count": 3,
+                  "artifact": "manual-p01-obstacle-results",
+                  "families": ["performance"],
+                  "perf_profile": "ci",
+              },
+              {
+                  "key": "p02_colregs",
+                  "path": "harnesses/performance_harnesses/P02-colregs_joust",
+                  "harness": "P02-colregs_joust",
+                  "expected_count": 3,
+                  "artifact": "manual-p02-colregs-results",
+                  "families": ["colregs", "performance"],
+              },
+              {
+                  "key": "p03_colregs",
+                  "path": "harnesses/performance_harnesses/P03-colregs_traffic_ring",
+                  "harness": "P03-colregs_traffic_ring",
+                  "expected_count": 3,
+                  "artifact": "manual-p03-colregs-results",
+                  "families": ["colregs", "performance"],
+                  "perf_profile": "ci",
+              },
+          ]
+
+          if dispatch_mode == "family_run":
+              selected = [
+                  item for item in all_targets if family in item["families"]
+              ]
+              if not selected:
+                  sys.stderr.write(
+                      f"No live harnesses are configured for family '{family}'.\n"
+                  )
+                  raise SystemExit(1)
+          else:
+              target_map = {item["key"]: item for item in all_targets}
+              invalid = [item for item in wanted if item not in target_map]
+              if invalid:
+                  sys.stderr.write(
+                      "Unknown target key(s): " + ", ".join(invalid) + "\n"
+                  )
+                  sys.stderr.write(
+                      "Valid keys: " + ", ".join(sorted(target_map)) + "\n"
+                  )
+                  raise SystemExit(1)
+
+              selected = [target_map[item] for item in wanted]
+              if not selected:
+                  sys.stderr.write("No valid targets were selected.\n")
+                  raise SystemExit(1)
+
+          print("matrix=" + json.dumps({"include": selected}))
+          PY
 
   build:
     runs-on: ubuntu-latest
@@ -79,6 +273,7 @@ jobs:
           if-no-files-found: error
 
   just-make:
+    if: ${{ inputs.dispatch_mode == 'full' }}
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -89,6 +284,8 @@ jobs:
           - harnesses/cmgr_harnesses/H02-cmgr_motion
           - harnesses/obmgr_harnesses/H01-obmgr_unit
           - harnesses/obmgr_harnesses/H02-obmgr_motion
+          - harnesses/colregs_harnesses/H01-colregs_classification
+          - harnesses/colregs_harnesses/H03-colregs_execution
           - harnesses/collision_behavior_harnesses/H01-collision_behavior_motion
           - harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion
     steps:
@@ -120,6 +317,7 @@ jobs:
           ./zlaunch.sh --just_make 10
 
   collision-correctness:
+    if: ${{ inputs.dispatch_mode == 'full' }}
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -187,8 +385,340 @@ jobs:
             exit 1
           fi
 
+  colregs-classification-correctness:
+    if: ${{ inputs.dispatch_mode == 'full' }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Run full COLREGS classification harness
+        id: colregs_h01_harness
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          (
+            cd harnesses/colregs_harnesses/H01-colregs_classification
+            ./zlaunch.sh 10
+          )
+
+      - name: Upload COLREGS classification results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: colregs-classification-correctness-results
+          path: harnesses/colregs_harnesses/H01-colregs_classification/results.txt
+          if-no-files-found: warn
+
+      - name: Summarize COLREGS classification results
+        id: colregs_h01_results
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/ci_harness_results_summary.py \
+            --results harnesses/colregs_harnesses/H01-colregs_classification/results.txt \
+            --harness "H01-colregs_classification" \
+            --expected-count 22 \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce COLREGS classification success
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.colregs_h01_harness.outcome }}" != "success" ]; then
+            echo "COLREGS classification harness run failed before clean completion."
+            exit 1
+          fi
+          if [ "${{ steps.colregs_h01_results.outcome }}" != "success" ]; then
+            echo "COLREGS classification harness results were incomplete or contained failed cases."
+            exit 1
+          fi
+
+  colregs-correctness:
+    if: ${{ inputs.dispatch_mode == 'full' }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Run full COLREGS correctness harness
+        id: colregs_harness
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          (
+            cd harnesses/colregs_harnesses/H03-colregs_execution
+            ./zlaunch.sh 10
+          )
+
+      - name: Upload COLREGS harness results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: colregs-correctness-results
+          path: harnesses/colregs_harnesses/H03-colregs_execution/results.txt
+          if-no-files-found: warn
+
+      - name: Summarize COLREGS harness results
+        id: colregs_results
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/ci_harness_results_summary.py \
+            --results harnesses/colregs_harnesses/H03-colregs_execution/results.txt \
+            --harness "H03-colregs_execution" \
+            --expected-count 23 \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce COLREGS harness success
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.colregs_harness.outcome }}" != "success" ]; then
+            echo "COLREGS harness run failed before clean completion."
+            exit 1
+          fi
+          if [ "${{ steps.colregs_results.outcome }}" != "success" ]; then
+            echo "COLREGS harness results were incomplete or contained failed cases."
+            exit 1
+          fi
+
+  just-make-subset:
+    if: ${{ inputs.dispatch_mode == 'just_make_subset' }}
+    needs:
+      - select-targets
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.select-targets.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Just-make selected harness
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.path }}"
+          ./zlaunch.sh --just_make "${{ inputs.time_warp }}"
+
+  correctness-subset:
+    if: ${{ inputs.dispatch_mode == 'correctness_subset' }}
+    needs:
+      - select-targets
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.select-targets.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Run selected correctness harness
+        id: harness
+        continue-on-error: true
+        env:
+          PERF_PROFILE: ${{ matrix.perf_profile }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.path }}"
+          if [ -n "${PERF_PROFILE:-}" ]; then
+            ./zlaunch.sh
+          else
+            ./zlaunch.sh "${{ inputs.time_warp }}"
+          fi
+
+      - name: Upload selected correctness results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.path }}/results.txt
+          if-no-files-found: warn
+
+      - name: Summarize selected correctness results
+        id: harness_results
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/ci_harness_results_summary.py \
+            --results "${{ matrix.path }}/results.txt" \
+            --harness "${{ matrix.harness }}" \
+            --expected-count "${{ matrix.expected_count }}" \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce selected correctness success
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.harness.outcome }}" != "success" ]; then
+            echo "Harness run failed before clean completion."
+            exit 1
+          fi
+          if [ "${{ steps.harness_results.outcome }}" != "success" ]; then
+            echo "Harness results were incomplete or contained failed cases."
+            exit 1
+          fi
+
+  family-run:
+    name: ${{ inputs.family }}-family
+    if: ${{ inputs.dispatch_mode == 'family_run' }}
+    needs:
+      - select-targets
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.select-targets.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/moos-ivp/bin" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/moos-ivp/scripts" >> "$GITHUB_PATH"
+          echo "${GITHUB_WORKSPACE}/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Run selected family harness
+        id: harness
+        continue-on-error: true
+        env:
+          PERF_PROFILE: ${{ matrix.perf_profile }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.path }}"
+          if [ -n "${PERF_PROFILE:-}" ]; then
+            ./zlaunch.sh
+          else
+            ./zlaunch.sh "${{ inputs.time_warp }}"
+          fi
+
+      - name: Upload selected family results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.path }}/results.txt
+          if-no-files-found: warn
+
+      - name: Summarize selected family results
+        id: harness_results
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/ci_harness_results_summary.py \
+            --results "${{ matrix.path }}/results.txt" \
+            --harness "${{ matrix.harness }}" \
+            --expected-count "${{ matrix.expected_count }}" \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce selected family success
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.harness.outcome }}" != "success" ]; then
+            echo "Harness run failed before clean completion."
+            exit 1
+          fi
+          if [ "${{ steps.harness_results.outcome }}" != "success" ]; then
+            echo "Harness results were incomplete or contained failed cases."
+            exit 1
+          fi
+
   p01-obstacle-performance:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    if: ${{ inputs.dispatch_mode == 'full' }}
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -259,7 +789,7 @@ jobs:
           fi
 
   p03-colregs-performance:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    if: ${{ inputs.dispatch_mode == 'full' }}
     needs: build
     runs-on: ubuntu-latest
     steps:

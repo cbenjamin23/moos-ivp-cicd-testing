@@ -1,13 +1,15 @@
 //-------------------------------------------------
+// FILE: meta_vehicle.moos
 // NAME: M. Benjamin, MIT
 //-------------------------------------------------
+
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
 Community  = $(VNAME)
 
 #include plugs.moos <origin_warp>
   
-//------------------------------------------------------------
+//----------------------------------------------------
 Processconfig = ANTLER
 {
   MSBetweenLaunches = 50
@@ -66,7 +68,7 @@ ProcessConfig = pHelmIvP
   hold_on_app  = pContactMgrV20
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 // pNodeReporter Config Block
 
 ProcessConfig = pNodeReporter
@@ -81,7 +83,7 @@ ProcessConfig = pNodeReporter
 	json_report = true
 	}
 
-//--------------------------------------------------------
+//----------------------------------------------------
 // pContactMgrV20 Config Block
 
 ProcessConfig = pContactMgrV20
@@ -117,7 +119,7 @@ ProcessConfig = pContactMgrV20
 	disable_flag = CMGR_DISABLED_ALL = all_ids=$[ALL_DISABLED]
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeBroker Config Block
 
 ProcessConfig = uFldNodeBroker
@@ -146,7 +148,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=ENCOUNTER_END
 }
 
-//-----------------------------------------------------
+//----------------------------------------------------
 // pMarinePIDV22 Config Block 
 
 ProcessConfig = pMarinePIDV22
@@ -180,7 +182,7 @@ ProcessConfig = pMarinePIDV22
 }
 
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger
@@ -222,7 +224,7 @@ ProcessConfig = pLogger
 }
 
 <tag><iM300>
-//---------------------------------------------------------
+//----------------------------------------------------
 // iM300 config block
 
 ProcessConfig = iM300
@@ -260,7 +262,7 @@ ProcessConfig = iM300
 }
 
 <tag><iM300Health>
-//------------------------------------------------
+//----------------------------------------------------
 // iM300Health config block
 
 ProcessConfig = iM300Health

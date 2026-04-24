@@ -1,0 +1,194 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = ARRIVED=false
+  flag = SAVE_REGION_BREACHED=false
+  flag = SAVE_REGION_RECOVERING=false
+  flag = HALT_REGION_BREACHED=false
+  flag = TIME_LIMIT_BREACHED=false
+  flag = BHV_ERROR_SEEN=false
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_POLYGON, val="pts={-23,-152:47,-152:47,-90:-23,-90},label=opreg_core_fixed,edge_color=white,vertex_size=0,edge_size=2,duration=9999", time=1
+  event = var=VIEW_POLYGON, val="pts={-31,-160:55,-160:55,-82:-31,-82},label=opreg_halt_fixed,edge_color=white,vertex_size=0,edge_size=1,duration=9999", time=1
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = ARRIVED = true
+  pass_condition = ARRIVED = true
+  pass_condition = SAVE_REGION_BREACHED = false
+  pass_condition = HALT_REGION_BREACHED = false
+  pass_condition = TIME_LIMIT_BREACHED = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = opregion_safety_tests
+  mission_mod  = $(MMOD:=inside_region_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[ARRIVED]
+  report_column = arrived=$[ARRIVED]
+  report_column = save_breached=$[SAVE_REGION_BREACHED]
+  report_column = save_recovering=$[SAVE_REGION_RECOVERING]
+  report_column = halt_breached=$[HALT_REGION_BREACHED]
+  report_column = time_breached=$[TIME_LIMIT_BREACHED]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = OPREGION_UPDATES, OPREGION_CORE_POLY
+  qbridge  = ARRIVED, SAVE_REGION_BREACHED, SAVE_REGION_RECOVERING
+  qbridge  = HALT_REGION_BREACHED, TIME_LIMIT_BREACHED
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//----------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = -20
+  set_pan_y            = -70
+  zoom                 = 1.5
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode         = appcast
+  appcast_color_scheme = indigo
+  nodes_font_size      = large
+  procs_font_size      = large
+  appcast_font_size    = large
+
+  scope = ARRIVED
+  scope = TEST_EVAL_READY
+  scope = MISSION_EVALUATED
+  scope = SAVE_REGION_BREACHED
+  scope = SAVE_REGION_RECOVERING
+  scope = HALT_REGION_BREACHED
+  scope = TIME_LIMIT_BREACHED
+  scope = BHV_ERROR_SEEN
+
+  button_one = DEPLOY # DEPLOY_ALL=true
+  button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false
+}

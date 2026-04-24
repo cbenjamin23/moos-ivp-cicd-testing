@@ -1,0 +1,9 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=OPREGION_CORE_POLY, val="pts={-23,-152:60,-152:60,-90:-23,-90}", time=3
+}

@@ -1,3 +1,8 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
 <tag><origin_warp>
 MOOSTimeWarp = $(WARP)
 
@@ -9,7 +14,7 @@ LongOrigin = -71.087448
 
 
 <tag><pHostInfo>
-//--------------------------------------------------
+//----------------------------------------------------
 // pHostInfo Config Block
 
 ProcessConfig = pHostInfo
@@ -21,7 +26,7 @@ ProcessConfig = pHostInfo
 }
 
 <tag><pShare>
-//---------------------------------------------------------
+//----------------------------------------------------
 // pShare Config Block
 
 ProcessConfig = pShare
@@ -33,7 +38,7 @@ ProcessConfig = pShare
 }
 
 <tag><uSimMarineV22>
-//------------------------------------------------------
+//----------------------------------------------------
 // uSimMarineV22 Config Block
 
 ProcessConfig = uSimMarineV22
@@ -51,7 +56,7 @@ ProcessConfig = uSimMarineV22
 }
 
 <tag><uLoadWatch>
-//-------------------------------------------------------------
+//----------------------------------------------------
 // uLoadWatch Config Block
 
 ProcessConfig = uLoadWatch                                      
@@ -67,7 +72,7 @@ ProcessConfig = uLoadWatch
 }                                            
 
 <tag><uProcessWatch>
-//--------------------------------------------------
+//----------------------------------------------------
 // uProcessWatch Config Block
 
 ProcessConfig = uProcessWatch
@@ -85,5 +90,4 @@ ProcessConfig = uProcessWatch
 	allow_retractions = true
 	summary_wait = 10
 }
-
 

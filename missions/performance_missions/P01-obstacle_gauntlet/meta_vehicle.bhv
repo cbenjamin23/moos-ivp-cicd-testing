@@ -1,5 +1,7 @@
-//---------------------------------------------------
-// Helm Behavior file
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 initialize   DEPLOY     = false
 initialize   AVOID      = true
@@ -9,6 +11,7 @@ set MODE = ACTIVE {
   DEPLOY = true
 } INACTIVE
 
+//----------------------------------------------------
 Behavior = BHV_PModelView
 {
   name      = pmview
@@ -17,6 +20,7 @@ Behavior = BHV_PModelView
   updates   = UP_PMVIEW
 }
 
+//----------------------------------------------------
 Behavior = BHV_Waypoint
 {
   name      = wpt_transit
@@ -48,6 +52,7 @@ Behavior = BHV_Waypoint
   visual_hints = trackpt_lcolor=off
 }
 
+//----------------------------------------------------
 Behavior = BHV_AvoidObstacleV24
 {
   name       = avd_obs_

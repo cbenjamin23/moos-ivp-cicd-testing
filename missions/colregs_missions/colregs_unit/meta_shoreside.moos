@@ -1,6 +1,7 @@
-//--------------------------------------------------------
-// Shoreside Config file
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -8,7 +9,7 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
   
-//--------------------------------------------------------
+//----------------------------------------------------
 Processconfig = ANTLER
 {
   MSBetweenLaunches = 100
@@ -148,7 +149,7 @@ ProcessConfig = pMissionEval
   report_file   = results.txt
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldShoreBroker Config Block
 
 ProcessConfig = uFldShoreBroker
@@ -173,7 +174,7 @@ ProcessConfig = uFldShoreBroker
   bridge   = src=MISSION_HASH, alias=MISSION_HASH
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeComms Config Block
 
 ProcessConfig = uFldNodeComms
@@ -192,7 +193,7 @@ ProcessConfig = uFldNodeComms
   view_node_rpt_pulses = false
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger
@@ -218,7 +219,7 @@ ProcessConfig = pLogger
   WildCardOmitPattern = *_ITER_LEN
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uLoadWatch Config Block
 
 ProcessConfig = uLoadWatch
@@ -234,7 +235,7 @@ ProcessConfig = uLoadWatch
   breach_trigger = 5
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pMarineViewer
 {
   AppTick    = 4
@@ -302,7 +303,7 @@ ProcessConfig = pMarineViewer
   button_4   = STATION:false # STATION_ALL=false
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 // uFldCollisionDetect Config Block
 
 ProcessConfig = uFldCollisionDetect                             

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H02 Obstacle Manager Motion | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Obstacle Manager</p>
+      <h1>H02 Obstacle Manager Motion</h1>
+      <p class="lede">Moving correctness tests for obstacle-manager alert output. These cases check whether obstacle alerts are actionable enough to support clean obstacle-avoidance transit, and whether intentionally bad setups fail for the expected reason.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission sends one ownship through a short corridor with case-specific obstacle layouts. The harness grades whether obstacle-manager alerts support arrival without collisions, near misses, or unresolved encounters.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="obmgr-motion-baseline-center.gif">
+          <img src="../assets/gifs/obmgr-motion-baseline-center.gif" alt="Baseline Center Pass GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Center Pass</h3>
+          <p>Representative case: <code>baseline_center_pass</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="obmgr-motion-wide-center.gif">
+          <img src="../assets/gifs/obmgr-motion-wide-center.gif" alt="Wide Center Fail GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Wide Center Fail</h3>
+          <p>Representative case: <code>wide_center_fail</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>baseline_center_pass</code>
+          <p>one obstacle blocks the lane and the vehicle is expected to arrive cleanly with zero collisions.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>offset_clear_pass</code>
+          <p>one obstacle sits well above the transit lane, the vehicle should arrive with zero encounters.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>tight_alert_pass</code>
+          <p>the alert range is reduced but still large enough for a clean one-obstacle avoidance transit.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>two_sequential_fail</code>
+          <p>two obstacles are placed in sequence as a stress case; the short stem is expected to fail its normal clean-transit criteria.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wide_center_fail</code>
+          <p>a wider centered obstacle exceeds what this short corridor stem can safely clear, so the baseline mission criteria are expected to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>avoid_disabled_fail</code>
+          <p>obstacle alerts are redirected onto an unused variable instead of OBSTACLE_ALERT, so no avoid behavior spawns and the vehicle is expected to fail the normal...</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/obmgr_harnesses/H02-obmgr_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/obmgr_missions/obmgr_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

@@ -1,6 +1,7 @@
 //-------------------------------------------------
-// Vehicle Helm config file
-// M. Benjamin, MIT
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 initialize  DEPLOY  = false
 initialize  RETURN  = false
@@ -28,7 +29,7 @@ set MODE = TRANSITING {
 } 
 
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_AvdColregsV22
 {
   name       = avdcol_
@@ -60,7 +61,7 @@ Behavior = BHV_AvdColregsV22
    bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
 }
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_Waypoint
 {
   name        = waypt_transit
@@ -84,7 +85,7 @@ Behavior = BHV_Waypoint
   visual_hints = nextpt_color=$(COLOR)
 }
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_Waypoint
 {
   name        = waypt_return
@@ -105,7 +106,7 @@ Behavior = BHV_Waypoint
   visual_hints = vertex_color=dodger_blue
 }
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_StationKeep
 {
   name         = station-keep

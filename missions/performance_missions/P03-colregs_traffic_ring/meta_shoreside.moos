@@ -1,5 +1,7 @@
-//*******************************************************
-// ShoreSide Configuration File
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -7,6 +9,7 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
 
+//----------------------------------------------------
 Processconfig = ANTLER
 {
   MSBetweenLaunches = 100

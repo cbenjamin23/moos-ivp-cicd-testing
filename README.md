@@ -12,10 +12,17 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - `harnesses/obmgr_harnesses/H01-obmgr_unit` - patch-driven obstacle-manager unit matrix
 - `missions/obmgr_missions/obmgr_motion` - moving obstacle-avoidance integration stem
 - `harnesses/obmgr_harnesses/H02-obmgr_motion` - moving obstacle integration matrix
+- `missions/colregs_missions/colregs_unit` - shared two-vessel COLREGS correctness stem
+- `harnesses/colregs_harnesses/H01-colregs_classification` - canonical COLREGS classification matrix
+- `harnesses/colregs_harnesses/H02-colregs_thresholds` - COLREGS threshold-boundary matrix
+- `harnesses/colregs_harnesses/H03-colregs_execution` - COLREGS execution-quality matrix
+- `harnesses/colregs_harnesses/H04-colregs_parameters` - COLREGS parameter-regression matrix
 - `missions/collision_behavior_missions/collision_behavior_motion` - moving avoid-collision behavior stem
 - `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion` - moving avoid-collision behavior matrix
 - `missions/obstacle_behavior_missions/obstacle_behavior_motion` - moving avoid-obstacle behavior stem
 - `harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion` - moving avoid-obstacle behavior matrix
+- `missions/opregion_missions/opregion_motion` - moving OpRegionV24 safety-envelope stem
+- `harnesses/opregion_harnesses/H01-opregion_safety` - OpRegionV24 safety-envelope matrix
 - `missions/first_draft` - older obstacle-avoidance baseline mission kept for reference
 - `src/` - legacy template code still built by the repository
 
@@ -35,10 +42,17 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - [harnesses/obmgr_harnesses/H01-obmgr_unit/README.md](./harnesses/obmgr_harnesses/H01-obmgr_unit/README.md) for the obstacle-manager unit matrix
 - [missions/obmgr_missions/obmgr_motion/README.md](./missions/obmgr_missions/obmgr_motion/README.md) for the moving obstacle-avoidance stem
 - [harnesses/obmgr_harnesses/H02-obmgr_motion/README.md](./harnesses/obmgr_harnesses/H02-obmgr_motion/README.md) for the moving obstacle integration matrix
+- [missions/colregs_missions/colregs_unit/README.md](./missions/colregs_missions/colregs_unit/README.md) for the shared COLREGS unit stem
+- [harnesses/colregs_harnesses/H01-colregs_classification/README.md](./harnesses/colregs_harnesses/H01-colregs_classification/README.md) for the canonical COLREGS classification matrix
+- [harnesses/colregs_harnesses/H02-colregs_thresholds/README.md](./harnesses/colregs_harnesses/H02-colregs_thresholds/README.md) for the COLREGS threshold-boundary matrix
+- [harnesses/colregs_harnesses/H03-colregs_execution/README.md](./harnesses/colregs_harnesses/H03-colregs_execution/README.md) for the COLREGS execution-quality matrix
+- [harnesses/colregs_harnesses/H04-colregs_parameters/README.md](./harnesses/colregs_harnesses/H04-colregs_parameters/README.md) for the COLREGS parameter-regression matrix
 - [missions/collision_behavior_missions/collision_behavior_motion/README.md](./missions/collision_behavior_missions/collision_behavior_motion/README.md) for the avoid-collision behavior stem
 - [harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/README.md](./harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/README.md) for the avoid-collision behavior matrix
 - [missions/obstacle_behavior_missions/obstacle_behavior_motion/README.md](./missions/obstacle_behavior_missions/obstacle_behavior_motion/README.md) for the avoid-obstacle behavior stem
 - [harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md](./harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md) for the avoid-obstacle behavior matrix
+- [missions/opregion_missions/opregion_motion/README.md](./missions/opregion_missions/opregion_motion/README.md) for the OpRegionV24 safety-envelope stem
+- [harnesses/opregion_harnesses/H01-opregion_safety/README.md](./harnesses/opregion_harnesses/H01-opregion_safety/README.md) for the OpRegionV24 safety-envelope matrix
 - [missions/first_draft/README.md](./missions/first_draft/README.md) for the baseline mission
 - [time_benchmarking/PARALLELIZATION_STATUS.md](./time_benchmarking/PARALLELIZATION_STATUS.md) for the current harness parallelization model
 - [time_benchmarking/parallel_jobs_2026-03-20/README.md](./time_benchmarking/parallel_jobs_2026-03-20/README.md) for the current timing sweep and recommended `--jobs` values
@@ -73,6 +87,14 @@ MOOS-IvP CI/CD workspace for mission-level tests.
   graded deterministically.
 - The full `H02-obmgr_motion` matrix currently has `6` cases and the latest
   full run passed at warp `10`.
+- `colregs_unit` is the shared two-vessel correctness stem for the COLREGS
+  family. It underpins the canonical classification, threshold, execution, and
+  parameter-regression harnesses for `BHV_AvdColregsV22`.
+- The full `H01-colregs_classification` matrix currently has `22` stable
+  canonical cases and is the first implemented COLREGS correctness suite.
+- `H03-colregs_execution` is the downstream execution-quality layer for the
+  same family. It currently has `23` default cases and most recently cleared a
+  `5/5` repeatability signoff on April 11, 2026.
 - `collision_behavior_motion` is the downstream moving correctness layer for
   `BHV_AvoidCollision`. It keeps the synthetic-contact setup deterministic, but
   grades on behavior-owned lifecycle and mission outcome rather than on raw
@@ -84,4 +106,13 @@ MOOS-IvP CI/CD workspace for mission-level tests.
   grades on behavior engagement, completion, and clean transit.
 - The full `H01-obstacle_behavior_motion` matrix currently has `7` cases and
   the latest full run passed at warp `10` in about `93` seconds wall clock.
+- `opregion_motion` is the moving safety-envelope layer for `BHV_OpRegionV24`.
+  It keeps one ownship and one short transit corridor, then grades on
+  behavior-owned save, halt, and time-limit flags.
+- The `H01-opregion_safety` matrix has `15` cases covering inside-region
+  transit, save recovery, generated save buffers, halt breach, entry gating,
+  entry/exit debounce timing, reset behavior, max-time failure, dynamic-region
+  expansion/recovery, and dynamic-region halt failure. The latest full run
+  passed at warp `10` after tightening most cases to event-driven evaluation
+  gates.
 - The `src/` tree is kept only for legacy template compatibility and can be trimmed further if you no longer need those builds.

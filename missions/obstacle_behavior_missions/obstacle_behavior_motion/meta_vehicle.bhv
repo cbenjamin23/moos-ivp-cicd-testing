@@ -1,4 +1,7 @@
-//--------    FILE: meta_vehicle.bhv   -------------
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 initialize  DEPLOY    = false
 initialize  RETURN    = false
@@ -20,6 +23,7 @@ set MODE = TRANSITING {
   TRANSIT = true
 }
 
+//----------------------------------------------------
 Behavior = BHV_Waypoint
 {
   name      = transit
@@ -43,6 +47,7 @@ Behavior = BHV_Waypoint
   visual_hints = vertex_size=5, edge_size=1
 }
 
+//----------------------------------------------------
 Behavior = BHV_AvoidObstacleV24
 {
   name        = avd_obs_

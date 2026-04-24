@@ -1,4 +1,7 @@
-//--------    FILE: alpha.bhv  -------------
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: M. Benjamin, MIT
+//-------------------------------------------------
 
 initialize   DEPLOY  = false
 initialize   RETURN  = false
@@ -27,7 +30,7 @@ set MODE = RETURNING {
   RETURN = true
 } 
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_LegRun
 {
   name       = legrun
@@ -76,7 +79,7 @@ Behavior = BHV_LegRun
   #include plugs.bhv <bhv_avd_cpa>
 #endif
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_Waypoint
 {
   name        = waypt_return
@@ -98,7 +101,7 @@ Behavior = BHV_Waypoint
      visual_hints = nextpt_label_color = $(COLOR)
 }
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_StationKeep
 {
   name         = station-keep
@@ -115,7 +118,7 @@ Behavior = BHV_StationKeep
      visual_hints = label_color=gray50
 }
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_OpRegionV24
 {
   name      = opreg

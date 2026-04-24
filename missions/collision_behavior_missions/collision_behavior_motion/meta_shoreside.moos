@@ -1,6 +1,7 @@
-//--------------------------------------------------------
-// Shoreside Config file
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -8,7 +9,7 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 100
@@ -60,7 +61,7 @@ ProcessConfig = pAutoPoke
   required_nodes = 1
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uTimerScript Config Block
 
 ProcessConfig = uTimerScript
@@ -81,7 +82,7 @@ ProcessConfig = uTimerScript
   event = var=TEST_EVAL_READY, val=true, time=44
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pMissionEval Config Block
 
 ProcessConfig = pMissionEval
@@ -126,7 +127,7 @@ ProcessConfig = pMissionEval
   report_column = mhash=$[MHASH_SHORT]
 }
 
-//------------------------------------------------------
+//----------------------------------------------------
 // uFldCollisionDetect Config Block
 
 ProcessConfig = uFldCollisionDetect
@@ -148,7 +149,7 @@ ProcessConfig = uFldCollisionDetect
   collision_flag  = COLLISION=$CPA
 }
 
-//------------------------------------------------------
+//----------------------------------------------------
 // uFldShoreBroker Config Block
 
 ProcessConfig = uFldShoreBroker
@@ -161,7 +162,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = RANGE_AVD_intruder, CLSG_SPD_AVD_intruder
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeComms Config Block
 
 ProcessConfig = uFldNodeComms
@@ -178,7 +179,7 @@ ProcessConfig = uFldNodeComms
   view_node_rpt_pulses = false
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger
@@ -201,7 +202,7 @@ ProcessConfig = pLogger
   WildCardOmitPattern = *_ITER_LEN
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pMarineViewer
 {
   AppTick   = 4

@@ -1,6 +1,7 @@
 //-------------------------------------------------
-// Vehicle MOOS config file
-// P01 obstacle gauntlet, based on missions-auto/02-obavoid
+// FILE: meta_vehicle.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -8,7 +9,7 @@ Community  = $(VNAME)
 
 #include plugs.moos <origin_warp>
 
-//-------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 50
@@ -49,7 +50,7 @@ ProcessConfig = pHelmIvP
   pmgen = alg=dubins # radius=$(MODEL_RAD) # degs=10
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = uFldNodeBroker
 {
   AppTick   = 1
@@ -75,7 +76,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }
 
-//------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = uSimMarine
 {
   AppTick   = 10
@@ -87,7 +88,7 @@ ProcessConfig = uSimMarine
   deprecated_ok = true
 }
 
-//-------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pNodeReporter
 {
   AppTick   = 2
@@ -98,7 +99,7 @@ ProcessConfig = pNodeReporter
   terse_reports  = true
 }
 
-//-----------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pMarinePID
 {
   AppTick    = 10
@@ -126,7 +127,7 @@ ProcessConfig = pMarinePID
   SPEED_FACTOR = 20
 }
 
-//-------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pObstacleMgr
 {
   AppTick   = 4
@@ -141,7 +142,7 @@ ProcessConfig = pObstacleMgr
   general_alert = update_var=OBSTACLE_ALERT, alert_range=40000
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pLogger
 {
   AppTick       = 5

@@ -1,6 +1,7 @@
-//--------------------------------------------------------
-// Shoreside Config file
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -8,7 +9,7 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 100
@@ -120,7 +121,7 @@ ProcessConfig = pMissionEval
   report_column = time=$[TIME]
 }
 
-//------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = uFldCollObDetect
 {
   AppTick   = 2
@@ -138,7 +139,7 @@ ProcessConfig = uFldCollObDetect
   collision_flag = OB_COLLISION=$DIST
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = uFldObstacleSim
 {
   AppTick       = 1
@@ -170,7 +171,7 @@ ProcessConfig = uFldObstacleSim
 #endif
 }
 
-//------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = uFldShoreBroker
 {
   AppTick   = 1
@@ -186,7 +187,7 @@ ProcessConfig = uFldShoreBroker
   bridge   = src=GIVEN_OBSTACLE
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = uFldNodeComms
 {
   AppTick   = 2
@@ -200,7 +201,7 @@ ProcessConfig = uFldNodeComms
   view_node_rpt_pulses = false
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pLogger
 {
   AppTick       = 10
@@ -221,7 +222,7 @@ ProcessConfig = pLogger
   WildCardOmitPattern = *_ITER_LEN
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pMarineViewer
 {
   AppTick   = 4

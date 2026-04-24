@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Contact Manager Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Contact Manager</p>
+      <h1>H01 Contact Manager Unit</h1>
+      <p class="lede">Simple correctness tests for pContactMgrV20 output behavior. These cases keep the mission controlled and verify that contact alerts, reports, filters, runtime requests, and multi-contact selections appear only when expected.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission is a small single-ownship setup in the lower-band Forrest 19 / MIT_SP frame. <code>alpha</code> is the ownship; contacts such as <code>bravo</code> or <code>intruder</code> are synthetic targets introduced by individual cases so pContactMgrV20 can be checked without a full behavior stack.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="cmgr-unit-runtime-alert.gif">
+          <img src="../assets/gifs/cmgr-unit-runtime-alert.gif" alt="Runtime Alert Path GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Alert Path</h3>
+          <p>Representative case: <code>runtime_alert_add_pass</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="cmgr-unit-cpa-detection.gif">
+          <img src="../assets/gifs/cmgr-unit-cpa-detection.gif" alt="CPA-only Detection GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>CPA-only Detection</h3>
+          <p>Representative case: <code>detect_cpa_only_pass</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>detect_baseline_pass</code>
+          <p>Default geometry should see the spoofed contact before the checkpoint.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_strict_absent_pass</code>
+          <p>Tighter alert thresholds should keep the same spoof unseen.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_edge_pass</code>
+          <p>Near-threshold geometry should still detect.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_edge_absent_pass</code>
+          <p>Slightly tighter near-threshold geometry should stay unseen.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_delayed_spoof_pass</code>
+          <p>A later spoof and later checkpoint should still detect.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_short_duration_absent_pass</code>
+          <p>A short-lived distant spoof should stay unseen.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_early_checkpoint_absent_pass</code>
+          <p>An intentionally early checkpoint should occur before detection.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_far_spoof_absent_pass</code>
+          <p>A farther spoof should stay outside the alert window.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_near_spoof_pass</code>
+          <p>A nearer spoof should be detected quickly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>detect_cpa_only_pass</code>
+          <p>This is a CPA-specific case rather than just another range threshold case. The contact is still outside alert_range at grading time, but it is on a closing...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>closest_contact_pass</code>
+          <p>CONTACT_CLOSEST should be intruder.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_all_ranges_pass</code>
+          <p>This case turns on the CONTACT_RANGES report path. It is a reporting-only branch, so the key point is that the mission now publishes the full list of current...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_closest_relbng_pass</code>
+          <p>This turns on the closest-relative-bearing report path. It is useful because it exercises a distinct output variable, CONTACT_CLOSEST_RELBNG, rather than just...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_alert_add_pass</code>
+          <p>No static alert is configured in the case for this case. Instead the harness posts a BCM_ALERT_REQUEST at runtime and expects that dynamic alert definition to...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_alert_disable_absent_pass</code>
+          <p>This exercises the runtime alert-disable path. The stem still has the normal alert configured, but a BCM_ALERT_REQUEST disables it before the spoofed contact...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>filter_match_type_absent_pass</code>
+          <p>This is a representative alert-filter case. The alert is constrained to match_type=ship, while the spoofed contact remains the default kayak, so the contact...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>disable_contact_pass</code>
+          <p>This exercises the disable_var path directly. In this timing setup the contact is already seen before the disable request is posted, so the case is specifically...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>enable_contact_pass</code>
+          <p>This is the matching enable_var path. It is a message-path case proving contact manager emits the expected BHV_ABLE_FILTER enable request for a named contact...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>early_warning_pass</code>
+          <p>This is the early-warning branch. The case checks that the mission posts the configured warning flag before the main contact evaluation completes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>count_one_pass</code>
+          <p>CONTACTS_COUNT should be exactly 1.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>list_intruder_pass</code>
+          <p>CONTACTS_LIST should be intruder.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>range_report_pass</code>
+          <p>CONTACT_CLOSEST_RANGE should land in a reasonable broad band.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>report_request_pass</code>
+          <p>This exercises the separate BCM_REPORT_REQUEST subsystem. The case asks contact manager to publish a custom range-limited contact list variable and verifies that...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>range_tight_pass</code>
+          <p>CONTACT_CLOSEST_RANGE should land in a tighter band around the baseline.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>count_two_pass</code>
+          <p>Two alerted contacts should be counted.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>list_alpha_bravo_pass</code>
+          <p>The known-contact list should be alpha,bravo.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>closest_alpha_pass</code>
+          <p>alpha should be reported as the closest contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>closest_bravo_pass</code>
+          <p>bravo should be reported as the closest contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bravo_far_count_one_pass</code>
+          <p>bravo should remain tracked but stay outside the alert count.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>late_bravo_count_two_pass</code>
+          <p>bravo arrives later, but the delayed checkpoint should still catch both.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stale_bravo_drop_pass</code>
+          <p>bravo should expire and drop out of the tracked list before grading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reject_range_retire_pass</code>
+          <p>This is the non-age retirement path. The contact is accepted first, but a very small reject_range should cause contact manager to retire it and post...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>alpha_far_bravo_only_pass</code>
+          <p>alpha should remain tracked but only bravo should qualify as alerted and closest.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/cmgr_harnesses/H01-cmgr_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/cmgr_missions/cmgr_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

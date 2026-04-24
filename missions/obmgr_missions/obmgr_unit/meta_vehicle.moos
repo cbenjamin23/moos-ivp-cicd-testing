@@ -1,6 +1,7 @@
-//----------------------------------------------------
-// Vehicle MOOS config file
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_vehicle.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -56,7 +57,7 @@ ProcessConfig = pNodeReporter
   terse_reports  = true
 }
 
-//-------------------------------------------------------
+//----------------------------------------------------
 // pObstacleMgr Config Block
 
 ProcessConfig = pObstacleMgr
@@ -78,7 +79,7 @@ ProcessConfig = pObstacleMgr
   new_obs_flag = OBM_NEW_GIVEN=true
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uTimerScript Config Block
 
 ProcessConfig = uTimerScript
@@ -92,7 +93,7 @@ ProcessConfig = uTimerScript
   event = var=GIVEN_OBSTACLE, val="pts={18,-62:22,-62:22,-58:18,-58},label=ob_near,duration=20", time=2
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeBroker Config Block
 
 ProcessConfig = uFldNodeBroker
@@ -119,7 +120,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger

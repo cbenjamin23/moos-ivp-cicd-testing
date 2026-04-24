@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H03 COLREGS Execution | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">COLREGS</p>
+      <h1>H03 COLREGS Execution</h1>
+      <p class="lede">Execution correctness tests for BHV_AvdColregsV22 after classification is known. These cases run encounters through completion and grade the realized maneuver using CPA, side outcome, timing, and collision evidence.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared COLREGS stem mission uses two vessels, <code>ben</code> and <code>abe</code>; <code>ben</code> is the evaluated ownship. Execution cases reuse trusted classification geometry and then judge the maneuver that actually unfolds.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="colregs-execution-head-on.gif">
+          <img src="../assets/gifs/colregs-execution-head-on.gif" alt="Head-on Resolution GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Head-on Resolution</h3>
+          <p>Representative case: <code>head_on_execution_pass</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="colregs-execution-overtaken-midrange.gif">
+          <img src="../assets/gifs/colregs-execution-overtaken-midrange.gif" alt="Overtaken Midrange GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Overtaken Midrange</h3>
+          <p>Representative case: <code>overtaken_starboard_standon_midrange_execution_pass</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>head_on_execution_pass</code>
+          <p>Covers head on execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_cpa_fallback_execution_pass</code>
+          <p>Covers head on cpa fallback execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_port_offset_execution_pass</code>
+          <p>Covers head on port offset execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_starboard_offset_execution_pass</code>
+          <p>Covers head on starboard offset execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_starboard_giveway_execution_pass</code>
+          <p>Covers crossing starboard giveway execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_starboard_giveway_far_execution_pass</code>
+          <p>Covers crossing starboard giveway far execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_starboard_giveway_close_execution_pass</code>
+          <p>Covers crossing starboard giveway close execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_port_standon_execution_pass</code>
+          <p>Covers crossing port standon execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_port_standon_unsure_bow_execution_pass</code>
+          <p>Covers crossing port standon unsure bow execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_port_standon_stern_execution_pass</code>
+          <p>Covers crossing port standon stern execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_port_standon_far_execution_pass</code>
+          <p>Covers crossing port standon far execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_port_standon_close_execution_pass</code>
+          <p>Covers crossing port standon close execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_port_standon_close_unsure_bow_execution_pass</code>
+          <p>Covers crossing port standon close unsure bow execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_port_standon_unsure_execution_pass</code>
+          <p>Covers crossing port standon unsure execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_starboard_execution_pass</code>
+          <p>Covers overtaking starboard execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_starboard_range_far_execution_pass</code>
+          <p>Covers overtaking starboard range far execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_starboard_small_gap_execution_pass</code>
+          <p>Covers overtaking starboard small gap execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_starboard_mirror_execution_pass</code>
+          <p>Covers overtaking starboard mirror execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_starboard_mirror_range_far_execution_pass</code>
+          <p>Covers overtaking starboard mirror range far execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_starboard_mirror_small_gap_execution_pass</code>
+          <p>Covers overtaking starboard mirror small gap execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_starboard_mirror_large_gap_execution_pass</code>
+          <p>Covers overtaking starboard mirror large gap execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_port_standon_midrange_execution_pass</code>
+          <p>Covers overtaken port standon midrange execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_starboard_standon_midrange_execution_pass</code>
+          <p>Covers overtaken starboard standon midrange execution expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_starboard_standon_execution_pass</code>
+          <p>is intentionally excluded because the shared stem does enter standon_ot:starboard, but it leaves that mode well before H03&#x27;s completion-style evaluation point....</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_port_standon_range_far_pass</code>
+          <p>remains outside H03 because its longer-range stem no longer preserves the stand-on identity through completion. In a preserved H03-style run it finished...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_starboard_standon_range_far_pass</code>
+          <p>remains outside H03 because it still does not produce a clean completion-grade path under the current H03 overlay, so it is not yet a stable completion-style...</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/colregs_harnesses/H03-colregs_execution/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/colregs_missions/colregs_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

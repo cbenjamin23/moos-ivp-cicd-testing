@@ -1,6 +1,7 @@
-//--------------------------------------------------------
-// Shoreside Config file
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -8,7 +9,7 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 100
@@ -114,7 +115,7 @@ ProcessConfig = pMissionEval
   report_column = mhash=$[MHASH_SHORT]
 }
 
-//------------------------------------------------------
+//----------------------------------------------------
 // uFldCollObDetect Config Block
 
 ProcessConfig = uFldCollObDetect
@@ -134,7 +135,7 @@ ProcessConfig = uFldCollObDetect
   collision_flag = OB_COLLISION=$DIST
 }
 
-//------------------------------------------------------
+//----------------------------------------------------
 // uFldShoreBroker Config Block
 
 ProcessConfig = uFldShoreBroker
@@ -148,7 +149,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = AVOID_RANGE_SEEN, AVOID_CPA_SEEN
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeComms Config Block
 
 ProcessConfig = uFldNodeComms
@@ -163,7 +164,7 @@ ProcessConfig = uFldNodeComms
   groups           = true
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger
@@ -186,7 +187,7 @@ ProcessConfig = pLogger
   WildCardOmitPattern = *_ITER_LEN
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pMarineViewer
 {
   AppTick   = 4

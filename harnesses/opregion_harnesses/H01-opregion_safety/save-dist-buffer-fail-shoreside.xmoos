@@ -1,0 +1,45 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_POLYGON, val="pts={-10,-135:32,-135:32,-107:-10,-107},label=opreg_core_fixed,edge_color=white,vertex_size=0,edge_size=2,duration=9999", time=1
+  event = var=VIEW_POLYGON, val="pts={-46,-171:68,-171:68,-71:-46,-71},label=opreg_halt_fixed,edge_color=white,vertex_size=0,edge_size=1,duration=9999", time=1
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = SAVE_REGION_BREACHED = true
+  pass_condition = ARRIVED = true
+  pass_condition = SAVE_REGION_BREACHED = false
+  pass_condition = HALT_REGION_BREACHED = false
+  pass_condition = TIME_LIMIT_BREACHED = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = opregion_safety_tests
+  mission_mod  = $(MMOD:=save_dist_buffer_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[SAVE_REGION_BREACHED]
+  report_column = arrived=$[ARRIVED]
+  report_column = save_breached=$[SAVE_REGION_BREACHED]
+  report_column = save_recovering=$[SAVE_REGION_RECOVERING]
+  report_column = halt_breached=$[HALT_REGION_BREACHED]
+  report_column = time_breached=$[TIME_LIMIT_BREACHED]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

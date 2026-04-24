@@ -1,6 +1,7 @@
-//*******************************************************
-// ShoreSide Configuration File
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: M. Benjamin, MIT
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = $(MOOS_PORT)
@@ -8,7 +9,7 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
   
-//--------------------------------------------------------
+//----------------------------------------------------
 Processconfig = ANTLER
 {
   MSBetweenLaunches = 100
@@ -150,7 +151,7 @@ ProcessConfig = uFldCollisionDetect
   pulse_duration = 30
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeComms Config Block
 
 ProcessConfig = uFldNodeComms
@@ -165,7 +166,7 @@ ProcessConfig = uFldNodeComms
   view_node_rpt_pulses = true
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldShoreBroker Config Block
 
 ProcessConfig = uFldShoreBroker
@@ -186,7 +187,7 @@ ProcessConfig = uFldShoreBroker
   bridge  = src=RETURN_$V,  alias=RETURN
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Configuration Block
 
 ProcessConfig = pLogger
@@ -212,7 +213,7 @@ ProcessConfig = pLogger
 }
 
 
-//--------------------------------------------------------
+//----------------------------------------------------
 ProcessConfig = pMarineViewer
 {
   AppTick   = 4

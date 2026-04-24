@@ -1,6 +1,7 @@
-//*******************************************************
-// ShoreSide Configuration File
-// Charles Benjamin
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 ServerHost = localhost
 ServerPort = 9000
@@ -8,7 +9,7 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
   
-//--------------------------------------------------------
+//----------------------------------------------------
 Processconfig = ANTLER
 {
   MSBetweenLaunches = 100
@@ -107,7 +108,7 @@ ProcessConfig = pMissionEval
 }
 
 	
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldCollisionDetect
 
 ProcessConfig = uFldCollisionDetect
@@ -135,7 +136,7 @@ ProcessConfig = uFldCollisionDetect
 }
 
 	
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldShoreBroker Config Block
 
 ProcessConfig = uFldShoreBroker
@@ -158,7 +159,7 @@ ProcessConfig = uFldShoreBroker
   bridge   = src=HELM_MAP_CLEAR, alias=HELM_MAP_CLEAR
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeComms Config Block
 
 ProcessConfig = uFldNodeComms
@@ -175,7 +176,7 @@ ProcessConfig = uFldNodeComms
   view_node_rpt_pulses = false
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger
@@ -200,7 +201,7 @@ ProcessConfig = pLogger
 }
 
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pMarineViewer Config Block
 
 ProcessConfig = pMarineViewer
@@ -270,7 +271,7 @@ ProcessConfig = pMarineViewer
 }
 
 
-//--------------------------------------------------------
+//----------------------------------------------------
 // uProcessWatch Configuration Block
 
 ProcessConfig = uProcessWatch

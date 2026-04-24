@@ -1,6 +1,7 @@
 //-------------------------------------------------
-// Vehicle Helm config file
-// Charles Benjamin
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 initialize  DEPLOY  = false
 initialize  ARRIVED = false

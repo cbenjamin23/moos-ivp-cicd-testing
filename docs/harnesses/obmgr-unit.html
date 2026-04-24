@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Obstacle Manager Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Obstacle Manager</p>
+      <h1>H01 Obstacle Manager Unit</h1>
+      <p class="lede">Simple correctness tests for pObstacleMgr output behavior. These cases keep vehicle dynamics minimal and verify accepted obstacles, rejected obstacles, alert messages, point-cluster hulls, distance reports, and obstacle lifecycle messages.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission keeps the ownship context simple and introduces given obstacles or point clusters through the case inputs. That isolates pObstacleMgr message behavior before any moving obstacle-avoidance outcome is judged.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="obmgr-unit-given-baseline.gif">
+          <img src="../assets/gifs/obmgr-unit-given-baseline.gif" alt="Given Obstacle Alert GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Given Obstacle Alert</h3>
+          <p>Representative case: <code>given_baseline_pass</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="obmgr-unit-point-cluster.gif">
+          <img src="../assets/gifs/obmgr-unit-point-cluster.gif" alt="Point Cluster Hull GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Point Cluster Hull</h3>
+          <p>Representative case: <code>points_cluster_dist_pass</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>given_baseline_pass</code>
+          <p>Default runtime alert request plus a near given obstacle should produce both OBM_NEW_GIVEN=true and OBM_DIST_TO_OBJ=OB_NEAR,18.0.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_alert_request_absent_pass</code>
+          <p>The same obstacle is still accepted, but the runtime OBM_ALERT_REQUEST is removed. This matters because pObstacleMgr will not post OBM_DIST_TO_OBJ or obstacle...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>given_far_absent_pass</code>
+          <p>A farther given obstacle should still be accepted, but with default post_dist_to_polys=close it should stay out of both the distance posting path and the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>given_general_alert_pass</code>
+          <p>This is slightly more niche than the basic near/far cases. It checks the separate general_alert configuration branch, where a broader alert variable can be...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>general_alert_default_name_pass</code>
+          <p>This is the same branch, but it leaves the name= field out of the config string so the default gen_alert_ prefixing behavior is exercised.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>given_duration_resolve_pass</code>
+          <p>A short-lived given obstacle should age out and post OBM_RESOLVED.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>given_max_duration_reject_absent_pass</code>
+          <p>pObstacleMgr can reject mailed-in obstacles whose declared duration exceeds given_max_duration. This case proves the obstacle is rejected before it is ever...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>given_max_duration_missing_absent_pass</code>
+          <p>This is the missing-duration version of the same branch. The obstacle is mailed in without duration=..., and the correct outcome is rejection before it can ever...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_dist_always_pass</code>
+          <p>With post_dist_to_polys=true, a far obstacle should still publish OBM_DIST_TO_OBJ. This is the always-post branch, distinct from the default close-only behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_dist_false_absent_pass</code>
+          <p>The opposite branch: with post_dist_to_polys=false, the mission should not publish the normal near-obstacle distance report for this fixed geometry. This is...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>points_cluster_dist_pass</code>
+          <p>A cluster of TRACKED_FEATURE points should generate a convex hull and a stable OBM_DIST_TO_OBJ distance report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_point_var_pass</code>
+          <p>This exercises the custom point_var input path. The same point cluster is posted under an alternate variable name instead of the default TRACKED_FEATURE.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_pts_per_cluster_trim_pass</code>
+          <p>This is the cluster-trimming branch. The point set intentionally exceeds max_pts_per_cluster, so the hull is built from the trimmed cluster rather than from the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>points_ignore_range_absent_pass</code>
+          <p>The same point cluster should be ignored entirely when ignore_range is tighter than the point distances.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>points_age_resolve_pass</code>
+          <p>Point-based obstacles should resolve once all points age out past max_age_per_point.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lasso_cluster_pass</code>
+          <p>This exercises the lasso=true pseudo-hull branch rather than the normal convex-hull generator. The reported distance is checked in a numeric band instead of by...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>placeholder_hull_pass</code>
+          <p>This is another niche branch: three colinear points do not form a valid convex hull, so pObstacleMgr falls back to a placeholder radial polygon. The test checks...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>disable_obstacle_pass</code>
+          <p>disable_var should post BHV_ABLE_FILTER=obstacle_id=...,action=disable, and the mission grades on a confirmation flag posted when that filter-message path is...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>enable_obstacle_pass</code>
+          <p>enable_var should post BHV_ABLE_FILTER=obstacle_id=...,action=enable, and the mission grades on a confirmation flag posted when that filter-message path is...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>expunge_obstacle_pass</code>
+          <p>expunge_var should post BHV_ABLE_FILTER=obstacle_id=...,action=expunge and remove the obstacle from the manager&#x27;s internal map. The mission grades on a...</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/obmgr_harnesses/H01-obmgr_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/obmgr_missions/obmgr_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

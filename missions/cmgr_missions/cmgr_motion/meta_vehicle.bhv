@@ -1,6 +1,7 @@
 //-------------------------------------------------
-// Vehicle Helm config file
-// Charles Benjamin
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
 
 initialize  DEPLOY           = false
 initialize  ARRIVED          = false
@@ -11,7 +12,7 @@ set MODE = ACTIVE {
   DEPLOY = true
 } INACTIVE
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_Waypoint
 {
   name      = waypt_transit
@@ -35,7 +36,7 @@ Behavior = BHV_Waypoint
   visual_hints = vertex_size=5, edge_size=1
 }
 
-//----------------------------------------------
+//----------------------------------------------------
 Behavior = BHV_AvoidCollision
 {
   name       = avd_

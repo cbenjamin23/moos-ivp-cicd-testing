@@ -1,6 +1,6 @@
 //-------------------------------------------------
-// NAME: M. Benjamin
-// FILE: $(VNAME).moos
+// FILE: meta_vehicle.moos
+// NAME: Charles Benjamin
 //-------------------------------------------------
 
 ServerHost = localhost
@@ -9,7 +9,7 @@ Community  = $(VNAME)
 
 #include plugs.moos <origin_warp>
 
-//------------------------------------------------------------
+//----------------------------------------------------
 Processconfig = ANTLER
 {
   MSBetweenLaunches = 50
@@ -52,7 +52,7 @@ ProcessConfig = pHelmIvP
 	hold_on_apps = pContactMgrV20
 }
 	
-//--------------------------------------------------------
+//----------------------------------------------------
 // pNodeReporter Config Block 
 
 ProcessConfig = pNodeReporter
@@ -65,7 +65,7 @@ ProcessConfig = pNodeReporter
   terse_reports  = true
 }
 
-//------------------------------------------
+//----------------------------------------------------
 // uSimMarineV22 config block
 
 ProcessConfig = uSimMarineV22
@@ -108,7 +108,7 @@ ProcessConfig = uSimMarineV22
   speed_factor = 20
 }
 
-//--------------------------------------------------------
+//----------------------------------------------------
 // pContactMgrV20 Config Block
 
 ProcessConfig = pContactMgrV20
@@ -137,7 +137,7 @@ ProcessConfig = pContactMgrV20
   cpa_range_color   = gray30
 }
 
-//--------------------------------------------------
+//----------------------------------------------------
 // uFldNodeBroker Config Block
 
 ProcessConfig = uFldNodeBroker
@@ -156,7 +156,7 @@ ProcessConfig = uFldNodeBroker
 }
 
 
-//--------------------------------------------------
+//----------------------------------------------------
 // pLogger Config Block
 
 ProcessConfig = pLogger

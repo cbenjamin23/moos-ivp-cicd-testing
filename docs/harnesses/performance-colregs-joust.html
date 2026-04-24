@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P02 COLREGS Joust | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Performance</p>
+      <h1>P02 COLREGS Joust</h1>
+      <p class="lede">Performance tests for sustained COLREGS pressure. These cases run repeated multi-vehicle interaction and grade safe spacing, completion, warning cleanliness, and runtime bounds.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission creates sustained two- or three-vehicle COLREGS encounters. Cases adjust traffic density and duration to test whether safe spacing holds beyond a single isolated encounter.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="performance-colregs-joust-baseline.gif">
+          <img src="../assets/gifs/performance-colregs-joust-baseline.gif" alt="Baseline Joust GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Joust</h3>
+          <p>Representative case: <code>baseline_colregs_pass</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="performance-colregs-joust-dense.gif">
+          <img src="../assets/gifs/performance-colregs-joust-dense.gif" alt="Dense Joust GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Dense Joust</h3>
+          <p>Representative case: <code>dense_colregs_pass</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>baseline_colregs_pass</code>
+          <p>Covers baseline colregs expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dense_colregs_pass</code>
+          <p>Covers dense colregs expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>endurance_colregs_pass</code>
+          <p>Covers endurance colregs expected pass.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/performance_harnesses/P02-colregs_joust/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/performance_missions/P02-colregs_joust/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

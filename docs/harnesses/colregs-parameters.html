@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H04 COLREGS Parameters | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">COLREGS</p>
+      <h1>H04 COLREGS Parameters</h1>
+      <p class="lede">Parameter-regression tests for BHV_AvdColregsV22. These cases vary one tuning knob at a time while holding trusted geometry steady, verifying expected stability or one deliberate behavioral change.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared COLREGS stem mission uses two vessels, <code>ben</code> and <code>abe</code>; <code>ben</code> is the evaluated ownship. Parameter cases keep the encounter setup stable while changing one behavior setting at a time.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="colregs-parameters-cpa-compare.gif">
+          <img src="../assets/gifs/colregs-parameters-cpa-compare.gif" alt="Default vs High CPA GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Default vs High CPA</h3>
+          <p>Representative case: <code>min_util_cpa_default/high</code></p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="colregs-parameters-headon-only.gif">
+          <img src="../assets/gifs/colregs-parameters-headon-only.gif" alt="Head-on Only Toggle GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Head-on Only Toggle</h3>
+          <p>Representative case: <code>headon_only_true/false</code></p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>min_util_cpa_low_pass</code>
+          <p>Covers min util cpa low expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_util_cpa_default_pass</code>
+          <p>Covers min util cpa default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_util_cpa_high_pass</code>
+          <p>Covers min util cpa high expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>headon_only_true_pass</code>
+          <p>Covers headon only true expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>headon_only_false_pass</code>
+          <p>Covers headon only false expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_bow_dist_default_pass</code>
+          <p>Covers giveway bow dist default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_bow_dist_high_pass</code>
+          <p>Covers giveway bow dist high expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_util_cpa_default_pass</code>
+          <p>Covers max util cpa default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_util_cpa_high_pass</code>
+          <p>Covers max util cpa high expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>velocity_filter_off_pass</code>
+          <p>Covers velocity filter off expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>velocity_filter_on_pass</code>
+          <p>Covers velocity filter on expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_tol_default_pass</code>
+          <p>Covers eval tol default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_tol_short_pass</code>
+          <p>Covers eval tol short expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_tol_long_pass</code>
+          <p>Covers eval tol long expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_dist_default_pass</code>
+          <p>Covers pwt outer dist default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_dist_high_pass</code>
+          <p>Covers pwt outer dist high expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_inner_dist_low_pass</code>
+          <p>Covers pwt inner dist low expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_inner_dist_default_pass</code>
+          <p>Covers pwt inner dist default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_inner_dist_high_pass</code>
+          <p>Covers pwt inner dist high expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_grade_linear_pass</code>
+          <p>Covers pwt grade linear expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_grade_quasi_pass</code>
+          <p>Covers pwt grade quasi expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_grade_quadratic_pass</code>
+          <p>Covers pwt grade quadratic expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pts_port_turns_ok_true_pass</code>
+          <p>Covers pts port turns ok true expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pts_port_turns_ok_false_pass</code>
+          <p>Covers pts port turns ok false expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_radius_default_pass</code>
+          <p>Covers turn radius default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_radius_high_pass</code>
+          <p>Covers turn radius high expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>check_plateaus_false_pass</code>
+          <p>Covers check plateaus false expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>check_plateaus_true_pass</code>
+          <p>Covers check plateaus true expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>completed_dist_default_pass</code>
+          <p>Covers completed dist default expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>completed_dist_high_pass</code>
+          <p>Covers completed dist high expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>refinery_on_pass</code>
+          <p>Covers refinery on expected pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>refinery_off_pass</code>
+          <p>Covers refinery off expected pass.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/colregs_harnesses/H04-colregs_parameters/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/colregs_missions/colregs_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>
