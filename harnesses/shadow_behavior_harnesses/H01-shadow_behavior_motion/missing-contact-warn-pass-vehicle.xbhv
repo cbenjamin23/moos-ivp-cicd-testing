@@ -1,0 +1,19 @@
+Behavior = BHV_Shadow
+{
+  name      = shadow_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = SHADOW = true
+  updates   = SHADOW_UPDATES
+
+           contact = ghost
+    pwt_outer_dist = 0
+  on_no_contact_ok = true
+       extrapolate = true
+             decay = 30,60
+
+ heading_peakwidth = 20
+  heading_basewidth = 160
+   speed_peakwidth = 0.1
+    speed_basewidth = 2.0
+}

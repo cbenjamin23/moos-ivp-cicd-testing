@@ -1,0 +1,74 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize DEPLOY = false
+initialize RETURN = false
+initialize SHADOW = false
+initialize TRANSIT = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+}
+
+#ifdef VROLE CHASER
+
+//----------------------------------------------------
+Behavior = BHV_Shadow
+{
+  name      = shadow_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = SHADOW = true
+  updates   = SHADOW_UPDATES
+
+           contact = unset_ok
+    pwt_outer_dist = 0
+  on_no_contact_ok = true
+       extrapolate = true
+             decay = 30,60
+
+ heading_peakwidth = 20
+  heading_basewidth = 160
+   speed_peakwidth = 0.1
+    speed_basewidth = 2.0
+}
+
+#else
+
+//----------------------------------------------------
+Behavior = BHV_ConstantHeading
+{
+  name      = target_heading
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRANSIT = true
+
+       heading = 90
+      duration = no-time-limit
+  peakwidth    = 10
+  basewidth    = 170
+  summitdelta  = 25
+}
+
+//----------------------------------------------------
+Behavior = BHV_ConstantSpeed
+{
+  name      = target_speed
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRANSIT = true
+
+       speed = $(STOCK_SPD)
+    duration = no-time-limit
+  peakwidth  = 0
+  basewidth  = 0.2
+}
+
+#endif

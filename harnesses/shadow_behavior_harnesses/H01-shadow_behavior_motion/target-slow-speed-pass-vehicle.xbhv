@@ -1,0 +1,12 @@
+Behavior = BHV_ConstantSpeed
+{
+  name      = target_speed
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRANSIT = true
+
+       speed = 0.8
+    duration = no-time-limit
+  peakwidth  = 0
+  basewidth  = 0.2
+}

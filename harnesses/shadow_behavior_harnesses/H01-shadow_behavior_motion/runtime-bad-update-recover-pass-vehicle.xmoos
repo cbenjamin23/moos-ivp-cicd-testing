@@ -1,0 +1,16 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+#ifdef VROLE CHASER
+  event = var=SHADOW_UPDATES, val="pwt_outer_dist=-5", time=11
+  event = var=SHADOW_UPDATES, val="contact=ben", time=30
+  event = var=SHADOW, val=true, time=32
+  event = var=SHADOW_UPDATES, val="pwt_outer_dist=120", time=38
+#else
+  event = var=TRANSIT, val=true, time=8
+#endif
+}

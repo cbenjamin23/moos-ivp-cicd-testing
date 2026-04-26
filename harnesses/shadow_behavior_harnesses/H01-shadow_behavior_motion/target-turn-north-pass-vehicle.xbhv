@@ -1,0 +1,14 @@
+Behavior = BHV_ConstantHeading
+{
+  name      = target_heading
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRANSIT = true
+  updates   = TARGET_HEADING_UPDATES
+
+       heading = 90
+      duration = no-time-limit
+  peakwidth    = 10
+  basewidth    = 170
+  summitdelta  = 25
+}
