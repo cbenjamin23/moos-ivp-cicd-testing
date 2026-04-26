@@ -35,7 +35,7 @@ on:
         default: "10"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.targets || 'full' }}
   cancel-in-progress: true
 
 jobs:
@@ -67,7 +67,6 @@ jobs:
                   "key": "cmgr_h01",
                   "path": "harnesses/cmgr_harnesses/H01-cmgr_unit",
                   "harness": "H01-cmgr_unit",
-                  "expected_count": 33,
                   "artifact": "manual-cmgr-h01-results",
                   "families": ["cmgr"],
               },
@@ -75,7 +74,6 @@ jobs:
                   "key": "cmgr_h02",
                   "path": "harnesses/cmgr_harnesses/H02-cmgr_motion",
                   "harness": "H02-cmgr_motion",
-                  "expected_count": 9,
                   "artifact": "manual-cmgr-h02-results",
                   "families": ["cmgr"],
               },
@@ -83,7 +81,6 @@ jobs:
                   "key": "obmgr_h01",
                   "path": "harnesses/obmgr_harnesses/H01-obmgr_unit",
                   "harness": "H01-obmgr_unit",
-                  "expected_count": 20,
                   "artifact": "manual-obmgr-h01-results",
                   "families": ["obmgr"],
               },
@@ -91,7 +88,6 @@ jobs:
                   "key": "obmgr_h02",
                   "path": "harnesses/obmgr_harnesses/H02-obmgr_motion",
                   "harness": "H02-obmgr_motion",
-                  "expected_count": 6,
                   "artifact": "manual-obmgr-h02-results",
                   "families": ["obmgr"],
               },
@@ -99,7 +95,6 @@ jobs:
                   "key": "colregs_h01",
                   "path": "harnesses/colregs_harnesses/H01-colregs_classification",
                   "harness": "H01-colregs_classification",
-                  "expected_count": 22,
                   "artifact": "manual-colregs-h01-results",
                   "families": ["colregs"],
               },
@@ -107,7 +102,6 @@ jobs:
                   "key": "colregs_h02",
                   "path": "harnesses/colregs_harnesses/H02-colregs_thresholds",
                   "harness": "H02-colregs_thresholds",
-                  "expected_count": 58,
                   "artifact": "manual-colregs-h02-results",
                   "families": ["colregs"],
               },
@@ -115,7 +109,6 @@ jobs:
                   "key": "colregs_h03",
                   "path": "harnesses/colregs_harnesses/H03-colregs_execution",
                   "harness": "H03-colregs_execution",
-                  "expected_count": 23,
                   "artifact": "manual-colregs-h03-results",
                   "families": ["colregs"],
               },
@@ -123,7 +116,6 @@ jobs:
                   "key": "colregs_h04",
                   "path": "harnesses/colregs_harnesses/H04-colregs_parameters",
                   "harness": "H04-colregs_parameters",
-                  "expected_count": 32,
                   "artifact": "manual-colregs-h04-results",
                   "families": ["colregs"],
               },
@@ -131,7 +123,6 @@ jobs:
                   "key": "collision_h01",
                   "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion",
                   "harness": "H01-collision_behavior_motion",
-                  "expected_count": 6,
                   "artifact": "manual-collision-h01-results",
                   "families": ["collision_behavior"],
               },
@@ -139,7 +130,6 @@ jobs:
                   "key": "obstacle_behavior_h01",
                   "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion",
                   "harness": "H01-obstacle_behavior_motion",
-                  "expected_count": 7,
                   "artifact": "manual-obstacle-behavior-h01-results",
                   "families": ["obstacle_behavior"],
               },
@@ -147,7 +137,6 @@ jobs:
                   "key": "opregion_h01",
                   "path": "harnesses/opregion_harnesses/H01-opregion_safety",
                   "harness": "H01-opregion_safety",
-                  "expected_count": 15,
                   "artifact": "manual-opregion-h01-results",
                   "families": ["opregion"],
               },
@@ -155,7 +144,6 @@ jobs:
                   "key": "p01_obstacle",
                   "path": "harnesses/performance_harnesses/P01-obstacle_gauntlet",
                   "harness": "P01-obstacle_gauntlet",
-                  "expected_count": 3,
                   "artifact": "manual-p01-obstacle-results",
                   "families": ["performance"],
                   "perf_profile": "ci",
@@ -164,7 +152,6 @@ jobs:
                   "key": "p02_colregs",
                   "path": "harnesses/performance_harnesses/P02-colregs_joust",
                   "harness": "P02-colregs_joust",
-                  "expected_count": 3,
                   "artifact": "manual-p02-colregs-results",
                   "families": ["colregs", "performance"],
               },
@@ -172,7 +159,6 @@ jobs:
                   "key": "p03_colregs",
                   "path": "harnesses/performance_harnesses/P03-colregs_traffic_ring",
                   "harness": "P03-colregs_traffic_ring",
-                  "expected_count": 3,
                   "artifact": "manual-p03-colregs-results",
                   "families": ["colregs", "performance"],
                   "perf_profile": "ci",
@@ -273,6 +259,7 @@ jobs:
           if-no-files-found: error
 
   just-make:
+    name: just-make / ${{ matrix.harness }}
     if: ${{ inputs.dispatch_mode == 'full' }}
     needs: build
     runs-on: ubuntu-latest
@@ -366,10 +353,11 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          expected_count=$(python3 scripts/ci_harness_case_count.py harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh)
           python3 scripts/ci_harness_results_summary.py \
             --results harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/results.txt \
             --harness "H01-collision_behavior_motion" \
-            --expected-count 6 \
+            --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
       - name: Enforce collision harness success
@@ -435,10 +423,11 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          expected_count=$(python3 scripts/ci_harness_case_count.py harnesses/colregs_harnesses/H01-colregs_classification/zlaunch.sh)
           python3 scripts/ci_harness_results_summary.py \
             --results harnesses/colregs_harnesses/H01-colregs_classification/results.txt \
             --harness "H01-colregs_classification" \
-            --expected-count 22 \
+            --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
       - name: Enforce COLREGS classification success
@@ -504,10 +493,11 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          expected_count=$(python3 scripts/ci_harness_case_count.py harnesses/colregs_harnesses/H03-colregs_execution/zlaunch.sh)
           python3 scripts/ci_harness_results_summary.py \
             --results harnesses/colregs_harnesses/H03-colregs_execution/results.txt \
             --harness "H03-colregs_execution" \
-            --expected-count 23 \
+            --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
       - name: Enforce COLREGS harness success
@@ -524,6 +514,7 @@ jobs:
           fi
 
   just-make-subset:
+    name: just-make / ${{ matrix.key }} / ${{ matrix.harness }}
     if: ${{ inputs.dispatch_mode == 'just_make_subset' }}
     needs:
       - select-targets
@@ -561,6 +552,7 @@ jobs:
           ./zlaunch.sh --just_make "${{ inputs.time_warp }}"
 
   correctness-subset:
+    name: correctness / ${{ matrix.key }} / ${{ matrix.harness }}
     if: ${{ inputs.dispatch_mode == 'correctness_subset' }}
     needs:
       - select-targets
@@ -619,10 +611,11 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          expected_count=$(python3 scripts/ci_harness_case_count.py "${{ matrix.path }}/zlaunch.sh")
           python3 scripts/ci_harness_results_summary.py \
             --results "${{ matrix.path }}/results.txt" \
             --harness "${{ matrix.harness }}" \
-            --expected-count "${{ matrix.expected_count }}" \
+            --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
       - name: Enforce selected correctness success
@@ -639,7 +632,7 @@ jobs:
           fi
 
   family-run:
-    name: ${{ inputs.family }}-family
+    name: ${{ inputs.family }} / ${{ matrix.key }} / ${{ matrix.harness }}
     if: ${{ inputs.dispatch_mode == 'family_run' }}
     needs:
       - select-targets
@@ -698,10 +691,11 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          expected_count=$(python3 scripts/ci_harness_case_count.py "${{ matrix.path }}/zlaunch.sh")
           python3 scripts/ci_harness_results_summary.py \
             --results "${{ matrix.path }}/results.txt" \
             --harness "${{ matrix.harness }}" \
-            --expected-count "${{ matrix.expected_count }}" \
+            --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
       - name: Enforce selected family success
@@ -769,10 +763,11 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          expected_count=$(python3 scripts/ci_harness_case_count.py harnesses/performance_harnesses/P01-obstacle_gauntlet/zlaunch.sh)
           python3 scripts/ci_harness_results_summary.py \
             --results harnesses/performance_harnesses/P01-obstacle_gauntlet/results.txt \
             --harness "P01-obstacle_gauntlet" \
-            --expected-count 3 \
+            --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
       - name: Enforce P01 performance success
@@ -840,10 +835,11 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          expected_count=$(python3 scripts/ci_harness_case_count.py harnesses/performance_harnesses/P03-colregs_traffic_ring/zlaunch.sh)
           python3 scripts/ci_harness_results_summary.py \
             --results harnesses/performance_harnesses/P03-colregs_traffic_ring/results.txt \
             --harness "P03-colregs_traffic_ring" \
-            --expected-count 3 \
+            --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
       - name: Enforce P03 performance success
