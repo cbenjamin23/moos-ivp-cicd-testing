@@ -26,6 +26,13 @@ uses behavior outputs such as:
   Trails off the contact's port quarter with a relative 135 degree angle.
 - `relative_starboard_pass`
   Trails off the contact's starboard quarter with a relative -135 degree angle.
+- `lead_right_turn_pass`
+  Replaces the target's straight waypoint leg with a right-angle dogleg and
+  grades pursuit after the target changes course.
+- `lead_port_turn_pass`
+  Combines the dogleg target path with a port-quarter relative trail angle.
+- `lead_turn_angle_update_pass`
+  Combines the dogleg target path with a runtime `trail_angle` update.
 - `short_trail_range_pass`
   Shortens `trail_range` and grades tighter trail-point convergence.
 - `long_trail_range_pass`
@@ -82,13 +89,16 @@ uses behavior outputs such as:
 - `bad_mod_trail_range_pct_fail`
   Rejects zero `mod_trail_range_pct`.
 - `bad_radius_fail`
-  Rejects negative `radius`.
+  Rejects a negative `radius` configuration and expects the behavior error path
+  to make the mission fail.
 - `bad_nm_radius_fail`
-  Rejects negative `nm_radius`.
+  Rejects a negative `nm_radius` configuration and expects the behavior error
+  path to make the mission fail.
 - `bad_pwt_outer_dist_fail`
   Rejects negative `pwt_outer_dist`.
 - `bad_decay_fail`
-  Rejects malformed `decay`.
+  Rejects malformed `decay` input and expects the behavior error path to make
+  the mission fail.
 - `bad_time_on_leg_fail`
   Rejects negative `time_on_leg`.
 
@@ -101,6 +111,9 @@ From this harness directory:
 ./zlaunch.sh --case=static_trail_pass 10
 ./zlaunch.sh --case=pwt_outer_inactive_pass --gui 1
 ./zlaunch.sh --case=outside_nm_radius_pass --gui 1
+./zlaunch.sh --case=lead_right_turn_pass --gui 1
+./zlaunch.sh --case=lead_port_turn_pass --gui 1
+./zlaunch.sh --case=lead_turn_angle_update_pass --gui 1
 ./zlaunch.sh --case=runtime_bad_update_recover_pass --gui 1
 ./zlaunch.sh --case=idle_post_distance_pass --gui 1
 ./zlaunch.sh --jobs=4 10
@@ -112,6 +125,6 @@ From the paired mission directory, named cases are forwarded to this harness:
 ./zlaunch.sh --case=runtime_angle_update_pass --gui 1
 ```
 
-The full matrix currently has 35 cases. Wave mode uses isolated temp mission
+The full matrix currently has 38 cases. Wave mode uses isolated temp mission
 copies and deterministic two-vehicle port blocks, so do not overlap it with
 other MOOS harnesses on the same machine.

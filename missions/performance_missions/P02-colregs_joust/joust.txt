@@ -1,5 +1,4 @@
-# Checked-in deterministic denser three-vehicle joust layout
-cx=23,cy=-82,rad=38
-px1=53.107,py1=-58.81448,px2=-7.10701,py2=-105.18552,hdg=232.4,spd=2.02,vname=abe,vcolor=yellow
-px1=13.678,py1=-45.16108,px2=32.32169,py2=-118.83892,hdg=165.8,spd=2.05,vname=ben,vcolor=red
-px1=-14.964,py1=-80.34246,px2=60.96383,py2=-83.65754,hdg=92.5,spd=2.02,vname=cal,vcolor=dodger_blue
+# Checked-in deterministic two-vehicle joust baseline
+cx=23,cy=-82,rad=32
+px1=48.353,py1=-62.47535,px2=-2.35327,py2=-101.52465,hdg=232.4,spd=2.00,vname=abe,vcolor=yellow
+px1=-8.97,py1=-80.60418,px2=54.96954,py2=-83.39582,hdg=92.5,spd=2.00,vname=ben,vcolor=red

@@ -72,6 +72,15 @@ uses behavior outputs plus chaser/target speed aliases:
 - `close_offset_tailgate_pass`
   Starts the chaser close and laterally offset from the target, then grades
   tailgate-safe convergence into the convoy queue.
+- `lead_right_turn_pass`
+  Replaces the target's straight waypoint leg with a right-angle dogleg and
+  grades convoy following after the target has turned north.
+- `lead_s_turn_pass`
+  Gives the target a compact S-turn path and grades convoy following after the
+  target has completed two heading changes.
+- `short_queue_turn_pass`
+  Combines a right-angle target turn with a shortened `max_mark_range`, grading
+  queue trimming during non-straight contact motion.
 - `slow_follower_pass`
   Uses conservative speed multipliers and grades slower physical chaser speed.
 - `fast_follower_pass`
@@ -102,17 +111,21 @@ uses behavior outputs plus chaser/target speed aliases:
 - `bad_max_mark_range_fail`
   Rejects negative `max_mark_range`.
 - `bad_radius_fail`
-  Rejects negative `radius`.
+  Rejects a negative `radius` configuration and expects the behavior error path
+  to make the mission fail.
 - `bad_nm_radius_fail`
-  Rejects negative `nm_radius`.
+  Rejects a negative `nm_radius` configuration and expects the behavior error
+  path to make the mission fail.
 - `bad_spd_slower_fail`
   Rejects `spd_slower` outside its accepted range.
 - `bad_spd_faster_fail`
   Rejects `spd_faster` outside its accepted range.
 - `bad_spd_max_fail`
-  Rejects zero `spd_max`.
+  Rejects zero `spd_max`, which would make the convoy speed cap invalid, and
+  expects mission failure.
 - `bad_rng_estop_fail`
-  Rejects negative `rng_estop`.
+  Rejects a negative `rng_estop` safety range and expects the behavior error
+  path to make the mission fail.
 - `bad_rng_safety_fail`
   Rejects malformed `rng_safety`.
 
@@ -126,6 +139,9 @@ From this harness directory:
 ./zlaunch.sh --case=fine_mark_spacing_pass --gui 1
 ./zlaunch.sh --case=angled_entry_pass --gui 1
 ./zlaunch.sh --case=cross_track_entry_pass --gui 1
+./zlaunch.sh --case=lead_right_turn_pass --gui 1
+./zlaunch.sh --case=lead_s_turn_pass --gui 1
+./zlaunch.sh --case=short_queue_turn_pass --gui 1
 ./zlaunch.sh --case=fast_follower_pass --gui 1
 ./zlaunch.sh --case=short_mark_queue_pass --gui 1
 ./zlaunch.sh --jobs=4 10
@@ -141,6 +157,6 @@ The geometry-entry cases are evaluated at 65 seconds and require `QLEN >= 2`,
 `TLEN` between 10 and 95 meters, `MXRNG = 80`, `AVG2 >= 1`, a moving target
 and chaser, chaser `Y` between -102 and -58, and no behavior error.
 
-The full matrix currently has 41 cases. Wave mode uses isolated temp mission
+The full matrix currently has 44 cases. Wave mode uses isolated temp mission
 copies and deterministic two-vehicle port blocks, so do not overlap it with
 other MOOS harnesses on the same machine.

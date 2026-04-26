@@ -74,11 +74,14 @@ behavior-owned outputs:
 - `center_bad_update_recover_pass`
   Bad center update followed by valid recovery update.
 - `spiral_factor_pass`
-  Nondefault `spiral_factor`.
+  Uses a nondefault `spiral_factor` and verifies the loiter still acquires and
+  stabilizes without behavior errors.
 - `patience_low_pass`
-  Low `patience`.
+  Uses low `patience` to exercise faster loiter-point switching while still
+  reaching stable loiter.
 - `patience_high_pass`
-  High `patience`.
+  Uses high `patience` to exercise slower loiter-point switching while still
+  reaching stable loiter.
 
 ## Running
 
