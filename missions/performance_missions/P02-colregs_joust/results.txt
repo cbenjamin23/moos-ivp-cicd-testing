@@ -1,0 +1,2 @@
+  grade=pass  form=colregs_joust  mmod=baseline_colregs_pass  eval=true  done=true  timeout=false  encounters=5  closest_range_ever=9.86  near_misses=3  collisions=0  wall_time=29.03  mhash=[PINK-GLEE]
+          

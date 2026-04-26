@@ -1,0 +1,1 @@
+form=obmgr_tests_harness  mmod=given_baseline_pass  grade=pass  eval=true  new_given=true  dist=OB_NEAR,18.0  mindist=18  alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near  mhash=[BENS-RICH]

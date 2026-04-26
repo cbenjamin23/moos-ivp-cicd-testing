@@ -1,0 +1,1 @@
+  grade=pass  form=stationkeep_behavior_tests  mmod=static_station_pass  eval=true  dist=6.408  pskeep=SEEKING_STATION  warning=false  bhv_error=false  settings=type=BHV_StationKeep,name=station_keep,x=12.00,y=-121.00,inner_radius=4.0,outer_radius=15.0,hibernation_radius=-1.0,outer_speed=1.2,center_activate=false  mhash=[VICE-DIME]

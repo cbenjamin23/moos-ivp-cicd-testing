@@ -1,0 +1,1 @@
+  grade=pass  form=obavoid_tests_harness  mmod=baseline_center_pass  eval=true  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[GLIB-BOYD]

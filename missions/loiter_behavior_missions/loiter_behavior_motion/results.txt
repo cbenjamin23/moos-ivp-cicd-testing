@@ -1,0 +1,1 @@
+  grade=pass  form=loiter_behavior_tests  mmod=radial_clockwise_pass  eval=true  loiter_done=false  complete=false  index=7  mode=stable  acquire=0  dist_poly=2.321  dist_vert=5.724  bhv_error=false  mhash=[DARK-ARES]
