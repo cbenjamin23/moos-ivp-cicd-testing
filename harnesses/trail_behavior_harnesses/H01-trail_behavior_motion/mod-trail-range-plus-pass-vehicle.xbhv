@@ -1,0 +1,20 @@
+Behavior = BHV_Trail
+{
+  name      = trail_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRAIL = true
+  updates   = TRAIL_UPDATES
+
+              contact = ben
+       pwt_outer_dist = 0
+            nm_radius = 25
+               radius = 8
+          trail_angle = 180
+          trail_range = 45
+      mod_trail_range = 15
+     trail_angle_type = relative
+     on_no_contact_ok = true
+          extrapolate = true
+                decay = 30,60
+}

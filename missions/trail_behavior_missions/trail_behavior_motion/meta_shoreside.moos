@@ -1,0 +1,197 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = TEST_EVAL_READY=false
+  flag = BHV_ERROR_SEEN=false
+  flag = BHV_WARNING_SEEN=false
+  flag = TRAIL_DISTANCE=999
+  flag = TRAIL_RELEVANCE=0
+  flag = TRAIL_RANGE=999
+  flag = PURSUIT=-1
+  flag = REGION=UNKNOWN
+
+  required_nodes = 2
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=45
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = TRAIL_DISTANCE <= 20
+  pass_condition = PURSUIT = 1
+  pass_condition = TRAIL_RELEVANCE > 0
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = trail_behavior_tests
+  mission_mod  = $(MMOD:=static_trail_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = dist=$[TRAIL_DISTANCE]
+  report_column = relevance=$[TRAIL_RELEVANCE]
+  report_column = range=$[TRAIL_RANGE]
+  report_column = pursuit=$[PURSUIT]
+  report_column = region=$[REGION]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = TRAIL_UPDATES, TEST_EVAL_READY
+  qbridge  = TRAIL_DISTANCE, TRAIL_RELEVANCE, TRAIL_RANGE, PURSUIT, REGION
+  qbridge  = TRAIL_SPEED, TRAIL_HEADING, BHV_WARNING, BHV_ERROR
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 10
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = TRAIL_DISTANCE @ 0 nosync
+  Log = TRAIL_RELEVANCE @ 0 nosync
+  Log = TRAIL_RANGE @ 0 nosync
+  Log = PURSUIT @ 0 nosync
+  Log = REGION @ 0 nosync
+  Log = TRAIL_SPEED @ 0 nosync
+  Log = TRAIL_HEADING @ 0 nosync
+  Log = BHV_WARNING @ 0 nosync
+  Log = BHV_ERROR @ 0 nosync
+  Log = BHV_ERROR_SEEN @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = NODE_REPORT @ 0 nosync
+}
+
+//----------------------------------------------------
+// pMarineViewer Config Block
+
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file = MIT_SP.tif
+  set_pan_x = 40
+  set_pan_y = -80
+  zoom      = 1.1
+
+  vehicles_shape_scale = 1.0
+  vehicles_name_mode   = names
+
+  app_logging = true
+  hash_delta  = true
+
+  scope = NODE_REPORT
+  scope = TRAIL_DISTANCE
+  scope = TRAIL_RELEVANCE
+  scope = TRAIL_RANGE
+  scope = PURSUIT
+  scope = REGION
+  scope = BHV_ERROR_SEEN
+}

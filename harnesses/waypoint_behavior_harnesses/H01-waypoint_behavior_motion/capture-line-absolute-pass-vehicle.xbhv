@@ -1,0 +1,32 @@
+Behavior = BHV_Waypoint
+{
+  name      = waypoint
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = WPT_UPDATES
+  endflag   = WPT_DONE = true
+  endflag   = WAYPOINT_END = true
+  endflag   = DESIRED_SPEED = 0
+  wptflag   = WPT_HIT = true
+  cycleflag = CYCLE_HIT = true
+
+  perpetual = false
+  speed     = $(STOCK_SPD)
+
+  capture_line = absolute
+  lead         = 8
+  lead_damper  = 1
+  point        = 12,-121
+  repeat       = 0
+
+  wpt_status       = WPT_STAT
+  wpt_index        = WPT_INDEX
+  cycle_index_var  = CYCLE_INDEX
+  wpt_dist_to_next = WPT_DIST_TO_NEXT
+
+  visual_hints = nextpt_color=yellow
+  visual_hints = nextpt_vertex_size=8
+  visual_hints = nextpt_lcolor=gray70
+  visual_hints = vertex_color=dodger_blue, edge_color=white
+  visual_hints = vertex_size=5, edge_size=1
+}

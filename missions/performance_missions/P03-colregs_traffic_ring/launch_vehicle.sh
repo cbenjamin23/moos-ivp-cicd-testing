@@ -24,11 +24,13 @@ XMODE="SIM"
 START_POS="x=0,y=0,heading=0"
 STOCK_SPD="1.9"
 MAX_SPD="2.5"
+AVOID_INITIAL="true"
 
 for ARGI; do
   CMD_ARGS+=" ${ARGI}"
   if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
     echo "$ME [OPTIONS] [time_warp]"
+    echo "  --avoid=<bool>      Initial AVOID value for helm behaviors"
     exit 0
   elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 1 ]; then
     TIME_WARP=$ARGI
@@ -60,6 +62,8 @@ for ARGI; do
     STOCK_SPD="${ARGI#--stock_spd=*}"
   elif [ "${ARGI:0:10}" = "--max_spd=" ]; then
     MAX_SPD="${ARGI#--max_spd=*}"
+  elif [ "${ARGI:0:8}" = "--avoid=" ]; then
+    AVOID_INITIAL="${ARGI#--avoid=*}"
   fi
 done
 
@@ -74,7 +78,8 @@ nsplug meta_vehicle.moos targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \
   XMODE=$XMODE START_POS=$START_POS MAX_SPD=$MAX_SPD UP_VNAME=$UP_VNAME FSEAT_IP=localhost
 
 nsplug meta_vehicle.bhv targ_$VNAME.bhv $NSFLAGS \
-  START_POS=$START_POS VNAME=$VNAME UP_VNAME=$UP_VNAME STOCK_SPD=$STOCK_SPD COLOR=$COLOR
+  START_POS=$START_POS VNAME=$VNAME UP_VNAME=$UP_VNAME STOCK_SPD=$STOCK_SPD \
+  COLOR=$COLOR AVOID_INITIAL=$AVOID_INITIAL
 
 if [ "${JUST_MAKE}" = "yes" ]; then
   echo "$ME: Targ files made; exiting without launch."

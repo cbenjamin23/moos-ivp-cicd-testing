@@ -22,7 +22,8 @@ Capture from: `harnesses/cmgr_harnesses/H02-cmgr_motion`
 Typical capture launch: `./zlaunch.sh --case=baseline_crossing_pass --gui 10`
 
 - `cmgr-motion-baseline-crossing.gif` - Baseline Crossing Pass; representative case `baseline_crossing_pass`
-- `cmgr-motion-avoid-disabled.gif` - Avoid Disabled Fail; representative case `avoid_disabled_fail`
+- `cmgr-motion-head-on-pass.gif` - Head-on Pass; representative case `head_on_pass`
+- `cmgr-motion-two-contact-pmarineviewer.gif` - Two Contact Pass; representative case `two_contact_pass`
 
 ## H01 Obstacle Manager Unit
 
@@ -38,7 +39,8 @@ Capture from: `harnesses/obmgr_harnesses/H02-obmgr_motion`
 Typical capture launch: `./zlaunch.sh --case=baseline_center_pass --gui 10`
 
 - `obmgr-motion-baseline-center.gif` - Baseline Center Pass; representative case `baseline_center_pass`
-- `obmgr-motion-wide-center.gif` - Wide Center Fail; representative case `wide_center_fail`
+- `obmgr-motion-offset-clear.gif` - Offset Clear Pass; representative case `offset_clear_pass`
+- `obmgr-motion-two-sequential.gif` - Two Sequential Fail; representative case `two_sequential_fail`
 
 ## H01 COLREGS Classification
 

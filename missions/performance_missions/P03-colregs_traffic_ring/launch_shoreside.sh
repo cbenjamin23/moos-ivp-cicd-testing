@@ -36,6 +36,7 @@ MIN_LEG_LEN="20"
 MIN_PRED_CPA="10"
 REPOST_INTERVAL="10"
 TRAFFIC_BIN="${PTRAFFIC_BIN}"
+DUMB_VNAME="none"
 
 for ARGI; do
   CMD_ARGS+="${ARGI} "
@@ -98,6 +99,8 @@ for ARGI; do
     REPOST_INTERVAL="${ARGI#--repost_interval=*}"
   elif [ "${ARGI:0:14}" = "--traffic_bin=" ]; then
     TRAFFIC_BIN="${ARGI#--traffic_bin=*}"
+  elif [ "${ARGI:0:13}" = "--dumb_vname=" ]; then
+    DUMB_VNAME="${ARGI#--dumb_vname=*}"
   fi
 done
 
@@ -115,7 +118,7 @@ nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
   SEED=$SEED CENTER_X=$CENTER_X CENTER_Y=$CENTER_Y \
   BASE_RADIUS=$BASE_RADIUS RADIUS_JITTER=$RADIUS_JITTER \
   MIN_TARGET_SEP=$MIN_TARGET_SEP MIN_LEG_LEN=$MIN_LEG_LEN MIN_PRED_CPA=$MIN_PRED_CPA \
-  REPOST_INTERVAL=$REPOST_INTERVAL
+  REPOST_INTERVAL=$REPOST_INTERVAL DUMB_VNAME=$DUMB_VNAME
 
 if [ "${JUST_MAKE}" = "yes" ]; then
   echo "$ME: Targ files made; exiting without launch."

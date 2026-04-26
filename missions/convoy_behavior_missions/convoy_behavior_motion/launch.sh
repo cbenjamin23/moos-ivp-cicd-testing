@@ -1,0 +1,199 @@
+#!/bin/bash -e
+#------------------------------------------------------------
+#   Script: launch.sh
+#  Mission: convoy_behavior_motion
+#   Author: Charles Benjamin
+#   LastEd: Apr 2026
+#------------------------------------------------------------
+#  Part 1: Set convenience functions for producing terminal
+#          debugging output, and catching SIGINT (ctrl-c).
+#------------------------------------------------------------
+vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
+on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
+trap on_exit SIGINT
+
+#------------------------------------------------------------
+#  Part 2: Set global variable default values
+#------------------------------------------------------------
+ME=`basename "$0"`
+CMD_ARGS=""
+TIME_WARP=1
+VERBOSE=""
+JUST_MAKE=""
+LOG_CLEAN=""
+MAX_SPD="4.0"
+MMOD=""
+VPOS1=""
+VPOS2=""
+SHORE_MPORT="9000"
+VEH1_MPORT="9001"
+VEH2_MPORT="9002"
+SHORE_PSHARE="9200"
+VEH1_PSHARE="9201"
+VEH2_PSHARE="9202"
+
+XLAUNCHED="no"
+NOGUI=""
+
+#------------------------------------------------------------
+#  Part 3: Check for and handle command-line arguments
+#------------------------------------------------------------
+for ARGI; do
+    CMD_ARGS+=" ${ARGI}"
+    if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
+        echo "$ME [OPTIONS] [time_warp]                      "
+        echo "                                               "
+        echo "Options:                                       "
+        echo "  --help, -h         Show this help message    "
+        echo "  --verbose, -v      Verbose, confirm launch   "
+        echo "  --just_make, -j    Only create targ files    "
+        echo "  --log_clean, -lc   Run clean.sh bef launch   "
+        echo "  --max_spd=N        Max helm/sim speed        "
+        echo "  --mmod=<mod>       Mission variation/mod     "
+        echo "  --vpos1=<pos>      Chaser start position     "
+        echo "  --vpos2=<pos>      Target start position     "
+        echo "  --shore_mport=N    Shoreside MOOSDB port     "
+        echo "  --veh1_mport=N     Chaser MOOSDB port        "
+        echo "  --veh2_mport=N     Target MOOSDB port        "
+        echo "  --shore_pshare=N   Shoreside pShare port     "
+        echo "  --veh1_pshare=N    Chaser pShare port        "
+        echo "  --veh2_pshare=N    Target pShare port        "
+        echo "                                               "
+        echo "Options (monte):                               "
+        echo "  --xlaunched, -x    Launched by xlaunch       "
+        echo "  --nogui, -ng       Headless launch, no gui   "
+        exit 0
+    elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 1 ]; then
+        TIME_WARP=$ARGI
+    elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
+        VERBOSE=$ARGI
+    elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
+        JUST_MAKE=$ARGI
+    elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
+        LOG_CLEAN=$ARGI
+    elif [ "${ARGI:0:10}" = "--max_spd=" ]; then
+        MAX_SPD="${ARGI#--max_spd=*}"
+    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
+        MMOD=$ARGI
+    elif [ "${ARGI:0:8}" = "--vpos1=" ]; then
+        VPOS1="${ARGI#--vpos1=*}"
+    elif [ "${ARGI:0:8}" = "--vpos2=" ]; then
+        VPOS2="${ARGI#--vpos2=*}"
+    elif [ "${ARGI:0:14}" = "--shore_mport=" ]; then
+        SHORE_MPORT="${ARGI#--shore_mport=*}"
+    elif [ "${ARGI:0:13}" = "--veh1_mport=" ]; then
+        VEH1_MPORT="${ARGI#--veh1_mport=*}"
+    elif [ "${ARGI:0:13}" = "--veh2_mport=" ]; then
+        VEH2_MPORT="${ARGI#--veh2_mport=*}"
+    elif [ "${ARGI:0:15}" = "--shore_pshare=" ]; then
+        SHORE_PSHARE="${ARGI#--shore_pshare=*}"
+    elif [ "${ARGI:0:14}" = "--veh1_pshare=" ]; then
+        VEH1_PSHARE="${ARGI#--veh1_pshare=*}"
+    elif [ "${ARGI:0:14}" = "--veh2_pshare=" ]; then
+        VEH2_PSHARE="${ARGI#--veh2_pshare=*}"
+    elif [ "${ARGI}" = "--xlaunched" -o "${ARGI}" = "-x" ]; then
+        XLAUNCHED="yes"
+    elif [ "${ARGI}" = "--nogui" -o "${ARGI}" = "-ng" ]; then
+        NOGUI="--nogui"
+    else
+        echo "$ME: Bad arg:" $ARGI "Exit Code 1."
+        exit 1
+    fi
+done
+
+#------------------------------------------------------------
+#  Part 4: Set starting positions, speeds, vnames, colors
+#------------------------------------------------------------
+INIT_VARS=" $VERBOSE "
+./init_field.sh $INIT_VARS
+
+VEHPOS=(`cat vpositions.txt`)
+SPEEDS=(`cat vspeeds.txt`)
+VNAMES=(`cat vnames.txt`)
+VCOLORS=(`cat vcolors.txt`)
+VROLES=(`cat vroles.txt`)
+
+if [ "$VPOS1" != "" ]; then
+    VEHPOS[0]="$VPOS1"
+fi
+
+if [ "$VPOS2" != "" ]; then
+    VEHPOS[1]="$VPOS2"
+fi
+
+#------------------------------------------------------------
+#  Part 5: If verbose, show vars and confirm before launching
+#------------------------------------------------------------
+if [ "${VERBOSE}" != "" ]; then
+    echo "============================================"
+    echo "  $ME SUMMARY                   (ALL)       "
+    echo "============================================"
+    echo "CMD_ARGS =      [${CMD_ARGS}]               "
+    echo "TIME_WARP =     [${TIME_WARP}]              "
+    echo "JUST_MAKE =     [${JUST_MAKE}]              "
+    echo "LOG_CLEAN =     [${LOG_CLEAN}]              "
+    echo "MAX_SPD =       [${MAX_SPD}]                "
+    echo "MMOD =          [${MMOD}]                   "
+    echo "SHORE_MPORT =   [${SHORE_MPORT}]            "
+    echo "VEH1_MPORT =    [${VEH1_MPORT}]             "
+    echo "VEH2_MPORT =    [${VEH2_MPORT}]             "
+    echo "SHORE_PSHARE =  [${SHORE_PSHARE}]           "
+    echo "VEH1_PSHARE =   [${VEH1_PSHARE}]            "
+    echo "VEH2_PSHARE =   [${VEH2_PSHARE}]            "
+    echo "--------------------------------(VProps)----"
+    echo "VNAMES =        [${VNAMES[*]}]              "
+    echo "VCOLORS =       [${VCOLORS[*]}]             "
+    echo "VROLES =        [${VROLES[*]}]              "
+    echo "START_POS =     [${VEHPOS[*]}]              "
+    echo "SPEEDS =        [${SPEEDS[*]}]              "
+    echo "--------------------------------(Monte)-----"
+    echo "XLAUNCHED =     [${XLAUNCHED}]              "
+    echo "NOGUI =         [${NOGUI}]                  "
+    echo "                                            "
+    echo -n "Hit any key to continue launch           "
+    read ANSWER
+fi
+
+#------------------------------------------------------------
+#  Part 6: Launch the Vehicle communities
+#------------------------------------------------------------
+VARGS=" --sim --auto --max_spd=$MAX_SPD $MMOD "
+VARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE "
+
+vecho "Launching vehicle: ${VNAMES[0]}"
+./launch_vehicle.sh $VARGS --mport=$VEH1_MPORT --pshare=$VEH1_PSHARE \
+    --shore_pshare=$SHORE_PSHARE --start_pos=${VEHPOS[0]} \
+    --stock_spd=${SPEEDS[0]} --vname=${VNAMES[0]} \
+    --color=${VCOLORS[0]} --vrole=${VROLES[0]}
+sleep 0.5
+
+vecho "Launching vehicle: ${VNAMES[1]}"
+./launch_vehicle.sh $VARGS --mport=$VEH2_MPORT --pshare=$VEH2_PSHARE \
+    --shore_pshare=$SHORE_PSHARE --start_pos=${VEHPOS[1]} \
+    --stock_spd=${SPEEDS[1]} --vname=${VNAMES[1]} \
+    --color=${VCOLORS[1]} --vrole=${VROLES[1]}
+sleep 0.5
+
+#------------------------------------------------------------
+#  Part 7: Launch the Shoreside mission file
+#------------------------------------------------------------
+SARGS=" --auto --mport=$SHORE_MPORT --pshare=$SHORE_PSHARE $NOGUI "
+SARGS+=" --vnames=${VNAMES[0]}:${VNAMES[1]} $TIME_WARP $JUST_MAKE $VERBOSE $MMOD "
+vecho "Launching shoreside: $SARGS"
+./launch_shoreside.sh $SARGS
+
+if [ "${JUST_MAKE}" != "" ]; then
+    echo "$ME: Targ files made; exiting without launch."
+    exit 0
+fi
+
+#------------------------------------------------------------
+#  Part 8: Unless auto-launched, launch uMAC until mission quit
+#------------------------------------------------------------
+if [ "${XLAUNCHED}" != "yes" ]; then
+    uMAC --paused targ_shoreside.moos || true
+    trap "" SIGINT
+    kill -- -$$
+fi
+
+exit 0

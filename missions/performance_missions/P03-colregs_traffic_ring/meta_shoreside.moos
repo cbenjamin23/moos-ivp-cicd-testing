@@ -53,6 +53,7 @@ ProcessConfig = pAutoPoke
   flag = TRAFFIC_BATCHES=0
   flag = TRAFFIC_ASSIGN_FAILS=0
   flag = TRAFFIC_ASSIGN_MODE=none
+  flag = DUMB_VNAME=$(DUMB_VNAME:=none)
 
   required_nodes = $(REQUIRED_NODES:=5)
 }
@@ -104,6 +105,7 @@ ProcessConfig = pMissionEval
   report_column = batches=$[TRAFFIC_BATCHES]
   report_column = assign_fails=$[TRAFFIC_ASSIGN_FAILS]
   report_column = assign_mode=$[TRAFFIC_ASSIGN_MODE]
+  report_column = dumb_vname=$[DUMB_VNAME]
   report_column = wall_time=$[WALL_TIME]
   report_column = mhash=$[MHASH_SHORT]
 }

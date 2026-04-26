@@ -49,18 +49,29 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Crossing Pass</h3>
-          <p>Representative case: <code>baseline_crossing_pass</code></p>
+          <p>Description: Default on-lane contact. The vehicle should detect it early enough to route around it, arrive cleanly, and finish with zero collisions.</p>
         </div>
       </article>
 
 
       <article class="gif-card">
-        <div class="gif-frame" data-file="cmgr-motion-avoid-disabled.gif">
-          <img src="../assets/gifs/cmgr-motion-avoid-disabled.gif" alt="Avoid Disabled Fail GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="cmgr-motion-head-on-pass.gif">
+          <img src="../assets/gifs/cmgr-motion-head-on-pass.gif" alt="Head-on Pass GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Avoid Disabled Fail</h3>
-          <p>Representative case: <code>avoid_disabled_fail</code></p>
+          <h3>Head-on Pass</h3>
+          <p>Description: The intruder approaches head-on along the lane. This is a stronger geometry than the default crossing case but should still finish safely.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="cmgr-motion-two-contact-pmarineviewer.gif">
+          <img src="../assets/gifs/cmgr-motion-two-contact-pmarineviewer.gif" alt="Two Contact Pass GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Two Contact Pass</h3>
+          <p>Description: One avoid-worthy contact plus one irrelevant background contact should still result in a clean arrival. This extends the motion layer into multi-contact...</p>
         </div>
       </article>
 

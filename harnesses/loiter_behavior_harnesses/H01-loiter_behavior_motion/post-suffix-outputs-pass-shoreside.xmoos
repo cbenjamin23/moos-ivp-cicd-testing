@@ -1,0 +1,61 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=25
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = LOITER_INDEX_CUSTOM >= 0
+  pass_condition = LOITER_ACQUIRE_CUSTOM = 0
+  pass_condition = LOITER_DIST_TO_POLY_CUSTOM <= 10
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = loiter_behavior_tests
+  mission_mod  = $(MMOD:=post_suffix_outputs_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = loiter_done=$[LOITER_DONE]
+  report_column = complete=$[LOITER_COMPLETE]
+  report_column = index=$[LOITER_INDEX_CUSTOM]
+  report_column = mode=$[LOITER_MODE_CUSTOM]
+  report_column = acquire=$[LOITER_ACQUIRE_CUSTOM]
+  report_column = dist_poly=$[LOITER_DIST_TO_POLY_CUSTOM]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = LOITER_UPDATES, LOITER_DONE, LOITER_COMPLETE
+  qbridge  = TEST_EVAL_READY, BHV_ERROR
+  qbridge  = LOITER_REPORT, LOITER_INDEX, LOITER_MODE, LOITER_ACQUIRE
+  qbridge  = LOITER_DIST_TO_POLY, LOITER_ETA_TO_POLY, LOITER_DIST_TO_VERT
+  qbridge  = LOITER_REPORT_CUSTOM, LOITER_INDEX_CUSTOM, LOITER_MODE_CUSTOM
+  qbridge  = LOITER_ACQUIRE_CUSTOM, LOITER_DIST_TO_POLY_CUSTOM
+  qbridge  = LOITER_ETA_TO_POLY_CUSTOM
+}

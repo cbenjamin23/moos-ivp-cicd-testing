@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=TRAIL_UPDATES, val="trail_range=-5", time=12
+  event = var=TRAIL_UPDATES, val="trail_range=45", time=15
+}

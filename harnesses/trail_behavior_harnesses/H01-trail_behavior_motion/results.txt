@@ -1,0 +1,1 @@
+case=static_trail_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=trail_behavior_tests  mmod=static_trail_pass  eval=true  dist=12  relevance=1  range=999  pursuit=1  region=Inside nm_radius  warning=true  bhv_error=false  mhash=[WAXY-TOSH]

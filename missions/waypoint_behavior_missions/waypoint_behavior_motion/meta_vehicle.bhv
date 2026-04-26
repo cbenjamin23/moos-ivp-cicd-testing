@@ -1,0 +1,75 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize  DEPLOY            = false
+initialize  RETURN            = false
+initialize  WPT_DONE          = false
+initialize  WPT_HIT           = false
+initialize  CYCLE_HIT         = false
+initialize  WAYPOINT_END      = false
+initialize  BHV_ERROR_SEEN    = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+}
+
+//----------------------------------------------------
+Behavior = BHV_Waypoint
+{
+  name      = waypoint
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = WPT_UPDATES
+  endflag   = WPT_DONE = true
+  endflag   = WAYPOINT_END = true
+  endflag   = DESIRED_SPEED = 0
+  wptflag   = WPT_HIT = true
+  cycleflag = CYCLE_HIT = true
+
+  perpetual = false
+  speed     = $(STOCK_SPD)
+
+  capture_line   = true
+  capture_radius = 4.0
+  slip_radius    = 12.0
+  lead           = 8
+  lead_damper    = 1
+  points         = $(DEST_POS)
+  repeat         = 0
+
+  wpt_status       = WPT_STAT
+  wpt_index        = WPT_INDEX
+  cycle_index_var  = CYCLE_INDEX
+  wpt_dist_to_next = WPT_DIST_TO_NEXT
+
+  visual_hints = nextpt_color=yellow
+  visual_hints = nextpt_vertex_size=8
+  visual_hints = nextpt_lcolor=gray70
+  visual_hints = vertex_color=dodger_blue, edge_color=white
+  visual_hints = vertex_size=5, edge_size=1
+}
+
+//----------------------------------------------------
+Behavior = BHV_StationKeep
+{
+  name      = station_keep
+  pwt       = 100
+  condition = WPT_DONE = true
+
+  center_activate = true
+  inner_radius    = 5
+  outer_radius    = 7.5
+  outer_speed     = 0.6
+  transit_speed   = 0.9
+  swing_time      = 7
+
+  visual_hints = vertex_size=0, edge_color=gray40
+  visual_hints = label_color=gray50
+}

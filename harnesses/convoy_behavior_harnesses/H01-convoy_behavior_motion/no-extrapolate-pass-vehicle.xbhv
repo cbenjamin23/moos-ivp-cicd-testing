@@ -1,0 +1,25 @@
+Behavior = BHV_Convoy
+{
+  name      = convoy_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = CONVOY = true
+  updates   = CONVOY_UPDATES
+
+          contact = ben
+  on_no_contact_ok = true
+      extrapolate = false
+            decay = 30,60
+
+           radius = 8
+        nm_radius = 15
+  inter_mark_range = 5
+    max_mark_range = 80
+
+        rng_estop = 15
+      rng_tgating = 25
+      rng_lagging = 45
+       spd_slower = 0.8
+       spd_faster = 1.3
+          spd_max = 4.0
+}

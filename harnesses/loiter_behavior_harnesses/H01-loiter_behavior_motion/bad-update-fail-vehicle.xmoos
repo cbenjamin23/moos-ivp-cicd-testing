@@ -1,0 +1,9 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=LOITER_UPDATES, val="polygon=pts={0,-121:20,-101:0,-101:20,-121}", time=2
+}

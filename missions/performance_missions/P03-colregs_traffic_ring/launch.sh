@@ -37,12 +37,14 @@ MIN_TARGET_SEP="14"
 MIN_LEG_LEN="20"
 MIN_PRED_CPA="10"
 REPOST_INTERVAL="10"
+DUMB_VNAME="none"
 
 for ARGI; do
   CMD_ARGS+=" ${ARGI}"
   if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
     echo "$ME [OPTIONS] [time_warp]"
-    echo "  --mmod=<mod>       baseline_circle_pass | mixed_speed_circle_pass | endurance_circle_pass"
+    echo "  --mmod=<mod>       baseline_circle_pass | mixed_speed_circle_pass | endurance_circle_pass | noncoop_circle_pass"
+    echo "  --dumb_vname=<v>   Vehicle launched with AVOID=false"
     echo "  --shore_mport=<n>  Shoreside MOOSDB port"
     echo "  --veh_mport=<n>    Base vehicle MOOSDB port"
     echo "  --shore_pshare=<n> Shoreside pShare port"
@@ -71,6 +73,8 @@ for ARGI; do
     SHORE_PSHARE="${ARGI#--shore_pshare=*}"
   elif [ "${ARGI:0:13}" = "--veh_pshare=" ]; then
     VEH_PSHARE="${ARGI#--veh_pshare=*}"
+  elif [ "${ARGI:0:13}" = "--dumb_vname=" ]; then
+    DUMB_VNAME="${ARGI#--dumb_vname=*}"
   elif [ "${ARGI}" = "--xlaunched" -o "${ARGI}" = "-x" ]; then
     XLAUNCHED="yes"
   elif [ "${ARGI}" = "--nogui" -o "${ARGI}" = "-ng" ]; then
@@ -117,6 +121,20 @@ case "$MMOD" in
     FIELD_RADIUS="37"
     BASE_RADIUS="40"
     ;;
+  noncoop_circle_pass)
+    SEED="41"
+    EVAL_TIME_SECS="300"
+    MISSION_TIMEOUT_SECS="420"
+    CLOSEST_MIN="0.1"
+    CLOSEST_MAX="30"
+    NEAR_MISS_MAX="999"
+    BATCHES_MIN="25"
+    FIELD_RADIUS="36"
+    BASE_RADIUS="38"
+    if [ "$DUMB_VNAME" = "none" ]; then
+      DUMB_VNAME="eve"
+    fi
+    ;;
   *)
     echo "$ME: Unknown mission mode [$MMOD]"
     exit 1
@@ -160,6 +178,9 @@ for IX in $(seq 1 "$VAMT"); do
   IVARGS="$VARGS --mport=$veh_mport_ix --pshare=$veh_pshare_ix"
   IVARGS="$IVARGS --start_pos=${VEHPOS[$idx]} --stock_spd=${SPEEDS[$idx]}"
   IVARGS="$IVARGS --vname=${VNAMES[$idx]} --up_vname=$up_vname --color=${VCOLOR[$idx]}"
+  if [ "$DUMB_VNAME" != "none" ] && [ "${VNAMES[$idx]}" = "$DUMB_VNAME" ]; then
+    IVARGS="$IVARGS --avoid=false"
+  fi
   vecho "Launching vehicle: $IVARGS"
   ./launch_vehicle.sh $IVARGS
   sleep 0.4
@@ -182,6 +203,7 @@ SARGS="$SARGS --center_x=23 --center_y=-82 --base_radius=$BASE_RADIUS"
 SARGS="$SARGS --radius_jitter=$RADIUS_JITTER"
 SARGS="$SARGS --min_target_sep=$MIN_TARGET_SEP --min_leg_len=$MIN_LEG_LEN"
 SARGS="$SARGS --min_pred_cpa=$MIN_PRED_CPA --repost_interval=$REPOST_INTERVAL"
+SARGS="$SARGS --dumb_vname=$DUMB_VNAME"
 vecho "Launching shoreside: $SARGS"
 ./launch_shoreside.sh $SARGS
 

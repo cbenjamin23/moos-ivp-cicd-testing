@@ -1,0 +1,60 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=65
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = QLEN >= 2
+  pass_condition = TLEN >= 10
+  pass_condition = TLEN <= 95
+  pass_condition = MXRNG = 80
+  pass_condition = AVG2 >= 1
+  pass_condition = ABE_NAV_SPEED >= 0.5
+  pass_condition = BEN_NAV_SPEED >= 0.9
+  pass_condition = ABE_NAV_Y >= -102
+  pass_condition = ABE_NAV_Y <= -58
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = convoy_behavior_tests
+  mission_mod  = $(MMOD:=eval_geometry_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = qlen=$[QLEN]
+  report_column = tlen=$[TLEN]
+  report_column = mxrng=$[MXRNG]
+  report_column = avg2=$[AVG2]
+  report_column = avg5=$[AVG5]
+  report_column = wptx=$[WPTX]
+  report_column = wpty=$[WPTY]
+  report_column = abe_spd=$[ABE_NAV_SPEED]
+  report_column = ben_spd=$[BEN_NAV_SPEED]
+  report_column = abe_x=$[ABE_NAV_X]
+  report_column = abe_y=$[ABE_NAV_Y]
+  report_column = ben_x=$[BEN_NAV_X]
+  report_column = ben_y=$[BEN_NAV_Y]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

@@ -6,9 +6,11 @@ Current case set:
 - `baseline_circle_pass`
 - `mixed_speed_circle_pass`
 - `endurance_circle_pass`
+- `noncoop_circle_pass`
 
 What it tests:
 - continuous five-vehicle COLREGS pressure under repeated seeded reassignment
+- one non-cooperative traffic-ring variant with `eve` launched at `AVOID=false`
 - no collisions over a fixed runtime window
 - no planner/runtime warning text in the newest vehicle `.alog`
 - case-specific floors on assignment activity
@@ -29,6 +31,7 @@ Current supported envelopes:
 - `baseline_circle_pass`: `collisions=0`, `batches>=25`
 - `mixed_speed_circle_pass`: `collisions=0`, `batches>=25`
 - `endurance_circle_pass`: `collisions=0`, `batches>=80`
+- `noncoop_circle_pass`: `collisions=0`, `batches>=25`, `dumb_vname=eve`
 
 Notes:
 - `assign_fails` is still reported, but it is treated as coordinator health rather than the primary traffic verdict.
@@ -45,7 +48,9 @@ Current shell-side checks:
   - `baseline_circle_pass`: `wall_time` in `[30.0,32.0]`, warning count `0`
   - `mixed_speed_circle_pass`: `wall_time` in `[30.0,32.0]`, warning count `0`
   - `endurance_circle_pass`: `wall_time` in `[89.5,92.5]`, warning count `0`
+  - `noncoop_circle_pass`: `wall_time` in `[30.0,32.0]`, warning count `0`
 - `ci`
   - `baseline_circle_pass`: `wall_time` in `[58.0,70.0]`, warning count `0`
   - `mixed_speed_circle_pass`: `wall_time` in `[58.0,70.0]`, warning count `0`
   - `endurance_circle_pass`: `wall_time` in `[175.0,190.0]`, warning count `0`
+  - `noncoop_circle_pass`: `wall_time` in `[58.0,70.0]`, warning count `0`

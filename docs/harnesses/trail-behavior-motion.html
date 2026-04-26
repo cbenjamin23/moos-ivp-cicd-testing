@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Trail Behavior Motion | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 Trail Behavior Motion</h1>
+      <p class="lede">Checks trail distance, relevance, range, pursuit, region, warning, and error evidence across static, port-quarter, inactive, and runtime-update branches.</p>
+    </section>
+
+    
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="trail-behavior-static-trail.gif">
+          <img src="../assets/gifs/trail-behavior-static-trail.gif" alt="Static Trail Pass GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Static Trail Pass</h3>
+          <p>Description: Baseline relative trailing at 180 degrees and 45 meters.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="trail-behavior-relative-port.gif">
+          <img src="../assets/gifs/trail-behavior-relative-port.gif" alt="Relative Port Pass GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Relative Port Pass</h3>
+          <p>Description: Trails off the contact&#x27;s port quarter with a relative 135 degree angle.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="trail-behavior-pwt-outer-inactive.gif">
+          <img src="../assets/gifs/trail-behavior-pwt-outer-inactive.gif" alt="PWT Outer Inactive Pass GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>PWT Outer Inactive Pass</h3>
+          <p>Description: Sets pwt_outer_dist below contact range and grades zero relevance/pursuit.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="trail-behavior-runtime-angle-update.gif">
+          <img src="../assets/gifs/trail-behavior-runtime-angle-update.gif" alt="Runtime Angle Update Pass GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Angle Update Pass</h3>
+          <p>Description: Changes trail_angle through TRAIL_UPDATES.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>static_trail_pass</code>
+          <p>Baseline relative trailing at 180 degrees and 45 meters.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>absolute_west_pass</code>
+          <p>Uses trail_angle_type=absolute with a westward trail point.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>relative_port_pass</code>
+          <p>Trails off the contact&#x27;s port quarter with a relative 135 degree angle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>relative_starboard_pass</code>
+          <p>Trails off the contact&#x27;s starboard quarter with a relative -135 degree angle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_trail_range_pass</code>
+          <p>Shortens trail_range and grades tighter trail-point convergence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>long_trail_range_pass</code>
+          <p>Extends trail_range and evaluates after the longer geometry settles.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>tight_radius_pass</code>
+          <p>Shrinks the inner radius while keeping pursuit active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wide_radius_pass</code>
+          <p>Expands the inner radius and grades bounded trail-point convergence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>inside_nm_radius_pass</code>
+          <p>Exercises the inside-nm_radius branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outside_nm_radius_pass</code>
+          <p>Forces the outside-nm_radius branch with zero radius settings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_active_pass</code>
+          <p>Sets pwt_outer_dist high enough that relevance remains active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_inactive_pass</code>
+          <p>Sets pwt_outer_dist below contact range and grades zero relevance/pursuit.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mod_trail_range_plus_pass</code>
+          <p>Uses mod_trail_range to increase configured trailing distance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mod_trail_range_pct_pass</code>
+          <p>Uses mod_trail_range_pct to shrink configured trailing distance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_range_extend_pass</code>
+          <p>Extends trail_range through TRAIL_UPDATES.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_mod_range_plus_pass</code>
+          <p>Applies mod_trail_range through TRAIL_UPDATES.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_mod_range_pct_pass</code>
+          <p>Applies mod_trail_range_pct through TRAIL_UPDATES.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_angle_update_pass</code>
+          <p>Changes trail_angle through TRAIL_UPDATES.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_relevance_off_pass</code>
+          <p>Lowers pwt_outer_dist through TRAIL_UPDATES and grades pursuit shutoff.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_bad_update_recover_pass</code>
+          <p>Sends a malformed runtime trail-range update, then verifies a later valid update recovers without a behavior error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>idle_post_distance_pass</code>
+          <p>Idles the trail behavior after pursuit and verifies distance reporting can continue with pursuit off.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_extrapolate_pass</code>
+          <p>Verifies clean pursuit with contact extrapolation disabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_alert_request_pass</code>
+          <p>Verifies no_alert_request=true is accepted without breaking pursuit.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_warn_pass</code>
+          <p>Uses a missing contact with on_no_contact_ok=true and expects warning-only behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_fail</code>
+          <p>Uses a missing contact with on_no_contact_ok=false and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_param_fail</code>
+          <p>Omits contact with on_no_contact_ok=false and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_trail_angle_type_fail</code>
+          <p>Rejects malformed trail_angle_type.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_trail_angle_fail</code>
+          <p>Rejects malformed trail_angle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_trail_range_fail</code>
+          <p>Rejects negative trail_range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_mod_trail_range_pct_fail</code>
+          <p>Rejects zero mod_trail_range_pct.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_radius_fail</code>
+          <p>Rejects negative radius.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_nm_radius_fail</code>
+          <p>Rejects negative nm_radius.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_outer_dist_fail</code>
+          <p>Rejects negative pwt_outer_dist.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_decay_fail</code>
+          <p>Rejects malformed decay.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_time_on_leg_fail</code>
+          <p>Rejects negative time_on_leg.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/trail_behavior_harnesses/H01-trail_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/trail_behavior_missions/trail_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

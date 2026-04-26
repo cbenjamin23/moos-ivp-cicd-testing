@@ -1,0 +1,65 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize DEPLOY = false
+initialize RETURN = false
+initialize TRAIL = true
+initialize TRANSIT = true
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+}
+
+#ifdef VROLE CHASER
+
+//----------------------------------------------------
+Behavior = BHV_Trail
+{
+  name      = trail_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRAIL = true
+  updates   = TRAIL_UPDATES
+
+              contact = ben
+       pwt_outer_dist = 0
+            nm_radius = 18
+               radius = 8
+          trail_angle = 180
+          trail_range = 45
+     trail_angle_type = relative
+     on_no_contact_ok = true
+          extrapolate = true
+                decay = 30,60
+  bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
+}
+
+#else
+
+//----------------------------------------------------
+Behavior = BHV_Waypoint
+{
+  name      = target_transit
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRANSIT = true
+
+      speed = $(STOCK_SPD)
+     radius = 5
+  nm_radius = 15
+      point = 180,-80
+     repeat = 0
+       lead = 8
+
+  visual_hints = label_color=off
+  visual_hints = vertex_color=cyan, edge_color=cyan
+}
+
+#endif

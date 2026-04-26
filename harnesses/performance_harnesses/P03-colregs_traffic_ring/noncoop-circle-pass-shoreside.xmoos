@@ -1,0 +1,38 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = MISSION_DONE = true
+  pass_condition = COLLISION_TOTAL = 0
+  pass_condition = UCD_CLOSEST_RANGE_EVER > 0
+  pass_condition = UCD_CLOSEST_RANGE_EVER <= 30
+  pass_condition = TRAFFIC_BATCHES >= 25
+  pass_condition = MISSION_TIMEOUT = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = colregs_traffic_ring
+  mission_mod  = $(MMOD:=noncoop_circle_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = done=$[MISSION_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = encounters=$[ENCOUNTER_TOTAL]
+  report_column = closest_range_ever=$[UCD_CLOSEST_RANGE_EVER]
+  report_column = near_misses=$[NEAR_MISS_TOTAL]
+  report_column = collisions=$[COLLISION_TOTAL]
+  report_column = batches=$[TRAFFIC_BATCHES]
+  report_column = assign_fails=$[TRAFFIC_ASSIGN_FAILS]
+  report_column = assign_mode=$[TRAFFIC_ASSIGN_MODE]
+  report_column = dumb_vname=$[DUMB_VNAME]
+  report_column = wall_time=$[WALL_TIME]
+  report_column = mhash=$[MHASH_SHORT]
+}

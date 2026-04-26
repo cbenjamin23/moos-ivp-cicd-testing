@@ -84,6 +84,8 @@ signals:
 ./zlaunch.sh --case=save_recover_pass 10
 ./zlaunch.sh --case=trigger_exit_debounce_pass --gui 1
 ./zlaunch.sh --just_make 10
+./zlaunch.sh --jobs=4 10
+./zlaunch.sh --jobs=4 --port_base=9300 10
 ```
 
 Results are appended to `results.txt` with the mission-owned `grade` and the
@@ -93,8 +95,15 @@ for expected failures. The exit-debounce, entry-delay, and reset cases retain a
 short `TEST_EVAL_READY` timer because they verify that a breach does not happen
 after a configured timing window.
 
+Wave mode runs the full matrix in isolated temporary mission copies. Each case
+gets its own MOOSDB and pShare port block derived from `--port_base`, with
+pShare ports offset above the MOOSDB range. The default is serial
+`--jobs=1`; use `--keep_workdirs` when preserving the temporary case folders is
+useful for debugging.
+
 Latest validation:
 
 - April 24, 2026
 - full matrix: `15/15` expected outcomes matched after event-driven gate tightening
+- wave matrix: `15/15` expected outcomes matched with `--jobs=4`
 - warp: `10`

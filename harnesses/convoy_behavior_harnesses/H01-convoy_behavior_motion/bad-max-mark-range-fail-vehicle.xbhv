@@ -1,0 +1,11 @@
+Behavior = BHV_Convoy
+{
+  name      = convoy_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = CONVOY = true
+
+          contact = ben
+  inter_mark_range = 5
+    max_mark_range = -1
+}

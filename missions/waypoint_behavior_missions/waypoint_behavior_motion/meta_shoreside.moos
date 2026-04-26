@@ -1,0 +1,197 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = WPT_DONE=false
+  flag = WPT_HIT=false
+  flag = CYCLE_HIT=false
+  flag = WAYPOINT_END=false
+  flag = TEST_EVAL_READY=false
+  flag = BHV_ERROR_SEEN=false
+  flag = WPT_INDEX=-1
+  flag = CYCLE_INDEX=0
+  flag = WPT_DIST_TO_NEXT=-1
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = WPT_DONE = true
+  pass_condition = WPT_DONE = true
+  pass_condition = WAYPOINT_END = true
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = waypoint_behavior_tests
+  mission_mod  = $(MMOD:=single_point_arrival_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[WPT_DONE]
+  report_column = wpt_done=$[WPT_DONE]
+  report_column = wpt_hit=$[WPT_HIT]
+  report_column = cycle_hit=$[CYCLE_HIT]
+  report_column = waypoint_end=$[WAYPOINT_END]
+  report_column = test_ready=$[TEST_EVAL_READY]
+  report_column = wpt_index=$[WPT_INDEX]
+  report_column = cycle_index=$[CYCLE_INDEX]
+  report_column = wpt_dist=$[WPT_DIST_TO_NEXT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = WPT_UPDATES, WPT_DONE, WPT_HIT, CYCLE_HIT
+  qbridge  = WAYPOINT_END, TEST_EVAL_READY, BHV_ERROR
+  qbridge  = WPT_STAT, WPT_INDEX, CYCLE_INDEX, WPT_DIST_TO_NEXT
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//----------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = 5
+  set_pan_y            = -115
+  zoom                 = 1.5
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode         = appcast
+  appcast_color_scheme = indigo
+  nodes_font_size      = large
+  procs_font_size      = large
+  appcast_font_size    = large
+
+  scope = WPT_DONE
+  scope = WPT_HIT
+  scope = CYCLE_HIT
+  scope = WAYPOINT_END
+  scope = TEST_EVAL_READY
+  scope = MISSION_EVALUATED
+  scope = WPT_INDEX
+  scope = CYCLE_INDEX
+  scope = WPT_DIST_TO_NEXT
+  scope = BHV_ERROR_SEEN
+
+  button_one = DEPLOY # DEPLOY_ALL=true
+  button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false
+}

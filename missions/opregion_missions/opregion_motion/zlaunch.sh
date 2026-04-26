@@ -25,6 +25,9 @@ JUST_MAKE=""
 MAX_TIME="80"
 NOGUI="--nogui"
 CASE=""
+JOBS="1"
+PORT_BASE="9300"
+KEEP_WORKDIRS=""
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -42,6 +45,9 @@ for ARGI; do
         echo "  --gui              Launch with pMarineViewer "
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Forward a harness case run "
+        echo "  --jobs=<n>         Forward a harness wave run "
+        echo "  --port_base=<n>    Base shoreside MOOSDB port "
+        echo "  --keep_workdirs    Keep temp harness copies    "
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
         TIME_WARP=$ARGI
@@ -57,6 +63,12 @@ for ARGI; do
         MAX_TIME="${ARGI#--max_time=*}"
     elif [ "${ARGI:0:7}" = "--case=" ]; then
         CASE="${ARGI#--case=*}"
+    elif [ "${ARGI:0:7}" = "--jobs=" ]; then
+        JOBS="${ARGI#--jobs=*}"
+    elif [ "${ARGI:0:12}" = "--port_base=" ]; then
+        PORT_BASE="${ARGI#--port_base=*}"
+    elif [ "${ARGI}" = "--keep_workdirs" ]; then
+        KEEP_WORKDIRS="--keep_workdirs"
     else
         echo "$ME: Bad arg:" $ARGI "Exit Code 1."
         exit 1
@@ -64,13 +76,16 @@ for ARGI; do
 done
 
 #------------------------------------------------------------
-#  Part 4: Forward named cases to the companion harness
+#  Part 4: Forward named or wave cases to the companion harness
 #------------------------------------------------------------
-if [ "$CASE" != "" ]; then
+if [ "$CASE" != "" ] || [ "$JOBS" != "1" ]; then
     HARNESS_DIR="$(cd "$(dirname "$0")/../../../harnesses/opregion_harnesses/H01-opregion_safety" && pwd)"
     cd "$HARNESS_DIR"
 
-    HARGS="--case=$CASE --max_time=$MAX_TIME"
+    HARGS="--max_time=$MAX_TIME --jobs=$JOBS --port_base=$PORT_BASE"
+    if [ "$CASE" != "" ]; then
+        HARGS="$HARGS --case=$CASE"
+    fi
     if [ "$NOGUI" = "" ]; then
         HARGS="$HARGS --gui"
     fi
@@ -79,6 +94,9 @@ if [ "$CASE" != "" ]; then
     fi
     if [ "$VERBOSE" != "" ]; then
         HARGS="$HARGS --verbose"
+    fi
+    if [ "$KEEP_WORKDIRS" != "" ]; then
+        HARGS="$HARGS $KEEP_WORKDIRS"
     fi
 
     ./zlaunch.sh $HARGS $TIME_WARP

@@ -4,7 +4,7 @@
 //-------------------------------------------------
 
 initialize   DEPLOY  = false
-initialize   AVOID   = true
+initialize   AVOID   = $(AVOID_INITIAL:=true)
 
 set MODE = ACTIVE {
   DEPLOY = true

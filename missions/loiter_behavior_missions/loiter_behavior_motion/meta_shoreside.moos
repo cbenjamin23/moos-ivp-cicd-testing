@@ -1,0 +1,199 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = LOITER_DONE=false
+  flag = LOITER_COMPLETE=false
+  flag = TEST_EVAL_READY=false
+  flag = BHV_ERROR_SEEN=false
+  flag = LOITER_INDEX=-1
+  flag = LOITER_ACQUIRE=1
+  flag = LOITER_DIST_TO_POLY=999
+  flag = LOITER_DIST_TO_VERT=999
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=25
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = LOITER_INDEX >= 0
+  pass_condition = LOITER_ACQUIRE = 0
+  pass_condition = LOITER_DIST_TO_POLY <= 10
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = loiter_behavior_tests
+  mission_mod  = $(MMOD:=radial_clockwise_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = loiter_done=$[LOITER_DONE]
+  report_column = complete=$[LOITER_COMPLETE]
+  report_column = index=$[LOITER_INDEX]
+  report_column = mode=$[LOITER_MODE]
+  report_column = acquire=$[LOITER_ACQUIRE]
+  report_column = dist_poly=$[LOITER_DIST_TO_POLY]
+  report_column = dist_vert=$[LOITER_DIST_TO_VERT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = LOITER_UPDATES, LOITER_DONE, LOITER_COMPLETE
+  qbridge  = TEST_EVAL_READY, BHV_ERROR
+  qbridge  = LOITER_REPORT, LOITER_INDEX, LOITER_MODE, LOITER_ACQUIRE
+  qbridge  = LOITER_DIST_TO_POLY, LOITER_ETA_TO_POLY, LOITER_DIST_TO_VERT
+  qbridge  = LOITER_BNG_TOTAL, LOITER_BNG_DELTA
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = LOITER_DONE @ 0 nosync
+  Log = LOITER_COMPLETE @ 0 nosync
+  Log = LOITER_REPORT @ 0 nosync
+  Log = LOITER_INDEX @ 0 nosync
+  Log = LOITER_MODE @ 0 nosync
+  Log = LOITER_ACQUIRE @ 0 nosync
+  Log = LOITER_DIST_TO_POLY @ 0 nosync
+  Log = LOITER_DIST_TO_VERT @ 0 nosync
+  Log = BHV_ERROR_SEEN @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = NODE_REPORT @ 0 nosync
+}
+
+//----------------------------------------------------
+// pMarineViewer Config Block
+
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file = MIT_SP.tif
+  set_pan_x = 5
+  set_pan_y = -121
+  zoom      = 1.6
+
+  vehicles_shape_scale = 1.0
+  vehicles_name_mode   = names
+
+  app_logging = true
+  hash_delta  = true
+
+  scope = NODE_REPORT
+  scope = LOITER_DONE
+  scope = LOITER_COMPLETE
+  scope = LOITER_INDEX
+  scope = LOITER_MODE
+  scope = LOITER_ACQUIRE
+  scope = LOITER_DIST_TO_POLY
+  scope = BHV_ERROR_SEEN
+}

@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=LOITER_UPDATES, val="center_assign=bad_center", time=3
+  event = var=LOITER_UPDATES, val="center_assign=x=18,y=-121", time=5
+}

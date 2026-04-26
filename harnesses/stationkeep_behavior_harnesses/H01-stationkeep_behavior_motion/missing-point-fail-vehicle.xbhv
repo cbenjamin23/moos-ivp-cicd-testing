@@ -1,0 +1,12 @@
+Behavior = BHV_StationKeep
+{
+  name      = station_keep
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = STATIONKEEP_UPDATES
+
+  inner_radius  = 4
+  outer_radius  = 15
+  outer_speed   = 1.2
+  transit_speed = $(STOCK_SPD)
+}

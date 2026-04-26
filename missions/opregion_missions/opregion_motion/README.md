@@ -40,8 +40,14 @@ Entry points:
 ./launch.sh --just_make --nogui 10
 ./zlaunch.sh 10
 ./zlaunch.sh --case=trigger_exit_debounce_pass --gui 1
+./zlaunch.sh --jobs=4 10
 ```
 
 Companion harness:
 
 - [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/opregion_harnesses/H01-opregion_safety`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/opregion_harnesses/H01-opregion_safety)
+
+The local `zlaunch.sh` keeps the stem mission convenient for default runs, but
+forwards named cases and wave runs to the companion harness. In wave mode, the
+harness creates isolated mission copies and assigns per-case MOOSDB/pShare
+ports so cases can run in parallel without sharing a database.

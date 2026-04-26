@@ -1,0 +1,232 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = TEST_EVAL_READY=false
+  flag = BHV_ERROR_SEEN=false
+  flag = BHV_WARNING_SEEN=false
+  flag = TLEN=0
+  flag = QLEN=0
+  flag = MXRNG=0
+  flag = AVG2=0
+  flag = AVG5=0
+  flag = WPTX=0
+  flag = WPTY=0
+  flag = ABE_NAV_SPEED=0
+  flag = BEN_NAV_SPEED=0
+  flag = ABE_NAV_X=0
+  flag = ABE_NAV_Y=0
+  flag = BEN_NAV_X=0
+  flag = BEN_NAV_Y=0
+
+  required_nodes = 2
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=45
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = QLEN >= 2
+  pass_condition = TLEN >= 10
+  pass_condition = TLEN <= 95
+  pass_condition = MXRNG = 80
+  pass_condition = AVG2 >= 1
+  pass_condition = AVG5 >= 1
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = convoy_behavior_tests
+  mission_mod  = $(MMOD:=static_convoy_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = qlen=$[QLEN]
+  report_column = tlen=$[TLEN]
+  report_column = mxrng=$[MXRNG]
+  report_column = avg2=$[AVG2]
+  report_column = avg5=$[AVG5]
+  report_column = wptx=$[WPTX]
+  report_column = wpty=$[WPTY]
+  report_column = abe_spd=$[ABE_NAV_SPEED]
+  report_column = ben_spd=$[BEN_NAV_SPEED]
+  report_column = abe_x=$[ABE_NAV_X]
+  report_column = abe_y=$[ABE_NAV_Y]
+  report_column = ben_x=$[BEN_NAV_X]
+  report_column = ben_y=$[BEN_NAV_Y]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = CONVOY_UPDATES, TEST_EVAL_READY
+  qbridge  = TLEN, QLEN, MXRNG, AVG2, AVG5, WPTX, WPTY
+  qbridge  = ABE_NAV_SPEED, BEN_NAV_SPEED
+  qbridge  = ABE_NAV_X, ABE_NAV_Y, BEN_NAV_X, BEN_NAV_Y
+  qbridge  = BHV_WARNING, BHV_ERROR
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 10
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = TLEN @ 0 nosync
+  Log = QLEN @ 0 nosync
+  Log = MXRNG @ 0 nosync
+  Log = AVG2 @ 0 nosync
+  Log = AVG5 @ 0 nosync
+  Log = WPTX @ 0 nosync
+  Log = WPTY @ 0 nosync
+  Log = ABE_NAV_SPEED @ 0 nosync
+  Log = BEN_NAV_SPEED @ 0 nosync
+  Log = ABE_NAV_X @ 0 nosync
+  Log = ABE_NAV_Y @ 0 nosync
+  Log = BEN_NAV_X @ 0 nosync
+  Log = BEN_NAV_Y @ 0 nosync
+  Log = BHV_WARNING @ 0 nosync
+  Log = BHV_ERROR @ 0 nosync
+  Log = BHV_ERROR_SEEN @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = NODE_REPORT @ 0 nosync
+}
+
+//----------------------------------------------------
+// pMarineViewer Config Block
+
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file = MIT_SP.tif
+  set_pan_x = 40
+  set_pan_y = -80
+  zoom      = 1.1
+
+  vehicles_shape_scale = 1.0
+  vehicles_name_mode   = names
+
+  app_logging = true
+  hash_delta  = true
+
+  scope = NODE_REPORT
+  scope = TLEN
+  scope = QLEN
+  scope = MXRNG
+  scope = AVG2
+  scope = AVG5
+  scope = WPTX
+  scope = WPTY
+  scope = ABE_NAV_SPEED
+  scope = BEN_NAV_SPEED
+  scope = ABE_NAV_X
+  scope = ABE_NAV_Y
+  scope = BEN_NAV_X
+  scope = BEN_NAV_Y
+  scope = BHV_ERROR_SEEN
+}

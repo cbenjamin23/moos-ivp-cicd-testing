@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=CONVOY_UPDATES, val="inter_mark_range=-1", time=12
+  event = var=CONVOY_UPDATES, val="inter_mark_range=5", time=15
+}

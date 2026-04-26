@@ -1,0 +1,36 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize  DEPLOY          = false
+initialize  RETURN          = false
+initialize  BHV_ERROR_SEEN  = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+}
+
+//----------------------------------------------------
+Behavior = BHV_StationKeep
+{
+  name      = station_keep
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = STATIONKEEP_UPDATES
+
+  point        = x=12,y=-121
+  inner_radius = 4
+  outer_radius = 15
+  outer_speed  = 1.2
+  transit_speed = $(STOCK_SPD)
+
+  visual_hints = vertex_color=white, edge_color=white
+  visual_hints = vertex_size=1, edge_size=1
+  visual_hints = label_color=white
+}

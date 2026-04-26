@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=STATIONKEEP_UPDATES, val="point=bad_point", time=3
+  event = var=STATIONKEEP_UPDATES, val="point=x=12,y=-121", time=6
+}

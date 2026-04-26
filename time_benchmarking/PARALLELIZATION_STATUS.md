@@ -60,6 +60,11 @@ Wave-based `--jobs=<N>` mode is currently in place on:
 - `harnesses/cmgr_harnesses/H02-cmgr_motion`
 - `harnesses/obmgr_harnesses/H01-obmgr_unit`
 - `harnesses/obmgr_harnesses/H02-obmgr_motion`
+- `harnesses/opregion_harnesses/H01-opregion_safety`
+- `harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion`
+- `harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion`
+- `harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion`
+- `harnesses/trail_behavior_harnesses/H01-trail_behavior_motion`
 
 Other harnesses remain serial for now.
 

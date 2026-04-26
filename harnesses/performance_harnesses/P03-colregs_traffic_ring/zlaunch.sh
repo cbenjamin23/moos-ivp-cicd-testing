@@ -218,6 +218,15 @@ get_case_config() {
         WALL_MAX="92.5"
       fi
       ;;
+    noncoop_circle_pass)
+      if [ "$PERF_PROFILE" = "ci" ]; then
+        WALL_MIN="58.0"
+        WALL_MAX="70.0"
+      else
+        WALL_MIN="30.0"
+        WALL_MAX="32.0"
+      fi
+      ;;
     *)
       echo "$ME: Unknown case [$case_name]"
       return 1
@@ -314,7 +323,7 @@ run_case_isolated() {
 
 trap cleanup EXIT
 
-CASES="baseline_circle_pass mixed_speed_circle_pass endurance_circle_pass"
+CASES="baseline_circle_pass mixed_speed_circle_pass endurance_circle_pass noncoop_circle_pass"
 if [ "$CASE" != "" ]; then
   CASES="$CASE"
 fi

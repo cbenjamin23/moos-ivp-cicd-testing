@@ -10,8 +10,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_DIR = ROOT / "harnesses"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+HARNESS_DIR = REPO_ROOT / "harnesses"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
+CASE_LIST_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*(["\'])(.*)\2\s*$')
 
 
 @dataclass(frozen=True)
@@ -81,7 +83,8 @@ HARNESSES: tuple[Harness, ...] = (
         ),
         gifs=(
             ("Baseline Crossing Pass", "baseline_crossing_pass", "cmgr-motion-baseline-crossing.gif"),
-            ("Avoid Disabled Fail", "avoid_disabled_fail", "cmgr-motion-avoid-disabled.gif"),
+            ("Head-on Pass", "head_on_pass", "cmgr-motion-head-on-pass.gif"),
+            ("Two Contact Pass", "two_contact_pass", "cmgr-motion-two-contact-pmarineviewer.gif"),
         ),
         run="./zlaunch.sh --case=baseline_crossing_pass --gui 10",
         notes=(
@@ -133,7 +136,8 @@ HARNESSES: tuple[Harness, ...] = (
         ),
         gifs=(
             ("Baseline Center Pass", "baseline_center_pass", "obmgr-motion-baseline-center.gif"),
-            ("Wide Center Fail", "wide_center_fail", "obmgr-motion-wide-center.gif"),
+            ("Offset Clear Pass", "offset_clear_pass", "obmgr-motion-offset-clear.gif"),
+            ("Two Sequential Fail", "two_sequential_fail", "obmgr-motion-two-sequential.gif"),
         ),
         run="./zlaunch.sh --case=baseline_center_pass --gui 10",
         notes=(
@@ -568,9 +572,10 @@ def case_rows(h: Harness) -> str:
     )
 
 
-def gif_card(gif: tuple[str, str, str], prefix: str) -> str:
+def gif_card(gif: tuple[str, str, str], descriptions: dict[str, str], prefix: str) -> str:
     title, case_name, filename = gif
     asset = f"{prefix}assets/gifs/{filename}"
+    description = descriptions.get(case_name, humanize_case(case_name))
     return f"""
       <article class="gif-card">
         <div class="gif-frame" data-file="{escape(filename)}">
@@ -578,7 +583,7 @@ def gif_card(gif: tuple[str, str, str], prefix: str) -> str:
         </div>
         <div class="gif-meta">
           <h3>{escape(title)}</h3>
-          <p>Representative case: <code>{escape(case_name)}</code></p>
+          <p>Description: {escape(description)}</p>
         </div>
       </article>
 """
@@ -613,12 +618,45 @@ def family_panel(family: Family, harness_by_slug: dict[str, Harness]) -> str:
 """
 
 
+def harness_case_counts() -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for zlaunch in sorted(HARNESS_DIR.glob("*/*/zlaunch.sh")):
+        seen: set[str] = set()
+        for line in zlaunch.read_text().splitlines():
+            match = CASE_LIST_RE.match(line)
+            if not match:
+                continue
+            value = match.group(3)
+            if "$" in value:
+                continue
+            seen.update(value.split())
+        counts[zlaunch.parent.name] = len(seen)
+    return counts
+
+
+def harness_count() -> int:
+    return len(harness_case_counts())
+
+
+def app_behavior_target_count() -> int:
+    roots = {
+        zlaunch.parents[1].name
+        for zlaunch in HARNESS_DIR.glob("*/*/zlaunch.sh")
+        if zlaunch.parents[1].name != "performance_harnesses"
+    }
+    return len(roots)
+
+
+def total_case_count() -> int:
+    return sum(harness_case_counts().values())
+
+
 def render_stats() -> str:
     stats = (
-        ("13", "Harnesses", "Case matrices covering app-level units, motion checks, behavior checks, and performance gates."),
-        ("5", "Apps and Behaviors", "Two MOOS apps, three IvP behavior families, and their related stress missions."),
+        (str(total_case_count()), "Cases", "Harness case matrices across the catalog."),
+        (str(harness_count()), "Harnesses", "Case matrices covering app-level units, motion checks, behavior checks, and performance gates."),
+        (str(app_behavior_target_count()), "Apps and Behaviors", "Ten MOOS apps and IvP behavior targets, plus their related stress missions."),
         ("3", "Evidence Layers", "Simple mode validation, moving mission outcomes, and longer stress/endurance runs."),
-        ("1", "Shared Pattern", "Stem mission plus case overlay plus harness launch wrapper plus mission-visible verdict."),
     )
     return "\n".join(
         f"""
@@ -704,7 +742,8 @@ def render_index() -> str:
 
 
 def render_harness(h: Harness) -> str:
-    gifs = "\n".join(gif_card(g, "../") for g in h.gifs)
+    descriptions = dict(extract_case_docs(h))
+    gifs = "\n".join(gif_card(g, descriptions, "../") for g in h.gifs)
     test_style = TEST_STYLE.get(h.slug, h.proof)
     stem_context = STEM_CONTEXT.get(h.slug, "")
     stem_section = ""

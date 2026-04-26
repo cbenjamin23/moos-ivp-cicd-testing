@@ -1,0 +1,36 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = LOITER_INDEX >= 0
+  pass_condition = LOITER_ACQUIRE = 0
+  pass_condition = LOITER_DIST_TO_POLY <= 10
+  pass_condition = LOITER_ETA_TO_POLY >= 0
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = loiter_behavior_tests
+  mission_mod  = $(MMOD:=eta_output_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = index=$[LOITER_INDEX]
+  report_column = mode=$[LOITER_MODE]
+  report_column = acquire=$[LOITER_ACQUIRE]
+  report_column = dist_poly=$[LOITER_DIST_TO_POLY]
+  report_column = eta_poly=$[LOITER_ETA_TO_POLY]
+  report_column = report=$[LOITER_REPORT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

@@ -32,6 +32,7 @@ ProcessConfig = pMissionEval
   report_column = batches=$[TRAFFIC_BATCHES]
   report_column = assign_fails=$[TRAFFIC_ASSIGN_FAILS]
   report_column = assign_mode=$[TRAFFIC_ASSIGN_MODE]
+  report_column = dumb_vname=$[DUMB_VNAME]
   report_column = wall_time=$[WALL_TIME]
   report_column = mhash=$[MHASH_SHORT]
 }

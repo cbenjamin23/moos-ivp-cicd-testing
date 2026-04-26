@@ -1,0 +1,17 @@
+Behavior = BHV_StationKeep
+{
+  name      = station_keep
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = STATIONKEEP_UPDATES
+
+  point         = x=12,y=-121
+  inner_radius  = 4
+  outer_radius  = 15
+  outer_speed   = 0.35
+  transit_speed = $(STOCK_SPD)
+
+  visual_hints = vertex_color=white, edge_color=white
+  visual_hints = vertex_size=1, edge_size=1
+  visual_hints = label_color=white
+}

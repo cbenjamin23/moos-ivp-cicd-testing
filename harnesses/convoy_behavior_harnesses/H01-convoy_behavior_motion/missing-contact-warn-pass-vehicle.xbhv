@@ -1,0 +1,18 @@
+Behavior = BHV_Convoy
+{
+  name      = convoy_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = CONVOY = true
+  updates   = CONVOY_UPDATES
+
+          contact = ghost
+  on_no_contact_ok = true
+      extrapolate = true
+            decay = 30,60
+
+           radius = 8
+        nm_radius = 15
+  inter_mark_range = 5
+    max_mark_range = 80
+}
