@@ -33,6 +33,8 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - `harnesses/trail_behavior_harnesses/H01-trail_behavior_motion` - trail behavior motion matrix
 - `missions/convoy_behavior_missions/convoy_behavior_motion` - moving convoy behavior stem
 - `harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion` - convoy behavior motion matrix
+- `missions/fixedturn_behavior_missions/fixedturn_behavior_motion` - moving fixed-turn behavior stem
+- `harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion` - fixed-turn behavior motion matrix
 - `missions/first_draft` - older obstacle-avoidance baseline mission kept for reference
 - `src/` - legacy template code still built by the repository
 
@@ -73,6 +75,8 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - [harnesses/trail_behavior_harnesses/H01-trail_behavior_motion/README.md](./harnesses/trail_behavior_harnesses/H01-trail_behavior_motion/README.md) for the trail behavior matrix
 - [missions/convoy_behavior_missions/convoy_behavior_motion/README.md](./missions/convoy_behavior_missions/convoy_behavior_motion/README.md) for the convoy behavior stem
 - [harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/README.md](./harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/README.md) for the convoy behavior matrix
+- [missions/fixedturn_behavior_missions/fixedturn_behavior_motion/README.md](./missions/fixedturn_behavior_missions/fixedturn_behavior_motion/README.md) for the fixed-turn behavior stem
+- [harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/README.md](./harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/README.md) for the fixed-turn behavior matrix
 - [missions/first_draft/README.md](./missions/first_draft/README.md) for the baseline mission
 - [time_benchmarking/PARALLELIZATION_STATUS.md](./time_benchmarking/PARALLELIZATION_STATUS.md) for the current harness parallelization model
 - [time_benchmarking/parallel_jobs_2026-03-20/README.md](./time_benchmarking/parallel_jobs_2026-03-20/README.md) for the current timing sweep and recommended `--jobs` values
@@ -198,4 +202,13 @@ MOOS-IvP CI/CD workspace for mission-level tests.
   malformed update recovery, `no_extrapolate`, warning-only missing contact
   handling, fatal missing contact handling, and malformed mark/radius/speed/range
   settings. The latest full wave run passed at warp `10` with `--jobs=8`.
+- `fixedturn_behavior_motion` is the moving correctness layer for
+  `BHV_FixedTurn`. It uses a short waypoint leg to establish stem speed, then
+  grades turn completion, final heading, timeout completion, scheduled-turn
+  flags, and invalid configuration branches.
+- The `H01-fixedturn_behavior_motion` matrix has `11` cases covering starboard
+  and port 90-degree turns, long starboard and port turns, automatic and
+  explicit speed branches, turn delay, timeout completion, scheduled turn
+  sequencing, and invalid `fix_turn` / `stale_nav_thresh` failures. The latest
+  full wave run passed at warp `10` with `--jobs=4` and `--port_base=15000`.
 - The `src/` tree is kept only for legacy template compatibility and can be trimmed further if you no longer need those builds.

@@ -1,0 +1,184 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = $(VNAME)
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uTimerScript   @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+  Run = uSimMarineV22  @ NewConsole = false
+}
+
+#include plugs.moos <uSimMarineV22>
+#include plugs.moos <pShare>
+#include plugs.moos <pHostInfo>
+#include plugs.moos <uProcessWatch>
+#include plugs.moos <uLoadWatch>
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+}
+
+//----------------------------------------------------
+// pHelmIvP Config Block
+
+ProcessConfig = pHelmIvP
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  term_report_interval = 0
+  bhv_dir_not_found_ok = true
+
+  behaviors = targ_$(VNAME).bhv
+  verbose   = false
+  domain    = course:0:359:360
+  domain    = speed:0:$(MAX_SPD):31
+}
+
+//----------------------------------------------------
+// pNodeReporter Config Block
+
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  platform_type  = kayak
+  platform_color = $(COLOR)
+  terse_reports  = true
+}
+
+//----------------------------------------------------
+// uFldNodeBroker Config Block
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=FT_DONE
+  bridge = src=FT_REPORT
+  bridge = src=FIX_TURN
+  bridge = src=TRANSIT_DONE
+  bridge = src=TURNING_TIME
+  bridge = src=TURNING_DIST
+  bridge = src=TURN_ONE
+  bridge = src=TURN_TWO
+  bridge = src=TURN_THREE
+  bridge = src=NAV_HEADING
+  bridge = src=NAV_SPEED
+  bridge = src=BHV_WARNING
+  bridge = src=BHV_ERROR
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+}
+
+//----------------------------------------------------
+// pMarinePIDV22 Config Block
+
+ProcessConfig = pMarinePIDV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  verbose       = true
+  depth_control = false
+
+  yaw_pid_kp             = 1.2
+  yaw_pid_kd             = 0.1
+  yaw_pid_ki             = 0.3
+  yaw_pid_integral_limit = 0.07
+
+  speed_pid_kp             = 1.0
+  speed_pid_kd             = 0.0
+  speed_pid_ki             = 0.0
+  speed_pid_integral_limit = 0.07
+
+  maxrudder = 100
+  maxthrust = 100
+
+  speed_factor = 20
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = LOG_%(VNAME)
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+  Log = BHV_WARNING @ 0 nosync
+  Log = BHV_ERROR @ 0 nosync
+  Log = FT_DONE @ 0 nosync
+  Log = FT_REPORT @ 0 nosync
+  Log = FIX_TURN @ 0 nosync
+  Log = TRANSIT_DONE @ 0 nosync
+  Log = TURNING_TIME @ 0 nosync
+  Log = TURNING_DIST @ 0 nosync
+  Log = TURN_ONE @ 0 nosync
+  Log = TURN_TWO @ 0 nosync
+  Log = TURN_THREE @ 0 nosync
+  Log = NAV_HEADING @ 0 nosync
+
+  LogAuxSrc = true
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = APPCAST
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *ITER_GAP
+  WildCardOmitPattern = *ITER_LEN
+  WildCardOmitPattern = SIMULATION_MODE
+  WildCardOmitPattern = NAV_PITCH
+  WildCardOmitPattern = NAV_YAW
+  WildCardOmitPattern = NAV_Z
+  WildCardOmitPattern = TRUE_X
+  WildCardOmitPattern = TRUE_Y
+  WildCardOmitPattern = NAV_SPEED_OVER_GROUND
+  WildCardOmitPattern = NAV_HEADING_OVER_GROUND
+  WildCardOmitPattern = NAV_DEPTH
+  WildCardOmitPattern = NAV_LAT
+  WildCardOmitPattern = NAV_LONG
+  WildCardOmitPattern = DB_QOS
+}
