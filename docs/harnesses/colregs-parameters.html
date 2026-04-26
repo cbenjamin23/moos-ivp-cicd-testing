@@ -75,194 +75,194 @@
       <div class="case-matrix">
         
         <article class="case-row">
+          <code>pts_port_turns_ok_true_pass</code>
+          <p>Runs fixed give-way geometry with pts_port_turns_ok=true and checks the early side relationship.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>min_util_cpa_low_pass</code>
-          <p>Covers min util cpa low expected pass.</p>
+          <p>Runs fixed stand-on geometry with low min_util_cpa_dist; expected classification should remain on the low/default CPA-distance side.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_util_cpa_default_pass</code>
-          <p>Covers min util cpa default expected pass.</p>
+          <p>Runs the same fixed stand-on geometry with default min_util_cpa_dist; expected classification should match the baseline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_util_cpa_high_pass</code>
-          <p>Covers min util cpa high expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>headon_only_true_pass</code>
-          <p>Covers headon only true expected pass.</p>
+          <p>Runs the same fixed stand-on geometry with high min_util_cpa_dist; expected classification should shift to the higher CPA-distance branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>headon_only_false_pass</code>
-          <p>Covers headon only false expected pass.</p>
+          <p>Runs crossing geometry with headon_only=false; the non-head-on encounter should still be admitted as give-way.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>headon_only_true_pass</code>
+          <p>Runs the same crossing geometry with headon_only=true; the non-head-on encounter should be demoted to CPA.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveway_bow_dist_default_pass</code>
-          <p>Covers giveway bow dist default expected pass.</p>
+          <p>Runs fixed give-way bow-distance geometry with the default threshold and expects the stock give-way bow classification.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveway_bow_dist_high_pass</code>
-          <p>Covers giveway bow dist high expected pass.</p>
+          <p>Runs the same geometry with high giveway_bow_dist; expected classification should reflect the widened bow-distance threshold.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_util_cpa_default_pass</code>
-          <p>Covers max util cpa default expected pass.</p>
+          <p>Runs fixed stand-on geometry with default max_util_cpa_dist; expected classification should match the baseline.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_util_cpa_high_pass</code>
-          <p>Covers max util cpa high expected pass.</p>
+          <p>Runs the same geometry with high max_util_cpa_dist; expected classification should move to the higher CPA envelope branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>velocity_filter_off_pass</code>
-          <p>Covers velocity filter off expected pass.</p>
+          <p>Runs fixed stand-on geometry with velocity filtering off; expected classification should match the unfiltered baseline.</p>
         </article>
 
 
         <article class="case-row">
           <code>velocity_filter_on_pass</code>
-          <p>Covers velocity filter on expected pass.</p>
+          <p>Runs the same geometry with velocity filtering on; expected classification should show the filter&#x27;s effect on CPA evaluation.</p>
         </article>
 
 
         <article class="case-row">
           <code>eval_tol_default_pass</code>
-          <p>Covers eval tol default expected pass.</p>
+          <p>Runs fixed overtaking geometry with default eval_tol; expected execution quality should remain in the baseline CPA band.</p>
         </article>
 
 
         <article class="case-row">
           <code>eval_tol_short_pass</code>
-          <p>Covers eval tol short expected pass.</p>
+          <p>Runs the same overtaking geometry with short eval_tol; expected execution quality should widen as configured.</p>
         </article>
 
 
         <article class="case-row">
           <code>eval_tol_long_pass</code>
-          <p>Covers eval tol long expected pass.</p>
+          <p>Runs the same overtaking geometry with long eval_tol; expected execution quality should remain stable.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_outer_dist_default_pass</code>
-          <p>Covers pwt outer dist default expected pass.</p>
+          <p>Runs fixed range-gate geometry with default pwt_outer_dist; expected relevance should match the stock gate.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_outer_dist_high_pass</code>
-          <p>Covers pwt outer dist high expected pass.</p>
+          <p>Runs the same range-gate geometry with high pwt_outer_dist; expected relevance should admit COLREGS behavior earlier.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_inner_dist_low_pass</code>
-          <p>Covers pwt inner dist low expected pass.</p>
+          <p>Runs fixed stand-on geometry with low pwt_inner_dist; expected posted priority weight should follow the low inner-distance band.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_inner_dist_default_pass</code>
-          <p>Covers pwt inner dist default expected pass.</p>
+          <p>Runs the same geometry with default pwt_inner_dist; expected posted priority weight should match the baseline curve.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_inner_dist_high_pass</code>
-          <p>Covers pwt inner dist high expected pass.</p>
+          <p>Runs the same geometry with high pwt_inner_dist; expected posted priority weight should move toward the saturated band.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_grade_linear_pass</code>
-          <p>Covers pwt grade linear expected pass.</p>
+          <p>Runs fixed relevance geometry with pwt_grade=linear and checks the linear priority-weight curve.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_grade_quasi_pass</code>
-          <p>Covers pwt grade quasi expected pass.</p>
+          <p>Runs fixed relevance geometry with pwt_grade=quasi and checks the quasi priority-weight curve.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_grade_quadratic_pass</code>
-          <p>Covers pwt grade quadratic expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>pts_port_turns_ok_true_pass</code>
-          <p>Covers pts port turns ok true expected pass.</p>
+          <p>Runs fixed relevance geometry with pwt_grade=quadratic and checks the quadratic priority-weight curve.</p>
         </article>
 
 
         <article class="case-row">
           <code>pts_port_turns_ok_false_pass</code>
-          <p>Covers pts port turns ok false expected pass.</p>
+          <p>Runs the same give-way geometry with pts_port_turns_ok=false and checks that the early side relationship flips as expected.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_radius_default_pass</code>
-          <p>Covers turn radius default expected pass.</p>
+          <p>Runs fixed give-way turn-gap geometry with default turn_radius; expected classification should match the stock branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_radius_high_pass</code>
-          <p>Covers turn radius high expected pass.</p>
+          <p>Runs the same geometry with high turn_radius; expected classification should flip to the high-radius branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>check_plateaus_false_pass</code>
-          <p>Covers check plateaus false expected pass.</p>
+          <p>Runs CPA fallback geometry with check_plateaus=false; refinery diagnostics should remain at their initialized values.</p>
         </article>
 
 
         <article class="case-row">
           <code>check_plateaus_true_pass</code>
-          <p>Covers check plateaus true expected pass.</p>
+          <p>Runs the same geometry with check_plateaus=true; refinery diagnostics should post the expected plateau/basin signature.</p>
         </article>
 
 
         <article class="case-row">
           <code>completed_dist_default_pass</code>
-          <p>Covers completed dist default expected pass.</p>
+          <p>Runs CPA fallback geometry with default completed_dist; the encounter should already be complete at the shared checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>completed_dist_high_pass</code>
-          <p>Covers completed dist high expected pass.</p>
+          <p>Runs the same geometry with high completed_dist; the encounter should still be active at the shared checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>refinery_on_pass</code>
-          <p>Covers refinery on expected pass.</p>
+          <p>Runs CPA fallback geometry with refinery enabled; classification should remain CPA while diagnostics are posted.</p>
         </article>
 
 
         <article class="case-row">
           <code>refinery_off_pass</code>
-          <p>Covers refinery off expected pass.</p>
+          <p>Runs the same geometry with refinery disabled; classification should remain CPA while refinery diagnostics stay initialized.</p>
         </article>
 
       </div>

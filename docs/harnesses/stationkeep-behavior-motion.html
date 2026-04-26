@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 StationKeep Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 StationKeep Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_StationKeep. These cases verify station arrival, hold/swing modes, hibernation, radius and speed updates, retargeting, warning recovery, and invalid parameter handling.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission starts one simulated vehicle near a station point. Case overlays change the station geometry, hibernation settings, runtime retargeting, and speed/radius settings while grading mode and distance outputs.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="stationkeep-behavior-static.gif">
+          <img src="../assets/gifs/stationkeep-behavior-static.gif" alt="Static Station GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Static Station</h3>
+          <p>Description: Baseline station point, default radii, and default settle grading.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="stationkeep-behavior-hibernation.gif">
+          <img src="../assets/gifs/stationkeep-behavior-hibernation.gif" alt="Hibernation Settle GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Hibernation Settle</h3>
+          <p>Description: Enables hibernation and waits for PSKEEP_MODE=HIBERNATING.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>static_station_pass</code>
+          <p>Baseline station point, default radii, and default settle grading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>station_pt_alias_pass</code>
+          <p>Uses the station_pt parameter alias instead of point.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>start_inside_hold_pass</code>
+          <p>Starts at the configured station point and verifies it can hold immediately.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>center_activate_hold_pass</code>
+          <p>Exercises center_activate=true with the station anchored at activation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>center_activate_swing_pass</code>
+          <p>Combines center_activate=true with swing behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wide_radius_pass</code>
+          <p>Expands the inner and outer station-keeping rings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>tight_radius_pass</code>
+          <p>Tightens the station-keeping rings and grades tighter station proximity.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>inner_gt_outer_pass</code>
+          <p>Exercises the parameter path where the inner radius is greater than the outer radius.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outer_speed_slow_pass</code>
+          <p>Slows the outer correction speed and verifies bounded progress.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outer_speed_update_slow_pass</code>
+          <p>Slows the outer correction speed through STATIONKEEP_UPDATES and grades a farther bounded approach than the default controller would produce.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>transit_speed_fast_pass</code>
+          <p>Raises transit speed and verifies quicker station arrival.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>extra_speed_alias_pass</code>
+          <p>Uses the extra_speed alias for transit speed and evaluates early arrival.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>transit_speed_slow_in_progress_pass</code>
+          <p>Lowers transit speed and evaluates early to confirm the vehicle is still seeking the station.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hibernation_seek_pass</code>
+          <p>Enables hibernation and evaluates early while PSKEEP_MODE=SEEKING_STATION.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hibernation_settle_pass</code>
+          <p>Enables hibernation and waits for PSKEEP_MODE=HIBERNATING.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hibernation_radius_update_settle_pass</code>
+          <p>Enables hibernation through STATIONKEEP_UPDATES and waits for PSKEEP_MODE=HIBERNATING.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hibernation_off_pass</code>
+          <p>Explicitly disables hibernation and verifies clean station arrival.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_update_retarget_pass</code>
+          <p>Retargets the station point through STATIONKEEP_UPDATES.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>radius_update_expand_pass</code>
+          <p>Expands station-keeping radii through runtime updates.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>radius_update_shrink_pass</code>
+          <p>Shrinks station-keeping radii through runtime updates.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_update_slow_progress_pass</code>
+          <p>Slows speed through runtime updates and grades early in-progress behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_point_update_recover_pass</code>
+          <p>Sends a malformed update, then confirms the behavior continues with warning visibility and no fatal error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>visual_hints_pass</code>
+          <p>Exercises StationKeep visual-hint configuration.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_point_fail</code>
+          <p>Removes the station point and expects mission failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_point_fail</code>
+          <p>Provides malformed point configuration and expects mission failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_update_fail</code>
+          <p>Starts without a valid point, sends a malformed update, and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_outer_radius_fail</code>
+          <p>Provides malformed outer radius configuration and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_inner_radius_fail</code>
+          <p>Provides malformed inner radius configuration and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_hibernation_radius_fail</code>
+          <p>Provides malformed hibernation radius configuration and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_outer_speed_fail</code>
+          <p>Provides malformed outer speed configuration and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_transit_speed_fail</code>
+          <p>Provides malformed transit speed configuration and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_swing_time_fail</code>
+          <p>Provides malformed swing-time configuration and expects failure.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/stationkeep_behavior_missions/stationkeep_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

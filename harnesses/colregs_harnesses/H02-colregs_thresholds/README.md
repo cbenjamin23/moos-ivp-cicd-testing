@@ -54,6 +54,173 @@ of the threshold the geometry is expected to land on.
 - `southwest`: a custom stern-adjacent contact track added after calibration
   showed the older stern probes were a poor fit for the stock source
 
+## Active Case Guide
+
+- `giveway_turngap_edge_pass`
+  Probes the calibrated give-way turn-gap edge; expected classification should
+  stay on the stock stern-side branch.
+- `giveway_turngap_above_pass`
+  Probes just beyond the give-way turn-gap edge; expected classification should
+  flip to the stock bow-side branch.
+- `giveway_turngap_edge_mirror_pass`
+  Mirrored turn-gap edge case; expected classification should match the
+  non-mirrored edge behavior.
+- `giveway_turngap_above_mirror_pass`
+  Mirrored turn-gap above-edge case; expected classification should match the
+  non-mirrored bow-side behavior.
+- `head_on_thresh_below_pass`
+  Probes below the head-on entry cutoff; expected classification should remain
+  true head-on.
+- `head_on_thresh_edge_pass`
+  Probes the calibrated head-on entry edge; expected classification should land
+  on the calibrated edge behavior.
+- `head_on_thresh_above_pass`
+  Probes above the head-on entry cutoff; expected classification should fall
+  back to CPA.
+- `head_on_thresh_below_mirror_pass`
+  Mirrored below-threshold head-on case; expected classification should remain
+  true head-on.
+- `head_on_thresh_edge_mirror_pass`
+  Mirrored head-on edge case; expected classification should match the
+  non-mirrored edge behavior.
+- `head_on_thresh_above_mirror_pass`
+  Mirrored above-threshold head-on case; expected classification should fall
+  back to CPA.
+- `overtaking_thresh_below_pass`
+  Probes below the overtaking classification threshold; expected behavior
+  should remain on the calibrated pre-flip side.
+- `overtaking_thresh_edge_pass`
+  Probes the overtaking threshold edge; expected behavior should match the
+  calibrated edge branch.
+- `overtaking_thresh_above_pass`
+  Probes above the overtaking threshold; expected behavior should land on the
+  post-flip side.
+- `overtaking_thresh_below_mirror_pass`
+  Mirrored below-threshold overtaking case; expected behavior should match the
+  non-mirrored pre-flip side.
+- `overtaking_thresh_edge_mirror_pass`
+  Mirrored overtaking edge case; expected behavior should match the calibrated
+  edge branch.
+- `overtaking_thresh_above_mirror_pass`
+  Mirrored above-threshold overtaking case; expected behavior should land on
+  the post-flip side.
+- `overtaken_thresh_below_pass`
+  Probes below the overtaken-vessel threshold; expected behavior should remain
+  on the calibrated stand-on overtaken side.
+- `overtaken_thresh_edge_pass`
+  Probes the overtaken-vessel threshold edge; expected behavior should match
+  the calibrated edge branch.
+- `overtaken_thresh_above_pass`
+  Probes above the overtaken-vessel threshold; expected behavior should land on
+  the calibrated fallback side.
+- `overtaken_thresh_below_mirror_pass`
+  Mirrored below-threshold overtaken-vessel case; expected behavior should
+  match the non-mirrored stand-on overtaken side.
+- `overtaken_thresh_edge_mirror_pass`
+  Mirrored overtaken-vessel edge case; expected behavior should match the
+  calibrated edge branch.
+- `overtaken_thresh_above_mirror_pass`
+  Mirrored above-threshold overtaken-vessel case; expected behavior should land
+  on the calibrated fallback side.
+- `giveway_bowdist_below_pass`
+  Probes below the give-way bow-distance split; expected classification should
+  stay in `giveway:stern`.
+- `giveway_bowdist_edge_pass`
+  Probes the calibrated give-way bow-distance edge; expected classification
+  should still stay in `giveway:stern`.
+- `giveway_bowdist_above_pass`
+  Probes above the give-way bow-distance split; expected classification should
+  flip to `giveway:bow`.
+- `giveway_bowdist_below_mirror_pass`
+  Mirrored below-threshold bow-distance case; expected classification should
+  stay in `giveway:stern`.
+- `giveway_bowdist_edge_mirror_pass`
+  Mirrored bow-distance edge case; expected classification should still stay in
+  `giveway:stern`.
+- `giveway_bowdist_above_mirror_pass`
+  Mirrored above-threshold bow-distance case; expected classification should
+  flip to `giveway:bow`.
+- `giveway_turngap_below_pass`
+  Probes below the give-way turn-gap split; expected classification should stay
+  on the stern-side branch.
+- `giveway_turngap_below_mirror_pass`
+  Mirrored below-threshold turn-gap case; expected classification should stay
+  on the stern-side branch.
+- `standon_unsurebow_below_pass`
+  Probes below the stand-on unsure-bow transition; expected classification
+  should remain on the calibrated pre-flip side.
+- `standon_unsurebow_edge_pass`
+  Probes the stand-on unsure-bow edge; expected classification should match the
+  calibrated edge behavior.
+- `standon_unsurebow_above_pass`
+  Probes above the stand-on unsure-bow transition; expected classification
+  should land on the post-flip side.
+- `standon_band270_stern_pass`
+  Band-270 stand-on geometry expected to resolve to the stern branch.
+- `standon_band350_unsurebow_pass`
+  Band-350 stand-on geometry expected to remain in the unsure-bow branch.
+- `standon_band350_unsurebow_alt_pass`
+  Alternate band-350 geometry that should also remain in the unsure-bow branch.
+- `standon_band350_bow_pass`
+  Band-350 stand-on geometry expected to resolve to the bow branch.
+- `standon_band315_unsure_pass`
+  Band-315 stand-on geometry expected to enter the generic unsure branch.
+- `standon_band315_unsure_bow_pass`
+  Band-315 stand-on geometry expected to enter the unsure-bow branch.
+- `standon_band315_bow_pass`
+  Band-315 stand-on geometry expected to resolve to the bow branch.
+- `standon_southwest_unsurebow_pass`
+  Southwest stand-on probe expected to enter the unsure-bow branch.
+- `standon_southwest_unsure_pass`
+  Southwest stand-on probe expected to enter the generic unsure branch.
+- `standon_southwest_stern_pass`
+  Southwest stand-on probe expected to resolve to the stern branch.
+- `outer_dist_below_pass`
+  Probes below the COLREGS outer-distance relevance gate; expected behavior
+  should remain inactive or fallback as calibrated.
+- `outer_dist_edge_pass`
+  Probes the outer-distance relevance edge; expected behavior should match the
+  calibrated edge branch.
+- `outer_dist_above_pass`
+  Probes above the outer-distance relevance gate; expected COLREGS behavior
+  should activate.
+- `standon_inextremis_range_below_pass`
+  Probes below the stand-on in-extremis range cutoff; expected classification
+  should follow the calibrated range branch.
+- `standon_inextremis_range_edge_pass`
+  Probes the stand-on in-extremis range edge; expected classification should
+  match the calibrated edge branch.
+- `standon_inextremis_range_above_pass`
+  Probes above the stand-on in-extremis range cutoff; expected classification
+  should follow the post-edge range branch.
+- `standon_inextremis_cpa_below_pass`
+  Probes below the stand-on in-extremis CPA cutoff; expected classification
+  should follow the calibrated CPA branch.
+- `standon_inextremis_cpa_edge_pass`
+  Probes the stand-on in-extremis CPA edge; expected classification should
+  match the calibrated edge branch.
+- `standon_inextremis_cpa_above_pass`
+  Probes above the stand-on in-extremis CPA cutoff; expected classification
+  should follow the post-edge CPA branch.
+- `standon_ot_inextremis_range_below_pass`
+  Probes below the overtaken-vessel in-extremis range cutoff; expected
+  classification should follow the calibrated range branch.
+- `standon_ot_inextremis_range_edge_pass`
+  Probes the overtaken-vessel in-extremis range edge; expected classification
+  should match the calibrated edge branch.
+- `standon_ot_inextremis_range_above_pass`
+  Probes above the overtaken-vessel in-extremis range cutoff; expected
+  classification should follow the post-edge range branch.
+- `standon_ot_inextremis_cpa_below_pass`
+  Probes below the overtaken-vessel in-extremis CPA cutoff; expected
+  classification should follow the calibrated CPA branch.
+- `standon_ot_inextremis_cpa_edge_pass`
+  Probes the overtaken-vessel in-extremis CPA edge; expected classification
+  should match the calibrated edge branch.
+- `standon_ot_inextremis_cpa_above_pass`
+  Probes above the overtaken-vessel in-extremis CPA cutoff; expected
+  classification should follow the post-edge CPA branch.
+
 ## Scope Boundary
 
 `H01` answers:

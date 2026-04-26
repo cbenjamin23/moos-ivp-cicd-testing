@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Convoy Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 Convoy Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_Convoy. These cases verify convoy mark queues, following geometry, speed-control branches, runtime updates, warning paths, geometry recovery, and invalid parameter handling.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission uses two simulated vehicles: <code>abe</code> runs BHV_Convoy while <code>ben</code> creates the breadcrumb trail. Case overlays vary mark queues, following geometry, speed branches, and runtime updates.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="convoy-behavior-static.gif">
+          <img src="../assets/gifs/convoy-behavior-static.gif" alt="Static Convoy GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Static Convoy</h3>
+          <p>Description: Baseline convoy following with 5 meter mark spacing and an 80 meter queue cap.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="convoy-behavior-angled-entry.gif">
+          <img src="../assets/gifs/convoy-behavior-angled-entry.gif" alt="Angled Entry GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Angled Entry</h3>
+          <p>Description: Starts the chaser southwest of the convoy line with a northeast heading and grades recovery into the target&#x27;s breadcrumb queue.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>static_convoy_pass</code>
+          <p>Baseline convoy following with 5 meter mark spacing and an 80 meter queue cap.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fine_mark_spacing_pass</code>
+          <p>Shrinks inter_mark_range and grades a larger mark queue.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>coarse_mark_spacing_pass</code>
+          <p>Expands inter_mark_range and grades a smaller mark queue.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_mark_queue_pass</code>
+          <p>Shrinks max_mark_range and grades queue trimming through MXRNG and TLEN.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>long_mark_queue_pass</code>
+          <p>Expands max_mark_range and verifies the configured cap is reported.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>tight_radius_pass</code>
+          <p>Shrinks waypoint capture radius while preserving stable convoy following.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wide_radius_pass</code>
+          <p>Expands waypoint capture radius while preserving stable convoy following.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cruise_speed_pass</code>
+          <p>Uses explicit cruise_speed and grades the chaser speed branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cruise_speed_cap_warn_pass</code>
+          <p>Sets cruise_speed above spd_max and expects the behavior warning path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>safety_range_autoadjust_warn_pass</code>
+          <p>Gives inconsistent safety ranges and expects auto-adjust warning behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>safety_off_bad_ranges_pass</code>
+          <p>Disables range safety and verifies the same inconsistent ranges remain runnable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>tailgating_speed_slow_pass</code>
+          <p>Forces the tailgating branch and grades slower physical chaser speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lagging_speed_fast_pass</code>
+          <p>Forces the lagging branch and grades faster physical chaser speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>estop_speed_zero_pass</code>
+          <p>Forces the emergency-stop branch and grades near-zero chaser speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>range_aliases_pass</code>
+          <p>Uses the range_estop, range_tailgating, and range_lagging aliases.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>nm_radius_zero_pass</code>
+          <p>Verifies zero nm_radius is accepted without breaking queue following.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>view_point_post_pass</code>
+          <p>Verifies BHV_Convoy posts visual breadcrumb points through VIEW_POINT.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>angled_entry_pass</code>
+          <p>Starts the chaser southwest of the convoy line with a northeast heading and grades recovery into the target&#x27;s breadcrumb queue.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cross_track_entry_pass</code>
+          <p>Starts the chaser well below the target leg with a northward heading and grades lateral convergence back toward the convoy line.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>opposite_heading_recover_pass</code>
+          <p>Starts the chaser behind the target but pointed west, then grades recovery into eastbound convoy following.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>close_offset_tailgate_pass</code>
+          <p>Starts the chaser close and laterally offset from the target, then grades tailgate-safe convergence into the convoy queue.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lead_right_turn_pass</code>
+          <p>Replaces the target&#x27;s straight waypoint leg with a right-angle dogleg and grades convoy following after the target has turned north.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lead_s_turn_pass</code>
+          <p>Gives the target a compact S-turn path and grades convoy following after the target has completed two heading changes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_queue_turn_pass</code>
+          <p>Combines a right-angle target turn with a shortened max_mark_range, grading queue trimming during non-straight contact motion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>slow_follower_pass</code>
+          <p>Uses conservative speed multipliers and grades slower physical chaser speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fast_follower_pass</code>
+          <p>Uses aggressive speed multipliers and grades faster physical chaser speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_inter_mark_coarse_pass</code>
+          <p>Changes inter_mark_range through CONVOY_UPDATES.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_max_mark_short_pass</code>
+          <p>Changes max_mark_range through CONVOY_UPDATES.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_cruise_speed_pass</code>
+          <p>Changes cruise_speed through CONVOY_UPDATES and grades chaser speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_cruise_cap_warn_pass</code>
+          <p>Applies high cruise-speed/runtime speed-cap updates and expects warning-safe operation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_bad_update_recover_pass</code>
+          <p>Sends a malformed runtime mark-spacing update, then verifies a later valid update recovers without a behavior error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_extrapolate_pass</code>
+          <p>Verifies clean following with contact extrapolation disabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_warn_pass</code>
+          <p>Uses a missing contact with on_no_contact_ok=true and expects warning-only behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_fail</code>
+          <p>Uses a missing contact with on_no_contact_ok=false and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_param_fail</code>
+          <p>Omits contact with on_no_contact_ok=false and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_inter_mark_range_fail</code>
+          <p>Rejects negative inter_mark_range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_max_mark_range_fail</code>
+          <p>Rejects negative max_mark_range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_radius_fail</code>
+          <p>Rejects a negative radius configuration and expects the behavior error path to make the mission fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_nm_radius_fail</code>
+          <p>Rejects a negative nm_radius configuration and expects the behavior error path to make the mission fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_spd_slower_fail</code>
+          <p>Rejects spd_slower outside its accepted range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_spd_faster_fail</code>
+          <p>Rejects spd_faster outside its accepted range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_spd_max_fail</code>
+          <p>Rejects zero spd_max, which would make the convoy speed cap invalid, and expects mission failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_rng_estop_fail</code>
+          <p>Rejects a negative rng_estop safety range and expects the behavior error path to make the mission fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_rng_safety_fail</code>
+          <p>Rejects malformed rng_safety.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/convoy_behavior_missions/convoy_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

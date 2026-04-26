@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>H01 Trail Behavior Motion | MOOS-IvP CI/CD</title>
+  <title>H01 Trail Behavior | MOOS-IvP CI/CD</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -23,11 +23,19 @@
     <section class="page-hero">
       <a class="back-link" href="../index.html#families">Back to catalog</a>
       <p class="eyebrow">Behavior Correctness</p>
-      <h1>H01 Trail Behavior Motion</h1>
-      <p class="lede">Checks trail distance, relevance, range, pursuit, region, warning, and error evidence across static, port-quarter, inactive, and runtime-update branches.</p>
+      <h1>H01 Trail Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_Trail. These cases verify relative and absolute trailing geometry, pursuit relevance, runtime trail updates, extrapolation choices, missing-contact behavior, and malformed parameter handling.</p>
     </section>
 
     
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission uses two simulated vehicles: <code>abe</code> runs BHV_Trail while <code>ben</code> provides the moving contact track. Case overlays vary trailing geometry, relevance settings, runtime updates, and missing-contact behavior.</p>
+      </article>
+    </section>
+
 
     <section class="content-section">
       <div class="section-heading">
@@ -36,44 +44,22 @@
       </div>
       <div class="gif-grid">
       <article class="gif-card">
-        <div class="gif-frame" data-file="trail-behavior-static-trail.gif">
-          <img src="../assets/gifs/trail-behavior-static-trail.gif" alt="Static Trail Pass GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="trail-behavior-static.gif">
+          <img src="../assets/gifs/trail-behavior-static.gif" alt="Static Trail GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Static Trail Pass</h3>
+          <h3>Static Trail</h3>
           <p>Description: Baseline relative trailing at 180 degrees and 45 meters.</p>
         </div>
       </article>
 
 
       <article class="gif-card">
-        <div class="gif-frame" data-file="trail-behavior-relative-port.gif">
-          <img src="../assets/gifs/trail-behavior-relative-port.gif" alt="Relative Port Pass GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="trail-behavior-runtime-angle.gif">
+          <img src="../assets/gifs/trail-behavior-runtime-angle.gif" alt="Runtime Angle Update GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Relative Port Pass</h3>
-          <p>Description: Trails off the contact&#x27;s port quarter with a relative 135 degree angle.</p>
-        </div>
-      </article>
-
-
-      <article class="gif-card">
-        <div class="gif-frame" data-file="trail-behavior-pwt-outer-inactive.gif">
-          <img src="../assets/gifs/trail-behavior-pwt-outer-inactive.gif" alt="PWT Outer Inactive Pass GIF" onerror="this.style.display='none'">
-        </div>
-        <div class="gif-meta">
-          <h3>PWT Outer Inactive Pass</h3>
-          <p>Description: Sets pwt_outer_dist below contact range and grades zero relevance/pursuit.</p>
-        </div>
-      </article>
-
-
-      <article class="gif-card">
-        <div class="gif-frame" data-file="trail-behavior-runtime-angle-update.gif">
-          <img src="../assets/gifs/trail-behavior-runtime-angle-update.gif" alt="Runtime Angle Update Pass GIF" onerror="this.style.display='none'">
-        </div>
-        <div class="gif-meta">
-          <h3>Runtime Angle Update Pass</h3>
+          <h3>Runtime Angle Update</h3>
           <p>Description: Changes trail_angle through TRAIL_UPDATES.</p>
         </div>
       </article>
@@ -109,6 +95,24 @@
         <article class="case-row">
           <code>relative_starboard_pass</code>
           <p>Trails off the contact&#x27;s starboard quarter with a relative -135 degree angle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lead_right_turn_pass</code>
+          <p>Replaces the target&#x27;s straight waypoint leg with a right-angle dogleg and grades pursuit after the target changes course.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lead_port_turn_pass</code>
+          <p>Combines the dogleg target path with a port-quarter relative trail angle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lead_turn_angle_update_pass</code>
+          <p>Combines the dogleg target path with a runtime trail_angle update.</p>
         </article>
 
 
@@ -270,13 +274,13 @@
 
         <article class="case-row">
           <code>bad_radius_fail</code>
-          <p>Rejects negative radius.</p>
+          <p>Rejects a negative radius configuration and expects the behavior error path to make the mission fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_nm_radius_fail</code>
-          <p>Rejects negative nm_radius.</p>
+          <p>Rejects a negative nm_radius configuration and expects the behavior error path to make the mission fail.</p>
         </article>
 
 
@@ -288,7 +292,7 @@
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Rejects malformed decay.</p>
+          <p>Rejects malformed decay input and expects the behavior error path to make the mission fail.</p>
         </article>
 
 

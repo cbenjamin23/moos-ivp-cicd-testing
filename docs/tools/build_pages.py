@@ -298,6 +298,162 @@ HARNESSES: tuple[Harness, ...] = (
         ),
     ),
     Harness(
+        slug="opregion-safety",
+        title="H01 OpRegion Safety",
+        family="Behavior Correctness",
+        path="harnesses/opregion_harnesses/H01-opregion_safety",
+        mission="missions/opregion_missions/opregion_motion",
+        summary="Moving safety harness for BHV_OpRegionV24 save regions, halt regions, timing gates, reset, and runtime region updates.",
+        proof="Checks nominal containment, save recovery, generated buffers, halt breaches, entry/exit timing gates, reset handling, max-time failure, and dynamic region enforcement.",
+        cases=(
+            "inside_region_pass",
+            "save_recover_pass",
+            "save_dist_buffer_pass",
+            "halt_breach_fail",
+            "trigger_exit_debounce_pass",
+            "dynamic_region_update_pass",
+        ),
+        gifs=(
+            ("Save Recovery", "save_recover_pass", "opregion-safety-save-recover.gif"),
+            ("Dynamic Region Update", "dynamic_region_update_pass", "opregion-safety-dynamic-update.gif"),
+        ),
+        run="./zlaunch.sh --case=save_recover_pass --gui 10",
+        notes=(
+            "This harness isolates the operating-region safety contract around save/halt envelopes and timing gates.",
+            "Expected-fail cases prove that true halt, max-time, or configured save-buffer breaches are caught by the mission verdict.",
+        ),
+    ),
+    Harness(
+        slug="waypoint-behavior-motion",
+        title="H01 Waypoint Behavior",
+        family="Behavior Correctness",
+        path="harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion",
+        mission="missions/waypoint_behavior_missions/waypoint_behavior_motion",
+        summary="Moving correctness harness for BHV_Waypoint route traversal, runtime point updates, cycle flags, capture modes, and malformed inputs.",
+        proof="Checks completion, waypoint-hit flags, end flags, repeat/cycle handling, dynamic route updates, capture/slip/line modes, status variables, and expected invalid-input failures.",
+        cases=(
+            "single_point_arrival_pass",
+            "multi_point_sequence_pass",
+            "repeat_once_cycle_pass",
+            "dynamic_points_update_pass",
+            "capture_line_absolute_pass",
+            "bad_xpoints_size_fail",
+        ),
+        gifs=(
+            ("Multi-point Sequence", "multi_point_sequence_pass", "waypoint-behavior-multipoint.gif"),
+            ("Dynamic Points Update", "dynamic_points_update_pass", "waypoint-behavior-dynamic-update.gif"),
+        ),
+        run="./zlaunch.sh --case=multi_point_sequence_pass --gui 10",
+        notes=(
+            "This harness keeps the vehicle on a short route while checking behavior-owned waypoint completion evidence.",
+            "Runtime update cases prove that the behavior can accept, reject, or preserve traversal state across point updates.",
+        ),
+    ),
+    Harness(
+        slug="loiter-behavior-motion",
+        title="H01 Loiter Behavior",
+        family="Behavior Correctness",
+        path="harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
+        mission="missions/loiter_behavior_missions/loiter_behavior_motion",
+        summary="Moving correctness harness for BHV_Loiter acquisition, polygon variants, center updates, speed modes, reports, and invalid inputs.",
+        proof="Checks loiter mode, acquisition state, polygon distance/ETA, bearing accumulation, suffixed outputs, runtime polygon updates, and expected malformed-polygon failures.",
+        cases=(
+            "radial_clockwise_pass",
+            "radial_counterclockwise_pass",
+            "start_inside_loiter_pass",
+            "center_activate_pass",
+            "slingshot_bearing_pass",
+            "bad_polygon_fail",
+        ),
+        gifs=(
+            ("Radial Clockwise", "radial_clockwise_pass", "loiter-behavior-radial.gif"),
+            ("Center Activate", "center_activate_pass", "loiter-behavior-center-activate.gif"),
+        ),
+        run="./zlaunch.sh --case=radial_clockwise_pass --gui 10",
+        notes=(
+            "This harness checks both stable loiter acquisition and the output signals that make loiter state observable in CI.",
+            "Dynamic center and polygon cases cover runtime geometry changes without copying the stem mission.",
+        ),
+    ),
+    Harness(
+        slug="stationkeep-behavior-motion",
+        title="H01 StationKeep Behavior",
+        family="Behavior Correctness",
+        path="harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion",
+        mission="missions/stationkeep_behavior_missions/stationkeep_behavior_motion",
+        summary="Moving correctness harness for BHV_StationKeep station points, radii, hibernation, runtime retargeting, speed settings, warnings, and invalid inputs.",
+        proof="Checks station distance, mode transitions, radius/speed updates, hibernation seek/settle behavior, warning recovery, visual hints, and expected parameter failures.",
+        cases=(
+            "static_station_pass",
+            "start_inside_hold_pass",
+            "center_activate_swing_pass",
+            "hibernation_settle_pass",
+            "point_update_retarget_pass",
+            "bad_point_fail",
+        ),
+        gifs=(
+            ("Static Station", "static_station_pass", "stationkeep-behavior-static.gif"),
+            ("Hibernation Settle", "hibernation_settle_pass", "stationkeep-behavior-hibernation.gif"),
+        ),
+        run="./zlaunch.sh --case=static_station_pass --gui 10",
+        notes=(
+            "This harness grades the station-keeping behavior through mode and distance outputs rather than only final vehicle position.",
+            "Runtime retargeting and hibernation cases make the behavior's state transitions explicit for regression testing.",
+        ),
+    ),
+    Harness(
+        slug="trail-behavior-motion",
+        title="H01 Trail Behavior",
+        family="Behavior Correctness",
+        path="harnesses/trail_behavior_harnesses/H01-trail_behavior_motion",
+        mission="missions/trail_behavior_missions/trail_behavior_motion",
+        summary="Two-vehicle moving correctness harness for BHV_Trail relative/absolute trailing geometry, runtime updates, pursuit relevance, and missing-contact paths.",
+        proof="Checks trail distance, relevance, range, pursuit state, update handling, extrapolation, missing-contact warnings/failures, and malformed parameter rejection.",
+        cases=(
+            "static_trail_pass",
+            "absolute_west_pass",
+            "relative_port_pass",
+            "pwt_outer_inactive_pass",
+            "runtime_angle_update_pass",
+            "missing_contact_fail",
+        ),
+        gifs=(
+            ("Static Trail", "static_trail_pass", "trail-behavior-static.gif"),
+            ("Runtime Angle Update", "runtime_angle_update_pass", "trail-behavior-runtime-angle.gif"),
+        ),
+        run="./zlaunch.sh --case=static_trail_pass --gui 10",
+        notes=(
+            "This harness uses a target vehicle and a chaser so trailing geometry is tested against moving contact state.",
+            "Relevance and runtime-update cases prove the behavior can turn pursuit on/off and reframe the desired trail point.",
+        ),
+    ),
+    Harness(
+        slug="convoy-behavior-motion",
+        title="H01 Convoy Behavior",
+        family="Behavior Correctness",
+        path="harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion",
+        mission="missions/convoy_behavior_missions/convoy_behavior_motion",
+        summary="Two-vehicle moving correctness harness for BHV_Convoy mark queues, following geometry, speed branches, runtime updates, warnings, and missing-contact failures.",
+        proof="Checks queue length, track length, max range, average spacing, chaser/target speed aliases, visual breadcrumbs, geometry recovery, runtime updates, and expected parameter failures.",
+        cases=(
+            "static_convoy_pass",
+            "fine_mark_spacing_pass",
+            "short_mark_queue_pass",
+            "angled_entry_pass",
+            "runtime_cruise_speed_pass",
+            "missing_contact_fail",
+        ),
+        gifs=(
+            ("Static Convoy", "static_convoy_pass", "convoy-behavior-static.gif"),
+            ("Angled Entry", "angled_entry_pass", "convoy-behavior-angled-entry.gif"),
+        ),
+        run="./zlaunch.sh --case=static_convoy_pass --gui 10",
+        notes=(
+            "This harness uses a leader/follower pair so queue and speed-branch outputs can be graded during real motion.",
+            "Geometry-entry cases check recovery into convoy following from less tidy starting conditions.",
+        ),
+    ),
+    Harness(
         slug="performance-obstacle-gauntlet",
         title="P01 Obstacle Gauntlet",
         family="Performance",
@@ -312,6 +468,7 @@ HARNESSES: tuple[Harness, ...] = (
         ),
         gifs=(
             ("Baseline Field", "baseline_field_pass", "performance-obstacle-gauntlet-baseline.gif"),
+            ("Dense Field", "dense_field_pass", "performance-obstacle-gauntlet-dense.gif"),
             ("Endurance Random", "endurance_random_pass", "performance-obstacle-gauntlet-endurance.gif"),
         ),
         run="./zlaunch.sh --case=baseline_field_pass --gui 10",
@@ -355,10 +512,12 @@ HARNESSES: tuple[Harness, ...] = (
             "baseline_circle_pass",
             "mixed_speed_circle_pass",
             "endurance_circle_pass",
+            "noncoop_circle_pass",
         ),
         gifs=(
             ("Baseline Traffic Ring", "baseline_circle_pass", "performance-traffic-ring-baseline.gif"),
             ("Mixed-Speed Traffic Ring", "mixed_speed_circle_pass", "performance-traffic-ring-mixed-speed.gif"),
+            ("Non-Cooperative Traffic Ring", "noncoop_circle_pass", "performance-traffic-ring-noncoop.gif"),
         ),
         run="./zlaunch.sh --case=baseline_circle_pass --gui 10",
         notes=(
@@ -410,6 +569,42 @@ FAMILIES: tuple[Family, ...] = (
             "performance-obstacle-gauntlet",
         ),
     ),
+    Family(
+        name="BHV_OpRegionV24",
+        label="Operating Region Behavior",
+        summary="Checks save and halt envelopes, entry/exit timing gates, reset behavior, and runtime region updates.",
+        slugs=("opregion-safety",),
+    ),
+    Family(
+        name="BHV_Waypoint",
+        label="Waypoint Behavior",
+        summary="Checks route traversal, capture modes, cycle flags, runtime point updates, status outputs, and invalid route inputs.",
+        slugs=("waypoint-behavior-motion",),
+    ),
+    Family(
+        name="BHV_Loiter",
+        label="Loiter Behavior",
+        summary="Checks loiter acquisition, polygon forms, center updates, speed modes, status reports, and invalid polygon inputs.",
+        slugs=("loiter-behavior-motion",),
+    ),
+    Family(
+        name="BHV_StationKeep",
+        label="Station-Keeping Behavior",
+        summary="Checks station-point holding, hibernation, radii, speed updates, warning recovery, and invalid station-keeping inputs.",
+        slugs=("stationkeep-behavior-motion",),
+    ),
+    Family(
+        name="BHV_Trail",
+        label="Trail Behavior",
+        summary="Checks moving target trailing geometry, pursuit relevance, runtime trail updates, and missing-contact handling.",
+        slugs=("trail-behavior-motion",),
+    ),
+    Family(
+        name="BHV_Convoy",
+        label="Convoy Behavior",
+        summary="Checks mark queues, leader/follower geometry, speed branches, runtime updates, visual breadcrumbs, and missing-contact handling.",
+        slugs=("convoy-behavior-motion",),
+    ),
 )
 
 
@@ -424,6 +619,12 @@ TEST_STYLE: dict[str, str] = {
     "colregs-parameters": "Parameter-regression tests for BHV_AvdColregsV22. These cases vary one tuning knob at a time while holding trusted geometry steady, verifying expected stability or one deliberate behavioral change.",
     "collision-behavior-motion": "Behavior correctness tests for BHV_AvoidCollision. These cases isolate the behavior contract: alert requests, contact information, lifecycle evidence, per-contact outputs, resolution signals, and collision-free transit.",
     "obstacle-behavior-motion": "Behavior correctness tests for BHV_AvoidObstacleV24. These cases isolate the behavior-owned contract for obstacle alert requests, helper flags, lifecycle evidence, resolution signals, and clean transit outcomes.",
+    "opregion-safety": "Behavior correctness tests for BHV_OpRegionV24. These cases isolate the operating-region safety contract: save-region warnings, halt-region failures, generated buffers, entry/exit timing gates, reset handling, and runtime polygon updates.",
+    "waypoint-behavior-motion": "Behavior correctness tests for BHV_Waypoint. These cases verify route completion, waypoint-hit and end flags, repeat/cycle behavior, runtime point updates, capture modes, status variables, and invalid route handling.",
+    "loiter-behavior-motion": "Behavior correctness tests for BHV_Loiter. These cases verify stable loiter acquisition, polygon input forms, clockwise selection, center updates, speed modes, reports, and malformed polygon/update handling.",
+    "stationkeep-behavior-motion": "Behavior correctness tests for BHV_StationKeep. These cases verify station arrival, hold/swing modes, hibernation, radius and speed updates, retargeting, warning recovery, and invalid parameter handling.",
+    "trail-behavior-motion": "Behavior correctness tests for BHV_Trail. These cases verify relative and absolute trailing geometry, pursuit relevance, runtime trail updates, extrapolation choices, missing-contact behavior, and malformed parameter handling.",
+    "convoy-behavior-motion": "Behavior correctness tests for BHV_Convoy. These cases verify convoy mark queues, following geometry, speed-control branches, runtime updates, warning paths, geometry recovery, and invalid parameter handling.",
     "performance-obstacle-gauntlet": "Performance and endurance tests for obstacle avoidance. These cases exercise repeated obstacle-field traversal and grade completion, collision safety, warning cleanliness, and wall-time behavior.",
     "performance-colregs-joust": "Performance tests for sustained COLREGS pressure. These cases run repeated multi-vehicle interaction and grade safe spacing, completion, warning cleanliness, and runtime bounds.",
     "performance-traffic-ring": "Seeded traffic-stress tests for COLREGS behavior. These cases replay five-vehicle traffic pressure and grade assignment activity, fixed runtime windows, zero collisions, and warning-free logs.",
@@ -441,6 +642,12 @@ STEM_CONTEXT: dict[str, str] = {
     "colregs-parameters": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Parameter cases keep the encounter setup stable while changing one behavior setting at a time.",
     "collision-behavior-motion": "The stem mission puts one ownship in a compact moving encounter with a synthetic contact. Unlike the app-level contact-manager harnesses, this stem focuses on what BHV_AvoidCollision requests, publishes, and resolves.",
     "obstacle-behavior-motion": "The stem mission runs one ownship through deterministic obstacle layouts with obstacle-manager input held stable. The cases focus on what BHV_AvoidObstacleV24 requests, flags, and resolves.",
+    "opregion-safety": "The stem mission keeps one ownship on a compact transit through configured operating-region envelopes. Case overlays reshape save/halt regions or timing parameters so the behavior's safety flags and breach handling can be graded directly.",
+    "waypoint-behavior-motion": "The stem mission keeps one simulated vehicle on a short waypoint corridor. Case overlays change route shape, capture settings, runtime point updates, or status variables while the mission grades behavior-owned completion evidence.",
+    "loiter-behavior-motion": "The stem mission starts one simulated vehicle near a compact loiter area. Case overlays vary polygon geometry, acquisition conditions, center updates, and speed behavior while grading loiter-owned status outputs.",
+    "stationkeep-behavior-motion": "The stem mission starts one simulated vehicle near a station point. Case overlays change the station geometry, hibernation settings, runtime retargeting, and speed/radius settings while grading mode and distance outputs.",
+    "trail-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Trail while `ben` provides the moving contact track. Case overlays vary trailing geometry, relevance settings, runtime updates, and missing-contact behavior.",
+    "convoy-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Convoy while `ben` creates the breadcrumb trail. Case overlays vary mark queues, following geometry, speed branches, and runtime updates.",
     "performance-obstacle-gauntlet": "The stem mission is a repeatable obstacle-field loop. Individual cases change field density or duration so the same avoidance stack can be tested under baseline, dense, and longer-running pressure.",
     "performance-colregs-joust": "The stem mission creates sustained two- or three-vehicle COLREGS encounters. Cases adjust traffic density and duration to test whether safe spacing holds beyond a single isolated encounter.",
     "performance-traffic-ring": "The stem mission keeps five vehicles moving through a seeded traffic-ring assignment pattern. The seed makes the pressure replayable enough for CI while still exercising repeated COLREGS interactions.",
@@ -497,7 +704,202 @@ def case_chips(cases: tuple[str, ...]) -> str:
     return "\n".join(f"<li><code>{escape(case)}</code></li>" for case in cases)
 
 
-def humanize_case(case_name: str) -> str:
+def phrase_colregs_case(case_name: str) -> str:
+    name = case_name.removesuffix("_pass")
+    name = name.removesuffix("_execution")
+    name = name.replace("_execution", "")
+
+    mirror = " Mirrored geometry checks the same branch on the opposite side." if "_mirror" in name else ""
+    spacing = ""
+    if "_far" in name or "_range_far" in name:
+        spacing = " with a longer-range setup"
+    elif "_close" in name:
+        spacing = " with a tighter setup"
+    elif "_small_gap" in name:
+        spacing = " with a smaller lateral gap"
+    elif "_large_gap" in name:
+        spacing = " with a larger lateral gap"
+    elif "_midrange" in name:
+        spacing = " with a midrange live-encounter setup"
+
+    if name.startswith("head_on_cpa_fallback"):
+        return f"Near-head-on geometry expected to fall back to CPA rather than true head-on classification{spacing}."
+    if name.startswith("head_on_port_offset"):
+        return "Offset head-on encounter on the port side; expected to remain in the head-on family."
+    if name.startswith("head_on_starboard_offset"):
+        return "Offset head-on encounter on the starboard side; expected to remain in the head-on family."
+    if name.startswith("head_on"):
+        return f"Head-on encounter used to check the head-on COLREGS branch{spacing}."
+
+    if name.startswith("crossing_starboard_giveway"):
+        return f"Starboard crossing where ownship should take the give-way role{spacing}."
+    if name.startswith("crossing_port_standon_close_unsure_bow"):
+        return "Tight port-side crossing expected to enter the stand-on unsure-bow branch before resolving."
+    if name.startswith("crossing_port_standon_unsure_bow"):
+        return "Port-side crossing expected to enter the stand-on unsure-bow branch before resolving."
+    if name.startswith("crossing_port_standon_stern"):
+        return "Port-side crossing expected to settle into the stand-on stern branch."
+    if name.startswith("crossing_port_standon_unsure"):
+        return "Port-side crossing expected to enter the generic stand-on unsure branch."
+    if name.startswith("crossing_port_standon"):
+        return f"Port-side crossing where ownship should stand on{spacing}."
+
+    if name.startswith("overtaking_starboard"):
+        side = "mirrored passing side" if "_mirror" in name else "starboard passing side"
+        return f"Ownship overtakes on the {side}{spacing}; classification should remain in the overtaking family.{mirror}"
+    if name.startswith("overtaken_port"):
+        return f"Ownship is being overtaken on its port side{spacing}; the stand-on overtaken role should be preserved."
+    if name.startswith("overtaken_starboard"):
+        return f"Ownship is being overtaken on its starboard side{spacing}; the stand-on overtaken role should be preserved."
+
+    return ""
+
+
+def phrase_threshold_case(case_name: str) -> str:
+    name = case_name.removesuffix("_pass")
+    mirror = " mirrored" if name.endswith("_mirror") or "_mirror_" in name else ""
+    base = name.replace("_mirror", "")
+
+    side = ""
+    if "_below" in base:
+        side = "below"
+    elif "_edge" in base:
+        side = "at the calibrated edge of"
+    elif "_above" in base:
+        side = "above"
+
+    if base.startswith("head_on_thresh"):
+        return f"Probes {side} the head-on entry cutoff{mirror}; expected classification should land on the calibrated side of head-on vs CPA."
+    if base.startswith("giveway_bowdist"):
+        return f"Probes {side} the give-way bow-distance split{mirror}; expected classification should stay stern-side or flip bow-side as calibrated."
+    if base.startswith("giveway_turngap"):
+        return f"Probes {side} the give-way turn-gap split{mirror}; expected classification should follow the stock turn-gap branch."
+    if base.startswith("standon_unsurebow"):
+        return f"Probes {side} the stand-on unsure-bow transition; expected classification should remain on the calibrated side of unsure-bow vs bow."
+    if base.startswith("standon_band350_unsurebow_alt"):
+        return "Alternate band-350 stand-on geometry expected to remain in the unsure-bow branch."
+    if base.startswith("standon_band350_unsurebow"):
+        return "Band-350 stand-on geometry expected to remain in the unsure-bow branch."
+    if base.startswith("standon_band350_bow"):
+        return "Band-350 stand-on geometry expected to resolve to the bow branch."
+    if base.startswith("standon_band315_unsure_bow"):
+        return "Band-315 stand-on geometry expected to enter the unsure-bow branch."
+    if base.startswith("standon_band315_unsure"):
+        return "Band-315 stand-on geometry expected to enter the generic unsure branch."
+    if base.startswith("standon_band315_bow"):
+        return "Band-315 stand-on geometry expected to resolve to the bow branch."
+    if base.startswith("standon_band270_stern"):
+        return "Band-270 stand-on geometry expected to resolve to the stern branch."
+    if base.startswith("standon_southwest_unsurebow"):
+        return "Southwest stand-on probe expected to enter the unsure-bow branch."
+    if base.startswith("standon_southwest_unsure"):
+        return "Southwest stand-on probe expected to enter the generic unsure branch."
+    if base.startswith("standon_southwest_stern"):
+        return "Southwest stand-on probe expected to resolve to the stern branch."
+    if base.startswith("standon_ot_inextremis_range"):
+        return f"Probes {side} the overtaken-vessel in-extremis range cutoff; expected classification should follow the calibrated range branch."
+    if base.startswith("standon_ot_inextremis_cpa"):
+        return f"Probes {side} the overtaken-vessel in-extremis CPA cutoff; expected classification should follow the calibrated CPA branch."
+    if base.startswith("standon_inextremis_range"):
+        return f"Probes {side} the stand-on in-extremis range cutoff; expected classification should follow the calibrated range branch."
+    if base.startswith("standon_inextremis_cpa"):
+        return f"Probes {side} the stand-on in-extremis CPA cutoff; expected classification should follow the calibrated CPA branch."
+    if base.startswith("overtaking_thresh"):
+        return f"Probes {side} the overtaking classification threshold{mirror}; expected classification should stay on the calibrated side of overtaking vs fallback."
+    if base.startswith("overtaken_thresh"):
+        return f"Probes {side} the overtaken-vessel classification threshold{mirror}; expected classification should stay on the calibrated side of stand-on overtaken vs fallback."
+    if base.startswith("outer_dist"):
+        return f"Probes {side} the COLREGS outer-distance relevance gate; expected behavior should activate only on the calibrated side."
+    return ""
+
+
+def phrase_parameter_case(case_name: str) -> str:
+    name = case_name.removesuffix("_pass")
+    if name.startswith("min_util_cpa_"):
+        level = name.removeprefix("min_util_cpa_")
+        return f"Runs fixed stand-on geometry with {level} `min_util_cpa_dist`; expected classification should reflect the CPA-distance setting."
+    if name.startswith("headon_only_"):
+        state = name.removeprefix("headon_only_")
+        return f"Runs crossing geometry with `headon_only={state}` to verify non-head-on encounters are either admitted or demoted as expected."
+    if name.startswith("giveway_bow_dist_"):
+        level = name.removeprefix("giveway_bow_dist_")
+        return f"Runs fixed give-way bow-distance geometry with the {level} threshold setting."
+    if name.startswith("max_util_cpa_"):
+        level = name.removeprefix("max_util_cpa_")
+        return f"Runs fixed stand-on geometry with {level} `max_util_cpa_dist`; expected classification should reflect the widened CPA envelope."
+    if name.startswith("velocity_filter_"):
+        state = name.removeprefix("velocity_filter_")
+        return f"Runs fixed stand-on geometry with velocity filtering {state}; expected classification should show whether the filter changes effective CPA evaluation."
+    if name.startswith("eval_tol_"):
+        level = name.removeprefix("eval_tol_")
+        return f"Runs fixed overtaking geometry with {level} `eval_tol`; expected execution quality should remain in the configured CPA band."
+    if name.startswith("pwt_outer_dist_"):
+        level = name.removeprefix("pwt_outer_dist_")
+        return f"Runs fixed range-gate geometry with {level} `pwt_outer_dist`; expected relevance should admit or suppress COLREGS behavior accordingly."
+    if name.startswith("pwt_inner_dist_"):
+        level = name.removeprefix("pwt_inner_dist_")
+        return f"Runs fixed stand-on geometry with {level} `pwt_inner_dist`; expected posted priority weight should follow the configured inner-distance band."
+    if name.startswith("pwt_grade_"):
+        grade = name.removeprefix("pwt_grade_")
+        return f"Runs fixed relevance geometry with `pwt_grade={grade}` and checks the expected priority-weight curve."
+    if name.startswith("pts_port_turns_ok_"):
+        state = name.removeprefix("pts_port_turns_ok_")
+        return f"Runs fixed give-way geometry with `pts_port_turns_ok={state}` and checks the early side relationship."
+    if name.startswith("turn_radius_"):
+        level = name.removeprefix("turn_radius_")
+        return f"Runs fixed give-way turn-gap geometry with {level} `turn_radius`; expected classification should reflect the turn-radius branch."
+    if name.startswith("check_plateaus_"):
+        state = name.removeprefix("check_plateaus_")
+        return f"Runs CPA fallback geometry with `check_plateaus={state}` and checks whether refinery diagnostics are posted."
+    if name.startswith("completed_dist_"):
+        level = name.removeprefix("completed_dist_")
+        return f"Runs CPA fallback geometry with {level} `completed_dist` and checks whether the encounter has completed at the shared checkpoint."
+    if name.startswith("refinery_"):
+        state = name.removeprefix("refinery_")
+        return f"Runs CPA fallback geometry with refinery {state}; expected classification should remain CPA while diagnostics follow the refinery setting."
+    return ""
+
+
+def phrase_performance_case(slug: str, case_name: str) -> str:
+    if slug == "performance-obstacle-gauntlet":
+        return {
+            "baseline_field_pass": "Baseline obstacle-field traversal; expected to complete the loop with zero collisions and clean warning logs.",
+            "dense_field_pass": "Denser obstacle-field traversal; expected to preserve clean completion under heavier obstacle pressure.",
+            "endurance_random_pass": "Longer seeded obstacle-field run; expected to preserve completion and safety over an extended randomized field.",
+        }.get(case_name, "")
+    if slug == "performance-colregs-joust":
+        return {
+            "baseline_colregs_pass": "Baseline sustained COLREGS joust; expected to complete with zero collisions and safe closest-range telemetry.",
+            "dense_colregs_pass": "Denser COLREGS joust; expected to preserve safe spacing under added multi-vehicle pressure.",
+            "endurance_colregs_pass": "Longer COLREGS joust; expected to preserve warning-free, collision-free behavior over an extended run.",
+        }.get(case_name, "")
+    if slug == "performance-traffic-ring":
+        return {
+            "baseline_circle_pass": "Baseline seeded five-vehicle traffic ring; expected to maintain assignment activity with zero collisions.",
+            "mixed_speed_circle_pass": "Traffic ring with mixed vehicle speeds; expected to keep assignment pressure active while remaining collision-free.",
+            "endurance_circle_pass": "Longer traffic-ring run; expected to sustain repeated assignments over the endurance window with zero collisions.",
+            "noncoop_circle_pass": "Traffic ring with one non-cooperative vehicle; expected to remain collision-free while `eve` runs with avoidance disabled.",
+        }.get(case_name, "")
+    return ""
+
+
+def describe_case(slug: str, case_name: str) -> str:
+    if slug == "colregs-thresholds":
+        desc = phrase_threshold_case(case_name)
+    elif slug == "colregs-parameters":
+        desc = phrase_parameter_case(case_name)
+    elif slug in {"colregs-classification", "colregs-execution"}:
+        desc = phrase_colregs_case(case_name)
+        if slug == "colregs-execution" and desc:
+            desc = desc.replace("classification", "realized maneuver").replace("classify", "complete")
+    elif slug.startswith("performance-"):
+        desc = phrase_performance_case(slug, case_name)
+    else:
+        desc = ""
+
+    if desc:
+        return desc
+
     clean = case_name.replace("_", " ").replace("-", " ")
     clean = re.sub(r"\bpass\b", "expected pass", clean)
     clean = re.sub(r"\bfail\b", "expected fail", clean)
@@ -518,14 +920,46 @@ def normalize_description(text: str) -> str:
     return text
 
 
+def zlaunch_case_order(h: Harness) -> list[str]:
+    zlaunch = ROOT.parent / h.path / "zlaunch.sh"
+    if not zlaunch.exists():
+        return []
+
+    names: list[str] = []
+    seen: set[str] = set()
+    for line in zlaunch.read_text(encoding="utf-8", errors="ignore").splitlines():
+        match = CASE_LIST_RE.match(line)
+        if not match:
+            continue
+        value = match.group(3)
+        if "$" in value:
+            continue
+        for token in value.split():
+            if re.search(r"(_pass|_fail|_absent)$", token) and token not in seen:
+                names.append(token)
+                seen.add(token)
+    return names
+
+
+def zlaunch_case_names(h: Harness) -> set[str]:
+    return set(zlaunch_case_order(h))
+
+
 def extract_case_docs(h: Harness) -> list[tuple[str, str]]:
+    generated_description_slugs: set[str] = set()
+    ordered_cases = zlaunch_case_order(h)
+    if h.slug in generated_description_slugs:
+        return [(case, describe_case(h.slug, case)) for case in ordered_cases or h.cases]
+
     readme = ROOT.parent / h.path / "README.md"
     if not readme.exists():
-        return [(case, humanize_case(case)) for case in h.cases]
+        return [(case, describe_case(h.slug, case)) for case in h.cases]
 
     lines = readme.read_text(encoding="utf-8", errors="ignore").splitlines()
-    found: list[tuple[str, str]] = []
+    found: dict[str, str] = {}
     seen: set[str] = set()
+    actual_cases = set(ordered_cases)
+    explicit_cases = set(h.cases)
     case_line = re.compile(r"^\s*-\s+`([^`]+)`\s*:?\s*(.*)$")
 
     for i, line in enumerate(lines):
@@ -537,6 +971,8 @@ def extract_case_docs(h: Harness) -> list[tuple[str, str]]:
         if case_name in seen:
             continue
         if not re.search(r"(_pass|_fail|_absent|group=| threshold group|parameter)", case_name):
+            continue
+        if actual_cases and case_name not in actual_cases and case_name not in explicit_cases:
             continue
 
         parts = [match.group(2).strip()]
@@ -551,13 +987,16 @@ def extract_case_docs(h: Harness) -> list[tuple[str, str]]:
                 continue
             break
 
-        desc = normalize_description(" ".join(parts)) or humanize_case(case_name)
-        found.append((case_name, desc))
-        seen.add(case_name)
+        desc = normalize_description(" ".join(parts))
+        if desc:
+            found[case_name] = desc
+            seen.add(case_name)
 
     if not found:
-        found = [(case, humanize_case(case)) for case in h.cases]
-    return found
+        return [(case, describe_case(h.slug, case)) for case in h.cases]
+
+    ordered = ordered_cases or list(h.cases)
+    return [(case, found.get(case, describe_case(h.slug, case))) for case in ordered]
 
 
 def case_rows(h: Harness) -> str:
@@ -575,7 +1014,7 @@ def case_rows(h: Harness) -> str:
 def gif_card(gif: tuple[str, str, str], descriptions: dict[str, str], prefix: str) -> str:
     title, case_name, filename = gif
     asset = f"{prefix}assets/gifs/{filename}"
-    description = descriptions.get(case_name, humanize_case(case_name))
+    description = descriptions.get(case_name, describe_case("", case_name))
     return f"""
       <article class="gif-card">
         <div class="gif-frame" data-file="{escape(filename)}">
@@ -655,7 +1094,7 @@ def render_stats() -> str:
     stats = (
         (str(total_case_count()), "Cases", "Harness case matrices across the catalog."),
         (str(harness_count()), "Harnesses", "Case matrices covering app-level units, motion checks, behavior checks, and performance gates."),
-        (str(app_behavior_target_count()), "Apps and Behaviors", "Ten MOOS apps and IvP behavior targets, plus their related stress missions."),
+        (str(app_behavior_target_count()), "Apps and Behaviors", "MOOS apps and IvP behavior targets, plus their related stress missions."),
         ("3", "Evidence Layers", "Simple mode validation, moving mission outcomes, and longer stress/endurance runs."),
     )
     return "\n".join(

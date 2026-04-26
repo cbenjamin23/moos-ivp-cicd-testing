@@ -2,11 +2,21 @@
 
 Seeded five-vehicle COLREGS traffic-ring harness.
 
-Current case set:
+## Current Matrix
+
 - `baseline_circle_pass`
+  Baseline seeded five-vehicle traffic ring. The mission should maintain
+  assignment activity, run warning-free, and finish the fixed window with zero
+  collisions.
 - `mixed_speed_circle_pass`
+  Traffic ring with mixed vehicle speeds. The mission should keep assignments
+  active and remain collision-free despite speed asymmetry.
 - `endurance_circle_pass`
+  Longer traffic-ring run. The mission should sustain repeated assignments over
+  the endurance window with zero collisions and clean warning logs.
 - `noncoop_circle_pass`
+  Non-cooperative traffic-ring variant. Vehicle `eve` runs with `AVOID=false`,
+  while the overall traffic ring should still remain collision-free.
 
 What it tests:
 - continuous five-vehicle COLREGS pressure under repeated seeded reassignment

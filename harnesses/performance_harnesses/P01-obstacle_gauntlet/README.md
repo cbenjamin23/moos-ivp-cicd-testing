@@ -2,11 +2,19 @@
 
 Performance harness for the first deterministic gauntlet mission family.
 
-## Current Case
+## Current Matrix
 
 - `baseline_field_pass`
+  Baseline obstacle-field traversal. The vehicle should complete one full loop
+  with zero collisions, bounded near misses/encounters, no timeout, and clean
+  warning logs.
 - `dense_field_pass`
+  Denser fixed-field traversal. The vehicle should still complete one full loop
+  with zero collisions and clean logs under heavier obstacle pressure.
 - `endurance_random_pass`
+  Longer seeded-random obstacle-field run. The vehicle should complete 10 full
+  loops with zero collisions and bounded encounter/near-miss totals before the
+  fail-safe timeout.
 
 The harness currently expects the gauntlet mission to:
 

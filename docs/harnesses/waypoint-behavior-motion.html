@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Waypoint Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 Waypoint Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_Waypoint. These cases verify route completion, waypoint-hit and end flags, repeat/cycle behavior, runtime point updates, capture modes, status variables, and invalid route handling.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission keeps one simulated vehicle on a short waypoint corridor. Case overlays change route shape, capture settings, runtime point updates, or status variables while the mission grades behavior-owned completion evidence.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="waypoint-behavior-multipoint.gif">
+          <img src="../assets/gifs/waypoint-behavior-multipoint.gif" alt="Multi-point Sequence GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Multi-point Sequence</h3>
+          <p>Description: The route contains three points. The vehicle should sequence through them and finish.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="waypoint-behavior-dynamic-update.gif">
+          <img src="../assets/gifs/waypoint-behavior-dynamic-update.gif" alt="Dynamic Points Update GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Dynamic Points Update</h3>
+          <p>Description: The behavior starts with points=empty, then receives a runtime points=... update and completes.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>single_point_arrival_pass</code>
+          <p>Baseline case. The vehicle drives to one point and completes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>endflag_pass</code>
+          <p>Baseline geometry with explicit grading on the waypoint behavior&#x27;s end flag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multi_point_sequence_pass</code>
+          <p>The route contains three points. The vehicle should sequence through them and finish.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wptflag_pass</code>
+          <p>Multi-point companion case requiring WPT_HIT=true.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>repeat_once_cycle_pass</code>
+          <p>Two-point route with repeat=1. The case requires a cycle flag and final completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>repeat_forever_cycle_pass</code>
+          <p>Two-point route with repeat=forever. The case evaluates by timer and requires a cycle flag without final completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dynamic_points_update_pass</code>
+          <p>The behavior starts with points=empty, then receives a runtime points=... update and completes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>newpt_update_pass</code>
+          <p>The behavior starts empty, receives a runtime newpt=... update, and completes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>xpoints_update_pass</code>
+          <p>The route starts with two points and receives a same-length xpoints=... update while preserving traversal state.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>capture_radius_large_pass</code>
+          <p>A large capture radius allows immediate completion without needing to drive to the exact point.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>capture_line_absolute_pass</code>
+          <p>The behavior uses capture_line=absolute, exercising line-crossing arrival with capture and slip radii disabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>slip_radius_pass</code>
+          <p>The behavior disables capture-line arrival and uses a tiny capture radius with a larger slip_radius, exercising nonmonotonic closest-approach arrival.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>order_reverse_pass</code>
+          <p>A three-point route is traversed in order=reverse, exercising reverse route ordering while still completing cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>currix_start_pass</code>
+          <p>A three-point route starts at currix=1, exercising nonzero starting index handling.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lead_to_start_pass</code>
+          <p>The first leg uses lead_to_start=true, exercising trackline lead from the launch position into the route.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lead_condition_pass</code>
+          <p>Lead behavior is gated on ALLOW_LEAD=true, exercising lead_condition registration and runtime evaluation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>end_spd_slowdown_pass</code>
+          <p>The route uses end_spd=slow_dist=25,stop_dist=1, exercising final approach speed tapering without preventing completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_alt_update_pass</code>
+          <p>The behavior starts at low nominal speed with speed_alt configured, then a runtime update enables alternate speed and the vehicle completes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_on_idle_pass</code>
+          <p>The behavior idles briefly during transit with reset_on_idle=true, then redeploys and completes from a reset traversal state.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>empty_start_then_update_pass</code>
+          <p>The behavior starts with points=empty, receives point=start, and completes against the current ownship position.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wptflag_on_start_pass</code>
+          <p>The behavior uses wptflag_on_start=true; the case evaluates early and requires WPT_HIT=true before route completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_status_vars_pass</code>
+          <p>The behavior posts custom status, index, and distance variables. The case evaluates in transit and requires the custom numeric outputs to be bridged to shoreside.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>polygon_points_pass</code>
+          <p>The route is configured through polygon=pts={...} rather than points=....</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>slow_speed_no_arrival_pass</code>
+          <p>A low-speed configuration is evaluated before arrival and should still be in progress.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_points_timeout_fail</code>
+          <p>The behavior starts empty and receives no useful update. The case is expected to grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>malformed_update_fail</code>
+          <p>The behavior starts empty and receives a malformed update. The case is expected to grade fail because no valid waypoint is accepted.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_xpoints_size_fail</code>
+          <p>The behavior starts with a two-point route and receives a one-point xpoints update. The update should be rejected, so the short timer verdict is expected to...</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/waypoint_behavior_missions/waypoint_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

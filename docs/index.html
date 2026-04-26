@@ -56,23 +56,23 @@
       <div class="stats-grid">
         
       <article class="stat-card">
-        <strong>365</strong>
+        <strong>423</strong>
         <span>Cases</span>
         <p>Harness case matrices across the catalog.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>18</strong>
+        <strong>21</strong>
         <span>Harnesses</span>
         <p>Case matrices covering app-level units, motion checks, behavior checks, and performance gates.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>10</strong>
+        <strong>13</strong>
         <span>Apps and Behaviors</span>
-        <p>Ten MOOS apps and IvP behavior targets, plus their related stress missions.</p>
+        <p>MOOS apps and IvP behavior targets, plus their related stress missions.</p>
       </article>
 
 
@@ -238,6 +238,120 @@
         <span class="eyebrow">Performance</span>
         <h3>P01 Obstacle Gauntlet</h3>
         <p>Deterministic and randomized obstacle-field performance harness.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Operating Region Behavior</span>
+          <span class="family-name">BHV_OpRegionV24</span>
+          <span class="family-summary">Checks save and halt envelopes, entry/exit timing gates, reset behavior, and runtime region updates.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+          
+      <a class="harness-card" href="harnesses/opregion-safety.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 OpRegion Safety</h3>
+        <p>Moving safety harness for BHV_OpRegionV24 save regions, halt regions, timing gates, reset, and runtime region updates.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Waypoint Behavior</span>
+          <span class="family-name">BHV_Waypoint</span>
+          <span class="family-summary">Checks route traversal, capture modes, cycle flags, runtime point updates, status outputs, and invalid route inputs.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+          
+      <a class="harness-card" href="harnesses/waypoint-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 Waypoint Behavior</h3>
+        <p>Moving correctness harness for BHV_Waypoint route traversal, runtime point updates, cycle flags, capture modes, and malformed inputs.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Loiter Behavior</span>
+          <span class="family-name">BHV_Loiter</span>
+          <span class="family-summary">Checks loiter acquisition, polygon forms, center updates, speed modes, status reports, and invalid polygon inputs.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+          
+      <a class="harness-card" href="harnesses/loiter-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 Loiter Behavior</h3>
+        <p>Moving correctness harness for BHV_Loiter acquisition, polygon variants, center updates, speed modes, reports, and invalid inputs.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Station-Keeping Behavior</span>
+          <span class="family-name">BHV_StationKeep</span>
+          <span class="family-summary">Checks station-point holding, hibernation, radii, speed updates, warning recovery, and invalid station-keeping inputs.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+          
+      <a class="harness-card" href="harnesses/stationkeep-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 StationKeep Behavior</h3>
+        <p>Moving correctness harness for BHV_StationKeep station points, radii, hibernation, runtime retargeting, speed settings, warnings, and invalid inputs.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Trail Behavior</span>
+          <span class="family-name">BHV_Trail</span>
+          <span class="family-summary">Checks moving target trailing geometry, pursuit relevance, runtime trail updates, and missing-contact handling.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+          
+      <a class="harness-card" href="harnesses/trail-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 Trail Behavior</h3>
+        <p>Two-vehicle moving correctness harness for BHV_Trail relative/absolute trailing geometry, runtime updates, pursuit relevance, and missing-contact paths.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Convoy Behavior</span>
+          <span class="family-name">BHV_Convoy</span>
+          <span class="family-summary">Checks mark queues, leader/follower geometry, speed branches, runtime updates, visual breadcrumbs, and missing-contact handling.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+          
+      <a class="harness-card" href="harnesses/convoy-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 Convoy Behavior</h3>
+        <p>Two-vehicle moving correctness harness for BHV_Convoy mark queues, following geometry, speed branches, runtime updates, warnings, and missing-contact failures.</p>
       </a>
 
         </div>

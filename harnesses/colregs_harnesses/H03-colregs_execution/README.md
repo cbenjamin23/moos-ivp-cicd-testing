@@ -27,30 +27,78 @@ Primary intent:
   - final `colregs_mode` where the case identity should persist through completion
 - keep only loose completion time in the shell harness, because `WALL_TIME` is available to `pMissionEval` only as a report macro and not as a logic-test variable
 
-Current implemented case list:
+## Case Guide
+
 - `head_on_execution_pass`
+  Head-on encounter used to check the realized head-on maneuver through
+  completion.
 - `head_on_cpa_fallback_execution_pass`
+  Near-head-on geometry expected to complete through the CPA fallback path
+  rather than true head-on.
 - `head_on_port_offset_execution_pass`
+  Offset head-on encounter on the port side; expected to preserve the head-on
+  execution shape through completion.
 - `head_on_starboard_offset_execution_pass`
+  Offset head-on encounter on the starboard side; expected to preserve the
+  head-on execution shape through completion.
 - `crossing_starboard_giveway_execution_pass`
+  Starboard crossing where ownship should take the give-way role and complete
+  on the expected side.
 - `crossing_starboard_giveway_far_execution_pass`
+  Longer-range starboard crossing where ownship should still give way and
+  complete inside the expected CPA/side envelope.
 - `crossing_starboard_giveway_close_execution_pass`
+  Tighter starboard crossing where ownship should still give way and complete
+  cleanly.
 - `crossing_port_standon_execution_pass`
+  Port-side crossing where ownship should stand on and complete with the
+  expected side relationship.
 - `crossing_port_standon_unsure_bow_execution_pass`
+  Port-side crossing that enters the stand-on unsure-bow branch before
+  completion; expected to preserve a clean stand-on execution outcome.
 - `crossing_port_standon_stern_execution_pass`
+  Port-side crossing that settles to the stand-on stern branch and completes in
+  the expected CPA/side envelope.
 - `crossing_port_standon_far_execution_pass`
+  Longer-range port-side stand-on setup tuned for completion-style execution
+  grading.
 - `crossing_port_standon_close_execution_pass`
+  Tighter port-side stand-on setup expected to complete without crossing or
+  collision.
 - `crossing_port_standon_close_unsure_bow_execution_pass`
+  Tighter port-side setup that enters unsure-bow before completing with a clean
+  stand-on outcome.
 - `crossing_port_standon_unsure_execution_pass`
+  Port-side crossing that enters the generic stand-on unsure branch and
+  completes inside its narrower CPA envelope.
 - `overtaking_starboard_execution_pass`
+  Ownship overtakes on the starboard passing side and should maintain the
+  expected safe-side execution shape.
 - `overtaking_starboard_range_far_execution_pass`
+  Longer-range overtaking setup on the starboard passing side, used to
+  strengthen completion-side evidence.
 - `overtaking_starboard_small_gap_execution_pass`
+  Overtaking setup with a smaller lateral gap; expected to keep the same safe
+  side and CPA band.
 - `overtaking_starboard_mirror_execution_pass`
+  Mirrored overtaking setup on the opposite passing side; expected to preserve
+  the mirrored safe-side relationship.
 - `overtaking_starboard_mirror_range_far_execution_pass`
+  Longer-range mirrored overtaking setup, used to strengthen completion-side
+  evidence on the mirrored side.
 - `overtaking_starboard_mirror_small_gap_execution_pass`
+  Mirrored overtaking setup with a smaller lateral gap; expected to keep the
+  mirrored safe side and CPA band.
 - `overtaking_starboard_mirror_large_gap_execution_pass`
+  Mirrored overtaking setup with a larger lateral gap; expected to remain in
+  the supported mirrored execution envelope.
 - `overtaken_port_standon_midrange_execution_pass`
+  Ownship is being overtaken on its port side with a midrange live-encounter
+  setup; expected to preserve the stand-on overtaken role through completion.
 - `overtaken_starboard_standon_midrange_execution_pass`
+  Ownship is being overtaken on its starboard side with a midrange
+  live-encounter setup; expected to preserve the stand-on overtaken role
+  through completion.
 
 Current mission-side assertions:
 - every H03 case patch still requires `ARRIVED_ben = true`, `COLLISION_TOTAL = 0`, and `MISSION_TIMEOUT = false`

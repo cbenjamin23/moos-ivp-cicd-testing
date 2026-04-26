@@ -49,7 +49,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Traffic Ring</h3>
-          <p>Description: Covers baseline circle expected pass.</p>
+          <p>Description: Baseline seeded five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
         </div>
       </article>
 
@@ -60,7 +60,18 @@
         </div>
         <div class="gif-meta">
           <h3>Mixed-Speed Traffic Ring</h3>
-          <p>Description: Covers mixed speed circle expected pass.</p>
+          <p>Description: Traffic ring with mixed vehicle speeds. The mission should keep assignments active and remain collision-free despite speed asymmetry.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="performance-traffic-ring-noncoop.gif">
+          <img src="../assets/gifs/performance-traffic-ring-noncoop.gif" alt="Non-Cooperative Traffic Ring GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Non-Cooperative Traffic Ring</h3>
+          <p>Description: Non-cooperative traffic-ring variant. Vehicle eve runs with AVOID=false, while the overall traffic ring should still remain collision-free.</p>
         </div>
       </article>
 
@@ -76,31 +87,25 @@
         
         <article class="case-row">
           <code>baseline_circle_pass</code>
-          <p>Covers baseline circle expected pass.</p>
+          <p>Baseline seeded five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
         </article>
 
 
         <article class="case-row">
           <code>mixed_speed_circle_pass</code>
-          <p>Covers mixed speed circle expected pass.</p>
+          <p>Traffic ring with mixed vehicle speeds. The mission should keep assignments active and remain collision-free despite speed asymmetry.</p>
         </article>
 
 
         <article class="case-row">
           <code>endurance_circle_pass</code>
-          <p>Covers endurance circle expected pass.</p>
+          <p>Longer traffic-ring run. The mission should sustain repeated assignments over the endurance window with zero collisions and clean warning logs.</p>
         </article>
 
 
         <article class="case-row">
           <code>noncoop_circle_pass</code>
-          <p>Covers noncoop circle expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>assign_fails</code>
-          <p>is still reported, but it is treated as coordinator health rather than the primary traffic verdict.</p>
+          <p>Non-cooperative traffic-ring variant. Vehicle eve runs with AVOID=false, while the overall traffic ring should still remain collision-free.</p>
         </article>
 
       </div>

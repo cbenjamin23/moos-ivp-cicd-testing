@@ -49,7 +49,7 @@
         </div>
         <div class="gif-meta">
           <h3>Head-on Classification</h3>
-          <p>Description: Covers head on colregs expected pass.</p>
+          <p>Description: clean symmetric head-on encounter that should classify as true COLREGS head-on.</p>
         </div>
       </article>
 
@@ -60,7 +60,7 @@
         </div>
         <div class="gif-meta">
           <h3>Crossing Give-way</h3>
-          <p>Description: Covers crossing starboard giveway expected pass.</p>
+          <p>Description: canonical starboard crossing where ownship should be the give-way vessel.</p>
         </div>
       </article>
 
@@ -76,145 +76,133 @@
         
         <article class="case-row">
           <code>head_on_colregs_pass</code>
-          <p>Covers head on colregs expected pass.</p>
+          <p>clean symmetric head-on encounter that should classify as true COLREGS head-on.</p>
         </article>
 
 
         <article class="case-row">
           <code>head_on_cpa_fallback_pass</code>
-          <p>Covers head on cpa fallback expected pass.</p>
+          <p>near-head-on geometry intentionally outside the head-on bucket so the app should fall back to CPA mode.</p>
         </article>
 
 
         <article class="case-row">
           <code>head_on_port_offset_pass</code>
-          <p>Covers head on port offset expected pass.</p>
+          <p>head-on encounter with a left-right offset, still expected to stay in the head-on family.</p>
         </article>
 
 
         <article class="case-row">
           <code>head_on_starboard_offset_pass</code>
-          <p>Covers head on starboard offset expected pass.</p>
+          <p>mirrored offset head-on encounter, also expected to stay in the head-on family.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_starboard_giveway_pass</code>
-          <p>Covers crossing starboard giveway expected pass.</p>
+          <p>canonical starboard crossing where ownship should be the give-way vessel.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_starboard_giveway_far_pass</code>
-          <p>Covers crossing starboard giveway far expected pass.</p>
+          <p>same starboard crossing family with a longer setup and more spacing.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_starboard_giveway_close_pass</code>
-          <p>Covers crossing starboard giveway close expected pass.</p>
+          <p>same starboard crossing family with a tighter setup and earlier interaction.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_pass</code>
-          <p>Covers crossing port standon expected pass.</p>
+          <p>canonical port-side crossing where ownship should stand on and settle to the bow submode.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_unsure_bow_pass</code>
-          <p>Covers crossing port standon unsure bow expected pass.</p>
+          <p>port-side crossing that first enters the stand-on unsure_bow branch before later resolving.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_stern_pass</code>
-          <p>Covers crossing port standon stern expected pass.</p>
+          <p>port-side crossing that settles to the stand-on stern branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_far_pass</code>
-          <p>Covers crossing port standon far expected pass.</p>
+          <p>longer-spacing version of the port-side stand-on bow case.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_close_pass</code>
-          <p>Covers crossing port standon close expected pass.</p>
+          <p>tighter-spacing version of the port-side stand-on bow case.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_close_unsure_bow_pass</code>
-          <p>Covers crossing port standon close unsure bow expected pass.</p>
+          <p>tighter-spacing port-side case that still first enters unsure_bow.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_unsure_pass</code>
-          <p>Covers crossing port standon unsure expected pass.</p>
+          <p>port-side crossing that first enters the generic stand-on unsure branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_pass</code>
-          <p>Covers overtaking starboard expected pass.</p>
+          <p>canonical overtaking geometry on one passing side.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_small_gap_pass</code>
-          <p>Covers overtaking starboard small gap expected pass.</p>
+          <p>overtaking with a smaller lateral gap to confirm the same overtaking family still holds.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_large_gap_pass</code>
-          <p>Covers overtaking starboard large gap expected pass.</p>
+          <p>overtaking with a larger lateral gap to confirm the same overtaking family still holds.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_mirror_pass</code>
-          <p>Covers overtaking starboard mirror expected pass.</p>
+          <p>mirrored overtaking geometry on the opposite passing side.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_mirror_small_gap_pass</code>
-          <p>Covers overtaking starboard mirror small gap expected pass.</p>
+          <p>mirrored overtaking with a smaller lateral gap.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_mirror_large_gap_pass</code>
-          <p>Covers overtaking starboard mirror large gap expected pass.</p>
+          <p>mirrored overtaking with a larger lateral gap.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaken_port_standon_pass</code>
-          <p>Covers overtaken port standon expected pass.</p>
+          <p>ownship is the vessel being overtaken, with the contact overtaking on ownship&#x27;s port side.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaken_starboard_standon_pass</code>
-          <p>Covers overtaken starboard standon expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>crossing_starboard_giveway_bow_pass</code>
-          <p>remains available as a manual exploratory case, but it is intentionally not part of the default H01 pass set because repeated serial runs showed it can fall into...</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>crossing_port_standon_far_unsure_bow_pass</code>
-          <p>remains available as a manual exploratory case, but it is intentionally not part of the default H01 pass set because repeated isolated runs can fall through to...</p>
+          <p>mirrored overtaken-vessel case with the contact overtaking on ownship&#x27;s starboard side.</p>
         </article>
 
       </div>

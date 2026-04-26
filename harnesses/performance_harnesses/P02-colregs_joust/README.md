@@ -2,10 +2,19 @@
 
 Initial performance harness for the COLREGS joust stem.
 
-Current case set:
+## Current Matrix
+
 - `baseline_colregs_pass`
+  Mild two-vehicle deterministic crossing. The mission should complete with
+  zero collisions, clean warning logs, and closest-range telemetry inside the
+  baseline envelope.
 - `dense_colregs_pass`
+  Denser three-vehicle continuous joust. The mission should preserve
+  collision-free completion and safe closest-range telemetry under added
+  COLREGS pressure.
 - `endurance_colregs_pass`
+  Longer-running three-vehicle joust. The mission should preserve the same
+  zero-collision and zero-warning contract over the endurance window.
 
 The harness checks:
 - mission `grade`
@@ -16,15 +25,6 @@ For these joust cases, the main pressure metric is
 `closest_range_ever`, derived from `UCD_CLOSEST_RANGE_EVER`. That is more
 useful for this stem than `ENCOUNTER_TOTAL`, which may stay low or zero even
 when the vehicles repeatedly operate inside a meaningful contact envelope.
-
-The current case split is:
-- `baseline_colregs_pass`
-  - mild two-vehicle deterministic crossing
-- `dense_colregs_pass`
-  - denser three-vehicle continuous joust
-- `endurance_colregs_pass`
-  - longer-running three-vehicle joust with the same zero-collision and
-    zero-warning requirements
 
 Current split:
 - `pMissionEval` owns the MOOS-visible verdict through one case-specific

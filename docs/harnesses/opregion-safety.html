@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 OpRegion Safety | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../index.html#workflow">How it works</a>
+      <a href="../technical.html">Technical</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 OpRegion Safety</h1>
+      <p class="lede">Behavior correctness tests for BHV_OpRegionV24. These cases isolate the operating-region safety contract: save-region warnings, halt-region failures, generated buffers, entry/exit timing gates, reset handling, and runtime polygon updates.</p>
+    </section>
+
+    
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission keeps one ownship on a compact transit through configured operating-region envelopes. Case overlays reshape save/halt regions or timing parameters so the behavior&#x27;s safety flags and breach handling can be graded directly.</p>
+      </article>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="opregion-safety-save-recover.gif">
+          <img src="../assets/gifs/opregion-safety-save-recover.gif" alt="Save Recovery GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Save Recovery</h3>
+          <p>Description: The vehicle briefly leaves the save region, posts save/recovery flags, and returns without breaching the halt region.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="opregion-safety-dynamic-update.gif">
+          <img src="../assets/gifs/opregion-safety-dynamic-update.gif" alt="Dynamic Region Update GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Dynamic Region Update</h3>
+          <p>Description: A timer-posted OPREGION_CORE_POLY update shrinks the operating region at runtime from the vehicle community. The vehicle should post save-region recovery flags...</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+        
+        <article class="case-row">
+          <code>inside_region_pass</code>
+          <p>Baseline case. The vehicle remains inside the save and halt envelopes and arrives cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>save_recover_pass</code>
+          <p>The vehicle briefly leaves the save region, posts save/recovery flags, and returns without breaching the halt region.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>save_dist_buffer_pass</code>
+          <p>The vehicle leaves a small core polygon but stays inside generated positive save_dist and halt_dist buffers. The case should pass with no save flag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>save_dist_buffer_fail</code>
+          <p>The vehicle uses the same positive save_dist setup, but drives beyond the generated save buffer while staying inside the generated halt buffer. The case is...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>halt_breach_fail</code>
+          <p>The vehicle is driven outside a tight halt region. The case is expected to grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>entry_gate_start_outside_pass</code>
+          <p>The configured halt polygon starts to the east of the vehicle, so the vehicle launches outside the halt envelope, enters it, and finishes safely. With...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>entry_gate_disabled_fail</code>
+          <p>Same start-outside geometry, but with trigger_on_poly_entry=false. The case is expected to grade fail quickly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trigger_exit_debounce_pass</code>
+          <p>The vehicle briefly leaves the halt region, but the configured trigger_exit_time is long enough that no halt breach should be declared. This case grades the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trigger_exit_strict_fail</code>
+          <p>Companion case using the same short excursion shape, but with the stock short trigger_exit_time. The case is expected to grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trigger_entry_delay_pass</code>
+          <p>The vehicle leaves the halt envelope before the long trigger_entry_time matures, so the later outside state should not count as a breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_before_exit_pass</code>
+          <p>The vehicle would normally fail on halt exit, but a vehicle-side OPREGION_UPDATES=reset=true is posted during the exit debounce window and clears the entry state...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_time_fail</code>
+          <p>The behavior is case-specific with a short max_time. The case is expected to grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dynamic_region_expand_pass</code>
+          <p>The behavior starts with a narrow dynamic-region core, then receives an early vehicle-side OPREGION_CORE_POLY expansion before the vehicle reaches the narrow...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dynamic_region_update_pass</code>
+          <p>A timer-posted OPREGION_CORE_POLY update shrinks the operating region at runtime from the vehicle community. The vehicle should post save-region recovery flags...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dynamic_region_halt_fail</code>
+          <p>A timer-posted update shrinks the operating region far enough that the vehicle should breach the recomputed halt region. The case is expected to grade fail.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/opregion_harnesses/H01-opregion_safety/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/opregion_missions/opregion_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

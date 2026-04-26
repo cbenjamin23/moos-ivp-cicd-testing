@@ -75,986 +75,350 @@
       <div class="case-matrix">
         
         <article class="case-row">
-          <code>*_below_pass</code>
-          <p>just below the source cutoff; should stay on the pre-flip side</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>*_edge_pass</code>
-          <p>on the currently calibrated stock edge</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>*_above_pass</code>
-          <p>just above the cutoff; should land on the post-flip side</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>*_mirror_pass</code>
-          <p>same idea as the base case, but rotated or mirrored to prove the opposite-side geometry is behaving symmetrically</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>head_on_thresh_below_pass</code>
-          <p>Covers head on thresh below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>head_on_thresh_edge_pass</code>
-          <p>Covers head on thresh edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>head_on_thresh_above_pass</code>
-          <p>Covers head on thresh above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>head_on_thresh_below_mirror_pass</code>
-          <p>Covers head on thresh below mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>head_on_thresh_edge_mirror_pass</code>
-          <p>Covers head on thresh edge mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>head_on_thresh_above_mirror_pass</code>
-          <p>Covers head on thresh above mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_bowdist_below_pass</code>
-          <p>Covers giveway bowdist below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>giveway_bowdist_edge_pass</code>
-          <p>Covers giveway bowdist edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_bowdist_above_pass</code>
-          <p>Covers giveway bowdist above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_bowdist_below_mirror_pass</code>
-          <p>Covers giveway bowdist below mirror expected pass.</p>
+          <p>Probes the calibrated give-way bow-distance edge; expected classification should still stay in giveway:stern.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveway_bowdist_edge_mirror_pass</code>
-          <p>Covers giveway bowdist edge mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_bowdist_above_mirror_pass</code>
-          <p>Covers giveway bowdist above mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_turngap_below_pass</code>
-          <p>Covers giveway turngap below expected pass.</p>
+          <p>Mirrored bow-distance edge case; expected classification should still stay in giveway:stern.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveway_turngap_edge_pass</code>
-          <p>Covers giveway turngap edge expected pass.</p>
+          <p>Probes the calibrated give-way turn-gap edge; expected classification should stay on the stock stern-side branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveway_turngap_above_pass</code>
-          <p>Covers giveway turngap above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_turngap_below_mirror_pass</code>
-          <p>Covers giveway turngap below mirror expected pass.</p>
+          <p>Probes just beyond the give-way turn-gap edge; expected classification should flip to the stock bow-side branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveway_turngap_edge_mirror_pass</code>
-          <p>Covers giveway turngap edge mirror expected pass.</p>
+          <p>Mirrored turn-gap edge case; expected classification should match the non-mirrored edge behavior.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveway_turngap_above_mirror_pass</code>
-          <p>Covers giveway turngap above mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_unsurebow_below_pass</code>
-          <p>Covers standon unsurebow below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_unsurebow_edge_pass</code>
-          <p>Covers standon unsurebow edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_unsurebow_above_pass</code>
-          <p>Covers standon unsurebow above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_pass</code>
-          <p>Covers standon band350 unsurebow expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_alt_pass</code>
-          <p>Covers standon band350 unsurebow alt expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_bow_pass</code>
-          <p>Covers standon band350 bow expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsure_pass</code>
-          <p>Covers standon band315 unsure expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsurebow_pass</code>
-          <p>Covers standon band315 unsurebow expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_pass</code>
-          <p>Covers standon band315 bow expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_stern_pass</code>
-          <p>Covers standon band270 stern expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_southwest_unsurebow_pass</code>
-          <p>Covers standon southwest unsurebow expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_southwest_unsure_pass</code>
-          <p>Covers standon southwest unsure expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_southwest_stern_pass</code>
-          <p>Covers standon southwest stern expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>crossing_port_standon_turn_unsure_stern_below_pass</code>
-          <p>Covers crossing port standon turn unsure stern below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>crossing_port_standon_turn_unsure_stern_edge_pass</code>
-          <p>Covers crossing port standon turn unsure stern edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>crossing_port_standon_turn_unsure_stern_above_pass</code>
-          <p>Covers crossing port standon turn unsure stern above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsure_stern_pass</code>
-          <p>Covers standon band350 unsure stern expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_stern_pass</code>
-          <p>Band #2 stern-side reference case — removed pending a geometry that is verified to land in Band #2 (315 &lt; rel_bng &lt;= 350) at the time of classification. Earlier...</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_stern_direct_pass</code>
-          <p>simple direct stern anchor case — removed because it was using the same mmod as the southwest family without offering distinct coverage. Will be revisited if a...</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_bow_minutil_below_pass</code>
-          <p>Covers standon band350 bow minutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_bow_minutil_edge_pass</code>
-          <p>Covers standon band350 bow minutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_bow_minutil_above_pass</code>
-          <p>Covers standon band350 bow minutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_zero_below_pass</code>
-          <p>Covers standon band350 unsurebow zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_zero_edge_pass</code>
-          <p>Covers standon band350 unsurebow zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_zero_above_pass</code>
-          <p>Covers standon band350 unsurebow zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurestern_zero_below_pass</code>
-          <p>Covers standon band350 unsurestern zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurestern_zero_edge_pass</code>
-          <p>Covers standon band350 unsurestern zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurestern_zero_above_pass</code>
-          <p>Covers standon band350 unsurestern zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_bow_minutil_turnneg_below_pass</code>
-          <p>Covers standon band350 bow minutil turnneg below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_bow_minutil_turnneg_edge_pass</code>
-          <p>Covers standon band350 bow minutil turnneg edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_bow_minutil_turnneg_above_pass</code>
-          <p>Covers standon band350 bow minutil turnneg above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_zero_turnneg_below_pass</code>
-          <p>Covers standon band350 unsurebow zero turnneg below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_zero_turnneg_edge_pass</code>
-          <p>Covers standon band350 unsurebow zero turnneg edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band350_unsurebow_zero_turnneg_above_pass</code>
-          <p>Covers standon band350 unsurebow zero turnneg above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_halfutil_below_pass</code>
-          <p>Covers standon band315 bow halfutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_halfutil_edge_pass</code>
-          <p>Covers standon band315 bow halfutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_halfutil_above_pass</code>
-          <p>Covers standon band315 bow halfutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_minutil_below_pass</code>
-          <p>Covers standon band315 bow minutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_minutil_edge_pass</code>
-          <p>Covers standon band315 bow minutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_minutil_above_pass</code>
-          <p>Covers standon band315 bow minutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsurebow_zero_below_pass</code>
-          <p>Covers standon band315 unsurebow zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsurebow_zero_edge_pass</code>
-          <p>Covers standon band315 unsurebow zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsurebow_zero_above_pass</code>
-          <p>Covers standon band315 unsurebow zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_stern_zero_below_pass</code>
-          <p>Covers standon band315 stern zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_stern_zero_edge_pass</code>
-          <p>Covers standon band315 stern zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_stern_zero_above_pass</code>
-          <p>Covers standon band315 stern zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_halfutil_turn3_below_pass</code>
-          <p>Covers standon band315 bow halfutil turn3 below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_halfutil_turn3_edge_pass</code>
-          <p>Covers standon band315 bow halfutil turn3 edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_halfutil_turn3_above_pass</code>
-          <p>Covers standon band315 bow halfutil turn3 above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_minutil_turn01_below_pass</code>
-          <p>Covers standon band315 bow minutil turn01 below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_minutil_turn01_edge_pass</code>
-          <p>Covers standon band315 bow minutil turn01 edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_bow_minutil_turn01_above_pass</code>
-          <p>Covers standon band315 bow minutil turn01 above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsurebow_zero_turnneg_below_pass</code>
-          <p>Covers standon band315 unsurebow zero turnneg below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsurebow_zero_turnneg_edge_pass</code>
-          <p>Covers standon band315 unsurebow zero turnneg edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsurebow_zero_turnneg_above_pass</code>
-          <p>Covers standon band315 unsurebow zero turnneg above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_maxutil_below_pass</code>
-          <p>Covers standon band270 bow maxutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_maxutil_edge_pass</code>
-          <p>Covers standon band270 bow maxutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_maxutil_above_pass</code>
-          <p>Covers standon band270 bow maxutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_halfutil_below_pass</code>
-          <p>Covers standon band270 bow halfutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_halfutil_edge_pass</code>
-          <p>Covers standon band270 bow halfutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_halfutil_above_pass</code>
-          <p>Covers standon band270 bow halfutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_unsurebow_zero_below_pass</code>
-          <p>Covers standon band270 unsurebow zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_unsurebow_zero_edge_pass</code>
-          <p>Covers standon band270 unsurebow zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_unsurebow_zero_above_pass</code>
-          <p>Covers standon band270 unsurebow zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_stern_zero_below_pass</code>
-          <p>Covers standon band270 stern zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_stern_zero_edge_pass</code>
-          <p>Covers standon band270 stern zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_stern_zero_above_pass</code>
-          <p>Covers standon band270 stern zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_halfutil_turn01_below_pass</code>
-          <p>Covers standon band270 bow halfutil turn01 below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_halfutil_turn01_edge_pass</code>
-          <p>Covers standon band270 bow halfutil turn01 edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_bow_halfutil_turn01_above_pass</code>
-          <p>Covers standon band270 bow halfutil turn01 above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_unsurebow_zero_turnneg_below_pass</code>
-          <p>Covers standon band270 unsurebow zero turnneg below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_unsurebow_zero_turnneg_edge_pass</code>
-          <p>Covers standon band270 unsurebow zero turnneg edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band270_unsurebow_zero_turnneg_above_pass</code>
-          <p>Covers standon band270 unsurebow zero turnneg above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsurebow_halfutil_below_pass</code>
-          <p>Covers standon band180 270 unsurebow halfutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsurebow_halfutil_edge_pass</code>
-          <p>Covers standon band180 270 unsurebow halfutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsurebow_halfutil_above_pass</code>
-          <p>Covers standon band180 270 unsurebow halfutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsure_zero_below_pass</code>
-          <p>Covers standon band180 270 unsure zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsure_zero_edge_pass</code>
-          <p>Covers standon band180 270 unsure zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsure_zero_above_pass</code>
-          <p>Covers standon band180 270 unsure zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_stern_zero_below_pass</code>
-          <p>Covers standon band180 270 stern zero below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_stern_zero_edge_pass</code>
-          <p>Covers standon band180 270 stern zero edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_stern_zero_above_pass</code>
-          <p>Covers standon band180 270 stern zero above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsurebow_halfutil_turn01_below_pass</code>
-          <p>Covers standon band180 270 unsurebow halfutil turn01 below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsurebow_halfutil_turn01_edge_pass</code>
-          <p>Covers standon band180 270 unsurebow halfutil turn01 edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band180_270_unsurebow_halfutil_turn01_above_pass</code>
-          <p>Covers standon band180 270 unsurebow halfutil turn01 above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_350_to_315_transition_below_pass</code>
-          <p>Covers standon band 350 to 315 transition below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_350_to_315_transition_edge_pass</code>
-          <p>Covers standon band 350 to 315 transition edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_350_to_315_transition_above_pass</code>
-          <p>Covers standon band 350 to 315 transition above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_315_to_270_transition_below_pass</code>
-          <p>Covers standon band 315 to 270 transition below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_315_to_270_transition_edge_pass</code>
-          <p>Covers standon band 315 to 270 transition edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_315_to_270_transition_above_pass</code>
-          <p>Covers standon band 315 to 270 transition above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_270_to_180_transition_below_pass</code>
-          <p>Covers standon band 270 to 180 transition below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_270_to_180_transition_edge_pass</code>
-          <p>Covers standon band 270 to 180 transition edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band_270_to_180_transition_above_pass</code>
-          <p>Covers standon band 270 to 180 transition above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_neither_below_pass</code>
-          <p>Covers standon neither below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_neither_edge_pass</code>
-          <p>Covers standon neither edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_neither_above_pass</code>
-          <p>Covers standon neither above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_inextremis_range_below_pass</code>
-          <p>Covers standon inextremis range below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_inextremis_range_edge_pass</code>
-          <p>Covers standon inextremis range edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_inextremis_range_above_pass</code>
-          <p>Covers standon inextremis range above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_inextremis_cpa_below_pass</code>
-          <p>Covers standon inextremis cpa below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_inextremis_cpa_edge_pass</code>
-          <p>Covers standon inextremis cpa edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_inextremis_cpa_above_pass</code>
-          <p>Covers standon inextremis cpa above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_ot_inextremis_range_below_pass</code>
-          <p>Covers standon ot inextremis range below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_ot_inextremis_range_edge_pass</code>
-          <p>Covers standon ot inextremis range edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_ot_inextremis_range_above_pass</code>
-          <p>Covers standon ot inextremis range above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_ot_inextremis_cpa_below_pass</code>
-          <p>Covers standon ot inextremis cpa below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_ot_inextremis_cpa_edge_pass</code>
-          <p>Covers standon ot inextremis cpa edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_ot_inextremis_cpa_above_pass</code>
-          <p>Covers standon ot inextremis cpa above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>crossing_port_standon_cpa_wide_pass</code>
-          <p>remains available as a calibration alias if the wider CPA offset needs to be revisited later</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaken_port_standon_range_edge_pass</code>
-          <p>is the H02 range-edge pocket; overtaken_port_standon_range_close_pass is the above pocket</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaking_thresh_below_pass</code>
-          <p>Covers overtaking thresh below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaking_thresh_edge_pass</code>
-          <p>Covers overtaking thresh edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaking_thresh_above_pass</code>
-          <p>Covers overtaking thresh above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaking_thresh_below_mirror_pass</code>
-          <p>Covers overtaking thresh below mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaking_thresh_edge_mirror_pass</code>
-          <p>Covers overtaking thresh edge mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaking_thresh_above_mirror_pass</code>
-          <p>Covers overtaking thresh above mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaken_thresh_below_pass</code>
-          <p>Covers overtaken thresh below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaken_thresh_edge_pass</code>
-          <p>Covers overtaken thresh edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaken_thresh_above_pass</code>
-          <p>Covers overtaken thresh above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaken_thresh_below_mirror_pass</code>
-          <p>Covers overtaken thresh below mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaken_thresh_edge_mirror_pass</code>
-          <p>Covers overtaken thresh edge mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaken_thresh_above_mirror_pass</code>
-          <p>Covers overtaken thresh above mirror expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>outer_dist_below_pass</code>
-          <p>Covers outer dist below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>outer_dist_edge_pass</code>
-          <p>Covers outer dist edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>outer_dist_above_pass</code>
-          <p>Covers outer dist above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>inner_dist_below_pass</code>
-          <p>Covers inner dist below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>inner_dist_edge_pass</code>
-          <p>Covers inner dist edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>inner_dist_above_pass</code>
-          <p>Covers inner dist above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>completed_dist_below_pass</code>
-          <p>Covers completed dist below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>completed_dist_edge_pass</code>
-          <p>Covers completed dist edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>completed_dist_above_pass</code>
-          <p>Covers completed dist above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>cpa_minutil_below_pass</code>
-          <p>Covers cpa minutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>cpa_minutil_edge_pass</code>
-          <p>Covers cpa minutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>cpa_minutil_above_pass</code>
-          <p>Covers cpa minutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>cpa_maxutil_below_pass</code>
-          <p>Covers cpa maxutil below expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>cpa_maxutil_edge_pass</code>
-          <p>Covers cpa maxutil edge expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>cpa_maxutil_above_pass</code>
-          <p>Covers cpa maxutil above expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_release_to_cpa_pass</code>
-          <p>Covers giveway release to cpa expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_release_to_cpa_pass</code>
-          <p>Covers standon release to cpa expected pass.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>overtaking_reject_to_cpa_pass</code>
-          <p>Covers overtaking reject to cpa expected pass.</p>
+          <p>Mirrored turn-gap above-edge case; expected classification should match the non-mirrored bow-side behavior.</p>
         </article>
 
 
         <article class="case-row">
           <code>standon_band315_unsure_bow_pass</code>
-          <p>&gt; 36</p>
+          <p>Band-315 stand-on geometry expected to enter the unsure-bow branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_thresh_below_pass</code>
+          <p>Probes below the head-on entry cutoff; expected classification should remain true head-on.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_thresh_edge_pass</code>
+          <p>Probes the calibrated head-on entry edge; expected classification should land on the calibrated edge behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_thresh_above_pass</code>
+          <p>Probes above the head-on entry cutoff; expected classification should fall back to CPA.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_thresh_below_mirror_pass</code>
+          <p>Mirrored below-threshold head-on case; expected classification should remain true head-on.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_thresh_edge_mirror_pass</code>
+          <p>Mirrored head-on edge case; expected classification should match the non-mirrored edge behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>head_on_thresh_above_mirror_pass</code>
+          <p>Mirrored above-threshold head-on case; expected classification should fall back to CPA.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_thresh_below_pass</code>
+          <p>Probes below the overtaking classification threshold; expected behavior should remain on the calibrated pre-flip side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_thresh_edge_pass</code>
+          <p>Probes the overtaking threshold edge; expected behavior should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_thresh_above_pass</code>
+          <p>Probes above the overtaking threshold; expected behavior should land on the post-flip side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_thresh_below_mirror_pass</code>
+          <p>Mirrored below-threshold overtaking case; expected behavior should match the non-mirrored pre-flip side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_thresh_edge_mirror_pass</code>
+          <p>Mirrored overtaking edge case; expected behavior should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaking_thresh_above_mirror_pass</code>
+          <p>Mirrored above-threshold overtaking case; expected behavior should land on the post-flip side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_thresh_below_pass</code>
+          <p>Probes below the overtaken-vessel threshold; expected behavior should remain on the calibrated stand-on overtaken side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_thresh_edge_pass</code>
+          <p>Probes the overtaken-vessel threshold edge; expected behavior should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_thresh_above_pass</code>
+          <p>Probes above the overtaken-vessel threshold; expected behavior should land on the calibrated fallback side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_thresh_below_mirror_pass</code>
+          <p>Mirrored below-threshold overtaken-vessel case; expected behavior should match the non-mirrored stand-on overtaken side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_thresh_edge_mirror_pass</code>
+          <p>Mirrored overtaken-vessel edge case; expected behavior should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overtaken_thresh_above_mirror_pass</code>
+          <p>Mirrored above-threshold overtaken-vessel case; expected behavior should land on the calibrated fallback side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_bowdist_below_pass</code>
+          <p>Probes below the give-way bow-distance split; expected classification should stay in giveway:stern.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_bowdist_above_pass</code>
+          <p>Probes above the give-way bow-distance split; expected classification should flip to giveway:bow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_bowdist_below_mirror_pass</code>
+          <p>Mirrored below-threshold bow-distance case; expected classification should stay in giveway:stern.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_bowdist_above_mirror_pass</code>
+          <p>Mirrored above-threshold bow-distance case; expected classification should flip to giveway:bow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_turngap_below_pass</code>
+          <p>Probes below the give-way turn-gap split; expected classification should stay on the stern-side branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_turngap_below_mirror_pass</code>
+          <p>Mirrored below-threshold turn-gap case; expected classification should stay on the stern-side branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_unsurebow_below_pass</code>
+          <p>Probes below the stand-on unsure-bow transition; expected classification should remain on the calibrated pre-flip side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_unsurebow_edge_pass</code>
+          <p>Probes the stand-on unsure-bow edge; expected classification should match the calibrated edge behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_unsurebow_above_pass</code>
+          <p>Probes above the stand-on unsure-bow transition; expected classification should land on the post-flip side.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_band270_stern_pass</code>
+          <p>Band-270 stand-on geometry expected to resolve to the stern branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_band350_unsurebow_pass</code>
+          <p>Band-350 stand-on geometry expected to remain in the unsure-bow branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_band350_unsurebow_alt_pass</code>
+          <p>Alternate band-350 geometry that should also remain in the unsure-bow branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_band350_bow_pass</code>
+          <p>Band-350 stand-on geometry expected to resolve to the bow branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_band315_unsure_pass</code>
+          <p>Band-315 stand-on geometry expected to enter the generic unsure branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_band315_bow_pass</code>
+          <p>Band-315 stand-on geometry expected to resolve to the bow branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_southwest_unsurebow_pass</code>
+          <p>Southwest stand-on probe expected to enter the unsure-bow branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_southwest_unsure_pass</code>
+          <p>Southwest stand-on probe expected to enter the generic unsure branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_southwest_stern_pass</code>
+          <p>Southwest stand-on probe expected to resolve to the stern branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outer_dist_below_pass</code>
+          <p>Probes below the COLREGS outer-distance relevance gate; expected behavior should remain inactive or fallback as calibrated.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outer_dist_edge_pass</code>
+          <p>Probes the outer-distance relevance edge; expected behavior should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outer_dist_above_pass</code>
+          <p>Probes above the outer-distance relevance gate; expected COLREGS behavior should activate.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_inextremis_range_below_pass</code>
+          <p>Probes below the stand-on in-extremis range cutoff; expected classification should follow the calibrated range branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_inextremis_range_edge_pass</code>
+          <p>Probes the stand-on in-extremis range edge; expected classification should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_inextremis_range_above_pass</code>
+          <p>Probes above the stand-on in-extremis range cutoff; expected classification should follow the post-edge range branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_inextremis_cpa_below_pass</code>
+          <p>Probes below the stand-on in-extremis CPA cutoff; expected classification should follow the calibrated CPA branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_inextremis_cpa_edge_pass</code>
+          <p>Probes the stand-on in-extremis CPA edge; expected classification should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_inextremis_cpa_above_pass</code>
+          <p>Probes above the stand-on in-extremis CPA cutoff; expected classification should follow the post-edge CPA branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_ot_inextremis_range_below_pass</code>
+          <p>Probes below the overtaken-vessel in-extremis range cutoff; expected classification should follow the calibrated range branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_ot_inextremis_range_edge_pass</code>
+          <p>Probes the overtaken-vessel in-extremis range edge; expected classification should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_ot_inextremis_range_above_pass</code>
+          <p>Probes above the overtaken-vessel in-extremis range cutoff; expected classification should follow the post-edge range branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_ot_inextremis_cpa_below_pass</code>
+          <p>Probes below the overtaken-vessel in-extremis CPA cutoff; expected classification should follow the calibrated CPA branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_ot_inextremis_cpa_edge_pass</code>
+          <p>Probes the overtaken-vessel in-extremis CPA edge; expected classification should match the calibrated edge branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_ot_inextremis_cpa_above_pass</code>
+          <p>Probes above the overtaken-vessel in-extremis CPA cutoff; expected classification should follow the post-edge CPA branch.</p>
         </article>
 
       </div>
