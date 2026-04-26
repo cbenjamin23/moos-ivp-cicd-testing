@@ -64,6 +64,7 @@ for ARGI; do
         echo "  ./zlaunch.sh"
         echo "  ./zlaunch.sh --case=static_trail_pass"
         echo "  ./zlaunch.sh --case=pwt_outer_inactive_pass"
+        echo "  ./zlaunch.sh --case=lead_right_turn_pass --gui 1"
         echo "  ./zlaunch.sh --jobs=4"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
@@ -99,6 +100,25 @@ if ! echo "$PORT_BASE" | grep -Eq '^[0-9]+$'; then
     echo "$ME: Bad value for --port_base: [$PORT_BASE]"
     exit 1
 fi
+
+wait_for_result_line() {
+    local results_path="$1"
+    local attempts="${2:-24}"
+    local line=""
+    local attempt
+
+    for attempt in $(seq 1 "$attempts"); do
+        line=$(tail -n 1 "$results_path" 2>/dev/null)
+        if echo "$line" | grep -q 'grade='; then
+            echo "$line"
+            return 0
+        fi
+        sleep 0.25
+    done
+
+    echo "$line"
+    return 1
+}
 
 #------------------------------------------------------------
 #  Part 4: Set convenience functions for managing x-files
@@ -176,6 +196,19 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dist30-pass-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/relative-starboard-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "lead_right_turn_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/dist45-turn-late-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/lead-right-turn-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "lead_port_turn_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/dist45-turn-late-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/lead-port-turn-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "lead_turn_angle_update_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/dist45-turn-late-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/runtime-angle-update-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/lead-right-turn-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "short_trail_range_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dist18-pass-shoreside.xmoos"
@@ -258,36 +291,47 @@ get_case_config() {
         VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-warn-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_param_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-param-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_trail_angle_type_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-trail-angle-type-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_trail_angle_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-trail-angle-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_trail_range_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-trail-range-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_mod_trail_range_pct_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-mod-trail-range-pct-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_radius_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_nm_radius_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-nm-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_pwt_outer_dist_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-outer-dist-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_decay_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-decay-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_time_on_leg_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-time-on-leg-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
@@ -356,7 +400,7 @@ run_case() {
 
     sleep 1
 
-    line=`tail -n 1 results.txt 2>/dev/null`
+    line=$(wait_for_result_line results.txt 24)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -468,6 +512,8 @@ run_case_isolated() {
     )
     launch_rc=$?
 
+    sleep 1
+
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = 0 ]; then
             echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
@@ -477,7 +523,7 @@ run_case_isolated() {
         return 1
     fi
 
-    line=`tail -n 1 "$case_dir/results.txt" 2>/dev/null`
+    line=$(wait_for_result_line "$case_dir/results.txt" 24)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -513,7 +559,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="static_trail_pass absolute_west_pass relative_port_pass relative_starboard_pass short_trail_range_pass long_trail_range_pass tight_radius_pass wide_radius_pass inside_nm_radius_pass outside_nm_radius_pass pwt_outer_active_pass pwt_outer_inactive_pass mod_trail_range_plus_pass mod_trail_range_pct_pass runtime_range_extend_pass runtime_mod_range_plus_pass runtime_mod_range_pct_pass runtime_angle_update_pass runtime_relevance_off_pass runtime_bad_update_recover_pass idle_post_distance_pass no_extrapolate_pass no_alert_request_pass missing_contact_warn_pass missing_contact_fail missing_contact_param_fail bad_trail_angle_type_fail bad_trail_angle_fail bad_trail_range_fail bad_mod_trail_range_pct_fail bad_radius_fail bad_nm_radius_fail bad_pwt_outer_dist_fail bad_decay_fail bad_time_on_leg_fail"
+    CASES="static_trail_pass absolute_west_pass relative_port_pass relative_starboard_pass lead_right_turn_pass lead_port_turn_pass lead_turn_angle_update_pass short_trail_range_pass long_trail_range_pass tight_radius_pass wide_radius_pass inside_nm_radius_pass outside_nm_radius_pass pwt_outer_active_pass pwt_outer_inactive_pass mod_trail_range_plus_pass mod_trail_range_pct_pass runtime_range_extend_pass runtime_mod_range_plus_pass runtime_mod_range_pct_pass runtime_angle_update_pass runtime_relevance_off_pass runtime_bad_update_recover_pass idle_post_distance_pass no_extrapolate_pass no_alert_request_pass missing_contact_warn_pass missing_contact_fail missing_contact_param_fail bad_trail_angle_type_fail bad_trail_angle_fail bad_trail_range_fail bad_mod_trail_range_pct_fail bad_radius_fail bad_nm_radius_fail bad_pwt_outer_dist_fail bad_decay_fail bad_time_on_leg_fail"
 fi
 
 : > "$RESULTS_FILE"

@@ -100,6 +100,25 @@ if ! echo "$PORT_BASE" | grep -Eq '^[0-9]+$'; then
     exit 1
 fi
 
+wait_for_result_line() {
+    local results_path="$1"
+    local attempts="${2:-24}"
+    local line=""
+    local attempt
+
+    for attempt in $(seq 1 "$attempts"); do
+        line=$(tail -n 1 "$results_path" 2>/dev/null)
+        if echo "$line" | grep -q 'grade='; then
+            echo "$line"
+            return 0
+        fi
+        sleep 0.25
+    done
+
+    echo "$line"
+    return 1
+}
+
 #------------------------------------------------------------
 #  Part 4: Set convenience functions for managing x-files
 #          and per-run cleanup.
@@ -247,31 +266,40 @@ get_case_config() {
         VEH_BHV_PATCH="$HARNESS_DIR/visual-hints-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_point_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/missing-point-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_point_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-point-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_update_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/bad-update-fail-vehicle.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/missing-point-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_outer_radius_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-outer-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_inner_radius_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-inner-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_hibernation_radius_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-hibernation-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_outer_speed_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-outer-speed-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_transit_speed_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-transit-speed-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_swing_time_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-swing-time-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
@@ -340,7 +368,7 @@ run_case() {
 
     sleep 1
 
-    line=`tail -n 1 results.txt 2>/dev/null`
+    line=$(wait_for_result_line results.txt 24)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -457,7 +485,7 @@ run_case_isolated() {
         return 1
     fi
 
-    line=`tail -n 1 "$case_dir/results.txt" 2>/dev/null`
+    line=$(wait_for_result_line "$case_dir/results.txt" 24)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"

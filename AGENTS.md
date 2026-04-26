@@ -11,3 +11,6 @@ editing missions, harnesses, and launcher scripts.
   one-off runs when that is faster and still representative.
 - Do not run two scripts at the same time if their MOOSDB or pShare port
   ranges could overlap.
+- Harness launchers intended for grouped local or CI validation should expose
+  caller-controlled `--jobs` and `--port_base` options so runs can be isolated
+  safely.

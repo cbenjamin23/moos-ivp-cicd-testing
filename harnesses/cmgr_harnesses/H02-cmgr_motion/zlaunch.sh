@@ -98,6 +98,25 @@ if ! echo "$PORT_BASE" | grep -Eq '^[0-9]+$'; then
     exit 1
 fi
 
+wait_for_result_line() {
+    local results_path="$1"
+    local attempts="${2:-24}"
+    local line=""
+    local attempt
+
+    for attempt in $(seq 1 "$attempts"); do
+        line=$(tail -n 1 "$results_path" 2>/dev/null)
+        if echo "$line" | grep -q 'grade='; then
+            echo "$line"
+            return 0
+        fi
+        sleep 0.25
+    done
+
+    echo "$line"
+    return 1
+}
+
 #------------------------------------------------------------
 #  Part 4: Define cleanup and patch application helpers.
 #------------------------------------------------------------
@@ -213,7 +232,7 @@ run_case() {
         return 0
     fi
 
-    line=`tail -n 1 results.txt 2>/dev/null`
+    line=$(wait_for_result_line results.txt 24)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -309,7 +328,7 @@ run_case_isolated() {
         return 1
     fi
 
-    line=`tail -n 1 "$case_dir/results.txt" 2>/dev/null`
+    line=$(wait_for_result_line "$case_dir/results.txt" 24)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
