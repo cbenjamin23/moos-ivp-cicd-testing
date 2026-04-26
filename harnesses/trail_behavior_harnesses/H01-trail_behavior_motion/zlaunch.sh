@@ -25,6 +25,7 @@ NOGUI="--nogui"
 CASE=""
 JOBS="1"
 PORT_BASE="9700"
+PORT_BASE_SET="no"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -81,6 +82,7 @@ for ARGI; do
         JOBS="${ARGI#--jobs=*}"
     elif [ "${ARGI:0:12}" = "--port_base=" ]; then
         PORT_BASE="${ARGI#--port_base=*}"
+        PORT_BASE_SET="yes"
     elif [ "${ARGI}" = "--keep_workdirs" ]; then
         KEEP_WORKDIRS="yes"
     elif [ "${ARGI}" = "--gui" ]; then
@@ -368,6 +370,12 @@ run_case() {
     local actual
     local status
     local launch_rc
+    local shore_mport
+    local veh1_mport
+    local veh2_mport
+    local shore_pshare
+    local veh1_pshare
+    local veh2_pshare
     get_case_config "$case_name" || return 1
 
     vecho "Preparing case: $case_name"
@@ -379,6 +387,15 @@ run_case() {
     : > results.txt
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
+    if [ "$PORT_BASE_SET" = "yes" ]; then
+        shore_mport=$PORT_BASE
+        veh1_mport=$((shore_mport + 1))
+        veh2_mport=$((shore_mport + 2))
+        shore_pshare=$((PORT_BASE + 1000))
+        veh1_pshare=$((shore_pshare + 1))
+        veh2_pshare=$((shore_pshare + 2))
+        XARGS="$XARGS --shore_mport=$shore_mport --veh1_mport=$veh1_mport --veh2_mport=$veh2_mport --shore_pshare=$shore_pshare --veh1_pshare=$veh1_pshare --veh2_pshare=$veh2_pshare"
+    fi
     if [ "$NOGUI" != "" ]; then
         XARGS="$XARGS $NOGUI"
     fi

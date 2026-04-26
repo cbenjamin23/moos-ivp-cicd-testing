@@ -30,8 +30,11 @@ COLORS=(yellow red dodger_blue green orange)
 ANGLES=(90 18 -54 -126 -198)
 
 case "$MMOD" in
-  baseline_circle_pass|noncoop_circle_pass)
+  baseline_circle_pass)
     SPEEDS=(1.75 1.75 1.75 1.75 1.75)
+    ;;
+  noncoop_circle_pass)
+    SPEEDS=(1.50 1.50 1.50 1.50 1.50)
     ;;
   mixed_speed_circle_pass|endurance_circle_pass)
     SPEEDS=(1.55 1.67 1.79 1.91 2.03)

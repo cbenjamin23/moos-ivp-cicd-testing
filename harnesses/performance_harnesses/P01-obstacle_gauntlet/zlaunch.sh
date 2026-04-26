@@ -20,18 +20,27 @@ NOGUI="--nogui"
 CASE=""
 JOBS="1"
 PORT_BASE="9600"
+PORT_BASE_SET="no"
 KEEP_WORKDIRS="no"
 ENDURANCE_MAX_TIME="2800"
 
 HARNESS_DIR="${PWD}"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/performance_missions/P01-obstacle_gauntlet"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 RUN_ROOT=""
 CASE_RESULT_DIR=""
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 for ARGI; do
     CMD_ARGS+="${ARGI} "
@@ -70,6 +79,7 @@ for ARGI; do
         JOBS="${ARGI#--jobs=*}"
     elif [ "${ARGI:0:12}" = "--port_base=" ]; then
         PORT_BASE="${ARGI#--port_base=*}"
+        PORT_BASE_SET="yes"
     elif [ "${ARGI}" = "--keep_workdirs" ]; then
         KEEP_WORKDIRS="yes"
     elif [ "${ARGI:0:10}" = "--profile=" ]; then
@@ -113,12 +123,20 @@ cleanup() {
         cd "$MISSION_DIR"
         clear_xfiles
         ./clean.sh >/dev/null 2>&1 || true
-        ktm >/dev/null 2>&1 || true
+        stop_mission_apps "$MISSION_DIR"
     fi
     cd "$start_dir"
+    if [ "$RUN_ROOT" != "" ]; then
+        stop_mission_apps "$RUN_ROOT"
+    fi
     if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ]; then
         rm -rf "$RUN_ROOT"
     fi
+}
+
+stop_mission_apps() {
+    local mission_root="${1:-$MISSION_DIR}"
+    harness_teardown_stop_root "$mission_root"
 }
 
 clear_xfiles() {
@@ -309,6 +327,10 @@ run_case() {
     local perf_status="skip"
     local perf_notes=""
     local perf_warning_count="na"
+    local shore_mport
+    local veh_mport
+    local shore_pshare
+    local veh_pshare
 
     get_case_config "$case_name" || return 1
 
@@ -318,11 +340,18 @@ run_case() {
 
     cd "$MISSION_DIR"
     ./clean.sh >/dev/null 2>&1
-    ktm >/dev/null 2>&1 || true
+    stop_mission_apps "$MISSION_DIR"
     apply_case_patches || return 1
     : > results.txt
 
     XARGS="--max_time=$case_max_time --mmod=$case_name $TIME_WARP"
+    if [ "$PORT_BASE_SET" = "yes" ]; then
+        shore_mport=$PORT_BASE
+        veh_mport=$((shore_mport + 1))
+        shore_pshare=$((PORT_BASE + 200))
+        veh_pshare=$((shore_pshare + 1))
+        XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
+    fi
     if [ "$NOGUI" != "" ]; then
         XARGS="$XARGS $NOGUI"
     fi
@@ -502,7 +531,7 @@ else
     CASE_RESULT_DIR="$RUN_ROOT/case_results"
     mkdir -p "$CASE_RESULT_DIR"
 
-    ktm >/dev/null 2>&1 || true
+    stop_mission_apps "$MISSION_DIR"
 
     case_idx=0
     wave_pids=""
@@ -519,7 +548,7 @@ else
             done
             wave_pids=""
             wave_count=0
-            ktm >/dev/null 2>&1 || true
+            stop_mission_apps "$RUN_ROOT"
         fi
     done
 
@@ -527,7 +556,7 @@ else
         for pid in $wave_pids; do
             wait "$pid" || ALL_OK="no"
         done
-        ktm >/dev/null 2>&1 || true
+        stop_mission_apps "$RUN_ROOT"
     fi
 
     for result_file in $(find "$CASE_RESULT_DIR" -type f | sort); do

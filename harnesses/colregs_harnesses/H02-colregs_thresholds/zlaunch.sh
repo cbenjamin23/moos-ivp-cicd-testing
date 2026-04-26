@@ -18,11 +18,13 @@ CASE=""
 GROUP=""
 JOBS="1"
 PORT_BASE="9900"
+PORT_BASE_SET="no"
 KEEP_WORKDIRS="no"
 RESULTS_FILE="$PWD/results.txt"
 HARNESS_DIR="$PWD"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/colregs_missions/colregs_unit"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 ALL_OK="yes"
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
@@ -30,7 +32,14 @@ MIN_UTIL_CPA=""
 MAX_UTIL_CPA=""
 RUN_ROOT=""
 CASE_RESULT_DIR=""
-WAVE_SERIAL_CASES="giveway_turngap_edge_pass giveway_turngap_above_pass giveway_turngap_edge_mirror_pass giveway_turngap_above_mirror_pass"
+WAVE_SERIAL_CASES="giveway_bowdist_edge_pass giveway_bowdist_edge_mirror_pass giveway_turngap_edge_pass giveway_turngap_above_pass giveway_turngap_edge_mirror_pass giveway_turngap_above_mirror_pass standon_band315_unsure_bow_pass"
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 for ARGI; do
     if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
@@ -130,6 +139,7 @@ for ARGI; do
         JOBS="${ARGI#--jobs=*}"
     elif [ "${ARGI:0:12}" = "--port_base=" ]; then
         PORT_BASE="${ARGI#--port_base=*}"
+        PORT_BASE_SET="yes"
     elif [ "${ARGI}" = "--keep_workdirs" ]; then
         KEEP_WORKDIRS="yes"
     else
@@ -310,12 +320,20 @@ cleanup() {
         cd "$MISSION_DIR"
         clear_xfiles
         ./clean.sh >/dev/null 2>&1 || true
-        ktm >/dev/null 2>&1 || true
+        stop_mission_apps "$MISSION_DIR"
     fi
     cd "$start_dir"
+    if [ "$RUN_ROOT" != "" ]; then
+        stop_mission_apps "$RUN_ROOT"
+    fi
     if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ]; then
         rm -rf "$RUN_ROOT"
     fi
+}
+
+stop_mission_apps() {
+    local mission_root="${1:-$MISSION_DIR}"
+    harness_teardown_stop_root "$mission_root"
 }
 
 prepare_case_dir() {
@@ -513,15 +531,33 @@ run_case() {
     local line actual status
     local launch_rc
     local cleanup_note=""
+    local shore_mport=9000
+    local veh_mport=9001
+    local third_mport=9002
+    local shore_pshare=9200
+    local veh_pshare=9201
+    local third_pshare=9202
+    local xargs
 
     get_case_config "$case_name"
 
     cd "$MISSION_DIR"
+    stop_mission_apps "$MISSION_DIR"
     ./clean.sh >/dev/null 2>&1 || true
     clear_xfiles
     nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
     : > results.txt
-    xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+    xargs="--max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --nogui"
+    if [ "$PORT_BASE_SET" = "yes" ]; then
+        shore_mport=$PORT_BASE
+        veh_mport=$((shore_mport + 1))
+        third_mport=$((shore_mport + 2))
+        shore_pshare=$((PORT_BASE + 200))
+        veh_pshare=$((shore_pshare + 1))
+        third_pshare=$((shore_pshare + 2))
+        xargs="$xargs --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
+    fi
+    xlaunch.sh $xargs ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
     launch_rc=$?
 
     if [ "$JUST_MAKE" = "yes" ]; then
@@ -547,7 +583,7 @@ run_case() {
         ALL_OK="no"
     fi
 
-    if ! stop_case_runtime "" 24 9000 9001 9002 9200 9201 9202; then
+    if ! stop_case_runtime "" 24 "$shore_mport" "$veh_mport" "$third_mport" "$shore_pshare" "$veh_pshare" "$third_pshare"; then
         cleanup_note=" cleanup=failed"
         ALL_OK="no"
     fi
@@ -691,7 +727,7 @@ fi
 : > "$RESULTS_FILE"
 trap cleanup EXIT
 
-ktm >/dev/null 2>&1 || true
+stop_mission_apps "$MISSION_DIR"
 
 if [ "$JOBS" -le 1 ]; then
     for ONE_CASE in $CASES; do

@@ -25,11 +25,13 @@ NOGUI="--nogui"
 CASE=""
 JOBS="1"
 PORT_BASE="9700"
+PORT_BASE_SET="no"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/convoy_behavior_missions/convoy_behavior_motion"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
@@ -40,6 +42,13 @@ VEHICLE_BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 VEHICLE_MOOS_XFILE="$MISSION_DIR/meta_vehicle.moosx"
 VEHICLE_BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -82,6 +91,7 @@ for ARGI; do
         JOBS="${ARGI#--jobs=*}"
     elif [ "${ARGI:0:12}" = "--port_base=" ]; then
         PORT_BASE="${ARGI#--port_base=*}"
+        PORT_BASE_SET="yes"
     elif [ "${ARGI}" = "--keep_workdirs" ]; then
         KEEP_WORKDIRS="yes"
     elif [ "${ARGI}" = "--gui" ]; then
@@ -138,23 +148,7 @@ remove_tree() {
 
 stop_mission_apps() {
     local mission_root="${1:-$MISSION_DIR}"
-    local app
-    local pid
-    local cwd
-    local apps
-    apps="MOOSDB pRealm pLogger uProcessWatch pShare pHostInfo"
-    apps="$apps uFldShoreBroker uFldNodeComms uTimerScript pMissionEval"
-    apps="$apps pAutoPoke pMarineViewer pMissionHash uFldNodeBroker pHelmIvP"
-    apps="$apps pContactMgrV20 uSimMarineV22 pMarinePIDV22"
-
-    for app in $apps; do
-        for pid in `pgrep -x "$app" 2>/dev/null`; do
-            cwd=`lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p'`
-            if [ "$cwd" = "$mission_root" ] || [ "${cwd#$mission_root/}" != "$cwd" ]; then
-                kill "$pid" >/dev/null 2>&1 || true
-            fi
-        done
-    done
+    harness_teardown_stop_root "$mission_root"
 }
 
 cleanup() {
@@ -386,6 +380,12 @@ run_case() {
     local actual
     local status
     local launch_rc
+    local shore_mport
+    local veh1_mport
+    local veh2_mport
+    local shore_pshare
+    local veh1_pshare
+    local veh2_pshare
     get_case_config "$case_name" || return 1
 
     vecho "Preparing case: $case_name"
@@ -397,6 +397,15 @@ run_case() {
     : > results.txt
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $LAUNCH_ARGS $TIME_WARP"
+    if [ "$PORT_BASE_SET" = "yes" ]; then
+        shore_mport=$PORT_BASE
+        veh1_mport=$((shore_mport + 1))
+        veh2_mport=$((shore_mport + 2))
+        shore_pshare=$((PORT_BASE + 1000))
+        veh1_pshare=$((shore_pshare + 1))
+        veh2_pshare=$((shore_pshare + 2))
+        XARGS="$XARGS --shore_mport=$shore_mport --veh1_mport=$veh1_mport --veh2_mport=$veh2_mport --shore_pshare=$shore_pshare --veh1_pshare=$veh1_pshare --veh2_pshare=$veh2_pshare"
+    fi
     if [ "$NOGUI" != "" ]; then
         XARGS="$XARGS $NOGUI"
     fi

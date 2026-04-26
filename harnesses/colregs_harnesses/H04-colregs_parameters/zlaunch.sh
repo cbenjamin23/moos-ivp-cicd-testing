@@ -17,11 +17,13 @@ MAX_TIME="120"
 CASE=""
 JOBS="1"
 PORT_BASE="10280"
+PORT_BASE_SET="no"
 KEEP_WORKDIRS="no"
 RESULTS_FILE="$PWD/results.txt"
 HARNESS_DIR="$PWD"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/colregs_missions/colregs_unit"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 ALL_OK="yes"
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
@@ -29,6 +31,14 @@ BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
 RUN_ROOT=""
 CASE_RESULT_DIR=""
+WAVE_SERIAL_CASES="pts_port_turns_ok_true_pass"
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 for ARGI; do
     if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
@@ -90,6 +100,7 @@ for ARGI; do
         JOBS="${ARGI#--jobs=*}"
     elif [ "${ARGI:0:12}" = "--port_base=" ]; then
         PORT_BASE="${ARGI#--port_base=*}"
+        PORT_BASE_SET="yes"
     elif [ "${ARGI}" = "--keep_workdirs" ]; then
         KEEP_WORKDIRS="yes"
     else
@@ -137,12 +148,28 @@ cleanup() {
         cd "$MISSION_DIR"
         clear_xfiles
         ./clean.sh >/dev/null 2>&1 || true
-        ktm >/dev/null 2>&1 || true
+        stop_mission_apps "$MISSION_DIR"
     fi
     cd "$start_dir"
+    if [ "$RUN_ROOT" != "" ]; then
+        stop_mission_apps "$RUN_ROOT"
+    fi
     if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ]; then
         rm -rf "$RUN_ROOT"
     fi
+}
+
+stop_mission_apps() {
+    local mission_root="${1:-$MISSION_DIR}"
+    harness_teardown_stop_root "$mission_root"
+}
+
+case_requires_solo_wave() {
+    local case_name="$1"
+    case " $WAVE_SERIAL_CASES " in
+        *" $case_name "*) return 0 ;;
+    esac
+    return 1
 }
 
 prepare_case_dir() {
@@ -296,17 +323,27 @@ get_case_config() {
 run_case() {
     local case_name="$1"
     local line actual status
+    local shore_mport veh_mport shore_pshare veh_pshare
+    local xargs
 
     get_case_config "$case_name"
 
     cd "$MISSION_DIR"
-    ktm >/dev/null 2>&1 || true
+    stop_mission_apps "$MISSION_DIR"
     ./clean.sh >/dev/null 2>&1 || true
     clear_xfiles
     [ "$SHORE_PATCH" != "" ] && nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
     [ "$BHV_PATCH" != "" ] && nspatch --stem="$BHV_STEM" "$BHV_PATCH" --targ="$BHV_XFILE"
     : > results.txt
-    xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+    xargs="--max_time=$MAX_TIME --mmod=$MMOD --nogui"
+    if [ "$PORT_BASE_SET" = "yes" ]; then
+        shore_mport=$PORT_BASE
+        veh_mport=$((shore_mport + 1))
+        shore_pshare=$((PORT_BASE + 200))
+        veh_pshare=$((shore_pshare + 1))
+        xargs="$xargs --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
+    fi
+    xlaunch.sh $xargs ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
 
     if [ "$JUST_MAKE" = "yes" ]; then
         clear_xfiles
@@ -324,7 +361,7 @@ run_case() {
     fi
 
     echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" >> "$RESULTS_FILE"
-    ktm >/dev/null 2>&1 || true
+    stop_mission_apps "$MISSION_DIR"
     clear_xfiles
     cd "$HARNESS_DIR"
 }
@@ -417,13 +454,28 @@ else
     CASE_RESULT_DIR="$RUN_ROOT/case_results"
     mkdir -p "$CASE_RESULT_DIR"
 
-    ktm >/dev/null 2>&1 || true
+    stop_mission_apps "$MISSION_DIR"
     clear_xfiles
 
     case_idx=0
     wave_pids=""
     wave_count=0
     for ONE_CASE in $CASES; do
+        if case_requires_solo_wave "$ONE_CASE"; then
+            if [ "$wave_pids" != "" ]; then
+                for pid in $wave_pids; do
+                    wait "$pid" || ALL_OK="no"
+                done
+                wave_pids=""
+                wave_count=0
+                stop_mission_apps "$RUN_ROOT"
+            fi
+
+            run_case_isolated "$case_idx" "$ONE_CASE" || ALL_OK="no"
+            case_idx=$((case_idx + 1))
+            continue
+        fi
+
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -435,7 +487,7 @@ else
             done
             wave_pids=""
             wave_count=0
-            ktm >/dev/null 2>&1 || true
+            stop_mission_apps "$RUN_ROOT"
         fi
     done
 
@@ -443,7 +495,7 @@ else
         for pid in $wave_pids; do
             wait "$pid" || ALL_OK="no"
         done
-        ktm >/dev/null 2>&1 || true
+        stop_mission_apps "$RUN_ROOT"
     fi
 
     for ONE_CASE in $CASES; do

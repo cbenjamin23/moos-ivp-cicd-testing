@@ -24,11 +24,19 @@ RESULTS_FILE="$PWD/results.txt"
 HARNESS_DIR="$PWD"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/performance_missions/P03-colregs_traffic_ring"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 ALL_OK="yes"
 RUN_ROOT=""
 CASE_RESULT_DIR=""
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+  . "$TEARDOWN_HELPER"
+else
+  echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+  exit 1
+fi
 
 for ARGI; do
   CMD_ARGS+="${ARGI} "
@@ -79,12 +87,20 @@ cleanup() {
     cd "$MISSION_DIR"
     rm -f "$SHORE_XFILE"
     ./clean.sh >/dev/null 2>&1 || true
-    ktm >/dev/null 2>&1 || true
+    stop_mission_apps "$MISSION_DIR"
   fi
   cd "$start_dir"
+  if [ "$RUN_ROOT" != "" ]; then
+    stop_mission_apps "$RUN_ROOT"
+  fi
   if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ] && [ "$ALL_OK" = "yes" ]; then
     rm -rf "$RUN_ROOT"
   fi
+}
+
+stop_mission_apps() {
+  local mission_root="${1:-$MISSION_DIR}"
+  harness_teardown_stop_root "$mission_root"
 }
 
 prepare_case_dir() {
@@ -334,7 +350,7 @@ RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_colregs_circle_XXXXXX")
 CASE_RESULT_DIR="$RUN_ROOT/case_results"
 mkdir -p "$CASE_RESULT_DIR"
 
-ktm >/dev/null 2>&1 || true
+stop_mission_apps "$MISSION_DIR"
 
 case_idx=0
 wave_pids=""
@@ -350,7 +366,7 @@ for case_name in $CASES; do
     done
     wave_pids=""
     wave_count=0
-    ktm >/dev/null 2>&1 || true
+    stop_mission_apps "$RUN_ROOT"
   fi
 done
 
@@ -358,7 +374,7 @@ if [ "$wave_count" -gt 0 ]; then
   for pid in $wave_pids; do
     wait "$pid" || ALL_OK="no"
   done
-  ktm >/dev/null 2>&1 || true
+  stop_mission_apps "$RUN_ROOT"
 fi
 
 for result_file in $(find "$CASE_RESULT_DIR" -type f | sort); do

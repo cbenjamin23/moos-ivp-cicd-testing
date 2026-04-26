@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=TEST_EVAL_READY, val=true, time=60
+  event = var=TEST_EVAL_READY, val=true, time=25
 }
 
 ProcessConfig = pMissionEval

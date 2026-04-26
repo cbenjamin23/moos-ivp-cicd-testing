@@ -1,3 +1,13 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=8
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
