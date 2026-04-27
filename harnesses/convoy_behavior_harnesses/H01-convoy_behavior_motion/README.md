@@ -94,6 +94,9 @@ uses behavior outputs plus chaser/target speed aliases:
 - `runtime_cruise_cap_warn_pass`
   Applies high cruise-speed/runtime speed-cap updates and expects warning-safe
   operation.
+- `runtime_estop_speed_zero_pass`
+  Raises runtime safety ranges through `CONVOY_UPDATES` so the chaser enters
+  the emergency-stop branch and grades near-zero physical speed.
 - `runtime_bad_update_recover_pass`
   Sends a malformed runtime mark-spacing update, then verifies a later valid
   update recovers without a behavior error.
@@ -126,8 +129,14 @@ uses behavior outputs plus chaser/target speed aliases:
 - `bad_rng_estop_fail`
   Rejects a negative `rng_estop` safety range and expects the behavior error
   path to make the mission fail.
+- `bad_rng_tgating_fail`
+  Rejects a negative `rng_tgating` safety range and expects mission failure.
+- `bad_rng_lagging_fail`
+  Rejects a negative `rng_lagging` safety range and expects mission failure.
 - `bad_rng_safety_fail`
   Rejects malformed `rng_safety`.
+- `bad_cruise_speed_fail`
+  Rejects a negative `cruise_speed` configuration and expects mission failure.
 
 ## Running
 
@@ -144,7 +153,7 @@ From this harness directory:
 ./zlaunch.sh --case=short_queue_turn_pass --gui 1
 ./zlaunch.sh --case=fast_follower_pass --gui 1
 ./zlaunch.sh --case=short_mark_queue_pass --gui 1
-./zlaunch.sh --jobs=4 10
+./zlaunch.sh --jobs=4 --port_base=26000 10
 ```
 
 From the paired mission directory, named cases are forwarded to this harness:
@@ -157,6 +166,15 @@ The geometry-entry cases are evaluated at 65 seconds and require `QLEN >= 2`,
 `TLEN` between 10 and 95 meters, `MXRNG = 80`, `AVG2 >= 1`, a moving target
 and chaser, chaser `Y` between -102 and -58, and no behavior error.
 
-The full matrix currently has 44 cases. Wave mode uses isolated temp mission
-copies and deterministic two-vehicle port blocks, so do not overlap it with
-other MOOS harnesses on the same machine.
+The full matrix currently has 48 cases. Wave mode uses isolated temp mission
+copies and deterministic two-vehicle port blocks:
+`case_base = port_base + case_idx*PORT_STRIDE`, with MOOSDB ports at
+`case_base + 0..2` and pShare ports at `case_base + 10..12`. Do not overlap it
+with other MOOS harnesses on the same machine.
+
+Latest validation:
+
+- April 27, 2026
+- generated-file matrix: `48/48` cases completed with `--just_make --jobs=4 --port_base=15000`
+- full wave matrix: `48/48` expected outcomes matched
+- command: `./zlaunch.sh --jobs=4 --port_base=15000 10`

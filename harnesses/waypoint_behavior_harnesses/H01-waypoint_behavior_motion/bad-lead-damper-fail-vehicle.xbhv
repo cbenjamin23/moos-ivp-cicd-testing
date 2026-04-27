@@ -1,0 +1,12 @@
+Behavior = BHV_Waypoint
+{
+  name      = waypoint
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = WPT_UPDATES
+
+  speed       = $(STOCK_SPD)
+  lead        = 8
+  lead_damper = 0
+  point       = 36,-121
+}

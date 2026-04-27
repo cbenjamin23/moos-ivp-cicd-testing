@@ -26,6 +26,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9000"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -64,7 +65,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -173,10 +174,22 @@ get_case_config() {
     if [ "$CASE_NAME" = "given_baseline_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/given-baseline-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "config_given_obstacle_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/config-given-obstacle-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/config-given-obstacle-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "given_obstable_alias_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/given-obstable-alias-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/given-obstable-alias-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "no_alert_request_absent_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/no-alert-request-absent-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/no-alert-request-absent-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "bad_alert_request_absent_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/bad-alert-request-absent-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/bad-alert-request-absent-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "given_far_absent_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/given-far-absent-pass-shoreside.xmoos"
@@ -203,6 +216,10 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/given-max-duration-missing-absent-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/given-max-duration-missing-absent-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "invalid_given_nonconvex_absent_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/invalid-given-nonconvex-absent-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/invalid-given-nonconvex-absent-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "post_dist_always_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/post-dist-always-pass-shoreside.xmoos"
@@ -219,6 +236,10 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/custom-point-var-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/custom-point-var-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "invalid_point_missing_key_absent_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/invalid-point-missing-key-absent-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/invalid-point-missing-key-absent-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "max_pts_per_cluster_trim_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/max-pts-per-cluster-trim-pass-shoreside.xmoos"
@@ -239,10 +260,32 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/placeholder-hull-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/placeholder-hull-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "post_view_polys_false_absent_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/post-view-polys-false-absent-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/post-view-polys-false-absent-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "new_obs_flag_macros_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/new-obs-flag-macros-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/new-obs-flag-macros-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "point_vsource_alert_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/point-vsource-alert-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/point-vsource-alert-pass-vehicle.xmoos"
+        REQUIRED_TOKEN="vsource=radar"
+    elif [ "$CASE_NAME" = "given_after_points_same_key_reject_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/given-after-points-same-key-reject-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/given-after-points-same-key-reject-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "disable_obstacle_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/disable-obstacle-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/disable-obstacle-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "disable_vsource_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/disable-vsource-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/disable-vsource-pass-vehicle.xmoos"
+        REQUIRED_TOKEN="vsource=radar,action=disable"
     elif [ "$CASE_NAME" = "enable_obstacle_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/enable-obstacle-pass-shoreside.xmoos"
@@ -275,6 +318,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local shore_mport
     local veh_mport
     local shore_pshare
@@ -291,10 +336,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 200))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -324,7 +370,7 @@ run_case() {
         ALL_OK="no"
     fi
 
-    if [ "" = "success" -a "$REQUIRED_TOKEN" != "" ]; then
+    if [ "$status" = "success" -a "$REQUIRED_TOKEN" != "" ]; then
         echo "$line" | grep -F "$REQUIRED_TOKEN" >/dev/null 2>&1
         if [ $? != 0 ]; then
             status="mismatch"
@@ -388,10 +434,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 200 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -427,7 +474,7 @@ run_case_isolated() {
         status="mismatch"
     fi
 
-    if [ "" = "success" -a "$REQUIRED_TOKEN" != "" ]; then
+    if [ "$status" = "success" -a "$REQUIRED_TOKEN" != "" ]; then
         echo "$line" | grep -F "$REQUIRED_TOKEN" >/dev/null 2>&1
         if [ $? != 0 ]; then
             status="mismatch"
@@ -453,7 +500,7 @@ fi
 
 trap cleanup EXIT
 
-CASES="given_baseline_pass no_alert_request_absent_pass given_far_absent_pass given_general_alert_pass general_alert_default_name_pass given_duration_resolve_pass given_max_duration_reject_absent_pass given_max_duration_missing_absent_pass post_dist_always_pass post_dist_false_absent_pass points_cluster_dist_pass custom_point_var_pass max_pts_per_cluster_trim_pass points_ignore_range_absent_pass points_age_resolve_pass lasso_cluster_pass placeholder_hull_pass disable_obstacle_pass enable_obstacle_pass expunge_obstacle_pass"
+CASES="given_baseline_pass config_given_obstacle_pass given_obstable_alias_pass no_alert_request_absent_pass bad_alert_request_absent_pass given_far_absent_pass given_general_alert_pass general_alert_default_name_pass given_duration_resolve_pass given_max_duration_reject_absent_pass given_max_duration_missing_absent_pass invalid_given_nonconvex_absent_pass post_dist_always_pass post_dist_false_absent_pass points_cluster_dist_pass custom_point_var_pass invalid_point_missing_key_absent_pass max_pts_per_cluster_trim_pass points_ignore_range_absent_pass points_age_resolve_pass lasso_cluster_pass placeholder_hull_pass post_view_polys_false_absent_pass new_obs_flag_macros_pass point_vsource_alert_pass given_after_points_same_key_reject_pass disable_obstacle_pass disable_vsource_pass enable_obstacle_pass expunge_obstacle_pass"
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 fi

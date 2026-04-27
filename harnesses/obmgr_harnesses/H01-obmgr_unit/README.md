@@ -1,4 +1,4 @@
-# H02-obmgr_tests
+# H01-obmgr_unit
 
 Patch-driven harness for [`missions/obmgr_missions/obmgr_unit`](../../../missions/obmgr_missions/obmgr_unit).
 
@@ -18,10 +18,22 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 - `given_baseline_pass`
   Default runtime alert request plus a near given obstacle should produce both
   `OBM_NEW_GIVEN=true` and `OBM_DIST_TO_OBJ=OB_NEAR,18.0`.
+- `config_given_obstacle_pass`
+  A startup `given_obstacle` entry should seed the manager before runtime mail
+  arrives. The case then sends only the alert request and grades on the
+  resulting distance publication for that config-owned polygon.
+- `given_obstable_alias_pass`
+  The source still accepts the historical misspelled `given_obstable` config
+  token. This case keeps that alias under regression coverage by requiring the
+  alias-loaded polygon to alert exactly like the canonical spelling.
 - `no_alert_request_absent_pass`
   The same obstacle is still accepted, but the runtime `OBM_ALERT_REQUEST` is
   removed. This matters because `pObstacleMgr` will not post `OBM_DIST_TO_OBJ`
   or obstacle alerts at all until an alert request exists.
+- `bad_alert_request_absent_pass`
+  A malformed runtime alert request should be ignored rather than partially
+  installed. The obstacle is accepted, but the mission fails if the invalid
+  request causes a distance report or obstacle alert to appear.
 - `given_far_absent_pass`
   A farther given obstacle should still be accepted, but with default
   `post_dist_to_polys=close` it should stay out of both the distance posting
@@ -47,6 +59,9 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   This is the missing-duration version of the same branch. The obstacle is
   mailed in without `duration=...`, and the correct outcome is rejection before
   it can ever become a live given obstacle.
+- `invalid_given_nonconvex_absent_pass`
+  A non-convex/degenerate `GIVEN_OBSTACLE` payload should be rejected before it
+  posts `new_obs_flag`, `OBM_DIST_TO_OBJ`, or an obstacle alert.
 - `post_dist_always_pass`
   With `post_dist_to_polys=true`, a far obstacle should still publish
   `OBM_DIST_TO_OBJ`. This is the always-post branch, distinct from the default
@@ -67,6 +82,10 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   This exercises the custom `point_var` input path. The same point cluster is
   posted under an alternate variable name instead of the default
   `TRACKED_FEATURE`.
+- `invalid_point_missing_key_absent_pass`
+  `pObstacleMgr` requires each point input to include a key or label before it
+  can become an obstacle cluster. This case sends otherwise valid points without
+  keys and grades on the absence of a generic cluster alert.
 - `max_pts_per_cluster_trim_pass`
   This is the cluster-trimming branch. The point set intentionally exceeds
   `max_pts_per_cluster`, so the hull is built from the trimmed cluster rather
@@ -87,6 +106,24 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   convex hull, so `pObstacleMgr` falls back to a placeholder radial polygon.
   The test checks the resulting minimum distance band rather than the polygon
   text itself.
+- `post_view_polys_false_absent_pass`
+  A point cluster should still produce obstacle distance output when
+  `post_view_polys=false`, but it should not publish a `VIEW_POLYGON`
+  visualization. The mission watches for that visualization and fails if it
+  appears.
+- `new_obs_flag_macros_pass`
+  `new_obs_flag` supports `pObstacleMgr` macros such as `$[OBS_NOW]` and
+  `$[OBS_EVER]`. This case confirms a first accepted given obstacle expands
+  those counters to `now_1_ever_1`.
+- `point_vsource_alert_pass`
+  Point inputs may include `vsource=...`, and the alert payload should preserve
+  that source tag when a hull update is posted. The mission grades on alert and
+  distance, while the harness verifies the `vsource=radar` token in the result
+  line.
+- `given_after_points_same_key_reject_pass`
+  If a point-cluster obstacle already owns a key, a later mailed-in
+  `GIVEN_OBSTACLE` with the same label should be rejected. The point cluster
+  must remain alertable, and the given-obstacle `new_obs_flag` must stay absent.
 
 ### Obstacle-modification cases
 
@@ -94,6 +131,10 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   `disable_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=disable`,
   and the mission grades on a confirmation flag posted when that filter-message
   path is exercised.
+- `disable_vsource_pass`
+  The modification parser also accepts `vsource=...` selectors, not only bare
+  obstacle IDs. This case sends a vsource disable command and checks that the
+  resulting filter message preserves `vsource=radar,action=disable`.
 - `enable_obstacle_pass`
   `enable_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=enable`,
   and the mission grades on a confirmation flag posted when that filter-message
@@ -107,9 +148,10 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ```bash
 ./zlaunch.sh
-./zlaunch.sh --jobs=4 10
+./zlaunch.sh --jobs=4 --port_base=15000 10
 ./zlaunch.sh --case=given_baseline_pass 10
 ./zlaunch.sh --case=points_cluster_dist_pass 10
+./zlaunch.sh --case=new_obs_flag_macros_pass --port_base=15000 10
 ./zlaunch.sh --just_make 10
 ./zlaunch.sh --max_time=90 10
 ```
@@ -119,7 +161,8 @@ Wave mode notes:
 - `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
 - each live case in a wave gets its own temp mission directory and unique port
   block
-- the harness uses one `ktm` barrier between waves, not after every case
+- the harness uses scoped mission teardown between waves rather than global
+  `ktm`
 - this mode is intended for CI wall-clock reduction, not for interactive use
   alongside other MOOS missions
 
@@ -129,13 +172,14 @@ When run from this harness directory, `./zlaunch.sh` does not call the stem
 mission's own `zlaunch.sh`. Instead it owns the full run:
 
 1. Choose one case or the full default case list.
-2. Run the stem mission `clean.sh` and `ktm` so the next case starts clean.
+2. Run the stem mission `clean.sh` and scoped harness teardown so the next case
+   starts clean.
 3. Apply the selected `nspatch` overlays to `missions/obmgr_missions/obmgr_unit`.
 4. Call shared `xlaunch.sh`, which in turn calls the stem mission `launch.sh`.
 5. Read the mission-local `results.txt`.
 6. Compare `actual` against `expected`.
 7. Append one summary line to the harness `results.txt`.
-8. On harness exit, run one final `clean.sh` and `ktm`.
+8. On harness exit, run one final `clean.sh` and scoped harness teardown.
 
 In wave mode, those same steps happen inside per-case temporary mission copies.
 The shared stem directory remains the source for patches and the default serial
@@ -209,6 +253,14 @@ Field anatomy:
   The `BHV_ABLE_FILTER` message for enable/disable/expunge cases.
 - `filter_seen`
   Mission-side confirmation that an obstacle-filter message was observed.
+- `view_poly_seen`
+  Mission-side confirmation that a `VIEW_POLYGON` was observed, used by the
+  `post_view_polys=false` absence case.
+- `new_stats`
+  Macro-expanded `new_obs_flag` output for the accepted-obstacle counter case.
+- `alert_seen`
+  Mission-side confirmation that an obstacle alert was observed before the
+  harness applies an additional exact-token payload check.
 - `mhash`
   Short mission hash.
 
@@ -216,14 +268,15 @@ As with the contact-manager harness, every current obstacle case is expected to
 end with mission `grade=pass`. Even the absence cases use `grade=pass` when the
 correct outcome is “accepted but not alerted” or “rejected before acceptance”.
 
-Most current obstacle cases are graded fully inside the mission. The only
-remaining residual harness-side exact-token checks are the two general-alert
-name cases, because `pMissionEval` cannot directly compare strings that contain
-their own `=` assignments. For every other case, the harness just compares the
-expected and actual mission grade and preserves the mission's own report
-columns in the summary line.
+Most current obstacle cases are graded fully inside the mission. The remaining
+residual harness-side exact-token checks are limited to payload-format cases:
+the two general-alert name cases plus the point-vsource and vsource-disable
+selectors, where the literal alert or filter payload is the behavior under
+test. For every other case, the harness just compares the expected and actual
+mission grade and preserves the mission's own report columns in the summary
+line.
 
-Current matrix size: `20` cases.
+Current matrix size: `30` cases.
 
 ## Wall-Clock Efficiency
 
@@ -231,9 +284,8 @@ The stem itself is intentionally short and stationary. Most wall-clock time
 comes from launch and teardown rather than the obstacle logic. Revalidation
 timings:
 
-- full 20-case matrix passed at warp `10`
-- serial wall clock: `138.31` seconds
-- `--jobs=4` wall clock: `59.65` seconds
+- full 30-case matrix passed at warp `10`
+- `--jobs=4 --port_base=15000` passed in grouped validation
 - launch and teardown still dominate the wall-clock cost
 
 As with the contact-manager harness, launch and teardown overhead is a larger

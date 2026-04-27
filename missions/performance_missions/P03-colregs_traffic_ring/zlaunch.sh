@@ -46,7 +46,12 @@ xlaunch.sh --max_time=$MAX_TIME $NOGUI $JUST_MAKE $VERBOSE ${MMOD:+--mmod=$MMOD}
 
 if [ "${JUST_MAKE}" = "" ]; then
   sleep 0.5
-  ktm
+  repo_dir=`git -C "$PWD" rev-parse --show-toplevel 2>/dev/null`
+  if [ "$repo_dir" = "" ] || [ ! -x "$repo_dir/scripts/harness_teardown.sh" ]; then
+    echo "$ME: Missing scoped teardown helper"
+    exit 1
+  fi
+  "$repo_dir/scripts/harness_teardown.sh" "$PWD"
   sleep 0.5
 fi
 

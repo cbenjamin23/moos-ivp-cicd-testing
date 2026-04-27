@@ -26,12 +26,15 @@ CASE=""
 JOBS="1"
 PORT_BASE="9700"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/trail_behavior_missions/trail_behavior_motion"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
+AGG_RESULTS_FILE=""
 ALL_OK="yes"
 RUN_ROOT=""
 CASE_RESULT_DIR=""
@@ -41,6 +44,58 @@ VEHICLE_BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 VEHICLE_MOOS_XFILE="$MISSION_DIR/meta_vehicle.moosx"
 VEHICLE_BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
+
+ALL_CASES=(
+    static_trail_pass
+    absolute_west_pass
+    relative_port_pass
+    relative_starboard_pass
+    lead_right_turn_pass
+    lead_port_turn_pass
+    lead_turn_angle_update_pass
+    short_trail_range_pass
+    long_trail_range_pass
+    tight_radius_pass
+    wide_radius_pass
+    inside_nm_radius_pass
+    outside_nm_radius_pass
+    pwt_outer_active_pass
+    pwt_outer_inactive_pass
+    mod_trail_range_plus_pass
+    mod_trail_range_pct_pass
+    mod_trail_range_floor_pass
+    runtime_range_extend_pass
+    runtime_mod_range_plus_pass
+    runtime_mod_range_pct_pass
+    runtime_mod_range_floor_pass
+    runtime_angle_update_pass
+    runtime_relevance_off_pass
+    runtime_bad_update_recover_pass
+    idle_post_distance_pass
+    idle_no_post_distance_pass
+    no_extrapolate_pass
+    no_alert_request_pass
+    auto_alert_request_pass
+    missing_contact_warn_pass
+    missing_contact_fail
+    missing_contact_param_fail
+    bad_trail_angle_type_fail
+    bad_trail_angle_fail
+    bad_trail_range_fail
+    bad_mod_trail_range_pct_fail
+    bad_radius_fail
+    bad_nm_radius_fail
+    bad_pwt_outer_dist_fail
+    bad_decay_fail
+    bad_time_on_leg_fail
+)
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -57,7 +112,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -105,7 +160,7 @@ fi
 
 wait_for_result_line() {
     local results_path="$1"
-    local attempts="${2:-24}"
+    local attempts="${2:-60}"
     local line=""
     local attempt
 
@@ -139,23 +194,7 @@ remove_tree() {
 
 stop_mission_apps() {
     local mission_root="${1:-$MISSION_DIR}"
-    local app
-    local pid
-    local cwd
-    local apps
-    apps="MOOSDB pRealm pLogger uProcessWatch pShare pHostInfo"
-    apps="$apps uFldShoreBroker uFldNodeComms uTimerScript pMissionEval"
-    apps="$apps pAutoPoke pMarineViewer pMissionHash uFldNodeBroker pHelmIvP"
-    apps="$apps pContactMgrV20 uSimMarineV22 pMarinePIDV22"
-
-    for app in $apps; do
-        for pid in `pgrep -x "$app" 2>/dev/null`; do
-            cwd=`lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p'`
-            if [ "$cwd" = "$mission_root" ] || [ "${cwd#$mission_root/}" != "$cwd" ]; then
-                kill "$pid" >/dev/null 2>&1 || true
-            fi
-        done
-    done
+    harness_teardown_stop_root "$mission_root"
 }
 
 cleanup() {
@@ -171,6 +210,9 @@ cleanup() {
     fi
     if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ]; then
         remove_tree "$RUN_ROOT"
+    fi
+    if [ "$AGG_RESULTS_FILE" != "" ]; then
+        rm -f "$AGG_RESULTS_FILE"
     fi
 }
 
@@ -251,6 +293,10 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dist18-pass-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/mod-trail-range-pct-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "mod_trail_range_floor_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/mod-trail-range-floor-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/mod-trail-range-floor-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "runtime_range_extend_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dist40-late-pass-shoreside.xmoos"
@@ -263,6 +309,10 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dist18-pass-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/runtime-mod-range-pct-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "runtime_mod_range_floor_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/runtime-mod-range-floor-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/runtime-mod-range-floor-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_angle_update_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dist30-late-pass-shoreside.xmoos"
@@ -280,6 +330,11 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/idle-post-distance-pass-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/idle-post-distance-pass-vehicle.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/idle-post-distance-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "idle_no_post_distance_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/idle-no-post-distance-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/idle-no-post-distance-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/idle-no-post-distance-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "no_extrapolate_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dist30-late-pass-shoreside.xmoos"
@@ -287,6 +342,11 @@ get_case_config() {
     elif [ "$CASE_NAME" = "no_alert_request_pass" ]; then
         EXPECTED="pass"
         VEH_BHV_PATCH="$HARNESS_DIR/no-alert-request-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "auto_alert_request_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/auto-alert-request-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/auto-alert-request-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/auto-alert-request-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_warn_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/missing-contact-warn-pass-shoreside.xmoos"
@@ -366,6 +426,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -376,6 +438,7 @@ run_case() {
     local shore_pshare
     local veh1_pshare
     local veh2_pshare
+    local case_base
     get_case_config "$case_name" || return 1
 
     vecho "Preparing case: $case_name"
@@ -388,12 +451,13 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh1_mport=$((shore_mport + 1))
-        veh2_mport=$((shore_mport + 2))
-        shore_pshare=$((PORT_BASE + 1000))
-        veh1_pshare=$((shore_pshare + 1))
-        veh2_pshare=$((shore_pshare + 2))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh1_mport=$((case_base + 1))
+        veh2_mport=$((case_base + 2))
+        shore_pshare=$((case_base + 10))
+        veh1_pshare=$((case_base + 11))
+        veh2_pshare=$((case_base + 12))
         XARGS="$XARGS --shore_mport=$shore_mport --veh1_mport=$veh1_mport --veh2_mport=$veh2_mport --shore_pshare=$shore_pshare --veh1_pshare=$veh1_pshare --veh2_pshare=$veh2_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -417,7 +481,7 @@ run_case() {
 
     sleep 1
 
-    line=$(wait_for_result_line results.txt 24)
+    line=$(wait_for_result_line results.txt 60)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -488,6 +552,7 @@ run_case_isolated() {
     local shore_pshare
     local veh1_pshare
     local veh2_pshare
+    local case_base
     local line
     local actual
     local status
@@ -508,12 +573,13 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*30))
-    veh1_mport=$((shore_mport + 1))
-    veh2_mport=$((shore_mport + 2))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*30))
-    veh1_pshare=$((shore_pshare + 1))
-    veh2_pshare=$((shore_pshare + 2))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh1_mport=$((case_base + 1))
+    veh2_mport=$((case_base + 2))
+    shore_pshare=$((case_base + 10))
+    veh1_pshare=$((case_base + 11))
+    veh2_pshare=$((case_base + 12))
 
     (
         cd "$case_dir"
@@ -540,7 +606,7 @@ run_case_isolated() {
         return 1
     fi
 
-    line=$(wait_for_result_line "$case_dir/results.txt" 24)
+    line=$(wait_for_result_line "$case_dir/results.txt" 60)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -568,70 +634,122 @@ run_case_isolated() {
     return 1
 }
 
-trap cleanup EXIT
+run_wave_cases() {
+    local total="$1"
+    local start=0
+    local idx
+    local pid
+    local pids
+    local case_name
+
+    while [ "$start" -lt "$total" ]; do
+        pids=""
+        idx=0
+        while [ "$idx" -lt "$JOBS" ] && [ $((start + idx)) -lt "$total" ]; do
+            case_name="${RUN_CASES[$((start + idx))]}"
+            run_case_isolated "$((start + idx))" "$case_name" &
+            pid=$!
+            pids="$pids $pid"
+            idx=$((idx + 1))
+        done
+
+        for pid in $pids; do
+            wait "$pid" || ALL_OK="no"
+        done
+        stop_mission_apps "$RUN_ROOT"
+        start=$((start + JOBS))
+    done
+}
+
+aggregate_case_results() {
+    local result_file
+
+    AGG_RESULTS_FILE="$HARNESS_DIR/.results_trail_$$.txt"
+    : > "$AGG_RESULTS_FILE"
+    find "$CASE_RESULT_DIR" -type f -name '*.txt' -print | sort |
+    while IFS= read -r result_file; do
+        cat "$result_file" >> "$AGG_RESULTS_FILE"
+    done
+    mv "$AGG_RESULTS_FILE" "$RESULTS_FILE"
+    AGG_RESULTS_FILE=""
+}
+
+check_result_case_set() {
+    local expected_count="${#RUN_CASES[@]}"
+    local actual_count
+    local case_name
+    local hits
+
+    actual_count=$(grep -c '^case=' "$RESULTS_FILE" 2>/dev/null || true)
+    if [ "$actual_count" != "$expected_count" ]; then
+        echo "$ME: Expected $expected_count result lines, found $actual_count"
+        ALL_OK="no"
+    fi
+
+    for case_name in "${RUN_CASES[@]}"; do
+        hits=$(grep -c "^case=$case_name  " "$RESULTS_FILE" 2>/dev/null || true)
+        if [ "$hits" != "1" ]; then
+            echo "$ME: Expected one result line for [$case_name], found $hits"
+            ALL_OK="no"
+        fi
+    done
+}
 
 #------------------------------------------------------------
-#  Part 9: Select the case set, run the matrix, and report.
+#  Part 9: Select cases and run the harness.
 #------------------------------------------------------------
+if [ ! -d "$MISSION_DIR" ]; then
+    echo "$ME: Mission dir not found: [$MISSION_DIR]"
+    exit 1
+fi
+
+trap cleanup EXIT
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="static_trail_pass absolute_west_pass relative_port_pass relative_starboard_pass lead_right_turn_pass lead_port_turn_pass lead_turn_angle_update_pass short_trail_range_pass long_trail_range_pass tight_radius_pass wide_radius_pass inside_nm_radius_pass outside_nm_radius_pass pwt_outer_active_pass pwt_outer_inactive_pass mod_trail_range_plus_pass mod_trail_range_pct_pass runtime_range_extend_pass runtime_mod_range_plus_pass runtime_mod_range_pct_pass runtime_angle_update_pass runtime_relevance_off_pass runtime_bad_update_recover_pass idle_post_distance_pass no_extrapolate_pass no_alert_request_pass missing_contact_warn_pass missing_contact_fail missing_contact_param_fail bad_trail_angle_type_fail bad_trail_angle_fail bad_trail_range_fail bad_mod_trail_range_pct_fail bad_radius_fail bad_nm_radius_fail bad_pwt_outer_dist_fail bad_decay_fail bad_time_on_leg_fail"
+    get_case_config "$CASE" >/dev/null || exit 1
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
-if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
-        run_case "$ONE_CASE" || {
-            echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
-            ALL_OK="no"
-            if [ "$JUST_MAKE" != "yes" ]; then
-                break
-            fi
-        }
+if [ "$JUST_MAKE" = "yes" ]; then
+    if [ "$CASE" != "" ] || [ "$JOBS" -le 1 ]; then
+        for case_name in "${RUN_CASES[@]}"; do
+            run_case "$case_name" || ALL_OK="no"
+        done
+    else
+        RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_trail_XXXXXX")
+        CASE_RESULT_DIR="$RUN_ROOT/case_results"
+        mkdir -p "$CASE_RESULT_DIR"
+        run_wave_cases "${#RUN_CASES[@]}"
+        aggregate_case_results
+        check_result_case_set
+    fi
+    if [ "$ALL_OK" = "yes" ]; then
+        echo "$ME: just_make validation passed"
+        exit 0
+    fi
+    echo "$ME: just_make validation failed"
+    exit 1
+fi
+
+if [ "$CASE" != "" ] || [ "$JOBS" -le 1 ]; then
+    for case_name in "${RUN_CASES[@]}"; do
+        run_case "$case_name"
     done
 else
     RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_trail_XXXXXX")
     CASE_RESULT_DIR="$RUN_ROOT/case_results"
     mkdir -p "$CASE_RESULT_DIR"
-
-    case_idx=0
-    wave_pids=""
-    wave_count=0
-    for ONE_CASE in $CASES; do
-        run_case_isolated "$case_idx" "$ONE_CASE" &
-        wave_pids="$wave_pids $!"
-        wave_count=$((wave_count + 1))
-        case_idx=$((case_idx + 1))
-
-        if [ "$wave_count" -ge "$JOBS" ]; then
-            for pid in $wave_pids; do
-                wait "$pid" || ALL_OK="no"
-            done
-            wave_pids=""
-            wave_count=0
-            stop_mission_apps "$RUN_ROOT"
-        fi
-    done
-
-    if [ "$wave_count" -gt 0 ]; then
-        for pid in $wave_pids; do
-            wait "$pid" || ALL_OK="no"
-        done
-        stop_mission_apps "$RUN_ROOT"
-    fi
-
-    for result_file in $(find "$CASE_RESULT_DIR" -type f | sort); do
-        cat "$result_file" >> "$RESULTS_FILE"
-    done
+    run_wave_cases "${#RUN_CASES[@]}"
+    aggregate_case_results
 fi
 
-if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
-    exit 0
-fi
+check_result_case_set
 
+echo ""
+echo "$ME: Results written to $RESULTS_FILE"
 cat "$RESULTS_FILE"
 
 if [ "$ALL_OK" = "yes" ]; then

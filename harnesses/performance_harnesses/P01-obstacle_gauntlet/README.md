@@ -41,7 +41,7 @@ It preserves the mission-owned report columns and wraps them in the usual harnes
 ./zlaunch.sh 10
 PERF_PROFILE=ci ./zlaunch.sh
 ./zlaunch.sh --profile=ci
-./zlaunch.sh --jobs=2 10
+./zlaunch.sh --jobs=2 --port_base=30000 10
 ./zlaunch.sh --case=baseline_field_pass 10
 ./zlaunch.sh --just_make 10
 ```
@@ -51,7 +51,9 @@ PERF_PROFILE=ci ./zlaunch.sh
 - All cases run the same loop-course mission and select obstacle source through `--mmod`.
 - Each case now launches with one case-specific shoreside patch, and `pMissionEval` owns the MOOS-visible verdict.
 - Two cases are deterministic comparison runs, and one case is a longer randomized endurance run.
-- The harness supports wave-batch execution with `--jobs=<n>` using isolated temp mission copies and per-wave port blocks.
+- The harness supports wave-batch execution with `--jobs=<n>` using isolated
+  temp mission copies and unique per-case port blocks
+  (`case_base = port_base + case_idx*PORT_STRIDE`, pShare at `case_base + 10`).
 - The endurance case automatically uses a larger launcher `--max_time` budget than the fixed-field cases.
 - The harness has two timing profiles:
   - `local` is the default and keeps the original warp `10` timing bands.

@@ -5,5 +5,5 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY = true
 
-  event = var=LOITER_UPDATES, val="mod_poly_rad=6", time=4
+  event = var=LOITER_UPDATES, val="mod_poly_rad=6", time=20
 }

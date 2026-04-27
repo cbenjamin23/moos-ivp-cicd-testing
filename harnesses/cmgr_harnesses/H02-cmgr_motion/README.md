@@ -24,10 +24,31 @@ and running a short `70m` eastbound corridor.
 - `head_on_pass`
   The intruder approaches head-on along the lane. This is a stronger geometry
   than the default crossing case but should still finish safely.
+- `runtime_alert_add_pass`
+  The moving mission starts without a static alert and posts a
+  `BCM_ALERT_REQUEST` at runtime. The dynamic alert should create the spawned
+  avoid-collision update, detect the contact, and finish without collision or
+  encounter.
+- `runtime_alert_reenable_pass`
+  The configured alert is disabled and then re-enabled by runtime
+  `BCM_ALERT_REQUEST` messages before the contact arrives. The re-enabled alert
+  should behave like the static path and support a clean detected arrival.
+- `hold_alerts_for_helm_pass`
+  Contact manager is patched with `hold_alerts_for_helm=true`. The alert should
+  remain held until the helm reaches `DRIVE`, then release in time for the
+  spawned avoid behavior to complete the transit safely.
 - `no_detect_clear_pass`
   A benign far-off contact should remain fully irrelevant. This case is useful
   because it proves the moving mission can stay clean without contact manager
   ever triggering at all.
+- `filter_match_type_clear_pass`
+  The contact is a default kayak while the alert requires `match_type=ship`.
+  The vehicle should still arrive cleanly, and the mission grades this case by
+  confirming the filtered contact does not trip `CONTACT_DETECTED`.
+- `stale_reappear_pass`
+  A short-lived contact with the same name is retired through
+  `contact_max_age`, then reappears on the lane. The mission requires both the
+  retire flag and the later successful alert/avoid path.
 - `two_contact_pass`
   One avoid-worthy contact plus one irrelevant background contact should still
   result in a clean arrival. This extends the motion layer into multi-contact
@@ -43,6 +64,10 @@ and running a short `70m` eastbound corridor.
   the tuned case the vehicle still arrives, but it no longer stays
   encounter-free, which is the mission-level failure this case is meant to
   catch.
+- `runtime_alert_disable_fail`
+  The configured alert is disabled by a runtime `BCM_ALERT_REQUEST` before a
+  harsh contact arrives. The expected mission result is failure because the
+  contact remains tracked but does not trigger the spawned avoid behavior.
 - `fast_intruder_fail`
   A faster head-on intruder creates a harsher encounter. This case is graded as
   a failure when the mission can no longer remain encounter-free under that
@@ -78,6 +103,7 @@ Field anatomy:
 - `range`: closest reported range when included
 - `count`: alerted-contact count, when included
 - `list`: known-contact list, when included
+- `retired`: contact retired by `pContactMgrV20`, when included
 - `encounters`: `uFldCollisionDetect` encounter total
 - `near_misses`: `uFldCollisionDetect` near-miss total
 - `collisions`: `uFldCollisionDetect` collision total
@@ -87,7 +113,7 @@ Field anatomy:
 
 ```bash
 ./zlaunch.sh
-./zlaunch.sh --jobs=4 10
+./zlaunch.sh --jobs=4 --port_base=21000 10
 ./zlaunch.sh --case=head_on_pass 10
 ./zlaunch.sh --just_make 10
 ```
@@ -100,14 +126,14 @@ Wave mode notes:
 - `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
 - each live case in a wave gets its own temp mission directory and unique port
   block
-- the harness uses one `ktm` barrier between waves, not after every case
+- the harness uses scoped teardown between waves, not global process cleanup
 - this mode is intended for CI wall-clock reduction, not for interactive use
   alongside other MOOS missions
 
 Latest validation:
 
-- March 20, 2026
-- full matrix: `9/9` passing
-- warp: `10`
-- serial wall clock: about `97.15` seconds
-- `--jobs=4` wall clock: about `45.46` seconds
+- April 27, 2026
+- full wave matrix: `15/15` expected outcomes matched
+- command: `./zlaunch.sh --jobs=4 --port_base=15000 10`
+- compact port blocks: MOOSDB at `case_base + 0..1`, pShare at
+  `case_base + 10..11`

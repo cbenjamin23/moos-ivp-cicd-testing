@@ -18,6 +18,10 @@ signals:
 - whether `trigger_exit_time` debounces a short halt-region excursion
 - whether `reset=true` clears entry state before a later halt-envelope exit
 - whether `max_time` causes the expected failure
+- whether `max_depth` and `min_altitude` runtime breaches halt through
+  behavior-owned errors
+- whether invalid scalar and boolean configuration values put the helm into
+  `MALCONFIG`
 - whether runtime `OPREGION_CORE_POLY` shrink and expansion updates are accepted
   and enforced
 
@@ -64,6 +68,37 @@ signals:
 - `max_time_fail`
   The behavior is patched with a short `max_time`. The case is expected to
   grade `fail`.
+- `max_depth_breach_fail`
+  Vehicle-side sensor input posts `NAV_DEPTH` beyond a configured `max_depth`.
+  The case should grade `fail` through the OpRegion depth-breach error path.
+- `min_altitude_breach_fail`
+  Vehicle-side sensor input posts `NAV_ALTITUDE` below a configured
+  `min_altitude`. The case should grade `fail` through the OpRegion
+  altitude-breach error path.
+- `bad_save_dist_fail`
+  The behavior is configured with a negative `save_dist`. The case should
+  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+- `bad_halt_dist_fail`
+  The behavior is configured with a negative `halt_dist`. The case should
+  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+- `bad_max_depth_fail`
+  The behavior is configured with a negative `max_depth`. The case should
+  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+- `bad_min_altitude_fail`
+  The behavior is configured with a negative `min_altitude`. The case should
+  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+- `bad_recover_spd_fail`
+  The behavior is configured with zero `recover_spd`. The case should grade
+  `fail` when `pHelmIvP` reports `MALCONFIG`.
+- `bad_trigger_on_poly_entry_fail`
+  The behavior is configured with an invalid `trigger_on_poly_entry` boolean.
+  The case should grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+- `bad_trigger_entry_time_fail`
+  The behavior is configured with a negative `trigger_entry_time`. The case
+  should grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+- `bad_trigger_exit_time_fail`
+  The behavior is configured with a negative `trigger_exit_time`. The case
+  should grade `fail` when `pHelmIvP` reports `MALCONFIG`.
 - `dynamic_region_expand_pass`
   The behavior starts with a narrow dynamic-region core, then receives an early
   vehicle-side `OPREGION_CORE_POLY` expansion before the vehicle reaches the
@@ -84,8 +119,7 @@ signals:
 ./zlaunch.sh --case=save_recover_pass 10
 ./zlaunch.sh --case=trigger_exit_debounce_pass --gui 1
 ./zlaunch.sh --just_make 10
-./zlaunch.sh --jobs=4 10
-./zlaunch.sh --jobs=4 --port_base=9300 10
+./zlaunch.sh --jobs=4 --port_base=31000 10
 ```
 
 Results are appended to `results.txt` with the mission-owned `grade` and the
@@ -96,14 +130,15 @@ short `TEST_EVAL_READY` timer because they verify that a breach does not happen
 after a configured timing window.
 
 Wave mode runs the full matrix in isolated temporary mission copies. Each case
-gets its own MOOSDB and pShare port block derived from `--port_base`, with
-pShare ports offset above the MOOSDB range. The default is serial
+gets its own MOOSDB and pShare port block using
+`case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
+`case_base + 10`. The default is serial
 `--jobs=1`; use `--keep_workdirs` when preserving the temporary case folders is
 useful for debugging.
 
 Latest validation:
 
-- April 24, 2026
-- full matrix: `15/15` expected outcomes matched after event-driven gate tightening
-- wave matrix: `15/15` expected outcomes matched with `--jobs=4`
+- April 27, 2026
+- just_make matrix: `25/25` target generations completed with `--jobs=4 --port_base=31000`
+- wave matrix: `25/25` expected outcomes matched with `--jobs=4 --port_base=31000`
 - warp: `10`

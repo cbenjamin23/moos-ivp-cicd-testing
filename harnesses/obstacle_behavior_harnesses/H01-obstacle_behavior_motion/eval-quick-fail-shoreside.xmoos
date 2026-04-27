@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=KNOWN_OBSTACLE, val="pts={29,-53:43,-53:43,-67:29,-67},label=ob_lane", time=1
+  event = var=TEST_EVAL_READY, val=true, time=20
+}

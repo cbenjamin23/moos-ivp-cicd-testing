@@ -1,0 +1,20 @@
+Behavior = BHV_Trail
+{
+  name       = trail_contact
+  pwt        = 100
+  condition  = MODE == ACTIVE
+  updates    = TRAIL_UPDATES
+  templating = spawn
+
+              contact = to-be-set
+       pwt_outer_dist = 120
+            nm_radius = 18
+               radius = 8
+          trail_angle = 180
+          trail_range = 45
+     trail_angle_type = relative
+     on_no_contact_ok = true
+          extrapolate = true
+     no_alert_request = false
+                decay = 30,60
+}

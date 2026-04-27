@@ -1,0 +1,10 @@
+Behavior = BHV_Convoy
+{
+  name      = convoy_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = CONVOY = true
+
+          contact = ben
+      rng_lagging = -1
+}

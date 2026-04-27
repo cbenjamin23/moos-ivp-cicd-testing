@@ -26,9 +26,11 @@ telemetry plus bridged NAV speed/heading from both vehicles.
 - `runtime_pwt_outer_on_pass` Starts with relevance gated off, then raises `pwt_outer_dist` through `SHADOW_UPDATES` and verifies active shadowing.
 - `runtime_pwt_outer_off_pass` Starts active, then lowers `pwt_outer_dist` through `SHADOW_UPDATES` and verifies relevance shuts off.
 - `runtime_bad_update_recover_warn_pass` Sends one rejected runtime update followed by a valid update and requires both the expected warning and recovered active relevance.
+- `runtime_missing_contact_recover_warn_pass` Temporarily switches Shadow to a missing contact, then restores `contact=ben` and requires warning plus recovered active relevance.
 - `heading_widths_pass` Exercises accepted `heading_peakwidth` and `heading_basewidth` tuning.
 - `speed_width_aliases_pass` Exercises accepted `hdg_*` and `spd_*` alias parameters.
 - `no_extrapolate_pass` Verifies clean shadowing with contact extrapolation disabled.
+- `cnflag_range_macro_pass` Exercises inherited contact-flag handling by posting a range macro when the target is within 120 meters and requiring the bridged value.
 - `missing_contact_warn_pass` Uses a missing contact with `on_no_contact_ok=true` and requires warning-only behavior with no behavior error.
 - `missing_contact_fail` Uses a missing contact with `on_no_contact_ok=false` and expects the mission to fail.
 - `missing_contact_param_fail` Omits the required `contact` setting and expects the mission to fail.
@@ -38,6 +40,12 @@ telemetry plus bridged NAV speed/heading from both vehicles.
 - `bad_speed_peakwidth_fail` Rejects negative `speed_peakwidth`.
 - `bad_speed_basewidth_fail` Rejects negative `speed_basewidth`.
 - `bad_decay_fail` Rejects malformed `decay` input.
+- `bad_decay_order_fail` Rejects `decay` ranges whose start is greater than the end.
+- `bad_extrapolate_fail` Rejects non-boolean `extrapolate` input.
+- `bad_on_no_contact_ok_fail` Rejects non-boolean `on_no_contact_ok` input.
+- `bad_time_on_leg_fail` Rejects negative inherited `time_on_leg` input.
+- `bad_cnflag_fail` Rejects a malformed inherited contact-flag tag.
+- `bad_post_per_contact_info_fail` Rejects non-boolean `post_per_contact_info` input.
 
 ## Running
 
@@ -50,7 +58,7 @@ From this harness directory:
 ./zlaunch.sh --case=turn_north_shadow_pass --gui 1
 ./zlaunch.sh --case=pwt_outer_inactive_pass --gui 1
 ./zlaunch.sh --case=runtime_pwt_outer_on_pass --gui 1
-./zlaunch.sh --jobs=2 --port_base=9000 10
+./zlaunch.sh --jobs=2 --port_base=33000 10
 ```
 
 From the paired mission directory, named cases are forwarded to this harness:
@@ -59,8 +67,19 @@ From the paired mission directory, named cases are forwarded to this harness:
 ./zlaunch.sh --case=runtime_pwt_outer_off_pass --gui 1
 ```
 
-The full matrix currently has 27 cases. Normal expected-pass cases require
+The full matrix currently has 35 cases. Normal expected-pass cases require
 `BHV_WARNING_SEEN=false`; explicitly named `*_warn_pass` cases require the
 expected warning and `BHV_ERROR_SEEN=false`. Wave mode uses isolated temp mission
 copies and deterministic two-vehicle port blocks; keep `--port_base` separated
 from any other live harness on the same machine.
+
+Source-audit note: `BHV_Shadow` accepts inherited bearing-line configuration
+parameters, but it does not call the inherited bearing-line publisher. This
+harness therefore does not include a bearing-line output case for Shadow.
+
+Latest validation:
+
+- April 27, 2026
+- generated-file matrix: `35/35` cases completed with `--just_make --jobs=2 --port_base=15000`
+- wave matrix: `35/35` expected outcomes matched with `--jobs=2 --port_base=15000`
+- warp: `10`

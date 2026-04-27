@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=FTURN_UPDATE, val="turn_spec=key=alpha,bogus=oops", time=1
+  event = var=FTURN_UPDATE, val="turn_spec=key=alpha,spd=1.4,mhdg=45,fix=45,turn=star,flag=TURN_TWO=true,flag=FT_DONE=true", time=2
+}

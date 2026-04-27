@@ -98,6 +98,8 @@ ProcessConfig = pMissionEval
   pass_condition = MXRNG = 80
   pass_condition = AVG2 >= 1
   pass_condition = AVG5 >= 1
+  pass_condition = ABE_NAV_SPEED >= 0.4
+  pass_condition = BEN_NAV_SPEED >= 0.9
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

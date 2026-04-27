@@ -19,6 +19,7 @@ GROUP=""
 JOBS="1"
 PORT_BASE="9900"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 RESULTS_FILE="$PWD/results.txt"
 HARNESS_DIR="$PWD"
@@ -53,7 +54,7 @@ for ARGI; do
         echo "  --case=<name>      Run one named case"
         echo "  --group=<name>     Run one named case group"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo ""
         echo "Groups:"
@@ -528,6 +529,8 @@ get_case_config() {
 
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line actual status
     local launch_rc
     local cleanup_note=""
@@ -537,6 +540,7 @@ run_case() {
     local shore_pshare=9200
     local veh_pshare=9201
     local third_pshare=9202
+    local case_base
     local xargs
 
     get_case_config "$case_name"
@@ -549,12 +553,13 @@ run_case() {
     : > results.txt
     xargs="--max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --nogui"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        third_mport=$((shore_mport + 2))
-        shore_pshare=$((PORT_BASE + 200))
-        veh_pshare=$((shore_pshare + 1))
-        third_pshare=$((shore_pshare + 2))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        third_mport=$((case_base + 2))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
+        third_pshare=$((case_base + 12))
         xargs="$xargs --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     xlaunch.sh $xargs ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
@@ -623,10 +628,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 200 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"

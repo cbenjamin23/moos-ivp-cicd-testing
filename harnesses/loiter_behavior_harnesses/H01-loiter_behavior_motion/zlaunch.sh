@@ -26,11 +26,13 @@ CASE=""
 JOBS="1"
 PORT_BASE="9700"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/loiter_behavior_missions/loiter_behavior_motion"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
@@ -41,6 +43,13 @@ VEHICLE_BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 VEHICLE_MOOS_XFILE="$MISSION_DIR/meta_vehicle.moosx"
 VEHICLE_BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -57,7 +66,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -154,23 +163,7 @@ cleanup() {
 
 stop_mission_apps() {
     local mission_root="${1:-$MISSION_DIR}"
-    local app
-    local pid
-    local cwd
-    local apps
-    apps="MOOSDB pRealm pLogger uProcessWatch pShare pHostInfo"
-    apps="$apps uFldShoreBroker uFldNodeComms uTimerScript pMissionEval"
-    apps="$apps pAutoPoke pMarineViewer pMissionHash uFldNodeBroker pHelmIvP"
-    apps="$apps uSimMarineV22 pMarinePIDV22"
-
-    for app in $apps; do
-        for pid in `pgrep -x "$app" 2>/dev/null`; do
-            cwd=`lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p'`
-            if [ "$cwd" = "$mission_root" ] || [ "${cwd#$mission_root/}" != "$cwd" ]; then
-                kill "$pid" >/dev/null 2>&1 || true
-            fi
-        done
-    done
+    harness_teardown_stop_root "$mission_root"
 }
 
 #------------------------------------------------------------
@@ -186,6 +179,7 @@ get_case_config() {
 
     if [ "$CASE_NAME" = "radial_clockwise_pass" ]; then
         EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-late-shoreside.xmoos"
     elif [ "$CASE_NAME" = "radial_counterclockwise_pass" ]; then
         EXPECTED="pass"
         VEH_BHV_PATCH="$HARNESS_DIR/radial-counterclockwise-pass-vehicle.xbhv"
@@ -229,12 +223,15 @@ get_case_config() {
         VEH_MOOS_PATCH="$HARNESS_DIR/center-assign-xy-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "center_assign_pair_pass" ]; then
         EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/center-assign-pair-pass-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/center-assign-pair-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/center-assign-pair-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "xcenter_ycenter_update_pass" ]; then
         EXPECTED="pass"
         VEH_MOOS_PATCH="$HARNESS_DIR/xcenter-ycenter-update-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "mod_poly_rad_expand_pass" ]; then
         EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-late-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/mod-poly-rad-expand-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "mod_poly_rad_shrink_pass" ]; then
         EXPECTED="pass"
@@ -271,6 +268,22 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/bad-update-fail-vehicle.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/empty-polygon-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_clockwise_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-clockwise-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_use_alt_speed_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-use-alt-speed-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_patience_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-patience-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_capture_radius_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-capture-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "center_bad_update_recover_pass" ]; then
         EXPECTED="pass"
         VEH_MOOS_PATCH="$HARNESS_DIR/center-bad-update-recover-pass-vehicle.xmoos"
@@ -314,6 +327,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -334,10 +349,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 1000))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -450,10 +466,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -514,7 +531,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="radial_clockwise_pass radial_counterclockwise_pass clockwise_best_pass polygon_box_pass triangle_polygon_pass start_inside_loiter_pass acquire_from_far_pass early_acquire_mode_pass center_activate_pass capture_radius_large_pass slip_radius_pass speed_alt_update_pass use_alt_speed_static_pass center_assign_xy_pass center_assign_pair_pass xcenter_ycenter_update_pass mod_poly_rad_expand_pass mod_poly_rad_shrink_pass slingshot_bearing_pass post_suffix_outputs_pass eta_output_pass ipf_zaic_spd_pass slow_speed_acquire_pass empty_polygon_fail bad_polygon_fail bad_update_fail center_bad_update_recover_pass spiral_factor_pass patience_low_pass patience_high_pass"
+    CASES="radial_clockwise_pass radial_counterclockwise_pass clockwise_best_pass polygon_box_pass triangle_polygon_pass start_inside_loiter_pass acquire_from_far_pass early_acquire_mode_pass center_activate_pass capture_radius_large_pass slip_radius_pass speed_alt_update_pass use_alt_speed_static_pass center_assign_xy_pass center_assign_pair_pass xcenter_ycenter_update_pass mod_poly_rad_expand_pass mod_poly_rad_shrink_pass slingshot_bearing_pass post_suffix_outputs_pass eta_output_pass ipf_zaic_spd_pass slow_speed_acquire_pass empty_polygon_fail bad_polygon_fail bad_update_fail bad_clockwise_fail bad_use_alt_speed_fail bad_patience_fail bad_capture_radius_fail center_bad_update_recover_pass spiral_factor_pass patience_low_pass patience_high_pass"
 fi
 
 : > "$RESULTS_FILE"

@@ -1,0 +1,40 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (FT_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = FT_DONE = true
+  pass_condition = TURN_ONE = true
+  pass_condition = TURNING_TIME > 3
+  pass_condition = TURNING_TIME < 8
+  pass_condition = TURNING_DIST > 2
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = fixedturn_behavior_tests
+  mission_mod  = $(MMOD:=turn_spec_timeout_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[FT_DONE]
+  report_column = ft_done=$[FT_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = heading=$[NAV_HEADING]
+  report_column = nav_speed=$[NAV_SPEED]
+  report_column = turn_time=$[TURNING_TIME]
+  report_column = turn_dist=$[TURNING_DIST]
+  report_column = turn_one=$[TURN_ONE]
+  report_column = turn_two=$[TURN_TWO]
+  report_column = turn_three=$[TURN_THREE]
+  report_column = ft_report=$[FT_REPORT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

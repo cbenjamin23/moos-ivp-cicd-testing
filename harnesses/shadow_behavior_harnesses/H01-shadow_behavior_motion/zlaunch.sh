@@ -26,6 +26,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9000"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -66,9 +67,11 @@ ALL_CASES=(
     runtime_pwt_outer_on_pass
     runtime_pwt_outer_off_pass
     runtime_bad_update_recover_warn_pass
+    runtime_missing_contact_recover_warn_pass
     heading_widths_pass
     speed_width_aliases_pass
     no_extrapolate_pass
+    cnflag_range_macro_pass
     missing_contact_warn_pass
     missing_contact_fail
     missing_contact_param_fail
@@ -78,6 +81,12 @@ ALL_CASES=(
     bad_speed_peakwidth_fail
     bad_speed_basewidth_fail
     bad_decay_fail
+    bad_decay_order_fail
+    bad_extrapolate_fail
+    bad_on_no_contact_ok_fail
+    bad_time_on_leg_fail
+    bad_cnflag_fail
+    bad_post_per_contact_info_fail
 )
 
 #------------------------------------------------------------
@@ -95,7 +104,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -264,6 +273,10 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/eval-runtime-recover-pass-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/runtime-bad-update-recover-pass-vehicle.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/shadow-pwt-inactive-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "runtime_missing_contact_recover_warn_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-runtime-recover-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/runtime-missing-contact-recover-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "heading_widths_pass" ]; then
         EXPECTED="pass"
         VEH_BHV_PATCH="$HARNESS_DIR/shadow-heading-widths-pass-vehicle.xbhv"
@@ -273,6 +286,11 @@ get_case_config() {
     elif [ "$CASE_NAME" = "no_extrapolate_pass" ]; then
         EXPECTED="pass"
         VEH_BHV_PATCH="$HARNESS_DIR/shadow-no-extrapolate-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "cnflag_range_macro_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-cnflag-range-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/shadow-cnflag-range-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/shadow-cnflag-range-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_warn_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/eval-warning-pass-shoreside.xmoos"
@@ -309,6 +327,30 @@ get_case_config() {
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-decay-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_decay_order_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-decay-order-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_extrapolate_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-extrapolate-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_on_no_contact_ok_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-on-no-contact-ok-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_time_on_leg_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-time-on-leg-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_cnflag_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-cnflag-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_post_per_contact_info_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-post-per-contact-info-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
         return 1
@@ -340,6 +382,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -362,12 +406,13 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh1_mport=$((shore_mport + 1))
-        veh2_mport=$((shore_mport + 2))
-        shore_pshare=$((PORT_BASE + 1000))
-        veh1_pshare=$((shore_pshare + 1))
-        veh2_pshare=$((shore_pshare + 2))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh1_mport=$((case_base + 1))
+        veh2_mport=$((case_base + 2))
+        shore_pshare=$((case_base + 10))
+        veh1_pshare=$((case_base + 11))
+        veh2_pshare=$((case_base + 12))
         XARGS="$XARGS --shore_mport=$shore_mport --veh1_mport=$veh1_mport --veh2_mport=$veh2_mport --shore_pshare=$shore_pshare --veh1_pshare=$veh1_pshare --veh2_pshare=$veh2_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -482,12 +527,13 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*30))
-    veh1_mport=$((shore_mport + 1))
-    veh2_mport=$((shore_mport + 2))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*30))
-    veh1_pshare=$((shore_pshare + 1))
-    veh2_pshare=$((shore_pshare + 2))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh1_mport=$((case_base + 1))
+    veh2_mport=$((case_base + 2))
+    shore_pshare=$((case_base + 10))
+    veh1_pshare=$((case_base + 11))
+    veh2_pshare=$((case_base + 12))
 
     (
         cd "$case_dir"

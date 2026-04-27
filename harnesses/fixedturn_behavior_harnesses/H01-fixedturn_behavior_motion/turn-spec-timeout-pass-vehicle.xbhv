@@ -1,0 +1,20 @@
+Behavior = BHV_FixedTurn
+{
+  name      = fixed_turn
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = FIX_TURN = true
+  updates   = FTURN_UPDATE
+  endflag   = TURNING_TIME = $[TURN_TIME]
+  endflag   = TURNING_DIST = $[TURN_DIST]
+
+  perpetual = false
+  fix_turn  = 90
+  mod_hdg   = 25
+  turn_dir  = star
+  speed     = 1.4
+
+  turn_spec = spd=1.0, mhdg=10, fix=355, turn=star, timeout=4, flag=FT_DONE=true, flag=TURN_ONE=true
+
+  stale_nav_thresh = 5
+}

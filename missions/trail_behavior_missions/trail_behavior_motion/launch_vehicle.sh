@@ -165,7 +165,7 @@ nsplug meta_vehicle.moos targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \
        SHORE_PSHARE=$SHORE_PSHARE   VNAME=$VNAME         \
        COLOR=$COLOR                 XMODE=$XMODE         \
        START_POS=$START_POS         MAX_SPD=$MAX_SPD     \
-       MMOD=$MMOD
+       VROLE=$VROLE                 MMOD=$MMOD
 
 nsplug meta_vehicle.bhv targ_$VNAME.bhv $NSFLAGS \
        START_POS=$START_POS         VNAME=$VNAME \

@@ -137,6 +137,19 @@ Current reported execution metrics:
 - `collisions`
 - `wall_time`
 
+## Running
+
+```bash
+./zlaunch.sh 10
+./zlaunch.sh --jobs=2 --port_base=24000 10
+./zlaunch.sh --case=head_on_execution_pass 10
+./zlaunch.sh --just_make --jobs=2 --port_base=24000 10
+```
+
+Wave mode uses isolated temp mission copies and compact per-case port blocks:
+`case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
+`case_base + 10`.
+
 This harness now stays on realized execution quality while still preserving the
 case identity where that matters. In practice that means family-level CPA/side
 checks for most cases and final-mode checks only for the admitted overtaken

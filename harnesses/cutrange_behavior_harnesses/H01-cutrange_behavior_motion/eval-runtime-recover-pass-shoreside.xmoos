@@ -1,0 +1,50 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=85
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @ABE_BHV_WARNING#BHV_WARNING_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = CUTRANGE_PURSUIT = true
+  pass_condition = CUTRANGE_GIVEUP = false
+  pass_condition = UCD_CLOSEST_RANGE <= 90
+  pass_condition = UCD_CLOSEST_RANGE_EVER <= 65
+  pass_condition = ABE_NAV_SPEED >= 0.6
+  pass_condition = BHV_WARNING_SEEN = true
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = cutrange_behavior_tests
+  mission_mod  = $(MMOD:=eval_runtime_recover_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = pursuit=$[CUTRANGE_PURSUIT]
+  report_column = giveup=$[CUTRANGE_GIVEUP]
+  report_column = range=$[UCD_CLOSEST_RANGE]
+  report_column = min_range=$[UCD_CLOSEST_RANGE_EVER]
+  report_column = abe_spd=$[ABE_NAV_SPEED]
+  report_column = ben_spd=$[BEN_NAV_SPEED]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

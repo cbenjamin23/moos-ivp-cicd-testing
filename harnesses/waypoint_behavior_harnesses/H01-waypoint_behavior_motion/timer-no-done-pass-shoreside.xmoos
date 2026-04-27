@@ -18,6 +18,10 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
   pass_condition = WPT_DONE = false
+  pass_condition = WPT_HIT = false
+  pass_condition = CYCLE_HIT = false
+  pass_condition = WAYPOINT_END = false
+  pass_condition = WPT_DIST_TO_NEXT >= 40
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

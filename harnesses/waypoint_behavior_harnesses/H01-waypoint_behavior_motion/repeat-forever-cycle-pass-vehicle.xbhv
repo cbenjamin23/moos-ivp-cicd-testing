@@ -18,7 +18,7 @@ Behavior = BHV_Waypoint
   slip_radius    = 12.0
   lead           = 8
   lead_damper    = 1
-  points         = 0,-121:22,-121
+  points         = 22,-121:22,-99
   repeat         = forever
 
   wpt_status       = WPT_STAT

@@ -5,5 +5,5 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY = true
 
-  event = var=WPT_UPDATES, val="points=42,-121", time=2
+  event = var=WPT_UPDATES, val="points=12,-106:42,-121", time=5
 }

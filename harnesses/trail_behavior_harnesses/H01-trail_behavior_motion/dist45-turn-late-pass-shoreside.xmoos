@@ -21,6 +21,8 @@ ProcessConfig = pMissionEval
   pass_condition = TRAIL_DISTANCE <= 45
   pass_condition = PURSUIT = 1
   pass_condition = TRAIL_RELEVANCE > 0
+  pass_condition = BEN_NAV_X >= 50
+  pass_condition = BEN_NAV_Y >= -45
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -40,6 +42,10 @@ ProcessConfig = pMissionEval
   report_column = range=$[TRAIL_RANGE]
   report_column = pursuit=$[PURSUIT]
   report_column = region=$[REGION]
+  report_column = abe_x=$[ABE_NAV_X]
+  report_column = abe_y=$[ABE_NAV_Y]
+  report_column = ben_x=$[BEN_NAV_X]
+  report_column = ben_y=$[BEN_NAV_Y]
   report_column = warning=$[BHV_WARNING_SEEN]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]

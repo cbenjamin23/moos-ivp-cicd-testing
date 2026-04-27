@@ -84,6 +84,7 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
   pass_condition = LOITER_INDEX >= 0
+  pass_condition = LOITER_MODE = stable
   pass_condition = LOITER_ACQUIRE = 0
   pass_condition = LOITER_DIST_TO_POLY <= 10
   pass_condition = BHV_ERROR_SEEN = false

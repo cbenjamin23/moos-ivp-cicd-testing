@@ -69,6 +69,8 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
+  event = var=VIEW_SEGLIST, val="pts={-24,-124:-4,-104},label=fturn_approach_leg,edge_color=white,vertex_color=dodger_blue,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=VIEW_POINT, val="x=-4,y=-104,label=fturn_start,vertex_color=orange,vertex_size=9,duration=9999", time=0.5
   event = var=MISSION_TIMEOUT, val=true, time=45
 }
 
@@ -161,6 +163,9 @@ ProcessConfig = pLogger
   FileTimeStamp = true
   LogAuxSrc     = true
 
+  Log = VIEW_SEGLIST @ 0 nosync
+  Log = VIEW_POINT @ 0 nosync
+
   WildCardLogging = true
   WildCardOmitPattern = *_STATUS
   WildCardOmitPattern = DB_VARSUMMARY
@@ -187,10 +192,13 @@ ProcessConfig = pMarineViewer
   nodes_font_size      = large
   procs_font_size      = large
   appcast_font_size    = large
+  point_viewable_labels = false
 
   scope = FT_DONE
   scope = FT_REPORT
   scope = FIX_TURN
+  scope = VIEW_SEGLIST
+  scope = VIEW_POINT
   scope = TRANSIT_DONE
   scope = MISSION_EVALUATED
   scope = MISSION_TIMEOUT

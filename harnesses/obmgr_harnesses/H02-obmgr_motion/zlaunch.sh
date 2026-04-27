@@ -26,6 +26,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9100"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -63,7 +64,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -183,6 +184,18 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/tight-alert-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/tight-alert-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "runtime_given_late_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/runtime-given-late-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/runtime-given-late-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "point_cluster_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/point-cluster-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/point-cluster-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "lasso_cluster_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/lasso-cluster-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/lasso-cluster-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "wide_center_fail" ]; then
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/wide-center-fail-shoreside.xmoos"
@@ -191,6 +204,10 @@ get_case_config() {
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/avoid-disabled-fail-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/avoid-disabled-fail-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "no_alert_request_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/no-alert-request-fail-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/no-alert-request-fail-vehicle.xmoos"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
         return 1
@@ -215,6 +232,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local shore_mport
     local veh_mport
     local shore_pshare
@@ -231,10 +250,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 200))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -320,10 +340,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 200 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -375,7 +396,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="baseline_center_pass offset_clear_pass tight_alert_pass two_sequential_fail wide_center_fail avoid_disabled_fail"
+    CASES="baseline_center_pass offset_clear_pass tight_alert_pass runtime_given_late_pass point_cluster_pass lasso_cluster_pass two_sequential_fail wide_center_fail avoid_disabled_fail no_alert_request_fail"
 fi
 
 : > "$RESULTS_FILE"

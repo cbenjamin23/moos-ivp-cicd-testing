@@ -1,0 +1,46 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = WPT_DONE = true
+  pass_condition = WPT_DONE = true
+  pass_condition = WAYPOINT_END = true
+  pass_condition = WPT_EFF_DIST_ALL > 0
+  pass_condition = WPT_EFF_TIME_ALL > 0
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = waypoint_behavior_tests
+  mission_mod  = $(MMOD:=efficiency_measure_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[WPT_DONE]
+  report_column = wpt_done=$[WPT_DONE]
+  report_column = waypoint_end=$[WAYPOINT_END]
+  report_column = eff_dist_all=$[WPT_EFF_DIST_ALL]
+  report_column = eff_time_all=$[WPT_EFF_TIME_ALL]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = WPT_UPDATES, WPT_DONE, WPT_HIT, CYCLE_HIT
+  qbridge  = WAYPOINT_END, TEST_EVAL_READY, BHV_ERROR
+  qbridge  = WPT_STAT, WPT_INDEX, CYCLE_INDEX, WPT_DIST_TO_NEXT
+  qbridge  = WPT_EFF_DIST_ALL, WPT_EFF_TIME_ALL
+}

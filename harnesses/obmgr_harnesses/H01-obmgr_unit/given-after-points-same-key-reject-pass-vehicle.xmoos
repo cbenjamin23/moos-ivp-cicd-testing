@@ -1,0 +1,14 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = OBM_CONNECT = true
+
+  event = var=OBM_ALERT_REQUEST, val="name=avd_,update_var=OBSTACLE_ALERT,alert_range=25", time=1
+  event = var=TRACKED_FEATURE, val="x=18,y=-62,key=mix_key", time=2
+  event = var=TRACKED_FEATURE, val="x=22,y=-62,key=mix_key", time=2.2
+  event = var=TRACKED_FEATURE, val="x=22,y=-58,key=mix_key", time=2.4
+  event = var=TRACKED_FEATURE, val="x=18,y=-58,key=mix_key", time=2.6
+  event = var=GIVEN_OBSTACLE, val="pts={18,-62:22,-62:22,-58:18,-58},label=mix_key,duration=20", time=4
+}

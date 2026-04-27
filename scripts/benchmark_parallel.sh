@@ -97,7 +97,13 @@ for JOBS in "${JOBS_ARRAY[@]}"; do
     TIME_FILE="$RAW_DIR/jobs${JOBS}.time"
 
     echo "$ME: Running jobs=$JOBS"
-    ktm >/dev/null 2>&1 || true
+    REPO_DIR="$(cd "$HARNESS/../../.." && pwd)"
+    TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
+    if [ ! -x "$TEARDOWN_HELPER" ]; then
+        echo "$ME: Missing scoped teardown helper: $TEARDOWN_HELPER"
+        exit 1
+    fi
+    "$TEARDOWN_HELPER" "$HARNESS" >/dev/null 2>&1 || true
 
     CMD=(./zlaunch.sh "--jobs=$JOBS")
     if [ -n "$MAX_TIME" ]; then

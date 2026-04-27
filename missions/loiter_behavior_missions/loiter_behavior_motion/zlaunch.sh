@@ -46,7 +46,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Forward a harness case run "
         echo "  --jobs=<n>         Forward a harness wave run "
-        echo "  --port_base=<n>    Base shoreside MOOSDB port "
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp harness copies    "
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
@@ -116,7 +116,12 @@ xlaunch.sh --max_time=$MAX_TIME $NOGUI $JUST_MAKE $VERBOSE $TIME_WARP
 
 if [ "${JUST_MAKE}" = "" ]; then
     sleep 0.5
-    ktm
+    repo_dir=`git -C "$PWD" rev-parse --show-toplevel 2>/dev/null`
+    if [ "$repo_dir" = "" ] || [ ! -x "$repo_dir/scripts/harness_teardown.sh" ]; then
+        echo "$ME: Missing scoped teardown helper"
+        exit 1
+    fi
+    "$repo_dir/scripts/harness_teardown.sh" "$PWD"
     sleep 0.5
 fi
 

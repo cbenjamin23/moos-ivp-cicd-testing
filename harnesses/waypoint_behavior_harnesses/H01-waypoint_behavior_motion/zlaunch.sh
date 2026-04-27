@@ -26,6 +26,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9700"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -65,7 +66,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -257,6 +258,24 @@ get_case_config() {
     elif [ "$CASE_NAME" = "polygon_points_pass" ]; then
         EXPECTED="pass"
         VEH_BHV_PATCH="$HARNESS_DIR/polygon-points-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "ipf_type_roc_pass" ]; then
+        EXPECTED="pass"
+        VEH_BHV_PATCH="$HARNESS_DIR/ipf-type-roc-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "ipf_type_zaic_spd_pass" ]; then
+        EXPECTED="pass"
+        VEH_BHV_PATCH="$HARNESS_DIR/ipf-type-zaic-spd-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "greedy_tour_pass" ]; then
+        EXPECTED="pass"
+        VEH_BHV_PATCH="$HARNESS_DIR/greedy-tour-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "cycle_index_output_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/cycle-index-output-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/repeat-once-cycle-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "efficiency_measure_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/efficiency-measure-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/efficiency-measure-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/efficiency-measure-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "slow_speed_no_arrival_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/timer-no-done-pass-shoreside.xmoos"
@@ -275,6 +294,61 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/timer-wpt-done-fail-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/bad-xpoints-size-fail-vehicle.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-xpoints-size-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_speed_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-speed-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_capture_line_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-capture-line-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_capture_radius_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-capture-radius-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_slip_radius_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-slip-radius-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_order_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-order-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_repeat_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-repeat-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_lead_damper_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-lead-damper-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_lead_condition_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-lead-condition-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_end_spd_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-end-spd-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_patience_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-patience-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_efficiency_measure_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-efficiency-measure-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
         return 1
@@ -306,6 +380,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -326,10 +402,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 1000))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -442,10 +519,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -506,7 +584,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="single_point_arrival_pass endflag_pass multi_point_sequence_pass wptflag_pass repeat_once_cycle_pass repeat_forever_cycle_pass dynamic_points_update_pass newpt_update_pass xpoints_update_pass capture_radius_large_pass capture_line_absolute_pass slip_radius_pass order_reverse_pass currix_start_pass lead_to_start_pass lead_condition_pass end_spd_slowdown_pass speed_alt_update_pass reset_on_idle_pass empty_start_then_update_pass wptflag_on_start_pass custom_status_vars_pass polygon_points_pass slow_speed_no_arrival_pass no_points_timeout_fail malformed_update_fail bad_xpoints_size_fail"
+    CASES="single_point_arrival_pass endflag_pass multi_point_sequence_pass wptflag_pass repeat_once_cycle_pass repeat_forever_cycle_pass dynamic_points_update_pass newpt_update_pass xpoints_update_pass capture_radius_large_pass capture_line_absolute_pass slip_radius_pass order_reverse_pass currix_start_pass lead_to_start_pass lead_condition_pass end_spd_slowdown_pass speed_alt_update_pass reset_on_idle_pass empty_start_then_update_pass wptflag_on_start_pass custom_status_vars_pass polygon_points_pass ipf_type_roc_pass ipf_type_zaic_spd_pass greedy_tour_pass cycle_index_output_pass efficiency_measure_pass slow_speed_no_arrival_pass no_points_timeout_fail malformed_update_fail bad_xpoints_size_fail bad_speed_fail bad_capture_line_fail bad_capture_radius_fail bad_slip_radius_fail bad_order_fail bad_repeat_fail bad_lead_damper_fail bad_lead_condition_fail bad_end_spd_fail bad_patience_fail bad_efficiency_measure_fail"
 fi
 
 : > "$RESULTS_FILE"

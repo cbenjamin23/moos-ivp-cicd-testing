@@ -26,6 +26,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9700"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -65,7 +66,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -291,6 +292,10 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/eval-warning-pass-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/runtime-cruise-cap-warn-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "runtime_estop_speed_zero_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/eval-estop-speed-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/runtime-estop-speed-zero-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_bad_update_recover_pass" ]; then
         EXPECTED="pass"
         VEH_MOOS_PATCH="$HARNESS_DIR/runtime-bad-update-recover-pass-vehicle.xmoos"
@@ -341,10 +346,22 @@ get_case_config() {
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-rng-estop-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_rng_tgating_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-rng-tgating-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_rng_lagging_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-rng-lagging-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_rng_safety_fail" ]; then
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-rng-safety-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_cruise_speed_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-cruise-speed-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
         return 1
@@ -376,6 +393,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -398,12 +417,13 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $LAUNCH_ARGS $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh1_mport=$((shore_mport + 1))
-        veh2_mport=$((shore_mport + 2))
-        shore_pshare=$((PORT_BASE + 1000))
-        veh1_pshare=$((shore_pshare + 1))
-        veh2_pshare=$((shore_pshare + 2))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh1_mport=$((case_base + 1))
+        veh2_mport=$((case_base + 2))
+        shore_pshare=$((case_base + 10))
+        veh1_pshare=$((case_base + 11))
+        veh2_pshare=$((case_base + 12))
         XARGS="$XARGS --shore_mport=$shore_mport --veh1_mport=$veh1_mport --veh2_mport=$veh2_mport --shore_pshare=$shore_pshare --veh1_pshare=$veh1_pshare --veh2_pshare=$veh2_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -518,12 +538,13 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*30))
-    veh1_mport=$((shore_mport + 1))
-    veh2_mport=$((shore_mport + 2))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*30))
-    veh1_pshare=$((shore_pshare + 1))
-    veh2_pshare=$((shore_pshare + 2))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh1_mport=$((case_base + 1))
+    veh2_mport=$((case_base + 2))
+    shore_pshare=$((case_base + 10))
+    veh1_pshare=$((case_base + 11))
+    veh2_pshare=$((case_base + 12))
 
     (
         cd "$case_dir"
@@ -586,7 +607,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="static_convoy_pass fine_mark_spacing_pass coarse_mark_spacing_pass short_mark_queue_pass long_mark_queue_pass tight_radius_pass wide_radius_pass cruise_speed_pass cruise_speed_cap_warn_pass safety_range_autoadjust_warn_pass safety_off_bad_ranges_pass tailgating_speed_slow_pass lagging_speed_fast_pass estop_speed_zero_pass range_aliases_pass nm_radius_zero_pass view_point_post_pass angled_entry_pass cross_track_entry_pass opposite_heading_recover_pass close_offset_tailgate_pass lead_right_turn_pass lead_s_turn_pass short_queue_turn_pass slow_follower_pass fast_follower_pass runtime_inter_mark_coarse_pass runtime_max_mark_short_pass runtime_cruise_speed_pass runtime_cruise_cap_warn_pass runtime_bad_update_recover_pass no_extrapolate_pass missing_contact_warn_pass missing_contact_fail missing_contact_param_fail bad_inter_mark_range_fail bad_max_mark_range_fail bad_radius_fail bad_nm_radius_fail bad_spd_slower_fail bad_spd_faster_fail bad_spd_max_fail bad_rng_estop_fail bad_rng_safety_fail"
+    CASES="static_convoy_pass fine_mark_spacing_pass coarse_mark_spacing_pass short_mark_queue_pass long_mark_queue_pass tight_radius_pass wide_radius_pass cruise_speed_pass cruise_speed_cap_warn_pass safety_range_autoadjust_warn_pass safety_off_bad_ranges_pass tailgating_speed_slow_pass lagging_speed_fast_pass estop_speed_zero_pass range_aliases_pass nm_radius_zero_pass view_point_post_pass angled_entry_pass cross_track_entry_pass opposite_heading_recover_pass close_offset_tailgate_pass lead_right_turn_pass lead_s_turn_pass short_queue_turn_pass slow_follower_pass fast_follower_pass runtime_inter_mark_coarse_pass runtime_max_mark_short_pass runtime_cruise_speed_pass runtime_cruise_cap_warn_pass runtime_estop_speed_zero_pass runtime_bad_update_recover_pass no_extrapolate_pass missing_contact_warn_pass missing_contact_fail missing_contact_param_fail bad_inter_mark_range_fail bad_max_mark_range_fail bad_radius_fail bad_nm_radius_fail bad_spd_slower_fail bad_spd_faster_fail bad_spd_max_fail bad_rng_estop_fail bad_rng_tgating_fail bad_rng_lagging_fail bad_rng_safety_fail bad_cruise_speed_fail"
 fi
 
 : > "$RESULTS_FILE"

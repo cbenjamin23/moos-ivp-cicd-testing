@@ -1,4 +1,4 @@
-# NSPatch Notes For H02-obmgr_tests
+# NSPatch Notes For H01-obmgr_unit
 
 This harness uses `nspatch` to turn one obstacle-manager stem mission into a
 matrix of short `pObstacleMgr` tests without copying the whole mission.
@@ -45,7 +45,7 @@ In simple terms:
 
 For each case:
 
-1. Run `clean.sh` and `ktm` in the stem mission directory.
+1. Run `clean.sh` and scoped harness teardown in the stem mission directory.
 2. Apply the selected case patches with `nspatch`.
 3. Run the mission through the harness-controlled `xlaunch.sh` path.
 4. Read the mission-local `results.txt`.

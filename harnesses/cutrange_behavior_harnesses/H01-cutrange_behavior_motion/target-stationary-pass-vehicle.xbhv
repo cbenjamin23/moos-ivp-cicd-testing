@@ -1,0 +1,17 @@
+Behavior = BHV_Waypoint
+{
+  name      = target_transit
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRANSIT = true
+
+      speed = 0.1
+     radius = 5
+  nm_radius = 15
+     points = 45,-80
+     repeat = 0
+       lead = 8
+
+  visual_hints = label_color=off
+  visual_hints = vertex_color=white, edge_color=white
+}

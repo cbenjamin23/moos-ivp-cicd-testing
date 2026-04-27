@@ -19,6 +19,7 @@ NOGUI="--nogui"
 CASE=""
 JOBS="1"
 PORT_BASE="9900"
+PORT_STRIDE="100"
 KEEP_WORKDIRS="no"
 RESULTS_FILE="$PWD/results.txt"
 HARNESS_DIR="$PWD"
@@ -42,8 +43,25 @@ for ARGI; do
   CMD_ARGS+="${ARGI} "
   if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
     echo "$ME [OPTIONS] [time_warp]"
+    echo ""
+    echo "Options:"
+    echo "  --help, -h         Show this help message"
+    echo "  --verbose, -v      Verbose, confirm launch"
+    echo "  --just_make, -j    Only create targ files"
+    echo "  --max_time=<secs>  Max time passed to the mission"
+    echo "  --case=<name>      Run one named case"
+    echo "  --jobs=<n>         Run up to n cases per wave"
+    echo "  --port_base=<n>    Base port for per-case wave blocks"
+    echo "  --keep_workdirs    Keep temp mission copies in wave mode"
+    echo "  --gui              Launch with pMarineViewer"
     echo "  --profile=<name>   Set perf profile (local or ci)"
     echo "  PERF_PROFILE=ci    Run with CI timing defaults"
+    echo ""
+    echo "Examples:"
+    echo "  ./zlaunch.sh"
+    echo "  PERF_PROFILE=ci ./zlaunch.sh"
+    echo "  ./zlaunch.sh --case=baseline_circle_pass"
+    echo "  ./zlaunch.sh --jobs=2 --port_base=32000"
     exit 0
   elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
     VERBOSE="yes"
@@ -260,7 +278,7 @@ run_case_isolated() {
   local case_idx="$1"
   local case_name="$2"
   local case_tag case_dir case_result_file
-  local shore_mport veh_mport shore_pshare veh_pshare
+  local shore_mport veh_mport shore_pshare veh_pshare case_base
   local line actual status launch_rc
   local case_max_time="$MAX_TIME"
   local perf_status="skip" perf_notes="" perf_warning_count="na"
@@ -278,10 +296,11 @@ run_case_isolated() {
     return 1
   }
 
-  shore_mport=$((PORT_BASE + case_idx*20))
-  veh_mport=$((shore_mport + 1))
-  shore_pshare=$((PORT_BASE + 200 + case_idx*20))
-  veh_pshare=$((shore_pshare + 1))
+  case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+  shore_mport=$((case_base + 0))
+  veh_mport=$((case_base + 1))
+  shore_pshare=$((case_base + 10))
+  veh_pshare=$((case_base + 11))
 
   (
     cd "$case_dir"

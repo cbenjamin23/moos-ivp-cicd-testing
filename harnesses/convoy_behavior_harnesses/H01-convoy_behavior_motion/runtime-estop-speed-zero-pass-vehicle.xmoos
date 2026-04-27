@@ -1,0 +1,11 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=CONVOY_UPDATES, val="rng_estop=200", time=12
+  event = var=CONVOY_UPDATES, val="rng_tgating=210", time=13
+  event = var=CONVOY_UPDATES, val="rng_lagging=220", time=14
+}

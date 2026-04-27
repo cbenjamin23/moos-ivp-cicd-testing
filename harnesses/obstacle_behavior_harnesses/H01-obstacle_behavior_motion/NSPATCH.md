@@ -31,6 +31,11 @@ The most important behavior-specific patches are:
   proves the behavior can post range-threshold flags
 - `cpa_flag = AVOID_CPA_SEEN=true`
   proves the behavior can post CPA-event flags
+- launch-time `polygon` and `poly`
+  prove non-templated obstacle configuration still avoids and completes
+- malformed polygon, distance, CPA, flag, boolean, and currently unsupported
+  `pwt_grade` settings
+  prove rejected configuration paths grade fail under mission control
 - altered `condition = AVOID = ...`
   proves the behavior can be effectively disabled without changing the rest of
   the mission stack

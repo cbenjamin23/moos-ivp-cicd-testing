@@ -26,11 +26,13 @@ CASE=""
 JOBS="1"
 PORT_BASE="9300"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/opregion_missions/opregion_motion"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
@@ -41,6 +43,13 @@ VEHICLE_BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 VEHICLE_MOOS_XFILE="$MISSION_DIR/meta_vehicle.moosx"
 VEHICLE_BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -57,7 +66,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -154,23 +163,7 @@ cleanup() {
 
 stop_mission_apps() {
     local mission_root="${1:-$MISSION_DIR}"
-    local app
-    local pid
-    local cwd
-    local apps
-    apps="MOOSDB pRealm pLogger uProcessWatch pShare pHostInfo"
-    apps="$apps uFldShoreBroker uFldNodeComms uTimerScript pMissionEval"
-    apps="$apps pAutoPoke pMarineViewer pMissionHash uFldNodeBroker pHelmIvP"
-    apps="$apps uSimMarineV22 pMarinePIDV22"
-
-    for app in $apps; do
-        for pid in `pgrep -x "$app" 2>/dev/null`; do
-            cwd=`lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p'`
-            if [ "$cwd" = "$mission_root" ] || [ "${cwd#$mission_root/}" != "$cwd" ]; then
-                kill "$pid" >/dev/null 2>&1 || true
-            fi
-        done
-    done
+    harness_teardown_stop_root "$mission_root"
 }
 
 #------------------------------------------------------------
@@ -231,6 +224,56 @@ get_case_config() {
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/max-time-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/max-time-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "max_depth_breach_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/bhv-error-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/max-depth-breach-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/max-depth-breach-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "min_altitude_breach_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/bhv-error-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-breach-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/min-altitude-breach-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_save_dist_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-save-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_halt_dist_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-halt-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_max_depth_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-max-depth-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_min_altitude_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-min-altitude-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_recover_spd_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-recover-spd-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_trigger_on_poly_entry_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-trigger-on-poly-entry-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_trigger_entry_time_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-trigger-entry-time-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_trigger_exit_time_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-trigger-exit-time-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "dynamic_region_expand_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/dynamic-region-expand-pass-shoreside.xmoos"
@@ -276,6 +319,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -296,10 +341,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 1000))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -412,10 +458,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -476,7 +523,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="inside_region_pass save_recover_pass save_dist_buffer_pass save_dist_buffer_fail halt_breach_fail entry_gate_start_outside_pass entry_gate_disabled_fail trigger_exit_debounce_pass trigger_exit_strict_fail trigger_entry_delay_pass reset_before_exit_pass max_time_fail dynamic_region_expand_pass dynamic_region_update_pass dynamic_region_halt_fail"
+    CASES="inside_region_pass save_recover_pass save_dist_buffer_pass save_dist_buffer_fail halt_breach_fail entry_gate_start_outside_pass entry_gate_disabled_fail trigger_exit_debounce_pass trigger_exit_strict_fail trigger_entry_delay_pass reset_before_exit_pass max_time_fail max_depth_breach_fail min_altitude_breach_fail bad_save_dist_fail bad_halt_dist_fail bad_max_depth_fail bad_min_altitude_fail bad_recover_spd_fail bad_trigger_on_poly_entry_fail bad_trigger_entry_time_fail bad_trigger_exit_time_fail dynamic_region_expand_pass dynamic_region_update_pass dynamic_region_halt_fail"
 fi
 
 : > "$RESULTS_FILE"

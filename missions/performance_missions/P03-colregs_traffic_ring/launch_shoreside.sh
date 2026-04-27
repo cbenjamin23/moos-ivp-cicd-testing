@@ -91,9 +91,9 @@ for ARGI; do
     RADIUS_JITTER="${ARGI#--radius_jitter=*}"
   elif [ "${ARGI:0:17}" = "--min_target_sep=" ]; then
     MIN_TARGET_SEP="${ARGI#--min_target_sep=*}"
-  elif [ "${ARGI:0:15}" = "--min_leg_len=" ]; then
+  elif [ "${ARGI:0:14}" = "--min_leg_len=" ]; then
     MIN_LEG_LEN="${ARGI#--min_leg_len=*}"
-  elif [ "${ARGI:0:16}" = "--min_pred_cpa=" ]; then
+  elif [ "${ARGI:0:15}" = "--min_pred_cpa=" ]; then
     MIN_PRED_CPA="${ARGI#--min_pred_cpa=*}"
   elif [ "${ARGI:0:18}" = "--repost_interval=" ]; then
     REPOST_INTERVAL="${ARGI#--repost_interval=*}"

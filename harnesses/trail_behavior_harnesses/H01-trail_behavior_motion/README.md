@@ -23,7 +23,8 @@ uses behavior outputs such as:
 - `absolute_west_pass`
   Uses `trail_angle_type=absolute` with a westward trail point.
 - `relative_port_pass`
-  Trails off the contact's port quarter with a relative 135 degree angle.
+  Keeps the chaser on the target's port quarter, proving `BHV_Trail` can hold
+  an offset relative trail angle instead of only following directly astern.
 - `relative_starboard_pass`
   Trails off the contact's starboard quarter with a relative -135 degree angle.
 - `lead_right_turn_pass`
@@ -32,7 +33,8 @@ uses behavior outputs such as:
 - `lead_port_turn_pass`
   Combines the dogleg target path with a port-quarter relative trail angle.
 - `lead_turn_angle_update_pass`
-  Combines the dogleg target path with a runtime `trail_angle` update.
+  Follows a target through a dogleg while changing `trail_angle` at runtime,
+  proving the chaser can reframe the desired trail point during a turn.
 - `short_trail_range_pass`
   Shortens `trail_range` and grades tighter trail-point convergence.
 - `long_trail_range_pass`
@@ -53,12 +55,19 @@ uses behavior outputs such as:
   Uses `mod_trail_range` to increase configured trailing distance.
 - `mod_trail_range_pct_pass`
   Uses `mod_trail_range_pct` to shrink configured trailing distance.
+- `mod_trail_range_floor_pass`
+  Drives `mod_trail_range` below the source minimum and verifies the configured
+  trail range clamps to the 10 meter floor while pursuit stays active.
 - `runtime_range_extend_pass`
-  Extends `trail_range` through `TRAIL_UPDATES`.
+  Increases `trail_range` through `TRAIL_UPDATES`, proving the behavior can
+  accept a runtime range change and settle cleanly at the longer separation.
 - `runtime_mod_range_plus_pass`
   Applies `mod_trail_range` through `TRAIL_UPDATES`.
 - `runtime_mod_range_pct_pass`
   Applies `mod_trail_range_pct` through `TRAIL_UPDATES`.
+- `runtime_mod_range_floor_pass`
+  Applies a runtime `mod_trail_range_pct` update below the source minimum and
+  verifies the clamped trail range still produces valid pursuit.
 - `runtime_angle_update_pass`
   Changes `trail_angle` through `TRAIL_UPDATES`.
 - `runtime_relevance_off_pass`
@@ -69,10 +78,16 @@ uses behavior outputs such as:
 - `idle_post_distance_pass`
   Idles the trail behavior after pursuit and verifies distance reporting can
   continue with pursuit off.
+- `idle_no_post_distance_pass`
+  Idles the trail behavior with `post_trail_dist_on_idle=false` and verifies a
+  sentinel `TRAIL_DISTANCE` value is not overwritten while pursuit is off.
 - `no_extrapolate_pass`
   Verifies clean pursuit with contact extrapolation disabled.
 - `no_alert_request_pass`
   Verifies `no_alert_request=true` is accepted without breaking pursuit.
+- `auto_alert_request_pass`
+  Runs a spawnable trail behavior with `no_alert_request=false` and verifies an
+  automatic `BCM_ALERT_REQUEST` is posted before pursuit becomes active.
 - `missing_contact_warn_pass`
   Uses a missing contact with `on_no_contact_ok=true` and expects warning-only
   behavior.
@@ -116,7 +131,7 @@ From this harness directory:
 ./zlaunch.sh --case=lead_turn_angle_update_pass --gui 1
 ./zlaunch.sh --case=runtime_bad_update_recover_pass --gui 1
 ./zlaunch.sh --case=idle_post_distance_pass --gui 1
-./zlaunch.sh --jobs=4 10
+./zlaunch.sh --jobs=4 --port_base=15000 10
 ```
 
 From the paired mission directory, named cases are forwarded to this harness:
@@ -125,6 +140,6 @@ From the paired mission directory, named cases are forwarded to this harness:
 ./zlaunch.sh --case=runtime_angle_update_pass --gui 1
 ```
 
-The full matrix currently has 38 cases. Wave mode uses isolated temp mission
+The full matrix currently has 42 cases. Wave mode uses isolated temp mission
 copies and deterministic two-vehicle port blocks, so do not overlap it with
 other MOOS harnesses on the same machine.

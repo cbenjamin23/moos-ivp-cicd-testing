@@ -158,7 +158,7 @@ Typical runs:
 
 ```bash
 ./zlaunch.sh 10
-./zlaunch.sh --jobs=2 10
+./zlaunch.sh --jobs=2 --port_base=22000 10
 ./zlaunch.sh --case=head_on_colregs_pass 10
 ./zlaunch.sh --case=head_on_cpa_fallback_pass 10
 ./zlaunch.sh --case=overtaking_starboard_mirror_pass 10

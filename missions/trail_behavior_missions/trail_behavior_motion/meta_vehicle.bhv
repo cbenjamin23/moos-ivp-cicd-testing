@@ -59,7 +59,7 @@ Behavior = BHV_Waypoint
        lead = 8
 
   visual_hints = label_color=off
-  visual_hints = vertex_color=cyan, edge_color=cyan
+  visual_hints = vertex_color=white, edge_color=white
 }
 
 #endif

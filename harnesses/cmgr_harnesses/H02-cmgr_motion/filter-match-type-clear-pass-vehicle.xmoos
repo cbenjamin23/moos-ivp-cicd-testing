@@ -1,0 +1,29 @@
+ProcessConfig = pContactMgrV20
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  app_logging = true
+
+  decay           = 20,40
+  contact_max_age = 35
+
+  alert_verbose = true
+
+  alert = id=avoid, var=CONTACT_INFO, val="name=avd_ # contact=$[VNAME]"
+  alert = id=avoid, on_flag=CONTACT_DETECTED=true
+  alert = id=avoid, alert_range=20, cpa_range=28, match_type=ship
+
+  post_closest_range   = true
+  hold_alerts_for_helm = false
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY = true
+
+  event = var=SPOOF, val="name=intruder,x=45,y=-42,hdg=180,spd=0,vsource=ais,color=green,dur=45", time=2
+}

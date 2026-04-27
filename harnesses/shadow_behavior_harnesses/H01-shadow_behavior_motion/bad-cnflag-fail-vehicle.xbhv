@@ -1,0 +1,11 @@
+Behavior = BHV_Shadow
+{
+  name      = shadow_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = SHADOW = true
+  updates   = SHADOW_UPDATES
+
+  contact = ben
+   cnflag = soon SHADOW_RANGE_NEAR=$[RANGE]
+}

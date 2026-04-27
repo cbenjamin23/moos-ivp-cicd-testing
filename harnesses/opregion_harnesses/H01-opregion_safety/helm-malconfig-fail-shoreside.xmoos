@@ -1,0 +1,29 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
+
+  lead_condition = HELM_MALCONFIG = true
+  pass_condition = ARRIVED = true
+  pass_condition = SAVE_REGION_BREACHED = false
+  pass_condition = HALT_REGION_BREACHED = false
+  pass_condition = TIME_LIMIT_BREACHED = false
+  pass_condition = HELM_MALCONFIG = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = opregion_safety_tests
+  mission_mod  = $(MMOD:=helm_malconfig_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[HELM_MALCONFIG]
+  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = mhash=$[MHASH_SHORT]
+}

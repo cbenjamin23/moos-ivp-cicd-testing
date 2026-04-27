@@ -16,8 +16,9 @@ Scenario:
 - shoreside grades behavior-owned outcomes such as alert request seen,
   obstacle alert seen, `OBAVOIDING=end`, and clean arrival
 
-The companion harness expands this stem into flag-path, non-engagement,
-multi-obstacle, and disabled-behavior variants.
+The companion harness expands this stem into flag-path, launch-time polygon,
+non-engagement, multi-obstacle, disabled-behavior, and invalid-configuration
+variants.
 
 Default pass rule:
 

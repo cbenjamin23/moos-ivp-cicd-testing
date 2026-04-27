@@ -22,11 +22,13 @@ NOGUI="--nogui"
 CASE=""
 JOBS="1"
 PORT_BASE="15000"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/fixedturn_behavior_missions/fixedturn_behavior_motion"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
@@ -37,6 +39,13 @@ VEHICLE_BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 VEHICLE_MOOS_XFILE="$MISSION_DIR/meta_vehicle.moosx"
 VEHICLE_BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 #------------------------------------------------------------
 #  Part 2: Check for and handle command-line arguments.
@@ -53,7 +62,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -112,23 +121,7 @@ remove_tree() {
 
 stop_mission_apps() {
     local mission_root="${1:-$MISSION_DIR}"
-    local app
-    local pid
-    local cwd
-    local apps
-    apps="MOOSDB pRealm pLogger uProcessWatch pShare pHostInfo"
-    apps="$apps uFldShoreBroker uFldNodeComms uTimerScript pMissionEval"
-    apps="$apps pAutoPoke pMarineViewer pMissionHash uFldNodeBroker pHelmIvP"
-    apps="$apps uSimMarineV22 pMarinePIDV22"
-
-    for app in $apps; do
-        for pid in `pgrep -x "$app" 2>/dev/null`; do
-            cwd=`lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p'`
-            if [ "$cwd" = "$mission_root" ] || [ "${cwd#$mission_root/}" != "$cwd" ]; then
-                kill "$pid" >/dev/null 2>&1 || true
-            fi
-        done
-    done
+    harness_teardown_stop_root "$mission_root"
 }
 
 cleanup() {
@@ -209,6 +202,46 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/turn-spec-sequence-pass-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-sequence-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "turn_spec_fallback_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-spec-fallback-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-fallback-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "turn_spec_key_update_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-spec-key-update-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/turn-spec-key-update-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-key-update-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "turn_spec_bad_update_recover_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-spec-bad-update-recover-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/turn-spec-bad-update-recover-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-bad-update-recover-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "turn_spec_clear_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-spec-clear-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/turn-spec-clear-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-clear-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "turn_spec_timeout_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-spec-timeout-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-timeout-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "zero_fix_turn_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/zero-fix-turn-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/zero-fix-turn-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "runtime_static_update_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/runtime-static-update-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/runtime-static-update-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "turn_spec_clear_add_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-spec-clear-add-pass-shoreside.xmoos"
+        VEH_MOOS_PATCH="$HARNESS_DIR/turn-spec-clear-add-pass-vehicle.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-clear-add-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "turn_spec_aliases_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/turn-spec-aliases-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/turn-spec-aliases-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_fix_turn_fail" ]; then
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
@@ -217,6 +250,22 @@ get_case_config() {
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-stale-nav-thresh-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_turn_dir_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-turn-dir-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_speed_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-speed-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_turn_spec_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-turn-spec-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_schedule_repeat_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-schedule-repeat-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
         return 1
@@ -254,13 +303,15 @@ run_case() {
     local veh_mport
     local shore_pshare
     local veh_pshare
+    local case_base
 
     get_case_config "$case_name" || return 1
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     cd "$MISSION_DIR"
     ./clean.sh >/dev/null 2>&1
@@ -289,7 +340,7 @@ run_case() {
     fi
 
     sleep 1
-    line=$(wait_for_result_line results.txt 24)
+    line=$(wait_for_result_line results.txt 60)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -375,10 +426,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -403,7 +455,7 @@ run_case_isolated() {
         return 1
     fi
 
-    line=$(wait_for_result_line "$case_dir/results.txt" 24)
+    line=$(wait_for_result_line "$case_dir/results.txt" 60)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -439,7 +491,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="starboard_90_pass port_90_pass starboard_360_pass port_360_pass speed_auto_pass fixed_speed_pass turn_delay_pass timeout_complete_pass turn_spec_sequence_pass bad_fix_turn_fail bad_stale_nav_thresh_fail"
+    CASES="starboard_90_pass port_90_pass starboard_360_pass port_360_pass speed_auto_pass fixed_speed_pass turn_delay_pass timeout_complete_pass turn_spec_sequence_pass turn_spec_fallback_pass turn_spec_key_update_pass turn_spec_bad_update_recover_pass turn_spec_clear_pass turn_spec_timeout_pass zero_fix_turn_pass runtime_static_update_pass turn_spec_clear_add_pass turn_spec_aliases_pass bad_fix_turn_fail bad_stale_nav_thresh_fail bad_turn_dir_fail bad_speed_fail bad_turn_spec_fail bad_schedule_repeat_fail"
 fi
 
 : > "$RESULTS_FILE"

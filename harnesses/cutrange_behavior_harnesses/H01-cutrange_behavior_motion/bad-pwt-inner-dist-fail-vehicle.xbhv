@@ -1,0 +1,13 @@
+Behavior = BHV_CutRange
+{
+  name      = cutrange_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = CUTRANGE = true
+
+             contact = ben
+      pwt_outer_dist = 70
+      pwt_inner_dist = 90
+        giveup_range = 160
+}
+

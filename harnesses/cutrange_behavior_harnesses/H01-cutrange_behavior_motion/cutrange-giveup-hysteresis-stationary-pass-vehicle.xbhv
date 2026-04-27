@@ -1,0 +1,41 @@
+Behavior = BHV_CutRange
+{
+  name      = cutrange_contact
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = CUTRANGE = true
+  updates   = CUTRANGE_UPDATES
+
+             contact = ben
+    on_no_contact_ok = true
+         extrapolate = true
+               decay = 30,60
+
+      pwt_outer_dist = 70
+      pwt_inner_dist = 15
+        giveup_range = 89.5
+            patience = 35
+        max_patience = 85
+         time_on_leg = 15
+
+  pursueflag = CUTRANGE_PURSUIT = true
+  giveupflag = CUTRANGE_GIVEUP = true
+}
+
+Behavior = BHV_Waypoint
+{
+  name      = target_transit
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = TRANSIT = true
+
+      speed = 0.0
+     radius = 5
+  nm_radius = 15
+     points = 20,-80
+     repeat = 0
+       lead = 8
+
+  visual_hints = label_color=off
+  visual_hints = vertex_color=white, edge_color=white
+}

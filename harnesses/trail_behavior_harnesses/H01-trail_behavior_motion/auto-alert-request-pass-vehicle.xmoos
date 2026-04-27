@@ -1,0 +1,32 @@
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=TRAIL_UPDATES
+  bridge = src=TRAIL_DISTANCE
+  bridge = src=TRAIL_RELEVANCE
+  bridge = src=TRAIL_RANGE
+  bridge = src=PURSUIT
+  bridge = src=REGION
+  bridge = src=TRAIL_SPEED
+  bridge = src=TRAIL_HEADING
+  bridge = src=BCM_ALERT_REQUEST
+#ifdef VROLE CHASER
+  bridge = src=NAV_X, alias=ABE_NAV_X
+  bridge = src=NAV_Y, alias=ABE_NAV_Y
+#else
+  bridge = src=NAV_X, alias=BEN_NAV_X
+  bridge = src=NAV_Y, alias=BEN_NAV_Y
+#endif
+  bridge = src=BHV_WARNING
+  bridge = src=BHV_ERROR
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+}

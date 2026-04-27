@@ -39,6 +39,26 @@ The harness has two timing profiles:
 - `ci` is what GitHub Actions sets through `PERF_PROFILE=ci`; it uses warp `5`
   and the relaxed wall-time bands below.
 
+## Running
+
+```bash
+./zlaunch.sh 10
+PERF_PROFILE=ci ./zlaunch.sh
+./zlaunch.sh --jobs=2 --port_base=32000 10
+./zlaunch.sh --case=baseline_circle_pass 10
+./zlaunch.sh --just_make --jobs=2 --port_base=32000 10
+```
+
+Wave mode uses isolated temp mission copies and wider performance-harness port
+blocks: `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports
+starting at `case_base + 10`.
+
+Latest validation:
+
+- April 27, 2026
+- full wave matrix: `4/4` expected outcomes matched
+- command: `./zlaunch.sh --jobs=2 --port_base=32000 10`
+
 Current supported envelopes:
 - `baseline_circle_pass`: `collisions=0`, `batches>=25`
 - `mixed_speed_circle_pass`: `collisions=0`, `batches>=25`

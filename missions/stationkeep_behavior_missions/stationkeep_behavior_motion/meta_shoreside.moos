@@ -82,6 +82,7 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
   pass_condition = DIST_TO_STATION <= 8
+  pass_condition = BHV_WARNING_SEEN = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

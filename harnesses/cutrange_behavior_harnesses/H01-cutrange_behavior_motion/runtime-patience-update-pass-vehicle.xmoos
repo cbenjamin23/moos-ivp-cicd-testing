@@ -1,0 +1,12 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+#ifdef VROLE CHASER
+  event = var=CUTRANGE, val=true, time=30
+  event = var=CUTRANGE_UPDATES, val="patience=80", time=37
+#endif
+}

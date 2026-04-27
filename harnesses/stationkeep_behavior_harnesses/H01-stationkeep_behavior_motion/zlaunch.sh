@@ -26,11 +26,13 @@ CASE=""
 JOBS="1"
 PORT_BASE="9700"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
 REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
 MISSION_DIR="$REPO_DIR/missions/stationkeep_behavior_missions/stationkeep_behavior_motion"
+TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
@@ -41,6 +43,13 @@ VEHICLE_BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 VEHICLE_MOOS_XFILE="$MISSION_DIR/meta_vehicle.moosx"
 VEHICLE_BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
+
+if [ -f "$TEARDOWN_HELPER" ]; then
+    . "$TEARDOWN_HELPER"
+else
+    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -57,7 +66,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -154,23 +163,7 @@ cleanup() {
 
 stop_mission_apps() {
     local mission_root="${1:-$MISSION_DIR}"
-    local app
-    local pid
-    local cwd
-    local apps
-    apps="MOOSDB pRealm pLogger uProcessWatch pShare pHostInfo"
-    apps="$apps uFldShoreBroker uFldNodeComms uTimerScript pMissionEval"
-    apps="$apps pAutoPoke pMarineViewer pMissionHash uFldNodeBroker pHelmIvP"
-    apps="$apps uSimMarineV22 pMarinePIDV22"
-
-    for app in $apps; do
-        for pid in `pgrep -x "$app" 2>/dev/null`; do
-            cwd=`lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p'`
-            if [ "$cwd" = "$mission_root" ] || [ "${cwd#$mission_root/}" != "$cwd" ]; then
-                kill "$pid" >/dev/null 2>&1 || true
-            fi
-        done
-    done
+    harness_teardown_stop_root "$mission_root"
 }
 
 #------------------------------------------------------------
@@ -262,6 +255,7 @@ get_case_config() {
         VEH_MOOS_PATCH="$HARNESS_DIR/speed-update-slow-progress-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "bad_point_update_recover_pass" ]; then
         EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/bad-point-update-recover-pass-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/bad-point-update-recover-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "visual_hints_pass" ]; then
         EXPECTED="pass"
@@ -299,6 +293,14 @@ get_case_config() {
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/bad-transit-speed-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_extra_speed_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-extra-speed-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_center_activate_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-center-activate-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_swing_time_fail" ]; then
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
@@ -334,6 +336,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -354,10 +358,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 1000))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -470,10 +475,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 1000 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -534,7 +540,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="static_station_pass station_pt_alias_pass start_inside_hold_pass center_activate_hold_pass center_activate_swing_pass wide_radius_pass tight_radius_pass inner_gt_outer_pass outer_speed_slow_pass outer_speed_update_slow_pass transit_speed_fast_pass extra_speed_alias_pass transit_speed_slow_in_progress_pass hibernation_seek_pass hibernation_settle_pass hibernation_radius_update_settle_pass hibernation_off_pass point_update_retarget_pass radius_update_expand_pass radius_update_shrink_pass speed_update_slow_progress_pass bad_point_update_recover_pass visual_hints_pass missing_point_fail bad_point_fail bad_update_fail bad_outer_radius_fail bad_inner_radius_fail bad_hibernation_radius_fail bad_outer_speed_fail bad_transit_speed_fail bad_swing_time_fail"
+    CASES="static_station_pass station_pt_alias_pass start_inside_hold_pass center_activate_hold_pass center_activate_swing_pass wide_radius_pass tight_radius_pass inner_gt_outer_pass outer_speed_slow_pass outer_speed_update_slow_pass transit_speed_fast_pass extra_speed_alias_pass transit_speed_slow_in_progress_pass hibernation_seek_pass hibernation_settle_pass hibernation_radius_update_settle_pass hibernation_off_pass point_update_retarget_pass radius_update_expand_pass radius_update_shrink_pass speed_update_slow_progress_pass bad_point_update_recover_pass visual_hints_pass missing_point_fail bad_point_fail bad_update_fail bad_outer_radius_fail bad_inner_radius_fail bad_hibernation_radius_fail bad_outer_speed_fail bad_transit_speed_fail bad_extra_speed_fail bad_center_activate_fail bad_swing_time_fail"
 fi
 
 : > "$RESULTS_FILE"

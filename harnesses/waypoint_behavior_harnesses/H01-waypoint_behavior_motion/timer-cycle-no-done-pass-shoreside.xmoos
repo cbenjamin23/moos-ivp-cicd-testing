@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=TEST_EVAL_READY, val=true, time=25
+  event = var=TEST_EVAL_READY, val=true, time=38
 }
 
 ProcessConfig = pMissionEval
@@ -17,8 +17,11 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
+  pass_condition = WPT_HIT = true
   pass_condition = CYCLE_HIT = true
+  pass_condition = CYCLE_INDEX >= 1
   pass_condition = WPT_DONE = false
+  pass_condition = WAYPOINT_END = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

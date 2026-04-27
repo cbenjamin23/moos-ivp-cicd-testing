@@ -117,7 +117,7 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ```bash
 ./zlaunch.sh
-./zlaunch.sh --jobs=4 10
+./zlaunch.sh --jobs=4 --port_base=20000 10
 ./zlaunch.sh --case=detect_baseline_pass 10
 ./zlaunch.sh --case=count_two_pass 10
 ./zlaunch.sh --just_make 10
@@ -276,7 +276,7 @@ Validated on March 20, 2026:
 
 - full 33-case matrix passed at warp `10`
 - serial wall clock: `239.45` seconds
-- `--jobs=4` wall clock: `110.56` seconds
+- `--jobs=4 --port_base=20000` wall clock: `110.56` seconds
 - the suite is still dominated by launch and teardown overhead rather than the
   case logic itself
 

@@ -82,6 +82,10 @@ behavior-owned outputs:
   Provides malformed outer speed configuration and expects failure.
 - `bad_transit_speed_fail`
   Provides malformed transit speed configuration and expects failure.
+- `bad_extra_speed_fail`
+  Provides malformed `extra_speed` alias configuration and expects failure.
+- `bad_center_activate_fail`
+  Provides non-boolean `center_activate` configuration and expects failure.
 - `bad_swing_time_fail`
   Provides malformed swing-time configuration and expects failure.
 
@@ -93,7 +97,7 @@ From this harness directory:
 ./zlaunch.sh 10
 ./zlaunch.sh --case=static_station_pass 10
 ./zlaunch.sh --case=hibernation_seek_pass --gui 1
-./zlaunch.sh --jobs=4 10
+./zlaunch.sh --jobs=4 --port_base=34000 10
 ```
 
 From the paired mission directory, named cases are forwarded to this harness:
@@ -102,6 +106,13 @@ From the paired mission directory, named cases are forwarded to this harness:
 ./zlaunch.sh --case=point_update_retarget_pass --gui 1
 ```
 
-The full matrix currently has 32 cases. Wave mode uses isolated temp mission
+The full matrix currently has 34 cases. Wave mode uses isolated temp mission
 copies and deterministic per-case port blocks, so do not overlap it with other
 MOOS harnesses on the same machine.
+
+Latest validation:
+
+- April 27, 2026
+- generated-file matrix: `34/34` cases completed with `--just_make --jobs=4 --port_base=15000`
+- full wave matrix: `34/34` expected outcomes matched with `--jobs=4 --port_base=15000`
+- warp: `10`

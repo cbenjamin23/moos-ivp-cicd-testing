@@ -108,6 +108,13 @@ ProcessConfig = uFldNodeBroker
   bridge = src=REGION
   bridge = src=TRAIL_SPEED
   bridge = src=TRAIL_HEADING
+#ifdef VROLE CHASER
+  bridge = src=NAV_X, alias=ABE_NAV_X
+  bridge = src=NAV_Y, alias=ABE_NAV_Y
+#else
+  bridge = src=NAV_X, alias=BEN_NAV_X
+  bridge = src=NAV_Y, alias=BEN_NAV_Y
+#endif
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
@@ -206,6 +213,8 @@ ProcessConfig = pLogger
   Log = REGION @ 0 nosync
   Log = TRAIL_SPEED @ 0 nosync
   Log = TRAIL_HEADING @ 0 nosync
+  Log = NAV_X @ 0 nosync
+  Log = NAV_Y @ 0 nosync
   Log = BHV_WARNING @ 0 nosync
   Log = BHV_ERROR @ 0 nosync
   Log = NODE_REPORT_LOCAL @ 0 nosync

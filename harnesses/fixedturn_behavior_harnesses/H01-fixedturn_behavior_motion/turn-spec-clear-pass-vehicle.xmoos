@@ -1,0 +1,9 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=FTURN_UPDATE, val="turn_spec=clear", time=1
+}

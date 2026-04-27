@@ -30,7 +30,9 @@ Developer note:
   `--group=overtaken`, `--group=overtaken_mirror`, `--group=giveway`,
   `--group=turngap`, or `--group=standon` to iterate on one family without
   running the full H02 gate
-- `./zlaunch.sh --jobs=2 10` runs isolated wave batches with unique port blocks;
+- `./zlaunch.sh --jobs=2 --port_base=23000 10` runs isolated wave batches with
+  unique compact case blocks
+  (`case_base = port_base + case_idx*PORT_STRIDE`);
   a small set of known-sensitive supported edge cases currently run as solo
   waves, with a short settle pause between waves, to keep the stock geometry
   honest instead of retuning it into different scenarios
@@ -1102,6 +1104,6 @@ Typical runs:
 
 ```bash
 ./zlaunch.sh 10
-./zlaunch.sh --jobs=2 10
+./zlaunch.sh --jobs=2 --port_base=23000 10
 ./zlaunch.sh --case=head_on_thresh_edge_pass 10
 ```

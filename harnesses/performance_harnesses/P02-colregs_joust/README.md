@@ -62,7 +62,7 @@ Typical runs:
 
 ```bash
 ./zlaunch.sh 10
-./zlaunch.sh --jobs=2 10
+./zlaunch.sh --jobs=2 --port_base=31000 10
 ./zlaunch.sh --case=baseline_colregs_pass 10
 ./zlaunch.sh --case=dense_colregs_pass 10
 ./zlaunch.sh --case=endurance_colregs_pass 10
@@ -72,6 +72,7 @@ Wave-mode notes:
 - The harness supports `--jobs=<n>` with the same wave-batch model used by the
   other parallelized harnesses in this repo.
 - Each live case gets its own temp mission copy plus its own MOOSDB and pShare
-  port block, and the harness waits once between waves with `ktm`.
+  port block (`case_base = port_base + case_idx*PORT_STRIDE`, pShare at
+  `case_base + 10`), and the harness waits once between waves with `ktm`.
 - Use `--keep_workdirs` if you want to inspect the isolated temp mission copies
   after a parallel run.

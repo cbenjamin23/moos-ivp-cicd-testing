@@ -1,0 +1,11 @@
+Behavior = BHV_Waypoint
+{
+  name      = waypoint
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = WPT_UPDATES
+
+  speed = $(STOCK_SPD)
+  order = sideways
+  point = 36,-121
+}

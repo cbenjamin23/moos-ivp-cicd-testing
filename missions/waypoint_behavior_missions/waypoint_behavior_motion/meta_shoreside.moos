@@ -82,6 +82,8 @@ ProcessConfig = pMissionEval
 
   lead_condition = WPT_DONE = true
   pass_condition = WPT_DONE = true
+  pass_condition = WPT_HIT = true
+  pass_condition = CYCLE_HIT = true
   pass_condition = WAYPOINT_END = true
   pass_condition = BHV_ERROR_SEEN = false
 

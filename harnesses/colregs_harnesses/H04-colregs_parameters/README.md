@@ -66,6 +66,19 @@ Current case structure:
 - allow execution-style or timeout-snapshot families when that is the real
   parameter effect
 
+## Running
+
+```bash
+./zlaunch.sh 10
+./zlaunch.sh --jobs=2 --port_base=24500 10
+./zlaunch.sh --case=min_util_cpa_default_pass 10
+./zlaunch.sh --just_make --jobs=2 --port_base=24500 10
+```
+
+Wave mode uses isolated temp mission copies and compact per-case port blocks:
+`case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
+`case_base + 10`.
+
 ## Case Guide
 
 - `min_util_cpa_low_pass`

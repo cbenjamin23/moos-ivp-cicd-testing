@@ -32,7 +32,7 @@ harness_teardown_apps_for_root() {
     defaults="$defaults uFldShoreBroker uFldNodeComms uTimerScript pMissionEval"
     defaults="$defaults pAutoPoke pMarineViewer pMissionHash uMayFinish"
     defaults="$defaults uFldNodeBroker pHelmIvP"
-    defaults="$defaults pMarinePID pMarinePIDV22 pNodeReporter uLoadWatch"
+    defaults="$defaults pMarinePID pMarinePIDV22 pNodeReporter pNodeRepo uLoadWatch"
     defaults="$defaults uSimMarine uSimMarineV22"
     defaults="$defaults pTrafficManager pTrafficM"
 

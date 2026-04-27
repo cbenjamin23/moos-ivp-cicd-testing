@@ -1,0 +1,17 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  event = var=ARRIVED, val=false, time=1
+  event = var=AVOIDING, val=idle, time=1
+  event = var=CONTACT_RESOLVED, val=none, time=1
+  event = var=ALERT_REQUEST_SEEN, val=false, time=1
+  event = var=CONTACT_INFO_SEEN, val=false, time=1
+  event = var=RANGE_INFO_SEEN, val=false, time=1
+  event = var=CLSG_INFO_SEEN, val=false, time=1
+  event = var=ENCOUNTER_TOTAL, val=0, time=1
+  event = var=NEAR_MISS_TOTAL, val=0, time=1
+  event = var=COLLISION_TOTAL, val=0, time=1
+  event = var=TEST_EVAL_READY, val=true, time=18
+}

@@ -1,0 +1,28 @@
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  obstacles_color = green
+  post_view_polys = true
+
+  given_max_duration = 1000
+  max_age_per_point  = 1000
+  lasso              = true
+  lasso_points       = 6
+  lasso_radius       = 8
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = OBM_CONNECT = true
+
+  event = var=OBM_ALERT_REQUEST, val="name=avd_,update_var=OBSTACLE_ALERT,alert_range=22", time=1
+  event = var=TRACKED_FEATURE, val="x=29,y=-53,key=ob_lasso", time=1.5
+  event = var=TRACKED_FEATURE, val="x=43,y=-53,key=ob_lasso", time=1.7
+  event = var=TRACKED_FEATURE, val="x=43,y=-67,key=ob_lasso", time=1.9
+  event = var=TRACKED_FEATURE, val="x=29,y=-67,key=ob_lasso", time=2.1
+}

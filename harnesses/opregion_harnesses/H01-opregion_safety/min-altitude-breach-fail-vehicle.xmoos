@@ -1,0 +1,13 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  condition = DEPLOY = true
+
+  event = var=NAV_ALTITUDE, val=2, time=2
+  event = var=NAV_ALTITUDE, val=2, time=3
+  event = var=NAV_ALTITUDE, val=2, time=4
+  event = var=NAV_ALTITUDE, val=2, time=5
+  event = var=NAV_ALTITUDE, val=2, time=6
+}

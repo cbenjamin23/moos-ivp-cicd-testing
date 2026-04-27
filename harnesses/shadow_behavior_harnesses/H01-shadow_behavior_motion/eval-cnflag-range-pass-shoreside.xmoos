@@ -1,0 +1,50 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = SHADOW_RELEVANCE > 0
+  pass_condition = SHADOW_RANGE_NEAR > 0
+  pass_condition = SHADOW_RANGE_NEAR <= 120
+  pass_condition = BHV_WARNING_SEEN = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = shadow_behavior_tests
+  mission_mod  = $(MMOD:=cnflag_range_macro_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = relevance=$[SHADOW_RELEVANCE]
+  report_column = range_near=$[SHADOW_RANGE_NEAR]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = SHADOW_UPDATES, TEST_EVAL_READY
+  qbridge  = SHADOW_CONTACT_X, SHADOW_CONTACT_Y
+  qbridge  = SHADOW_CONTACT_SPEED, SHADOW_CONTACT_HEADING, SHADOW_RELEVANCE
+  qbridge  = SHADOW_RANGE_NEAR
+  qbridge  = ABE_NAV_SPEED, ABE_NAV_HEADING, ABE_NAV_X, ABE_NAV_Y
+  qbridge  = BEN_NAV_SPEED, BEN_NAV_HEADING, BEN_NAV_X, BEN_NAV_Y
+  qbridge  = BHV_WARNING, BHV_ERROR
+}

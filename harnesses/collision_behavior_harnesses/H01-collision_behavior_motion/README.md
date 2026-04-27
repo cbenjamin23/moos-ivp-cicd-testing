@@ -31,23 +31,71 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
 - `head_on_resolve_pass`
   The intruder is patched to move head-on. This is a stronger geometry than
   the baseline crossing case, but the mission should still resolve cleanly.
+- `pwt_outer_too_small_fail`
+  The collision-relevance outer distance is made too small for the on-lane
+  encounter. The behavior may resolve administratively, but the mission should
+  fail because the vessel still collides.
+- `pwt_grade_quadratic_pass`
+  The objective-function grade is switched to `quadratic`. The behavior should
+  still resolve the baseline encounter with no collision.
+- `pwt_grade_quasi_pass`
+  The objective-function grade is switched to `quasi`. The behavior should
+  still resolve the baseline encounter with no collision.
+- `use_refinery_pass`
+  The IvP refinery branch is enabled. The behavior should still build a usable
+  function, resolve the contact, arrive, and avoid collision.
+- `contact_type_required_absent_pass`
+  The legacy `contact_type_required` alias is set to a type that excludes the
+  spoofed contact while the contact is moved off-lane. The behavior should stay
+  idle and the transit should finish cleanly.
+- `no_extrapolate_pass`
+  Contact extrapolation is disabled while the contact feed remains fresh. The
+  behavior should still resolve the encounter cleanly.
 - `no_alert_request_fail`
   The behavior is told not to request an alert while the contact remains
   challenging. The mission should fail because the avoid behavior never
   engages and the required resolution path does not complete.
+- `bad_pwt_inner_dist_fail`
+  `pwt_inner_dist` is set outside the valid relationship to `pwt_outer_dist`.
+  The mission should grade fail rather than silently accepting the unsafe
+  behavior configuration.
+- `bad_pwt_outer_dist_fail`
+  `pwt_outer_dist` is set inside the configured inner distance. The mission
+  should grade fail.
+- `bad_min_util_cpa_dist_fail`
+  `min_util_cpa_dist` is set above `max_util_cpa_dist`. The mission should
+  grade fail.
+- `bad_max_util_cpa_dist_fail`
+  `max_util_cpa_dist` is set below `min_util_cpa_dist`. The mission should
+  grade fail.
+- `bad_pwt_grade_fail`
+  `pwt_grade` is set to an unsupported token. The behavior configuration
+  should be rejected and the mission should grade fail.
+- `bad_completed_dist_fail`
+  `completed_dist` is set negative. The behavior configuration should be
+  rejected and the mission should grade fail.
+- `bad_time_on_leg_fail`
+  The inherited `time_on_leg` setting is set negative. The mission should
+  grade fail.
+- `bad_decay_fail`
+  The inherited contact-decay window is malformed by making the stale threshold
+  lower than the linear threshold. The mission should grade fail.
+- `bad_collision_depth_fail`
+  `collision_depth` is enabled in this 2D mission, where the source requires a
+  depth domain. The mission should grade fail.
 
 ## Results Lines
 
 Typical pass line:
 
 ```text
-case=default_resolve_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  collisions=0  mhash=[WARM-ELMO]
+case=default_resolve_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=1  near_misses=0  collisions=0  mhash=[...]
 ```
 
 Typical fail line:
 
 ```text
-case=no_alert_request_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[...]
+case=no_alert_request_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  encounters=1  near_misses=0  collisions=1  mhash=[...]
 ```
 
 Field anatomy:
@@ -69,6 +117,10 @@ Field anatomy:
 - `clsg_seen`: whether `CLSG_SPD_AVD_intruder` was seen
 - `resolved`: value posted by the behavior `endflag`
 - `arrived`: whether the ownship reached the goal waypoint
+- `encounters`: `uFldCollisionDetect` encounter total, when reported by the
+  case
+- `near_misses`: `uFldCollisionDetect` near-miss total, when reported by the
+  case
 - `collisions`: `uFldCollisionDetect` collision total
 - `mhash`: short mission hash
 
@@ -76,7 +128,7 @@ Field anatomy:
 
 ```bash
 ./zlaunch.sh
-./zlaunch.sh --jobs=2 10
+./zlaunch.sh --jobs=4 --port_base=17000 10
 ./zlaunch.sh --case=head_on_resolve_pass 10
 ./zlaunch.sh --just_make 10
 ```
@@ -92,8 +144,7 @@ Wave mode notes:
 
 Latest validation:
 
-- March 20, 2026
-- full matrix: `6/6` passing
+- April 26, 2026
+- full matrix: `21/21` passing
 - warp: `10`
-- serial wall clock: `63.82` seconds
-- `--jobs=2` wall clock: `43.62` seconds
+- command: `./zlaunch.sh --jobs=4 --port_base=17000 10`

@@ -1,0 +1,24 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @VIEW_POLYGON#VIEW_POLY_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = OBM_DIST_TO_OBJ = ROCK_A,18.0
+  fail_condition = VIEW_POLY_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests_harness
+  mission_mod  = post_view_polys_false_absent_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = view_poly_seen=$[VIEW_POLY_SEEN]
+  report_column    = dist=$[OBM_DIST_TO_OBJ]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

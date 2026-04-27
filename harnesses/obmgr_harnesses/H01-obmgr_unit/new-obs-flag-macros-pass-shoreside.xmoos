@@ -1,0 +1,22 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = OBM_NEW_STATS = now_1_ever_1
+  pass_condition = OBM_DIST_TO_OBJ = OB_NEAR,18.0
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests_harness
+  mission_mod  = new_obs_flag_macros_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = new_stats=$[OBM_NEW_STATS]
+  report_column    = dist=$[OBM_DIST_TO_OBJ]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

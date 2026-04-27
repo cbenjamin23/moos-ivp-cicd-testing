@@ -1,0 +1,15 @@
+Behavior = BHV_AvoidObstacleV24
+{
+  name        = avd_obs_
+  pwt         = 110
+  condition   = MODE == ACTIVE
+  condition   = AVOID = true
+
+  idleflag     = OBAVOIDING = idle
+  activeflag   = OBAVOIDING = active
+  inactiveflag = OBAVOIDING = inactive
+  runflag      = OBAVOIDING = running
+  endflag      = OBAVOIDING = end
+
+  polygon = pts={29,-53:43,-67:29,-67:43,-53},label=bad_poly
+}

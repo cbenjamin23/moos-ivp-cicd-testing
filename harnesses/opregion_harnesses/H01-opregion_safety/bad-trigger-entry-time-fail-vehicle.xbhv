@@ -1,0 +1,12 @@
+Behavior = BHV_OpRegionV24
+{
+  name      = opreg
+  pwt       = 300
+  condition = MODE == ACTIVE
+  updates   = OPREGION_UPDATES
+
+  core_poly = pts={-23,-152:47,-152:47,-90:-23,-90}
+  save_dist = 0
+  halt_dist = 8
+  trigger_entry_time = -1
+}

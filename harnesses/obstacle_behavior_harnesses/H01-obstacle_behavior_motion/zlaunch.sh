@@ -26,6 +26,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9300"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -65,7 +66,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -73,6 +74,7 @@ for ARGI; do
         echo "  ./zlaunch.sh"
         echo "  ./zlaunch.sh --case=cpa_flag_pass"
         echo "  ./zlaunch.sh --case=avoid_disabled_fail"
+        echo "  ./zlaunch.sh --jobs=4 --port_base=18000 10"
         echo "  ./zlaunch.sh --jobs=2"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
@@ -112,7 +114,7 @@ fi
 
 wait_for_result_line() {
     local results_path="$1"
-    local attempts="${2:-24}"
+    local attempts="${2:-60}"
     local line=""
     local attempt
 
@@ -198,9 +200,65 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/two-obstacles-clean-pass-shoreside.xmoos"
         VEH_MOOS_PATCH="$HARNESS_DIR/two-obstacles-clean-pass-vehicle.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/two-obstacles-clean-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "static_polygon_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/static-polygon-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/static-polygon-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "poly_alias_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/static-polygon-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/poly-alias-pass-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "rng_flag_no_threshold_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/rng-flag-pass-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/rng-flag-no-threshold-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "avoid_disabled_fail" ]; then
         EXPECTED="fail"
         VEH_BHV_PATCH="$HARNESS_DIR/avoid-disabled-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_polygon_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-polygon-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_pwt_inner_dist_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-inner-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_pwt_outer_dist_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-outer-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_completed_dist_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-completed-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_min_util_cpa_dist_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-min-util-cpa-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_max_util_cpa_dist_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-max-util-cpa-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_allowable_ttc_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-allowable-ttc-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_rng_flag_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-rng-flag-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_cpa_flag_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-cpa-flag-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_use_refinery_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-use-refinery-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "bad_pwt_grade_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-grade-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
         return 1
@@ -232,6 +290,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local shore_mport
     local veh_mport
     local shore_pshare
@@ -252,10 +312,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 200))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -281,7 +342,7 @@ run_case() {
     # before reading it from the harness-owned path.
     sleep 1
 
-    line=$(wait_for_result_line results.txt 24)
+    line=$(wait_for_result_line results.txt 60)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -363,10 +424,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 200 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -391,7 +453,7 @@ run_case_isolated() {
         return 1
     fi
 
-    line=$(wait_for_result_line "$case_dir/results.txt" 24)
+    line=$(wait_for_result_line "$case_dir/results.txt" 60)
     actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
     if [ "$actual" = "" ]; then
         actual="missing"
@@ -418,7 +480,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="default_auto_request_pass rng_flag_pass cpa_flag_pass offlane_no_engagement_pass no_refinery_pass two_obstacles_clean_pass avoid_disabled_fail"
+    CASES="default_auto_request_pass rng_flag_pass cpa_flag_pass offlane_no_engagement_pass no_refinery_pass two_obstacles_clean_pass static_polygon_pass poly_alias_pass rng_flag_no_threshold_pass avoid_disabled_fail bad_polygon_fail bad_pwt_inner_dist_fail bad_pwt_outer_dist_fail bad_completed_dist_fail bad_min_util_cpa_dist_fail bad_max_util_cpa_dist_fail bad_allowable_ttc_fail bad_rng_flag_fail bad_cpa_flag_fail bad_use_refinery_fail bad_pwt_grade_fail"
 fi
 
 : > "$RESULTS_FILE"

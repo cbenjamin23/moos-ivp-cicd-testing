@@ -38,10 +38,44 @@ collision outcome.
 - `head_on_resolve_pass`
   The intruder is patched to move head-on. This is a stronger geometry than
   the baseline crossing case, but the mission should still resolve cleanly.
+- `pwt_outer_too_small_fail`
+  A too-small collision-relevance outer distance should be exposed as an unsafe
+  collision outcome, not counted as a clean success.
+- `pwt_grade_quadratic_pass`
+  The quadratic objective-function grade should still resolve the baseline
+  encounter cleanly.
+- `pwt_grade_quasi_pass`
+  The quasi objective-function grade should still resolve the baseline
+  encounter cleanly.
+- `use_refinery_pass`
+  The refinery branch should still produce a safe resolving behavior.
+- `contact_type_required_absent_pass`
+  The legacy `contact_type_required` alias should filter out a non-matching
+  off-lane contact and allow clean idle transit.
+- `no_extrapolate_pass`
+  Disabling extrapolation should still work while the contact report is fresh.
 - `no_alert_request_fail`
   The behavior is told not to request an alert while the contact remains
   challenging. The mission should fail because the avoid behavior never
   engages and the required resolution path does not complete.
+- `bad_pwt_inner_dist_fail`
+  Invalid inner/outer relevance ordering should grade fail.
+- `bad_pwt_outer_dist_fail`
+  Invalid outer/inner relevance ordering should grade fail.
+- `bad_min_util_cpa_dist_fail`
+  Invalid minimum/maximum CPA utility ordering should grade fail.
+- `bad_max_util_cpa_dist_fail`
+  Invalid maximum/minimum CPA utility ordering should grade fail.
+- `bad_pwt_grade_fail`
+  Unsupported `pwt_grade` values should grade fail.
+- `bad_completed_dist_fail`
+  Negative `completed_dist` should grade fail.
+- `bad_time_on_leg_fail`
+  Negative inherited `time_on_leg` should grade fail.
+- `bad_decay_fail`
+  Malformed inherited contact decay should grade fail.
+- `bad_collision_depth_fail`
+  Depth-specific collision settings should grade fail in this 2D domain.
 
 ## Results
 

@@ -1,0 +1,24 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = OBM_NEW_GIVEN = true
+  fail_condition = OBM_DIST_TO_OBJ = OB_NEAR,18.0
+  fail_condition = OBSTACLE_ALERT = name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = obmgr_tests_harness
+  mission_mod  = bad_alert_request_absent_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = new_given=$[OBM_NEW_GIVEN]
+  report_column    = dist=$[OBM_DIST_TO_OBJ]
+  report_column    = alert=$[OBSTACLE_ALERT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

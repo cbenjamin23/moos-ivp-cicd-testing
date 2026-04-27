@@ -21,6 +21,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9600"
 PORT_BASE_SET="no"
+PORT_STRIDE="100"
 KEEP_WORKDIRS="no"
 ENDURANCE_MAX_TIME="2800"
 
@@ -54,7 +55,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to the mission"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo "  --profile=<name>   Set perf profile (local or ci)"
@@ -65,7 +66,7 @@ for ARGI; do
         echo "  ./zlaunch.sh --case=baseline_field_pass"
         echo "  ./zlaunch.sh --case=dense_field_pass"
         echo "  ./zlaunch.sh --case=endurance_random_pass"
-        echo "  ./zlaunch.sh --jobs=2"
+        echo "  ./zlaunch.sh --jobs=2 --port_base=30000"
         exit 0
     elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
         VERBOSE="yes"
@@ -319,6 +320,8 @@ prepare_case_dir() {
 
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local line
     local actual
     local status
@@ -331,6 +334,7 @@ run_case() {
     local veh_mport
     local shore_pshare
     local veh_pshare
+    local case_base
 
     get_case_config "$case_name" || return 1
 
@@ -346,10 +350,11 @@ run_case() {
 
     XARGS="--max_time=$case_max_time --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 200))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -442,10 +447,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 200 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"

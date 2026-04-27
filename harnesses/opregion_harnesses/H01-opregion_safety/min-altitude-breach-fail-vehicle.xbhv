@@ -1,0 +1,30 @@
+Behavior = BHV_OpRegionV24
+{
+  name      = opreg
+  pwt       = 300
+  condition = MODE == ACTIVE
+  updates   = OPREGION_UPDATES
+
+  core_poly = pts={-23,-152:47,-152:47,-90:-23,-90}
+  save_dist = 0
+  halt_dist = 8
+  min_altitude = 10
+
+  trigger_on_poly_entry = true
+  trigger_entry_time    = 0.5
+  trigger_exit_time     = 0.5
+  recover_spd           = 1.0
+
+  save_flag              = SAVE_REGION_BREACHED=true
+  savex_flag             = SAVE_REGION_RECOVERING=true
+  breached_poly_flag     = HALT_REGION_BREACHED=true
+  breached_time_flag     = TIME_LIMIT_BREACHED=true
+  breached_altitude_flag = ALTITUDE_LIMIT_BREACHED=true
+
+  visual_hints = vertex_size=0, edge_size=1
+  visual_hints = core_edge_color=white
+  visual_hints = save_edge_color=yellow
+  visual_hints = halt_edge_color=white
+  visual_hints = save_status_edge_color=yellow
+  visual_hints = halt_status_edge_color=red
+}

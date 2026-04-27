@@ -17,8 +17,10 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
+  pass_condition = LOITER_DONE = true
+  pass_condition = LOITER_MODE = stable
   pass_condition = LOITER_ACQUIRE = 0
-  pass_condition = LOITER_BNG_TOTAL > 0
+  pass_condition = LOITER_BNG_TOTAL >= 5
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

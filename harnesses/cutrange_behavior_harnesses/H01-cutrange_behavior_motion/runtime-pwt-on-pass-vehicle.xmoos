@@ -1,0 +1,13 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+#ifdef VROLE CHASER
+  event = var=CUTRANGE, val=true, time=30
+  event = var=CUTRANGE_UPDATES, val="pwt_inner_dist=15", time=37
+  event = var=CUTRANGE_UPDATES, val="pwt_outer_dist=70", time=38
+#endif
+}

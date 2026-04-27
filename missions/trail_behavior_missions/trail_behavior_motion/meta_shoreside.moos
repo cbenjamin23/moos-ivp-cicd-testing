@@ -54,6 +54,10 @@ ProcessConfig = pAutoPoke
   flag = TRAIL_RANGE=999
   flag = PURSUIT=-1
   flag = REGION=UNKNOWN
+  flag = ABE_NAV_X=0
+  flag = ABE_NAV_Y=0
+  flag = BEN_NAV_X=0
+  flag = BEN_NAV_Y=0
 
   required_nodes = 2
 }
@@ -123,6 +127,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = MOOS_MANUAL_OVERRIDE
   qbridge  = TRAIL_UPDATES, TEST_EVAL_READY
   qbridge  = TRAIL_DISTANCE, TRAIL_RELEVANCE, TRAIL_RANGE, PURSUIT, REGION
+  qbridge  = ABE_NAV_X, ABE_NAV_Y, BEN_NAV_X, BEN_NAV_Y
   qbridge  = TRAIL_SPEED, TRAIL_HEADING, BHV_WARNING, BHV_ERROR
 }
 
@@ -159,6 +164,10 @@ ProcessConfig = pLogger
   Log = TRAIL_RANGE @ 0 nosync
   Log = PURSUIT @ 0 nosync
   Log = REGION @ 0 nosync
+  Log = ABE_NAV_X @ 0 nosync
+  Log = ABE_NAV_Y @ 0 nosync
+  Log = BEN_NAV_X @ 0 nosync
+  Log = BEN_NAV_Y @ 0 nosync
   Log = TRAIL_SPEED @ 0 nosync
   Log = TRAIL_HEADING @ 0 nosync
   Log = BHV_WARNING @ 0 nosync
@@ -193,5 +202,9 @@ ProcessConfig = pMarineViewer
   scope = TRAIL_RANGE
   scope = PURSUIT
   scope = REGION
+  scope = ABE_NAV_X
+  scope = ABE_NAV_Y
+  scope = BEN_NAV_X
+  scope = BEN_NAV_Y
   scope = BHV_ERROR_SEEN
 }

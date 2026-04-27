@@ -42,10 +42,53 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
   grades on clean completion rather than a specific final `OBAVOIDING` state or
   exact encounter count, because those were less stable than the mission
   outcome itself.
+- `static_polygon_pass`
+  The behavior is configured with a launch-time `polygon` instead of the
+  templated `OBSTACLE_ALERT` path. It should still complete avoidance and
+  arrive without collision.
+- `poly_alias_pass`
+  The same launch-time obstacle is configured through the `poly` alias. It
+  should behave like `polygon` and complete cleanly.
+- `rng_flag_no_threshold_pass`
+  The behavior uses `rng_flag=AVOID_RANGE_SEEN=true` with no threshold. The
+  mission passes only if the no-threshold range flag is posted during a clean
+  avoidance run.
 - `avoid_disabled_fail`
   The behavior is patched so its `AVOID=true` condition can never hold. The
   alert request still happens, but the avoid-obstacle lifecycle should fail to
   complete and the mission is expected to grade `fail`.
+- `bad_polygon_fail`
+  The launch-time `polygon` is non-convex. The behavior configuration should be
+  rejected and the mission should grade fail.
+- `bad_pwt_inner_dist_fail`
+  `pwt_inner_dist` is set above `pwt_outer_dist`. The mission should grade fail
+  rather than accepting an invalid relevance band.
+- `bad_pwt_outer_dist_fail`
+  `pwt_outer_dist` is set below `pwt_inner_dist`. The mission should grade
+  fail.
+- `bad_completed_dist_fail`
+  `completed_dist` is set below the configured outer relevance distance. The
+  mission should grade fail.
+- `bad_min_util_cpa_dist_fail`
+  `min_util_cpa_dist` is set above `max_util_cpa_dist`. The mission should
+  grade fail.
+- `bad_max_util_cpa_dist_fail`
+  `max_util_cpa_dist` is set below `min_util_cpa_dist`. The mission should
+  grade fail.
+- `bad_allowable_ttc_fail`
+  `allowable_ttc` is set negative. The behavior configuration should be
+  rejected and the mission should grade fail.
+- `bad_rng_flag_fail`
+  `rng_flag` is given a malformed threshold. The behavior configuration should
+  be rejected and the mission should grade fail.
+- `bad_cpa_flag_fail`
+  `cpa_flag` is missing an assignment payload. The behavior configuration
+  should be rejected and the mission should grade fail.
+- `bad_use_refinery_fail`
+  `use_refinery` is set to a non-boolean token. The mission should grade fail.
+- `bad_pwt_grade_fail`
+  `pwt_grade` is present in the source state but is not accepted by the current
+  `setParam()` surface. The mission should grade fail if someone configures it.
 
 ## Results Lines
 
@@ -79,12 +122,13 @@ Field anatomy:
 ```bash
 ./zlaunch.sh
 ./zlaunch.sh --case=cpa_flag_pass 10
+./zlaunch.sh --jobs=4 --port_base=18000 10
 ./zlaunch.sh --just_make 10
 ```
 
 Latest validation:
 
-- March 25, 2026
-- full matrix: `7/7` expected outcomes matched
-- isolated `cpa_flag_pass`: `6/6` passing
+- April 26, 2026
+- full matrix: `21/21` expected outcomes matched
 - warp: `10`
+- command: `./zlaunch.sh --jobs=4 --port_base=18000 10`

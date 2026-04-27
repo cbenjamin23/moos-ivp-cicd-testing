@@ -26,6 +26,7 @@ CASE=""
 JOBS="1"
 PORT_BASE="9000"
 PORT_BASE_SET="no"
+PORT_STRIDE="30"
 KEEP_WORKDIRS="no"
 
 HARNESS_DIR="${PWD}"
@@ -63,7 +64,7 @@ for ARGI; do
         echo "  --max_time=<secs>  Max time passed to xlaunch"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base shoreside MOOSDB port for wave mode"
+        echo "  --port_base=<n>    Base port for per-case wave blocks"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
@@ -185,6 +186,23 @@ get_case_config() {
     elif [ "$CASE_NAME" = "head_on_pass" ]; then
         EXPECTED="pass"
         VEH_PATCH="$HARNESS_DIR/head-on-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "runtime_alert_add_pass" ]; then
+        EXPECTED="pass"
+        VEH_PATCH="$HARNESS_DIR/runtime-alert-add-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "runtime_alert_reenable_pass" ]; then
+        EXPECTED="pass"
+        VEH_PATCH="$HARNESS_DIR/runtime-alert-reenable-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "hold_alerts_for_helm_pass" ]; then
+        EXPECTED="pass"
+        VEH_PATCH="$HARNESS_DIR/hold-alerts-for-helm-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "filter_match_type_clear_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/filter-match-type-clear-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/filter-match-type-clear-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "stale_reappear_pass" ]; then
+        EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/stale-reappear-pass-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/stale-reappear-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "two_contact_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/two-contact-pass-shoreside.xmoos"
@@ -196,6 +214,10 @@ get_case_config() {
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/avoid-disabled-fail-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/avoid-disabled-fail-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "runtime_alert_disable_fail" ]; then
+        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/runtime-alert-disable-fail-shoreside.xmoos"
+        VEH_PATCH="$HARNESS_DIR/runtime-alert-disable-fail-vehicle.xmoos"
     elif [ "$CASE_NAME" = "fast_intruder_fail" ]; then
         EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/fast-intruder-fail-shoreside.xmoos"
@@ -224,6 +246,8 @@ apply_case_patches() {
 #------------------------------------------------------------
 run_case() {
     local case_name="$1"
+    local case_idx="${RUN_CASE_IDX:-0}"
+    RUN_CASE_IDX=$((case_idx + 1))
     local shore_mport
     local veh_mport
     local shore_pshare
@@ -240,10 +264,11 @@ run_case() {
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
-        shore_mport=$PORT_BASE
-        veh_mport=$((shore_mport + 1))
-        shore_pshare=$((PORT_BASE + 200))
-        veh_pshare=$((shore_pshare + 1))
+        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+        shore_mport=$((case_base + 0))
+        veh_mport=$((case_base + 1))
+        shore_pshare=$((case_base + 10))
+        veh_pshare=$((case_base + 11))
         XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
@@ -329,10 +354,11 @@ run_case_isolated() {
         return 1
     }
 
-    shore_mport=$((PORT_BASE + case_idx*20))
-    veh_mport=$((shore_mport + 1))
-    shore_pshare=$((PORT_BASE + 200 + case_idx*20))
-    veh_pshare=$((shore_pshare + 1))
+    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
+    shore_mport=$((case_base + 0))
+    veh_mport=$((case_base + 1))
+    shore_pshare=$((case_base + 10))
+    veh_pshare=$((case_base + 11))
 
     (
         cd "$case_dir"
@@ -384,7 +410,7 @@ trap cleanup EXIT
 if [ "$CASE" != "" ]; then
     CASES="$CASE"
 else
-    CASES="baseline_crossing_pass offset_clear_pass no_detect_clear_pass delayed_crossing_pass head_on_pass two_contact_pass tight_alert_fail avoid_disabled_fail fast_intruder_fail"
+    CASES="baseline_crossing_pass offset_clear_pass no_detect_clear_pass delayed_crossing_pass head_on_pass runtime_alert_add_pass runtime_alert_reenable_pass hold_alerts_for_helm_pass filter_match_type_clear_pass stale_reappear_pass two_contact_pass tight_alert_fail avoid_disabled_fail runtime_alert_disable_fail fast_intruder_fail"
 fi
 
 : > "$RESULTS_FILE"

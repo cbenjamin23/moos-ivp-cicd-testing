@@ -36,6 +36,13 @@ The most important behavior-specific patches are:
 - `match_type=...`
   proves the behavior-owned filter path works and can prevent spawning even
   when the contact itself is present
+- `contact_type_required=...`
+  covers the legacy alias path that maps into the same type-filter machinery
+- `pwt_grade=quadratic|quasi` and `use_refinery=true`
+  cover alternate IvP function construction branches while preserving the
+  baseline encounter geometry
+- malformed distance, grade, decay, and depth settings
+  cover rejected or unsafe parameter branches with mission-owned fail grades
 
 Case geometry is changed separately in `uTimerScript` patches when needed.
 That keeps the behavior parameters and the motion geometry independent, which

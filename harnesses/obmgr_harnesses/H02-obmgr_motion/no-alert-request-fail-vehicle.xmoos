@@ -1,0 +1,23 @@
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  given_obstacle = pts={27,-52:45,-52:45,-68:27,-68},label=ob_noalert
+
+  obstacles_color = green
+  post_view_polys = true
+
+  given_max_duration = 1000
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = OBM_CONNECT = true
+
+  // Intentionally no OBM_ALERT_REQUEST. The obstacle exists, but no avoid
+  // behavior should be spawned from pObstacleMgr.
+}

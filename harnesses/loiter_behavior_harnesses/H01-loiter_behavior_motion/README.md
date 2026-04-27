@@ -48,7 +48,8 @@ behavior-owned outputs:
 - `center_assign_xy_pass`
   Updates the center through `xcenter_assign` and `ycenter_assign`.
 - `center_assign_pair_pass`
-  Updates the center through combined `center_assign`.
+  Starts with the loiter center near the approach path, then shifts the center
+  east through combined `center_assign`.
 - `xcenter_ycenter_update_pass`
   Updates the polygon center through runtime x/y center mail.
 - `mod_poly_rad_expand_pass`
@@ -71,6 +72,15 @@ behavior-owned outputs:
   Malformed polygon configuration is expected to fail.
 - `bad_update_fail`
   Malformed runtime update is expected to fail.
+- `bad_clockwise_fail`
+  Rejects malformed `clockwise` input outside the accepted boolean/`best`
+  values.
+- `bad_use_alt_speed_fail`
+  Rejects non-boolean `use_alt_speed` configuration.
+- `bad_patience_fail`
+  Rejects `patience` outside the accepted 1..99 course/speed ZAIC ratio range.
+- `bad_capture_radius_fail`
+  Rejects a negative `capture_radius` value.
 - `center_bad_update_recover_pass`
   Bad center update followed by valid recovery update.
 - `spiral_factor_pass`
@@ -91,20 +101,19 @@ behavior-owned outputs:
 ./zlaunch.sh --case=center_activate_pass --gui 1
 ./zlaunch.sh --case=eta_output_pass --gui 1
 ./zlaunch.sh --just_make 10
-./zlaunch.sh --jobs=4 10
-./zlaunch.sh --jobs=4 --port_base=9700 10
+./zlaunch.sh --jobs=4 --port_base=27000 10
 ```
 
 Results are written to `results.txt` with the mission-owned `grade` and the
 loiter status columns used for grading. Wave mode runs the full matrix in
 isolated temporary mission copies. Each case gets its own MOOSDB and pShare
-port block derived from `--port_base`, with pShare ports offset above the
-MOOSDB range. The default is serial `--jobs=1`; use `--keep_workdirs` when
+port block using `case_base = port_base + case_idx*PORT_STRIDE`, with pShare
+ports starting at `case_base + 10`. The default is serial `--jobs=1`; use `--keep_workdirs` when
 preserving temporary case folders is useful for debugging.
 
 Latest validation:
 
-- April 24, 2026
-- full wave matrix: `30/30` expected outcomes matched with `--jobs=4`
-- added cases also passed as individual live runs
+- April 27, 2026
+- generated-file matrix: `34/34` cases completed with `--just_make --jobs=4 --port_base=15000`
+- full wave matrix: `34/34` expected outcomes matched with `--jobs=4 --port_base=15000`
 - warp: `10`
