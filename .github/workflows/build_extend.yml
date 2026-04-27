@@ -61,12 +61,21 @@ jobs:
           bash <(curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
           ./actionlint
 
+      - name: Validate CI helper scripts
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests
+          python3 scripts/harness_targets.py validate
+
   select-targets:
     if: ${{ inputs.dispatch_mode != 'full' }}
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.select.outputs.matrix }}
+      selected_keys: ${{ steps.select.outputs.selected_keys }}
     steps:
+      - uses: actions/checkout@v6
+
       - name: Select requested harness targets
         id: select
         env:
@@ -74,199 +83,18 @@ jobs:
           FAMILY: ${{ inputs.family }}
           TARGETS: ${{ inputs.targets }}
         run: |
-          python3 <<'PY' >> "$GITHUB_OUTPUT"
-          import json
-          import os
-          import sys
-
-          dispatch_mode = os.environ["DISPATCH_MODE"]
-          family = os.environ["FAMILY"]
-          raw_targets = os.environ["TARGETS"]
-          wanted = [item.strip() for item in raw_targets.split(",") if item.strip()]
-          all_targets = [
-              {
-                  "key": "cmgr_h01",
-                  "path": "harnesses/cmgr_harnesses/H01-cmgr_unit",
-                  "harness": "H01-cmgr_unit",
-                  "artifact": "manual-cmgr-h01-results",
-                  "families": ["cmgr"],
-              },
-              {
-                  "key": "cmgr_h02",
-                  "path": "harnesses/cmgr_harnesses/H02-cmgr_motion",
-                  "harness": "H02-cmgr_motion",
-                  "artifact": "manual-cmgr-h02-results",
-                  "families": ["cmgr"],
-              },
-              {
-                  "key": "obmgr_h01",
-                  "path": "harnesses/obmgr_harnesses/H01-obmgr_unit",
-                  "harness": "H01-obmgr_unit",
-                  "artifact": "manual-obmgr-h01-results",
-                  "families": ["obmgr"],
-              },
-              {
-                  "key": "obmgr_h02",
-                  "path": "harnesses/obmgr_harnesses/H02-obmgr_motion",
-                  "harness": "H02-obmgr_motion",
-                  "artifact": "manual-obmgr-h02-results",
-                  "families": ["obmgr"],
-              },
-              {
-                  "key": "colregs_h01",
-                  "path": "harnesses/colregs_harnesses/H01-colregs_classification",
-                  "harness": "H01-colregs_classification",
-                  "artifact": "manual-colregs-h01-results",
-                  "families": ["colregs"],
-              },
-              {
-                  "key": "colregs_h02",
-                  "path": "harnesses/colregs_harnesses/H02-colregs_thresholds",
-                  "harness": "H02-colregs_thresholds",
-                  "artifact": "manual-colregs-h02-results",
-                  "families": ["colregs"],
-              },
-              {
-                  "key": "colregs_h03",
-                  "path": "harnesses/colregs_harnesses/H03-colregs_execution",
-                  "harness": "H03-colregs_execution",
-                  "artifact": "manual-colregs-h03-results",
-                  "families": ["colregs"],
-              },
-              {
-                  "key": "colregs_h04",
-                  "path": "harnesses/colregs_harnesses/H04-colregs_parameters",
-                  "harness": "H04-colregs_parameters",
-                  "artifact": "manual-colregs-h04-results",
-                  "families": ["colregs"],
-              },
-              {
-                  "key": "collision_h01",
-                  "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion",
-                  "harness": "H01-collision_behavior_motion",
-                  "artifact": "manual-collision-h01-results",
-                  "families": ["collision_behavior"],
-              },
-              {
-                  "key": "convoy_h01",
-                  "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion",
-                  "harness": "H01-convoy_behavior_motion",
-                  "artifact": "manual-convoy-h01-results",
-                  "families": ["convoy_behavior"],
-              },
-              {
-                  "key": "fixedturn_h01",
-                  "path": "harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion",
-                  "harness": "H01-fixedturn_behavior_motion",
-                  "artifact": "manual-fixedturn-h01-results",
-                  "families": ["fixedturn_behavior"],
-              },
-              {
-                  "key": "loiter_h01",
-                  "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
-                  "harness": "H01-loiter_behavior_motion",
-                  "artifact": "manual-loiter-h01-results",
-                  "families": ["loiter_behavior"],
-              },
-              {
-                  "key": "obstacle_behavior_h01",
-                  "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion",
-                  "harness": "H01-obstacle_behavior_motion",
-                  "artifact": "manual-obstacle-behavior-h01-results",
-                  "families": ["obstacle_behavior"],
-              },
-              {
-                  "key": "opregion_h01",
-                  "path": "harnesses/opregion_harnesses/H01-opregion_safety",
-                  "harness": "H01-opregion_safety",
-                  "artifact": "manual-opregion-h01-results",
-                  "families": ["opregion"],
-              },
-              {
-                  "key": "p01_obstacle",
-                  "path": "harnesses/performance_harnesses/P01-obstacle_gauntlet",
-                  "harness": "P01-obstacle_gauntlet",
-                  "artifact": "manual-p01-obstacle-results",
-                  "families": ["performance"],
-                  "perf_profile": "ci",
-              },
-              {
-                  "key": "shadow_h01",
-                  "path": "harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion",
-                  "harness": "H01-shadow_behavior_motion",
-                  "artifact": "manual-shadow-h01-results",
-                  "families": ["shadow_behavior"],
-              },
-              {
-                  "key": "stationkeep_h01",
-                  "path": "harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion",
-                  "harness": "H01-stationkeep_behavior_motion",
-                  "artifact": "manual-stationkeep-h01-results",
-                  "families": ["stationkeep_behavior"],
-              },
-              {
-                  "key": "trail_h01",
-                  "path": "harnesses/trail_behavior_harnesses/H01-trail_behavior_motion",
-                  "harness": "H01-trail_behavior_motion",
-                  "artifact": "manual-trail-h01-results",
-                  "families": ["trail_behavior"],
-              },
-              {
-                  "key": "waypoint_h01",
-                  "path": "harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion",
-                  "harness": "H01-waypoint_behavior_motion",
-                  "artifact": "manual-waypoint-h01-results",
-                  "families": ["waypoint_behavior"],
-              },
-              {
-                  "key": "p02_colregs",
-                  "path": "harnesses/performance_harnesses/P02-colregs_joust",
-                  "harness": "P02-colregs_joust",
-                  "artifact": "manual-p02-colregs-results",
-                  "families": ["colregs", "performance"],
-              },
-              {
-                  "key": "p03_colregs",
-                  "path": "harnesses/performance_harnesses/P03-colregs_traffic_ring",
-                  "harness": "P03-colregs_traffic_ring",
-                  "artifact": "manual-p03-colregs-results",
-                  "families": ["colregs", "performance"],
-                  "perf_profile": "ci",
-              },
-          ]
-
-          if dispatch_mode == "family_run":
-              selected = [
-                  item for item in all_targets if family in item["families"]
-              ]
-              if not selected:
-                  sys.stderr.write(
-                      f"No live harnesses are configured for family '{family}'.\n"
-                  )
-                  raise SystemExit(1)
-          else:
-              target_map = {item["key"]: item for item in all_targets}
-              invalid = [item for item in wanted if item not in target_map]
-              if invalid:
-                  sys.stderr.write(
-                      "Unknown target key(s): " + ", ".join(invalid) + "\n"
-                  )
-                  sys.stderr.write(
-                      "Valid keys: " + ", ".join(sorted(target_map)) + "\n"
-                  )
-                  raise SystemExit(1)
-
-              selected = [target_map[item] for item in wanted]
-              if not selected:
-                  sys.stderr.write("No valid targets were selected.\n")
-                  raise SystemExit(1)
-
-          print("matrix=" + json.dumps({"include": selected}))
-          PY
+          python3 scripts/harness_targets.py select \
+            --mode "$DISPATCH_MODE" \
+            --family "$FAMILY" \
+            --targets "$TARGETS" \
+            --github-output "$GITHUB_OUTPUT" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
 
   build:
     needs: workflow-lint
     runs-on: ubuntu-latest
+    outputs:
+      moos_ivp_sha: ${{ steps.moos_sha.outputs.sha }}
     steps:
       - uses: actions/checkout@v6
 
@@ -302,6 +130,29 @@ jobs:
             echo "- Resolved SHA: \`$sha\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Install compiler cache
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ccache
+
+      - name: Restore compiler cache
+        uses: actions/cache@v5
+        with:
+          path: .ccache
+          key: ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', '.github/workflows/build_extend.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-
+            ${{ runner.os }}-ccache-
+
+      - name: Configure compiler cache
+        env:
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+        run: |
+          set -euo pipefail
+          ccache -M 500M
+          ccache -z
+
       - name: Restore build cache
         uses: actions/cache@v5
         with:
@@ -321,7 +172,12 @@ jobs:
 
       - name: Build MOOS-IvP
         working-directory: moos-ivp
+        env:
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
         run: |
+          export PATH="/usr/lib/ccache:$PATH"
           ./build-moos.sh --minrobot --release
           ./build-ivp.sh --nogui
 
@@ -335,11 +191,32 @@ jobs:
           echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: Build repo
+        env:
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
         run: |
+          export PATH="/usr/lib/ccache:$PATH"
           mkdir -p build
           cd build
-          cmake -DMOOSIVP_SOURCE_TREE_BASE="${GITHUB_WORKSPACE}/moos-ivp" ..
+          cmake \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DMOOSIVP_SOURCE_TREE_BASE="${GITHUB_WORKSPACE}/moos-ivp" ..
           make
+
+      - name: Report compiler cache stats
+        if: always()
+        env:
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+        run: |
+          {
+            echo "### Compiler Cache"
+            echo ""
+            echo '```'
+            ccache -s || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
@@ -653,6 +530,21 @@ jobs:
           } >> "$GITHUB_PATH"
           echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
+      - name: Summarize selected harness context
+        env:
+          MOOS_IVP_REF: ${{ inputs.moos_ivp_ref }}
+          MOOS_IVP_SHA: ${{ needs.build.outputs.moos_ivp_sha }}
+        run: |
+          {
+            echo "### Selected Harness"
+            echo ""
+            echo "- Target: \`${{ matrix.key }}\`"
+            echo "- Harness: \`${{ matrix.harness }}\`"
+            echo "- Path: \`${{ matrix.path }}\`"
+            echo "- Requested MOOS-IvP ref: \`$MOOS_IVP_REF\`"
+            echo "- Resolved MOOS-IvP SHA: \`$MOOS_IVP_SHA\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Just-make selected harness
         run: |
           set -euo pipefail
@@ -692,6 +584,21 @@ jobs:
             echo "${GITHUB_WORKSPACE}/bin"
           } >> "$GITHUB_PATH"
           echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Summarize selected harness context
+        env:
+          MOOS_IVP_REF: ${{ inputs.moos_ivp_ref }}
+          MOOS_IVP_SHA: ${{ needs.build.outputs.moos_ivp_sha }}
+        run: |
+          {
+            echo "### Selected Harness"
+            echo ""
+            echo "- Target: \`${{ matrix.key }}\`"
+            echo "- Harness: \`${{ matrix.harness }}\`"
+            echo "- Path: \`${{ matrix.path }}\`"
+            echo "- Requested MOOS-IvP ref: \`$MOOS_IVP_REF\`"
+            echo "- Resolved MOOS-IvP SHA: \`$MOOS_IVP_SHA\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run selected correctness harness
         id: harness
@@ -774,6 +681,21 @@ jobs:
             echo "${GITHUB_WORKSPACE}/bin"
           } >> "$GITHUB_PATH"
           echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Summarize selected harness context
+        env:
+          MOOS_IVP_REF: ${{ inputs.moos_ivp_ref }}
+          MOOS_IVP_SHA: ${{ needs.build.outputs.moos_ivp_sha }}
+        run: |
+          {
+            echo "### Selected Harness"
+            echo ""
+            echo "- Target: \`${{ matrix.key }}\`"
+            echo "- Harness: \`${{ matrix.harness }}\`"
+            echo "- Path: \`${{ matrix.path }}\`"
+            echo "- Requested MOOS-IvP ref: \`$MOOS_IVP_REF\`"
+            echo "- Resolved MOOS-IvP SHA: \`$MOOS_IVP_SHA\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run selected family harness
         id: harness

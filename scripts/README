@@ -5,6 +5,12 @@ directory. Users are encouraged to tailor this one to their own needs.
 
 Current repo-specific helpers:
 
+- `ci_harness_case_count.py` derives the default case count from a harness
+  `zlaunch.sh` so GitHub Actions can reject incomplete `results.txt` files.
+- `harness_targets.py` validates and selects the manual-dispatch harness
+  target metadata in `config/harness_targets.json`.
+- `list_harness_targets.py` prints the configured manual-dispatch families and
+  targets for quick local inspection.
 - `benchmark_parallel.sh` runs repeatable wall-clock timing sweeps for a
   harness across multiple `--jobs` values and writes the summary under
   `time_benchmarking/`.

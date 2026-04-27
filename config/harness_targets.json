@@ -1,0 +1,151 @@
+[
+  {
+    "key": "cmgr_h01",
+    "path": "harnesses/cmgr_harnesses/H01-cmgr_unit",
+    "harness": "H01-cmgr_unit",
+    "artifact": "manual-cmgr-h01-results",
+    "families": ["cmgr"]
+  },
+  {
+    "key": "cmgr_h02",
+    "path": "harnesses/cmgr_harnesses/H02-cmgr_motion",
+    "harness": "H02-cmgr_motion",
+    "artifact": "manual-cmgr-h02-results",
+    "families": ["cmgr"]
+  },
+  {
+    "key": "obmgr_h01",
+    "path": "harnesses/obmgr_harnesses/H01-obmgr_unit",
+    "harness": "H01-obmgr_unit",
+    "artifact": "manual-obmgr-h01-results",
+    "families": ["obmgr"]
+  },
+  {
+    "key": "obmgr_h02",
+    "path": "harnesses/obmgr_harnesses/H02-obmgr_motion",
+    "harness": "H02-obmgr_motion",
+    "artifact": "manual-obmgr-h02-results",
+    "families": ["obmgr"]
+  },
+  {
+    "key": "colregs_h01",
+    "path": "harnesses/colregs_harnesses/H01-colregs_classification",
+    "harness": "H01-colregs_classification",
+    "artifact": "manual-colregs-h01-results",
+    "families": ["colregs"]
+  },
+  {
+    "key": "colregs_h02",
+    "path": "harnesses/colregs_harnesses/H02-colregs_thresholds",
+    "harness": "H02-colregs_thresholds",
+    "artifact": "manual-colregs-h02-results",
+    "families": ["colregs"]
+  },
+  {
+    "key": "colregs_h03",
+    "path": "harnesses/colregs_harnesses/H03-colregs_execution",
+    "harness": "H03-colregs_execution",
+    "artifact": "manual-colregs-h03-results",
+    "families": ["colregs"]
+  },
+  {
+    "key": "colregs_h04",
+    "path": "harnesses/colregs_harnesses/H04-colregs_parameters",
+    "harness": "H04-colregs_parameters",
+    "artifact": "manual-colregs-h04-results",
+    "families": ["colregs"]
+  },
+  {
+    "key": "collision_h01",
+    "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion",
+    "harness": "H01-collision_behavior_motion",
+    "artifact": "manual-collision-h01-results",
+    "families": ["collision_behavior"]
+  },
+  {
+    "key": "convoy_h01",
+    "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion",
+    "harness": "H01-convoy_behavior_motion",
+    "artifact": "manual-convoy-h01-results",
+    "families": ["convoy_behavior"]
+  },
+  {
+    "key": "fixedturn_h01",
+    "path": "harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion",
+    "harness": "H01-fixedturn_behavior_motion",
+    "artifact": "manual-fixedturn-h01-results",
+    "families": ["fixedturn_behavior"]
+  },
+  {
+    "key": "loiter_h01",
+    "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
+    "harness": "H01-loiter_behavior_motion",
+    "artifact": "manual-loiter-h01-results",
+    "families": ["loiter_behavior"]
+  },
+  {
+    "key": "obstacle_behavior_h01",
+    "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion",
+    "harness": "H01-obstacle_behavior_motion",
+    "artifact": "manual-obstacle-behavior-h01-results",
+    "families": ["obstacle_behavior"]
+  },
+  {
+    "key": "opregion_h01",
+    "path": "harnesses/opregion_harnesses/H01-opregion_safety",
+    "harness": "H01-opregion_safety",
+    "artifact": "manual-opregion-h01-results",
+    "families": ["opregion"]
+  },
+  {
+    "key": "p01_obstacle",
+    "path": "harnesses/performance_harnesses/P01-obstacle_gauntlet",
+    "harness": "P01-obstacle_gauntlet",
+    "artifact": "manual-p01-obstacle-results",
+    "families": ["performance"],
+    "perf_profile": "ci"
+  },
+  {
+    "key": "shadow_h01",
+    "path": "harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion",
+    "harness": "H01-shadow_behavior_motion",
+    "artifact": "manual-shadow-h01-results",
+    "families": ["shadow_behavior"]
+  },
+  {
+    "key": "stationkeep_h01",
+    "path": "harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion",
+    "harness": "H01-stationkeep_behavior_motion",
+    "artifact": "manual-stationkeep-h01-results",
+    "families": ["stationkeep_behavior"]
+  },
+  {
+    "key": "trail_h01",
+    "path": "harnesses/trail_behavior_harnesses/H01-trail_behavior_motion",
+    "harness": "H01-trail_behavior_motion",
+    "artifact": "manual-trail-h01-results",
+    "families": ["trail_behavior"]
+  },
+  {
+    "key": "waypoint_h01",
+    "path": "harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion",
+    "harness": "H01-waypoint_behavior_motion",
+    "artifact": "manual-waypoint-h01-results",
+    "families": ["waypoint_behavior"]
+  },
+  {
+    "key": "p02_colregs",
+    "path": "harnesses/performance_harnesses/P02-colregs_joust",
+    "harness": "P02-colregs_joust",
+    "artifact": "manual-p02-colregs-results",
+    "families": ["colregs", "performance"]
+  },
+  {
+    "key": "p03_colregs",
+    "path": "harnesses/performance_harnesses/P03-colregs_traffic_ring",
+    "harness": "P03-colregs_traffic_ring",
+    "artifact": "manual-p03-colregs-results",
+    "families": ["colregs", "performance"],
+    "perf_profile": "ci"
+  }
+]
