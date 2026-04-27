@@ -11,6 +11,7 @@ import sys
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TARGETS_PATH = REPO_ROOT / "config" / "harness_targets.json"
 REQUIRED_FIELDS = ("key", "path", "harness", "artifact", "families")
+FULL_MODES = ("just_make", "correctness")
 
 
 def load_targets(path: Path = DEFAULT_TARGETS_PATH) -> list[dict[str, object]]:
@@ -49,6 +50,15 @@ def validate_targets(targets: list[dict[str, object]], repo_root: Path = REPO_RO
         perf_profile = target.get("perf_profile")
         if perf_profile is not None and not isinstance(perf_profile, str):
             raise ValueError(f"target #{idx} field 'perf_profile' must be a string")
+
+        full_modes = target.get("full_modes", [])
+        if (
+            not isinstance(full_modes, list)
+            or any(mode not in FULL_MODES for mode in full_modes)
+        ):
+            raise ValueError(
+                f"target #{idx} field 'full_modes' must use only: {', '.join(FULL_MODES)}"
+            )
 
         key = str(target["key"])
         if key in seen_keys:
@@ -92,10 +102,33 @@ def select_targets(
     return selected
 
 
-def write_github_output(selected: list[dict[str, object]], output_path: Path | None) -> None:
+def select_full_targets(
+    targets: list[dict[str, object]],
+    full_mode: str,
+) -> list[dict[str, object]]:
+    selected = [target for target in targets if full_mode in target.get("full_modes", [])]
+    if not selected:
+        raise ValueError(f"No targets are configured for full {full_mode}.")
+    return selected
+
+
+def matrix_json(selected: list[dict[str, object]]) -> str:
+    return json.dumps({"include": selected}, separators=(",", ":"))
+
+
+def write_github_output(
+    selected: list[dict[str, object]],
+    output_path: Path | None,
+    just_make: list[dict[str, object]] | None = None,
+    correctness: list[dict[str, object]] | None = None,
+) -> None:
     keys = ",".join(str(target["key"]) for target in selected)
-    matrix = json.dumps({"include": selected}, separators=(",", ":"))
-    lines = [f"matrix={matrix}", f"selected_keys={keys}"]
+    lines = [
+        f"matrix={matrix_json(selected)}",
+        f"just_make_matrix={matrix_json(just_make or [])}",
+        f"correctness_matrix={matrix_json(correctness or [])}",
+        f"selected_keys={keys}",
+    ]
 
     if output_path is None:
         print("\n".join(lines))
@@ -129,8 +162,13 @@ def write_github_summary(selected: list[dict[str, object]], summary_path: Path |
 def print_target_list(targets: list[dict[str, object]]) -> None:
     for target in targets:
         families = ", ".join(str(item) for item in target["families"])
-        profile = f" [{target['perf_profile']}]" if target.get("perf_profile") else ""
-        print(f"{target['key']}: {families} -> {target['path']}{profile}")
+        flags: list[str] = []
+        if target.get("perf_profile"):
+            flags.append(str(target["perf_profile"]))
+        if target.get("full_modes"):
+            flags.append("full:" + ",".join(str(item) for item in target["full_modes"]))
+        suffix = f" [{' | '.join(flags)}]" if flags else ""
+        print(f"{target['key']}: {families} -> {target['path']}{suffix}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -144,7 +182,11 @@ def parse_args() -> argparse.Namespace:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     select_parser = subparsers.add_parser("select", help="Select targets for a dispatch.")
-    select_parser.add_argument("--mode", required=True, choices=("family_run", "correctness_subset", "just_make_subset"))
+    select_parser.add_argument(
+        "--mode",
+        required=True,
+        choices=("full", "family_run", "correctness_subset", "just_make_subset"),
+    )
     select_parser.add_argument("--family", default="")
     select_parser.add_argument("--targets", default="")
     select_parser.add_argument("--github-output", default="")
@@ -169,10 +211,21 @@ def main() -> int:
         elif args.command == "list":
             print_target_list(targets)
         elif args.command == "select":
-            selected = select_targets(targets, args.mode, args.family, args.targets)
+            if args.mode == "full":
+                just_make = select_full_targets(targets, "just_make")
+                correctness = select_full_targets(targets, "correctness")
+                selected = just_make + [
+                    target for target in correctness if target not in just_make
+                ]
+            else:
+                selected = select_targets(targets, args.mode, args.family, args.targets)
+                just_make = selected if args.mode == "just_make_subset" else []
+                correctness = selected if args.mode in ("correctness_subset", "family_run") else []
             write_github_output(
                 selected,
                 Path(args.github_output) if args.github_output else None,
+                just_make,
+                correctness,
             )
             write_github_summary(
                 selected,
