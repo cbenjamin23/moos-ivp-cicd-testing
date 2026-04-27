@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS_DIR = REPO_ROOT / "harnesses"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
-ASSET_VERSION = "20260426-2"
+ASSET_VERSION = "20260427-1"
 CASE_LIST_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*(["\'])(.*)\2\s*$')
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
 CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail)\b")
