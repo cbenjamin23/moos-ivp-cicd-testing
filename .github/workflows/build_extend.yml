@@ -33,6 +33,10 @@ on:
         description: "Time warp for manual runs that do not use a harness-specific CI profile"
         required: false
         default: "10"
+      moos_ivp_ref:
+        description: "MOOS-IvP branch, tag, or commit SHA to test"
+        required: false
+        default: "main"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.targets || 'full' }}
@@ -211,11 +215,36 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Clone MOOS-IvP
-        run: git clone https://github.com/moos-ivp/moos-ivp.git
+        env:
+          MOOS_IVP_REF: ${{ inputs.moos_ivp_ref }}
+        run: |
+          set -euo pipefail
+          git clone https://github.com/moos-ivp/moos-ivp.git
+          git -C moos-ivp fetch --tags origin "$MOOS_IVP_REF" || true
+          if git -C moos-ivp rev-parse --verify --quiet "$MOOS_IVP_REF^{commit}" >/dev/null; then
+            git -C moos-ivp checkout --detach "$MOOS_IVP_REF"
+          elif git -C moos-ivp rev-parse --verify --quiet "origin/$MOOS_IVP_REF^{commit}" >/dev/null; then
+            git -C moos-ivp checkout --detach "origin/$MOOS_IVP_REF"
+          else
+            echo "Unable to resolve MOOS-IvP ref: $MOOS_IVP_REF" >&2
+            exit 1
+          fi
 
       - name: Capture MOOS-IvP SHA
         id: moos_sha
-        run: echo "sha=$(git -C moos-ivp rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        env:
+          MOOS_IVP_REF: ${{ inputs.moos_ivp_ref }}
+        run: |
+          set -euo pipefail
+          sha=$(git -C moos-ivp rev-parse HEAD)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          {
+            echo "### MOOS-IvP Under Test"
+            echo ""
+            echo "- Repository: \`https://github.com/moos-ivp/moos-ivp.git\`"
+            echo "- Requested ref: \`$MOOS_IVP_REF\`"
+            echo "- Resolved SHA: \`$sha\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Restore build cache
         uses: actions/cache@v5
