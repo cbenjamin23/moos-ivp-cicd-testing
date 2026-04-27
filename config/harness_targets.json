@@ -73,6 +73,13 @@
     "families": ["convoy_behavior"]
   },
   {
+    "key": "cutrange_h01",
+    "path": "harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion",
+    "harness": "H01-cutrange_behavior_motion",
+    "artifact": "manual-cutrange-h01-results",
+    "families": ["cutrange_behavior"]
+  },
+  {
     "key": "fixedturn_h01",
     "path": "harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion",
     "harness": "H01-fixedturn_behavior_motion",

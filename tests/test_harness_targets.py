@@ -32,10 +32,10 @@ class HarnessTargetTests(unittest.TestCase):
             ],
         )
 
-    def test_correctness_subset_preserves_requested_order(self) -> None:
+    def test_specific_harnesses_preserves_requested_order(self) -> None:
         selected = harness_targets.select_targets(
             self.targets,
-            dispatch_mode="correctness_subset",
+            dispatch_mode="specific_harnesses",
             family="",
             raw_families="",
             raw_targets="waypoint_h01,cmgr_h01",
@@ -48,17 +48,20 @@ class HarnessTargetTests(unittest.TestCase):
             self.targets,
             dispatch_mode="batch_family_run",
             family="",
-            raw_families="fixedturn_behavior,loiter_behavior",
+            raw_families="fixedturn_behavior,cutrange_behavior,loiter_behavior",
             raw_targets="",
         )
 
-        self.assertEqual([target["key"] for target in selected], ["fixedturn_h01", "loiter_h01"])
+        self.assertEqual(
+            [target["key"] for target in selected],
+            ["cutrange_h01", "fixedturn_h01", "loiter_h01"],
+        )
 
     def test_subset_rejects_unknown_target(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown target key"):
             harness_targets.select_targets(
                 self.targets,
-                dispatch_mode="correctness_subset",
+                dispatch_mode="specific_harnesses",
                 family="",
                 raw_families="",
                 raw_targets="missing_target",

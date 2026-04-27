@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       dispatch_mode:
-        description: "full, family_run, batch_family_run, or correctness_subset"
+        description: "full, family_run, batch_family_run, or specific_harnesses"
         required: true
         type: choice
         default: full
@@ -11,7 +11,7 @@ on:
           - full
           - family_run
           - batch_family_run
-          - correctness_subset
+          - specific_harnesses
       family:
         description: "Family for family_run"
         required: false
@@ -23,6 +23,7 @@ on:
           - colregs
           - collision_behavior
           - convoy_behavior
+          - cutrange_behavior
           - fixedturn_behavior
           - loiter_behavior
           - obstacle_behavior
@@ -33,13 +34,13 @@ on:
           - trail_behavior
           - waypoint_behavior
       targets:
-        description: "Comma-separated target keys for correctness_subset mode"
+        description: "Comma-separated target keys for specific_harnesses mode"
         required: false
         default: "colregs_h01,colregs_h03"
       families:
         description: "Comma-separated families for batch_family_run mode"
         required: false
-        default: "convoy_behavior,fixedturn_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion"
+        default: "convoy_behavior,cutrange_behavior,fixedturn_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion"
       time_warp:
         description: "Time warp for manual runs that do not use a harness-specific CI profile"
         required: false
@@ -75,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.select.outputs.matrix }}
-      correctness_matrix: ${{ steps.select.outputs.correctness_matrix }}
+      runtime_matrix: ${{ steps.select.outputs.runtime_matrix }}
       selected_keys: ${{ steps.select.outputs.selected_keys }}
     steps:
       - uses: actions/checkout@v6
@@ -256,14 +257,14 @@ jobs:
 
   runtime-harnesses:
     name: runtime / ${{ matrix.key }} / ${{ matrix.harness }}
-    if: ${{ inputs.dispatch_mode == 'full' || inputs.dispatch_mode == 'correctness_subset' || inputs.dispatch_mode == 'family_run' || inputs.dispatch_mode == 'batch_family_run' }}
+    if: ${{ inputs.dispatch_mode == 'full' || inputs.dispatch_mode == 'specific_harnesses' || inputs.dispatch_mode == 'family_run' || inputs.dispatch_mode == 'batch_family_run' }}
     needs:
       - select-targets
       - build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.select-targets.outputs.correctness_matrix) }}
+      matrix: ${{ fromJson(needs.select-targets.outputs.runtime_matrix) }}
     steps:
       - uses: actions/checkout@v6
 
@@ -303,7 +304,7 @@ jobs:
             echo "- Resolved MOOS-IvP SHA: \`$MOOS_IVP_SHA\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Run selected correctness harness
+      - name: Run selected runtime harness
         id: harness
         continue-on-error: true
         env:
@@ -317,7 +318,7 @@ jobs:
             ./zlaunch.sh "${{ inputs.time_warp }}"
           fi
 
-      - name: Upload selected correctness results
+      - name: Upload selected runtime results
         if: always()
         uses: actions/upload-artifact@v7
         with:
@@ -325,7 +326,7 @@ jobs:
           path: ${{ matrix.path }}/results.txt
           if-no-files-found: warn
 
-      - name: Summarize selected correctness results
+      - name: Summarize selected runtime results
         id: harness_results
         if: always()
         continue-on-error: true
@@ -338,7 +339,7 @@ jobs:
             --expected-count "$expected_count" \
             --summary-path "$GITHUB_STEP_SUMMARY"
 
-      - name: Enforce selected correctness success
+      - name: Enforce selected runtime success
         if: always()
         run: |
           set -euo pipefail

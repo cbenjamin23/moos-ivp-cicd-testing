@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TARGETS_PATH = REPO_ROOT / "config" / "harness_targets.json"
 REQUIRED_FIELDS = ("key", "path", "harness", "artifact", "families")
 FULL_MODES = ("correctness",)
+SPECIFIC_HARNESSES_MODES = ("specific_harnesses", "correctness_subset")
 
 
 def load_targets(path: Path = DEFAULT_TARGETS_PATH) -> list[dict[str, object]]:
@@ -79,6 +80,9 @@ def select_targets(
     raw_families: str,
     raw_targets: str,
 ) -> list[dict[str, object]]:
+    if dispatch_mode == "correctness_subset":
+        dispatch_mode = "specific_harnesses"
+
     if dispatch_mode == "family_run":
         selected = [target for target in targets if family in target["families"]]
         if not selected:
@@ -111,6 +115,9 @@ def select_targets(
         if not selected:
             raise ValueError("No live harnesses are configured for the selected families.")
         return selected
+
+    if dispatch_mode != "specific_harnesses":
+        raise ValueError(f"Unknown dispatch mode: {dispatch_mode}")
 
     wanted = [item.strip() for item in raw_targets.split(",") if item.strip()]
     target_map = {str(target["key"]): target for target in targets}
@@ -147,12 +154,12 @@ def matrix_json(selected: list[dict[str, object]]) -> str:
 def write_github_output(
     selected: list[dict[str, object]],
     output_path: Path | None,
-    correctness: list[dict[str, object]] | None = None,
+    runtime: list[dict[str, object]] | None = None,
 ) -> None:
     keys = ",".join(str(target["key"]) for target in selected)
     lines = [
         f"matrix={matrix_json(selected)}",
-        f"correctness_matrix={matrix_json(correctness or [])}",
+        f"runtime_matrix={matrix_json(runtime or [])}",
         f"selected_keys={keys}",
     ]
 
@@ -211,7 +218,13 @@ def parse_args() -> argparse.Namespace:
     select_parser.add_argument(
         "--mode",
         required=True,
-        choices=("full", "family_run", "batch_family_run", "correctness_subset"),
+        choices=(
+            "full",
+            "family_run",
+            "batch_family_run",
+            "specific_harnesses",
+            "correctness_subset",
+        ),
     )
     select_parser.add_argument("--family", default="")
     select_parser.add_argument("--families", default="")
@@ -239,8 +252,8 @@ def main() -> int:
             print_target_list(targets)
         elif args.command == "select":
             if args.mode == "full":
-                correctness = select_full_targets(targets, "correctness")
-                selected = correctness
+                runtime = select_full_targets(targets, "correctness")
+                selected = runtime
             else:
                 selected = select_targets(
                     targets,
@@ -249,15 +262,15 @@ def main() -> int:
                     args.families,
                     args.targets,
                 )
-                correctness = selected if args.mode in (
-                    "correctness_subset",
+                runtime = selected if args.mode in (
+                    *SPECIFIC_HARNESSES_MODES,
                     "family_run",
                     "batch_family_run",
                 ) else []
             write_github_output(
                 selected,
                 Path(args.github_output) if args.github_output else None,
-                correctness,
+                runtime,
             )
             write_github_summary(
                 selected,
