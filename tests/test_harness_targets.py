@@ -16,6 +16,7 @@ class HarnessTargetTests(unittest.TestCase):
             self.targets,
             dispatch_mode="family_run",
             family="colregs",
+            raw_families="",
             raw_targets="",
         )
 
@@ -31,15 +32,27 @@ class HarnessTargetTests(unittest.TestCase):
             ],
         )
 
-    def test_subset_preserves_requested_order(self) -> None:
+    def test_correctness_subset_preserves_requested_order(self) -> None:
         selected = harness_targets.select_targets(
             self.targets,
-            dispatch_mode="just_make_subset",
+            dispatch_mode="correctness_subset",
             family="",
+            raw_families="",
             raw_targets="waypoint_h01,cmgr_h01",
         )
 
         self.assertEqual([target["key"] for target in selected], ["waypoint_h01", "cmgr_h01"])
+
+    def test_batch_family_run_selects_requested_families(self) -> None:
+        selected = harness_targets.select_targets(
+            self.targets,
+            dispatch_mode="batch_family_run",
+            family="",
+            raw_families="fixedturn_behavior,loiter_behavior",
+            raw_targets="",
+        )
+
+        self.assertEqual([target["key"] for target in selected], ["fixedturn_h01", "loiter_h01"])
 
     def test_subset_rejects_unknown_target(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown target key"):
@@ -47,25 +60,9 @@ class HarnessTargetTests(unittest.TestCase):
                 self.targets,
                 dispatch_mode="correctness_subset",
                 family="",
+                raw_families="",
                 raw_targets="missing_target",
             )
-
-    def test_full_just_make_targets_match_current_full_matrix(self) -> None:
-        selected = harness_targets.select_full_targets(self.targets, "just_make")
-
-        self.assertEqual(
-            [target["key"] for target in selected],
-            [
-                "cmgr_h01",
-                "cmgr_h02",
-                "obmgr_h01",
-                "obmgr_h02",
-                "colregs_h01",
-                "colregs_h03",
-                "collision_h01",
-                "obstacle_behavior_h01",
-            ],
-        )
 
     def test_full_correctness_targets_match_current_full_jobs(self) -> None:
         selected = harness_targets.select_full_targets(self.targets, "correctness")

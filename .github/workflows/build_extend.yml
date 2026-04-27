@@ -3,15 +3,15 @@ on:
   workflow_dispatch:
     inputs:
       dispatch_mode:
-        description: "full, family_run, correctness_subset, or just_make_subset"
+        description: "full, family_run, batch_family_run, or correctness_subset"
         required: true
         type: choice
         default: full
         options:
           - full
           - family_run
+          - batch_family_run
           - correctness_subset
-          - just_make_subset
       family:
         description: "Family for family_run"
         required: false
@@ -33,9 +33,13 @@ on:
           - trail_behavior
           - waypoint_behavior
       targets:
-        description: "Comma-separated target keys for correctness_subset or just_make_subset modes"
+        description: "Comma-separated target keys for correctness_subset mode"
         required: false
         default: "colregs_h01,colregs_h03"
+      families:
+        description: "Comma-separated families for batch_family_run mode"
+        required: false
+        default: "convoy_behavior,fixedturn_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion"
       time_warp:
         description: "Time warp for manual runs that do not use a harness-specific CI profile"
         required: false
@@ -46,7 +50,7 @@ on:
         default: "main"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.targets || 'full' }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'full' }}
   cancel-in-progress: true
 
 jobs:
@@ -71,7 +75,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.select.outputs.matrix }}
-      just_make_matrix: ${{ steps.select.outputs.just_make_matrix }}
       correctness_matrix: ${{ steps.select.outputs.correctness_matrix }}
       selected_keys: ${{ steps.select.outputs.selected_keys }}
     steps:
@@ -82,11 +85,13 @@ jobs:
         env:
           DISPATCH_MODE: ${{ inputs.dispatch_mode }}
           FAMILY: ${{ inputs.family }}
+          FAMILIES: ${{ inputs.families }}
           TARGETS: ${{ inputs.targets }}
         run: |
           python3 scripts/harness_targets.py select \
             --mode "$DISPATCH_MODE" \
             --family "$FAMILY" \
+            --families "$FAMILIES" \
             --targets "$TARGETS" \
             --github-output "$GITHUB_OUTPUT" \
             --github-summary "$GITHUB_STEP_SUMMARY"
@@ -249,64 +254,9 @@ jobs:
             lib
           if-no-files-found: error
 
-  just-make:
-    name: just-make / ${{ matrix.key }} / ${{ matrix.harness }}
-    if: ${{ inputs.dispatch_mode == 'full' || inputs.dispatch_mode == 'just_make_subset' }}
-    needs:
-      - select-targets
-      - build
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.select-targets.outputs.just_make_matrix) }}
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: workspace-build
-          path: .
-
-      - name: Restore executable bits
-        run: |
-          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
-          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
-          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
-
-      - name: Put built tools on PATH
-        run: |
-          {
-            echo "${GITHUB_WORKSPACE}/moos-ivp/bin"
-            echo "${GITHUB_WORKSPACE}/moos-ivp/scripts"
-            echo "${GITHUB_WORKSPACE}/bin"
-          } >> "$GITHUB_PATH"
-          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
-
-      - name: Summarize selected harness context
-        env:
-          MOOS_IVP_REF: ${{ inputs.moos_ivp_ref }}
-          MOOS_IVP_SHA: ${{ needs.build.outputs.moos_ivp_sha }}
-        run: |
-          {
-            echo "### Selected Harness"
-            echo ""
-            echo "- Target: \`${{ matrix.key }}\`"
-            echo "- Harness: \`${{ matrix.harness }}\`"
-            echo "- Path: \`${{ matrix.path }}\`"
-            echo "- Requested MOOS-IvP ref: \`$MOOS_IVP_REF\`"
-            echo "- Resolved MOOS-IvP SHA: \`$MOOS_IVP_SHA\`"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Just-make selected harness
-        run: |
-          set -euo pipefail
-          cd "${{ matrix.path }}"
-          ./zlaunch.sh --just_make "${{ inputs.time_warp }}"
-
-  correctness:
-    name: correctness / ${{ matrix.key }} / ${{ matrix.harness }}
-    if: ${{ inputs.dispatch_mode == 'full' || inputs.dispatch_mode == 'correctness_subset' || inputs.dispatch_mode == 'family_run' }}
+  runtime-harnesses:
+    name: runtime / ${{ matrix.key }} / ${{ matrix.harness }}
+    if: ${{ inputs.dispatch_mode == 'full' || inputs.dispatch_mode == 'correctness_subset' || inputs.dispatch_mode == 'family_run' || inputs.dispatch_mode == 'batch_family_run' }}
     needs:
       - select-targets
       - build

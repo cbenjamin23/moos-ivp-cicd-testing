@@ -11,7 +11,7 @@ import sys
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TARGETS_PATH = REPO_ROOT / "config" / "harness_targets.json"
 REQUIRED_FIELDS = ("key", "path", "harness", "artifact", "families")
-FULL_MODES = ("just_make", "correctness")
+FULL_MODES = ("correctness",)
 
 
 def load_targets(path: Path = DEFAULT_TARGETS_PATH) -> list[dict[str, object]]:
@@ -76,12 +76,40 @@ def select_targets(
     targets: list[dict[str, object]],
     dispatch_mode: str,
     family: str,
+    raw_families: str,
     raw_targets: str,
 ) -> list[dict[str, object]]:
     if dispatch_mode == "family_run":
         selected = [target for target in targets if family in target["families"]]
         if not selected:
             raise ValueError(f"No live harnesses are configured for family '{family}'.")
+        return selected
+
+    if dispatch_mode == "batch_family_run":
+        families = [item.strip() for item in raw_families.split(",") if item.strip()]
+        if not families:
+            raise ValueError("No families were selected.")
+        known_families = {
+            str(family_name)
+            for target in targets
+            for family_name in target["families"]
+        }
+        invalid = [family_name for family_name in families if family_name not in known_families]
+        if invalid:
+            raise ValueError(
+                "Unknown family/families: "
+                + ", ".join(invalid)
+                + "\nValid families: "
+                + ", ".join(sorted(known_families))
+            )
+
+        selected = [
+            target
+            for target in targets
+            if any(family_name in target["families"] for family_name in families)
+        ]
+        if not selected:
+            raise ValueError("No live harnesses are configured for the selected families.")
         return selected
 
     wanted = [item.strip() for item in raw_targets.split(",") if item.strip()]
@@ -119,13 +147,11 @@ def matrix_json(selected: list[dict[str, object]]) -> str:
 def write_github_output(
     selected: list[dict[str, object]],
     output_path: Path | None,
-    just_make: list[dict[str, object]] | None = None,
     correctness: list[dict[str, object]] | None = None,
 ) -> None:
     keys = ",".join(str(target["key"]) for target in selected)
     lines = [
         f"matrix={matrix_json(selected)}",
-        f"just_make_matrix={matrix_json(just_make or [])}",
         f"correctness_matrix={matrix_json(correctness or [])}",
         f"selected_keys={keys}",
     ]
@@ -185,9 +211,10 @@ def parse_args() -> argparse.Namespace:
     select_parser.add_argument(
         "--mode",
         required=True,
-        choices=("full", "family_run", "correctness_subset", "just_make_subset"),
+        choices=("full", "family_run", "batch_family_run", "correctness_subset"),
     )
     select_parser.add_argument("--family", default="")
+    select_parser.add_argument("--families", default="")
     select_parser.add_argument("--targets", default="")
     select_parser.add_argument("--github-output", default="")
     select_parser.add_argument("--github-summary", default="")
@@ -212,19 +239,24 @@ def main() -> int:
             print_target_list(targets)
         elif args.command == "select":
             if args.mode == "full":
-                just_make = select_full_targets(targets, "just_make")
                 correctness = select_full_targets(targets, "correctness")
-                selected = just_make + [
-                    target for target in correctness if target not in just_make
-                ]
+                selected = correctness
             else:
-                selected = select_targets(targets, args.mode, args.family, args.targets)
-                just_make = selected if args.mode == "just_make_subset" else []
-                correctness = selected if args.mode in ("correctness_subset", "family_run") else []
+                selected = select_targets(
+                    targets,
+                    args.mode,
+                    args.family,
+                    args.families,
+                    args.targets,
+                )
+                correctness = selected if args.mode in (
+                    "correctness_subset",
+                    "family_run",
+                    "batch_family_run",
+                ) else []
             write_github_output(
                 selected,
                 Path(args.github_output) if args.github_output else None,
-                just_make,
                 correctness,
             )
             write_github_summary(
