@@ -15,6 +15,8 @@ HARNESS_DIR = REPO_ROOT / "harnesses"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 ASSET_VERSION = "20260426-2"
 CASE_LIST_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*(["\'])(.*)\2\s*$')
+CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
+CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail)\b")
 VISUAL_NOTES = {
     "cmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship geometry is intentionally simple and the verdict comes from MOOS publications such as contact alerts, reports, and filter messages.",
     "obmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship is stationary and the verdict comes from MOOS publications such as obstacle acceptance, distance reports, hull generation, and filter messages.",
@@ -1075,14 +1077,17 @@ def harness_case_counts() -> dict[str, int]:
     counts: dict[str, int] = {}
     for zlaunch in sorted(HARNESS_DIR.glob("*/*/zlaunch.sh")):
         seen: set[str] = set()
-        for line in zlaunch.read_text().splitlines():
+        text = zlaunch.read_text()
+        for match in CASE_ARRAY_RE.finditer(text):
+            seen.update(CASE_NAME_RE.findall(match.group(2)))
+        for line in text.splitlines():
             match = CASE_LIST_RE.match(line)
             if not match:
                 continue
             value = match.group(3)
             if "$" in value:
                 continue
-            seen.update(value.split())
+            seen.update(CASE_NAME_RE.findall(value))
         counts[zlaunch.parent.name] = len(seen)
     return counts
 
@@ -1139,21 +1144,8 @@ def render_index() -> str:
           <a class="button secondary" href="technical.html">Technical overview</a>
         </div>
       </div>
-      <div class="hero-panel">
-        <div class="mission-visual" aria-hidden="true">
-          <svg class="trail-svg" viewBox="0 0 360 560" role="img">
-            <path class="trail trail-a" d="M48 455 L302 112" />
-            <path class="trail trail-b" d="M42 132 L318 250" />
-            <path class="trail trail-c" d="M90 520 L260 316" />
-          </svg>
-          <div class="boat boat-a"><span></span></div>
-          <div class="boat boat-b"><span></span></div>
-          <div class="boat boat-c"><span></span></div>
-        </div>
-        <div class="hero-process">
-          <h2>Process</h2>
-          <p>Stem missions define the baseline MOOS community and behavior setup. Harness cases apply small overlays, run through the harness launch wrapper, and grade MOOS-visible evidence from the resulting mission.</p>
-        </div>
+      <div class="hero-panel hero-panel--actions">
+        <img class="actions-screenshot" src="assets/images/github-actions-runtime-harnesses.png" alt="GitHub Actions runtime harness matrix with passing jobs">
       </div>
     </section>
 

@@ -170,6 +170,28 @@ main {
   border-radius: 1rem;
 }
 
+.hero-panel--actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 0;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.actions-screenshot {
+  display: block;
+  width: min(100%, 380px);
+  max-height: 620px;
+  object-fit: contain;
+  background: #f6f8fa;
+  border: 1px solid rgba(17, 22, 26, 0.16);
+  border-radius: 1.1rem;
+}
+
 .hero-process {
   position: absolute;
   right: 1.5rem;
@@ -775,5 +797,14 @@ tbody tr:last-child td {
 
   .hero-panel {
     min-height: 460px;
+  }
+
+  .hero-panel.hero-panel--actions {
+    min-height: 0;
+  }
+
+  .actions-screenshot {
+    width: min(100%, 360px);
+    max-height: 560px;
   }
 }
