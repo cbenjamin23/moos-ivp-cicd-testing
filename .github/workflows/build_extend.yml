@@ -13,7 +13,7 @@ on:
           - correctness_subset
           - just_make_subset
       family:
-        description: "Family for family_run: cmgr, obmgr, colregs, collision_behavior, obstacle_behavior, opregion, or performance"
+        description: "Family for family_run"
         required: false
         type: choice
         default: colregs
@@ -22,9 +22,16 @@ on:
           - obmgr
           - colregs
           - collision_behavior
+          - convoy_behavior
+          - fixedturn_behavior
+          - loiter_behavior
           - obstacle_behavior
           - opregion
           - performance
+          - shadow_behavior
+          - stationkeep_behavior
+          - trail_behavior
+          - waypoint_behavior
       targets:
         description: "Comma-separated target keys for correctness_subset or just_make_subset modes"
         required: false
@@ -141,6 +148,27 @@ jobs:
                   "families": ["collision_behavior"],
               },
               {
+                  "key": "convoy_h01",
+                  "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion",
+                  "harness": "H01-convoy_behavior_motion",
+                  "artifact": "manual-convoy-h01-results",
+                  "families": ["convoy_behavior"],
+              },
+              {
+                  "key": "fixedturn_h01",
+                  "path": "harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion",
+                  "harness": "H01-fixedturn_behavior_motion",
+                  "artifact": "manual-fixedturn-h01-results",
+                  "families": ["fixedturn_behavior"],
+              },
+              {
+                  "key": "loiter_h01",
+                  "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
+                  "harness": "H01-loiter_behavior_motion",
+                  "artifact": "manual-loiter-h01-results",
+                  "families": ["loiter_behavior"],
+              },
+              {
                   "key": "obstacle_behavior_h01",
                   "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion",
                   "harness": "H01-obstacle_behavior_motion",
@@ -161,6 +189,34 @@ jobs:
                   "artifact": "manual-p01-obstacle-results",
                   "families": ["performance"],
                   "perf_profile": "ci",
+              },
+              {
+                  "key": "shadow_h01",
+                  "path": "harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion",
+                  "harness": "H01-shadow_behavior_motion",
+                  "artifact": "manual-shadow-h01-results",
+                  "families": ["shadow_behavior"],
+              },
+              {
+                  "key": "stationkeep_h01",
+                  "path": "harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion",
+                  "harness": "H01-stationkeep_behavior_motion",
+                  "artifact": "manual-stationkeep-h01-results",
+                  "families": ["stationkeep_behavior"],
+              },
+              {
+                  "key": "trail_h01",
+                  "path": "harnesses/trail_behavior_harnesses/H01-trail_behavior_motion",
+                  "harness": "H01-trail_behavior_motion",
+                  "artifact": "manual-trail-h01-results",
+                  "families": ["trail_behavior"],
+              },
+              {
+                  "key": "waypoint_h01",
+                  "path": "harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion",
+                  "harness": "H01-waypoint_behavior_motion",
+                  "artifact": "manual-waypoint-h01-results",
+                  "families": ["waypoint_behavior"],
               },
               {
                   "key": "p02_colregs",
