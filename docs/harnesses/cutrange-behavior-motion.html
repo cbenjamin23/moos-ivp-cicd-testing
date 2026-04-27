@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 CutRange Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../user-guide.html">Run Tests</a>
+      <a href="../technical.html">Technical</a>
+      <a href="../developer-guide.html">Developer</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 CutRange Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_CutRange. These cases verify range closure, target geometry variants, pursuit and give-up flags, relevance gates, runtime updates, warning recovery, and invalid parameter handling.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission uses two simulated vehicles: <code>abe</code> runs BHV_CutRange and tries to reduce range to <code>ben</code>. Case overlays vary target route geometry, relevance distances, give-up conditions, runtime updates, and warning/error paths.</p>
+      </article>
+    </section>
+
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>startup_no_warning_pass</code>
+          <p>Verifies the default CutRange behavior enters pursuit shortly after deployment without behavior warning or error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>static_cutrange_pass</code>
+          <p>Baseline eastbound closure where the chaser reduces target range below the default threshold.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossing_cutrange_pass</code>
+          <p>Starts the target on a northbound crossing leg and verifies CutRange still produces meaningful closure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>headon_cutrange_pass</code>
+          <p>Starts the target head-on and grades the rapid approach under opposing headings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>angled_entry_pass</code>
+          <p>Starts both vehicles at offset positions/headings and verifies recovery into an active closure maneuver.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>right_turn_target_pass</code>
+          <p>Sends the target through an east-to-north dogleg and only evaluates after the target is on the northbound leg.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>s_turn_target_pass</code>
+          <p>Sends the target through a multi-leg S-shaped route and only evaluates after the target is on the southbound middle leg.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>slow_target_pass</code>
+          <p>Slows the target and requires close approach while confirming the target is in the slower speed regime.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fast_target_pass</code>
+          <p>Speeds the target up and gives the chaser longer to demonstrate range reduction without warnings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stationary_target_pass</code>
+          <p>Holds the target nearly stationary and verifies the chaser can close on a low-speed contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_time_on_leg_pass</code>
+          <p>Exercises accepted short time_on_leg planning horizon.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>long_time_on_leg_pass</code>
+          <p>Exercises accepted long time_on_leg planning horizon.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>low_patience_pass</code>
+          <p>Exercises accepted low patience weighting.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>high_patience_pass</code>
+          <p>Exercises accepted high patience weighting with a wider max_patience.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_patience_clamp_pass</code>
+          <p>Sets patience higher than max_patience and verifies the behavior clamps cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_patience_100_pass</code>
+          <p>Sets both patience and max_patience to 100 to cover the source path that deliberately allows the old 85 cap to be overridden.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_active_pass</code>
+          <p>Raises pwt_outer_dist and verifies active CutRange closure remains valid.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_inner_zero_relevance_pass</code>
+          <p>Sets the inner range above the starting contact range and verifies zero-relevance stopped behavior without warnings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_equal_zero_relevance_pass</code>
+          <p>Sets equal inner/outer relevance distances and verifies the zero-total-range branch stays clean and inactive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveup_start_far_pass</code>
+          <p>Starts the target beyond giveup_range and verifies CutRange never enters pursuit or posts giveup from a cold start.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveup_dist_alias_pass</code>
+          <p>Uses the giveup_dist alias accepted by BHV_CutRange and verifies it behaves like giveup_range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveup_hysteresis_pass</code>
+          <p>Starts pursuit near the one-meter giveup buffer and verifies the behavior remains in pursuit without posting giveup, allowing a small range tolerance for startup...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_pwt_on_pass</code>
+          <p>Starts relevance gated off, then lowers the inner/outer distances through CUTRANGE_UPDATES and verifies recovered closure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_pwt_off_pass</code>
+          <p>Starts active, then raises inner/outer distances through CUTRANGE_UPDATES and verifies relevance shuts off cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_patience_update_pass</code>
+          <p>Starts with low patience, updates it at runtime, and verifies the behavior continues to close range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_giveup_update_pass</code>
+          <p>Lowers giveup_range at runtime and requires the behavior to post the configured giveup flag and stop pursuing.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_bad_update_recover_warn_pass</code>
+          <p>Sends one rejected runtime update, then valid recovery updates, and requires warning-only recovery with range closure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_extrapolate_pass</code>
+          <p>Verifies normal closure when contact extrapolation is disabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_warn_pass</code>
+          <p>Uses a missing contact with on_no_contact_ok=true and requires warning-only behavior with no behavior error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_fail</code>
+          <p>Uses a missing contact with on_no_contact_ok=false and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_param_fail</code>
+          <p>Omits the required contact setting and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_outer_dist_fail</code>
+          <p>Rejects negative pwt_outer_dist.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_inner_dist_fail</code>
+          <p>Rejects an inner relevance distance greater than the outer distance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_giveup_range_fail</code>
+          <p>Rejects negative giveup_range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_patience_fail</code>
+          <p>Rejects negative patience.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_max_patience_fail</code>
+          <p>Rejects out-of-range max_patience.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_time_on_leg_fail</code>
+          <p>Rejects negative inherited time_on_leg.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_decay_fail</code>
+          <p>Rejects malformed inherited decay input.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_legacy_util_param_fail</code>
+          <p>Confirms legacy AOF-only utility parameters are not accepted as top-level BHV_CutRange config.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/cutrange_behavior_missions/cutrange_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

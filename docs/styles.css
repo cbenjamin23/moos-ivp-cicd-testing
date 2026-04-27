@@ -346,6 +346,17 @@ h3 {
   font-weight: 650;
 }
 
+.guide-note {
+  max-width: 900px;
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  color: var(--ink);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  font-weight: 650;
+}
+
 h2 {
   font-size: clamp(1.65rem, 3.5vw, 2.7rem);
 }

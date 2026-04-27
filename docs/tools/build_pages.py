@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import json
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS_DIR = REPO_ROOT / "harnesses"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
+REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
 ASSET_VERSION = "20260427-1"
 CASE_LIST_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*(["\'])(.*)\2\s*$')
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
@@ -470,6 +472,54 @@ HARNESSES: tuple[Harness, ...] = (
         ),
     ),
     Harness(
+        slug="cutrange-behavior-motion",
+        title="H01 CutRange Behavior",
+        family="Behavior Correctness",
+        path="harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion",
+        mission="missions/cutrange_behavior_missions/cutrange_behavior_motion",
+        summary="Two-vehicle moving correctness harness for BHV_CutRange pursuit, give-up behavior, relevance, runtime updates, and malformed inputs.",
+        proof="Checks range closure, pursue/give-up flags, target geometry branches, relevance gates, warning recovery, runtime updates, and expected configuration failures.",
+        cases=(),
+        gifs=(),
+        run="./zlaunch.sh --case=static_cutrange_pass --gui 10",
+        notes=(
+            "This harness uses a chaser/target pair so range reduction is graded against live contact geometry instead of a static input.",
+            "Runtime update and give-up cases make the behavior's pursuit state explicit enough for CI to catch subtle regressions.",
+        ),
+    ),
+    Harness(
+        slug="fixedturn-behavior-motion",
+        title="H01 FixedTurn Behavior",
+        family="Behavior Correctness",
+        path="harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion",
+        mission="missions/fixedturn_behavior_missions/fixedturn_behavior_motion",
+        summary="Moving correctness harness for BHV_FixedTurn direction, scheduled turns, runtime updates, timeout completion, and invalid turn configuration.",
+        proof="Checks fixed-turn completion, final heading bands, turn time/distance, scheduled-turn flags, runtime update recovery, and behavior error state.",
+        cases=(),
+        gifs=(),
+        run="./zlaunch.sh --case=starboard_90_pass --gui 10",
+        notes=(
+            "This harness starts with a short approach leg and then activates the fixed-turn behavior so turn completion can be measured from mission-owned outputs.",
+            "The scheduled-turn and runtime-update cases exercise configuration paths that are hard to prove from one static mission.",
+        ),
+    ),
+    Harness(
+        slug="shadow-behavior-motion",
+        title="H01 Shadow Behavior",
+        family="Behavior Correctness",
+        path="harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion",
+        mission="missions/shadow_behavior_missions/shadow_behavior_motion",
+        summary="Two-vehicle moving correctness harness for BHV_Shadow contact telemetry, relevance gates, speed/heading following, runtime updates, and malformed inputs.",
+        proof="Checks shadow contact heading/speed output, active relevance, stopped relevance, runtime recovery, warning-only paths, contact flags, and expected parameter failures.",
+        cases=(),
+        gifs=(),
+        run="./zlaunch.sh --case=static_shadow_pass --gui 10",
+        notes=(
+            "This harness uses one target and one chaser so shadowing can be graded against changing contact heading and speed.",
+            "Relevance and missing-contact cases distinguish clean inactive behavior from warning and error paths.",
+        ),
+    ),
+    Harness(
         slug="performance-obstacle-gauntlet",
         title="P01 Obstacle Gauntlet",
         family="Performance",
@@ -621,6 +671,24 @@ FAMILIES: tuple[Family, ...] = (
         summary="Checks mark queues, leader/follower geometry, speed branches, runtime updates, visual breadcrumbs, and missing-contact handling.",
         slugs=("convoy-behavior-motion",),
     ),
+    Family(
+        name="BHV_CutRange",
+        label="Cut-Range Behavior",
+        summary="Checks pursuit relevance, range reduction, give-up behavior, target geometry branches, runtime updates, and malformed inputs.",
+        slugs=("cutrange-behavior-motion",),
+    ),
+    Family(
+        name="BHV_FixedTurn",
+        label="Fixed-Turn Behavior",
+        summary="Checks fixed-turn direction, scheduled turn specifications, runtime updates, timeout completion, and invalid turn configuration.",
+        slugs=("fixedturn-behavior-motion",),
+    ),
+    Family(
+        name="BHV_Shadow",
+        label="Shadow Behavior",
+        summary="Checks contact speed/heading following, relevance gates, warning recovery, runtime updates, and malformed contact/configuration inputs.",
+        slugs=("shadow-behavior-motion",),
+    ),
 )
 
 
@@ -641,6 +709,9 @@ TEST_STYLE: dict[str, str] = {
     "stationkeep-behavior-motion": "Behavior correctness tests for BHV_StationKeep. These cases verify station arrival, hold/swing modes, hibernation, radius and speed updates, retargeting, warning recovery, and invalid parameter handling.",
     "trail-behavior-motion": "Behavior correctness tests for BHV_Trail. These cases verify relative and absolute trailing geometry, pursuit relevance, runtime trail updates, extrapolation choices, missing-contact behavior, and malformed parameter handling.",
     "convoy-behavior-motion": "Behavior correctness tests for BHV_Convoy. These cases verify convoy mark queues, following geometry, speed-control branches, runtime updates, warning paths, geometry recovery, and invalid parameter handling.",
+    "cutrange-behavior-motion": "Behavior correctness tests for BHV_CutRange. These cases verify range closure, target geometry variants, pursuit and give-up flags, relevance gates, runtime updates, warning recovery, and invalid parameter handling.",
+    "fixedturn-behavior-motion": "Behavior correctness tests for BHV_FixedTurn. These cases verify fixed-turn direction, scheduled turn specifications, inherited and fixed speed branches, timeout completion, runtime updates, and invalid turn configuration.",
+    "shadow-behavior-motion": "Behavior correctness tests for BHV_Shadow. These cases verify contact heading and speed following, relevance gating, runtime recovery, warning paths, contact flags, and invalid parameter handling.",
     "performance-obstacle-gauntlet": "Performance and endurance tests for obstacle avoidance. These cases exercise repeated obstacle-field traversal and grade completion, collision safety, warning cleanliness, and wall-time behavior.",
     "performance-colregs-joust": "Performance tests for sustained COLREGS pressure. These cases run repeated multi-vehicle interaction and grade safe spacing, completion, warning cleanliness, and runtime bounds.",
     "performance-traffic-ring": "Seeded traffic-stress tests for COLREGS behavior. These cases replay five-vehicle traffic pressure and grade assignment activity, fixed runtime windows, zero collisions, and warning-free logs.",
@@ -664,6 +735,9 @@ STEM_CONTEXT: dict[str, str] = {
     "stationkeep-behavior-motion": "The stem mission starts one simulated vehicle near a station point. Case overlays change the station geometry, hibernation settings, runtime retargeting, and speed/radius settings while grading mode and distance outputs.",
     "trail-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Trail while `ben` provides the moving contact track. Case overlays vary trailing geometry, relevance settings, runtime updates, and missing-contact behavior.",
     "convoy-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Convoy while `ben` creates the breadcrumb trail. Case overlays vary mark queues, following geometry, speed branches, and runtime updates.",
+    "cutrange-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_CutRange and tries to reduce range to `ben`. Case overlays vary target route geometry, relevance distances, give-up conditions, runtime updates, and warning/error paths.",
+    "fixedturn-behavior-motion": "The stem mission runs one simulated vehicle through a short approach leg before activating BHV_FixedTurn. Case overlays vary turn direction, fixed-turn magnitude, scheduled turn specifications, speed selection, and timeout behavior.",
+    "shadow-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Shadow while `ben` provides controlled contact headings and speeds. Case overlays vary target motion, relevance distance, runtime updates, and missing-contact behavior.",
     "performance-obstacle-gauntlet": "The stem mission is a repeatable obstacle-field loop. Individual cases change field density or duration so the same avoidance stack can be tested under baseline, dense, and longer-running pressure.",
     "performance-colregs-joust": "The stem mission creates sustained two- or three-vehicle COLREGS encounters. Cases adjust traffic density and duration to test whether safe spacing holds beyond a single isolated encounter.",
     "performance-traffic-ring": "The stem mission keeps five vehicles moving through a seeded traffic-ring assignment pattern. The seed makes the pressure replayable enough for CI while still exercising repeated COLREGS interactions.",
@@ -702,8 +776,9 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
     </a>
     <nav>
       <a href="{prefix}index.html#families">Harnesses</a>
-      <a href="{prefix}index.html#workflow">How it works</a>
+      <a href="{prefix}user-guide.html">Run Tests</a>
       <a href="{prefix}technical.html">Technical</a>
+      <a href="{prefix}developer-guide.html">Developer</a>
     </nav>
   </header>
   {body}
@@ -943,7 +1018,14 @@ def zlaunch_case_order(h: Harness) -> list[str]:
 
     names: list[str] = []
     seen: set[str] = set()
-    for line in zlaunch.read_text(encoding="utf-8", errors="ignore").splitlines():
+    text = zlaunch.read_text(encoding="utf-8", errors="ignore")
+    for match in CASE_ARRAY_RE.finditer(text):
+        for token in CASE_NAME_RE.findall(match.group(2)):
+            if token not in seen:
+                names.append(token)
+                seen.add(token)
+
+    for line in text.splitlines():
         match = CASE_LIST_RE.match(line)
         if not match:
             continue
@@ -1128,6 +1210,180 @@ def render_stats() -> str:
     )
 
 
+def load_manual_targets() -> list[dict[str, object]]:
+    targets_path = REPO_ROOT / "config" / "harness_targets.json"
+    with targets_path.open(encoding="utf-8") as stream:
+        targets = json.load(stream)
+    return targets
+
+
+def manual_target_rows() -> str:
+    rows = []
+    for target in load_manual_targets():
+        flags = []
+        if target.get("full_modes"):
+            flags.append("full")
+        if target.get("perf_profile"):
+            flags.append(str(target["perf_profile"]))
+        flag_text = ", ".join(flags) if flags else "manual"
+        rows.append(
+            f"""
+          <tr>
+            <th><code>{escape(str(target["key"]))}</code></th>
+            <td>{escape(", ".join(str(item) for item in target["families"]))}</td>
+            <td>{escape(str(target["harness"]))}</td>
+            <td>{escape(flag_text)}</td>
+          </tr>
+"""
+        )
+    return "\n".join(rows)
+
+
+def render_user_guide() -> str:
+    body = f"""
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="index.html">Back to overview</a>
+      <p class="eyebrow">User Guide</p>
+      <h1>Run harnesses from GitHub Actions.</h1>
+      <p class="lede">This guide is for people who want to launch manual CI runs, choose the right target set, and read the result page without changing repository code.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="{REPO_ACTIONS}">Open workflow</a>
+        <a class="button secondary" href="#target-keys">Target keys</a>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Normal Flow</p>
+        <h2>Start with a batch family run</h2>
+        <p>For a broad manual check, run several families in one workflow. The workflow builds once, uploads that build as an artifact, then fans out selected runtime harnesses as separate matrix jobs.</p>
+      </div>
+      <div class="technical-grid">
+        <article class="technical-card">
+          <h3>1. Open Actions</h3>
+          <p>Use the <code>Build And Check Active Harnesses</code> workflow and click <code>Run workflow</code>. Keep the branch on <code>main</code> unless you deliberately want to test another branch.</p>
+        </article>
+        <article class="technical-card">
+          <h3>2. Choose a mode</h3>
+          <p>Use <code>batch_family_run</code> for several families, <code>family_run</code> for one family, <code>specific_harnesses</code> for exact target keys, and <code>full</code> for the curated correctness gate.</p>
+        </article>
+        <article class="technical-card">
+          <h3>3. Read the graph</h3>
+          <p><code>workflow-lint</code> and <code>select-targets</code> should pass quickly. <code>build</code> prepares the binaries. <code>runtime-harnesses</code> contains the actual harness jobs.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Dispatch Modes</p>
+        <h2>Which input to use</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mode</th>
+              <th>Use when</th>
+              <th>Important input</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th><code>batch_family_run</code></th>
+              <td>You want one build followed by several family harness jobs.</td>
+              <td><code>families=convoy_behavior,cutrange_behavior,waypoint_behavior</code></td>
+            </tr>
+            <tr>
+              <th><code>family_run</code></th>
+              <td>You want all active targets for one family from the dropdown.</td>
+              <td><code>family=colregs</code></td>
+            </tr>
+            <tr>
+              <th><code>specific_harnesses</code></th>
+              <td>You know the exact target keys and want only those rows.</td>
+              <td><code>targets=cutrange_h01,waypoint_h01</code></td>
+            </tr>
+            <tr>
+              <th><code>full</code></th>
+              <td>You want the curated high-signal correctness set.</td>
+              <td>No family or target input required.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Inputs</p>
+        <h2>Recommended values</h2>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Broad behavior batch</h3>
+          <pre><code>dispatch_mode: batch_family_run
+families: convoy_behavior,cutrange_behavior,fixedturn_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion
+time_warp: 10
+moos_ivp_ref: main</code></pre>
+        </article>
+        <article>
+          <h3>One family</h3>
+          <pre><code>dispatch_mode: family_run
+family: waypoint_behavior
+time_warp: 10
+moos_ivp_ref: main</code></pre>
+        </article>
+        <article>
+          <h3>Exact harnesses</h3>
+          <pre><code>dispatch_mode: specific_harnesses
+targets: cutrange_h01,waypoint_h01
+time_warp: 10
+moos_ivp_ref: main</code></pre>
+        </article>
+      </div>
+      <p class="guide-note">GitHub's manual workflow form does not support dynamic checkboxes from repository metadata, so exact harness selection uses comma-separated target keys.</p>
+    </section>
+
+    <section id="target-keys" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Target Keys</p>
+        <h2>Names accepted by <code>specific_harnesses</code></h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Family</th>
+              <th>Harness</th>
+              <th>Profile</th>
+            </tr>
+          </thead>
+          <tbody>
+            {manual_target_rows()}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="workflow">
+      <p class="eyebrow">Interpreting Results</p>
+      <h2>What success means</h2>
+      <ol>
+        <li>Each runtime row downloads the build artifact and runs one harness <code>zlaunch.sh</code>.</li>
+        <li>The workflow uploads that harness's <code>results.txt</code> as an artifact.</li>
+        <li>The summary step derives the expected case count from the harness and fails if the result file is incomplete or contains failed expected outcomes.</li>
+        <li>A green matrix means all selected harnesses completed and their expected case matrix matched.</li>
+      </ol>
+      <a class="text-link" href="technical.html">Read the technical architecture</a>
+    </section>
+  </main>
+"""
+    return page_shell("User Guide", body)
+
+
 def render_index() -> str:
     harness_by_slug = {h.slug: h for h in HARNESSES}
     family_sections = "\n".join(family_panel(family, harness_by_slug) for family in FAMILIES)
@@ -1141,6 +1397,7 @@ def render_index() -> str:
         <p class="lede">This site introduces a CI/CD workspace that packages MOOS-IvP missions into repeatable gates for contact management, obstacle management, COLREGS, and avoidance behavior changes.</p>
         <div class="hero-actions">
           <a class="button primary" href="#families">Browse catalog</a>
+          <a class="button secondary" href="user-guide.html">Run tests</a>
           <a class="button secondary" href="technical.html">Technical overview</a>
         </div>
       </div>
@@ -1179,7 +1436,8 @@ def render_index() -> str:
         <li>The harness <code>zlaunch.sh</code> wrapper selects the case and then delegates to the shared <code>xlaunch.sh</code> path, keeping local and CI runs aligned.</li>
         <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact CI result lines.</li>
       </ol>
-      <a class="text-link" href="technical.html">Read the in-depth technical explanation</a>
+      <a class="text-link" href="user-guide.html">Run harnesses manually</a>
+      <a class="text-link" href="technical.html">Read the technical architecture</a>
     </section>
   </main>
 """
@@ -1192,6 +1450,19 @@ def render_harness(h: Harness) -> str:
     gif_grid_class = "gif-grid"
     if len(h.gifs) == 2:
         gif_grid_class += " gif-grid--two"
+    examples_section = ""
+    if h.gifs:
+        examples_section = f"""
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+      {{visual_note}}
+      <div class="{gif_grid_class}">{gifs}
+      </div>
+    </section>
+"""
     test_style = TEST_STYLE.get(h.slug, h.proof)
     stem_context = STEM_CONTEXT.get(h.slug, "")
     visual_note_text = VISUAL_NOTES.get(h.slug, "")
@@ -1222,15 +1493,7 @@ def render_harness(h: Harness) -> str:
 
     {stem_section}
 
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Examples</p>
-        <h2>Representative runs</h2>
-      </div>
-      {visual_note}
-      <div class="{gif_grid_class}">{gifs}
-      </div>
-    </section>
+    {examples_section.format(visual_note=visual_note) if examples_section else ""}
 
     <section class="content-section">
       <div class="section-heading">
@@ -1250,6 +1513,143 @@ def render_harness(h: Harness) -> str:
   </main>
 """
     return page_shell(h.title, body, "../")
+
+
+def render_developer_guide() -> str:
+    body = f"""
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="index.html">Back to overview</a>
+      <p class="eyebrow">Developer Guide</p>
+      <h1>Add or repair harnesses without breaking CI.</h1>
+      <p class="lede">This guide is for contributors editing missions, harness wrappers, target metadata, and generated documentation. It focuses on the contracts the CI workflow depends on.</p>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Harness Contract</p>
+        <h2>What every active target needs</h2>
+      </div>
+      <div class="technical-grid">
+        <article class="technical-card">
+          <h3>Runnable wrapper</h3>
+          <p>Each target path must contain a <code>zlaunch.sh</code> that can run the default matrix headlessly and accept an optional time-warp argument unless it declares a CI performance profile.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Stable result file</h3>
+          <p>The run must produce <code>results.txt</code> with one compact result line per expected case. CI derives the expected count from the wrapper and rejects incomplete files.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Isolated execution</h3>
+          <p>Grouped harnesses should expose <code>--jobs</code> and <code>--port_base</code>, use scoped teardown, and avoid overlapping MOOSDB or pShare port ranges.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Add a Target</p>
+        <h2>Checklist for a new manual dispatch harness</h2>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>1. Start from the nearest exemplar</h3>
+          <p>For app-level checks, start near <code>harnesses/cmgr_harnesses/H01-cmgr_unit</code> or <code>harnesses/obmgr_harnesses/H01-obmgr_unit</code>. For moving behavior checks, start near a current behavior family with the same vehicle count and port-isolation shape.</p>
+        </article>
+        <article>
+          <h3>2. Keep the mission verdict-owned</h3>
+          <p>Prefer <code>pMissionEval</code> and mission-visible flags for the real verdict. Use shell checks for result completeness, wall-clock bounds, warning scans, and other constraints that are awkward inside MOOS.</p>
+        </article>
+        <article>
+          <h3>3. Register the target</h3>
+          <p>Add the target to <code>config/harness_targets.json</code> with <code>key</code>, <code>path</code>, <code>harness</code>, <code>artifact</code>, and <code>families</code>. Add <code>full_modes: ["correctness"]</code> only for curated high-signal gates.</p>
+        </article>
+        <article>
+          <h3>4. Update generated docs</h3>
+          <p>Add a catalog entry in <code>docs/tools/build_pages.py</code> when the family should be public on the site, then regenerate pages with <code>python3 docs/tools/build_pages.py</code>.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Validation</p>
+        <h2>Commands to run before pushing</h2>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Metadata and workflow checks</h3>
+          <pre><code>python3 -m unittest discover -s tests
+python3 scripts/harness_targets.py validate
+actionlint .github/workflows/build_extend.yml .github/workflows/pages.yml</code></pre>
+        </article>
+        <article>
+          <h3>Selector smoke checks</h3>
+          <pre><code>python3 scripts/harness_targets.py select --mode family_run --family waypoint_behavior
+python3 scripts/harness_targets.py select --mode specific_harnesses --targets cutrange_h01,waypoint_h01</code></pre>
+        </article>
+        <article>
+          <h3>Harness runtime checks</h3>
+          <pre><code>cd harnesses/&lt;family&gt;_harnesses/&lt;target&gt;
+./zlaunch.sh --just_make --jobs=4 --port_base=25000 10
+./zlaunch.sh --jobs=4 --port_base=25000 10</code></pre>
+        </article>
+      </div>
+      <p class="guide-note">Do not run two harness batches at the same time if their MOOSDB or pShare port blocks could overlap. For CI-style grouped validation, use explicit non-default <code>--port_base</code> values.</p>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Source Map</p>
+        <h2>Where each responsibility lives</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Responsibility</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th><code>missions/</code></th>
+              <td>Reusable MOOS stem missions, launch scripts, behavior templates, and mission-local evaluation setup.</td>
+            </tr>
+            <tr>
+              <th><code>harnesses/</code></th>
+              <td>Case matrices, overlays, harness wrappers, result aggregation, and per-harness README documentation.</td>
+            </tr>
+            <tr>
+              <th><code>config/harness_targets.json</code></th>
+              <td>Manual dispatch source of truth for active CI targets, families, artifact names, and curated full-mode membership.</td>
+            </tr>
+            <tr>
+              <th><code>scripts/</code></th>
+              <td>CI result summarizers, target selectors, repeatability helpers, benchmark sweeps, and scoped teardown helpers.</td>
+            </tr>
+            <tr>
+              <th><code>docs/tools/build_pages.py</code></th>
+              <td>Static site generator for the catalog, user guide, technical guide, developer guide, and generated harness pages.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="workflow">
+      <p class="eyebrow">Manual CI</p>
+      <h2>After code lands</h2>
+      <ol>
+        <li>Use <code>specific_harnesses</code> for the exact changed target when validating a narrow fix.</li>
+        <li>Use <code>family_run</code> when a change affects a family-level mission stem or shared case pattern.</li>
+        <li>Use <code>batch_family_run</code> when several behavior families should be checked against one shared build.</li>
+      </ol>
+      <a class="text-link" href="user-guide.html">Open the run guide</a>
+    </section>
+  </main>
+"""
+    return page_shell("Developer Guide", body)
 
 
 def render_technical() -> str:
@@ -1336,20 +1736,65 @@ def render_technical() -> str:
     <section class="content-section">
       <div class="section-heading">
         <p class="eyebrow">CI Execution</p>
-        <h2>How GitHub Actions uses the repo</h2>
+        <h2>How GitHub Actions uses the repo today</h2>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>Build</h3>
-          <p>The workflow checks out this repo, builds MOOS-IvP and the local workspace apps, then uploads the built tools as an artifact for later jobs.</p>
+          <h3>Select</h3>
+          <p><code>scripts/harness_targets.py</code> converts manual workflow inputs into a runtime matrix. The source of truth is <code>config/harness_targets.json</code>, which maps target keys to harness paths and families.</p>
         </article>
         <article class="technical-card">
-          <h3>Make Checks</h3>
-          <p>Selected active harnesses run in <code>--just_make</code> mode to verify patched mission generation before the heavier runtime gates execute.</p>
+          <h3>Build Once</h3>
+          <p>The workflow resolves the requested <code>moos_ivp_ref</code> to an exact SHA, restores or creates the build cache, builds MOOS-IvP and this repo, then uploads the built workspace as an artifact.</p>
         </article>
         <article class="technical-card">
-          <h3>Runtime Gates</h3>
-          <p>Correctness and performance jobs run full harnesses, upload result files, summarize the result lines, and fail the workflow if the expected matrix does not complete cleanly.</p>
+          <h3>Fan Out</h3>
+          <p>The <code>runtime-harnesses</code> matrix downloads that one build artifact. Each row runs one harness on its own GitHub runner, uploads <code>results.txt</code>, and fails if the expected case matrix is incomplete or mismatched.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Manual Dispatch</p>
+        <h2>Modes and concurrency</h2>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Dispatch modes are intentionally manual</h3>
+          <p><code>full</code> runs the curated correctness set, <code>family_run</code> runs one family, <code>batch_family_run</code> runs multiple families after one build, and <code>specific_harnesses</code> accepts comma-separated target keys.</p>
+        </article>
+        <article>
+          <h3>Concurrency cancels duplicate intent</h3>
+          <p>The workflow concurrency group includes the workflow, branch, dispatch mode, and selected family/target list. A newer run with the same intent replaces the older one, while different family sets can run independently.</p>
+        </article>
+        <article>
+          <h3>Cache and artifact solve different problems</h3>
+          <p>The cache avoids rebuilding the same MOOS-IvP SHA and repo source across workflow runs. The artifact shares one completed build across all runtime jobs inside a single workflow run.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Guide Map</p>
+        <h2>Use the right page for the task</h2>
+      </div>
+      <div class="technical-grid">
+        <article class="technical-card">
+          <h3>User Guide</h3>
+          <p>Launch manual workflows, choose dispatch modes, copy known-good input strings, and read the Actions matrix.</p>
+          <a class="text-link" href="user-guide.html">Open user guide</a>
+        </article>
+        <article class="technical-card">
+          <h3>Technical Guide</h3>
+          <p>Understand the mission, harness, build, artifact, cache, matrix, and verdict model.</p>
+          <a class="text-link" href="technical.html">Stay here</a>
+        </article>
+        <article class="technical-card">
+          <h3>Developer Guide</h3>
+          <p>Add targets, preserve result contracts, validate wrappers, and update generated docs without breaking CI.</p>
+          <a class="text-link" href="developer-guide.html">Open developer guide</a>
         </article>
       </div>
     </section>
@@ -1372,7 +1817,10 @@ def render_technical() -> str:
 
 def write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+    normalized = ""
+    if content:
+        normalized = "\n".join(line.rstrip() for line in content.splitlines()) + "\n"
+    path.write_text(normalized, encoding="utf-8")
 
 
 def render_gif_manifest() -> str:
@@ -1424,7 +1872,9 @@ def render_gif_manifest() -> str:
 
 def main() -> None:
     write(ROOT / "index.html", render_index())
+    write(ROOT / "user-guide.html", render_user_guide())
     write(ROOT / "technical.html", render_technical())
+    write(ROOT / "developer-guide.html", render_developer_guide())
     for harness in HARNESSES:
         write(ROOT / "harnesses" / f"{harness.slug}.html", render_harness(harness))
     write(ROOT / "assets" / "gifs" / "README.md", render_gif_manifest())

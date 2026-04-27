@@ -14,11 +14,12 @@
     </a>
     <nav>
       <a href="index.html#families">Harnesses</a>
-      <a href="index.html#workflow">How it works</a>
+      <a href="user-guide.html">Run Tests</a>
       <a href="technical.html">Technical</a>
+      <a href="developer-guide.html">Developer</a>
     </nav>
   </header>
-  
+
   <main>
     <section class="page-hero">
       <a class="back-link" href="index.html">Back to overview</a>
@@ -82,7 +83,7 @@
             </tr>
           </thead>
           <tbody>
-            
+
           <tr>
             <th>pContactMgrV20</th>
             <td>Detects and reports relevant contacts so downstream avoidance behaviors can react to them.</td>
@@ -159,6 +160,27 @@
             <td>1</td>
           </tr>
 
+
+          <tr>
+            <th>BHV_CutRange</th>
+            <td>Checks pursuit relevance, range reduction, give-up behavior, target geometry branches, runtime updates, and malformed inputs.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_FixedTurn</th>
+            <td>Checks fixed-turn direction, scheduled turn specifications, runtime updates, timeout completion, and invalid turn configuration.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_Shadow</th>
+            <td>Checks contact speed/heading following, relevance gates, warning recovery, runtime updates, and malformed contact/configuration inputs.</td>
+            <td>1</td>
+          </tr>
+
           </tbody>
         </table>
       </div>
@@ -167,20 +189,65 @@
     <section class="content-section">
       <div class="section-heading">
         <p class="eyebrow">CI Execution</p>
-        <h2>How GitHub Actions uses the repo</h2>
+        <h2>How GitHub Actions uses the repo today</h2>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>Build</h3>
-          <p>The workflow checks out this repo, builds MOOS-IvP and the local workspace apps, then uploads the built tools as an artifact for later jobs.</p>
+          <h3>Select</h3>
+          <p><code>scripts/harness_targets.py</code> converts manual workflow inputs into a runtime matrix. The source of truth is <code>config/harness_targets.json</code>, which maps target keys to harness paths and families.</p>
         </article>
         <article class="technical-card">
-          <h3>Make Checks</h3>
-          <p>Selected active harnesses run in <code>--just_make</code> mode to verify patched mission generation before the heavier runtime gates execute.</p>
+          <h3>Build Once</h3>
+          <p>The workflow resolves the requested <code>moos_ivp_ref</code> to an exact SHA, restores or creates the build cache, builds MOOS-IvP and this repo, then uploads the built workspace as an artifact.</p>
         </article>
         <article class="technical-card">
-          <h3>Runtime Gates</h3>
-          <p>Correctness and performance jobs run full harnesses, upload result files, summarize the result lines, and fail the workflow if the expected matrix does not complete cleanly.</p>
+          <h3>Fan Out</h3>
+          <p>The <code>runtime-harnesses</code> matrix downloads that one build artifact. Each row runs one harness on its own GitHub runner, uploads <code>results.txt</code>, and fails if the expected case matrix is incomplete or mismatched.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Manual Dispatch</p>
+        <h2>Modes and concurrency</h2>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Dispatch modes are intentionally manual</h3>
+          <p><code>full</code> runs the curated correctness set, <code>family_run</code> runs one family, <code>batch_family_run</code> runs multiple families after one build, and <code>specific_harnesses</code> accepts comma-separated target keys.</p>
+        </article>
+        <article>
+          <h3>Concurrency cancels duplicate intent</h3>
+          <p>The workflow concurrency group includes the workflow, branch, dispatch mode, and selected family/target list. A newer run with the same intent replaces the older one, while different family sets can run independently.</p>
+        </article>
+        <article>
+          <h3>Cache and artifact solve different problems</h3>
+          <p>The cache avoids rebuilding the same MOOS-IvP SHA and repo source across workflow runs. The artifact shares one completed build across all runtime jobs inside a single workflow run.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Guide Map</p>
+        <h2>Use the right page for the task</h2>
+      </div>
+      <div class="technical-grid">
+        <article class="technical-card">
+          <h3>User Guide</h3>
+          <p>Launch manual workflows, choose dispatch modes, copy known-good input strings, and read the Actions matrix.</p>
+          <a class="text-link" href="user-guide.html">Open user guide</a>
+        </article>
+        <article class="technical-card">
+          <h3>Technical Guide</h3>
+          <p>Understand the mission, harness, build, artifact, cache, matrix, and verdict model.</p>
+          <a class="text-link" href="technical.html">Stay here</a>
+        </article>
+        <article class="technical-card">
+          <h3>Developer Guide</h3>
+          <p>Add targets, preserve result contracts, validate wrappers, and update generated docs without breaking CI.</p>
+          <a class="text-link" href="developer-guide.html">Open developer guide</a>
         </article>
       </div>
     </section>

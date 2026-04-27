@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Shadow Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../user-guide.html">Run Tests</a>
+      <a href="../technical.html">Technical</a>
+      <a href="../developer-guide.html">Developer</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 Shadow Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_Shadow. These cases verify contact heading and speed following, relevance gating, runtime recovery, warning paths, contact flags, and invalid parameter handling.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission uses two simulated vehicles: <code>abe</code> runs BHV_Shadow while <code>ben</code> provides controlled contact headings and speeds. Case overlays vary target motion, relevance distance, runtime updates, and missing-contact behavior.</p>
+      </article>
+    </section>
+
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>startup_no_warning_pass</code>
+          <p>Delays Shadow activation until contact data is available and verifies the default run remains warning-free.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>static_shadow_pass</code>
+          <p>Baseline eastbound shadowing with active relevance and matched chaser/contact heading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>west_shadow_pass</code>
+          <p>Forces a westbound contact leg and verifies Shadow reports westbound contact heading without warnings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>north_shadow_pass</code>
+          <p>Forces a north-northeast contact leg without heading wrap and verifies Shadow reports the same contact heading family.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>heading_wrap_pass</code>
+          <p>Sends the target onto a northwest-ish leg and verifies Shadow reports a high heading across the 360-degree wrap boundary.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_north_shadow_pass</code>
+          <p>Sends the target through an east-to-north dogleg and grades the chaser after the contact turn.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>slow_contact_speed_pass</code>
+          <p>Lowers the target waypoint speed and verifies the chaser follows the slower speed regime.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fast_contact_speed_pass</code>
+          <p>Raises the target waypoint speed and verifies the chaser responds with a faster speed regime.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stationary_contact_pass</code>
+          <p>Holds the contact nearly stationary and verifies Shadow reports near-zero contact speed without warning.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_active_pass</code>
+          <p>Sets pwt_outer_dist high enough that contact relevance remains active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_edge_pass</code>
+          <p>Sets pwt_outer_dist at the contact-range edge and verifies relevance remains active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_outer_inactive_pass</code>
+          <p>Sets pwt_outer_dist below contact range and verifies zero relevance and stopped chaser motion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_pwt_outer_on_pass</code>
+          <p>Starts with relevance gated off, then raises pwt_outer_dist through SHADOW_UPDATES and verifies active shadowing.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_pwt_outer_off_pass</code>
+          <p>Starts active, then lowers pwt_outer_dist through SHADOW_UPDATES and verifies relevance shuts off.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_bad_update_recover_warn_pass</code>
+          <p>Sends one rejected runtime update followed by a valid update and requires both the expected warning and recovered active relevance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_missing_contact_recover_warn_pass</code>
+          <p>Temporarily switches Shadow to a missing contact, then restores contact=ben and requires warning plus recovered active relevance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>heading_widths_pass</code>
+          <p>Exercises accepted heading_peakwidth and heading_basewidth tuning.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_width_aliases_pass</code>
+          <p>Exercises accepted hdg_* and spd_* alias parameters.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_extrapolate_pass</code>
+          <p>Verifies clean shadowing with contact extrapolation disabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cnflag_range_macro_pass</code>
+          <p>Exercises inherited contact-flag handling by posting a range macro when the target is within 120 meters and requiring the bridged value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_warn_pass</code>
+          <p>Uses a missing contact with on_no_contact_ok=true and requires warning-only behavior with no behavior error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_fail</code>
+          <p>Uses a missing contact with on_no_contact_ok=false and expects the mission to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_contact_param_fail</code>
+          <p>Omits the required contact setting and expects the mission to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_outer_dist_fail</code>
+          <p>Rejects negative pwt_outer_dist.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_heading_peakwidth_fail</code>
+          <p>Rejects negative heading_peakwidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_heading_basewidth_fail</code>
+          <p>Rejects negative heading_basewidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_peakwidth_fail</code>
+          <p>Rejects negative speed_peakwidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_basewidth_fail</code>
+          <p>Rejects negative speed_basewidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_decay_fail</code>
+          <p>Rejects malformed decay input.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_decay_order_fail</code>
+          <p>Rejects decay ranges whose start is greater than the end.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_extrapolate_fail</code>
+          <p>Rejects non-boolean extrapolate input.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_on_no_contact_ok_fail</code>
+          <p>Rejects non-boolean on_no_contact_ok input.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_time_on_leg_fail</code>
+          <p>Rejects negative inherited time_on_leg input.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_cnflag_fail</code>
+          <p>Rejects a malformed inherited contact-flag tag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_post_per_contact_info_fail</code>
+          <p>Rejects non-boolean post_per_contact_info input.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/shadow_behavior_missions/shadow_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

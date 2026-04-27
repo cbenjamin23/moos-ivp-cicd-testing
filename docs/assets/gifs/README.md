@@ -161,6 +161,24 @@ Typical capture launch: `./zlaunch.sh --case=static_convoy_pass --gui 10`
 - `convoy-behavior-static.gif` - Static Convoy; representative case `static_convoy_pass`
 - `convoy-behavior-angled-entry.gif` - Angled Entry; representative case `angled_entry_pass`
 
+## H01 CutRange Behavior
+
+Capture from: `harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=static_cutrange_pass --gui 10`
+
+
+## H01 FixedTurn Behavior
+
+Capture from: `harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=starboard_90_pass --gui 10`
+
+
+## H01 Shadow Behavior
+
+Capture from: `harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=static_shadow_pass --gui 10`
+
+
 ## P01 Obstacle Gauntlet
 
 Capture from: `harnesses/performance_harnesses/P01-obstacle_gauntlet`

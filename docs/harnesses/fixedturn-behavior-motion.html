@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 FixedTurn Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <nav>
+      <a href="../index.html#families">Harnesses</a>
+      <a href="../user-guide.html">Run Tests</a>
+      <a href="../technical.html">Technical</a>
+      <a href="../developer-guide.html">Developer</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 FixedTurn Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_FixedTurn. These cases verify fixed-turn direction, scheduled turn specifications, inherited and fixed speed branches, timeout completion, runtime updates, and invalid turn configuration.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one simulated vehicle through a short approach leg before activating BHV_FixedTurn. Case overlays vary turn direction, fixed-turn magnitude, scheduled turn specifications, speed selection, and timeout behavior.</p>
+      </article>
+    </section>
+
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>starboard_90_pass</code>
+          <p>Baseline case. The vehicle runs the approach leg, activates BHV_FixedTurn, turns starboard by about 90 degrees, and must finish with FT_DONE=true, heading...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>port_90_pass</code>
+          <p>Mirrored 90-degree case. The same approach leg activates a port turn, and the case must finish with FT_DONE=true, final heading above 285, positive turn...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>starboard_360_pass</code>
+          <p>Long-turn starboard case. The behavior uses a stronger mod_hdg to complete a near-full starboard circle, and the case requires FT_DONE=true, TURNING_TIME &gt; 15,...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>port_360_pass</code>
+          <p>Long-turn mirror case. The vehicle completes a near-full port circle with the same timing and distance thresholds as the starboard long-turn case, proving the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_auto_pass</code>
+          <p>Automatic speed case. The fixed-turn behavior uses speed=auto, so FT_REPORT should show the inherited stem speed branch while the mission still completes the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fixed_speed_pass</code>
+          <p>Explicit speed case. The fixed-turn behavior uses speed=1.3, which is distinct from both the default and speed=auto cases, and must still complete the baseline...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_delay_pass</code>
+          <p>Delay branch case. The behavior holds its current heading briefly before turning, then must complete normally with FT_DONE=true, positive turn time/distance, and...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>timeout_complete_pass</code>
+          <p>Timeout completion case. The behavior is configured with a long turn and a short timeout=4; success requires completion by the timeout path with FT_DONE=true,...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_sequence_pass</code>
+          <p>Scheduled-turn case. The behavior runs two turn_spec entries, and success requires both TURN_ONE=true and TURN_TWO=true, the final FT_DONE=true flag from the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_fallback_pass</code>
+          <p>Scheduled-turn fallback case. A turn_spec entry leaves speed, fixed turn, and mod_hdg unset so the behavior must fall back to the static behavior parameters,...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_key_update_pass</code>
+          <p>Runtime keyed-update case. The first scheduled turn is replaced by a keyed runtime update before activation, and success requires the updated port turn to...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_bad_update_recover_pass</code>
+          <p>Runtime recovery case. The vehicle receives one malformed keyed update and then a valid replacement before activation; success requires the valid replacement to...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_clear_pass</code>
+          <p>Runtime clear case. A queued scheduled turn is cleared before activation so the behavior must ignore TURN_ONE, fall back to the static starboard turn, complete...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_timeout_pass</code>
+          <p>Scheduled timeout case. A turn_spec entry defines its own long turn and short timeout; success requires the scheduled turn to complete by its timeout branch,...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_fix_turn_pass</code>
+          <p>Zero-turn case. The behavior is configured with fix_turn=0; success requires immediate completion with FT_DONE=true, zero turn time/distance, and no behavior error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_static_update_pass</code>
+          <p>Generic runtime-update case. The stem behavior starts as a starboard turn, then receives FTURN_UPDATE messages changing turn_dir and speed before activation;...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_clear_add_pass</code>
+          <p>Runtime clear-and-add case. A queued scheduled turn is replaced by a single turn_spec=clear,... runtime update; success requires TURN_ONE=false, TURN_TWO=true,...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_spec_aliases_pass</code>
+          <p>Scheduled-turn alias case. The scheduled turn uses fhdg and tdir aliases instead of fix and turn; success requires the alias-defined starboard turn to post...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_fix_turn_fail</code>
+          <p>Invalid fixed-turn case. The behavior patch sets an invalid negative fix_turn; the expected mission result is fail because FT_DONE should remain false until the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_stale_nav_thresh_fail</code>
+          <p>Invalid stale-navigation threshold case. The behavior patch sets an invalid stale_nav_thresh; the expected mission result is fail because the behavior should not...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_turn_dir_fail</code>
+          <p>Invalid turn-direction case. The behavior patch sets an unsupported turn_dir; the expected mission result is fail because the behavior should not complete and...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_fail</code>
+          <p>Invalid speed case. The behavior patch sets a negative fixed speed; the expected mission result is fail because the behavior should reject the configuration and...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_turn_spec_fail</code>
+          <p>Invalid scheduled-turn case. The behavior patch provides a malformed turn_spec; the expected mission result is fail because no valid turn should complete before...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_schedule_repeat_fail</code>
+          <p>Invalid schedule-repeat case. The behavior patch sets schedule_repeat to a non-boolean token; the expected mission result is fail because the behavior should...</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/fixedturn_behavior_missions/fixedturn_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>
