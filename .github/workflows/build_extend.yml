@@ -130,30 +130,8 @@ jobs:
             echo "- Resolved SHA: \`$sha\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Install compiler cache
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y ccache
-
-      - name: Restore compiler cache
-        uses: actions/cache@v5
-        with:
-          path: .ccache
-          key: ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', '.github/workflows/build_extend.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-
-            ${{ runner.os }}-ccache-
-
-      - name: Configure compiler cache
-        env:
-          CCACHE_DIR: ${{ github.workspace }}/.ccache
-        run: |
-          set -euo pipefail
-          ccache -M 500M
-          ccache -z
-
       - name: Restore build cache
+        id: build_cache
         uses: actions/cache@v5
         with:
           path: |
@@ -170,7 +148,34 @@ jobs:
             ${{ runner.os }}-moos-${{ steps.moos_sha.outputs.sha }}-
             ${{ runner.os }}-
 
+      - name: Install compiler cache
+        if: ${{ steps.build_cache.outputs.cache-hit != 'true' }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ccache
+
+      - name: Restore compiler cache
+        if: ${{ steps.build_cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache@v5
+        with:
+          path: .ccache
+          key: ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', '.github/workflows/build_extend.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-
+            ${{ runner.os }}-ccache-
+
+      - name: Configure compiler cache
+        if: ${{ steps.build_cache.outputs.cache-hit != 'true' }}
+        env:
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+        run: |
+          set -euo pipefail
+          ccache -M 500M
+          ccache -z
+
       - name: Build MOOS-IvP
+        if: ${{ steps.build_cache.outputs.cache-hit != 'true' }}
         working-directory: moos-ivp
         env:
           CCACHE_DIR: ${{ github.workspace }}/.ccache
@@ -191,6 +196,7 @@ jobs:
           echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: Build repo
+        if: ${{ steps.build_cache.outputs.cache-hit != 'true' }}
         env:
           CCACHE_DIR: ${{ github.workspace }}/.ccache
           CCACHE_BASEDIR: ${{ github.workspace }}
@@ -206,7 +212,7 @@ jobs:
           make
 
       - name: Report compiler cache stats
-        if: always()
+        if: ${{ always() && steps.build_cache.outputs.cache-hit != 'true' }}
         env:
           CCACHE_DIR: ${{ github.workspace }}/.ccache
         run: |
@@ -216,6 +222,15 @@ jobs:
             echo '```'
             ccache -s || true
             echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report exact build cache hit
+        if: ${{ steps.build_cache.outputs.cache-hit == 'true' }}
+        run: |
+          {
+            echo "### Build Cache"
+            echo ""
+            echo "Exact build cache hit. Skipped MOOS-IvP and repo rebuild steps."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload build artifact
