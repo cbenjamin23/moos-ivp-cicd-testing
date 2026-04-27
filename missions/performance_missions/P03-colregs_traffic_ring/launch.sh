@@ -118,8 +118,10 @@ case "$MMOD" in
     CLOSEST_MAX="30"
     NEAR_MISS_MAX="999"
     BATCHES_MIN="80"
-    FIELD_RADIUS="37"
-    BASE_RADIUS="40"
+    FIELD_RADIUS="42"
+    BASE_RADIUS="45"
+    MIN_TARGET_SEP="18"
+    MIN_PRED_CPA="14"
     ;;
   noncoop_circle_pass)
     SEED="41"

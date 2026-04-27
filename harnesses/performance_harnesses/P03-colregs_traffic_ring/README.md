@@ -13,7 +13,9 @@ Seeded five-vehicle COLREGS traffic-ring harness.
   active and remain collision-free despite speed asymmetry.
 - `endurance_circle_pass`
   Longer traffic-ring run. The mission should sustain repeated assignments over
-  the endurance window with zero collisions and clean warning logs.
+  the endurance window with zero collisions and clean warning logs. This case
+  uses a wider assignment ring and stricter predicted-CPA filtering than the
+  shorter cases to keep the long CI soak replayable.
 - `noncoop_circle_pass`
   Non-cooperative traffic-ring variant. Vehicle `eve` runs with `AVOID=false`,
   while the overall traffic ring should still remain collision-free.

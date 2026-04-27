@@ -20,6 +20,7 @@ Mission modes:
   - five vehicles
   - fixed mixed speeds
   - longer runtime
+  - wider assignment ring and stricter predicted-CPA filtering for CI replay
 
 The mission uses `pTrafficManager` on shoreside to:
 - wait for all vehicles to report in
