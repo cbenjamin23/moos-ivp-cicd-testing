@@ -49,9 +49,71 @@ harness_teardown_apps_for_root() {
     } | tr ' ' '\n' | sed '/^$/d' | sort -u
 }
 
-harness_teardown_pids_for_root() {
+harness_teardown_app_match() {
+    local command="$1"
+    local apps="$2"
+
+    [ "$command" != "" ] && [ "${apps#* $command }" != "$apps" ]
+}
+
+harness_teardown_path_in_root() {
+    local path="$1"
+    local root="$2"
+
+    [ "$path" = "$root" ] || [ "${path#"$root"/}" != "$path" ]
+}
+
+harness_teardown_pids_for_root_procfs() {
     local root="$1"
     local apps
+    local proc_dir
+    local pid
+    local cwd
+    local command
+    local exe
+    local argv0
+
+    [ -d /proc ] || return 1
+
+    root=`cd "$root" 2>/dev/null && pwd -P`
+    [ "$root" != "" ] || return 1
+
+    apps=`harness_teardown_apps_for_root "$root" | tr '\n' ' '`
+
+    for proc_dir in /proc/[0-9]*; do
+        [ -d "$proc_dir" ] || continue
+        pid="${proc_dir##*/}"
+        cwd=`readlink "$proc_dir/cwd" 2>/dev/null` || continue
+        harness_teardown_path_in_root "$cwd" "$root" || continue
+
+        command=""
+        exe=`readlink "$proc_dir/exe" 2>/dev/null` || exe=""
+        if [ "$exe" != "" ]; then
+            command="${exe##*/}"
+        fi
+        if ! harness_teardown_app_match "$command" " $apps "; then
+            argv0=`tr '\000' '\n' < "$proc_dir/cmdline" 2>/dev/null | sed -n '1p'` || argv0=""
+            if [ "$argv0" != "" ]; then
+                command="${argv0##*/}"
+            fi
+        fi
+        if ! harness_teardown_app_match "$command" " $apps "; then
+            command=`sed -n '1p' "$proc_dir/comm" 2>/dev/null` || command=""
+        fi
+        if harness_teardown_app_match "$command" " $apps "; then
+            echo "$pid"
+        fi
+    done | sort -nu
+}
+
+harness_teardown_pids_for_root_lsof() {
+    local root="$1"
+    local apps
+
+    command -v lsof >/dev/null 2>&1 || return 1
+
+    root=`cd "$root" 2>/dev/null && pwd -P`
+    [ "$root" != "" ] || return 1
 
     apps=`harness_teardown_apps_for_root "$root" | tr '\n' ' '`
 
@@ -80,6 +142,14 @@ harness_teardown_pids_for_root() {
                 next
             }
         ' | sort -nu
+}
+
+harness_teardown_pids_for_root() {
+    local root="$1"
+
+    harness_teardown_pids_for_root_procfs "$root" && return 0
+    harness_teardown_pids_for_root_lsof "$root" && return 0
+    return 0
 }
 
 harness_teardown_wait_clear() {
