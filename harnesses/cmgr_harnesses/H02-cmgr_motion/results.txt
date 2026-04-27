@@ -1,18 +1,30 @@
-case=baseline_crossing_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[BONY-TECH]
+case=baseline_crossing_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[CHIC-USER]
 
-case=offset_clear_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=offset_clear_pass  eval=true  arrived=true  detected=true  closest=intruder  range=37  encounters=0  near_misses=0  collisions=0  mhash=[MERE-RUDY]
+case=offset_clear_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=offset_clear_pass  eval=true  arrived=true  detected=true  closest=intruder  range=36  encounters=0  near_misses=0  collisions=0  mhash=[FREE-PROM]
 
-case=no_detect_clear_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=no_detect_clear_pass  eval=true  arrived=true  detected=false  closest=intruder  range=41  encounters=0  near_misses=0  collisions=0  mhash=[GRIM-PAIN]
+case=no_detect_clear_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=no_detect_clear_pass  eval=true  arrived=true  detected=false  closest=intruder  range=41  encounters=0  near_misses=0  collisions=0  mhash=[LEWD-PETE]
 
-case=delayed_crossing_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=delayed_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=22  encounters=1  near_misses=0  collisions=0  mhash=[JIMS-TWIG]
+case=delayed_crossing_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=delayed_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=23  encounters=1  near_misses=0  collisions=0  mhash=[POOR-WEBS]
 
-case=head_on_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=head_on_pass  eval=true  arrived=true  detected=true  closest=intruder  range=57  encounters=1  near_misses=0  collisions=0  mhash=[FAST-CITY]
+case=head_on_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=head_on_pass  eval=true  arrived=true  detected=true  closest=intruder  range=57  encounters=1  near_misses=0  collisions=0  mhash=[LITE-CLEM]
 
-case=two_contact_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=two_contact_pass  eval=true  arrived=true  detected=true  count=0  list=alpha,bravo  closest=bravo  range=32  encounters=0  near_misses=0  collisions=0  mhash=[VAST-JUDO]
+case=runtime_alert_add_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=runtime_alert_add_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[DANK-BEES]
 
-case=tight_alert_fail  case_result=success  expected=fail  actual=fail    grade=fail  form=cmgr_motion_tests  mmod=tight_alert_fail  eval=true  arrived=true  detected=false  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[LIKE-STUD]
+case=runtime_alert_reenable_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=runtime_alert_reenable_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[VERY-NOON]
 
-case=avoid_disabled_fail  case_result=success  expected=fail  actual=fail    grade=fail  form=cmgr_motion_tests  mmod=avoid_disabled_fail  eval=true  arrived=true  detected=true  closest=intruder  range=81  encounters=1  near_misses=0  collisions=0  mhash=[SAME-BRET]
+case=hold_alerts_for_helm_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=hold_alerts_for_helm_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[FLAT-TOSH]
 
-case=fast_intruder_fail  case_result=success  expected=fail  actual=fail    grade=fail  form=cmgr_motion_tests  mmod=fast_intruder_fail  eval=true  arrived=true  detected=true  closest=intruder  range=140  encounters=2  near_misses=0  collisions=0  mhash=[GLIB-KATO]
+case=filter_match_type_clear_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=filter_match_type_clear_pass  eval=true  arrived=true  detected=false  closest=intruder  range=36  encounters=0  near_misses=0  collisions=0  mhash=[SOLE-WALL]
+
+case=stale_reappear_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=stale_reappear_pass  eval=true  arrived=true  detected=true  retired=intruder  closest=intruder  range=22  encounters=0  near_misses=0  collisions=0  mhash=[DEAF-BRAN]
+
+case=two_contact_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=cmgr_motion_tests  mmod=two_contact_pass  eval=true  arrived=true  detected=true  count=0  list=alpha,bravo  closest=bravo  range=32  encounters=0  near_misses=0  collisions=0  mhash=[PINK-SNAG]
+
+case=tight_alert_fail  case_result=success  expected=fail  actual=fail    grade=fail  form=cmgr_motion_tests  mmod=tight_alert_fail  eval=true  arrived=true  detected=false  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[VERY-REIF]
+
+case=avoid_disabled_fail  case_result=success  expected=fail  actual=fail    grade=fail  form=cmgr_motion_tests  mmod=avoid_disabled_fail  eval=true  arrived=true  detected=true  closest=intruder  range=80  encounters=1  near_misses=0  collisions=0  mhash=[KIND-THOM]
+
+case=runtime_alert_disable_fail  case_result=success  expected=fail  actual=fail    grade=fail  form=cmgr_motion_tests  mmod=runtime_alert_disable_fail  eval=true  arrived=true  detected=false  closest=intruder  range=80  encounters=1  near_misses=0  collisions=0  mhash=[FOUR-FIRE]
+
+case=fast_intruder_fail  case_result=success  expected=fail  actual=fail    grade=fail  form=cmgr_motion_tests  mmod=fast_intruder_fail  eval=true  arrived=true  detected=true  closest=intruder  range=145  encounters=1  near_misses=0  collisions=0  mhash=[DANK-AYAN]
 

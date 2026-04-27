@@ -1,1 +1,0 @@
-  grade=pass  form=obstacle_behavior_motion_tests  mmod=default_auto_request_pass  eval=true  obavoiding=end  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=$[RESOLVED_SEEN]  range_flag_seen=$[RANGE_FLAG_SEEN]  cpa_flag_seen=$[CPA_FLAG_SEEN]  resolved=$[OBM_RESOLVED]  arrived=true  collisions=0  near_misses=0  encounters=0  mhash=[POSH-ELMO]

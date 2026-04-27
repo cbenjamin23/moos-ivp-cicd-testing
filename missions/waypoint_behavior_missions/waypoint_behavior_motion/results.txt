@@ -1,1 +1,1 @@
-  grade=pass  form=waypoint_behavior_tests  mmod=single_point_arrival_pass  eval=true  wpt_done=true  wpt_hit=true  cycle_hit=true  waypoint_end=true  test_ready=false  wpt_index=0  cycle_index=1  wpt_dist=4.193  bhv_error=false  mhash=[REAL-VOID]
+  grade=pass  form=waypoint_behavior_tests  mmod=slow_speed_no_arrival_pass  eval=true  wpt_done=false  wpt_hit=false  cycle_hit=false  waypoint_end=false  test_ready=true  wpt_index=0  cycle_index=0  wpt_dist=56.787  bhv_error=false  mhash=[WIDE-KODA]

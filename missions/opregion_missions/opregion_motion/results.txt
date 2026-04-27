@@ -1,1 +1,1 @@
-  grade=pass  form=opregion_safety_tests  mmod=inside_region_pass  eval=true  arrived=true  save_breached=false  save_recovering=false  halt_breached=false  time_breached=false  bhv_error=false  mhash=[FOUR-LADY]
+  grade=fail  form=opregion_safety_tests  mmod=trigger_exit_debounce_pass  eval=true  arrived=false  save_breached=true  save_recovering=true  halt_breached=false  time_breached=false  bhv_error=false  mhash=[MALE-MISS]
