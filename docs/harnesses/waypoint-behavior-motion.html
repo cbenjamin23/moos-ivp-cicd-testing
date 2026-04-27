@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Waypoint Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,6 +42,7 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
+      
       <div class="gif-grid">
       <article class="gif-card">
         <div class="gif-frame" data-file="waypoint-behavior-multipoint.gif">
@@ -49,18 +50,29 @@
         </div>
         <div class="gif-meta">
           <h3>Multi-point Sequence</h3>
-          <p>Description: The route contains three points. The vehicle should sequence through them and finish.</p>
+          <p>Description: The route contains three non-collinear points. The vehicle should visibly turn through the sequence and finish.</p>
         </div>
       </article>
 
 
       <article class="gif-card">
         <div class="gif-frame" data-file="waypoint-behavior-dynamic-update.gif">
-          <img src="../assets/gifs/waypoint-behavior-dynamic-update.gif" alt="Dynamic Points Update GIF" onerror="this.style.display='none'">
+          <img src="../assets/gifs/waypoint-behavior-dynamic-update.gif" alt="Dynamic Route Update GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Dynamic Points Update</h3>
-          <p>Description: The behavior starts with points=empty, then receives a runtime points=... update and completes.</p>
+          <h3>Dynamic Route Update</h3>
+          <p>Description: The route starts as a horizontal two-point line, then receives a same-length xpoints=... update that bends the second leg while preserving traversal state.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="waypoint-behavior-repeat-forever.gif">
+          <img src="../assets/gifs/waypoint-behavior-repeat-forever.gif" alt="Repeat Forever Cycle GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Repeat Forever Cycle</h3>
+          <p>Description: Vertical two-point route with repeat=forever. The case evaluates by timer and requires a cycle flag without final completion.</p>
         </div>
       </article>
 
@@ -88,7 +100,7 @@
 
         <article class="case-row">
           <code>multi_point_sequence_pass</code>
-          <p>The route contains three points. The vehicle should sequence through them and finish.</p>
+          <p>The route contains three non-collinear points. The vehicle should visibly turn through the sequence and finish.</p>
         </article>
 
 
@@ -106,13 +118,13 @@
 
         <article class="case-row">
           <code>repeat_forever_cycle_pass</code>
-          <p>Two-point route with repeat=forever. The case evaluates by timer and requires a cycle flag without final completion.</p>
+          <p>Vertical two-point route with repeat=forever. The case evaluates by timer and requires a cycle flag without final completion.</p>
         </article>
 
 
         <article class="case-row">
           <code>dynamic_points_update_pass</code>
-          <p>The behavior starts with points=empty, then receives a runtime points=... update and completes.</p>
+          <p>The behavior starts with points=empty, then receives a delayed runtime two-leg points=... update and completes.</p>
         </article>
 
 
@@ -124,7 +136,7 @@
 
         <article class="case-row">
           <code>xpoints_update_pass</code>
-          <p>The route starts with two points and receives a same-length xpoints=... update while preserving traversal state.</p>
+          <p>The route starts as a horizontal two-point line, then receives a same-length xpoints=... update that bends the second leg while preserving traversal state.</p>
         </article>
 
 
@@ -213,6 +225,36 @@
 
 
         <article class="case-row">
+          <code>ipf_type_roc_pass</code>
+          <p>The behavior uses ipf_type=roc, exercising the rate-of-closure objective function path while still completing the route.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ipf_type_zaic_spd_pass</code>
+          <p>The behavior uses ipf_type=zaic_spd, exercising the alternate speed ZAIC path while still completing the route.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>greedy_tour_pass</code>
+          <p>A multi-point route enables greedy_tour=true; the route should be reordered from ownship position and still complete cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cycle_index_output_pass</code>
+          <p>A repeat-once route must publish CYCLE_INDEX&gt;=1 in addition to completing and posting the cycle flag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>efficiency_measure_pass</code>
+          <p>A multi-leg route enables efficiency_measure=all; the case requires positive distance and time efficiency outputs after completion.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>slow_speed_no_arrival_pass</code>
           <p>A low-speed configuration is evaluated before arrival and should still be in progress.</p>
         </article>
@@ -233,6 +275,72 @@
         <article class="case-row">
           <code>bad_xpoints_size_fail</code>
           <p>The behavior starts with a two-point route and receives a one-point xpoints update. The update should be rejected, so the short timer verdict is expected to...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_fail</code>
+          <p>Launch-time speed=-1 should be rejected by BHV_Waypoint, putting the helm into malconfig and producing an expected fail grade.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_capture_line_fail</code>
+          <p>Launch-time capture_line=diagonal should be rejected, exercising capture line validation and the helm malconfig failure path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_capture_radius_fail</code>
+          <p>Launch-time capture_radius=-1 should be rejected, exercising radius validation and the helm malconfig failure path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_slip_radius_fail</code>
+          <p>Launch-time slip_radius=-1 should be rejected, exercising nonmonotonic radius validation and the helm malconfig failure path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_order_fail</code>
+          <p>Launch-time order=sideways should be rejected, exercising route-order validation and the helm malconfig failure path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_repeat_fail</code>
+          <p>Launch-time repeat=-1 should be rejected, exercising repeat-count validation and the helm malconfig failure path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_lead_damper_fail</code>
+          <p>Launch-time lead_damper=0 should be rejected because the source requires a positive damper value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_lead_condition_fail</code>
+          <p>Launch-time malformed lead_condition should be rejected by the logic condition parser.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_end_spd_fail</code>
+          <p>Launch-time end_spd=slow_dist=10,stop_dist=20 should be rejected because the stop distance exceeds the slow-down distance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_patience_fail</code>
+          <p>Launch-time patience=0 should be rejected because the course/speed ZAIC ratio must stay in the accepted 1..99 range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_efficiency_measure_fail</code>
+          <p>Launch-time efficiency_measure=summary should be rejected because only all and off are accepted.</p>
         </article>
 
       </div>

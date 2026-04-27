@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 OpRegion Safety | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,7 +42,8 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
-      <div class="gif-grid">
+      
+      <div class="gif-grid gif-grid--two">
       <article class="gif-card">
         <div class="gif-frame" data-file="opregion-safety-save-recover.gif">
           <img src="../assets/gifs/opregion-safety-save-recover.gif" alt="Save Recovery GIF" onerror="this.style.display='none'">
@@ -143,6 +144,66 @@
         <article class="case-row">
           <code>max_time_fail</code>
           <p>The behavior is case-specific with a short max_time. The case is expected to grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_depth_breach_fail</code>
+          <p>Vehicle-side sensor input posts NAV_DEPTH beyond a configured max_depth. The case should grade fail through the OpRegion depth-breach error path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_breach_fail</code>
+          <p>Vehicle-side sensor input posts NAV_ALTITUDE below a configured min_altitude. The case should grade fail through the OpRegion altitude-breach error path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_save_dist_fail</code>
+          <p>The behavior is configured with a negative save_dist. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_halt_dist_fail</code>
+          <p>The behavior is configured with a negative halt_dist. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_max_depth_fail</code>
+          <p>The behavior is configured with a negative max_depth. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_min_altitude_fail</code>
+          <p>The behavior is configured with a negative min_altitude. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_recover_spd_fail</code>
+          <p>The behavior is configured with zero recover_spd. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_trigger_on_poly_entry_fail</code>
+          <p>The behavior is configured with an invalid trigger_on_poly_entry boolean. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_trigger_entry_time_fail</code>
+          <p>The behavior is configured with a negative trigger_entry_time. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_trigger_exit_time_fail</code>
+          <p>The behavior is configured with a negative trigger_exit_time. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Avoid-Obstacle Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,7 +42,8 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
-      <div class="gif-grid">
+      
+      <div class="gif-grid gif-grid--two">
       <article class="gif-card">
         <div class="gif-frame" data-file="obstacle-behavior-two-obstacles.gif">
           <img src="../assets/gifs/obstacle-behavior-two-obstacles.gif" alt="Two Obstacles Clean GIF" onerror="this.style.display='none'">
@@ -111,8 +112,92 @@
 
 
         <article class="case-row">
+          <code>static_polygon_pass</code>
+          <p>The behavior is configured with a launch-time polygon instead of the templated OBSTACLE_ALERT path. It should still complete avoidance and arrive without collision.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>poly_alias_pass</code>
+          <p>The same launch-time obstacle is configured through the poly alias. It should behave like polygon and complete cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rng_flag_no_threshold_pass</code>
+          <p>The behavior uses rng_flag=AVOID_RANGE_SEEN=true with no threshold. The mission passes only if the no-threshold range flag is posted during a clean avoidance run.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>avoid_disabled_fail</code>
           <p>The behavior is case-specific so its AVOID=true condition can never hold. The alert request still happens, but the avoid-obstacle lifecycle should fail to...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_polygon_fail</code>
+          <p>The launch-time polygon is non-convex. The behavior configuration should be rejected and the mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_inner_dist_fail</code>
+          <p>pwt_inner_dist is set above pwt_outer_dist. The mission should grade fail rather than accepting an invalid relevance band.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_outer_dist_fail</code>
+          <p>pwt_outer_dist is set below pwt_inner_dist. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_completed_dist_fail</code>
+          <p>completed_dist is set below the configured outer relevance distance. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_min_util_cpa_dist_fail</code>
+          <p>min_util_cpa_dist is set above max_util_cpa_dist. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_max_util_cpa_dist_fail</code>
+          <p>max_util_cpa_dist is set below min_util_cpa_dist. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_allowable_ttc_fail</code>
+          <p>allowable_ttc is set negative. The behavior configuration should be rejected and the mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_rng_flag_fail</code>
+          <p>rng_flag is given a malformed threshold. The behavior configuration should be rejected and the mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_cpa_flag_fail</code>
+          <p>cpa_flag is missing an assignment payload. The behavior configuration should be rejected and the mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_use_refinery_fail</code>
+          <p>use_refinery is set to a non-boolean token. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_grade_fail</code>
+          <p>pwt_grade is present in the source state but is not accepted by the current setParam() surface. The mission should grade fail if someone configures it.</p>
         </article>
 
       </div>

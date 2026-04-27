@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H02 Obstacle Manager Motion | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,6 +42,7 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
+      
       <div class="gif-grid">
       <article class="gif-card">
         <div class="gif-frame" data-file="obmgr-motion-baseline-center.gif">
@@ -104,6 +105,24 @@
 
 
         <article class="case-row">
+          <code>runtime_given_late_pass</code>
+          <p>the obstacle is mailed to pObstacleMgr after launch with GIVEN_OBSTACLE instead of being present in startup config; the vehicle should still receive a usable...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_cluster_pass</code>
+          <p>the obstacle is built from TRACKED_FEATURE points and a generated convex hull instead of a configured polygon; the resulting alert should still support a clean...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lasso_cluster_pass</code>
+          <p>the obstacle is built from point inputs with lasso=true, exercising the pseudo-hull branch while still requiring clean transit.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>two_sequential_fail</code>
           <p>two obstacles are placed in sequence as a stress case; the short stem is expected to fail its normal clean-transit criteria.</p>
         </article>
@@ -118,6 +137,12 @@
         <article class="case-row">
           <code>avoid_disabled_fail</code>
           <p>obstacle alerts are redirected onto an unused variable instead of OBSTACLE_ALERT, so no avoid behavior spawns and the vehicle is expected to fail the normal...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_alert_request_fail</code>
+          <p>the obstacle exists in pObstacleMgr, but no OBM_ALERT_REQUEST is sent; without an alert variable, no avoid behavior should spawn and the normal clean-transit...</p>
         </article>
 
       </div>

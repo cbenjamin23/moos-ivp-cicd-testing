@@ -8,6 +8,24 @@ case overlays before delegating to shared `xlaunch.sh`. Calling `xlaunch.sh`
 directly is useful inside those wrappers, but it is not the case-selection
 entry point for the harness pages.
 
+Generated visual standard: app-level unit and classification pages may use 16:9,
+map-style explanatory GIFs when a raw `pMarineViewer` capture would not make
+the pass condition legible. Keep the look close to the PMV captures: dark chart
+background, simple ownship/contact/obstacle geometry, compact labels, and one
+small pass-condition callout. The callout should name the MOOS publication being
+graded, because that is the evidence the harness is actually testing.
+
+Generated unit visuals live in `docs/tools/render_unit_harness_gifs.py`.
+Generated COLREGS classification visuals live in
+`docs/tools/render_colregs_classification_gifs.py`.
+Generated COLREGS threshold overlay visuals live in
+`docs/tools/render_colregs_threshold_gifs.py`.
+Generated COLREGS parameter comparison visuals live in
+`docs/tools/render_colregs_parameter_gifs.py`.
+Headless harness runs remain the source of truth for the case behavior; the
+generated GIFs are documentation views of that same geometry and variable-level
+evidence.
+
 ## H01 Contact Manager Unit
 
 Capture from: `harnesses/cmgr_harnesses/H01-cmgr_unit`
@@ -55,8 +73,8 @@ Typical capture launch: `./zlaunch.sh --case=head_on_colregs_pass --gui 10`
 Capture from: `harnesses/colregs_harnesses/H02-colregs_thresholds`
 Typical capture launch: `./zlaunch.sh --group=headon --gui 10`
 
-- `colregs-thresholds-headon-triplet.gif` - Below/Edge/Above Triplet; representative case `group=headon`
-- `colregs-thresholds-mirror-boundary.gif` - Mirrored Boundary; representative case `group=standon`
+- `colregs-thresholds-giveway-bowdist.gif` - Give-way Bow Distance; representative case `giveway_bowdist_edge_pass`
+- `colregs-thresholds-overtaking-triplet.gif` - Overtaking Threshold; representative case `overtaking_thresh_edge_pass`
 
 ## H03 COLREGS Execution
 
@@ -65,14 +83,15 @@ Typical capture launch: `./zlaunch.sh --case=head_on_execution_pass --gui 10`
 
 - `colregs-execution-head-on.gif` - Head-on Resolution; representative case `head_on_execution_pass`
 - `colregs-execution-overtaken-midrange.gif` - Overtaken Midrange; representative case `overtaken_starboard_standon_midrange_execution_pass`
+- `colregs-execution-crossing-giveway.gif` - Crossing Give-way; representative case `crossing_starboard_giveway_execution_pass`
 
 ## H04 COLREGS Parameters
 
 Capture from: `harnesses/colregs_harnesses/H04-colregs_parameters`
 Typical capture launch: `./zlaunch.sh --group=min_util_cpa_dist --gui 10`
 
-- `colregs-parameters-cpa-compare.gif` - Default vs High CPA; representative case `min_util_cpa_default/high`
-- `colregs-parameters-headon-only.gif` - Head-on Only Toggle; representative case `headon_only_true/false`
+- `colregs-parameters-cpa-compare.gif` - Default vs High CPA; representative case `min_util_cpa_high_pass`
+- `colregs-parameters-headon-only.gif` - Head-on Only Toggle; representative case `headon_only_true_pass`
 
 ## H01 Avoid-Collision Behavior
 
@@ -104,7 +123,8 @@ Capture from: `harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motio
 Typical capture launch: `./zlaunch.sh --case=multi_point_sequence_pass --gui 10`
 
 - `waypoint-behavior-multipoint.gif` - Multi-point Sequence; representative case `multi_point_sequence_pass`
-- `waypoint-behavior-dynamic-update.gif` - Dynamic Points Update; representative case `dynamic_points_update_pass`
+- `waypoint-behavior-dynamic-update.gif` - Dynamic Route Update; representative case `xpoints_update_pass`
+- `waypoint-behavior-repeat-forever.gif` - Repeat Forever Cycle; representative case `repeat_forever_cycle_pass`
 
 ## H01 Loiter Behavior
 
@@ -112,7 +132,8 @@ Capture from: `harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion`
 Typical capture launch: `./zlaunch.sh --case=radial_clockwise_pass --gui 10`
 
 - `loiter-behavior-radial.gif` - Radial Clockwise; representative case `radial_clockwise_pass`
-- `loiter-behavior-center-activate.gif` - Center Activate; representative case `center_activate_pass`
+- `loiter-behavior-radius-expand.gif` - Runtime Radius Expand; representative case `mod_poly_rad_expand_pass`
+- `loiter-behavior-center-assign-pair.gif` - Center Assign Pair; representative case `center_assign_pair_pass`
 
 ## H01 StationKeep Behavior
 
@@ -121,14 +142,16 @@ Typical capture launch: `./zlaunch.sh --case=static_station_pass --gui 10`
 
 - `stationkeep-behavior-static.gif` - Static Station; representative case `static_station_pass`
 - `stationkeep-behavior-hibernation.gif` - Hibernation Settle; representative case `hibernation_settle_pass`
+- `stationkeep-behavior-radius-expand.gif` - Runtime Radius Expand; representative case `radius_update_expand_pass`
 
 ## H01 Trail Behavior
 
 Capture from: `harnesses/trail_behavior_harnesses/H01-trail_behavior_motion`
 Typical capture launch: `./zlaunch.sh --case=static_trail_pass --gui 10`
 
-- `trail-behavior-static.gif` - Static Trail; representative case `static_trail_pass`
-- `trail-behavior-runtime-angle.gif` - Runtime Angle Update; representative case `runtime_angle_update_pass`
+- `trail-behavior-relative-port.gif` - Relative Port Trail; representative case `relative_port_pass`
+- `trail-behavior-lead-turn-angle-update.gif` - Lead Turn Angle Update; representative case `lead_turn_angle_update_pass`
+- `trail-behavior-runtime-range-extend.gif` - Runtime Range Extend; representative case `runtime_range_extend_pass`
 
 ## H01 Convoy Behavior
 

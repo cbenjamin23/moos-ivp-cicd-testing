@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Trail Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,25 +42,37 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
+      
       <div class="gif-grid">
       <article class="gif-card">
-        <div class="gif-frame" data-file="trail-behavior-static.gif">
-          <img src="../assets/gifs/trail-behavior-static.gif" alt="Static Trail GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="trail-behavior-relative-port.gif">
+          <img src="../assets/gifs/trail-behavior-relative-port.gif" alt="Relative Port Trail GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Static Trail</h3>
-          <p>Description: Baseline relative trailing at 180 degrees and 45 meters.</p>
+          <h3>Relative Port Trail</h3>
+          <p>Description: Keeps the chaser on the target&#x27;s port quarter, proving BHV_Trail can hold an offset relative trail angle instead of only following directly astern.</p>
         </div>
       </article>
 
 
       <article class="gif-card">
-        <div class="gif-frame" data-file="trail-behavior-runtime-angle.gif">
-          <img src="../assets/gifs/trail-behavior-runtime-angle.gif" alt="Runtime Angle Update GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="trail-behavior-lead-turn-angle-update.gif">
+          <img src="../assets/gifs/trail-behavior-lead-turn-angle-update.gif" alt="Lead Turn Angle Update GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Runtime Angle Update</h3>
-          <p>Description: Changes trail_angle through TRAIL_UPDATES.</p>
+          <h3>Lead Turn Angle Update</h3>
+          <p>Description: Follows a target through a dogleg while changing trail_angle at runtime, proving the chaser can reframe the desired trail point during a turn.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="trail-behavior-runtime-range-extend.gif">
+          <img src="../assets/gifs/trail-behavior-runtime-range-extend.gif" alt="Runtime Range Extend GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Range Extend</h3>
+          <p>Description: Increases trail_range through TRAIL_UPDATES, proving the behavior can accept a runtime range change and settle cleanly at the longer separation.</p>
         </div>
       </article>
 
@@ -88,73 +100,13 @@
 
         <article class="case-row">
           <code>relative_port_pass</code>
-          <p>Trails off the contact&#x27;s port quarter with a relative 135 degree angle.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>relative_starboard_pass</code>
-          <p>Trails off the contact&#x27;s starboard quarter with a relative -135 degree angle.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>lead_right_turn_pass</code>
-          <p>Replaces the target&#x27;s straight waypoint leg with a right-angle dogleg and grades pursuit after the target changes course.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>lead_port_turn_pass</code>
-          <p>Combines the dogleg target path with a port-quarter relative trail angle.</p>
+          <p>Keeps the chaser on the target&#x27;s port quarter, proving BHV_Trail can hold an offset relative trail angle instead of only following directly astern.</p>
         </article>
 
 
         <article class="case-row">
           <code>lead_turn_angle_update_pass</code>
-          <p>Combines the dogleg target path with a runtime trail_angle update.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>short_trail_range_pass</code>
-          <p>Shortens trail_range and grades tighter trail-point convergence.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>long_trail_range_pass</code>
-          <p>Extends trail_range and evaluates after the longer geometry settles.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>tight_radius_pass</code>
-          <p>Shrinks the inner radius while keeping pursuit active.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>wide_radius_pass</code>
-          <p>Expands the inner radius and grades bounded trail-point convergence.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>inside_nm_radius_pass</code>
-          <p>Exercises the inside-nm_radius branch.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>outside_nm_radius_pass</code>
-          <p>Forces the outside-nm_radius branch with zero radius settings.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>pwt_outer_active_pass</code>
-          <p>Sets pwt_outer_dist high enough that relevance remains active.</p>
+          <p>Follows a target through a dogleg while changing trail_angle at runtime, proving the chaser can reframe the desired trail point during a turn.</p>
         </article>
 
 
@@ -165,32 +117,8 @@
 
 
         <article class="case-row">
-          <code>mod_trail_range_plus_pass</code>
-          <p>Uses mod_trail_range to increase configured trailing distance.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>mod_trail_range_pct_pass</code>
-          <p>Uses mod_trail_range_pct to shrink configured trailing distance.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>runtime_range_extend_pass</code>
-          <p>Extends trail_range through TRAIL_UPDATES.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_mod_range_plus_pass</code>
-          <p>Applies mod_trail_range through TRAIL_UPDATES.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_mod_range_pct_pass</code>
-          <p>Applies mod_trail_range_pct through TRAIL_UPDATES.</p>
+          <p>Increases trail_range through TRAIL_UPDATES, proving the behavior can accept a runtime range change and settle cleanly at the longer separation.</p>
         </article>
 
 
@@ -201,104 +129,8 @@
 
 
         <article class="case-row">
-          <code>runtime_relevance_off_pass</code>
-          <p>Lowers pwt_outer_dist through TRAIL_UPDATES and grades pursuit shutoff.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_bad_update_recover_pass</code>
-          <p>Sends a malformed runtime trail-range update, then verifies a later valid update recovers without a behavior error.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>idle_post_distance_pass</code>
-          <p>Idles the trail behavior after pursuit and verifies distance reporting can continue with pursuit off.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>no_extrapolate_pass</code>
-          <p>Verifies clean pursuit with contact extrapolation disabled.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>no_alert_request_pass</code>
-          <p>Verifies no_alert_request=true is accepted without breaking pursuit.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>missing_contact_warn_pass</code>
-          <p>Uses a missing contact with on_no_contact_ok=true and expects warning-only behavior.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>missing_contact_fail</code>
           <p>Uses a missing contact with on_no_contact_ok=false and expects failure.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>missing_contact_param_fail</code>
-          <p>Omits contact with on_no_contact_ok=false and expects failure.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_trail_angle_type_fail</code>
-          <p>Rejects malformed trail_angle_type.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_trail_angle_fail</code>
-          <p>Rejects malformed trail_angle.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_trail_range_fail</code>
-          <p>Rejects negative trail_range.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_mod_trail_range_pct_fail</code>
-          <p>Rejects zero mod_trail_range_pct.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_radius_fail</code>
-          <p>Rejects a negative radius configuration and expects the behavior error path to make the mission fail.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_nm_radius_fail</code>
-          <p>Rejects a negative nm_radius configuration and expects the behavior error path to make the mission fail.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_pwt_outer_dist_fail</code>
-          <p>Rejects negative pwt_outer_dist.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_decay_fail</code>
-          <p>Rejects malformed decay input and expects the behavior error path to make the mission fail.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_time_on_leg_fail</code>
-          <p>Rejects negative time_on_leg.</p>
         </article>
 
       </div>

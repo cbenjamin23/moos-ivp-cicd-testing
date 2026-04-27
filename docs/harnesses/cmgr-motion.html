@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H02 Contact Manager Motion | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,6 +42,7 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
+      
       <div class="gif-grid">
       <article class="gif-card">
         <div class="gif-frame" data-file="cmgr-motion-baseline-crossing.gif">
@@ -116,6 +117,36 @@
 
 
         <article class="case-row">
+          <code>runtime_alert_add_pass</code>
+          <p>The moving mission starts without a static alert and posts a BCM_ALERT_REQUEST at runtime. The dynamic alert should create the spawned avoid-collision update,...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_alert_reenable_pass</code>
+          <p>The configured alert is disabled and then re-enabled by runtime BCM_ALERT_REQUEST messages before the contact arrives. The re-enabled alert should behave like...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hold_alerts_for_helm_pass</code>
+          <p>Contact manager is case-specific with hold_alerts_for_helm=true. The alert should remain held until the helm reaches DRIVE, then release in time for the spawned...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>filter_match_type_clear_pass</code>
+          <p>The contact is a default kayak while the alert requires match_type=ship. The vehicle should still arrive cleanly, and the mission grades this case by confirming...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stale_reappear_pass</code>
+          <p>A short-lived contact with the same name is retired through contact_max_age, then reappears on the lane. The mission requires both the retire flag and the later...</p>
+        </article>
+
+
+        <article class="case-row">
           <code>two_contact_pass</code>
           <p>One avoid-worthy contact plus one irrelevant background contact should still result in a clean arrival. This extends the motion layer into multi-contact...</p>
         </article>
@@ -130,6 +161,12 @@
         <article class="case-row">
           <code>avoid_disabled_fail</code>
           <p>Contact manager still detects the contact, but the alert variable is case-specific away from CONTACT_INFO, so the avoid-collision behavior never spawns. In the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_alert_disable_fail</code>
+          <p>The configured alert is disabled by a runtime BCM_ALERT_REQUEST before a harsh contact arrives. The expected mission result is failure because the contact...</p>
         </article>
 
 

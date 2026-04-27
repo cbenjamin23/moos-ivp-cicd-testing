@@ -3,7 +3,9 @@
 
 The GIFs in docs/assets/gifs are derivatives. To "uncrop" or reframe them,
 run this against the original MP4 capture and choose a new normalized center
-and zoom. Center coordinates are percentages across the source video frame.
+and zoom. Center coordinates are percentages across the current crop or source
+video frame. The coordinate origin follows image/ffmpeg convention: x=0 is the
+left edge, y=0 is the top edge.
 """
 
 from __future__ import annotations
@@ -59,6 +61,114 @@ PRESETS: dict[str, Preset] = {
         crop_h=551,
         x=1712,
         y=705,
+    ),
+    "loiter-radial": Preset(
+        source=Path("/tmp/moos-cicd-loiter-final-v4/sources/radial_clockwise_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/loiter-behavior-radial.gif",
+        crop_w=1500,
+        crop_h=844,
+        x=950,
+        y=500,
+        start=3.0,
+        duration=8.0,
+        preview_time=6.0,
+        fps=12,
+    ),
+    "loiter-radius-expand": Preset(
+        source=Path("/tmp/moos-cicd-loiter-final-v4/sources/mod_poly_rad_expand_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/loiter-behavior-radius-expand.gif",
+        crop_w=1500,
+        crop_h=844,
+        x=1080,
+        y=500,
+        start=2.8,
+        duration=8.0,
+        preview_time=5.5,
+        fps=12,
+    ),
+    "loiter-center-assign": Preset(
+        source=Path("/tmp/moos-cicd-loiter-final-v4/sources/center_assign_pair_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/loiter-behavior-center-assign-pair.gif",
+        crop_w=1500,
+        crop_h=844,
+        x=1230,
+        y=500,
+        start=3.0,
+        duration=8.0,
+        preview_time=6.0,
+        fps=12,
+    ),
+    "stationkeep-static": Preset(
+        source=Path("/tmp/moos-cicd-stationkeep-candidates/sources/static_station_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/stationkeep-behavior-static.gif",
+        crop_w=1500,
+        crop_h=844,
+        x=1200,
+        y=604,
+        start=3.0,
+        duration=8.0,
+        preview_time=6.0,
+        fps=12,
+    ),
+    "stationkeep-hibernation": Preset(
+        source=Path("/tmp/moos-cicd-stationkeep-candidates/sources/hibernation_settle_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/stationkeep-behavior-hibernation.gif",
+        crop_w=1500,
+        crop_h=844,
+        x=1200,
+        y=604,
+        start=3.0,
+        duration=8.0,
+        preview_time=6.0,
+        fps=12,
+    ),
+    "stationkeep-radius-expand": Preset(
+        source=Path("/tmp/moos-cicd-stationkeep-candidates/sources/radius_update_expand_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/stationkeep-behavior-radius-expand.gif",
+        crop_w=1500,
+        crop_h=844,
+        x=1200,
+        y=604,
+        start=3.0,
+        duration=8.0,
+        preview_time=6.0,
+        fps=12,
+    ),
+    "trail-relative-port": Preset(
+        source=Path("/tmp/moos-cicd-trail-final/sources/relative_port_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/trail-behavior-relative-port.gif",
+        crop_w=1351,
+        crop_h=760,
+        x=1547,
+        y=312,
+        start=5.0,
+        duration=8.0,
+        preview_time=8.0,
+        fps=12,
+    ),
+    "trail-lead-turn-angle-update": Preset(
+        source=Path("/tmp/moos-cicd-trail-final/sources/lead_turn_angle_update_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/trail-behavior-lead-turn-angle-update.gif",
+        crop_w=1351,
+        crop_h=760,
+        x=1697,
+        y=312,
+        start=6.0,
+        duration=8.0,
+        preview_time=10.0,
+        fps=12,
+    ),
+    "trail-runtime-range-extend": Preset(
+        source=Path("/tmp/moos-cicd-trail-final/sources/runtime_range_extend_pass.mp4"),
+        output=REPO_ROOT / "docs/assets/gifs/trail-behavior-runtime-range-extend.gif",
+        crop_w=1351,
+        crop_h=760,
+        x=1547,
+        y=312,
+        start=5.0,
+        duration=8.0,
+        preview_time=8.0,
+        fps=12,
     ),
 }
 
@@ -178,7 +288,7 @@ def main() -> None:
     parser.add_argument(
         "--y-center",
         type=float,
-        help="y position in the current GIF frame, 0-100, to make the new center",
+        help="y position in the current GIF frame, 0-100 top-to-bottom, to make the new center",
     )
     parser.add_argument(
         "--source-x-center",
@@ -188,7 +298,7 @@ def main() -> None:
     parser.add_argument(
         "--source-y-center",
         type=float,
-        help="absolute y center in the full source recording, 0-100",
+        help="absolute y center in the full source recording, 0-100 top-to-bottom",
     )
     parser.add_argument(
         "--zoom",

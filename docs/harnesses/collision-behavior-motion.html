@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Avoid-Collision Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,7 +42,8 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
-      <div class="gif-grid">
+      
+      <div class="gif-grid gif-grid--two">
       <article class="gif-card">
         <div class="gif-frame" data-file="collision-behavior-head-on-resolve.gif">
           <img src="../assets/gifs/collision-behavior-head-on-resolve.gif" alt="Head-on Resolve GIF" onerror="this.style.display='none'">
@@ -105,8 +106,98 @@
 
 
         <article class="case-row">
+          <code>pwt_outer_too_small_fail</code>
+          <p>The collision-relevance outer distance is made too small for the on-lane encounter. The behavior may resolve administratively, but the mission should fail...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_grade_quadratic_pass</code>
+          <p>The objective-function grade is switched to quadratic. The behavior should still resolve the baseline encounter with no collision.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pwt_grade_quasi_pass</code>
+          <p>The objective-function grade is switched to quasi. The behavior should still resolve the baseline encounter with no collision.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>use_refinery_pass</code>
+          <p>The IvP refinery branch is enabled. The behavior should still build a usable function, resolve the contact, arrive, and avoid collision.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>contact_type_required_absent_pass</code>
+          <p>The legacy contact_type_required alias is set to a type that excludes the spoofed contact while the contact is moved off-lane. The behavior should stay idle and...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_extrapolate_pass</code>
+          <p>Contact extrapolation is disabled while the contact feed remains fresh. The behavior should still resolve the encounter cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>no_alert_request_fail</code>
           <p>The behavior is told not to request an alert while the contact remains challenging. The mission should fail because the avoid behavior never engages and the...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_inner_dist_fail</code>
+          <p>pwt_inner_dist is set outside the valid relationship to pwt_outer_dist. The mission should grade fail rather than silently accepting the unsafe behavior...</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_outer_dist_fail</code>
+          <p>pwt_outer_dist is set inside the configured inner distance. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_min_util_cpa_dist_fail</code>
+          <p>min_util_cpa_dist is set above max_util_cpa_dist. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_max_util_cpa_dist_fail</code>
+          <p>max_util_cpa_dist is set below min_util_cpa_dist. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_pwt_grade_fail</code>
+          <p>pwt_grade is set to an unsupported token. The behavior configuration should be rejected and the mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_completed_dist_fail</code>
+          <p>completed_dist is set negative. The behavior configuration should be rejected and the mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_time_on_leg_fail</code>
+          <p>The inherited time_on_leg setting is set negative. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_decay_fail</code>
+          <p>The inherited contact-decay window is malformed by making the stale threshold lower than the linear threshold. The mission should grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_collision_depth_fail</code>
+          <p>collision_depth is enabled in this 2D mission, where the source requires a depth domain. The mission should grade fail.</p>
         </article>
 
       </div>

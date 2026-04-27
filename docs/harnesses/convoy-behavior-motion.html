@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Convoy Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,7 +42,8 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
-      <div class="gif-grid">
+      
+      <div class="gif-grid gif-grid--two">
       <article class="gif-card">
         <div class="gif-frame" data-file="convoy-behavior-static.gif">
           <img src="../assets/gifs/convoy-behavior-static.gif" alt="Static Convoy GIF" onerror="this.style.display='none'">
@@ -255,6 +256,12 @@
 
 
         <article class="case-row">
+          <code>runtime_estop_speed_zero_pass</code>
+          <p>Raises runtime safety ranges through CONVOY_UPDATES so the chaser enters the emergency-stop branch and grades near-zero physical speed.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>runtime_bad_update_recover_pass</code>
           <p>Sends a malformed runtime mark-spacing update, then verifies a later valid update recovers without a behavior error.</p>
         </article>
@@ -333,8 +340,26 @@
 
 
         <article class="case-row">
+          <code>bad_rng_tgating_fail</code>
+          <p>Rejects a negative rng_tgating safety range and expects mission failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_rng_lagging_fail</code>
+          <p>Rejects a negative rng_lagging safety range and expects mission failure.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>bad_rng_safety_fail</code>
           <p>Rejects malformed rng_safety.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_cruise_speed_fail</code>
+          <p>Rejects a negative cruise_speed configuration and expects mission failure.</p>
         </article>
 
       </div>

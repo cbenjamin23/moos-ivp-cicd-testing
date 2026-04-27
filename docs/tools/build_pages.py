@@ -13,7 +13,14 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS_DIR = REPO_ROOT / "harnesses"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
+ASSET_VERSION = "20260426-2"
 CASE_LIST_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*(["\'])(.*)\2\s*$')
+VISUAL_NOTES = {
+    "cmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship geometry is intentionally simple and the verdict comes from MOOS publications such as contact alerts, reports, and filter messages.",
+    "obmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship is stationary and the verdict comes from MOOS publications such as obstacle acceptance, distance reports, hull generation, and filter messages.",
+    "colregs-classification": "This classification harness uses alog-backed explanatory GIFs instead of raw pMarineViewer captures because the vehicles do move, but the verdict comes from COLREGS publications such as mode, index, summary, and range reports.",
+    "colregs-thresholds": "This threshold harness uses alog-backed overlay GIFs instead of raw pMarineViewer captures because the cases differ by small geometry changes and the verdict comes from boundary-specific COLREGS publications.",
+}
 
 
 @dataclass(frozen=True)
@@ -186,8 +193,8 @@ HARNESSES: tuple[Harness, ...] = (
             "overtaken threshold group",
         ),
         gifs=(
-            ("Below/Edge/Above Triplet", "group=headon", "colregs-thresholds-headon-triplet.gif"),
-            ("Mirrored Boundary", "group=standon", "colregs-thresholds-mirror-boundary.gif"),
+            ("Give-way Bow Distance", "giveway_bowdist_edge_pass", "colregs-thresholds-giveway-bowdist.gif"),
+            ("Overtaking Threshold", "overtaking_thresh_edge_pass", "colregs-thresholds-overtaking-triplet.gif"),
         ),
         run="./zlaunch.sh --group=headon --gui 10",
         notes=(
@@ -213,6 +220,7 @@ HARNESSES: tuple[Harness, ...] = (
         gifs=(
             ("Head-on Resolution", "head_on_execution_pass", "colregs-execution-head-on.gif"),
             ("Overtaken Midrange", "overtaken_starboard_standon_midrange_execution_pass", "colregs-execution-overtaken-midrange.gif"),
+            ("Crossing Give-way", "crossing_starboard_giveway_execution_pass", "colregs-execution-crossing-giveway.gif"),
         ),
         run="./zlaunch.sh --case=head_on_execution_pass --gui 10",
         notes=(
@@ -237,8 +245,8 @@ HARNESSES: tuple[Harness, ...] = (
             "use_refinery",
         ),
         gifs=(
-            ("Default vs High CPA", "min_util_cpa_default/high", "colregs-parameters-cpa-compare.gif"),
-            ("Head-on Only Toggle", "headon_only_true/false", "colregs-parameters-headon-only.gif"),
+            ("Default vs High CPA", "min_util_cpa_high_pass", "colregs-parameters-cpa-compare.gif"),
+            ("Head-on Only Toggle", "headon_only_true_pass", "colregs-parameters-headon-only.gif"),
         ),
         run="./zlaunch.sh --group=min_util_cpa_dist --gui 10",
         notes=(
@@ -341,7 +349,8 @@ HARNESSES: tuple[Harness, ...] = (
         ),
         gifs=(
             ("Multi-point Sequence", "multi_point_sequence_pass", "waypoint-behavior-multipoint.gif"),
-            ("Dynamic Points Update", "dynamic_points_update_pass", "waypoint-behavior-dynamic-update.gif"),
+            ("Dynamic Route Update", "xpoints_update_pass", "waypoint-behavior-dynamic-update.gif"),
+            ("Repeat Forever Cycle", "repeat_forever_cycle_pass", "waypoint-behavior-repeat-forever.gif"),
         ),
         run="./zlaunch.sh --case=multi_point_sequence_pass --gui 10",
         notes=(
@@ -367,7 +376,8 @@ HARNESSES: tuple[Harness, ...] = (
         ),
         gifs=(
             ("Radial Clockwise", "radial_clockwise_pass", "loiter-behavior-radial.gif"),
-            ("Center Activate", "center_activate_pass", "loiter-behavior-center-activate.gif"),
+            ("Runtime Radius Expand", "mod_poly_rad_expand_pass", "loiter-behavior-radius-expand.gif"),
+            ("Center Assign Pair", "center_assign_pair_pass", "loiter-behavior-center-assign-pair.gif"),
         ),
         run="./zlaunch.sh --case=radial_clockwise_pass --gui 10",
         notes=(
@@ -394,6 +404,7 @@ HARNESSES: tuple[Harness, ...] = (
         gifs=(
             ("Static Station", "static_station_pass", "stationkeep-behavior-static.gif"),
             ("Hibernation Settle", "hibernation_settle_pass", "stationkeep-behavior-hibernation.gif"),
+            ("Runtime Radius Expand", "radius_update_expand_pass", "stationkeep-behavior-radius-expand.gif"),
         ),
         run="./zlaunch.sh --case=static_station_pass --gui 10",
         notes=(
@@ -413,13 +424,16 @@ HARNESSES: tuple[Harness, ...] = (
             "static_trail_pass",
             "absolute_west_pass",
             "relative_port_pass",
+            "lead_turn_angle_update_pass",
             "pwt_outer_inactive_pass",
+            "runtime_range_extend_pass",
             "runtime_angle_update_pass",
             "missing_contact_fail",
         ),
         gifs=(
-            ("Static Trail", "static_trail_pass", "trail-behavior-static.gif"),
-            ("Runtime Angle Update", "runtime_angle_update_pass", "trail-behavior-runtime-angle.gif"),
+            ("Relative Port Trail", "relative_port_pass", "trail-behavior-relative-port.gif"),
+            ("Lead Turn Angle Update", "lead_turn_angle_update_pass", "trail-behavior-lead-turn-angle-update.gif"),
+            ("Runtime Range Extend", "runtime_range_extend_pass", "trail-behavior-runtime-range-extend.gif"),
         ),
         run="./zlaunch.sh --case=static_trail_pass --gui 10",
         notes=(
@@ -676,7 +690,7 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)} | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="{prefix}styles.css">
+  <link rel="stylesheet" href="{prefix}styles.css?v={ASSET_VERSION}">
 </head>
 <body>
   <header class="site-header">
@@ -1183,8 +1197,17 @@ def render_index() -> str:
 def render_harness(h: Harness) -> str:
     descriptions = dict(extract_case_docs(h))
     gifs = "\n".join(gif_card(g, descriptions, "../") for g in h.gifs)
+    gif_grid_class = "gif-grid"
+    if len(h.gifs) == 2:
+        gif_grid_class += " gif-grid--two"
     test_style = TEST_STYLE.get(h.slug, h.proof)
     stem_context = STEM_CONTEXT.get(h.slug, "")
+    visual_note_text = VISUAL_NOTES.get(h.slug, "")
+    visual_note = ""
+    if visual_note_text:
+        visual_note = f"""
+      <p class="visual-note">{escape(visual_note_text)} The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+"""
     stem_section = ""
     if stem_context:
         stem_section = f"""
@@ -1212,7 +1235,8 @@ def render_harness(h: Harness) -> str:
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
-      <div class="gif-grid">{gifs}
+      {visual_note}
+      <div class="{gif_grid_class}">{gifs}
       </div>
     </section>
 
@@ -1370,6 +1394,24 @@ def render_gif_manifest() -> str:
         "case overlays before delegating to shared `xlaunch.sh`. Calling `xlaunch.sh`",
         "directly is useful inside those wrappers, but it is not the case-selection",
         "entry point for the harness pages.",
+        "",
+        "Generated visual standard: app-level unit and classification pages may use 16:9,",
+        "map-style explanatory GIFs when a raw `pMarineViewer` capture would not make",
+        "the pass condition legible. Keep the look close to the PMV captures: dark chart",
+        "background, simple ownship/contact/obstacle geometry, compact labels, and one",
+        "small pass-condition callout. The callout should name the MOOS publication being",
+        "graded, because that is the evidence the harness is actually testing.",
+        "",
+        "Generated unit visuals live in `docs/tools/render_unit_harness_gifs.py`.",
+        "Generated COLREGS classification visuals live in",
+        "`docs/tools/render_colregs_classification_gifs.py`.",
+        "Generated COLREGS threshold overlay visuals live in",
+        "`docs/tools/render_colregs_threshold_gifs.py`.",
+        "Generated COLREGS parameter comparison visuals live in",
+        "`docs/tools/render_colregs_parameter_gifs.py`.",
+        "Headless harness runs remain the source of truth for the case behavior; the",
+        "generated GIFs are documentation views of that same geometry and variable-level",
+        "evidence.",
         "",
     ]
     for harness in HARNESSES:

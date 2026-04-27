@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 StationKeep Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,6 +42,7 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
+      
       <div class="gif-grid">
       <article class="gif-card">
         <div class="gif-frame" data-file="stationkeep-behavior-static.gif">
@@ -61,6 +62,17 @@
         <div class="gif-meta">
           <h3>Hibernation Settle</h3>
           <p>Description: Enables hibernation and waits for PSKEEP_MODE=HIBERNATING.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="stationkeep-behavior-radius-expand.gif">
+          <img src="../assets/gifs/stationkeep-behavior-radius-expand.gif" alt="Runtime Radius Expand GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Radius Expand</h3>
+          <p>Description: Expands station-keeping radii through runtime updates.</p>
         </div>
       </article>
 
@@ -257,6 +269,18 @@
         <article class="case-row">
           <code>bad_transit_speed_fail</code>
           <p>Provides malformed transit speed configuration and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_extra_speed_fail</code>
+          <p>Provides malformed extra_speed alias configuration and expects failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_center_activate_fail</code>
+          <p>Provides non-boolean center_activate configuration and expects failure.</p>
         </article>
 
 

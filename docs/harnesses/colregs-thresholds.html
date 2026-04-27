@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H02 COLREGS Thresholds | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260426-2">
 </head>
 <body>
   <header class="site-header">
@@ -42,25 +42,28 @@
         <p class="eyebrow">Examples</p>
         <h2>Representative runs</h2>
       </div>
-      <div class="gif-grid">
+      
+      <p class="visual-note">This threshold harness uses alog-backed overlay GIFs instead of raw pMarineViewer captures because the cases differ by small geometry changes and the verdict comes from boundary-specific COLREGS publications. The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
       <article class="gif-card">
-        <div class="gif-frame" data-file="colregs-thresholds-headon-triplet.gif">
-          <img src="../assets/gifs/colregs-thresholds-headon-triplet.gif" alt="Below/Edge/Above Triplet GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="colregs-thresholds-giveway-bowdist.gif">
+          <img src="../assets/gifs/colregs-thresholds-giveway-bowdist.gif" alt="Give-way Bow Distance GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Below/Edge/Above Triplet</h3>
-          <p>Description: Covers group=headon.</p>
+          <h3>Give-way Bow Distance</h3>
+          <p>Description: Probes the calibrated give-way bow-distance edge; expected classification should still stay in giveway:stern.</p>
         </div>
       </article>
 
 
       <article class="gif-card">
-        <div class="gif-frame" data-file="colregs-thresholds-mirror-boundary.gif">
-          <img src="../assets/gifs/colregs-thresholds-mirror-boundary.gif" alt="Mirrored Boundary GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="colregs-thresholds-overtaking-triplet.gif">
+          <img src="../assets/gifs/colregs-thresholds-overtaking-triplet.gif" alt="Overtaking Threshold GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Mirrored Boundary</h3>
-          <p>Description: Covers group=standon.</p>
+          <h3>Overtaking Threshold</h3>
+          <p>Description: Probes the overtaking threshold edge; expected behavior should match the calibrated edge branch.</p>
         </div>
       </article>
 
