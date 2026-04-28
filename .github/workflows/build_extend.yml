@@ -70,7 +70,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m unittest discover -s tests
-          python3 scripts/harness_targets.py validate
+          python3 scripts/check_repo_invariants.py
 
   select-targets:
     runs-on: ubuntu-latest
