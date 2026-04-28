@@ -179,6 +179,7 @@ get_case_config() {
     VEH_MOOS_PATCH=""
     VEH_BHV_PATCH=""
     LAUNCH_ARGS=""
+    CASE_MAX_TIME=""
 
     if [ "$CASE_NAME" = "static_convoy_pass" ]; then
         EXPECTED="pass"
@@ -264,6 +265,8 @@ get_case_config() {
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/eval-lead-s-turn-pass-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/lead-s-turn-pass-vehicle.xbhv"
+        LAUNCH_ARGS="--vpos1=x=-20,y=-80,heading=90"
+        CASE_MAX_TIME="170"
     elif [ "$CASE_NAME" = "short_queue_turn_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/eval-short-queue-turn-pass-shoreside.xmoos"
@@ -405,7 +408,9 @@ run_case() {
     local shore_pshare
     local veh1_pshare
     local veh2_pshare
+    local effective_max_time
     get_case_config "$case_name" || return 1
+    effective_max_time="${CASE_MAX_TIME:-$MAX_TIME}"
 
     vecho "Preparing case: $case_name"
 
@@ -415,7 +420,7 @@ run_case() {
     apply_case_patches || return 1
     : > results.txt
 
-    XARGS="--max_time=$MAX_TIME --mmod=$case_name $LAUNCH_ARGS $TIME_WARP"
+    XARGS="--max_time=$effective_max_time --mmod=$case_name $LAUNCH_ARGS $TIME_WARP"
     if [ "$PORT_BASE_SET" = "yes" ]; then
         case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
         shore_mport=$((case_base + 0))
@@ -523,6 +528,7 @@ run_case_isolated() {
     local status
     local xargs
     local launch_rc
+    local effective_max_time
 
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
@@ -532,6 +538,7 @@ run_case_isolated() {
         echo "case=$case_name  case_result=error  expected=unknown  actual=script_error" > "$case_result_file"
         return 1
     }
+    effective_max_time="${CASE_MAX_TIME:-$MAX_TIME}"
 
     prepare_case_dir "$case_dir" || {
         echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
@@ -549,7 +556,7 @@ run_case_isolated() {
     (
         cd "$case_dir"
         : > results.txt
-        xargs="--max_time=$MAX_TIME --mmod=$case_name $LAUNCH_ARGS --shore_mport=$shore_mport --veh1_mport=$veh1_mport --veh2_mport=$veh2_mport --shore_pshare=$shore_pshare --veh1_pshare=$veh1_pshare --veh2_pshare=$veh2_pshare $TIME_WARP"
+        xargs="--max_time=$effective_max_time --mmod=$case_name $LAUNCH_ARGS --shore_mport=$shore_mport --veh1_mport=$veh1_mport --veh2_mport=$veh2_mport --shore_pshare=$shore_pshare --veh1_pshare=$veh1_pshare --veh2_pshare=$veh2_pshare $TIME_WARP"
         if [ "$NOGUI" != "" ]; then
             xargs="$xargs $NOGUI"
         fi

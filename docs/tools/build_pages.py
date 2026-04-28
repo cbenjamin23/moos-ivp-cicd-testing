@@ -226,7 +226,8 @@ HARNESSES: tuple[Harness, ...] = (
         summary="Moving correctness harness for BHV_AvoidObstacleV24 with deterministic obstacle-manager input.",
         proof="Checks auto-request, obstacle alert receipt, behavior-owned range/CPA flags, resolution, arrival, encounters, and expected fail modes.",
         gifs=(
-            ("Two Obstacles Clean", "two_obstacles_clean_pass", "obstacle-behavior-two-obstacles.gif"),
+            ("Default Auto Request", "default_auto_request_pass", "obstacle-behavior-default-auto-request.gif"),
+            ("Sequential Obstacle Alerts", "two_obstacles_clean_pass", "obstacle-behavior-two-obstacles.gif"),
             ("Avoid Disabled Fail", "avoid_disabled_fail", "obstacle-behavior-avoid-disabled.gif"),
         ),
         run="./zlaunch.sh --case=two_obstacles_clean_pass --gui 10",
@@ -246,6 +247,7 @@ HARNESSES: tuple[Harness, ...] = (
         gifs=(
             ("Save Recovery", "save_recover_pass", "opregion-safety-save-recover.gif"),
             ("Dynamic Region Update", "dynamic_region_update_pass", "opregion-safety-dynamic-update.gif"),
+            ("Entry Gate", "entry_gate_start_outside_pass", "opregion-safety-entry-gate.gif"),
         ),
         run="./zlaunch.sh --case=save_recover_pass --gui 10",
         notes=(
@@ -340,6 +342,7 @@ HARNESSES: tuple[Harness, ...] = (
         gifs=(
             ("Static Convoy", "static_convoy_pass", "convoy-behavior-static.gif"),
             ("Angled Entry", "angled_entry_pass", "convoy-behavior-angled-entry.gif"),
+            ("Lead S-turn", "lead_s_turn_pass", "convoy-behavior-lead-s-turn.gif"),
         ),
         run="./zlaunch.sh --case=static_convoy_pass --gui 10",
         notes=(

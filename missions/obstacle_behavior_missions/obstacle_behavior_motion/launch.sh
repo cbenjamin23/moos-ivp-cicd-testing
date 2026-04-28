@@ -27,8 +27,6 @@ SHORE_MPORT="9300"
 VEH_MPORT="9301"
 SHORE_PSHARE="9500"
 VEH_PSHARE="9501"
-SHORE_AUDIT_PORT=""
-VEH_AUDIT_PORT=""
 
 # Monte
 XLAUNCHED="no"
@@ -53,8 +51,6 @@ for ARGI; do
         echo "  --veh_mport=N      Vehicle MOOSDB port       "
         echo "  --shore_pshare=N   Shoreside pShare port     "
         echo "  --veh_pshare=N     Vehicle pShare port       "
-        echo "  --shore_audit_port=N Shoreside MOOSDB audit  "
-        echo "  --veh_audit_port=N Vehicle MOOSDB audit      "
         echo "                                               "
         echo "Options (monte):                               "
         echo "  --xlaunched, -x    Launched by xlaunch       "
@@ -80,10 +76,6 @@ for ARGI; do
         SHORE_PSHARE="${ARGI#--shore_pshare=*}"
     elif [ "${ARGI:0:13}" = "--veh_pshare=" ]; then
         VEH_PSHARE="${ARGI#--veh_pshare=*}"
-    elif [ "${ARGI:0:19}" = "--shore_audit_port=" ]; then
-        SHORE_AUDIT_PORT="${ARGI#--shore_audit_port=*}"
-    elif [ "${ARGI:0:17}" = "--veh_audit_port=" ]; then
-        VEH_AUDIT_PORT="${ARGI#--veh_audit_port=*}"
     elif [ "${ARGI}" = "--xlaunched" -o "${ARGI}" = "-x" ]; then
         XLAUNCHED="yes"
     elif [ "${ARGI}" = "--nogui" -o "${ARGI}" = "-ng" ]; then
@@ -93,13 +85,6 @@ for ARGI; do
         exit 1
     fi
 done
-
-if [ "$SHORE_AUDIT_PORT" = "" ]; then
-    SHORE_AUDIT_PORT=$((SHORE_MPORT + 20))
-fi
-if [ "$VEH_AUDIT_PORT" = "" ]; then
-    VEH_AUDIT_PORT=$((VEH_MPORT + 20))
-fi
 
 #------------------------------------------------------------
 #  Part 4: Set starting positions, speeds, vnames, colors
@@ -130,8 +115,6 @@ if [ "${VERBOSE}" != "" ]; then
     echo "VEH_MPORT =     [${VEH_MPORT}]              "
     echo "SHORE_PSHARE =  [${SHORE_PSHARE}]           "
     echo "VEH_PSHARE =    [${VEH_PSHARE}]             "
-    echo "SHORE_AUDIT =   [${SHORE_AUDIT_PORT}]       "
-    echo "VEH_AUDIT =     [${VEH_AUDIT_PORT}]         "
     echo "--------------------------------(VProps)----"
     echo "VNAMES =        [${VNAMES[*]}]              "
     echo "VCOLORS =       [${VCOLOR[*]}]              "
@@ -151,7 +134,6 @@ fi
 VARGS=" --sim --auto --max_spd=$MAX_SPD $MMOD "
 VARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE "
 VARGS+=" --mport=$VEH_MPORT --pshare=$VEH_PSHARE "
-VARGS+=" --audit_port=$VEH_AUDIT_PORT "
 VARGS+=" --start_pos=${VEHPOS[0]} "
 VARGS+=" --stock_spd=${SPEEDS[0]} "
 VARGS+=" --vname=${VNAMES[0]} "
@@ -166,7 +148,6 @@ sleep 0.5
 #  Part 7: Launch the Shoreside mission file
 #------------------------------------------------------------
 SARGS=" --auto --mport=$SHORE_MPORT --pshare=$SHORE_PSHARE $NOGUI --vnames=${VNAMES[0]} "
-SARGS+=" --audit_port=$SHORE_AUDIT_PORT "
 SARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE "
 SARGS+=" $MMOD "
 vecho "Launching shoreside: $SARGS"

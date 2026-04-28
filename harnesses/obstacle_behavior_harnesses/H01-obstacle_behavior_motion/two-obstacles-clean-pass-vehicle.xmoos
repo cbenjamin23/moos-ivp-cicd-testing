@@ -1,13 +1,41 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+  Run = uSimMarineV22  @ NewConsole = false
+  Run = pObstacleMgr   @ NewConsole = false
+  Run = uTimerScript   @ NewConsole = false
+}
+
 ProcessConfig = pObstacleMgr
 {
   AppTick   = 4
   CommsTick = 4
 
-  given_obstacle = pts={19,-66:24,-66:24,-61:19,-61},label=ob_one
-  given_obstacle = pts={55,-57:60,-57:60,-52:55,-52},label=ob_two
-
   obstacles_color = green
   post_view_polys = true
 
   given_max_duration = 1000
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=GIVEN_OBSTACLE, val="pts={19,-66:24,-66:24,-61:19,-61},label=ob_one,duration=1000", time=1
+  event = var=GIVEN_OBSTACLE, val="pts={55,-57:60,-57:60,-52:55,-52},label=ob_two,duration=1000", time=2
 }

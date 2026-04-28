@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=TEST_EVAL_READY, val=true, time=105
+  event = var=TEST_EVAL_READY, val=true, time=145
 }
 
 ProcessConfig = pMissionEval
@@ -20,13 +20,18 @@ ProcessConfig = pMissionEval
   pass_condition = TEST_EVAL_READY = true
   pass_condition = QLEN >= 2
   pass_condition = TLEN >= 10
-  pass_condition = TLEN <= 150
-  pass_condition = MXRNG = 80
+  pass_condition = TLEN <= 55
+  pass_condition = MXRNG = 40
   pass_condition = AVG2 >= 0.6
-  pass_condition = ABE_NAV_SPEED >= 0.4
-  pass_condition = BEN_NAV_SPEED >= 0.8
-  pass_condition = BEN_NAV_X >= 50
-  pass_condition = BEN_NAV_Y <= -68
+  pass_condition = ABE_NAV_SPEED >= 0.35
+  pass_condition = ABE_NAV_X >= 55
+  pass_condition = ABE_NAV_X <= 68
+  pass_condition = ABE_NAV_Y >= -58
+  pass_condition = ABE_NAV_Y <= -48
+  pass_condition = BEN_NAV_X >= 72
+  pass_condition = BEN_NAV_Y <= -90
+  pass_condition = WPTX >= 70
+  pass_condition = WPTY >= -68
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

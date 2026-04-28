@@ -37,12 +37,9 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
   The case should still complete avoidance, proving the non-refinery objective
   path remains valid.
 - `two_obstacles_clean_pass`
-  Two obstacles are placed in the corridor with one lower and one upper bias.
-  This is the suite's multi-obstacle clean-completion case: the vehicle should
-  still alert, avoid, and finish with zero collisions. This case deliberately
-  grades on clean completion rather than a specific final `OBAVOIDING` state or
-  exact encounter count, because those were less stable than the mission
-  outcome itself.
+  Two obstacles are injected after deploy so both obstacle-alert spawn paths
+  are exercised. The vehicle should spawn avoidance behavior for each obstacle,
+  route through the corridor cleanly, arrive, and finish with zero collisions.
 - `static_polygon_pass`
   The behavior is configured with a launch-time `polygon` instead of the
   templated `OBSTACLE_ALERT` input. It should still complete avoidance and

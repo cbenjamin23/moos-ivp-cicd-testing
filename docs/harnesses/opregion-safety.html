@@ -51,7 +51,7 @@
         <h2>Representative runs</h2>
       </div>
 
-      <div class="gif-grid gif-grid--two">
+      <div class="gif-grid">
       <article class="gif-card">
         <div class="gif-frame" data-file="opregion-safety-save-recover.gif">
           <img src="../assets/gifs/opregion-safety-save-recover.gif" alt="Save Recovery GIF" onerror="this.style.display='none'">
@@ -70,6 +70,17 @@
         <div class="gif-meta">
           <h3>Dynamic Region Update</h3>
           <p>Description: A timer-posted OPREGION_CORE_POLY update shrinks the operating region at runtime from the vehicle community. The vehicle should post save-region recovery flags and still finish without a halt breach.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="opregion-safety-entry-gate.gif">
+          <img src="../assets/gifs/opregion-safety-entry-gate.gif" alt="Entry Gate GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Entry Gate</h3>
+          <p>Description: The configured halt polygon starts to the east of the vehicle, so the vehicle launches outside the halt envelope, enters it, and finishes safely. With trigger_on_poly_entry=true, the initial outside state should not fail.</p>
         </div>
       </article>
 

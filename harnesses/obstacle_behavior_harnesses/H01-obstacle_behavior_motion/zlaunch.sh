@@ -211,6 +211,7 @@ get_case_config() {
 
     if [ "$CASE_NAME" = "default_auto_request_pass" ]; then
         EXPECTED="pass"
+        SHORE_PATCH="$HARNESS_DIR/default-auto-request-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "rng_flag_pass" ]; then
         EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/rng-flag-pass-shoreside.xmoos"
@@ -328,8 +329,6 @@ run_case() {
     local veh_mport
     local shore_pshare
     local veh_pshare
-    local shore_audit_port
-    local veh_audit_port
     local line
     local actual
     local status
@@ -351,15 +350,13 @@ run_case() {
         veh_mport=$((case_base + 1))
         shore_pshare=$((case_base + 10))
         veh_pshare=$((case_base + 11))
-        shore_audit_port=$((case_base + 20))
-        veh_audit_port=$((case_base + 21))
-        if ! check_case_ports "$case_name" "$shore_mport" "$veh_mport" "$shore_pshare" "$veh_pshare" "$shore_audit_port" "$veh_audit_port"; then
+        if ! check_case_ports "$case_name" "$shore_mport" "$veh_mport" "$shore_pshare" "$veh_pshare"; then
             echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=port_busy" >> "$RESULTS_FILE"
             ALL_OK="no"
             cd "$HARNESS_DIR"
             return 0
         fi
-        XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --shore_audit_port=$shore_audit_port --veh_audit_port=$veh_audit_port"
+        XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
     if [ "$NOGUI" != "" ]; then
         XARGS="$XARGS $NOGUI"
@@ -449,8 +446,6 @@ run_case_isolated() {
     local veh_mport
     local shore_pshare
     local veh_pshare
-    local shore_audit_port
-    local veh_audit_port
     local line
     local actual
     local status
@@ -473,10 +468,8 @@ run_case_isolated() {
     veh_mport=$((case_base + 1))
     shore_pshare=$((case_base + 10))
     veh_pshare=$((case_base + 11))
-    shore_audit_port=$((case_base + 20))
-    veh_audit_port=$((case_base + 21))
 
-    if ! check_case_ports "$case_name" "$shore_mport" "$veh_mport" "$shore_pshare" "$veh_pshare" "$shore_audit_port" "$veh_audit_port"; then
+    if ! check_case_ports "$case_name" "$shore_mport" "$veh_mport" "$shore_pshare" "$veh_pshare"; then
         echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=port_busy" > "$case_result_file"
         return 1
     fi
@@ -484,7 +477,7 @@ run_case_isolated() {
     (
         cd "$case_dir"
         : > results.txt
-        xargs="--max_time=$MAX_TIME --mmod=$case_name --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --shore_audit_port=$shore_audit_port --veh_audit_port=$veh_audit_port $TIME_WARP"
+        xargs="--max_time=$MAX_TIME --mmod=$case_name --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare $TIME_WARP"
         if [ "$NOGUI" != "" ]; then
             xargs="$xargs $NOGUI"
         fi

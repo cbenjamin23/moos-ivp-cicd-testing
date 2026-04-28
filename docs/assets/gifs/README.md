@@ -107,7 +107,8 @@ Typical capture launch: `./zlaunch.sh --case=head_on_resolve_pass --gui 10`
 Capture from: `harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion`
 Typical capture launch: `./zlaunch.sh --case=two_obstacles_clean_pass --gui 10`
 
-- `obstacle-behavior-two-obstacles.gif` - Two Obstacles Clean; representative case `two_obstacles_clean_pass`
+- `obstacle-behavior-default-auto-request.gif` - Default Auto Request; representative case `default_auto_request_pass`
+- `obstacle-behavior-two-obstacles.gif` - Sequential Obstacle Alerts; representative case `two_obstacles_clean_pass`
 - `obstacle-behavior-avoid-disabled.gif` - Avoid Disabled Fail; representative case `avoid_disabled_fail`
 
 ## H01 OpRegion Safety
@@ -117,6 +118,7 @@ Typical capture launch: `./zlaunch.sh --case=save_recover_pass --gui 10`
 
 - `opregion-safety-save-recover.gif` - Save Recovery; representative case `save_recover_pass`
 - `opregion-safety-dynamic-update.gif` - Dynamic Region Update; representative case `dynamic_region_update_pass`
+- `opregion-safety-entry-gate.gif` - Entry Gate; representative case `entry_gate_start_outside_pass`
 
 ## H01 Waypoint Behavior
 
@@ -161,6 +163,7 @@ Typical capture launch: `./zlaunch.sh --case=static_convoy_pass --gui 10`
 
 - `convoy-behavior-static.gif` - Static Convoy; representative case `static_convoy_pass`
 - `convoy-behavior-angled-entry.gif` - Angled Entry; representative case `angled_entry_pass`
+- `convoy-behavior-lead-s-turn.gif` - Lead S-turn; representative case `lead_s_turn_pass`
 
 ## H01 CutRange Behavior
 

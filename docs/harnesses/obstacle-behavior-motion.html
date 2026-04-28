@@ -51,14 +51,25 @@
         <h2>Representative runs</h2>
       </div>
 
-      <div class="gif-grid gif-grid--two">
+      <div class="gif-grid">
       <article class="gif-card">
-        <div class="gif-frame" data-file="obstacle-behavior-two-obstacles.gif">
-          <img src="../assets/gifs/obstacle-behavior-two-obstacles.gif" alt="Two Obstacles Clean GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="obstacle-behavior-default-auto-request.gif">
+          <img src="../assets/gifs/obstacle-behavior-default-auto-request.gif" alt="Default Auto Request GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Two Obstacles Clean</h3>
-          <p>Description: Two obstacles are placed in the corridor with one lower and one upper bias. This is the suite&#x27;s multi-obstacle clean-completion case: the vehicle should still alert, avoid, and finish with zero collisions. This case deliberately grades on clean completion rather than a specific final OBAVOIDING state or exact encounter count, because those were less stable than the mission outcome itself.</p>
+          <h3>Default Auto Request</h3>
+          <p>Description: Baseline one-obstacle case. The behavior should request alerts, engage, complete, and still arrive with zero collisions.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="obstacle-behavior-two-obstacles.gif">
+          <img src="../assets/gifs/obstacle-behavior-two-obstacles.gif" alt="Sequential Obstacle Alerts GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Sequential Obstacle Alerts</h3>
+          <p>Description: Two obstacles are injected after deploy so both obstacle-alert spawn paths are exercised. The vehicle should spawn avoidance behavior for each obstacle, route through the corridor cleanly, arrive, and finish with zero collisions.</p>
         </div>
       </article>
 
@@ -116,7 +127,7 @@
 
         <article class="case-row">
           <code>two_obstacles_clean_pass</code>
-          <p>Two obstacles are placed in the corridor with one lower and one upper bias. This is the suite&#x27;s multi-obstacle clean-completion case: the vehicle should still alert, avoid, and finish with zero collisions. This case deliberately grades on clean completion rather than a specific final OBAVOIDING state or exact encounter count, because those were less stable than the mission outcome itself.</p>
+          <p>Two obstacles are injected after deploy so both obstacle-alert spawn paths are exercised. The vehicle should spawn avoidance behavior for each obstacle, route through the corridor cleanly, arrive, and finish with zero collisions.</p>
         </article>
 
 

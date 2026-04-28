@@ -78,8 +78,10 @@ uses behavior outputs plus chaser/target speed aliases:
   Replaces the target's straight waypoint leg with a right-angle dogleg and
   grades convoy following after the target has turned north.
 - `lead_s_turn_pass`
-  Gives the target a compact S-turn route and grades convoy following after the
-  target has completed two heading changes.
+  Starts the chaser closer to an enlarged target S-turn route with a diagonal
+  first leg, uses a shorter and finer breadcrumb trail, then grades that the
+  target has pulled into the lower leg, the chaser is tightly tracking inside
+  the bend, and the active convoy breadcrumb has advanced through the turn.
 - `short_queue_turn_pass`
   Combines a right-angle target turn with a shortened `max_mark_range`, grading
   queue trimming during non-straight contact motion.
