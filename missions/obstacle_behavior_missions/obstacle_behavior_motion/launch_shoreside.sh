@@ -26,6 +26,7 @@ LAUNCH_GUI="yes"
 IP_ADDR="localhost"
 MOOS_PORT="9000"
 PSHARE_PORT="9200"
+AUDIT_PORT="9020"
 MMOD=""
 VNAMES="abe"
 
@@ -54,6 +55,8 @@ for ARGI; do
         echo "    Port number of this vehicle's MOOSDB port  "
         echo "  --pshare=<9200>                              "
         echo "    Port number of this vehicle's pShare port  "
+        echo "  --audit_port=<9020>                          "
+        echo "    MOOSDB network-performance audit UDP port  "
         echo "  --mmod=<mod>                                 "
         echo "    Identify a mission variation/mod           "
         echo "                                               "
@@ -76,6 +79,8 @@ for ARGI; do
         MOOS_PORT="${ARGI#--mport=*}"
     elif [ "${ARGI:0:9}" = "--pshare=" ]; then
         PSHARE_PORT="${ARGI#--pshare=*}"
+    elif [ "${ARGI:0:13}" = "--audit_port=" ]; then
+        AUDIT_PORT="${ARGI#--audit_port=*}"
     elif [ "${ARGI:0:7}" = "--mmod=" ]; then
         MMOD="${ARGI#--mmod=*}"
     elif [ "${ARGI:0:9}" = "--vnames=" ]; then
@@ -113,6 +118,7 @@ if [ "${VERBOSE}" = "yes" ]; then
     echo "IP_ADDR =       [${IP_ADDR}]      "
     echo "MOOS_PORT =     [${MOOS_PORT}]    "
     echo "PSHARE_PORT =   [${PSHARE_PORT}]  "
+    echo "AUDIT_PORT =    [${AUDIT_PORT}]   "
     echo "LAUNCH_GUI =    [${LAUNCH_GUI}]   "
     echo "MMOD =          [${MMOD}]         "
     echo "----------------------------------"
@@ -133,6 +139,7 @@ fi
 nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT    \
        PSHARE_PORT=$PSHARE_PORT     LAUNCH_GUI=$LAUNCH_GUI  \
+       AUDIT_PORT=$AUDIT_PORT                                  \
        MMOD=$MMOD                   VNAMES=$VNAMES          \
        AUTO_LAUNCHED=$AUTO_LAUNCHED
 

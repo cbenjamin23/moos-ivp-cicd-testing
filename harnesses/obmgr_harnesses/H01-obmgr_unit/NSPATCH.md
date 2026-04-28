@@ -84,6 +84,6 @@ Typical pattern:
    - expected result
    - shoreside patch path
    - vehicle patch path if needed
-4. Add the case to the default `CASES=` list if it should run in the full
+4. Add the case to the `ALL_CASES=(...)` array if it should run in the full
    matrix.
 5. Update `README.md` so the case intent is documented in plain language.

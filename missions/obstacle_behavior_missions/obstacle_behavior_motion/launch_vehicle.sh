@@ -26,6 +26,7 @@ AUTO_LAUNCHED="no"
 IP_ADDR="localhost"
 MOOS_PORT="9001"
 PSHARE_PORT="9201"
+AUDIT_PORT="9021"
 SHORE_IP="localhost"
 SHORE_PSHARE="9200"
 MMOD=""
@@ -58,6 +59,7 @@ for ARGI; do
         echo "  --ip=<localhost>       Veh default IP addr     "
         echo "  --mport=<9001>         Veh MOOSDB port         "
         echo "  --pshare=<9201>        Veh pShare listen port  "
+        echo "  --audit_port=<9021>    MOOSDB audit UDP port   "
         echo "  --shore=<localhost>    Shoreside IP to try     "
         echo "  --shore_pshare=<9200>  Shoreside pShare port   "
         echo "  --mmod=<mod>           Mission variation/mod   "
@@ -88,6 +90,8 @@ for ARGI; do
         MOOS_PORT="${ARGI#--mport=*}"
     elif [ "${ARGI:0:9}" = "--pshare=" ]; then
         PSHARE_PORT="${ARGI#--pshare=*}"
+    elif [ "${ARGI:0:13}" = "--audit_port=" ]; then
+        AUDIT_PORT="${ARGI#--audit_port=*}"
     elif [ "${ARGI:0:8}" = "--shore=" ]; then
         SHORE_IP="${ARGI#--shore=*}"
     elif [ "${ARGI:0:15}" = "--shore_pshare=" ]; then
@@ -131,6 +135,7 @@ if [ "${VERBOSE}" = "yes" ]; then
     echo "IP_ADDR =       [${IP_ADDR}]      "
     echo "MOOS_PORT =     [${MOOS_PORT}]    "
     echo "PSHARE_PORT =   [${PSHARE_PORT}]  "
+    echo "AUDIT_PORT =    [${AUDIT_PORT}]   "
     echo "SHORE_IP =      [${SHORE_IP}]     "
     echo "SHORE_PSHARE =  [${SHORE_PSHARE}] "
     echo "MMOD =          [${MMOD}]         "
@@ -167,6 +172,7 @@ fi
 nsplug meta_vehicle.moos targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT \
        PSHARE_PORT=$PSHARE_PORT     SHORE_IP=$SHORE_IP   \
+       AUDIT_PORT=$AUDIT_PORT                            \
        SHORE_PSHARE=$SHORE_PSHARE   VNAME=$VNAME         \
        COLOR=$COLOR                 XMODE=$XMODE         \
        START_POS=$START_POS         MAX_SPD=$MAX_SPD     \

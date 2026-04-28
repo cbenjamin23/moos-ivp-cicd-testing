@@ -407,16 +407,33 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 7: Select the case set, run the matrix, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    baseline_crossing_pass
+    offset_clear_pass
+    no_detect_clear_pass
+    delayed_crossing_pass
+    head_on_pass
+    runtime_alert_add_pass
+    runtime_alert_reenable_pass
+    hold_alerts_for_helm_pass
+    filter_match_type_clear_pass
+    stale_reappear_pass
+    two_contact_pass
+    tight_alert_fail
+    avoid_disabled_fail
+    runtime_alert_disable_fail
+    fast_intruder_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="baseline_crossing_pass offset_clear_pass no_detect_clear_pass delayed_crossing_pass head_on_pass runtime_alert_add_pass runtime_alert_reenable_pass hold_alerts_for_helm_pass filter_match_type_clear_pass stale_reappear_pass two_contact_pass tight_alert_fail avoid_disabled_fail runtime_alert_disable_fail fast_intruder_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -431,7 +448,7 @@ else
     mkdir -p "$CASE_RESULT_DIR"
 
     case_index=0
-    remaining_cases="$CASES"
+    remaining_cases="${RUN_CASES[*]}"
     while [ "$remaining_cases" != "" ]; do
         launched=0
         pids=""
@@ -474,7 +491,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

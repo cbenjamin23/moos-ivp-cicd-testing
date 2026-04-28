@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Obstacle Manager Unit | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -88,43 +94,43 @@
 
         <article class="case-row">
           <code>config_given_obstacle_pass</code>
-          <p>A startup given_obstacle entry should seed the manager before runtime mail arrives. The case then sends only the alert request and grades on the resulting...</p>
+          <p>A startup given_obstacle entry should seed the manager before runtime mail arrives. The case then sends only the alert request and grades on the resulting distance publication for that config-owned polygon.</p>
         </article>
 
 
         <article class="case-row">
           <code>given_obstable_alias_pass</code>
-          <p>The source still accepts the historical misspelled given_obstable config token. This case keeps that alias under regression coverage by requiring the...</p>
+          <p>The source still accepts the historical misspelled given_obstable config token. This case keeps that alias under regression coverage by requiring the alias-loaded polygon to alert exactly like the canonical spelling.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_alert_request_absent_pass</code>
-          <p>The same obstacle is still accepted, but the runtime OBM_ALERT_REQUEST is removed. This matters because pObstacleMgr will not post OBM_DIST_TO_OBJ or obstacle...</p>
+          <p>The same obstacle is still accepted, but the runtime OBM_ALERT_REQUEST is removed. This matters because pObstacleMgr will not post OBM_DIST_TO_OBJ or obstacle alerts at all until an alert request exists.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_alert_request_absent_pass</code>
-          <p>A malformed runtime alert request should be ignored rather than partially installed. The obstacle is accepted, but the mission fails if the invalid request...</p>
+          <p>A malformed runtime alert request should be ignored rather than partially installed. The obstacle is accepted, but the mission fails if the invalid request causes a distance report or obstacle alert to appear.</p>
         </article>
 
 
         <article class="case-row">
           <code>given_far_absent_pass</code>
-          <p>A farther given obstacle should still be accepted, but with default post_dist_to_polys=close it should stay out of both the distance posting path and the...</p>
+          <p>A farther given obstacle should still be accepted, but with default post_dist_to_polys=close it should not produce a distance report or an obstacle alert.</p>
         </article>
 
 
         <article class="case-row">
           <code>given_general_alert_pass</code>
-          <p>This is slightly more niche than the basic near/far cases. It checks the separate general_alert configuration branch, where a broader alert variable can be...</p>
+          <p>A broader general_alert variable should post even when the main alert range is too tight for the obstacle. The mission grades only when the obstacle is accepted and the general-alert publication is present at the checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>general_alert_default_name_pass</code>
-          <p>This is the same branch, but it leaves the name= field out of the config string so the default gen_alert_ prefixing behavior is exercised.</p>
+          <p>The same general-alert configuration should work without an explicit name= field, using the default gen_alert_ prefix.</p>
         </article>
 
 
@@ -136,13 +142,13 @@
 
         <article class="case-row">
           <code>given_max_duration_reject_absent_pass</code>
-          <p>pObstacleMgr can reject mailed-in obstacles whose declared duration exceeds given_max_duration. This case proves the obstacle is rejected before it is ever...</p>
+          <p>A mailed-in obstacle whose duration exceeds given_max_duration should be rejected before it is ever accepted as a live obstacle.</p>
         </article>
 
 
         <article class="case-row">
           <code>given_max_duration_missing_absent_pass</code>
-          <p>This is the missing-duration version of the same branch. The obstacle is mailed in without duration=..., and the correct outcome is rejection before it can ever...</p>
+          <p>A mailed-in obstacle without duration=... should also be rejected before it can become a live given obstacle.</p>
         </article>
 
 
@@ -154,13 +160,13 @@
 
         <article class="case-row">
           <code>post_dist_always_pass</code>
-          <p>With post_dist_to_polys=true, a far obstacle should still publish OBM_DIST_TO_OBJ. This is the always-post branch, distinct from the default close-only behavior.</p>
+          <p>With post_dist_to_polys=true, a far obstacle should still publish OBM_DIST_TO_OBJ, distinct from the default close-only behavior.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_dist_false_absent_pass</code>
-          <p>The opposite branch: with post_dist_to_polys=false, the mission should not publish the normal near-obstacle distance report for this fixed geometry. This is...</p>
+          <p>With post_dist_to_polys=false, the mission should not publish the normal near-obstacle distance report for this fixed geometry.</p>
         </article>
 
 
@@ -172,19 +178,19 @@
 
         <article class="case-row">
           <code>custom_point_var_pass</code>
-          <p>This exercises the custom point_var input path. The same point cluster is posted under an alternate variable name instead of the default TRACKED_FEATURE.</p>
+          <p>The same point cluster is posted under a custom point_var instead of the default TRACKED_FEATURE, and it should still become a valid obstacle.</p>
         </article>
 
 
         <article class="case-row">
           <code>invalid_point_missing_key_absent_pass</code>
-          <p>pObstacleMgr requires each point input to include a key or label before it can become an obstacle cluster. This case sends otherwise valid points without keys...</p>
+          <p>Point input without a key or label should be ignored before it can become an obstacle cluster. The mission grades on the absence of a generic cluster alert.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_pts_per_cluster_trim_pass</code>
-          <p>This is the cluster-trimming branch. The point set intentionally exceeds max_pts_per_cluster, so the hull is built from the trimmed cluster rather than from the...</p>
+          <p>The point set intentionally exceeds max_pts_per_cluster, so the hull should be built from the trimmed cluster rather than from the full history of points.</p>
         </article>
 
 
@@ -202,61 +208,61 @@
 
         <article class="case-row">
           <code>lasso_cluster_pass</code>
-          <p>This exercises the lasso=true pseudo-hull branch rather than the normal convex-hull generator. The reported distance is checked in a numeric band instead of by...</p>
+          <p>With lasso=true, the manager should build a pseudo-hull instead of the normal convex hull. The reported distance is checked in a numeric band because the case is about the lasso geometry, not a specific polygon string.</p>
         </article>
 
 
         <article class="case-row">
           <code>placeholder_hull_pass</code>
-          <p>This is another niche branch: three colinear points do not form a valid convex hull, so pObstacleMgr falls back to a placeholder radial polygon. The test checks...</p>
+          <p>Three colinear points do not form a valid convex hull, so pObstacleMgr should fall back to a placeholder radial polygon. The test checks the resulting minimum distance band rather than the polygon text itself.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_view_polys_false_absent_pass</code>
-          <p>A point cluster should still produce obstacle distance output when post_view_polys=false, but it should not publish a VIEW_POLYGON visualization. The mission...</p>
+          <p>A point cluster should still produce obstacle distance output when post_view_polys=false, but it should not publish a VIEW_POLYGON visualization. The mission watches for that visualization and fails if it appears.</p>
         </article>
 
 
         <article class="case-row">
           <code>new_obs_flag_macros_pass</code>
-          <p>new_obs_flag supports pObstacleMgr macros such as $[OBS_NOW] and $[OBS_EVER]. This case confirms a first accepted given obstacle expands those counters to...</p>
+          <p>new_obs_flag supports pObstacleMgr macros such as $[OBS_NOW] and $[OBS_EVER]. This case confirms a first accepted given obstacle expands those counters to now_1_ever_1.</p>
         </article>
 
 
         <article class="case-row">
           <code>point_vsource_alert_pass</code>
-          <p>Point inputs may include vsource=..., and the alert payload should preserve that source tag when a hull update is posted. The mission grades on alert and...</p>
+          <p>Point inputs may include vsource=..., and the alert payload should preserve that source tag when a hull update is posted. The mission grades on alert and distance, while the harness verifies the vsource=radar token in the result line.</p>
         </article>
 
 
         <article class="case-row">
           <code>given_after_points_same_key_reject_pass</code>
-          <p>If a point-cluster obstacle already owns a key, a later mailed-in GIVEN_OBSTACLE with the same label should be rejected. The point cluster must remain alertable,...</p>
+          <p>If a point-cluster obstacle already owns a key, a later mailed-in GIVEN_OBSTACLE with the same label should be rejected. The point cluster must remain alertable, and the given-obstacle new_obs_flag must stay absent.</p>
         </article>
 
 
         <article class="case-row">
           <code>disable_obstacle_pass</code>
-          <p>disable_var should post BHV_ABLE_FILTER=obstacle_id=...,action=disable, and the mission grades on a confirmation flag posted when that filter-message path is...</p>
+          <p>disable_var should post BHV_ABLE_FILTER=obstacle_id=...,action=disable, confirming that obstacle-disable mail is generated for the named obstacle.</p>
         </article>
 
 
         <article class="case-row">
           <code>disable_vsource_pass</code>
-          <p>The modification parser also accepts vsource=... selectors, not only bare obstacle IDs. This case sends a vsource disable command and checks that the resulting...</p>
+          <p>The modification parser also accepts vsource=... selectors, not only bare obstacle IDs. This case sends a vsource disable command and checks that the resulting filter message preserves vsource=radar,action=disable.</p>
         </article>
 
 
         <article class="case-row">
           <code>enable_obstacle_pass</code>
-          <p>enable_var should post BHV_ABLE_FILTER=obstacle_id=...,action=enable, and the mission grades on a confirmation flag posted when that filter-message path is...</p>
+          <p>enable_var should post BHV_ABLE_FILTER=obstacle_id=...,action=enable, confirming that obstacle-enable mail is generated for the named obstacle.</p>
         </article>
 
 
         <article class="case-row">
           <code>expunge_obstacle_pass</code>
-          <p>expunge_var should post BHV_ABLE_FILTER=obstacle_id=...,action=expunge and remove the obstacle from the manager&#x27;s internal map. The mission grades on a...</p>
+          <p>expunge_var should post BHV_ABLE_FILTER=obstacle_id=...,action=expunge and remove the obstacle from the manager&#x27;s internal map.</p>
         </article>
 
       </div>

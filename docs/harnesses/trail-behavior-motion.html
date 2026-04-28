@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Trail Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -121,7 +127,7 @@
 
         <article class="case-row">
           <code>lead_port_turn_pass</code>
-          <p>Combines the dogleg target path with a port-quarter relative trail angle.</p>
+          <p>Combines the dogleg target route with a port-quarter relative trail angle.</p>
         </article>
 
 
@@ -157,13 +163,13 @@
 
         <article class="case-row">
           <code>inside_nm_radius_pass</code>
-          <p>Exercises the inside-nm_radius branch.</p>
+          <p>Starts inside nm_radius and verifies the expected near-contact trail behavior.</p>
         </article>
 
 
         <article class="case-row">
           <code>outside_nm_radius_pass</code>
-          <p>Forces the outside-nm_radius branch with zero radius settings.</p>
+          <p>Starts outside nm_radius with zero radius settings and verifies pursuit remains valid.</p>
         </article>
 
 
@@ -223,7 +229,7 @@
 
         <article class="case-row">
           <code>runtime_angle_update_pass</code>
-          <p>Changes trail_angle through TRAIL_UPDATES.</p>
+          <p>Changes trail_angle through TRAIL_UPDATES and verifies the chaser settles around the updated trail point.</p>
         </article>
 
 
@@ -289,55 +295,55 @@
 
         <article class="case-row">
           <code>bad_trail_angle_type_fail</code>
-          <p>Rejects malformed trail_angle_type.</p>
+          <p>Malformed trail_angle_type should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trail_angle_fail</code>
-          <p>Rejects malformed trail_angle.</p>
+          <p>Malformed trail_angle should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trail_range_fail</code>
-          <p>Rejects negative trail_range.</p>
+          <p>Negative trail_range should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_mod_trail_range_pct_fail</code>
-          <p>Rejects zero mod_trail_range_pct.</p>
+          <p>Zero mod_trail_range_pct should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_radius_fail</code>
-          <p>Rejects a negative radius configuration and expects the behavior error path to make the mission fail.</p>
+          <p>Negative radius should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_nm_radius_fail</code>
-          <p>Rejects a negative nm_radius configuration and expects the behavior error path to make the mission fail.</p>
+          <p>Negative nm_radius should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>Rejects negative pwt_outer_dist.</p>
+          <p>Negative pwt_outer_dist should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Rejects malformed decay input and expects the behavior error path to make the mission fail.</p>
+          <p>Malformed decay input should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>Rejects negative time_on_leg.</p>
+          <p>Negative time_on_leg should be rejected and the mission should fail.</p>
         </article>
 
       </div>

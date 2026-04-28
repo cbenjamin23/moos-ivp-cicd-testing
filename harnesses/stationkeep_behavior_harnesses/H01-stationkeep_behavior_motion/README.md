@@ -30,8 +30,8 @@ behavior-owned outputs:
 - `tight_radius_pass`
   Tightens the station-keeping rings and grades tighter station proximity.
 - `inner_gt_outer_pass`
-  Exercises the parameter path where the inner radius is greater than the
-  outer radius.
+  Uses an inner radius greater than the outer radius and verifies StationKeep
+  still handles the configuration cleanly.
 - `outer_speed_slow_pass`
   Slows the outer correction speed and verifies bounded progress.
 - `outer_speed_update_slow_pass`

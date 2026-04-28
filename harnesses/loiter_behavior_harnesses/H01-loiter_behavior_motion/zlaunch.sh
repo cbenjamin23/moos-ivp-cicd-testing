@@ -528,16 +528,52 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 9: Select the case set, run the matrix, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    radial_clockwise_pass
+    radial_counterclockwise_pass
+    clockwise_best_pass
+    polygon_box_pass
+    triangle_polygon_pass
+    start_inside_loiter_pass
+    acquire_from_far_pass
+    early_acquire_mode_pass
+    center_activate_pass
+    capture_radius_large_pass
+    slip_radius_pass
+    speed_alt_update_pass
+    use_alt_speed_static_pass
+    center_assign_xy_pass
+    center_assign_pair_pass
+    xcenter_ycenter_update_pass
+    mod_poly_rad_expand_pass
+    mod_poly_rad_shrink_pass
+    slingshot_bearing_pass
+    post_suffix_outputs_pass
+    eta_output_pass
+    ipf_zaic_spd_pass
+    slow_speed_acquire_pass
+    empty_polygon_fail
+    bad_polygon_fail
+    bad_update_fail
+    bad_clockwise_fail
+    bad_use_alt_speed_fail
+    bad_patience_fail
+    bad_capture_radius_fail
+    center_bad_update_recover_pass
+    spiral_factor_pass
+    patience_low_pass
+    patience_high_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="radial_clockwise_pass radial_counterclockwise_pass clockwise_best_pass polygon_box_pass triangle_polygon_pass start_inside_loiter_pass acquire_from_far_pass early_acquire_mode_pass center_activate_pass capture_radius_large_pass slip_radius_pass speed_alt_update_pass use_alt_speed_static_pass center_assign_xy_pass center_assign_pair_pass xcenter_ycenter_update_pass mod_poly_rad_expand_pass mod_poly_rad_shrink_pass slingshot_bearing_pass post_suffix_outputs_pass eta_output_pass ipf_zaic_spd_pass slow_speed_acquire_pass empty_polygon_fail bad_polygon_fail bad_update_fail bad_clockwise_fail bad_use_alt_speed_fail bad_patience_fail bad_capture_radius_fail center_bad_update_recover_pass spiral_factor_pass patience_low_pass patience_high_pass"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -554,7 +590,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -583,7 +619,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

@@ -33,7 +33,15 @@ MIN_UTIL_CPA=""
 MAX_UTIL_CPA=""
 RUN_ROOT=""
 CASE_RESULT_DIR=""
-WAVE_SERIAL_CASES="giveway_bowdist_edge_pass giveway_bowdist_edge_mirror_pass giveway_turngap_edge_pass giveway_turngap_above_pass giveway_turngap_edge_mirror_pass giveway_turngap_above_mirror_pass standon_band315_unsure_bow_pass"
+SOLO_WAVE_CASES=(
+    giveway_bowdist_edge_pass
+    giveway_bowdist_edge_mirror_pass
+    giveway_turngap_edge_pass
+    giveway_turngap_above_pass
+    giveway_turngap_edge_mirror_pass
+    giveway_turngap_above_mirror_pass
+    standon_band315_unsure_bow_pass
+)
 
 if [ -f "$TEARDOWN_HELPER" ]; then
     . "$TEARDOWN_HELPER"
@@ -305,9 +313,12 @@ stop_case_runtime() {
 
 case_requires_solo_wave() {
     local case_name="$1"
-    case " $WAVE_SERIAL_CASES " in
-        *" $case_name "*) return 0 ;;
-    esac
+    local solo_case
+    for solo_case in "${SOLO_WAVE_CASES[@]}"; do
+        if [ "$solo_case" = "$case_name" ]; then
+            return 0
+        fi
+    done
     return 1
 }
 
@@ -691,43 +702,121 @@ run_case_isolated() {
     [ "$status" = "success" ] && [ "$cleanup_note" = "" ]
 }
 
-HEADON_CASES="head_on_thresh_below_pass head_on_thresh_edge_pass head_on_thresh_above_pass head_on_thresh_below_mirror_pass head_on_thresh_edge_mirror_pass head_on_thresh_above_mirror_pass"
-OVERTAKING_CASES="overtaking_thresh_below_pass overtaking_thresh_edge_pass overtaking_thresh_above_pass overtaking_thresh_below_mirror_pass overtaking_thresh_edge_mirror_pass overtaking_thresh_above_mirror_pass"
-OVERTAKEN_CASES="overtaken_thresh_below_pass overtaken_thresh_edge_pass overtaken_thresh_above_pass"
-OVERTAKEN_MIRROR_CASES="overtaken_thresh_below_mirror_pass overtaken_thresh_edge_mirror_pass overtaken_thresh_above_mirror_pass"
-GIVEWAY_CASES="giveway_bowdist_below_pass giveway_bowdist_edge_pass giveway_bowdist_above_pass giveway_bowdist_below_mirror_pass giveway_bowdist_edge_mirror_pass giveway_bowdist_above_mirror_pass"
-TURNGAP_CASES="giveway_turngap_below_pass giveway_turngap_edge_pass giveway_turngap_above_pass giveway_turngap_below_mirror_pass giveway_turngap_edge_mirror_pass giveway_turngap_above_mirror_pass"
-STANDON_CASES="standon_unsurebow_below_pass standon_unsurebow_edge_pass standon_unsurebow_above_pass standon_band270_stern_pass standon_band350_unsurebow_pass standon_band350_unsurebow_alt_pass standon_band350_bow_pass standon_band315_unsure_pass standon_band315_unsure_bow_pass standon_band315_bow_pass standon_southwest_unsurebow_pass standon_southwest_unsure_pass standon_southwest_stern_pass"
-OUTER_DIST_CASES="outer_dist_below_pass outer_dist_edge_pass outer_dist_above_pass"
-INEXTREMIS_CASES="standon_inextremis_range_below_pass standon_inextremis_range_edge_pass standon_inextremis_range_above_pass standon_inextremis_cpa_below_pass standon_inextremis_cpa_edge_pass standon_inextremis_cpa_above_pass standon_ot_inextremis_range_below_pass standon_ot_inextremis_range_edge_pass standon_ot_inextremis_range_above_pass standon_ot_inextremis_cpa_below_pass standon_ot_inextremis_cpa_edge_pass standon_ot_inextremis_cpa_above_pass"
+GROUP_HEADON_CASES=(
+    head_on_thresh_below_pass
+    head_on_thresh_edge_pass
+    head_on_thresh_above_pass
+    head_on_thresh_below_mirror_pass
+    head_on_thresh_edge_mirror_pass
+    head_on_thresh_above_mirror_pass
+)
+GROUP_OVERTAKING_CASES=(
+    overtaking_thresh_below_pass
+    overtaking_thresh_edge_pass
+    overtaking_thresh_above_pass
+    overtaking_thresh_below_mirror_pass
+    overtaking_thresh_edge_mirror_pass
+    overtaking_thresh_above_mirror_pass
+)
+GROUP_OVERTAKEN_CASES=(
+    overtaken_thresh_below_pass
+    overtaken_thresh_edge_pass
+    overtaken_thresh_above_pass
+)
+GROUP_OVERTAKEN_MIRROR_CASES=(
+    overtaken_thresh_below_mirror_pass
+    overtaken_thresh_edge_mirror_pass
+    overtaken_thresh_above_mirror_pass
+)
+GROUP_GIVEWAY_CASES=(
+    giveway_bowdist_below_pass
+    giveway_bowdist_edge_pass
+    giveway_bowdist_above_pass
+    giveway_bowdist_below_mirror_pass
+    giveway_bowdist_edge_mirror_pass
+    giveway_bowdist_above_mirror_pass
+)
+GROUP_TURNGAP_CASES=(
+    giveway_turngap_below_pass
+    giveway_turngap_edge_pass
+    giveway_turngap_above_pass
+    giveway_turngap_below_mirror_pass
+    giveway_turngap_edge_mirror_pass
+    giveway_turngap_above_mirror_pass
+)
+GROUP_STANDON_CASES=(
+    standon_unsurebow_below_pass
+    standon_unsurebow_edge_pass
+    standon_unsurebow_above_pass
+    standon_band270_stern_pass
+    standon_band350_unsurebow_pass
+    standon_band350_unsurebow_alt_pass
+    standon_band350_bow_pass
+    standon_band315_unsure_pass
+    standon_band315_unsure_bow_pass
+    standon_band315_bow_pass
+    standon_southwest_unsurebow_pass
+    standon_southwest_unsure_pass
+    standon_southwest_stern_pass
+)
+GROUP_OUTER_DIST_CASES=(
+    outer_dist_below_pass
+    outer_dist_edge_pass
+    outer_dist_above_pass
+)
+GROUP_INEXTREMIS_CASES=(
+    standon_inextremis_range_below_pass
+    standon_inextremis_range_edge_pass
+    standon_inextremis_range_above_pass
+    standon_inextremis_cpa_below_pass
+    standon_inextremis_cpa_edge_pass
+    standon_inextremis_cpa_above_pass
+    standon_ot_inextremis_range_below_pass
+    standon_ot_inextremis_range_edge_pass
+    standon_ot_inextremis_range_above_pass
+    standon_ot_inextremis_cpa_below_pass
+    standon_ot_inextremis_cpa_edge_pass
+    standon_ot_inextremis_cpa_above_pass
+)
 
+ALL_CASES=(
+    "${GROUP_HEADON_CASES[@]}"
+    "${GROUP_OVERTAKING_CASES[@]}"
+    "${GROUP_OVERTAKEN_CASES[@]}"
+    "${GROUP_OVERTAKEN_MIRROR_CASES[@]}"
+    "${GROUP_GIVEWAY_CASES[@]}"
+    "${GROUP_TURNGAP_CASES[@]}"
+    "${GROUP_STANDON_CASES[@]}"
+    "${GROUP_OUTER_DIST_CASES[@]}"
+    "${GROUP_INEXTREMIS_CASES[@]}"
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
+    RUN_CASES=("$CASE")
+elif [ "$GROUP" = "" ] || [ "$GROUP" = "all" ]; then
+    RUN_CASES=("${ALL_CASES[@]}")
+elif [ "$GROUP" = "headon" ]; then
+    RUN_CASES=("${GROUP_HEADON_CASES[@]}")
+elif [ "$GROUP" = "overtaking" ]; then
+    RUN_CASES=("${GROUP_OVERTAKING_CASES[@]}")
+elif [ "$GROUP" = "overtaken" ]; then
+    RUN_CASES=("${GROUP_OVERTAKEN_CASES[@]}")
+elif [ "$GROUP" = "overtaken_mirror" ]; then
+    RUN_CASES=("${GROUP_OVERTAKEN_MIRROR_CASES[@]}")
+elif [ "$GROUP" = "giveway" ]; then
+    RUN_CASES=("${GROUP_GIVEWAY_CASES[@]}")
+elif [ "$GROUP" = "turngap" ]; then
+    RUN_CASES=("${GROUP_TURNGAP_CASES[@]}")
+elif [ "$GROUP" = "standon" ]; then
+    RUN_CASES=("${GROUP_STANDON_CASES[@]}")
+elif [ "$GROUP" = "outer_dist" ]; then
+    RUN_CASES=("${GROUP_OUTER_DIST_CASES[@]}")
+elif [ "$GROUP" = "inextremis" ]; then
+    RUN_CASES=("${GROUP_INEXTREMIS_CASES[@]}")
 else
-    if [ "$GROUP" = "" ] || [ "$GROUP" = "all" ]; then
-        CASES="$HEADON_CASES $OVERTAKING_CASES $OVERTAKEN_CASES $OVERTAKEN_MIRROR_CASES $GIVEWAY_CASES $TURNGAP_CASES $STANDON_CASES $OUTER_DIST_CASES $INEXTREMIS_CASES"
-    elif [ "$GROUP" = "headon" ]; then
-        CASES="$HEADON_CASES"
-    elif [ "$GROUP" = "overtaking" ]; then
-        CASES="$OVERTAKING_CASES"
-    elif [ "$GROUP" = "overtaken" ]; then
-        CASES="$OVERTAKEN_CASES"
-    elif [ "$GROUP" = "overtaken_mirror" ]; then
-        CASES="$OVERTAKEN_MIRROR_CASES"
-    elif [ "$GROUP" = "giveway" ]; then
-        CASES="$GIVEWAY_CASES"
-    elif [ "$GROUP" = "turngap" ]; then
-        CASES="$TURNGAP_CASES"
-    elif [ "$GROUP" = "standon" ]; then
-        CASES="$STANDON_CASES"
-    elif [ "$GROUP" = "outer_dist" ]; then
-        CASES="$OUTER_DIST_CASES"
-    elif [ "$GROUP" = "inextremis" ]; then
-        CASES="$INEXTREMIS_CASES"
-    else
-        echo "$ME: Unknown group [$GROUP]"
-        exit 1
-    fi
+    echo "$ME: Unknown group [$GROUP]"
+    exit 1
 fi
 
 : > "$RESULTS_FILE"
@@ -736,7 +825,7 @@ trap cleanup EXIT
 stop_mission_apps "$MISSION_DIR"
 
 if [ "$JOBS" -le 1 ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || ALL_OK="no"
     done
 else
@@ -747,42 +836,42 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         if case_requires_solo_wave "$ONE_CASE"; then
-	            if [ "$wave_pids" != "" ]; then
-	                for pid in $wave_pids; do
-	                    wait "$pid" || ALL_OK="no"
-	                done
-	                wave_pids=""
-	                wave_count=0
-	            fi
-	
-	            run_case_isolated "$case_idx" "$ONE_CASE" || ALL_OK="no"
-	            case_idx=$((case_idx + 1))
-	            continue
-	        fi
+            if [ "$wave_pids" != "" ]; then
+                for pid in $wave_pids; do
+                    wait "$pid" || ALL_OK="no"
+                done
+                wave_pids=""
+                wave_count=0
+            fi
+
+            run_case_isolated "$case_idx" "$ONE_CASE" || ALL_OK="no"
+            case_idx=$((case_idx + 1))
+            continue
+        fi
 
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
         case_idx=$((case_idx + 1))
 
-	        if [ "$wave_count" -ge "$JOBS" ]; then
-	            for pid in $wave_pids; do
-	                wait "$pid" || ALL_OK="no"
-	            done
-	            wave_pids=""
-	            wave_count=0
-	        fi
-	    done
-	
-	    if [ "$wave_pids" != "" ]; then
-	        for pid in $wave_pids; do
-	            wait "$pid" || ALL_OK="no"
-	        done
-	    fi
+        if [ "$wave_count" -ge "$JOBS" ]; then
+            for pid in $wave_pids; do
+                wait "$pid" || ALL_OK="no"
+            done
+            wave_pids=""
+            wave_count=0
+        fi
+    done
 
-    for ONE_CASE in $CASES; do
+    if [ "$wave_pids" != "" ]; then
+        for pid in $wave_pids; do
+            wait "$pid" || ALL_OK="no"
+        done
+    fi
+
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
         if [ "$case_file" = "" ]; then
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=missing" >> "$RESULTS_FILE"

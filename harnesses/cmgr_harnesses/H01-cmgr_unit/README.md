@@ -21,7 +21,8 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 - `detect_strict_absent_pass`
   Tighter alert thresholds should keep the same spoof unseen.
 - `detect_edge_pass`
-  Near-threshold geometry should still detect.
+  Near-threshold geometry should still detect the contact before the
+  checkpoint.
 - `detect_edge_absent_pass`
   Slightly tighter near-threshold geometry should stay unseen.
 - `detect_delayed_spoof_pass`
@@ -33,53 +34,47 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 - `detect_far_spoof_absent_pass`
   A farther spoof should stay outside the alert window.
 - `detect_near_spoof_pass`
-  A nearer spoof should be detected quickly.
+  A nearer spoofed contact should be detected quickly and reported by the
+  checkpoint.
 - `detect_cpa_only_pass`
   This is a CPA-specific case rather than just another range threshold case.
   The contact is still outside `alert_range` at grading time, but it is on a
   closing course tight enough that `cpa_range` should still make the alert
   fire.
 - `closest_contact_pass`
-  `CONTACT_CLOSEST` should be `intruder`.
+  The closest-contact report should identify `intruder`.
 - `post_all_ranges_pass`
-  This case turns on the `CONTACT_RANGES` report path. It is a reporting-only
-  branch, so the key point is that the mission now publishes the full list of
-  current alerted ranges instead of just the closest one.
+  This case turns on the `CONTACT_RANGES` report. The mission should publish
+  the full list of current alerted ranges instead of only the closest one.
 - `post_closest_relbng_pass`
-  This turns on the closest-relative-bearing report path. It is useful because
-  it exercises a distinct output variable, `CONTACT_CLOSEST_RELBNG`, rather
-  than just re-checking the same closest-contact geometry.
+  This turns on the closest-relative-bearing report. The mission should publish
+  `CONTACT_CLOSEST_RELBNG`, proving that bearing output works as well as the
+  closest-contact selection itself.
 - `runtime_alert_add_pass`
-  No static alert is configured in the patched mission for this case. Instead
+  No static alert is configured in this case. Instead
   the harness posts a `BCM_ALERT_REQUEST` at runtime and expects that dynamic
   alert definition to drive normal contact detection.
 - `runtime_alert_disable_absent_pass`
-  This exercises the runtime alert-disable path. The stem still has the normal
-  alert configured, but a `BCM_ALERT_REQUEST` disables it before the spoofed
-  contact arrives, so the correct outcome is non-detection.
+  A runtime `BCM_ALERT_REQUEST` disables the normal alert before the spoofed
+  contact arrives. The correct outcome is non-detection.
 - `filter_match_type_absent_pass`
   This is a representative alert-filter case. The alert is constrained to
   `match_type=ship`, while the spoofed contact remains the default `kayak`, so
   the contact should still be tracked but should not count as alerted.
 - `disable_contact_pass`
-  This exercises the `disable_var` path directly. In this timing setup the
-  contact is already seen before the disable request is posted, so the case is
-  specifically checking that contact manager emits the expected
-  `BHV_ABLE_FILTER` disable message, not that the disable request suppresses an
-  earlier alert retroactively. The mission grades on a confirmation flag posted
-  when `BHV_ABLE_FILTER` mail is seen on this case's disable path.
+  The contact is already seen before the disable request is posted, so this
+  case checks that contact manager emits the expected `BHV_ABLE_FILTER`
+  disable message. It is not trying to suppress an alert that already fired.
 - `enable_contact_pass`
-  This is the matching `enable_var` path. It is a message-path case proving
-  contact manager emits the expected `BHV_ABLE_FILTER` enable request for a
-  named contact under controlled timing. As above, the mission grades on a
-  confirmation flag triggered by the case-specific filter mail.
+  The matching enable case should emit the expected `BHV_ABLE_FILTER` enable
+  request for a named contact under controlled timing.
 - `early_warning_pass`
-  This is the early-warning branch. The case checks that the mission posts the
-  configured warning flag before the main contact evaluation completes.
+  The configured warning flag should post before the main contact evaluation
+  completes.
 - `count_one_pass`
-  `CONTACTS_COUNT` should be exactly `1`.
+  The alerted-contact count should be exactly `1`.
 - `list_intruder_pass`
-  `CONTACTS_LIST` should be `intruder`.
+  The known-contact list should contain only `intruder`.
 - `range_report_pass`
   `CONTACT_CLOSEST_RANGE` should land in a reasonable broad band.
 - `report_request_pass`
@@ -92,26 +87,28 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 ### Multi-contact cases on the same stem
 
 - `count_two_pass`
-  Two alerted contacts should be counted.
+  The alerted-contact count should be exactly `2`.
 - `list_alpha_bravo_pass`
   The known-contact list should be `alpha,bravo`.
 - `closest_alpha_pass`
-  `alpha` should be reported as the closest contact.
+  The closest-contact report should identify `alpha`.
 - `closest_bravo_pass`
-  `bravo` should be reported as the closest contact.
+  The closest-contact report should identify `bravo`.
 - `bravo_far_count_one_pass`
-  `bravo` should remain tracked but stay outside the alert count.
+  The contact `bravo` should remain tracked, but it should stay outside the
+  alert count.
 - `late_bravo_count_two_pass`
-  `bravo` arrives later, but the delayed checkpoint should still catch both.
+  The contact `bravo` arrives later, and the delayed checkpoint should still
+  catch both contacts.
 - `stale_bravo_drop_pass`
-  `bravo` should expire and drop out of the tracked list before grading.
+  The contact `bravo` should expire and drop out of the tracked list before
+  grading.
 - `reject_range_retire_pass`
-  This is the non-age retirement path. The contact is accepted first, but a
-  very small `reject_range` should cause contact manager to retire it and post
-  `CONTACTS_RETIRED=intruder`.
+  The contact is accepted first, then a very small `reject_range` should cause
+  contact manager to retire it and post `CONTACTS_RETIRED=intruder`.
 - `alpha_far_bravo_only_pass`
-  `alpha` should remain tracked but only `bravo` should qualify as alerted and
-  closest.
+  The contact `alpha` should remain tracked, but only `bravo` should qualify as
+  alerted and closest.
 
 ## Typical Runs
 
@@ -198,7 +195,7 @@ Field anatomy:
 - `form`
   Harness or mission family name.
 - `mmod`
-  The case-specific mission mode written by `pMissionEval`.
+  The mission mode written by `pMissionEval` for the selected case.
 - `grade`
   Pass/fail result written by the mission itself.
 - `eval`
@@ -220,11 +217,11 @@ Field anatomy:
   The known-contact list still tracked by contact manager, when that column is
   included by the case.
 - `report`
-  The value posted by a case-specific `BCM_REPORT_REQUEST`, when included.
+  The value posted by a `BCM_REPORT_REQUEST` for the selected case, when included.
 - `filter`
   The `BHV_ABLE_FILTER` message for contact enable/disable cases.
 - `filter_seen`
-  Mission-side confirmation that a case-specific filter message was observed.
+  Mission-side confirmation that the selected case's filter message was observed.
 - `warn`
   The early-warning flag value when the warning branch is enabled.
 - `retired`

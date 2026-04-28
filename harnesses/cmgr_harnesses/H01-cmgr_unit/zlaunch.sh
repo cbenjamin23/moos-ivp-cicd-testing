@@ -486,15 +486,51 @@ fi
 
 trap cleanup EXIT
 
-CASES="detect_baseline_pass detect_strict_absent_pass detect_edge_pass detect_edge_absent_pass detect_delayed_spoof_pass detect_short_duration_absent_pass detect_early_checkpoint_absent_pass detect_far_spoof_absent_pass detect_near_spoof_pass detect_cpa_only_pass closest_contact_pass post_all_ranges_pass post_closest_relbng_pass runtime_alert_add_pass runtime_alert_disable_absent_pass filter_match_type_absent_pass disable_contact_pass enable_contact_pass early_warning_pass count_one_pass list_intruder_pass range_report_pass report_request_pass range_tight_pass count_two_pass list_alpha_bravo_pass closest_alpha_pass closest_bravo_pass bravo_far_count_one_pass late_bravo_count_two_pass stale_bravo_drop_pass reject_range_retire_pass alpha_far_bravo_only_pass"
+ALL_CASES=(
+    detect_baseline_pass
+    detect_strict_absent_pass
+    detect_edge_pass
+    detect_edge_absent_pass
+    detect_delayed_spoof_pass
+    detect_short_duration_absent_pass
+    detect_early_checkpoint_absent_pass
+    detect_far_spoof_absent_pass
+    detect_near_spoof_pass
+    detect_cpa_only_pass
+    closest_contact_pass
+    post_all_ranges_pass
+    post_closest_relbng_pass
+    runtime_alert_add_pass
+    runtime_alert_disable_absent_pass
+    filter_match_type_absent_pass
+    disable_contact_pass
+    enable_contact_pass
+    early_warning_pass
+    count_one_pass
+    list_intruder_pass
+    range_report_pass
+    report_request_pass
+    range_tight_pass
+    count_two_pass
+    list_alpha_bravo_pass
+    closest_alpha_pass
+    closest_bravo_pass
+    bravo_far_count_one_pass
+    late_bravo_count_two_pass
+    stale_bravo_drop_pass
+    reject_range_retire_pass
+    alpha_far_bravo_only_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for case_name in $CASES; do
+    for case_name in "${RUN_CASES[@]}"; do
         run_case "$case_name" || {
             echo "case=$case_name  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -509,7 +545,7 @@ else
     mkdir -p "$CASE_RESULT_DIR"
 
     case_index=0
-    remaining_cases="$CASES"
+    remaining_cases="${RUN_CASES[*]}"
     while [ "$remaining_cases" != "" ]; do
         launched=0
         pids=""

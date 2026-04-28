@@ -49,7 +49,7 @@ class GroupSpec:
     title: str
     subtitle: str
     output: str
-    cases: tuple[CaseSpec, CaseSpec, CaseSpec]
+    variants: tuple[CaseSpec, CaseSpec, CaseSpec]
     bounds: tuple[float, float, float, float]
     metric_name: str
 
@@ -78,7 +78,7 @@ GROUPS = [
         title="Give-way Bow Distance",
         subtitle="alog overlay: below/edge remain giveway:stern, above flips to giveway:bow",
         output="colregs-thresholds-giveway-bowdist.gif",
-        cases=(
+        variants=(
             CaseSpec("giveway_bowdist_below_pass", "below", BLUE),
             CaseSpec("giveway_bowdist_edge_pass", "edge", ORANGE),
             CaseSpec("giveway_bowdist_above_pass", "above", TEAL),
@@ -90,7 +90,7 @@ GROUPS = [
         title="Overtaking Threshold",
         subtitle="alog overlay: below classifies overtaking:port, edge/above flip to giveway:bow",
         output="colregs-thresholds-overtaking-triplet.gif",
-        cases=(
+        variants=(
             CaseSpec("overtaking_thresh_below_pass", "below", BLUE),
             CaseSpec("overtaking_thresh_edge_pass", "edge", ORANGE),
             CaseSpec("overtaking_thresh_above_pass", "above", TEAL),
@@ -413,7 +413,7 @@ def main() -> None:
     parser.add_argument("--evidence-root", required=True, type=Path)
     args = parser.parse_args()
     for group in GROUPS:
-        render_group(group, [load_case(args.evidence_root, case) for case in group.cases])
+        render_group(group, [load_case(args.evidence_root, case) for case in group.variants])
 
 
 if __name__ == "__main__":

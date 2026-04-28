@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H02 COLREGS Thresholds | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -79,48 +85,6 @@
         <h2>All cases</h2>
       </div>
       <div class="case-matrix">
-
-        <article class="case-row">
-          <code>giveway_bowdist_edge_pass</code>
-          <p>Probes the calibrated give-way bow-distance edge; expected classification should still stay in giveway:stern.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_bowdist_edge_mirror_pass</code>
-          <p>Mirrored bow-distance edge case; expected classification should still stay in giveway:stern.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_turngap_edge_pass</code>
-          <p>Probes the calibrated give-way turn-gap edge; expected classification should stay on the stock stern-side branch.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_turngap_above_pass</code>
-          <p>Probes just beyond the give-way turn-gap edge; expected classification should flip to the stock bow-side branch.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_turngap_edge_mirror_pass</code>
-          <p>Mirrored turn-gap edge case; expected classification should match the non-mirrored edge behavior.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>giveway_turngap_above_mirror_pass</code>
-          <p>Mirrored turn-gap above-edge case; expected classification should match the non-mirrored bow-side behavior.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>standon_band315_unsure_bow_pass</code>
-          <p>Band-315 stand-on geometry expected to enter the unsure-bow branch.</p>
-        </article>
-
 
         <article class="case-row">
           <code>head_on_thresh_below_pass</code>
@@ -237,6 +201,12 @@
 
 
         <article class="case-row">
+          <code>giveway_bowdist_edge_pass</code>
+          <p>Probes the calibrated give-way bow-distance edge; expected classification should still stay in giveway:stern.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>giveway_bowdist_above_pass</code>
           <p>Probes above the give-way bow-distance split; expected classification should flip to giveway:bow.</p>
         </article>
@@ -245,6 +215,12 @@
         <article class="case-row">
           <code>giveway_bowdist_below_mirror_pass</code>
           <p>Mirrored below-threshold bow-distance case; expected classification should stay in giveway:stern.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_bowdist_edge_mirror_pass</code>
+          <p>Mirrored bow-distance edge case; expected classification should still stay in giveway:stern.</p>
         </article>
 
 
@@ -261,8 +237,32 @@
 
 
         <article class="case-row">
+          <code>giveway_turngap_edge_pass</code>
+          <p>Probes the calibrated give-way turn-gap edge; expected classification should stay on the stock stern-side branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_turngap_above_pass</code>
+          <p>Probes just beyond the give-way turn-gap edge; expected classification should flip to the stock bow-side branch.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>giveway_turngap_below_mirror_pass</code>
           <p>Mirrored below-threshold turn-gap case; expected classification should stay on the stern-side branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_turngap_edge_mirror_pass</code>
+          <p>Mirrored turn-gap edge case; expected classification should match the non-mirrored edge behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>giveway_turngap_above_mirror_pass</code>
+          <p>Mirrored turn-gap above-edge case; expected classification should match the non-mirrored bow-side behavior.</p>
         </article>
 
 
@@ -311,6 +311,12 @@
         <article class="case-row">
           <code>standon_band315_unsure_pass</code>
           <p>Band-315 stand-on geometry expected to enter the generic unsure branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>standon_band315_unsure_bow_pass</code>
+          <p>Band-315 stand-on geometry expected to enter the unsure-bow branch.</p>
         </article>
 
 

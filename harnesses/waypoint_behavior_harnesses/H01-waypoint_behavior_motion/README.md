@@ -83,13 +83,13 @@ behavior-owned waypoint outputs:
   evaluates in transit and requires the custom numeric outputs to be bridged to
   shoreside.
 - `polygon_points_pass`
-  The route is configured through `polygon=pts={...}` rather than `points=...`.
+  The route is configured through `polygon=pts={...}` rather than a literal points list.
 - `ipf_type_roc_pass`
-  The behavior uses `ipf_type=roc`, exercising the rate-of-closure objective
-  function path while still completing the route.
+  The behavior uses `ipf_type=roc` and should still complete the route with the
+  rate-of-closure objective function.
 - `ipf_type_zaic_spd_pass`
-  The behavior uses `ipf_type=zaic_spd`, exercising the alternate speed ZAIC
-  path while still completing the route.
+  The behavior uses `ipf_type=zaic_spd` and should still complete the route
+  with the alternate speed ZAIC objective.
 - `greedy_tour_pass`
   A multi-point route enables `greedy_tour=true`; the route should be reordered
   from ownship position and still complete cleanly.
@@ -103,33 +103,32 @@ behavior-owned waypoint outputs:
   A low-speed configuration is evaluated before arrival and should still be in
   progress.
 - `no_points_timeout_fail`
-  The behavior starts empty and receives no useful update. The case is expected
-  to grade `fail`.
+  The behavior starts empty and receives no useful update, so the mission should
+  fail.
 - `malformed_update_fail`
-  The behavior starts empty and receives a malformed update. The case is
-  expected to grade `fail` because no valid waypoint is accepted.
+  The behavior starts empty and receives a malformed update. The mission should
+  fail because no valid waypoint is accepted.
 - `bad_xpoints_size_fail`
   The behavior starts with a two-point route and receives a one-point
-  `xpoints` update. The update should be rejected, so the short timer verdict
-  is expected to grade `fail`.
+  `xpoints` update. The update should be rejected, and the short timer verdict
+  should fail.
 - `bad_speed_fail`
   Launch-time `speed=-1` should be rejected by `BHV_Waypoint`, putting the helm
   into malconfig and producing an expected `fail` grade.
 - `bad_capture_line_fail`
-  Launch-time `capture_line=diagonal` should be rejected, exercising capture
-  line validation and the helm malconfig failure path.
+  Launch-time `capture_line=diagonal` should be rejected and put the helm into
+  malconfig.
 - `bad_capture_radius_fail`
-  Launch-time `capture_radius=-1` should be rejected, exercising radius
-  validation and the helm malconfig failure path.
+  Launch-time `capture_radius=-1` should be rejected and put the helm into
+  malconfig.
 - `bad_slip_radius_fail`
-  Launch-time `slip_radius=-1` should be rejected, exercising nonmonotonic
-  radius validation and the helm malconfig failure path.
+  Launch-time `slip_radius=-1` should be rejected and put the helm into
+  malconfig.
 - `bad_order_fail`
-  Launch-time `order=sideways` should be rejected, exercising route-order
-  validation and the helm malconfig failure path.
+  Launch-time `order=sideways` should be rejected and put the helm into
+  malconfig.
 - `bad_repeat_fail`
-  Launch-time `repeat=-1` should be rejected, exercising repeat-count
-  validation and the helm malconfig failure path.
+  Launch-time `repeat=-1` should be rejected and put the helm into malconfig.
 - `bad_lead_damper_fail`
   Launch-time `lead_damper=0` should be rejected because the source requires a
   positive damper value.

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import re
 import json
+import shlex
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -15,10 +16,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS_DIR = REPO_ROOT / "harnesses"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
-ASSET_VERSION = "20260427-1"
-CASE_LIST_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*(["\'])(.*)\2\s*$')
+ASSET_VERSION = "20260427-13"
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
-CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail)\b")
+ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
+CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
 VISUAL_NOTES = {
     "cmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship geometry is intentionally simple and the verdict comes from MOOS publications such as contact alerts, reports, and filter messages.",
     "obmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship is stationary and the verdict comes from MOOS publications such as obstacle acceptance, distance reports, hull generation, and filter messages.",
@@ -36,7 +37,6 @@ class Harness:
     mission: str
     summary: str
     proof: str
-    cases: tuple[str, ...]
     gifs: tuple[tuple[str, str, str], tuple[str, str, str]]
     run: str
     notes: tuple[str, ...]
@@ -59,14 +59,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/cmgr_missions/cmgr_unit",
         summary="Contact-manager mode checks for detection, absence, alerts, reports, filters, and multi-contact outputs.",
         proof="Directly checks detection, absence, report, alert filter, runtime request, closest-contact, and multi-contact publication paths.",
-        cases=(
-            "detect_baseline_pass",
-            "detect_cpa_only_pass",
-            "runtime_alert_add_pass",
-            "filter_match_type_absent_pass",
-            "closest_contact_pass",
-            "count_two_pass",
-        ),
         gifs=(
             ("Runtime Alert Path", "runtime_alert_add_pass", "cmgr-unit-runtime-alert.gif"),
             ("CPA-only Detection", "detect_cpa_only_pass", "cmgr-unit-cpa-detection.gif"),
@@ -85,13 +77,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/cmgr_missions/cmgr_motion",
         summary="Moving integration companion proving contact-manager alerts can drive safe collision-avoidance transit.",
         proof="Grades arrival, detection, contact range, encounters, near misses, and collisions over short moving encounters.",
-        cases=(
-            "baseline_crossing_pass",
-            "head_on_pass",
-            "two_contact_pass",
-            "avoid_disabled_fail",
-            "fast_intruder_fail",
-        ),
         gifs=(
             ("Baseline Crossing Pass", "baseline_crossing_pass", "cmgr-motion-baseline-crossing.gif"),
             ("Head-on Pass", "head_on_pass", "cmgr-motion-head-on-pass.gif"),
@@ -111,14 +96,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/obmgr_missions/obmgr_unit",
         summary="Obstacle-manager mode checks for alerts, given obstacles, point clusters, hulls, and lifecycle branches.",
         proof="Checks accepted/rejected obstacles, general alerts, distance reports, point-cluster hull generation, lasso, placeholder, disable, enable, and expunge paths.",
-        cases=(
-            "given_baseline_pass",
-            "given_general_alert_pass",
-            "points_cluster_dist_pass",
-            "lasso_cluster_pass",
-            "enable_obstacle_pass",
-            "expunge_obstacle_pass",
-        ),
         gifs=(
             ("Given Obstacle Alert", "given_baseline_pass", "obmgr-unit-given-baseline.gif"),
             ("Point Cluster Hull", "points_cluster_dist_pass", "obmgr-unit-point-cluster.gif"),
@@ -137,14 +114,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/obmgr_missions/obmgr_motion",
         summary="Moving integration suite for pObstacleMgr alert output feeding BHV_AvoidObstacleV24.",
         proof="Grades clean arrival, obstacle encounters, near misses, collisions, and expected fail modes in a short corridor.",
-        cases=(
-            "baseline_center_pass",
-            "offset_clear_pass",
-            "tight_alert_pass",
-            "two_sequential_fail",
-            "wide_center_fail",
-            "avoid_disabled_fail",
-        ),
         gifs=(
             ("Baseline Center Pass", "baseline_center_pass", "obmgr-motion-baseline-center.gif"),
             ("Offset Clear Pass", "offset_clear_pass", "obmgr-motion-offset-clear.gif"),
@@ -164,13 +133,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/colregs_missions/colregs_unit",
         summary="Canonical two-vessel COLREGS classification suite for BHV_AvdColregsV22.",
         proof="Checks expected mode/index selection across head-on, crossing, overtaking, and overtaken encounter geometry.",
-        cases=(
-            "head_on_colregs_pass",
-            "crossing_starboard_giveway_pass",
-            "crossing_port_standon_pass",
-            "overtaking_starboard_pass",
-            "overtaken_port_standon_pass",
-        ),
         gifs=(
             ("Head-on Classification", "head_on_colregs_pass", "colregs-classification-head-on.gif"),
             ("Crossing Give-way", "crossing_starboard_giveway_pass", "colregs-classification-crossing.gif"),
@@ -189,13 +151,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/colregs_missions/colregs_unit",
         summary="Geometry-edge suite for classification thresholds and near-boundary COLREGS behavior.",
         proof="Uses below, edge, above, mirrored, and family-grouped probes to catch subtle threshold regressions.",
-        cases=(
-            "headon threshold group",
-            "giveway threshold group",
-            "standon threshold group",
-            "overtaking threshold group",
-            "overtaken threshold group",
-        ),
         gifs=(
             ("Give-way Bow Distance", "giveway_bowdist_edge_pass", "colregs-thresholds-giveway-bowdist.gif"),
             ("Overtaking Threshold", "overtaking_thresh_edge_pass", "colregs-thresholds-overtaking-triplet.gif"),
@@ -214,13 +169,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/colregs_missions/colregs_unit",
         summary="Execution-quality layer for COLREGS cases after classification is known to be correct.",
         proof="Runs through completion and checks realized CPA bands, final side relationship, collisions, and loose wall-time envelopes.",
-        cases=(
-            "head_on_execution_pass",
-            "crossing_starboard_giveway_execution_pass",
-            "crossing_port_standon_execution_pass",
-            "overtaking_starboard_execution_pass",
-            "overtaken_starboard_standon_midrange_execution_pass",
-        ),
         gifs=(
             ("Head-on Resolution", "head_on_execution_pass", "colregs-execution-head-on.gif"),
             ("Overtaken Midrange", "overtaken_starboard_standon_midrange_execution_pass", "colregs-execution-overtaken-midrange.gif"),
@@ -240,17 +188,9 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/colregs_missions/colregs_unit",
         summary="Parameter-regression suite varying one BHV_AvdColregsV22 knob at a time.",
         proof="Keeps trusted geometry fixed while proving selected tuning changes remain stable or change in one expected way.",
-        cases=(
-            "min_util_cpa_dist",
-            "headon_only",
-            "giveway_bow_dist",
-            "velocity_filter",
-            "turn_radius",
-            "use_refinery",
-        ),
         gifs=(
-            ("Default vs High CPA", "min_util_cpa_high_pass", "colregs-parameters-cpa-compare.gif"),
-            ("Head-on Only Toggle", "headon_only_true_pass", "colregs-parameters-headon-only.gif"),
+            ("Bow Distance Threshold", "giveway_bow_dist_high_pass", "colregs-parameters-bow-distance.gif"),
+            ("Turn Radius Branch", "turn_radius_high_pass", "colregs-parameters-turn-radius.gif"),
         ),
         run="./zlaunch.sh --group=min_util_cpa_dist --gui 10",
         notes=(
@@ -266,16 +206,10 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/collision_behavior_missions/collision_behavior_motion",
         summary="Moving correctness harness for BHV_AvoidCollision independent of app-level contact-manager assertions.",
         proof="Checks alert request, contact info, per-contact outputs, behavior lifecycle, resolution, arrival, and collision-free transit.",
-        cases=(
-            "default_resolve_pass",
-            "post_per_contact_info_pass",
-            "behavior_filter_absent_pass",
-            "head_on_resolve_pass",
-            "no_alert_request_fail",
-        ),
         gifs=(
             ("Head-on Resolve", "head_on_resolve_pass", "collision-behavior-head-on-resolve.gif"),
             ("No Alert Request Fail", "no_alert_request_fail", "collision-behavior-no-alert-fail.gif"),
+            ("Baseline Resolve", "default_resolve_pass", "collision-behavior-default-resolve.gif"),
         ),
         run="./zlaunch.sh --case=head_on_resolve_pass --gui 10",
         notes=(
@@ -291,14 +225,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/obstacle_behavior_missions/obstacle_behavior_motion",
         summary="Moving correctness harness for BHV_AvoidObstacleV24 with deterministic obstacle-manager input.",
         proof="Checks auto-request, obstacle alert receipt, behavior-owned range/CPA flags, resolution, arrival, encounters, and expected fail modes.",
-        cases=(
-            "default_auto_request_pass",
-            "rng_flag_pass",
-            "cpa_flag_pass",
-            "offlane_no_engagement_pass",
-            "two_obstacles_clean_pass",
-            "avoid_disabled_fail",
-        ),
         gifs=(
             ("Two Obstacles Clean", "two_obstacles_clean_pass", "obstacle-behavior-two-obstacles.gif"),
             ("Avoid Disabled Fail", "avoid_disabled_fail", "obstacle-behavior-avoid-disabled.gif"),
@@ -317,14 +243,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/opregion_missions/opregion_motion",
         summary="Moving safety harness for BHV_OpRegionV24 save regions, halt regions, timing gates, reset, and runtime region updates.",
         proof="Checks nominal containment, save recovery, generated buffers, halt breaches, entry/exit timing gates, reset handling, max-time failure, and dynamic region enforcement.",
-        cases=(
-            "inside_region_pass",
-            "save_recover_pass",
-            "save_dist_buffer_pass",
-            "halt_breach_fail",
-            "trigger_exit_debounce_pass",
-            "dynamic_region_update_pass",
-        ),
         gifs=(
             ("Save Recovery", "save_recover_pass", "opregion-safety-save-recover.gif"),
             ("Dynamic Region Update", "dynamic_region_update_pass", "opregion-safety-dynamic-update.gif"),
@@ -343,14 +261,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/waypoint_behavior_missions/waypoint_behavior_motion",
         summary="Moving correctness harness for BHV_Waypoint route traversal, runtime point updates, cycle flags, capture modes, and malformed inputs.",
         proof="Checks completion, waypoint-hit flags, end flags, repeat/cycle handling, dynamic route updates, capture/slip/line modes, status variables, and expected invalid-input failures.",
-        cases=(
-            "single_point_arrival_pass",
-            "multi_point_sequence_pass",
-            "repeat_once_cycle_pass",
-            "dynamic_points_update_pass",
-            "capture_line_absolute_pass",
-            "bad_xpoints_size_fail",
-        ),
         gifs=(
             ("Multi-point Sequence", "multi_point_sequence_pass", "waypoint-behavior-multipoint.gif"),
             ("Dynamic Route Update", "xpoints_update_pass", "waypoint-behavior-dynamic-update.gif"),
@@ -370,14 +280,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/loiter_behavior_missions/loiter_behavior_motion",
         summary="Moving correctness harness for BHV_Loiter acquisition, polygon variants, center updates, speed modes, reports, and invalid inputs.",
         proof="Checks loiter mode, acquisition state, polygon distance/ETA, bearing accumulation, suffixed outputs, runtime polygon updates, and expected malformed-polygon failures.",
-        cases=(
-            "radial_clockwise_pass",
-            "radial_counterclockwise_pass",
-            "start_inside_loiter_pass",
-            "center_activate_pass",
-            "slingshot_bearing_pass",
-            "bad_polygon_fail",
-        ),
         gifs=(
             ("Radial Clockwise", "radial_clockwise_pass", "loiter-behavior-radial.gif"),
             ("Runtime Radius Expand", "mod_poly_rad_expand_pass", "loiter-behavior-radius-expand.gif"),
@@ -397,14 +299,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/stationkeep_behavior_missions/stationkeep_behavior_motion",
         summary="Moving correctness harness for BHV_StationKeep station points, radii, hibernation, runtime retargeting, speed settings, warnings, and invalid inputs.",
         proof="Checks station distance, mode transitions, radius/speed updates, hibernation seek/settle behavior, warning recovery, visual hints, and expected parameter failures.",
-        cases=(
-            "static_station_pass",
-            "start_inside_hold_pass",
-            "center_activate_swing_pass",
-            "hibernation_settle_pass",
-            "point_update_retarget_pass",
-            "bad_point_fail",
-        ),
         gifs=(
             ("Static Station", "static_station_pass", "stationkeep-behavior-static.gif"),
             ("Hibernation Settle", "hibernation_settle_pass", "stationkeep-behavior-hibernation.gif"),
@@ -424,16 +318,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/trail_behavior_missions/trail_behavior_motion",
         summary="Two-vehicle moving correctness harness for BHV_Trail relative/absolute trailing geometry, runtime updates, pursuit relevance, and missing-contact paths.",
         proof="Checks trail distance, relevance, range, pursuit state, update handling, extrapolation, missing-contact warnings/failures, and malformed parameter rejection.",
-        cases=(
-            "static_trail_pass",
-            "absolute_west_pass",
-            "relative_port_pass",
-            "lead_turn_angle_update_pass",
-            "pwt_outer_inactive_pass",
-            "runtime_range_extend_pass",
-            "runtime_angle_update_pass",
-            "missing_contact_fail",
-        ),
         gifs=(
             ("Relative Port Trail", "relative_port_pass", "trail-behavior-relative-port.gif"),
             ("Lead Turn Angle Update", "lead_turn_angle_update_pass", "trail-behavior-lead-turn-angle-update.gif"),
@@ -453,14 +337,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/convoy_behavior_missions/convoy_behavior_motion",
         summary="Two-vehicle moving correctness harness for BHV_Convoy mark queues, following geometry, speed branches, runtime updates, warnings, and missing-contact failures.",
         proof="Checks queue length, track length, max range, average spacing, chaser/target speed aliases, visual breadcrumbs, geometry recovery, runtime updates, and expected parameter failures.",
-        cases=(
-            "static_convoy_pass",
-            "fine_mark_spacing_pass",
-            "short_mark_queue_pass",
-            "angled_entry_pass",
-            "runtime_cruise_speed_pass",
-            "missing_contact_fail",
-        ),
         gifs=(
             ("Static Convoy", "static_convoy_pass", "convoy-behavior-static.gif"),
             ("Angled Entry", "angled_entry_pass", "convoy-behavior-angled-entry.gif"),
@@ -479,8 +355,11 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/cutrange_behavior_missions/cutrange_behavior_motion",
         summary="Two-vehicle moving correctness harness for BHV_CutRange pursuit, give-up behavior, relevance, runtime updates, and malformed inputs.",
         proof="Checks range closure, pursue/give-up flags, target geometry branches, relevance gates, warning recovery, runtime updates, and expected configuration failures.",
-        cases=(),
-        gifs=(),
+        gifs=(
+            ("Head-on Closure", "headon_cutrange_pass", "cutrange-behavior-headon.gif"),
+            ("Crossing Closure", "crossing_cutrange_pass", "cutrange-behavior-crossing.gif"),
+            ("S-turn Target", "s_turn_target_pass", "cutrange-behavior-s-turn.gif"),
+        ),
         run="./zlaunch.sh --case=static_cutrange_pass --gui 10",
         notes=(
             "This harness uses a chaser/target pair so range reduction is graded against live contact geometry instead of a static input.",
@@ -495,8 +374,11 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/fixedturn_behavior_missions/fixedturn_behavior_motion",
         summary="Moving correctness harness for BHV_FixedTurn direction, scheduled turns, runtime updates, timeout completion, and invalid turn configuration.",
         proof="Checks fixed-turn completion, final heading bands, turn time/distance, scheduled-turn flags, runtime update recovery, and behavior error state.",
-        cases=(),
-        gifs=(),
+        gifs=(
+            ("Starboard 90", "starboard_90_pass", "fixedturn-behavior-starboard-90.gif"),
+            ("Port 360", "port_360_pass", "fixedturn-behavior-port-360.gif"),
+            ("Turn Spec Sequence", "turn_spec_sequence_pass", "fixedturn-behavior-turn-spec-sequence.gif"),
+        ),
         run="./zlaunch.sh --case=starboard_90_pass --gui 10",
         notes=(
             "This harness starts with a short approach leg and then activates the fixed-turn behavior so turn completion can be measured from mission-owned outputs.",
@@ -511,8 +393,11 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/shadow_behavior_missions/shadow_behavior_motion",
         summary="Two-vehicle moving correctness harness for BHV_Shadow contact telemetry, relevance gates, speed/heading following, runtime updates, and malformed inputs.",
         proof="Checks shadow contact heading/speed output, active relevance, stopped relevance, runtime recovery, warning-only paths, contact flags, and expected parameter failures.",
-        cases=(),
-        gifs=(),
+        gifs=(
+            ("Static Shadow", "static_shadow_pass", "shadow-behavior-static.gif"),
+            ("Turn North Shadow", "turn_north_shadow_pass", "shadow-behavior-turn-north.gif"),
+            ("Runtime PWT On", "runtime_pwt_outer_on_pass", "shadow-behavior-runtime-pwt-on.gif"),
+        ),
         run="./zlaunch.sh --case=static_shadow_pass --gui 10",
         notes=(
             "This harness uses one target and one chaser so shadowing can be graded against changing contact heading and speed.",
@@ -527,11 +412,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/performance_missions/P01-obstacle_gauntlet",
         summary="Deterministic and randomized obstacle-field performance harness.",
         proof="Checks loop completion, zero collisions, bounded near misses/encounters, wall time, timeout, and warning-free logs.",
-        cases=(
-            "baseline_field_pass",
-            "dense_field_pass",
-            "endurance_random_pass",
-        ),
         gifs=(
             ("Baseline Field", "baseline_field_pass", "performance-obstacle-gauntlet-baseline.gif"),
             ("Dense Field", "dense_field_pass", "performance-obstacle-gauntlet-dense.gif"),
@@ -551,11 +431,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/performance_missions/P02-colregs_joust",
         summary="Two- and three-vehicle COLREGS pressure harness focused on sustained safe spacing.",
         proof="Checks mission completion, zero collisions, closest-range envelopes, near misses, wall time, and warning-free logs.",
-        cases=(
-            "baseline_colregs_pass",
-            "dense_colregs_pass",
-            "endurance_colregs_pass",
-        ),
         gifs=(
             ("Baseline Joust", "baseline_colregs_pass", "performance-colregs-joust-baseline.gif"),
             ("Dense Joust", "dense_colregs_pass", "performance-colregs-joust-dense.gif"),
@@ -574,12 +449,6 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/performance_missions/P03-colregs_traffic_ring",
         summary="Seeded five-vehicle traffic-ring harness with repeated reassignment pressure.",
         proof="Checks zero collisions, assignment activity floors, fixed runtime windows, warning-free logs, and reproducible seeded random behavior.",
-        cases=(
-            "baseline_circle_pass",
-            "mixed_speed_circle_pass",
-            "endurance_circle_pass",
-            "noncoop_circle_pass",
-        ),
         gifs=(
             ("Baseline Traffic Ring", "baseline_circle_pass", "performance-traffic-ring-baseline.gif"),
             ("Mixed-Speed Traffic Ring", "mixed_speed_circle_pass", "performance-traffic-ring-mixed-speed.gif"),
@@ -722,7 +591,7 @@ STEM_CONTEXT: dict[str, str] = {
     "cmgr-unit": "The stem mission is a small single-ownship setup in the lower-band Forrest 19 / MIT_SP frame. `alpha` is the ownship; contacts such as `bravo` or `intruder` are synthetic targets introduced by individual cases so pContactMgrV20 can be checked without a full behavior stack.",
     "cmgr-motion": "The stem mission places `alpha` on a short transit with one or more synthetic contacts. The harness keeps the geometry compact and grades whether contact-manager output gives the avoidance behavior enough evidence to arrive safely.",
     "obmgr-unit": "The stem mission keeps the ownship context simple and introduces given obstacles or point clusters through the case inputs. That isolates pObstacleMgr message behavior before any moving obstacle-avoidance outcome is judged.",
-    "obmgr-motion": "The stem mission sends one ownship through a short corridor with case-specific obstacle layouts. The harness grades whether obstacle-manager alerts support arrival without collisions, near misses, or unresolved encounters.",
+    "obmgr-motion": "The stem mission sends one ownship through a short corridor with obstacle layouts that vary by case. The harness grades whether obstacle-manager alerts support arrival without collisions, near misses, or unresolved encounters.",
     "colregs-classification": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Case overlays vary the encounter geometry for head-on, crossing, overtaking, and overtaken situations.",
     "colregs-thresholds": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Threshold cases reuse the same stem while moving the geometry just below, at, or above classification boundaries.",
     "colregs-execution": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Execution cases reuse trusted classification geometry and then judge the maneuver that actually unfolds.",
@@ -767,6 +636,7 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)} | MOOS-IvP CI/CD</title>
   <link rel="stylesheet" href="{prefix}styles.css?v={ASSET_VERSION}">
+  <script src="{prefix}theme.js?v={ASSET_VERSION}"></script>
 </head>
 <body>
   <header class="site-header">
@@ -774,12 +644,17 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="{prefix}index.html#families">Harnesses</a>
-      <a href="{prefix}user-guide.html">Run Tests</a>
-      <a href="{prefix}technical.html">Technical</a>
-      <a href="{prefix}developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="{prefix}index.html#families">Harnesses</a>
+        <a href="{prefix}user-guide.html">Run Tests</a>
+        <a href="{prefix}technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
   {body}
   <footer class="site-footer">
@@ -789,10 +664,6 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
 </body>
 </html>
 """
-
-
-def case_chips(cases: tuple[str, ...]) -> str:
-    return "\n".join(f"<li><code>{escape(case)}</code></li>" for case in cases)
 
 
 def phrase_colregs_case(case_name: str) -> str:
@@ -998,16 +869,21 @@ def describe_case(slug: str, case_name: str) -> str:
     return f"Covers {clean}."
 
 
-def normalize_description(text: str) -> str:
+def normalize_description(text: str, max_len: int | None = 165) -> str:
     text = text.replace("`", "")
     text = re.sub(r"\bpatched mission\b", "case", text, flags=re.IGNORECASE)
-    text = re.sub(r"\bpatched\b", "case-specific", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bis patched to\b", "is configured in this case to", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bis patched with\b", "is configured in this case with", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bis patched so\b", "is configured in this case so", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bthe behavior patch sets\b", "this case sets", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bthe behavior patch provides\b", "this case provides", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bpatched\b", "configured for this case", text, flags=re.IGNORECASE)
     text = re.sub(r"\s+", " ", text).strip()
     text = text.strip(" :-")
     if not text:
         return ""
-    if len(text) > 165:
-        text = text[:162].rsplit(" ", 1)[0] + "..."
+    if max_len is not None and len(text) > max_len:
+        text = text[: max_len - 3].rsplit(" ", 1)[0] + "..."
     return text
 
 
@@ -1016,26 +892,40 @@ def zlaunch_case_order(h: Harness) -> list[str]:
     if not zlaunch.exists():
         return []
 
+    text = zlaunch.read_text(encoding="utf-8", errors="ignore")
+    return zlaunch_all_cases(text)
+
+
+def zlaunch_all_cases(text: str) -> list[str]:
+    arrays: dict[str, list[str]] = {}
+    for match in CASE_ARRAY_RE.finditer(text):
+        name, body = match.groups()
+        try:
+            arrays[name] = shlex.split(body, comments=True, posix=True)
+        except ValueError:
+            arrays[name] = CASE_NAME_RE.findall(body)
+
+    if "ALL_CASES" not in arrays:
+        return []
+
+    def expand_array(name: str, stack: tuple[str, ...] = ()) -> list[str]:
+        if name in stack:
+            return []
+        expanded: list[str] = []
+        for token in arrays.get(name, []):
+            ref = ARRAY_REF_RE.match(token)
+            if ref and ref.group(1) in arrays:
+                expanded.extend(expand_array(ref.group(1), stack + (name,)))
+            elif CASE_NAME_RE.search(token):
+                expanded.append(token)
+        return expanded
+
     names: list[str] = []
     seen: set[str] = set()
-    text = zlaunch.read_text(encoding="utf-8", errors="ignore")
-    for match in CASE_ARRAY_RE.finditer(text):
-        for token in CASE_NAME_RE.findall(match.group(2)):
-            if token not in seen:
-                names.append(token)
-                seen.add(token)
-
-    for line in text.splitlines():
-        match = CASE_LIST_RE.match(line)
-        if not match:
-            continue
-        value = match.group(3)
-        if "$" in value:
-            continue
-        for token in value.split():
-            if re.search(r"(_pass|_fail|_absent)$", token) and token not in seen:
-                names.append(token)
-                seen.add(token)
+    for token in expand_array("ALL_CASES"):
+        if token not in seen:
+            names.append(token)
+            seen.add(token)
     return names
 
 
@@ -1043,21 +933,20 @@ def zlaunch_case_names(h: Harness) -> set[str]:
     return set(zlaunch_case_order(h))
 
 
-def extract_case_docs(h: Harness) -> list[tuple[str, str]]:
+def extract_case_docs(h: Harness, max_len: int | None = None) -> list[tuple[str, str]]:
     generated_description_slugs: set[str] = set()
     ordered_cases = zlaunch_case_order(h)
     if h.slug in generated_description_slugs:
-        return [(case, describe_case(h.slug, case)) for case in ordered_cases or h.cases]
+        return [(case, describe_case(h.slug, case)) for case in ordered_cases]
 
     readme = ROOT.parent / h.path / "README.md"
     if not readme.exists():
-        return [(case, describe_case(h.slug, case)) for case in h.cases]
+        return [(case, describe_case(h.slug, case)) for case in ordered_cases]
 
     lines = readme.read_text(encoding="utf-8", errors="ignore").splitlines()
     found: dict[str, str] = {}
     seen: set[str] = set()
     actual_cases = set(ordered_cases)
-    explicit_cases = set(h.cases)
     case_line = re.compile(r"^\s*-\s+`([^`]+)`\s*:?\s*(.*)$")
 
     for i, line in enumerate(lines):
@@ -1070,7 +959,7 @@ def extract_case_docs(h: Harness) -> list[tuple[str, str]]:
             continue
         if not re.search(r"(_pass|_fail|_absent|group=| threshold group|parameter)", case_name):
             continue
-        if actual_cases and case_name not in actual_cases and case_name not in explicit_cases:
+        if case_name not in actual_cases:
             continue
 
         parts = [match.group(2).strip()]
@@ -1085,16 +974,15 @@ def extract_case_docs(h: Harness) -> list[tuple[str, str]]:
                 continue
             break
 
-        desc = normalize_description(" ".join(parts))
+        desc = normalize_description(" ".join(parts), max_len=max_len)
         if desc:
             found[case_name] = desc
             seen.add(case_name)
 
     if not found:
-        return [(case, describe_case(h.slug, case)) for case in h.cases]
+        return [(case, describe_case(h.slug, case)) for case in ordered_cases]
 
-    ordered = ordered_cases or list(h.cases)
-    return [(case, found.get(case, describe_case(h.slug, case))) for case in ordered]
+    return [(case, found.get(case, describe_case(h.slug, case))) for case in ordered_cases]
 
 
 def case_rows(h: Harness) -> str:
@@ -1158,19 +1046,11 @@ def family_panel(family: Family, harness_by_slug: dict[str, Harness]) -> str:
 def harness_case_counts() -> dict[str, int]:
     counts: dict[str, int] = {}
     for zlaunch in sorted(HARNESS_DIR.glob("*/*/zlaunch.sh")):
-        seen: set[str] = set()
         text = zlaunch.read_text()
-        for match in CASE_ARRAY_RE.finditer(text):
-            seen.update(CASE_NAME_RE.findall(match.group(2)))
-        for line in text.splitlines():
-            match = CASE_LIST_RE.match(line)
-            if not match:
-                continue
-            value = match.group(3)
-            if "$" in value:
-                continue
-            seen.update(CASE_NAME_RE.findall(value))
-        counts[zlaunch.parent.name] = len(seen)
+        all_cases = zlaunch_all_cases(text)
+        if not all_cases:
+            raise ValueError(f"No ALL_CASES entries found in {zlaunch}")
+        counts[zlaunch.parent.name] = len(all_cases)
     return counts
 
 
@@ -1255,6 +1135,40 @@ def render_user_guide() -> str:
 
     <section class="content-section">
       <div class="section-heading">
+        <p class="eyebrow">Before You Run</p>
+        <h2>Plain-language workflow terms</h2>
+        <p>You do not need to know MOOS internals to launch a run. The <strong>Open workflow</strong> button above opens the GitHub Actions workflow page where you start one.</p>
+      </div>
+      <div class="technical-grid">
+        <article class="technical-card">
+          <h3>Workflow</h3>
+          <p>A workflow is a GitHub Actions page that runs CI. This guide uses the <code>Build And Check Active Harnesses</code> workflow.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Family</h3>
+          <p>A family is a group of related harnesses, such as <code>waypoint_behavior</code> or <code>colregs</code>. Use a family run when you want every active harness in that group.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Target key</h3>
+          <p>A target key names one exact harness, such as <code>cutrange_h01</code>. Use target keys when you want a narrow run with only selected harnesses.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Actions matrix</h3>
+          <p>The matrix is the group of job rows GitHub shows after a run starts. Each runtime row is one selected harness.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Time warp</h3>
+          <p><code>time_warp</code> controls simulation speed. Keep the default value unless you are deliberately debugging timing behavior.</p>
+        </article>
+        <article class="technical-card">
+          <h3>MOOS-IvP ref</h3>
+          <p><code>moos_ivp_ref</code> is the upstream MOOS-IvP branch, tag, or commit to build against. Use <code>main</code> for the normal run.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
         <p class="eyebrow">Normal Flow</p>
         <h2>Start with a batch family run</h2>
         <p>For a broad manual check, run several families in one workflow. The workflow builds once, uploads that build as an artifact, then fans out selected runtime harnesses as separate matrix jobs.</p>
@@ -1262,7 +1176,7 @@ def render_user_guide() -> str:
       <div class="technical-grid">
         <article class="technical-card">
           <h3>1. Open Actions</h3>
-          <p>Use the <code>Build And Check Active Harnesses</code> workflow and click <code>Run workflow</code>. Keep the branch on <code>main</code> unless you deliberately want to test another branch.</p>
+          <p>Use the <strong>Open workflow</strong> button at the top of this page, then click <code>Run workflow</code> in GitHub. Keep the branch on <code>main</code> unless you deliberately want to test another branch.</p>
         </article>
         <article class="technical-card">
           <h3>2. Choose a mode</h3>
@@ -1371,13 +1285,67 @@ moos_ivp_ref: main</code></pre>
     <section class="workflow">
       <p class="eyebrow">Interpreting Results</p>
       <h2>What success means</h2>
+      <div class="guide-figures">
+        <figure class="guide-figure">
+          <img src="assets/images/workflow-graph-example.png" alt="GitHub Actions workflow graph showing workflow-lint, select-targets, build, and runtime-harnesses jobs">
+          <figcaption>The workflow graph shows the setup jobs, one shared build, and the selected runtime harness matrix.</figcaption>
+        </figure>
+        <article class="run-summary-example">
+          <h3>Example run summary</h3>
+          <ul class="summary-meta">
+            <li>Target: <code>obstacle_behavior_h01</code></li>
+            <li>Harness: <code>H01-obstacle_behavior_motion</code></li>
+            <li>Requested MOOS-IvP ref: <code>main</code></li>
+            <li>Parsed cases: <code>21</code></li>
+            <li>Verdict: <code class="result-pass">pass</code></li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>case</th>
+                  <th>case_result</th>
+                  <th>expected</th>
+                  <th>actual</th>
+                  <th>grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th><code>default_auto_request_pass</code></th>
+                  <td>success</td>
+                  <td>pass</td>
+                  <td>pass</td>
+                  <td><span class="result-pass">pass</span></td>
+                </tr>
+                <tr>
+                  <th><code>rng_flag_pass</code></th>
+                  <td>success</td>
+                  <td>pass</td>
+                  <td>pass</td>
+                  <td><span class="result-pass">pass</span></td>
+                </tr>
+                <tr>
+                  <th><code>avoid_disabled_fail</code></th>
+                  <td>success</td>
+                  <td>fail</td>
+                  <td>fail</td>
+                  <td><span class="result-fail">fail</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
       <ol>
         <li>Each runtime row downloads the build artifact and runs one harness <code>zlaunch.sh</code>.</li>
         <li>The workflow uploads that harness's <code>results.txt</code> as an artifact.</li>
         <li>The summary step derives the expected case count from the harness and fails if the result file is incomplete or contains failed expected outcomes.</li>
         <li>A green matrix means all selected harnesses completed and their expected case matrix matched.</li>
       </ol>
-      <a class="text-link" href="technical.html">Read the technical architecture</a>
+      <div class="workflow-actions">
+        <a class="text-link" href="technical.html">Read the technical architecture</a>
+      </div>
     </section>
   </main>
 """
@@ -1436,8 +1404,10 @@ def render_index() -> str:
         <li>The harness <code>zlaunch.sh</code> wrapper selects the case and then delegates to the shared <code>xlaunch.sh</code> path, keeping local and CI runs aligned.</li>
         <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact CI result lines.</li>
       </ol>
-      <a class="text-link" href="user-guide.html">Run harnesses manually</a>
-      <a class="text-link" href="technical.html">Read the technical architecture</a>
+      <div class="workflow-actions">
+        <a class="text-link" href="user-guide.html">Run harnesses manually</a>
+        <a class="text-link" href="technical.html">Read the technical architecture</a>
+      </div>
     </section>
   </main>
 """
@@ -1445,7 +1415,7 @@ def render_index() -> str:
 
 
 def render_harness(h: Harness) -> str:
-    descriptions = dict(extract_case_docs(h))
+    descriptions = dict(extract_case_docs(h, max_len=None))
     gifs = "\n".join(gif_card(g, descriptions, "../") for g in h.gifs)
     gif_grid_class = "gif-grid"
     if len(h.gifs) == 2:
@@ -1515,143 +1485,6 @@ def render_harness(h: Harness) -> str:
     return page_shell(h.title, body, "../")
 
 
-def render_developer_guide() -> str:
-    body = f"""
-  <main>
-    <section class="page-hero">
-      <a class="back-link" href="index.html">Back to overview</a>
-      <p class="eyebrow">Developer Guide</p>
-      <h1>Add or repair harnesses without breaking CI.</h1>
-      <p class="lede">This guide is for contributors editing missions, harness wrappers, target metadata, and generated documentation. It focuses on the contracts the CI workflow depends on.</p>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Harness Contract</p>
-        <h2>What every active target needs</h2>
-      </div>
-      <div class="technical-grid">
-        <article class="technical-card">
-          <h3>Runnable wrapper</h3>
-          <p>Each target path must contain a <code>zlaunch.sh</code> that can run the default matrix headlessly and accept an optional time-warp argument unless it declares a CI performance profile.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Stable result file</h3>
-          <p>The run must produce <code>results.txt</code> with one compact result line per expected case. CI derives the expected count from the wrapper and rejects incomplete files.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Isolated execution</h3>
-          <p>Grouped harnesses should expose <code>--jobs</code> and <code>--port_base</code>, use scoped teardown, and avoid overlapping MOOSDB or pShare port ranges.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Add a Target</p>
-        <h2>Checklist for a new manual dispatch harness</h2>
-      </div>
-      <div class="explain-stack">
-        <article>
-          <h3>1. Start from the nearest exemplar</h3>
-          <p>For app-level checks, start near <code>harnesses/cmgr_harnesses/H01-cmgr_unit</code> or <code>harnesses/obmgr_harnesses/H01-obmgr_unit</code>. For moving behavior checks, start near a current behavior family with the same vehicle count and port-isolation shape.</p>
-        </article>
-        <article>
-          <h3>2. Keep the mission verdict-owned</h3>
-          <p>Prefer <code>pMissionEval</code> and mission-visible flags for the real verdict. Use shell checks for result completeness, wall-clock bounds, warning scans, and other constraints that are awkward inside MOOS.</p>
-        </article>
-        <article>
-          <h3>3. Register the target</h3>
-          <p>Add the target to <code>config/harness_targets.json</code> with <code>key</code>, <code>path</code>, <code>harness</code>, <code>artifact</code>, and <code>families</code>. Add <code>full_modes: ["correctness"]</code> only for curated high-signal gates.</p>
-        </article>
-        <article>
-          <h3>4. Update generated docs</h3>
-          <p>Add a catalog entry in <code>docs/tools/build_pages.py</code> when the family should be public on the site, then regenerate pages with <code>python3 docs/tools/build_pages.py</code>.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Validation</p>
-        <h2>Commands to run before pushing</h2>
-      </div>
-      <div class="explain-stack">
-        <article>
-          <h3>Metadata and workflow checks</h3>
-          <pre><code>python3 -m unittest discover -s tests
-python3 scripts/harness_targets.py validate
-actionlint .github/workflows/build_extend.yml .github/workflows/pages.yml</code></pre>
-        </article>
-        <article>
-          <h3>Selector smoke checks</h3>
-          <pre><code>python3 scripts/harness_targets.py select --mode family_run --family waypoint_behavior
-python3 scripts/harness_targets.py select --mode specific_harnesses --targets cutrange_h01,waypoint_h01</code></pre>
-        </article>
-        <article>
-          <h3>Harness runtime checks</h3>
-          <pre><code>cd harnesses/&lt;family&gt;_harnesses/&lt;target&gt;
-./zlaunch.sh --just_make --jobs=4 --port_base=25000 10
-./zlaunch.sh --jobs=4 --port_base=25000 10</code></pre>
-        </article>
-      </div>
-      <p class="guide-note">Do not run two harness batches at the same time if their MOOSDB or pShare port blocks could overlap. For CI-style grouped validation, use explicit non-default <code>--port_base</code> values.</p>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Source Map</p>
-        <h2>Where each responsibility lives</h2>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Area</th>
-              <th>Responsibility</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th><code>missions/</code></th>
-              <td>Reusable MOOS stem missions, launch scripts, behavior templates, and mission-local evaluation setup.</td>
-            </tr>
-            <tr>
-              <th><code>harnesses/</code></th>
-              <td>Case matrices, overlays, harness wrappers, result aggregation, and per-harness README documentation.</td>
-            </tr>
-            <tr>
-              <th><code>config/harness_targets.json</code></th>
-              <td>Manual dispatch source of truth for active CI targets, families, artifact names, and curated full-mode membership.</td>
-            </tr>
-            <tr>
-              <th><code>scripts/</code></th>
-              <td>CI result summarizers, target selectors, repeatability helpers, benchmark sweeps, and scoped teardown helpers.</td>
-            </tr>
-            <tr>
-              <th><code>docs/tools/build_pages.py</code></th>
-              <td>Static site generator for the catalog, user guide, technical guide, developer guide, and generated harness pages.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="workflow">
-      <p class="eyebrow">Manual CI</p>
-      <h2>After code lands</h2>
-      <ol>
-        <li>Use <code>specific_harnesses</code> for the exact changed target when validating a narrow fix.</li>
-        <li>Use <code>family_run</code> when a change affects a family-level mission stem or shared case pattern.</li>
-        <li>Use <code>batch_family_run</code> when several behavior families should be checked against one shared build.</li>
-      </ol>
-      <a class="text-link" href="user-guide.html">Open the run guide</a>
-    </section>
-  </main>
-"""
-    return page_shell("Developer Guide", body)
-
-
 def render_technical() -> str:
     family_rows = "\n".join(
         f"""
@@ -1670,6 +1503,31 @@ def render_technical() -> str:
       <p class="eyebrow">Technical Overview</p>
       <h1>How the CI/CD pipeline is organized.</h1>
       <p class="lede">The repository treats MOOS-IvP stem missions as executable regression tests. It keeps reusable mission stems separate from case overlays, then runs those cases in CI with a shared launch and grading pattern.</p>
+    </section>
+
+    <section class="content-section compact-section">
+      <div class="section-heading">
+        <p class="eyebrow">Core Terms</p>
+        <h2>Vocabulary for the rest of the site</h2>
+      </div>
+      <dl class="term-list">
+        <div class="term-item">
+          <dt>Mission stem</dt>
+          <dd>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</dd>
+        </div>
+        <div class="term-item">
+          <dt>Harness case</dt>
+          <dd>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</dd>
+        </div>
+        <div class="term-item">
+          <dt>Verdict</dt>
+          <dd>The pass or fail decision for a case. The mission usually reports the main verdict, and shell checks add file-completeness, timing, and warning-log constraints.</dd>
+        </div>
+        <div class="term-item">
+          <dt>Matrix and artifact</dt>
+          <dd>A matrix is GitHub Actions running several selected harnesses as separate rows. An artifact is a file bundle shared or saved by the workflow, such as the built workspace or a harness <code>results.txt</code>.</dd>
+        </div>
+      </dl>
     </section>
 
     <section class="technical-grid">
@@ -1756,20 +1614,20 @@ def render_technical() -> str:
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Manual Dispatch</p>
-        <h2>Modes and concurrency</h2>
+        <p class="eyebrow">Workflow Semantics</p>
+        <h2>Selection, concurrency, and reuse</h2>
       </div>
       <div class="explain-stack">
         <article>
-          <h3>Dispatch modes are intentionally manual</h3>
-          <p><code>full</code> runs the curated correctness set, <code>family_run</code> runs one family, <code>batch_family_run</code> runs multiple families after one build, and <code>specific_harnesses</code> accepts comma-separated target keys.</p>
+          <h3>Selection is metadata-driven</h3>
+          <p>Manual inputs are normalized into target keys before any runner starts. The selector owns validation, active-target filtering, and runtime-matrix shape; the User Guide owns the exact input strings.</p>
         </article>
         <article>
-          <h3>Concurrency cancels duplicate intent</h3>
+          <h3>Concurrency protects intent</h3>
           <p>The workflow concurrency group includes the workflow, branch, dispatch mode, and selected family/target list. A newer run with the same intent replaces the older one, while different family sets can run independently.</p>
         </article>
         <article>
-          <h3>Cache and artifact solve different problems</h3>
+          <h3>Build reuse has two layers</h3>
           <p>The cache avoids rebuilding the same MOOS-IvP SHA and repo source across workflow runs. The artifact shares one completed build across all runtime jobs inside a single workflow run.</p>
         </article>
       </div>
@@ -1788,13 +1646,13 @@ def render_technical() -> str:
         </article>
         <article class="technical-card">
           <h3>Technical Guide</h3>
-          <p>Understand the mission, harness, build, artifact, cache, matrix, and verdict model.</p>
+          <p>Understand the mission, harness, build, artifact, cache, matrix, verdict, and source layout.</p>
           <a class="text-link" href="technical.html">Stay here</a>
         </article>
         <article class="technical-card">
-          <h3>Developer Guide</h3>
-          <p>Add targets, preserve result contracts, validate wrappers, and update generated docs without breaking CI.</p>
-          <a class="text-link" href="developer-guide.html">Open developer guide</a>
+          <h3>Harness Catalog</h3>
+          <p>Browse the app and behavior families, then open individual harness pages for case coverage, visuals, source links, and run examples.</p>
+          <a class="text-link" href="index.html#families">Open catalog</a>
         </article>
       </div>
     </section>
@@ -1808,7 +1666,9 @@ def render_technical() -> str:
         <li><code>scripts/</code> contains helper scripts for summaries, sweeps, and benchmarking.</li>
         <li><code>.github/workflows/</code> contains the CI and Pages workflows.</li>
       </ol>
-      <a class="text-link" href="{repo_url('README.md')}">Open the repository README</a>
+      <div class="workflow-actions">
+        <a class="text-link" href="{repo_url('README.md')}">Open the repository README</a>
+      </div>
     </section>
   </main>
 """
@@ -1874,7 +1734,6 @@ def main() -> None:
     write(ROOT / "index.html", render_index())
     write(ROOT / "user-guide.html", render_user_guide())
     write(ROOT / "technical.html", render_technical())
-    write(ROOT / "developer-guide.html", render_developer_guide())
     for harness in HARNESSES:
         write(ROOT / "harnesses" / f"{harness.slug}.html", render_harness(harness))
     write(ROOT / "assets" / "gifs" / "README.md", render_gif_manifest())

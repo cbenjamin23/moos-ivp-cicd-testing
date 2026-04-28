@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Loiter Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -63,7 +69,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Radius Expand</h3>
-          <p>Description: Runtime polygon-radius expansion.</p>
+          <p>Description: Expands polygon radius at runtime and verifies loiter remains stable.</p>
         </div>
       </article>
 
@@ -97,7 +103,7 @@
 
         <article class="case-row">
           <code>radial_counterclockwise_pass</code>
-          <p>Same geometry with clockwise=false.</p>
+          <p>Uses the same radial polygon with clockwise=false and verifies stable counterclockwise loiter.</p>
         </article>
 
 
@@ -109,13 +115,13 @@
 
         <article class="case-row">
           <code>polygon_box_pass</code>
-          <p>Explicit rectangular polygon input.</p>
+          <p>Uses an explicit rectangular polygon and verifies the vehicle acquires stable loiter.</p>
         </article>
 
 
         <article class="case-row">
           <code>triangle_polygon_pass</code>
-          <p>Explicit triangular polygon input.</p>
+          <p>Uses an explicit triangular polygon and verifies the vehicle acquires stable loiter.</p>
         </article>
 
 
@@ -187,19 +193,19 @@
 
         <article class="case-row">
           <code>mod_poly_rad_expand_pass</code>
-          <p>Runtime polygon-radius expansion.</p>
+          <p>Expands polygon radius at runtime and verifies loiter remains stable.</p>
         </article>
 
 
         <article class="case-row">
           <code>mod_poly_rad_shrink_pass</code>
-          <p>Runtime polygon-radius shrink.</p>
+          <p>Shrinks polygon radius at runtime and verifies loiter remains stable.</p>
         </article>
 
 
         <article class="case-row">
           <code>slingshot_bearing_pass</code>
-          <p>Exercises slingshot completion path and grades on accumulated bearing.</p>
+          <p>Exercises slingshot completion and grades on accumulated bearing.</p>
         </article>
 
 
@@ -217,7 +223,7 @@
 
         <article class="case-row">
           <code>ipf_zaic_spd_pass</code>
-          <p>Exercises the ZAIC speed IvP function path.</p>
+          <p>Uses the ZAIC speed IvP function while still acquiring stable loiter.</p>
         </article>
 
 
@@ -247,13 +253,13 @@
 
         <article class="case-row">
           <code>bad_clockwise_fail</code>
-          <p>Rejects malformed clockwise input outside the accepted boolean/best values.</p>
+          <p>Malformed clockwise input outside the accepted boolean/best values should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_use_alt_speed_fail</code>
-          <p>Rejects non-boolean use_alt_speed configuration.</p>
+          <p>Non-boolean use_alt_speed should be rejected and the mission should fail.</p>
         </article>
 
 
@@ -265,7 +271,7 @@
 
         <article class="case-row">
           <code>bad_capture_radius_fail</code>
-          <p>Rejects a negative capture_radius value.</p>
+          <p>Negative capture_radius should be rejected and the mission should fail.</p>
         </article>
 
 

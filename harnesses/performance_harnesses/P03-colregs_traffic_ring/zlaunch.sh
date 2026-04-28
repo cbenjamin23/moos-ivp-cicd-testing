@@ -358,9 +358,16 @@ run_case_isolated() {
 
 trap cleanup EXIT
 
-CASES="baseline_circle_pass mixed_speed_circle_pass endurance_circle_pass noncoop_circle_pass"
+ALL_CASES=(
+    baseline_circle_pass
+    mixed_speed_circle_pass
+    endurance_circle_pass
+    noncoop_circle_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-  CASES="$CASE"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
@@ -374,7 +381,7 @@ stop_mission_apps "$MISSION_DIR"
 case_idx=0
 wave_pids=""
 wave_count=0
-for case_name in $CASES; do
+for case_name in "${RUN_CASES[@]}"; do
   run_case_isolated "$case_idx" "$case_name" &
   wave_pids="$wave_pids $!"
   wave_count=$((wave_count + 1))

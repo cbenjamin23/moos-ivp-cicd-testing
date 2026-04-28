@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Home | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260427-1">
+  <link rel="stylesheet" href="styles.css?v=20260427-13">
+  <script src="theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="index.html#families">Harnesses</a>
-      <a href="user-guide.html">Run Tests</a>
-      <a href="technical.html">Technical</a>
-      <a href="developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="index.html#families">Harnesses</a>
+        <a href="user-guide.html">Run Tests</a>
+        <a href="technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -415,8 +421,10 @@
         <li>The harness <code>zlaunch.sh</code> wrapper selects the case and then delegates to the shared <code>xlaunch.sh</code> path, keeping local and CI runs aligned.</li>
         <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact CI result lines.</li>
       </ol>
-      <a class="text-link" href="user-guide.html">Run harnesses manually</a>
-      <a class="text-link" href="technical.html">Read the technical architecture</a>
+      <div class="workflow-actions">
+        <a class="text-link" href="user-guide.html">Run harnesses manually</a>
+        <a class="text-link" href="technical.html">Read the technical architecture</a>
+      </div>
     </section>
   </main>
 

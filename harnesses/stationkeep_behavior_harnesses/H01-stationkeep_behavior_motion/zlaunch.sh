@@ -537,16 +537,52 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 9: Select the case set, run the matrix, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    static_station_pass
+    station_pt_alias_pass
+    start_inside_hold_pass
+    center_activate_hold_pass
+    center_activate_swing_pass
+    wide_radius_pass
+    tight_radius_pass
+    inner_gt_outer_pass
+    outer_speed_slow_pass
+    outer_speed_update_slow_pass
+    transit_speed_fast_pass
+    extra_speed_alias_pass
+    transit_speed_slow_in_progress_pass
+    hibernation_seek_pass
+    hibernation_settle_pass
+    hibernation_radius_update_settle_pass
+    hibernation_off_pass
+    point_update_retarget_pass
+    radius_update_expand_pass
+    radius_update_shrink_pass
+    speed_update_slow_progress_pass
+    bad_point_update_recover_pass
+    visual_hints_pass
+    missing_point_fail
+    bad_point_fail
+    bad_update_fail
+    bad_outer_radius_fail
+    bad_inner_radius_fail
+    bad_hibernation_radius_fail
+    bad_outer_speed_fail
+    bad_transit_speed_fail
+    bad_extra_speed_fail
+    bad_center_activate_fail
+    bad_swing_time_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="static_station_pass station_pt_alias_pass start_inside_hold_pass center_activate_hold_pass center_activate_swing_pass wide_radius_pass tight_radius_pass inner_gt_outer_pass outer_speed_slow_pass outer_speed_update_slow_pass transit_speed_fast_pass extra_speed_alias_pass transit_speed_slow_in_progress_pass hibernation_seek_pass hibernation_settle_pass hibernation_radius_update_settle_pass hibernation_off_pass point_update_retarget_pass radius_update_expand_pass radius_update_shrink_pass speed_update_slow_progress_pass bad_point_update_recover_pass visual_hints_pass missing_point_fail bad_point_fail bad_update_fail bad_outer_radius_fail bad_inner_radius_fail bad_hibernation_radius_fail bad_outer_speed_fail bad_transit_speed_fail bad_extra_speed_fail bad_center_activate_fail bad_swing_time_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -563,7 +599,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -592,7 +628,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

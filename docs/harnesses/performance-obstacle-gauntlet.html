@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>P01 Obstacle Gauntlet | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -52,7 +58,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Field</h3>
-          <p>Description: Baseline obstacle-field traversal. The vehicle should complete one full loop with zero collisions, bounded near misses/encounters, no timeout, and clean warning...</p>
+          <p>Description: Baseline obstacle-field traversal. The vehicle should complete one full loop with zero collisions, bounded near misses/encounters, no timeout, and clean warning logs.</p>
         </div>
       </article>
 
@@ -74,7 +80,7 @@
         </div>
         <div class="gif-meta">
           <h3>Endurance Random</h3>
-          <p>Description: Longer seeded-random obstacle-field run. The vehicle should complete 10 full loops with zero collisions and bounded encounter/near-miss totals before the...</p>
+          <p>Description: Longer seeded-random obstacle-field run. The vehicle should complete 10 full loops with zero collisions and bounded encounter/near-miss totals before the fail-safe timeout.</p>
         </div>
       </article>
 
@@ -91,7 +97,7 @@
 
         <article class="case-row">
           <code>baseline_field_pass</code>
-          <p>Baseline obstacle-field traversal. The vehicle should complete one full loop with zero collisions, bounded near misses/encounters, no timeout, and clean warning...</p>
+          <p>Baseline obstacle-field traversal. The vehicle should complete one full loop with zero collisions, bounded near misses/encounters, no timeout, and clean warning logs.</p>
         </article>
 
 
@@ -103,7 +109,7 @@
 
         <article class="case-row">
           <code>endurance_random_pass</code>
-          <p>Longer seeded-random obstacle-field run. The vehicle should complete 10 full loops with zero collisions and bounded encounter/near-miss totals before the...</p>
+          <p>Longer seeded-random obstacle-field run. The vehicle should complete 10 full loops with zero collisions and bounded encounter/near-miss totals before the fail-safe timeout.</p>
         </article>
 
       </div>

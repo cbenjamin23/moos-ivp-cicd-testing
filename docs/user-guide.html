@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>User Guide | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260427-1">
+  <link rel="stylesheet" href="styles.css?v=20260427-13">
+  <script src="theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="index.html#families">Harnesses</a>
-      <a href="user-guide.html">Run Tests</a>
-      <a href="technical.html">Technical</a>
-      <a href="developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="index.html#families">Harnesses</a>
+        <a href="user-guide.html">Run Tests</a>
+        <a href="technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -34,6 +40,40 @@
 
     <section class="content-section">
       <div class="section-heading">
+        <p class="eyebrow">Before You Run</p>
+        <h2>Plain-language workflow terms</h2>
+        <p>You do not need to know MOOS internals to launch a run. The <strong>Open workflow</strong> button above opens the GitHub Actions workflow page where you start one.</p>
+      </div>
+      <div class="technical-grid">
+        <article class="technical-card">
+          <h3>Workflow</h3>
+          <p>A workflow is a GitHub Actions page that runs CI. This guide uses the <code>Build And Check Active Harnesses</code> workflow.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Family</h3>
+          <p>A family is a group of related harnesses, such as <code>waypoint_behavior</code> or <code>colregs</code>. Use a family run when you want every active harness in that group.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Target key</h3>
+          <p>A target key names one exact harness, such as <code>cutrange_h01</code>. Use target keys when you want a narrow run with only selected harnesses.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Actions matrix</h3>
+          <p>The matrix is the group of job rows GitHub shows after a run starts. Each runtime row is one selected harness.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Time warp</h3>
+          <p><code>time_warp</code> controls simulation speed. Keep the default value unless you are deliberately debugging timing behavior.</p>
+        </article>
+        <article class="technical-card">
+          <h3>MOOS-IvP ref</h3>
+          <p><code>moos_ivp_ref</code> is the upstream MOOS-IvP branch, tag, or commit to build against. Use <code>main</code> for the normal run.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
         <p class="eyebrow">Normal Flow</p>
         <h2>Start with a batch family run</h2>
         <p>For a broad manual check, run several families in one workflow. The workflow builds once, uploads that build as an artifact, then fans out selected runtime harnesses as separate matrix jobs.</p>
@@ -41,7 +81,7 @@
       <div class="technical-grid">
         <article class="technical-card">
           <h3>1. Open Actions</h3>
-          <p>Use the <code>Build And Check Active Harnesses</code> workflow and click <code>Run workflow</code>. Keep the branch on <code>main</code> unless you deliberately want to test another branch.</p>
+          <p>Use the <strong>Open workflow</strong> button at the top of this page, then click <code>Run workflow</code> in GitHub. Keep the branch on <code>main</code> unless you deliberately want to test another branch.</p>
         </article>
         <article class="technical-card">
           <h3>2. Choose a mode</h3>
@@ -325,13 +365,67 @@ moos_ivp_ref: main</code></pre>
     <section class="workflow">
       <p class="eyebrow">Interpreting Results</p>
       <h2>What success means</h2>
+      <div class="guide-figures">
+        <figure class="guide-figure">
+          <img src="assets/images/workflow-graph-example.png" alt="GitHub Actions workflow graph showing workflow-lint, select-targets, build, and runtime-harnesses jobs">
+          <figcaption>The workflow graph shows the setup jobs, one shared build, and the selected runtime harness matrix.</figcaption>
+        </figure>
+        <article class="run-summary-example">
+          <h3>Example run summary</h3>
+          <ul class="summary-meta">
+            <li>Target: <code>obstacle_behavior_h01</code></li>
+            <li>Harness: <code>H01-obstacle_behavior_motion</code></li>
+            <li>Requested MOOS-IvP ref: <code>main</code></li>
+            <li>Parsed cases: <code>21</code></li>
+            <li>Verdict: <code class="result-pass">pass</code></li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>case</th>
+                  <th>case_result</th>
+                  <th>expected</th>
+                  <th>actual</th>
+                  <th>grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th><code>default_auto_request_pass</code></th>
+                  <td>success</td>
+                  <td>pass</td>
+                  <td>pass</td>
+                  <td><span class="result-pass">pass</span></td>
+                </tr>
+                <tr>
+                  <th><code>rng_flag_pass</code></th>
+                  <td>success</td>
+                  <td>pass</td>
+                  <td>pass</td>
+                  <td><span class="result-pass">pass</span></td>
+                </tr>
+                <tr>
+                  <th><code>avoid_disabled_fail</code></th>
+                  <td>success</td>
+                  <td>fail</td>
+                  <td>fail</td>
+                  <td><span class="result-fail">fail</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
       <ol>
         <li>Each runtime row downloads the build artifact and runs one harness <code>zlaunch.sh</code>.</li>
         <li>The workflow uploads that harness's <code>results.txt</code> as an artifact.</li>
         <li>The summary step derives the expected case count from the harness and fails if the result file is incomplete or contains failed expected outcomes.</li>
         <li>A green matrix means all selected harnesses completed and their expected case matrix matched.</li>
       </ol>
-      <a class="text-link" href="technical.html">Read the technical architecture</a>
+      <div class="workflow-actions">
+        <a class="text-link" href="technical.html">Read the technical architecture</a>
+      </div>
     </section>
   </main>
 

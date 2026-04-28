@@ -21,13 +21,16 @@ behavior-owned outputs:
 - `radial_clockwise_pass`
   Baseline radial polygon, clockwise loiter, stable acquisition.
 - `radial_counterclockwise_pass`
-  Same geometry with `clockwise=false`.
+  Uses the same radial polygon with `clockwise=false` and verifies stable
+  counterclockwise loiter.
 - `clockwise_best_pass`
   Dynamic clockwise selection through `clockwise=best`.
 - `polygon_box_pass`
-  Explicit rectangular polygon input.
+  Uses an explicit rectangular polygon and verifies the vehicle acquires stable
+  loiter.
 - `triangle_polygon_pass`
-  Explicit triangular polygon input.
+  Uses an explicit triangular polygon and verifies the vehicle acquires stable
+  loiter.
 - `start_inside_loiter_pass`
   Starts inside the loiter area and stabilizes without a long approach.
 - `acquire_from_far_pass`
@@ -53,17 +56,17 @@ behavior-owned outputs:
 - `xcenter_ycenter_update_pass`
   Updates the polygon center through runtime x/y center mail.
 - `mod_poly_rad_expand_pass`
-  Runtime polygon-radius expansion.
+  Expands polygon radius at runtime and verifies loiter remains stable.
 - `mod_poly_rad_shrink_pass`
-  Runtime polygon-radius shrink.
+  Shrinks polygon radius at runtime and verifies loiter remains stable.
 - `slingshot_bearing_pass`
-  Exercises slingshot completion path and grades on accumulated bearing.
+  Exercises slingshot completion and grades on accumulated bearing.
 - `post_suffix_outputs_pass`
   Uses `post_suffix` and verifies suffixed status outputs.
 - `eta_output_pass`
   Grades on `LOITER_ETA_TO_POLY` and records `LOITER_REPORT`.
 - `ipf_zaic_spd_pass`
-  Exercises the ZAIC speed IvP function path.
+  Uses the ZAIC speed IvP function while still acquiring stable loiter.
 - `slow_speed_acquire_pass`
   Evaluates while a deliberately slow vehicle is still acquiring.
 - `empty_polygon_fail`
@@ -73,14 +76,14 @@ behavior-owned outputs:
 - `bad_update_fail`
   Malformed runtime update is expected to fail.
 - `bad_clockwise_fail`
-  Rejects malformed `clockwise` input outside the accepted boolean/`best`
-  values.
+  Malformed `clockwise` input outside the accepted boolean/`best` values should
+  be rejected and the mission should fail.
 - `bad_use_alt_speed_fail`
-  Rejects non-boolean `use_alt_speed` configuration.
+  Non-boolean `use_alt_speed` should be rejected and the mission should fail.
 - `bad_patience_fail`
   Rejects `patience` outside the accepted 1..99 course/speed ZAIC ratio range.
 - `bad_capture_radius_fail`
-  Rejects a negative `capture_radius` value.
+  Negative `capture_radius` should be rejected and the mission should fail.
 - `center_bad_update_recover_pass`
   Bad center update followed by valid recovery update.
 - `spiral_factor_pass`

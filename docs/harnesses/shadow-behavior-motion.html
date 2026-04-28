@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Shadow Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -38,6 +44,48 @@
     </section>
 
 
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="shadow-behavior-static.gif">
+          <img src="../assets/gifs/shadow-behavior-static.gif" alt="Static Shadow GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Static Shadow</h3>
+          <p>Description: Baseline eastbound shadowing with active relevance and matched chaser/contact heading.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="shadow-behavior-turn-north.gif">
+          <img src="../assets/gifs/shadow-behavior-turn-north.gif" alt="Turn North Shadow GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Turn North Shadow</h3>
+          <p>Description: Sends the target through an east-to-north dogleg and grades the chaser after the contact turn.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="shadow-behavior-runtime-pwt-on.gif">
+          <img src="../assets/gifs/shadow-behavior-runtime-pwt-on.gif" alt="Runtime PWT On GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime PWT On</h3>
+          <p>Description: Starts with relevance gated off, then raises pwt_outer_dist through SHADOW_UPDATES and verifies active shadowing.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
 
 
     <section class="content-section">
@@ -145,13 +193,13 @@
 
         <article class="case-row">
           <code>heading_widths_pass</code>
-          <p>Exercises accepted heading_peakwidth and heading_basewidth tuning.</p>
+          <p>Uses custom heading_peakwidth and heading_basewidth tuning while preserving clean shadowing.</p>
         </article>
 
 
         <article class="case-row">
           <code>speed_width_aliases_pass</code>
-          <p>Exercises accepted hdg_* and spd_* alias parameters.</p>
+          <p>Uses accepted hdg_* and spd_* alias parameters while preserving clean shadowing.</p>
         </article>
 
 
@@ -187,37 +235,37 @@
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>Rejects negative pwt_outer_dist.</p>
+          <p>Negative pwt_outer_dist should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_heading_peakwidth_fail</code>
-          <p>Rejects negative heading_peakwidth.</p>
+          <p>Negative heading_peakwidth should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_heading_basewidth_fail</code>
-          <p>Rejects negative heading_basewidth.</p>
+          <p>Negative heading_basewidth should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_peakwidth_fail</code>
-          <p>Rejects negative speed_peakwidth.</p>
+          <p>Negative speed_peakwidth should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_basewidth_fail</code>
-          <p>Rejects negative speed_basewidth.</p>
+          <p>Negative speed_basewidth should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Rejects malformed decay input.</p>
+          <p>Malformed decay input should be rejected and the mission should fail.</p>
         </article>
 
 
@@ -229,19 +277,19 @@
 
         <article class="case-row">
           <code>bad_extrapolate_fail</code>
-          <p>Rejects non-boolean extrapolate input.</p>
+          <p>Non-boolean extrapolate input should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_on_no_contact_ok_fail</code>
-          <p>Rejects non-boolean on_no_contact_ok input.</p>
+          <p>Non-boolean on_no_contact_ok input should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>Rejects negative inherited time_on_leg input.</p>
+          <p>Negative inherited time_on_leg input should be rejected and the mission should fail.</p>
         </article>
 
 
@@ -253,7 +301,7 @@
 
         <article class="case-row">
           <code>bad_post_per_contact_info_fail</code>
-          <p>Rejects non-boolean post_per_contact_info input.</p>
+          <p>Non-boolean post_per_contact_info input should be rejected and the mission should fail.</p>
         </article>
 
       </div>

@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H04 COLREGS Parameters | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -47,23 +53,23 @@
 
       <div class="gif-grid gif-grid--two">
       <article class="gif-card">
-        <div class="gif-frame" data-file="colregs-parameters-cpa-compare.gif">
-          <img src="../assets/gifs/colregs-parameters-cpa-compare.gif" alt="Default vs High CPA GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="colregs-parameters-bow-distance.gif">
+          <img src="../assets/gifs/colregs-parameters-bow-distance.gif" alt="Bow Distance Threshold GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Default vs High CPA</h3>
-          <p>Description: Runs the same fixed stand-on geometry with high min_util_cpa_dist; expected classification should shift to the higher CPA-distance branch.</p>
+          <h3>Bow Distance Threshold</h3>
+          <p>Description: Runs the same geometry with high giveway_bow_dist; expected classification should reflect the widened bow-distance threshold.</p>
         </div>
       </article>
 
 
       <article class="gif-card">
-        <div class="gif-frame" data-file="colregs-parameters-headon-only.gif">
-          <img src="../assets/gifs/colregs-parameters-headon-only.gif" alt="Head-on Only Toggle GIF" onerror="this.style.display='none'">
+        <div class="gif-frame" data-file="colregs-parameters-turn-radius.gif">
+          <img src="../assets/gifs/colregs-parameters-turn-radius.gif" alt="Turn Radius Branch GIF" onerror="this.style.display='none'">
         </div>
         <div class="gif-meta">
-          <h3>Head-on Only Toggle</h3>
-          <p>Description: Runs the same crossing geometry with headon_only=true; the non-head-on encounter should be demoted to CPA.</p>
+          <h3>Turn Radius Branch</h3>
+          <p>Description: Runs the same geometry with high turn_radius; expected classification should flip to the high-radius branch.</p>
         </div>
       </article>
 
@@ -77,12 +83,6 @@
         <h2>All cases</h2>
       </div>
       <div class="case-matrix">
-
-        <article class="case-row">
-          <code>pts_port_turns_ok_true_pass</code>
-          <p>Runs fixed give-way geometry with pts_port_turns_ok=true and checks the early side relationship.</p>
-        </article>
-
 
         <article class="case-row">
           <code>min_util_cpa_low_pass</code>
@@ -213,6 +213,12 @@
         <article class="case-row">
           <code>pwt_grade_quadratic_pass</code>
           <p>Runs fixed relevance geometry with pwt_grade=quadratic and checks the quadratic priority-weight curve.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pts_port_turns_ok_true_pass</code>
+          <p>Runs fixed give-way geometry with pts_port_turns_ok=true and checks the early side relationship.</p>
         </article>
 
 

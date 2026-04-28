@@ -604,16 +604,66 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 9: Select the case set, run the matrix, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    static_convoy_pass
+    fine_mark_spacing_pass
+    coarse_mark_spacing_pass
+    short_mark_queue_pass
+    long_mark_queue_pass
+    tight_radius_pass
+    wide_radius_pass
+    cruise_speed_pass
+    cruise_speed_cap_warn_pass
+    safety_range_autoadjust_warn_pass
+    safety_off_bad_ranges_pass
+    tailgating_speed_slow_pass
+    lagging_speed_fast_pass
+    estop_speed_zero_pass
+    range_aliases_pass
+    nm_radius_zero_pass
+    view_point_post_pass
+    angled_entry_pass
+    cross_track_entry_pass
+    opposite_heading_recover_pass
+    close_offset_tailgate_pass
+    lead_right_turn_pass
+    lead_s_turn_pass
+    short_queue_turn_pass
+    slow_follower_pass
+    fast_follower_pass
+    runtime_inter_mark_coarse_pass
+    runtime_max_mark_short_pass
+    runtime_cruise_speed_pass
+    runtime_cruise_cap_warn_pass
+    runtime_estop_speed_zero_pass
+    runtime_bad_update_recover_pass
+    no_extrapolate_pass
+    missing_contact_warn_pass
+    missing_contact_fail
+    missing_contact_param_fail
+    bad_inter_mark_range_fail
+    bad_max_mark_range_fail
+    bad_radius_fail
+    bad_nm_radius_fail
+    bad_spd_slower_fail
+    bad_spd_faster_fail
+    bad_spd_max_fail
+    bad_rng_estop_fail
+    bad_rng_tgating_fail
+    bad_rng_lagging_fail
+    bad_rng_safety_fail
+    bad_cruise_speed_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="static_convoy_pass fine_mark_spacing_pass coarse_mark_spacing_pass short_mark_queue_pass long_mark_queue_pass tight_radius_pass wide_radius_pass cruise_speed_pass cruise_speed_cap_warn_pass safety_range_autoadjust_warn_pass safety_off_bad_ranges_pass tailgating_speed_slow_pass lagging_speed_fast_pass estop_speed_zero_pass range_aliases_pass nm_radius_zero_pass view_point_post_pass angled_entry_pass cross_track_entry_pass opposite_heading_recover_pass close_offset_tailgate_pass lead_right_turn_pass lead_s_turn_pass short_queue_turn_pass slow_follower_pass fast_follower_pass runtime_inter_mark_coarse_pass runtime_max_mark_short_pass runtime_cruise_speed_pass runtime_cruise_cap_warn_pass runtime_estop_speed_zero_pass runtime_bad_update_recover_pass no_extrapolate_pass missing_contact_warn_pass missing_contact_fail missing_contact_param_fail bad_inter_mark_range_fail bad_max_mark_range_fail bad_radius_fail bad_nm_radius_fail bad_spd_slower_fail bad_spd_faster_fail bad_spd_max_fail bad_rng_estop_fail bad_rng_tgating_fail bad_rng_lagging_fail bad_rng_safety_fail bad_cruise_speed_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -630,7 +680,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -659,7 +709,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

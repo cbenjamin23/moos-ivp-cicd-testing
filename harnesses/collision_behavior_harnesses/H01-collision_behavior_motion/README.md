@@ -29,7 +29,7 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
   contact, so the avoid behavior stays idle and the mission still finishes
   cleanly.
 - `head_on_resolve_pass`
-  The intruder is patched to move head-on. This is a stronger geometry than
+  This case moves the intruder head-on. This is a stronger geometry than
   the baseline crossing case, but the mission should still resolve cleanly.
 - `pwt_outer_too_small_fail`
   The collision-relevance outer distance is made too small for the on-lane
@@ -42,8 +42,8 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
   The objective-function grade is switched to `quasi`. The behavior should
   still resolve the baseline encounter with no collision.
 - `use_refinery_pass`
-  The IvP refinery branch is enabled. The behavior should still build a usable
-  function, resolve the contact, arrive, and avoid collision.
+  Enables the IvP refinery and verifies the behavior still builds a usable
+  function, resolves the contact, arrives, and avoids collision.
 - `contact_type_required_absent_pass`
   The legacy `contact_type_required` alias is set to a type that excludes the
   spoofed contact while the contact is moved off-lane. The behavior should stay
@@ -54,7 +54,7 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
 - `no_alert_request_fail`
   The behavior is told not to request an alert while the contact remains
   challenging. The mission should fail because the avoid behavior never
-  engages and the required resolution path does not complete.
+  engages and the required resolution does not complete.
 - `bad_pwt_inner_dist_fail`
   `pwt_inner_dist` is set outside the valid relationship to `pwt_outer_dist`.
   The mission should grade fail rather than silently accepting the unsafe
@@ -106,7 +106,7 @@ Field anatomy:
 - `case_result`: `success` when expected equals actual
 - `grade`: mission-level pass/fail from `pMissionEval`
 - `form`: mission family name
-- `mmod`: case-specific mission mode
+- `mmod`: mission mode for the selected case
 - `eval`: whether the evaluation checkpoint fired
 - `avoiding`: behavior lifecycle state at grading time
 - `alert_req_seen`: whether `BCM_ALERT_REQUEST` was seen on shoreside. This is

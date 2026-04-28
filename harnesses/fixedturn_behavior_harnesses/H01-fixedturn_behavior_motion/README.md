@@ -32,22 +32,22 @@ behavior and grades mission-owned evidence:
 - `port_360_pass`
   Long-turn mirror case. The vehicle completes a near-full port circle with the
   same timing and distance thresholds as the starboard long-turn case, proving
-  the direction branch is distinct.
+  the port direction is covered separately.
 - `speed_auto_pass`
   Automatic speed case. The fixed-turn behavior uses `speed=auto`, so
-  `FT_REPORT` should show the inherited stem speed branch while the mission
+  `FT_REPORT` should show the inherited stem speed while the mission
   still completes the baseline starboard 90-degree success criteria.
 - `fixed_speed_pass`
   Explicit speed case. The fixed-turn behavior uses `speed=1.3`, which is
   distinct from both the default and `speed=auto` cases, and must still complete
   the baseline starboard 90-degree success criteria.
 - `turn_delay_pass`
-  Delay branch case. The behavior holds its current heading briefly before
-  turning, then must complete normally with `FT_DONE=true`, positive turn
-  time/distance, and no behavior error.
+  Delay case. The behavior holds its current heading briefly before turning,
+  then must complete normally with `FT_DONE=true`, positive turn time/distance,
+  and no behavior error.
 - `timeout_complete_pass`
   Timeout completion case. The behavior is configured with a long turn and a
-  short `timeout=4`; success requires completion by the timeout path with
+  short `timeout=4`; success requires timeout-driven completion with
   `FT_DONE=true`, `TURNING_TIME` between `3` and `8`, positive distance, and no
   behavior error.
 - `turn_spec_sequence_pass`
@@ -78,9 +78,9 @@ behavior and grades mission-owned evidence:
   complete with `FT_DONE=true`, and keep behavior state clean.
 - `turn_spec_timeout_pass`
   Scheduled timeout case. A `turn_spec` entry defines its own long turn and
-  short timeout; success requires the scheduled turn to complete by its timeout
-  branch, post `TURN_ONE=true`, finish with `FT_DONE=true`, and report a short
-  positive turn time/distance.
+  short timeout; success requires the scheduled turn to complete by timeout,
+  post `TURN_ONE=true`, finish with `FT_DONE=true`, and report a short positive
+  turn time/distance.
 - `zero_fix_turn_pass`
   Zero-turn case. The behavior is configured with `fix_turn=0`; success
   requires immediate completion with `FT_DONE=true`, zero turn time/distance,

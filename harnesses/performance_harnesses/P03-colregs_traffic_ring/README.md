@@ -25,11 +25,11 @@ What it tests:
 - one non-cooperative traffic-ring variant with `eve` launched at `AVOID=false`
 - no collisions over a fixed runtime window
 - no planner/runtime warning text in the newest vehicle `.alog`
-- case-specific floors on assignment activity
+- assignment-activity floors for the selected case
 
 Current split:
-- `pMissionEval` owns the MOOS-visible verdict through one case-specific
-  shoreside patch per launch
+- `pMissionEval` owns the MOOS-visible verdict through one shoreside patch per
+  launch
 - shell still checks:
   - `wall_time` bands
   - disallowed warning text in the newest `.alog`

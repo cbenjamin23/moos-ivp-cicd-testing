@@ -351,9 +351,34 @@ run_case_isolated() {
     [ "$status" = "success" ]
 }
 
-CASES="head_on_colregs_pass head_on_cpa_fallback_pass head_on_port_offset_pass head_on_starboard_offset_pass crossing_starboard_giveway_pass crossing_starboard_giveway_far_pass crossing_starboard_giveway_close_pass crossing_port_standon_pass crossing_port_standon_unsure_bow_pass crossing_port_standon_stern_pass crossing_port_standon_far_pass crossing_port_standon_close_pass crossing_port_standon_close_unsure_bow_pass crossing_port_standon_unsure_pass overtaking_starboard_pass overtaking_starboard_small_gap_pass overtaking_starboard_large_gap_pass overtaking_starboard_mirror_pass overtaking_starboard_mirror_small_gap_pass overtaking_starboard_mirror_large_gap_pass overtaken_port_standon_pass overtaken_starboard_standon_pass"
+ALL_CASES=(
+    head_on_colregs_pass
+    head_on_cpa_fallback_pass
+    head_on_port_offset_pass
+    head_on_starboard_offset_pass
+    crossing_starboard_giveway_pass
+    crossing_starboard_giveway_far_pass
+    crossing_starboard_giveway_close_pass
+    crossing_port_standon_pass
+    crossing_port_standon_unsure_bow_pass
+    crossing_port_standon_stern_pass
+    crossing_port_standon_far_pass
+    crossing_port_standon_close_pass
+    crossing_port_standon_close_unsure_bow_pass
+    crossing_port_standon_unsure_pass
+    overtaking_starboard_pass
+    overtaking_starboard_small_gap_pass
+    overtaking_starboard_large_gap_pass
+    overtaking_starboard_mirror_pass
+    overtaking_starboard_mirror_small_gap_pass
+    overtaking_starboard_mirror_large_gap_pass
+    overtaken_port_standon_pass
+    overtaken_starboard_standon_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
+    RUN_CASES=("$CASE")
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
@@ -364,7 +389,7 @@ fi
 trap cleanup EXIT
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for case_name in $CASES; do
+    for case_name in "${RUN_CASES[@]}"; do
         run_case "$case_name"
     done
 else
@@ -377,7 +402,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -400,7 +425,7 @@ else
         stop_mission_apps "$RUN_ROOT"
     fi
 
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
         if [ "$case_file" = "" ]; then
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=missing" >> "$RESULTS_FILE"

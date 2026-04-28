@@ -514,16 +514,21 @@ run_case_isolated() {
 
 trap cleanup EXIT
 
+ALL_CASES=(
+    baseline_field_pass
+    dense_field_pass
+    endurance_random_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="baseline_field_pass dense_field_pass endurance_random_pass"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error  perf_status=error  perf_notes=run_failed  warning_count=na" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -542,7 +547,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -571,7 +576,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: just_make complete for cases: $CASES"
+    echo "$ME: just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 COLREGS Classification | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -54,7 +60,7 @@
         </div>
         <div class="gif-meta">
           <h3>Head-on Classification</h3>
-          <p>Description: clean symmetric head-on encounter that should classify as true COLREGS head-on.</p>
+          <p>Description: Clean symmetric head-on encounter that should classify as true COLREGS head-on.</p>
         </div>
       </article>
 
@@ -65,7 +71,7 @@
         </div>
         <div class="gif-meta">
           <h3>Crossing Give-way</h3>
-          <p>Description: canonical starboard crossing where ownship should be the give-way vessel.</p>
+          <p>Description: Canonical starboard crossing where ownship should be the give-way vessel.</p>
         </div>
       </article>
 
@@ -82,133 +88,133 @@
 
         <article class="case-row">
           <code>head_on_colregs_pass</code>
-          <p>clean symmetric head-on encounter that should classify as true COLREGS head-on.</p>
+          <p>Clean symmetric head-on encounter that should classify as true COLREGS head-on.</p>
         </article>
 
 
         <article class="case-row">
           <code>head_on_cpa_fallback_pass</code>
-          <p>near-head-on geometry intentionally outside the head-on bucket so the app should fall back to CPA mode.</p>
+          <p>Near-head-on geometry intentionally outside the head-on bucket so the app should fall back to CPA mode.</p>
         </article>
 
 
         <article class="case-row">
           <code>head_on_port_offset_pass</code>
-          <p>head-on encounter with a left-right offset, still expected to stay in the head-on family.</p>
+          <p>Head-on encounter with a left-right offset, still expected to stay in the head-on family.</p>
         </article>
 
 
         <article class="case-row">
           <code>head_on_starboard_offset_pass</code>
-          <p>mirrored offset head-on encounter, also expected to stay in the head-on family.</p>
+          <p>Mirrored offset head-on encounter, also expected to stay in the head-on family.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_starboard_giveway_pass</code>
-          <p>canonical starboard crossing where ownship should be the give-way vessel.</p>
+          <p>Canonical starboard crossing where ownship should be the give-way vessel.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_starboard_giveway_far_pass</code>
-          <p>same starboard crossing family with a longer setup and more spacing.</p>
+          <p>Same starboard crossing family with a longer setup and more spacing.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_starboard_giveway_close_pass</code>
-          <p>same starboard crossing family with a tighter setup and earlier interaction.</p>
+          <p>Same starboard crossing family with a tighter setup and earlier interaction.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_pass</code>
-          <p>canonical port-side crossing where ownship should stand on and settle to the bow submode.</p>
+          <p>Canonical port-side crossing where ownship should stand on and settle to the bow submode.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_unsure_bow_pass</code>
-          <p>port-side crossing that first enters the stand-on unsure_bow branch before later resolving.</p>
+          <p>Port-side crossing that first enters the stand-on unsure_bow branch before later resolving.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_stern_pass</code>
-          <p>port-side crossing that settles to the stand-on stern branch.</p>
+          <p>Port-side crossing that settles to the stand-on stern branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_far_pass</code>
-          <p>longer-spacing version of the port-side stand-on bow case.</p>
+          <p>Longer-spacing version of the port-side stand-on bow case.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_close_pass</code>
-          <p>tighter-spacing version of the port-side stand-on bow case.</p>
+          <p>Tighter-spacing version of the port-side stand-on bow case.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_close_unsure_bow_pass</code>
-          <p>tighter-spacing port-side case that still first enters unsure_bow.</p>
+          <p>Tighter-spacing port-side case that still first enters unsure_bow.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_unsure_pass</code>
-          <p>port-side crossing that first enters the generic stand-on unsure branch.</p>
+          <p>Port-side crossing that first enters the generic stand-on unsure branch.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_pass</code>
-          <p>canonical overtaking geometry on one passing side.</p>
+          <p>Canonical overtaking geometry on one passing side.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_small_gap_pass</code>
-          <p>overtaking with a smaller lateral gap to confirm the same overtaking family still holds.</p>
+          <p>Overtaking with a smaller lateral gap to confirm the same overtaking family still holds.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_large_gap_pass</code>
-          <p>overtaking with a larger lateral gap to confirm the same overtaking family still holds.</p>
+          <p>Overtaking with a larger lateral gap to confirm the same overtaking family still holds.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_mirror_pass</code>
-          <p>mirrored overtaking geometry on the opposite passing side.</p>
+          <p>Mirrored overtaking geometry on the opposite passing side.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_mirror_small_gap_pass</code>
-          <p>mirrored overtaking with a smaller lateral gap.</p>
+          <p>Mirrored overtaking with a smaller lateral gap.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_mirror_large_gap_pass</code>
-          <p>mirrored overtaking with a larger lateral gap.</p>
+          <p>Mirrored overtaking with a larger lateral gap.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaken_port_standon_pass</code>
-          <p>ownship is the vessel being overtaken, with the contact overtaking on ownship&#x27;s port side.</p>
+          <p>Ownship is the vessel being overtaken, with the contact overtaking on ownship&#x27;s port side.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaken_starboard_standon_pass</code>
-          <p>mirrored overtaken-vessel case with the contact overtaking on ownship&#x27;s starboard side.</p>
+          <p>Mirrored overtaken-vessel case with the contact overtaking on ownship&#x27;s starboard side.</p>
         </article>
 
       </div>

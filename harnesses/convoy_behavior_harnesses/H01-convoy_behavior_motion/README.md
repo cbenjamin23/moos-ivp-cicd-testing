@@ -41,19 +41,21 @@ uses behavior outputs plus chaser/target speed aliases:
 - `wide_radius_pass`
   Expands waypoint capture radius while preserving stable convoy following.
 - `cruise_speed_pass`
-  Uses explicit `cruise_speed` and grades the chaser speed branch.
+  Uses explicit `cruise_speed` and verifies the chaser settles into the
+  requested speed band.
 - `cruise_speed_cap_warn_pass`
-  Sets `cruise_speed` above `spd_max` and expects the behavior warning path.
+  Sets `cruise_speed` above `spd_max` and expects a warning while keeping the
+  mission runnable.
 - `safety_range_autoadjust_warn_pass`
   Gives inconsistent safety ranges and expects auto-adjust warning behavior.
 - `safety_off_bad_ranges_pass`
   Disables range safety and verifies the same inconsistent ranges remain runnable.
 - `tailgating_speed_slow_pass`
-  Forces the tailgating branch and grades slower physical chaser speed.
+  Forces tailgating behavior and grades slower physical chaser speed.
 - `lagging_speed_fast_pass`
-  Forces the lagging branch and grades faster physical chaser speed.
+  Forces lagging behavior and grades faster physical chaser speed.
 - `estop_speed_zero_pass`
-  Forces the emergency-stop branch and grades near-zero chaser speed.
+  Forces emergency-stop behavior and grades near-zero chaser speed.
 - `range_aliases_pass`
   Uses the `range_estop`, `range_tailgating`, and `range_lagging` aliases.
 - `nm_radius_zero_pass`
@@ -76,7 +78,7 @@ uses behavior outputs plus chaser/target speed aliases:
   Replaces the target's straight waypoint leg with a right-angle dogleg and
   grades convoy following after the target has turned north.
 - `lead_s_turn_pass`
-  Gives the target a compact S-turn path and grades convoy following after the
+  Gives the target a compact S-turn route and grades convoy following after the
   target has completed two heading changes.
 - `short_queue_turn_pass`
   Combines a right-angle target turn with a shortened `max_mark_range`, grading
@@ -96,7 +98,7 @@ uses behavior outputs plus chaser/target speed aliases:
   operation.
 - `runtime_estop_speed_zero_pass`
   Raises runtime safety ranges through `CONVOY_UPDATES` so the chaser enters
-  the emergency-stop branch and grades near-zero physical speed.
+  emergency-stop behavior and grades near-zero physical speed.
 - `runtime_bad_update_recover_pass`
   Sends a malformed runtime mark-spacing update, then verifies a later valid
   update recovers without a behavior error.
@@ -110,15 +112,13 @@ uses behavior outputs plus chaser/target speed aliases:
 - `missing_contact_param_fail`
   Omits `contact` with `on_no_contact_ok=false` and expects failure.
 - `bad_inter_mark_range_fail`
-  Rejects negative `inter_mark_range`.
+  Negative `inter_mark_range` should be rejected and the mission should fail.
 - `bad_max_mark_range_fail`
-  Rejects negative `max_mark_range`.
+  Negative `max_mark_range` should be rejected and the mission should fail.
 - `bad_radius_fail`
-  Rejects a negative `radius` configuration and expects the behavior error path
-  to make the mission fail.
+  Negative `radius` should be rejected and the mission should fail.
 - `bad_nm_radius_fail`
-  Rejects a negative `nm_radius` configuration and expects the behavior error
-  path to make the mission fail.
+  Negative `nm_radius` should be rejected and the mission should fail.
 - `bad_spd_slower_fail`
   Rejects `spd_slower` outside its accepted range.
 - `bad_spd_faster_fail`
@@ -127,14 +127,14 @@ uses behavior outputs plus chaser/target speed aliases:
   Rejects zero `spd_max`, which would make the convoy speed cap invalid, and
   expects mission failure.
 - `bad_rng_estop_fail`
-  Rejects a negative `rng_estop` safety range and expects the behavior error
-  path to make the mission fail.
+  Negative `rng_estop` safety range should be rejected and the mission should
+  fail.
 - `bad_rng_tgating_fail`
   Rejects a negative `rng_tgating` safety range and expects mission failure.
 - `bad_rng_lagging_fail`
   Rejects a negative `rng_lagging` safety range and expects mission failure.
 - `bad_rng_safety_fail`
-  Rejects malformed `rng_safety`.
+  Malformed `rng_safety` should be rejected and the mission should fail.
 - `bad_cruise_speed_fail`
   Rejects a negative `cruise_speed` configuration and expects mission failure.
 

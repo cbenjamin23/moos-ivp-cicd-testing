@@ -448,16 +448,39 @@ run_case_isolated() {
 #------------------------------------------------------------
 trap cleanup EXIT
 
+ALL_CASES=(
+    default_resolve_pass
+    no_alert_request_absent_pass
+    post_per_contact_info_pass
+    behavior_filter_absent_pass
+    head_on_resolve_pass
+    pwt_outer_too_small_fail
+    pwt_grade_quadratic_pass
+    pwt_grade_quasi_pass
+    use_refinery_pass
+    contact_type_required_absent_pass
+    no_extrapolate_pass
+    no_alert_request_fail
+    bad_pwt_inner_dist_fail
+    bad_pwt_outer_dist_fail
+    bad_min_util_cpa_dist_fail
+    bad_max_util_cpa_dist_fail
+    bad_pwt_grade_fail
+    bad_completed_dist_fail
+    bad_time_on_leg_fail
+    bad_decay_fail
+    bad_collision_depth_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="default_resolve_pass no_alert_request_absent_pass post_per_contact_info_pass behavior_filter_absent_pass head_on_resolve_pass pwt_outer_too_small_fail pwt_grade_quadratic_pass pwt_grade_quasi_pass use_refinery_pass contact_type_required_absent_pass no_extrapolate_pass no_alert_request_fail bad_pwt_inner_dist_fail bad_pwt_outer_dist_fail bad_min_util_cpa_dist_fail bad_max_util_cpa_dist_fail bad_pwt_grade_fail bad_completed_dist_fail bad_time_on_leg_fail bad_decay_fail bad_collision_depth_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -476,7 +499,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -505,7 +528,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

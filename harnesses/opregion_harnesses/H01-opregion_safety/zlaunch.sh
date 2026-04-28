@@ -520,16 +520,43 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 9: Select the case set, run the matrix, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    inside_region_pass
+    save_recover_pass
+    save_dist_buffer_pass
+    save_dist_buffer_fail
+    halt_breach_fail
+    entry_gate_start_outside_pass
+    entry_gate_disabled_fail
+    trigger_exit_debounce_pass
+    trigger_exit_strict_fail
+    trigger_entry_delay_pass
+    reset_before_exit_pass
+    max_time_fail
+    max_depth_breach_fail
+    min_altitude_breach_fail
+    bad_save_dist_fail
+    bad_halt_dist_fail
+    bad_max_depth_fail
+    bad_min_altitude_fail
+    bad_recover_spd_fail
+    bad_trigger_on_poly_entry_fail
+    bad_trigger_entry_time_fail
+    bad_trigger_exit_time_fail
+    dynamic_region_expand_pass
+    dynamic_region_update_pass
+    dynamic_region_halt_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="inside_region_pass save_recover_pass save_dist_buffer_pass save_dist_buffer_fail halt_breach_fail entry_gate_start_outside_pass entry_gate_disabled_fail trigger_exit_debounce_pass trigger_exit_strict_fail trigger_entry_delay_pass reset_before_exit_pass max_time_fail max_depth_breach_fail min_altitude_breach_fail bad_save_dist_fail bad_halt_dist_fail bad_max_depth_fail bad_min_altitude_fail bad_recover_spd_fail bad_trigger_on_poly_entry_fail bad_trigger_entry_time_fail bad_trigger_exit_time_fail dynamic_region_expand_pass dynamic_region_update_pass dynamic_region_halt_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -546,7 +573,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -575,7 +602,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

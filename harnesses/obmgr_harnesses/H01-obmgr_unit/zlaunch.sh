@@ -500,15 +500,48 @@ fi
 
 trap cleanup EXIT
 
-CASES="given_baseline_pass config_given_obstacle_pass given_obstable_alias_pass no_alert_request_absent_pass bad_alert_request_absent_pass given_far_absent_pass given_general_alert_pass general_alert_default_name_pass given_duration_resolve_pass given_max_duration_reject_absent_pass given_max_duration_missing_absent_pass invalid_given_nonconvex_absent_pass post_dist_always_pass post_dist_false_absent_pass points_cluster_dist_pass custom_point_var_pass invalid_point_missing_key_absent_pass max_pts_per_cluster_trim_pass points_ignore_range_absent_pass points_age_resolve_pass lasso_cluster_pass placeholder_hull_pass post_view_polys_false_absent_pass new_obs_flag_macros_pass point_vsource_alert_pass given_after_points_same_key_reject_pass disable_obstacle_pass disable_vsource_pass enable_obstacle_pass expunge_obstacle_pass"
+ALL_CASES=(
+    given_baseline_pass
+    config_given_obstacle_pass
+    given_obstable_alias_pass
+    no_alert_request_absent_pass
+    bad_alert_request_absent_pass
+    given_far_absent_pass
+    given_general_alert_pass
+    general_alert_default_name_pass
+    given_duration_resolve_pass
+    given_max_duration_reject_absent_pass
+    given_max_duration_missing_absent_pass
+    invalid_given_nonconvex_absent_pass
+    post_dist_always_pass
+    post_dist_false_absent_pass
+    points_cluster_dist_pass
+    custom_point_var_pass
+    invalid_point_missing_key_absent_pass
+    max_pts_per_cluster_trim_pass
+    points_ignore_range_absent_pass
+    points_age_resolve_pass
+    lasso_cluster_pass
+    placeholder_hull_pass
+    post_view_polys_false_absent_pass
+    new_obs_flag_macros_pass
+    point_vsource_alert_pass
+    given_after_points_same_key_reject_pass
+    disable_obstacle_pass
+    disable_vsource_pass
+    enable_obstacle_pass
+    expunge_obstacle_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for case_name in $CASES; do
+    for case_name in "${RUN_CASES[@]}"; do
         run_case "$case_name" || {
             echo "case=$case_name  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -523,7 +556,7 @@ else
     mkdir -p "$CASE_RESULT_DIR"
 
     case_index=0
-    remaining_cases="$CASES"
+    remaining_cases="${RUN_CASES[*]}"
     while [ "$remaining_cases" != "" ]; do
         launched=0
         pids=""

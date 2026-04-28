@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 CutRange Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -38,6 +44,48 @@
     </section>
 
 
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="cutrange-behavior-headon.gif">
+          <img src="../assets/gifs/cutrange-behavior-headon.gif" alt="Head-on Closure GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Head-on Closure</h3>
+          <p>Description: Starts the target head-on and grades the rapid approach under opposing headings.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="cutrange-behavior-crossing.gif">
+          <img src="../assets/gifs/cutrange-behavior-crossing.gif" alt="Crossing Closure GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Crossing Closure</h3>
+          <p>Description: Starts the target on a northbound crossing leg and verifies CutRange still produces meaningful closure.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="cutrange-behavior-s-turn.gif">
+          <img src="../assets/gifs/cutrange-behavior-s-turn.gif" alt="S-turn Target GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>S-turn Target</h3>
+          <p>Description: Sends the target through a multi-leg S-shaped route and only evaluates after the target is on the southbound middle leg.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
 
 
     <section class="content-section">
@@ -109,25 +157,25 @@
 
         <article class="case-row">
           <code>short_time_on_leg_pass</code>
-          <p>Exercises accepted short time_on_leg planning horizon.</p>
+          <p>Uses a short time_on_leg horizon and verifies closure remains valid.</p>
         </article>
 
 
         <article class="case-row">
           <code>long_time_on_leg_pass</code>
-          <p>Exercises accepted long time_on_leg planning horizon.</p>
+          <p>Uses a long time_on_leg horizon and verifies closure remains valid.</p>
         </article>
 
 
         <article class="case-row">
           <code>low_patience_pass</code>
-          <p>Exercises accepted low patience weighting.</p>
+          <p>Uses low patience weighting while still reducing target range.</p>
         </article>
 
 
         <article class="case-row">
           <code>high_patience_pass</code>
-          <p>Exercises accepted high patience weighting with a wider max_patience.</p>
+          <p>Uses high patience weighting with a wider max_patience while still reducing target range.</p>
         </article>
 
 
@@ -139,7 +187,7 @@
 
         <article class="case-row">
           <code>max_patience_100_pass</code>
-          <p>Sets both patience and max_patience to 100 to cover the source path that deliberately allows the old 85 cap to be overridden.</p>
+          <p>Sets both patience and max_patience to 100 and verifies the old 85 cap can be overridden cleanly.</p>
         </article>
 
 
@@ -157,7 +205,7 @@
 
         <article class="case-row">
           <code>pwt_equal_zero_relevance_pass</code>
-          <p>Sets equal inner/outer relevance distances and verifies the zero-total-range branch stays clean and inactive.</p>
+          <p>Sets equal inner/outer relevance distances and verifies the zero-total-range case stays clean and inactive.</p>
         </article>
 
 
@@ -175,7 +223,7 @@
 
         <article class="case-row">
           <code>giveup_hysteresis_pass</code>
-          <p>Starts pursuit near the one-meter giveup buffer and verifies the behavior remains in pursuit without posting giveup, allowing a small range tolerance for startup...</p>
+          <p>Starts pursuit near the one-meter giveup buffer and verifies the behavior remains in pursuit without posting giveup, allowing a small range tolerance for startup timing.</p>
         </article>
 
 
@@ -235,7 +283,7 @@
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>Rejects negative pwt_outer_dist.</p>
+          <p>Negative pwt_outer_dist should be rejected and the mission should fail.</p>
         </article>
 
 
@@ -247,31 +295,31 @@
 
         <article class="case-row">
           <code>bad_giveup_range_fail</code>
-          <p>Rejects negative giveup_range.</p>
+          <p>Negative giveup_range should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_patience_fail</code>
-          <p>Rejects negative patience.</p>
+          <p>Negative patience should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_patience_fail</code>
-          <p>Rejects out-of-range max_patience.</p>
+          <p>Out-of-range max_patience should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>Rejects negative inherited time_on_leg.</p>
+          <p>Negative inherited time_on_leg should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Rejects malformed inherited decay input.</p>
+          <p>Malformed inherited decay input should be rejected and the mission should fail.</p>
         </article>
 
 

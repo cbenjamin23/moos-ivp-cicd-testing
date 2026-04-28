@@ -1,0 +1,296 @@
+:root {
+  --ink: #101828;
+  --muted: #667085;
+  --paper: #f7f9fc;
+  --panel: rgba(255, 255, 255, 0.66);
+  --line: rgba(148, 163, 184, 0.28);
+  --line-strong: rgba(29, 78, 216, 0.34);
+  --blue: #0071e3;
+  --orange: #34c759;
+  --soft: rgba(255, 255, 255, 0.5);
+}
+
+html {
+  background: #eef3f8;
+}
+
+body {
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(238, 243, 248, 0.78) 42%, rgba(245, 247, 250, 0.94)),
+    linear-gradient(115deg, rgba(0, 113, 227, 0.1), transparent 34%, rgba(52, 199, 89, 0.08) 78%, transparent);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: #0066cc;
+}
+
+a:hover {
+  color: #004f9f;
+}
+
+.site-header {
+  top: 0.65rem;
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 0.68rem 0.75rem;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: 1.05rem;
+  box-shadow: 0 12px 36px rgba(16, 24, 40, 0.11);
+  backdrop-filter: blur(28px) saturate(1.55);
+  -webkit-backdrop-filter: blur(28px) saturate(1.55);
+}
+
+.brand {
+  color: #101828;
+  font-weight: 720;
+}
+
+.brand-mark {
+  color: #ffffff;
+  background: linear-gradient(180deg, #1c8dff, #0066cc);
+  border-radius: 0.72rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36), 0 8px 18px rgba(0, 113, 227, 0.24);
+}
+
+nav {
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 620;
+}
+
+nav a {
+  padding: 0.45rem 0.72rem;
+  color: rgba(16, 24, 40, 0.76);
+  border-radius: 999px;
+}
+
+nav a:hover {
+  color: #101828;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+main {
+  width: min(1120px, calc(100% - 2rem));
+}
+
+.hero {
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 0.7fr);
+  gap: clamp(1.6rem, 5vw, 4.5rem);
+  padding-top: clamp(3rem, 7vw, 5.4rem);
+}
+
+.hero-copy h1,
+.page-hero h1,
+.hero-process h2,
+h2,
+h3,
+.family-name,
+.stat-card strong,
+.gif-frame::before {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.hero-copy h1 {
+  max-width: 790px;
+  font-size: clamp(2.6rem, 5.8vw, 5.25rem);
+  font-weight: 760;
+  line-height: 0.98;
+}
+
+.page-hero h1 {
+  font-weight: 760;
+}
+
+h2 {
+  font-weight: 740;
+}
+
+h3,
+.family-name {
+  font-weight: 700;
+}
+
+.lede {
+  max-width: 670px;
+  color: #667085;
+  font-size: clamp(1.03rem, 1.8vw, 1.2rem);
+}
+
+.eyebrow,
+.section-kicker,
+.family-label {
+  color: #0066cc;
+  font-size: 0.71rem;
+  font-weight: 740;
+  letter-spacing: 0.1em;
+}
+
+.hero-actions {
+  gap: 0.65rem;
+}
+
+.button {
+  min-height: 2.55rem;
+  padding: 0.62rem 1.05rem;
+  border-color: rgba(0, 113, 227, 0.2);
+  border-radius: 999px;
+  font-weight: 680;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.button.primary {
+  color: #ffffff;
+  background: linear-gradient(180deg, #1583f7, #0066cc);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 10px 24px rgba(0, 113, 227, 0.22);
+}
+
+.button.secondary {
+  color: #101828;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+}
+
+.button.secondary:hover {
+  border-color: rgba(0, 113, 227, 0.36);
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.hero-panel--actions {
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: 1.35rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 26px 72px rgba(16, 24, 40, 0.14);
+  backdrop-filter: blur(26px) saturate(1.5);
+  -webkit-backdrop-filter: blur(26px) saturate(1.5);
+}
+
+.actions-screenshot {
+  width: min(100%, 392px);
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(255, 255, 255, 0.84);
+  border-radius: 1.05rem;
+  box-shadow: 0 24px 64px rgba(16, 24, 40, 0.16);
+}
+
+.content-section,
+.workflow,
+.page-hero {
+  margin: clamp(2.5rem, 5.4vw, 4.15rem) 0;
+}
+
+.detail-grid,
+.stats-grid,
+.technical-grid,
+.card-grid,
+.gif-grid,
+.family-harnesses {
+  gap: 0.9rem;
+}
+
+.detail-card,
+.harness-card,
+.gif-card,
+.stem-card,
+.workflow,
+.stat-card,
+.family-panel,
+.technical-card,
+.table-wrap,
+.source-strip,
+.explain-stack article,
+.case-row {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 16px 44px rgba(16, 24, 40, 0.08);
+  backdrop-filter: blur(22px) saturate(1.35);
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+}
+
+.stat-card {
+  padding: 1.15rem;
+}
+
+.stat-card strong {
+  color: #0066cc;
+  font-weight: 760;
+}
+
+.stat-card p,
+.gif-meta p,
+.harness-card p,
+.section-heading p,
+.family-summary,
+.case-row p,
+.stem-card p:last-child {
+  color: #667085;
+}
+
+.family-panel summary {
+  padding: 1rem;
+}
+
+.family-panel summary::after {
+  color: #ffffff;
+  background: linear-gradient(180deg, #1583f7, #0066cc);
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(0, 113, 227, 0.18);
+}
+
+.family-count,
+.case-row code,
+thead th {
+  color: #0066cc;
+}
+
+.harness-card:hover {
+  border-color: rgba(0, 113, 227, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 22px 54px rgba(0, 113, 227, 0.12);
+  transform: translateY(-2px);
+}
+
+.case-list li,
+.visual-note,
+.guide-note {
+  background: rgba(255, 255, 255, 0.56);
+  border-color: rgba(255, 255, 255, 0.72);
+  border-radius: 0.8rem;
+}
+
+pre {
+  color: #f8fbff;
+  background: rgba(16, 24, 40, 0.92);
+  border-radius: 0.9rem;
+}
+
+.gif-frame {
+  background: linear-gradient(180deg, #edf4fb, #dce8f2);
+}
+
+.gif-frame::before {
+  color: rgba(16, 24, 40, 0.28);
+}
+
+.site-footer {
+  border-top-color: rgba(148, 163, 184, 0.22);
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    width: min(100% - 1rem, 1180px);
+    border-radius: 0.95rem;
+  }
+
+  nav a {
+    padding: 0.38rem 0.58rem;
+  }
+}

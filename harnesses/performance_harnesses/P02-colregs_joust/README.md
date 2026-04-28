@@ -18,7 +18,7 @@ Initial performance harness for the COLREGS joust stem.
 
 The harness checks:
 - mission `grade`
-- mission-side case-specific thresholds for MOOS-visible metrics
+- mission-side thresholds for MOOS-visible metrics in the selected case
 - disallowed planner/runtime warning text in the newest vehicle `.alog`
 
 For these joust cases, the main pressure metric is
@@ -27,8 +27,8 @@ useful for this stem than `ENCOUNTER_TOTAL`, which may stay low or zero even
 when the vehicles repeatedly operate inside a meaningful contact envelope.
 
 Current split:
-- `pMissionEval` owns the MOOS-visible verdict through one case-specific
-  shoreside patch per launch
+- `pMissionEval` owns the MOOS-visible verdict through one shoreside patch per
+  launch
 - shell still checks only:
   - `wall_time` bands
   - disallowed warning text in the newest `.alog`

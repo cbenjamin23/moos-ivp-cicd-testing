@@ -581,16 +581,61 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 9: Select the case set, run the matrix, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    single_point_arrival_pass
+    endflag_pass
+    multi_point_sequence_pass
+    wptflag_pass
+    repeat_once_cycle_pass
+    repeat_forever_cycle_pass
+    dynamic_points_update_pass
+    newpt_update_pass
+    xpoints_update_pass
+    capture_radius_large_pass
+    capture_line_absolute_pass
+    slip_radius_pass
+    order_reverse_pass
+    currix_start_pass
+    lead_to_start_pass
+    lead_condition_pass
+    end_spd_slowdown_pass
+    speed_alt_update_pass
+    reset_on_idle_pass
+    empty_start_then_update_pass
+    wptflag_on_start_pass
+    custom_status_vars_pass
+    polygon_points_pass
+    ipf_type_roc_pass
+    ipf_type_zaic_spd_pass
+    greedy_tour_pass
+    cycle_index_output_pass
+    efficiency_measure_pass
+    slow_speed_no_arrival_pass
+    no_points_timeout_fail
+    malformed_update_fail
+    bad_xpoints_size_fail
+    bad_speed_fail
+    bad_capture_line_fail
+    bad_capture_radius_fail
+    bad_slip_radius_fail
+    bad_order_fail
+    bad_repeat_fail
+    bad_lead_damper_fail
+    bad_lead_condition_fail
+    bad_end_spd_fail
+    bad_patience_fail
+    bad_efficiency_measure_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="single_point_arrival_pass endflag_pass multi_point_sequence_pass wptflag_pass repeat_once_cycle_pass repeat_forever_cycle_pass dynamic_points_update_pass newpt_update_pass xpoints_update_pass capture_radius_large_pass capture_line_absolute_pass slip_radius_pass order_reverse_pass currix_start_pass lead_to_start_pass lead_condition_pass end_spd_slowdown_pass speed_alt_update_pass reset_on_idle_pass empty_start_then_update_pass wptflag_on_start_pass custom_status_vars_pass polygon_points_pass ipf_type_roc_pass ipf_type_zaic_spd_pass greedy_tour_pass cycle_index_output_pass efficiency_measure_pass slow_speed_no_arrival_pass no_points_timeout_fail malformed_update_fail bad_xpoints_size_fail bad_speed_fail bad_capture_line_fail bad_capture_radius_fail bad_slip_radius_fail bad_order_fail bad_repeat_fail bad_lead_damper_fail bad_lead_condition_fail bad_end_spd_fail bad_patience_fail bad_efficiency_measure_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -607,7 +652,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -636,7 +681,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

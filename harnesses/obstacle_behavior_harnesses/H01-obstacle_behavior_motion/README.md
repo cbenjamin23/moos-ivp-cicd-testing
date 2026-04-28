@@ -22,19 +22,20 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
   Baseline one-obstacle case. The behavior should request alerts, engage,
   complete, and still arrive with zero collisions.
 - `rng_flag_pass`
-  The behavior is patched with `rng_flag=<20 AVOID_RANGE_SEEN=true`. The
+  This case adds `rng_flag=<20 AVOID_RANGE_SEEN=true`. The
   mission passes only if that behavior-owned range flag is actually seen.
 - `cpa_flag_pass`
-  The behavior is patched with `cpa_flag=AVOID_CPA_SEEN=true`. This is a more
-  niche path because the flag only posts after a real CPA event is observed.
-  This case intentionally grades only the CPA helper path plus basic safety,
-  not late transit completion, so the verdict stays behavior-owned.
+  This case adds `cpa_flag=AVOID_CPA_SEEN=true`. This is a more
+  focused case because the flag only posts after a real CPA event is observed.
+  It grades the CPA flag plus basic safety, not late transit completion, so the
+  verdict stays behavior-owned.
 - `offlane_no_engagement_pass`
   The obstacle is moved well above the lane. The behavior should still request
-  its alert path, but it should never receive an obstacle alert or run.
+  alerts, but it should never receive an obstacle alert or run.
 - `no_refinery_pass`
-  The behavior is patched with `use_refinery=false`. This keeps the same
-  geometry, but exercises a different internal objective-building path.
+  Disables the IvP refinery while keeping the obstacle geometry unchanged.
+  The case should still complete avoidance, proving the non-refinery objective
+  path remains valid.
 - `two_obstacles_clean_pass`
   Two obstacles are placed in the corridor with one lower and one upper bias.
   This is the suite's multi-obstacle clean-completion case: the vehicle should
@@ -44,7 +45,7 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
   outcome itself.
 - `static_polygon_pass`
   The behavior is configured with a launch-time `polygon` instead of the
-  templated `OBSTACLE_ALERT` path. It should still complete avoidance and
+  templated `OBSTACLE_ALERT` input. It should still complete avoidance and
   arrive without collision.
 - `poly_alias_pass`
   The same launch-time obstacle is configured through the `poly` alias. It
@@ -54,9 +55,9 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
   mission passes only if the no-threshold range flag is posted during a clean
   avoidance run.
 - `avoid_disabled_fail`
-  The behavior is patched so its `AVOID=true` condition can never hold. The
+  This case makes the `AVOID=true` condition impossible to satisfy. The
   alert request still happens, but the avoid-obstacle lifecycle should fail to
-  complete and the mission is expected to grade `fail`.
+  complete and the mission should fail.
 - `bad_polygon_fail`
   The launch-time `polygon` is non-convex. The behavior configuration should be
   rejected and the mission should grade fail.

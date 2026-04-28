@@ -5,6 +5,10 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
+  event = var=VIEW_POLYGON, val="pts={19,-66:24,-66:24,-61:19,-61},label=ob_one,edge_color=white,fill_color=gray60,vertex_size=0,edge_size=2,duration=9999", time=1
+  event = var=VIEW_POLYGON, val="pts={55,-57:60,-57:60,-52:55,-52},label=ob_two,edge_color=white,fill_color=gray60,vertex_size=0,edge_size=2,duration=9999", time=1
+  event = var=VIEW_POLYGON, val="pts={19,-66:24,-66:24,-61:19,-61},label=ob_one,edge_color=white,fill_color=gray60,vertex_size=0,edge_size=2,duration=9999", time=10
+  event = var=VIEW_POLYGON, val="pts={55,-57:60,-57:60,-52:55,-52},label=ob_two,edge_color=white,fill_color=gray60,vertex_size=0,edge_size=2,duration=9999", time=10
   event = var=KNOWN_OBSTACLE, val="pts={19,-66:24,-66:24,-61:19,-61},label=ob_one", time=1
   event = var=KNOWN_OBSTACLE, val="pts={55,-57:60,-57:60,-52:55,-52},label=ob_two", time=2
   event = var=TEST_EVAL_READY, val=true, time=68

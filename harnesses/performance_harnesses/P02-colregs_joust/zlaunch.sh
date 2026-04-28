@@ -455,15 +455,21 @@ run_case_isolated() {
 
 trap cleanup EXIT
 
-CASES="baseline_colregs_pass dense_colregs_pass endurance_colregs_pass"
+ALL_CASES=(
+    baseline_colregs_pass
+    dense_colregs_pass
+    endurance_colregs_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for case_name in $CASES; do
+    for case_name in "${RUN_CASES[@]}"; do
         PERF_STATUS=""
         PERF_NOTES=""
         PERF_WARNING_COUNT=""
@@ -485,7 +491,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for case_name in $CASES; do
+    for case_name in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$case_name" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -514,7 +520,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: just_make complete for cases: $CASES"
+    echo "$ME: just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

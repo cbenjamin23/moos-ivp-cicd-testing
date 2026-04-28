@@ -22,7 +22,7 @@ The harness currently expects the gauntlet mission to:
 - in the endurance case, complete 10 full loops before the fail-safe timeout
 - incur zero collisions
 - avoid timing out
-- satisfy the case-specific mission-side MOOS-visible thresholds
+- satisfy the mission-side MOOS-visible thresholds for the selected case
 - avoid disallowed planner/runtime warning text in the vehicle `.alog`
 
 It preserves the mission-owned report columns and wraps them in the usual harness summary line:
@@ -49,7 +49,7 @@ PERF_PROFILE=ci ./zlaunch.sh
 ## Notes
 
 - All cases run the same loop-course mission and select obstacle source through `--mmod`.
-- Each case now launches with one case-specific shoreside patch, and `pMissionEval` owns the MOOS-visible verdict.
+- Each case now launches with one shoreside patch, and `pMissionEval` owns the MOOS-visible verdict.
 - Two cases are deterministic comparison runs, and one case is a longer randomized endurance run.
 - The harness supports wave-batch execution with `--jobs=<n>` using isolated
   temp mission copies and unique per-case port blocks

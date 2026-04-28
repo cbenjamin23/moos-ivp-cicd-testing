@@ -6,11 +6,16 @@ import argparse
 import datetime as dt
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
 import time
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.ci_harness_case_count import derive_case_order
 
 
 def parse_args() -> argparse.Namespace:
@@ -69,11 +74,10 @@ def parse_results_line(line: str) -> dict[str, str]:
 
 
 def extract_case_order(zlaunch_path: Path) -> list[str]:
-    content = zlaunch_path.read_text(encoding="utf-8")
-    match = re.search(r'^CASES="([^"]+)"', content, flags=re.MULTILINE)
-    if not match:
-        raise RuntimeError(f"Could not extract CASES from {zlaunch_path}")
-    return [case for case in match.group(1).split() if case]
+    try:
+        return derive_case_order(zlaunch_path)
+    except ValueError as err:
+        raise RuntimeError(f"Could not extract ALL_CASES from {zlaunch_path}") from err
 
 
 def fmt_float_range(values: list[float]) -> str:

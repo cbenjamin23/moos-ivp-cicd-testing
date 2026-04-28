@@ -393,16 +393,28 @@ run_case_isolated() {
 #------------------------------------------------------------
 trap cleanup EXIT
 
+ALL_CASES=(
+    baseline_center_pass
+    offset_clear_pass
+    tight_alert_pass
+    runtime_given_late_pass
+    point_cluster_pass
+    lasso_cluster_pass
+    two_sequential_fail
+    wide_center_fail
+    avoid_disabled_fail
+    no_alert_request_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="baseline_center_pass offset_clear_pass tight_alert_pass runtime_given_late_pass point_cluster_pass lasso_cluster_pass two_sequential_fail wide_center_fail avoid_disabled_fail no_alert_request_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -416,8 +428,7 @@ else
     CASE_RESULT_DIR="$RUN_ROOT/case_results"
     mkdir -p "$CASE_RESULT_DIR"
 
-    read -r -a CASE_ARRAY <<< "$CASES"
-    TOTAL_CASES=${#CASE_ARRAY[@]}
+    TOTAL_CASES=${#RUN_CASES[@]}
     IDX=0
 
     while [ "$IDX" -lt "$TOTAL_CASES" ]; do
@@ -425,7 +436,7 @@ else
         COUNT=0
 
         while [ "$COUNT" -lt "$JOBS" ] && [ "$IDX" -lt "$TOTAL_CASES" ]; do
-            run_case_isolated "$IDX" "${CASE_ARRAY[$IDX]}" &
+            run_case_isolated "$IDX" "${RUN_CASES[$IDX]}" &
             PIDS="$PIDS $!"
             IDX=$((IDX+1))
             COUNT=$((COUNT+1))
@@ -438,7 +449,7 @@ else
         stop_mission_apps "$RUN_ROOT"
     done
 
-    for ONE_CASE in "${CASE_ARRAY[@]}"; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         case_tag=""
         for ONE_FILE in "$CASE_RESULT_DIR"/*.txt; do
             if grep -q "case=$ONE_CASE  " "$ONE_FILE" 2>/dev/null; then
@@ -458,7 +469,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

@@ -210,8 +210,8 @@ ProcessConfig = pMarineViewer
 
   tiff_file            = MIT_SP.tif
   set_pan_x            = 0
-  set_pan_y            = -20
-  zoom                 = 2.0
+  set_pan_y            = -250
+  zoom                 = 1.5
   vehicles_shape_scale = 1.5
   vehicles_name_mode   = names
 

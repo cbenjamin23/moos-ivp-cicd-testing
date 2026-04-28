@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 OpRegion Safety | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -63,7 +69,7 @@
         </div>
         <div class="gif-meta">
           <h3>Dynamic Region Update</h3>
-          <p>Description: A timer-posted OPREGION_CORE_POLY update shrinks the operating region at runtime from the vehicle community. The vehicle should post save-region recovery flags...</p>
+          <p>Description: A timer-posted OPREGION_CORE_POLY update shrinks the operating region at runtime from the vehicle community. The vehicle should post save-region recovery flags and still finish without a halt breach.</p>
         </div>
       </article>
 
@@ -98,37 +104,37 @@
 
         <article class="case-row">
           <code>save_dist_buffer_fail</code>
-          <p>The vehicle uses the same positive save_dist setup, but drives beyond the generated save buffer while staying inside the generated halt buffer. The case is...</p>
+          <p>The vehicle uses the same positive save_dist setup, but drives beyond the generated save buffer while staying inside the generated halt buffer. The case should fail due to save-region breach.</p>
         </article>
 
 
         <article class="case-row">
           <code>halt_breach_fail</code>
-          <p>The vehicle is driven outside a tight halt region. The case is expected to grade fail.</p>
+          <p>The vehicle is driven outside a tight halt region and should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>entry_gate_start_outside_pass</code>
-          <p>The configured halt polygon starts to the east of the vehicle, so the vehicle launches outside the halt envelope, enters it, and finishes safely. With...</p>
+          <p>The configured halt polygon starts to the east of the vehicle, so the vehicle launches outside the halt envelope, enters it, and finishes safely. With trigger_on_poly_entry=true, the initial outside state should not fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>entry_gate_disabled_fail</code>
-          <p>Same start-outside geometry, but with trigger_on_poly_entry=false. The case is expected to grade fail quickly.</p>
+          <p>Same start-outside geometry, but with trigger_on_poly_entry=false. The case should fail quickly.</p>
         </article>
 
 
         <article class="case-row">
           <code>trigger_exit_debounce_pass</code>
-          <p>The vehicle briefly leaves the halt region, but the configured trigger_exit_time is long enough that no halt breach should be declared. This case grades the...</p>
+          <p>The vehicle briefly leaves the halt region, but the configured trigger_exit_time is long enough that no halt breach should be declared. This case grades the debounce contract rather than late transit completion.</p>
         </article>
 
 
         <article class="case-row">
           <code>trigger_exit_strict_fail</code>
-          <p>Companion case using the same short excursion shape, but with the stock short trigger_exit_time. The case is expected to grade fail.</p>
+          <p>Companion case using the same short excursion shape, but with the stock short trigger_exit_time. The case should fail.</p>
         </article>
 
 
@@ -140,25 +146,25 @@
 
         <article class="case-row">
           <code>reset_before_exit_pass</code>
-          <p>The vehicle would normally fail on halt exit, but a vehicle-side OPREGION_UPDATES=reset=true is posted during the exit debounce window and clears the entry state...</p>
+          <p>The vehicle would normally fail on halt exit, but a vehicle-side OPREGION_UPDATES=reset=true is posted during the exit debounce window and clears the entry state before breach declaration. The case should pass with no halt breach.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_time_fail</code>
-          <p>The behavior is case-specific with a short max_time. The case is expected to grade fail.</p>
+          <p>A short max_time should expire before the transit finishes, producing the expected mission failure.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_breach_fail</code>
-          <p>Vehicle-side sensor input posts NAV_DEPTH beyond a configured max_depth. The case should grade fail through the OpRegion depth-breach error path.</p>
+          <p>Vehicle-side sensor input posts NAV_DEPTH beyond a configured max_depth. The case should grade fail through the OpRegion depth-breach error.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_breach_fail</code>
-          <p>Vehicle-side sensor input posts NAV_ALTITUDE below a configured min_altitude. The case should grade fail through the OpRegion altitude-breach error path.</p>
+          <p>Vehicle-side sensor input posts NAV_ALTITUDE below a configured min_altitude. The case should grade fail through the OpRegion altitude-breach error.</p>
         </article>
 
 
@@ -212,19 +218,19 @@
 
         <article class="case-row">
           <code>dynamic_region_expand_pass</code>
-          <p>The behavior starts with a narrow dynamic-region core, then receives an early vehicle-side OPREGION_CORE_POLY expansion before the vehicle reaches the narrow...</p>
+          <p>The behavior starts with a narrow dynamic-region core, then receives an early vehicle-side OPREGION_CORE_POLY expansion before the vehicle reaches the narrow boundary. The case should pass without save or halt breach.</p>
         </article>
 
 
         <article class="case-row">
           <code>dynamic_region_update_pass</code>
-          <p>A timer-posted OPREGION_CORE_POLY update shrinks the operating region at runtime from the vehicle community. The vehicle should post save-region recovery flags...</p>
+          <p>A timer-posted OPREGION_CORE_POLY update shrinks the operating region at runtime from the vehicle community. The vehicle should post save-region recovery flags and still finish without a halt breach.</p>
         </article>
 
 
         <article class="case-row">
           <code>dynamic_region_halt_fail</code>
-          <p>A timer-posted update shrinks the operating region far enough that the vehicle should breach the recomputed halt region. The case is expected to grade fail.</p>
+          <p>A timer-posted update shrinks the operating region far enough that the vehicle should breach the recomputed halt region and fail.</p>
         </article>
 
       </div>

@@ -36,42 +36,32 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   request causes a distance report or obstacle alert to appear.
 - `given_far_absent_pass`
   A farther given obstacle should still be accepted, but with default
-  `post_dist_to_polys=close` it should stay out of both the distance posting
-  path and the obstacle-alert path.
+  `post_dist_to_polys=close` it should not produce a distance report or an
+  obstacle alert.
 - `given_general_alert_pass`
-  This is slightly more niche than the basic near/far cases. It checks the
-  separate `general_alert` configuration branch, where a broader alert variable
-  can be posted even when the main alert range is too tight for the obstacle.
-  The mission grades only when the accepted obstacle and a general-alert
-  publication are both present at the checkpoint. The harness still verifies the
-  exact payload string for this case because `pMissionEval` cannot directly
-  express values that themselves contain `=` tokens.
+  A broader `general_alert` variable should post even when the main alert range
+  is too tight for the obstacle. The mission grades only when the obstacle is
+  accepted and the general-alert publication is present at the checkpoint.
 - `general_alert_default_name_pass`
-  This is the same branch, but it leaves the `name=` field out of the config
-  string so the default `gen_alert_` prefixing behavior is exercised.
+  The same general-alert configuration should work without an explicit `name=`
+  field, using the default `gen_alert_` prefix.
 - `given_duration_resolve_pass`
   A short-lived given obstacle should age out and post `OBM_RESOLVED`.
 - `given_max_duration_reject_absent_pass`
-  `pObstacleMgr` can reject mailed-in obstacles whose declared duration exceeds
-  `given_max_duration`. This case proves the obstacle is rejected before it is
-  ever accepted as a live obstacle.
+  A mailed-in obstacle whose duration exceeds `given_max_duration` should be
+  rejected before it is ever accepted as a live obstacle.
 - `given_max_duration_missing_absent_pass`
-  This is the missing-duration version of the same branch. The obstacle is
-  mailed in without `duration=...`, and the correct outcome is rejection before
-  it can ever become a live given obstacle.
+  A mailed-in obstacle without `duration=...` should also be rejected before it
+  can become a live given obstacle.
 - `invalid_given_nonconvex_absent_pass`
   A non-convex/degenerate `GIVEN_OBSTACLE` payload should be rejected before it
   posts `new_obs_flag`, `OBM_DIST_TO_OBJ`, or an obstacle alert.
 - `post_dist_always_pass`
   With `post_dist_to_polys=true`, a far obstacle should still publish
-  `OBM_DIST_TO_OBJ`. This is the always-post branch, distinct from the default
-  close-only behavior.
+  `OBM_DIST_TO_OBJ`, distinct from the default close-only behavior.
 - `post_dist_false_absent_pass`
-  The opposite branch: with `post_dist_to_polys=false`, the mission should not
-  publish the normal near-obstacle distance report for this fixed geometry. This
-  is still an absence-style case, so it is best read as a regression guard on
-  the known baseline publication rather than as a universal proof that no
-  alternate distance string could ever appear.
+  With `post_dist_to_polys=false`, the mission should not publish the normal
+  near-obstacle distance report for this fixed geometry.
 
 ### Point-cluster and hull-generation cases
 
@@ -79,17 +69,15 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   A cluster of `TRACKED_FEATURE` points should generate a convex hull and a
   stable `OBM_DIST_TO_OBJ` distance report.
 - `custom_point_var_pass`
-  This exercises the custom `point_var` input path. The same point cluster is
-  posted under an alternate variable name instead of the default
-  `TRACKED_FEATURE`.
+  The same point cluster is posted under a custom `point_var` instead of the
+  default `TRACKED_FEATURE`, and it should still become a valid obstacle.
 - `invalid_point_missing_key_absent_pass`
-  `pObstacleMgr` requires each point input to include a key or label before it
-  can become an obstacle cluster. This case sends otherwise valid points without
-  keys and grades on the absence of a generic cluster alert.
+  Point input without a key or label should be ignored before it can become an
+  obstacle cluster. The mission grades on the absence of a generic cluster
+  alert.
 - `max_pts_per_cluster_trim_pass`
-  This is the cluster-trimming branch. The point set intentionally exceeds
-  `max_pts_per_cluster`, so the hull is built from the trimmed cluster rather
-  than from the full history of points.
+  The point set intentionally exceeds `max_pts_per_cluster`, so the hull should
+  be built from the trimmed cluster rather than from the full history of points.
 - `points_ignore_range_absent_pass`
   The same point cluster should be ignored entirely when `ignore_range` is
   tighter than the point distances.
@@ -97,15 +85,13 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   Point-based obstacles should resolve once all points age out past
   `max_age_per_point`.
 - `lasso_cluster_pass`
-  This exercises the `lasso=true` pseudo-hull branch rather than the normal
-  convex-hull generator. The reported distance is checked in a numeric band
-  instead of by exact string because the case is about the lasso geometry, not
-  about a specific polygon serialization.
+  With `lasso=true`, the manager should build a pseudo-hull instead of the
+  normal convex hull. The reported distance is checked in a numeric band because
+  the case is about the lasso geometry, not a specific polygon string.
 - `placeholder_hull_pass`
-  This is another niche branch: three colinear points do not form a valid
-  convex hull, so `pObstacleMgr` falls back to a placeholder radial polygon.
-  The test checks the resulting minimum distance band rather than the polygon
-  text itself.
+  Three colinear points do not form a valid convex hull, so `pObstacleMgr`
+  should fall back to a placeholder radial polygon. The test checks the
+  resulting minimum distance band rather than the polygon text itself.
 - `post_view_polys_false_absent_pass`
   A point cluster should still produce obstacle distance output when
   `post_view_polys=false`, but it should not publish a `VIEW_POLYGON`
@@ -129,20 +115,17 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 - `disable_obstacle_pass`
   `disable_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=disable`,
-  and the mission grades on a confirmation flag posted when that filter-message
-  path is exercised.
+  confirming that obstacle-disable mail is generated for the named obstacle.
 - `disable_vsource_pass`
   The modification parser also accepts `vsource=...` selectors, not only bare
   obstacle IDs. This case sends a vsource disable command and checks that the
   resulting filter message preserves `vsource=radar,action=disable`.
 - `enable_obstacle_pass`
   `enable_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=enable`,
-  and the mission grades on a confirmation flag posted when that filter-message
-  path is exercised.
+  confirming that obstacle-enable mail is generated for the named obstacle.
 - `expunge_obstacle_pass`
   `expunge_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=expunge`
-  and remove the obstacle from the manager's internal map. The mission grades on
-  a confirmation flag posted when that filter-message path is exercised.
+  and remove the obstacle from the manager's internal map.
 
 ## Typical Runs
 
@@ -230,7 +213,7 @@ Field anatomy:
 - `form`
   Harness or mission family name.
 - `mmod`
-  The case-specific mission mode written by `pMissionEval`.
+  The mission mode written by `pMissionEval` for the selected case.
 - `grade`
   Pass/fail result written by the mission itself.
 - `eval`

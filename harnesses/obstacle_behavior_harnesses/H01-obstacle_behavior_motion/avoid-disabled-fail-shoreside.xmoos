@@ -1,0 +1,12 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_POLYGON, val="pts={29,-53:43,-53:43,-67:29,-67},label=ob_lane,edge_color=white,fill_color=gray60,vertex_size=0,edge_size=2,duration=9999", time=1
+  event = var=VIEW_POLYGON, val="pts={29,-53:43,-53:43,-67:29,-67},label=ob_lane,edge_color=white,fill_color=gray60,vertex_size=0,edge_size=2,duration=9999", time=10
+  event = var=KNOWN_OBSTACLE, val="pts={29,-53:43,-53:43,-67:29,-67},label=ob_lane", time=1
+  event = var=TEST_EVAL_READY, val=true, time=68
+}

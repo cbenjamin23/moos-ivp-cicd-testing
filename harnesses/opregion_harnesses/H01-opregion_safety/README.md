@@ -39,24 +39,23 @@ signals:
 - `save_dist_buffer_fail`
   The vehicle uses the same positive `save_dist` setup, but drives beyond the
   generated save buffer while staying inside the generated halt buffer. The case
-  is expected to grade `fail` due to save-region breach.
+  should fail due to save-region breach.
 - `halt_breach_fail`
-  The vehicle is driven outside a tight halt region. The case is expected to
-  grade `fail`.
+  The vehicle is driven outside a tight halt region and should fail.
 - `entry_gate_start_outside_pass`
   The configured halt polygon starts to the east of the vehicle, so the vehicle
   launches outside the halt envelope, enters it, and finishes safely. With
   `trigger_on_poly_entry=true`, the initial outside state should not fail.
 - `entry_gate_disabled_fail`
   Same start-outside geometry, but with `trigger_on_poly_entry=false`. The case
-  is expected to grade `fail` quickly.
+  should fail quickly.
 - `trigger_exit_debounce_pass`
   The vehicle briefly leaves the halt region, but the configured
   `trigger_exit_time` is long enough that no halt breach should be declared.
   This case grades the debounce contract rather than late transit completion.
 - `trigger_exit_strict_fail`
   Companion case using the same short excursion shape, but with the stock
-  short `trigger_exit_time`. The case is expected to grade `fail`.
+  short `trigger_exit_time`. The case should fail.
 - `trigger_entry_delay_pass`
   The vehicle leaves the halt envelope before the long `trigger_entry_time`
   matures, so the later outside state should not count as a breach.
@@ -66,15 +65,15 @@ signals:
   clears the entry state before breach declaration. The case should pass with
   no halt breach.
 - `max_time_fail`
-  The behavior is patched with a short `max_time`. The case is expected to
-  grade `fail`.
+  A short `max_time` should expire before the transit finishes, producing the
+  expected mission failure.
 - `max_depth_breach_fail`
   Vehicle-side sensor input posts `NAV_DEPTH` beyond a configured `max_depth`.
-  The case should grade `fail` through the OpRegion depth-breach error path.
+  The case should grade `fail` through the OpRegion depth-breach error.
 - `min_altitude_breach_fail`
   Vehicle-side sensor input posts `NAV_ALTITUDE` below a configured
   `min_altitude`. The case should grade `fail` through the OpRegion
-  altitude-breach error path.
+  altitude-breach error.
 - `bad_save_dist_fail`
   The behavior is configured with a negative `save_dist`. The case should
   grade `fail` when `pHelmIvP` reports `MALCONFIG`.
@@ -109,8 +108,7 @@ signals:
   recovery flags and still finish without a halt breach.
 - `dynamic_region_halt_fail`
   A timer-posted update shrinks the operating region far enough that the
-  vehicle should breach the recomputed halt region. The case is expected to
-  grade `fail`.
+  vehicle should breach the recomputed halt region and fail.
 
 ## Running
 

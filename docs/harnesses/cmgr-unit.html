@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Contact Manager Unit | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -54,7 +60,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Alert Path</h3>
-          <p>Description: No static alert is configured in the case for this case. Instead the harness posts a BCM_ALERT_REQUEST at runtime and expects that dynamic alert definition to...</p>
+          <p>Description: No static alert is configured in this case. Instead the harness posts a BCM_ALERT_REQUEST at runtime and expects that dynamic alert definition to drive normal contact detection.</p>
         </div>
       </article>
 
@@ -65,7 +71,7 @@
         </div>
         <div class="gif-meta">
           <h3>CPA-only Detection</h3>
-          <p>Description: This is a CPA-specific case rather than just another range threshold case. The contact is still outside alert_range at grading time, but it is on a closing...</p>
+          <p>Description: This is a CPA-specific case rather than just another range threshold case. The contact is still outside alert_range at grading time, but it is on a closing course tight enough that cpa_range should still make the alert fire.</p>
         </div>
       </article>
 
@@ -94,7 +100,7 @@
 
         <article class="case-row">
           <code>detect_edge_pass</code>
-          <p>Near-threshold geometry should still detect.</p>
+          <p>Near-threshold geometry should still detect the contact before the checkpoint.</p>
         </article>
 
 
@@ -130,79 +136,79 @@
 
         <article class="case-row">
           <code>detect_near_spoof_pass</code>
-          <p>A nearer spoof should be detected quickly.</p>
+          <p>A nearer spoofed contact should be detected quickly and reported by the checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>detect_cpa_only_pass</code>
-          <p>This is a CPA-specific case rather than just another range threshold case. The contact is still outside alert_range at grading time, but it is on a closing...</p>
+          <p>This is a CPA-specific case rather than just another range threshold case. The contact is still outside alert_range at grading time, but it is on a closing course tight enough that cpa_range should still make the alert fire.</p>
         </article>
 
 
         <article class="case-row">
           <code>closest_contact_pass</code>
-          <p>CONTACT_CLOSEST should be intruder.</p>
+          <p>The closest-contact report should identify intruder.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_all_ranges_pass</code>
-          <p>This case turns on the CONTACT_RANGES report path. It is a reporting-only branch, so the key point is that the mission now publishes the full list of current...</p>
+          <p>This case turns on the CONTACT_RANGES report. The mission should publish the full list of current alerted ranges instead of only the closest one.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_closest_relbng_pass</code>
-          <p>This turns on the closest-relative-bearing report path. It is useful because it exercises a distinct output variable, CONTACT_CLOSEST_RELBNG, rather than just...</p>
+          <p>This turns on the closest-relative-bearing report. The mission should publish CONTACT_CLOSEST_RELBNG, proving that bearing output works as well as the closest-contact selection itself.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_alert_add_pass</code>
-          <p>No static alert is configured in the case for this case. Instead the harness posts a BCM_ALERT_REQUEST at runtime and expects that dynamic alert definition to...</p>
+          <p>No static alert is configured in this case. Instead the harness posts a BCM_ALERT_REQUEST at runtime and expects that dynamic alert definition to drive normal contact detection.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_alert_disable_absent_pass</code>
-          <p>This exercises the runtime alert-disable path. The stem still has the normal alert configured, but a BCM_ALERT_REQUEST disables it before the spoofed contact...</p>
+          <p>A runtime BCM_ALERT_REQUEST disables the normal alert before the spoofed contact arrives. The correct outcome is non-detection.</p>
         </article>
 
 
         <article class="case-row">
           <code>filter_match_type_absent_pass</code>
-          <p>This is a representative alert-filter case. The alert is constrained to match_type=ship, while the spoofed contact remains the default kayak, so the contact...</p>
+          <p>This is a representative alert-filter case. The alert is constrained to match_type=ship, while the spoofed contact remains the default kayak, so the contact should still be tracked but should not count as alerted.</p>
         </article>
 
 
         <article class="case-row">
           <code>disable_contact_pass</code>
-          <p>This exercises the disable_var path directly. In this timing setup the contact is already seen before the disable request is posted, so the case is specifically...</p>
+          <p>The contact is already seen before the disable request is posted, so this case checks that contact manager emits the expected BHV_ABLE_FILTER disable message. It is not trying to suppress an alert that already fired.</p>
         </article>
 
 
         <article class="case-row">
           <code>enable_contact_pass</code>
-          <p>This is the matching enable_var path. It is a message-path case proving contact manager emits the expected BHV_ABLE_FILTER enable request for a named contact...</p>
+          <p>The matching enable case should emit the expected BHV_ABLE_FILTER enable request for a named contact under controlled timing.</p>
         </article>
 
 
         <article class="case-row">
           <code>early_warning_pass</code>
-          <p>This is the early-warning branch. The case checks that the mission posts the configured warning flag before the main contact evaluation completes.</p>
+          <p>The configured warning flag should post before the main contact evaluation completes.</p>
         </article>
 
 
         <article class="case-row">
           <code>count_one_pass</code>
-          <p>CONTACTS_COUNT should be exactly 1.</p>
+          <p>The alerted-contact count should be exactly 1.</p>
         </article>
 
 
         <article class="case-row">
           <code>list_intruder_pass</code>
-          <p>CONTACTS_LIST should be intruder.</p>
+          <p>The known-contact list should contain only intruder.</p>
         </article>
 
 
@@ -214,7 +220,7 @@
 
         <article class="case-row">
           <code>report_request_pass</code>
-          <p>This exercises the separate BCM_REPORT_REQUEST subsystem. The case asks contact manager to publish a custom range-limited contact list variable and verifies that...</p>
+          <p>This exercises the separate BCM_REPORT_REQUEST subsystem. The case asks contact manager to publish a custom range-limited contact list variable and verifies that the requested report contains intruder.</p>
         </article>
 
 
@@ -226,7 +232,7 @@
 
         <article class="case-row">
           <code>count_two_pass</code>
-          <p>Two alerted contacts should be counted.</p>
+          <p>The alerted-contact count should be exactly 2.</p>
         </article>
 
 
@@ -238,43 +244,43 @@
 
         <article class="case-row">
           <code>closest_alpha_pass</code>
-          <p>alpha should be reported as the closest contact.</p>
+          <p>The closest-contact report should identify alpha.</p>
         </article>
 
 
         <article class="case-row">
           <code>closest_bravo_pass</code>
-          <p>bravo should be reported as the closest contact.</p>
+          <p>The closest-contact report should identify bravo.</p>
         </article>
 
 
         <article class="case-row">
           <code>bravo_far_count_one_pass</code>
-          <p>bravo should remain tracked but stay outside the alert count.</p>
+          <p>The contact bravo should remain tracked, but it should stay outside the alert count.</p>
         </article>
 
 
         <article class="case-row">
           <code>late_bravo_count_two_pass</code>
-          <p>bravo arrives later, but the delayed checkpoint should still catch both.</p>
+          <p>The contact bravo arrives later, and the delayed checkpoint should still catch both contacts.</p>
         </article>
 
 
         <article class="case-row">
           <code>stale_bravo_drop_pass</code>
-          <p>bravo should expire and drop out of the tracked list before grading.</p>
+          <p>The contact bravo should expire and drop out of the tracked list before grading.</p>
         </article>
 
 
         <article class="case-row">
           <code>reject_range_retire_pass</code>
-          <p>This is the non-age retirement path. The contact is accepted first, but a very small reject_range should cause contact manager to retire it and post...</p>
+          <p>The contact is accepted first, then a very small reject_range should cause contact manager to retire it and post CONTACTS_RETIRED=intruder.</p>
         </article>
 
 
         <article class="case-row">
           <code>alpha_far_bravo_only_pass</code>
-          <p>alpha should remain tracked but only bravo should qualify as alerted and closest.</p>
+          <p>The contact alpha should remain tracked, but only bravo should qualify as alerted and closest.</p>
         </article>
 
       </div>

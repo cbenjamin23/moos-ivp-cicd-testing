@@ -9,9 +9,8 @@ import shlex
 import sys
 
 
-ASSIGNMENT_RE = re.compile(r'\s*([A-Z][A-Z0-9_]*)="([^"]*)"\s*$')
 ARRAY_ASSIGNMENT_RE = re.compile(r"\s*([A-Z][A-Z0-9_]*)=\(\s*(.*)$")
-VAR_RE = re.compile(r"\$\{([A-Z][A-Z0-9_]*)\}|\$([A-Z][A-Z0-9_]*)")
+ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
 
 
 def parse_args() -> argparse.Namespace:
@@ -20,19 +19,6 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("zlaunch", help="Path to the harness zlaunch.sh")
     return parser.parse_args()
-
-
-def expand_vars(value: str, variables: dict[str, str]) -> str:
-    def repl(match: re.Match[str]) -> str:
-        name = match.group(1) or match.group(2)
-        return variables.get(name, "")
-
-    prev = None
-    expanded = value
-    while expanded != prev:
-        prev = expanded
-        expanded = VAR_RE.sub(repl, expanded)
-    return expanded
 
 
 def parse_array_values(first_value: str, remaining_lines: list[str]) -> tuple[list[str], int]:
@@ -54,47 +40,42 @@ def parse_array_values(first_value: str, remaining_lines: list[str]) -> tuple[li
     return shlex.split(text, comments=True, posix=True), consumed
 
 
-def derive_case_count(zlaunch_path: Path) -> int:
-    variables: dict[str, str] = {}
-    case_sets: list[str] = []
-    fallback_case_sets: list[str] = []
-
+def derive_case_order(zlaunch_path: Path) -> list[str]:
+    arrays: dict[str, list[str]] = {}
     lines = zlaunch_path.read_text(encoding="utf-8", errors="replace").splitlines()
     idx = 0
     while idx < len(lines):
         line = lines[idx]
-        match = ASSIGNMENT_RE.match(line)
-        if match:
-            name, value = match.groups()
-            expanded = expand_vars(value, variables)
-            variables[name] = expanded
-            if name == "CASES":
-                case_sets.append(expanded)
-            idx += 1
-            continue
-
         match = ARRAY_ASSIGNMENT_RE.match(line)
         if match:
             name, first_value = match.groups()
             values, consumed = parse_array_values(first_value, lines[idx + 1 :])
-            expanded = expand_vars(" ".join(values), variables)
-            variables[name] = expanded
-            if name == "CASES":
-                case_sets.append(expanded)
-            elif name == "ALL_CASES":
-                fallback_case_sets.append(expanded)
+            arrays[name] = values
             idx += consumed + 1
             continue
 
         idx += 1
 
-    if not case_sets:
-        case_sets = fallback_case_sets
+    if "ALL_CASES" not in arrays:
+        raise ValueError(f"No ALL_CASES assignment found in {zlaunch_path}")
 
-    if not case_sets:
-        raise ValueError(f"No CASES or ALL_CASES assignment found in {zlaunch_path}")
+    def expand_array(name: str, stack: tuple[str, ...] = ()) -> list[str]:
+        if name in stack:
+            raise ValueError(f"Cyclic case array reference in {zlaunch_path}: {' -> '.join(stack + (name,))}")
+        expanded: list[str] = []
+        for token in arrays.get(name, []):
+            ref = ARRAY_REF_RE.match(token)
+            if ref and ref.group(1) in arrays:
+                expanded.extend(expand_array(ref.group(1), stack + (name,)))
+            else:
+                expanded.append(token)
+        return expanded
 
-    return max(len(case_set.split()) for case_set in case_sets)
+    return [case for case in expand_array("ALL_CASES") if case]
+
+
+def derive_case_count(zlaunch_path: Path) -> int:
+    return len(derive_case_order(zlaunch_path))
 
 
 def main() -> int:

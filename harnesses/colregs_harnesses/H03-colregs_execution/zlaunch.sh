@@ -411,17 +411,42 @@ run_case_isolated() {
     return 0
 }
 
+ALL_CASES=(
+    head_on_execution_pass
+    head_on_cpa_fallback_execution_pass
+    head_on_port_offset_execution_pass
+    head_on_starboard_offset_execution_pass
+    crossing_starboard_giveway_execution_pass
+    crossing_starboard_giveway_far_execution_pass
+    crossing_starboard_giveway_close_execution_pass
+    crossing_port_standon_execution_pass
+    crossing_port_standon_unsure_bow_execution_pass
+    crossing_port_standon_stern_execution_pass
+    crossing_port_standon_far_execution_pass
+    crossing_port_standon_close_execution_pass
+    crossing_port_standon_close_unsure_bow_execution_pass
+    crossing_port_standon_unsure_execution_pass
+    overtaking_starboard_execution_pass
+    overtaking_starboard_range_far_execution_pass
+    overtaking_starboard_small_gap_execution_pass
+    overtaking_starboard_mirror_execution_pass
+    overtaking_starboard_mirror_range_far_execution_pass
+    overtaking_starboard_mirror_small_gap_execution_pass
+    overtaking_starboard_mirror_large_gap_execution_pass
+    overtaken_port_standon_midrange_execution_pass
+    overtaken_starboard_standon_midrange_execution_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-CASES="head_on_execution_pass head_on_cpa_fallback_execution_pass head_on_port_offset_execution_pass head_on_starboard_offset_execution_pass crossing_starboard_giveway_execution_pass crossing_starboard_giveway_far_execution_pass crossing_starboard_giveway_close_execution_pass crossing_port_standon_execution_pass crossing_port_standon_unsure_bow_execution_pass crossing_port_standon_stern_execution_pass crossing_port_standon_far_execution_pass crossing_port_standon_close_execution_pass crossing_port_standon_close_unsure_bow_execution_pass crossing_port_standon_unsure_execution_pass overtaking_starboard_execution_pass overtaking_starboard_range_far_execution_pass overtaking_starboard_small_gap_execution_pass overtaking_starboard_mirror_execution_pass overtaking_starboard_mirror_range_far_execution_pass overtaking_starboard_mirror_small_gap_execution_pass overtaking_starboard_mirror_large_gap_execution_pass overtaken_port_standon_midrange_execution_pass overtaken_starboard_standon_midrange_execution_pass"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 trap cleanup EXIT
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE"
     done
 else
@@ -434,7 +459,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -457,7 +482,7 @@ else
         stop_mission_apps "$RUN_ROOT"
     fi
 
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
         if [ "$case_file" = "" ]; then
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=missing" >> "$RESULTS_FILE"

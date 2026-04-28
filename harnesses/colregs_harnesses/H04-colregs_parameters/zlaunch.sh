@@ -32,7 +32,9 @@ BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
 RUN_ROOT=""
 CASE_RESULT_DIR=""
-WAVE_SERIAL_CASES="pts_port_turns_ok_true_pass"
+SOLO_WAVE_CASES=(
+    pts_port_turns_ok_true_pass
+)
 
 if [ -f "$TEARDOWN_HELPER" ]; then
     . "$TEARDOWN_HELPER"
@@ -167,9 +169,12 @@ stop_mission_apps() {
 
 case_requires_solo_wave() {
     local case_name="$1"
-    case " $WAVE_SERIAL_CASES " in
-        *" $case_name "*) return 0 ;;
-    esac
+    local solo_case
+    for solo_case in "${SOLO_WAVE_CASES[@]}"; do
+        if [ "$solo_case" = "$case_name" ]; then
+            return 0
+        fi
+    done
     return 1
 }
 
@@ -441,17 +446,51 @@ run_case_isolated() {
     return 0
 }
 
+ALL_CASES=(
+    min_util_cpa_low_pass
+    min_util_cpa_default_pass
+    min_util_cpa_high_pass
+    headon_only_false_pass
+    headon_only_true_pass
+    giveway_bow_dist_default_pass
+    giveway_bow_dist_high_pass
+    max_util_cpa_default_pass
+    max_util_cpa_high_pass
+    velocity_filter_off_pass
+    velocity_filter_on_pass
+    eval_tol_default_pass
+    eval_tol_short_pass
+    eval_tol_long_pass
+    pwt_outer_dist_default_pass
+    pwt_outer_dist_high_pass
+    pwt_inner_dist_low_pass
+    pwt_inner_dist_default_pass
+    pwt_inner_dist_high_pass
+    pwt_grade_linear_pass
+    pwt_grade_quasi_pass
+    pwt_grade_quadratic_pass
+    pts_port_turns_ok_true_pass
+    pts_port_turns_ok_false_pass
+    turn_radius_default_pass
+    turn_radius_high_pass
+    check_plateaus_false_pass
+    check_plateaus_true_pass
+    completed_dist_default_pass
+    completed_dist_high_pass
+    refinery_on_pass
+    refinery_off_pass
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="min_util_cpa_low_pass min_util_cpa_default_pass min_util_cpa_high_pass headon_only_false_pass headon_only_true_pass giveway_bow_dist_default_pass giveway_bow_dist_high_pass max_util_cpa_default_pass max_util_cpa_high_pass velocity_filter_off_pass velocity_filter_on_pass eval_tol_default_pass eval_tol_short_pass eval_tol_long_pass pwt_outer_dist_default_pass pwt_outer_dist_high_pass pwt_inner_dist_low_pass pwt_inner_dist_default_pass pwt_inner_dist_high_pass pwt_grade_linear_pass pwt_grade_quasi_pass pwt_grade_quadratic_pass pts_port_turns_ok_true_pass pts_port_turns_ok_false_pass turn_radius_default_pass turn_radius_high_pass check_plateaus_false_pass check_plateaus_true_pass completed_dist_default_pass completed_dist_high_pass refinery_on_pass refinery_off_pass"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 trap cleanup EXIT
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE"
     done
 else
@@ -465,7 +504,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         if case_requires_solo_wave "$ONE_CASE"; then
             if [ "$wave_pids" != "" ]; then
                 for pid in $wave_pids; do
@@ -503,7 +542,7 @@ else
         stop_mission_apps "$RUN_ROOT"
     fi
 
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
         if [ "$case_file" = "" ]; then
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=missing" >> "$RESULTS_FILE"

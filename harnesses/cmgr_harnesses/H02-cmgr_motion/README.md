@@ -34,7 +34,7 @@ and running a short `70m` eastbound corridor.
   `BCM_ALERT_REQUEST` messages before the contact arrives. The re-enabled alert
   should behave like the static path and support a clean detected arrival.
 - `hold_alerts_for_helm_pass`
-  Contact manager is patched with `hold_alerts_for_helm=true`. The alert should
+  This case sets `hold_alerts_for_helm=true` in contact manager. The alert should
   remain held until the helm reaches `DRIVE`, then release in time for the
   spawned avoid behavior to complete the transit safely.
 - `no_detect_clear_pass`
@@ -55,11 +55,11 @@ and running a short `70m` eastbound corridor.
   territory without making the grade depend on brittle exact count/list
   assertions. The case still reports `count` and `list`.
 - `tight_alert_fail`
-  `pContactMgrV20` is patched to alert too late. In the tuned geometry this
+  This case delays the `pContactMgrV20` alert. In the tuned geometry this
   means the mission still arrives, but it no longer satisfies the required
   contact-detected safe-encounter rule and therefore grades `fail`.
 - `avoid_disabled_fail`
-  Contact manager still detects the contact, but the alert variable is patched
+  Contact manager still detects the contact, but this case redirects the alert
   away from `CONTACT_INFO`, so the avoid-collision behavior never spawns. In
   the tuned case the vehicle still arrives, but it no longer stays
   encounter-free, which is the mission-level failure this case is meant to
@@ -95,7 +95,7 @@ Field anatomy:
 - `case_result`: `success` when expected equals actual
 - `grade`: mission-level pass/fail from `pMissionEval`
 - `form`: mission family name
-- `mmod`: case-specific mission mode
+- `mmod`: mission mode for the selected case
 - `eval`: whether the evaluation checkpoint fired
 - `arrived`: whether the ownship reached the goal waypoint
 - `detected`: whether contact manager produced the expected contact alert path

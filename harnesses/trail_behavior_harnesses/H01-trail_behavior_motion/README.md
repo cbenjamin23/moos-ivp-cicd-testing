@@ -31,7 +31,7 @@ uses behavior outputs such as:
   Replaces the target's straight waypoint leg with a right-angle dogleg and
   grades pursuit after the target changes course.
 - `lead_port_turn_pass`
-  Combines the dogleg target path with a port-quarter relative trail angle.
+  Combines the dogleg target route with a port-quarter relative trail angle.
 - `lead_turn_angle_update_pass`
   Follows a target through a dogleg while changing `trail_angle` at runtime,
   proving the chaser can reframe the desired trail point during a turn.
@@ -44,9 +44,11 @@ uses behavior outputs such as:
 - `wide_radius_pass`
   Expands the inner radius and grades bounded trail-point convergence.
 - `inside_nm_radius_pass`
-  Exercises the inside-`nm_radius` branch.
+  Starts inside `nm_radius` and verifies the expected near-contact trail
+  behavior.
 - `outside_nm_radius_pass`
-  Forces the outside-`nm_radius` branch with zero radius settings.
+  Starts outside `nm_radius` with zero radius settings and verifies pursuit
+  remains valid.
 - `pwt_outer_active_pass`
   Sets `pwt_outer_dist` high enough that relevance remains active.
 - `pwt_outer_inactive_pass`
@@ -69,7 +71,8 @@ uses behavior outputs such as:
   Applies a runtime `mod_trail_range_pct` update below the source minimum and
   verifies the clamped trail range still produces valid pursuit.
 - `runtime_angle_update_pass`
-  Changes `trail_angle` through `TRAIL_UPDATES`.
+  Changes `trail_angle` through `TRAIL_UPDATES` and verifies the chaser settles
+  around the updated trail point.
 - `runtime_relevance_off_pass`
   Lowers `pwt_outer_dist` through `TRAIL_UPDATES` and grades pursuit shutoff.
 - `runtime_bad_update_recover_pass`
@@ -96,26 +99,23 @@ uses behavior outputs such as:
 - `missing_contact_param_fail`
   Omits `contact` with `on_no_contact_ok=false` and expects failure.
 - `bad_trail_angle_type_fail`
-  Rejects malformed `trail_angle_type`.
+  Malformed `trail_angle_type` should be rejected and the mission should fail.
 - `bad_trail_angle_fail`
-  Rejects malformed `trail_angle`.
+  Malformed `trail_angle` should be rejected and the mission should fail.
 - `bad_trail_range_fail`
-  Rejects negative `trail_range`.
+  Negative `trail_range` should be rejected and the mission should fail.
 - `bad_mod_trail_range_pct_fail`
-  Rejects zero `mod_trail_range_pct`.
+  Zero `mod_trail_range_pct` should be rejected and the mission should fail.
 - `bad_radius_fail`
-  Rejects a negative `radius` configuration and expects the behavior error path
-  to make the mission fail.
+  Negative `radius` should be rejected and the mission should fail.
 - `bad_nm_radius_fail`
-  Rejects a negative `nm_radius` configuration and expects the behavior error
-  path to make the mission fail.
+  Negative `nm_radius` should be rejected and the mission should fail.
 - `bad_pwt_outer_dist_fail`
-  Rejects negative `pwt_outer_dist`.
+  Negative `pwt_outer_dist` should be rejected and the mission should fail.
 - `bad_decay_fail`
-  Rejects malformed `decay` input and expects the behavior error path to make
-  the mission fail.
+  Malformed `decay` input should be rejected and the mission should fail.
 - `bad_time_on_leg_fail`
-  Rejects negative `time_on_leg`.
+  Negative `time_on_leg` should be rejected and the mission should fail.
 
 ## Running
 

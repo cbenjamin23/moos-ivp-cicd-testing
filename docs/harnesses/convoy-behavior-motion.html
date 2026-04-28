@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Convoy Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -122,13 +128,13 @@
 
         <article class="case-row">
           <code>cruise_speed_pass</code>
-          <p>Uses explicit cruise_speed and grades the chaser speed branch.</p>
+          <p>Uses explicit cruise_speed and verifies the chaser settles into the requested speed band.</p>
         </article>
 
 
         <article class="case-row">
           <code>cruise_speed_cap_warn_pass</code>
-          <p>Sets cruise_speed above spd_max and expects the behavior warning path.</p>
+          <p>Sets cruise_speed above spd_max and expects a warning while keeping the mission runnable.</p>
         </article>
 
 
@@ -146,19 +152,19 @@
 
         <article class="case-row">
           <code>tailgating_speed_slow_pass</code>
-          <p>Forces the tailgating branch and grades slower physical chaser speed.</p>
+          <p>Forces tailgating behavior and grades slower physical chaser speed.</p>
         </article>
 
 
         <article class="case-row">
           <code>lagging_speed_fast_pass</code>
-          <p>Forces the lagging branch and grades faster physical chaser speed.</p>
+          <p>Forces lagging behavior and grades faster physical chaser speed.</p>
         </article>
 
 
         <article class="case-row">
           <code>estop_speed_zero_pass</code>
-          <p>Forces the emergency-stop branch and grades near-zero chaser speed.</p>
+          <p>Forces emergency-stop behavior and grades near-zero chaser speed.</p>
         </article>
 
 
@@ -212,7 +218,7 @@
 
         <article class="case-row">
           <code>lead_s_turn_pass</code>
-          <p>Gives the target a compact S-turn path and grades convoy following after the target has completed two heading changes.</p>
+          <p>Gives the target a compact S-turn route and grades convoy following after the target has completed two heading changes.</p>
         </article>
 
 
@@ -260,7 +266,7 @@
 
         <article class="case-row">
           <code>runtime_estop_speed_zero_pass</code>
-          <p>Raises runtime safety ranges through CONVOY_UPDATES so the chaser enters the emergency-stop branch and grades near-zero physical speed.</p>
+          <p>Raises runtime safety ranges through CONVOY_UPDATES so the chaser enters emergency-stop behavior and grades near-zero physical speed.</p>
         </article>
 
 
@@ -296,25 +302,25 @@
 
         <article class="case-row">
           <code>bad_inter_mark_range_fail</code>
-          <p>Rejects negative inter_mark_range.</p>
+          <p>Negative inter_mark_range should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_mark_range_fail</code>
-          <p>Rejects negative max_mark_range.</p>
+          <p>Negative max_mark_range should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_radius_fail</code>
-          <p>Rejects a negative radius configuration and expects the behavior error path to make the mission fail.</p>
+          <p>Negative radius should be rejected and the mission should fail.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_nm_radius_fail</code>
-          <p>Rejects a negative nm_radius configuration and expects the behavior error path to make the mission fail.</p>
+          <p>Negative nm_radius should be rejected and the mission should fail.</p>
         </article>
 
 
@@ -338,7 +344,7 @@
 
         <article class="case-row">
           <code>bad_rng_estop_fail</code>
-          <p>Rejects a negative rng_estop safety range and expects the behavior error path to make the mission fail.</p>
+          <p>Negative rng_estop safety range should be rejected and the mission should fail.</p>
         </article>
 
 
@@ -356,7 +362,7 @@
 
         <article class="case-row">
           <code>bad_rng_safety_fail</code>
-          <p>Rejects malformed rng_safety.</p>
+          <p>Malformed rng_safety should be rejected and the mission should fail.</p>
         </article>
 
 

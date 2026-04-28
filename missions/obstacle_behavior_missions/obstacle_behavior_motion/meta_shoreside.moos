@@ -14,7 +14,7 @@ ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 100
 
-  Run = MOOSDB           @ NewConsole = false
+  Run = MOOSDB           @ NewConsole = false, ExtraProcessParams=MOOSDBArgs
   Run = pRealm           @ NewConsole = false
   Run = pLogger          @ NewConsole = false
   Run = uProcessWatch    @ NewConsole = false
@@ -31,6 +31,8 @@ ProcessConfig = ANTLER
 #else
   Run = pMissionHash     @ NewConsole = false
 #endif
+
+  MOOSDBArgs = --audit_port=$(AUDIT_PORT)
 }
 
 #include plugs.moos <pHostInfo>

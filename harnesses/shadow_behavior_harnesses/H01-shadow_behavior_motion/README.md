@@ -27,25 +27,25 @@ telemetry plus bridged NAV speed/heading from both vehicles.
 - `runtime_pwt_outer_off_pass` Starts active, then lowers `pwt_outer_dist` through `SHADOW_UPDATES` and verifies relevance shuts off.
 - `runtime_bad_update_recover_warn_pass` Sends one rejected runtime update followed by a valid update and requires both the expected warning and recovered active relevance.
 - `runtime_missing_contact_recover_warn_pass` Temporarily switches Shadow to a missing contact, then restores `contact=ben` and requires warning plus recovered active relevance.
-- `heading_widths_pass` Exercises accepted `heading_peakwidth` and `heading_basewidth` tuning.
-- `speed_width_aliases_pass` Exercises accepted `hdg_*` and `spd_*` alias parameters.
+- `heading_widths_pass` Uses custom `heading_peakwidth` and `heading_basewidth` tuning while preserving clean shadowing.
+- `speed_width_aliases_pass` Uses accepted `hdg_*` and `spd_*` alias parameters while preserving clean shadowing.
 - `no_extrapolate_pass` Verifies clean shadowing with contact extrapolation disabled.
 - `cnflag_range_macro_pass` Exercises inherited contact-flag handling by posting a range macro when the target is within 120 meters and requiring the bridged value.
 - `missing_contact_warn_pass` Uses a missing contact with `on_no_contact_ok=true` and requires warning-only behavior with no behavior error.
 - `missing_contact_fail` Uses a missing contact with `on_no_contact_ok=false` and expects the mission to fail.
 - `missing_contact_param_fail` Omits the required `contact` setting and expects the mission to fail.
-- `bad_pwt_outer_dist_fail` Rejects negative `pwt_outer_dist`.
-- `bad_heading_peakwidth_fail` Rejects negative `heading_peakwidth`.
-- `bad_heading_basewidth_fail` Rejects negative `heading_basewidth`.
-- `bad_speed_peakwidth_fail` Rejects negative `speed_peakwidth`.
-- `bad_speed_basewidth_fail` Rejects negative `speed_basewidth`.
-- `bad_decay_fail` Rejects malformed `decay` input.
+- `bad_pwt_outer_dist_fail` Negative `pwt_outer_dist` should be rejected and the mission should fail.
+- `bad_heading_peakwidth_fail` Negative `heading_peakwidth` should be rejected and the mission should fail.
+- `bad_heading_basewidth_fail` Negative `heading_basewidth` should be rejected and the mission should fail.
+- `bad_speed_peakwidth_fail` Negative `speed_peakwidth` should be rejected and the mission should fail.
+- `bad_speed_basewidth_fail` Negative `speed_basewidth` should be rejected and the mission should fail.
+- `bad_decay_fail` Malformed `decay` input should be rejected and the mission should fail.
 - `bad_decay_order_fail` Rejects `decay` ranges whose start is greater than the end.
-- `bad_extrapolate_fail` Rejects non-boolean `extrapolate` input.
-- `bad_on_no_contact_ok_fail` Rejects non-boolean `on_no_contact_ok` input.
-- `bad_time_on_leg_fail` Rejects negative inherited `time_on_leg` input.
+- `bad_extrapolate_fail` Non-boolean `extrapolate` input should be rejected and the mission should fail.
+- `bad_on_no_contact_ok_fail` Non-boolean `on_no_contact_ok` input should be rejected and the mission should fail.
+- `bad_time_on_leg_fail` Negative inherited `time_on_leg` input should be rejected and the mission should fail.
 - `bad_cnflag_fail` Rejects a malformed inherited contact-flag tag.
-- `bad_post_per_contact_info_fail` Rejects non-boolean `post_per_contact_info` input.
+- `bad_post_per_contact_info_fail` Non-boolean `post_per_contact_info` input should be rejected and the mission should fail.
 
 ## Running
 

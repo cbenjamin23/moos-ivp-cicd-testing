@@ -13,7 +13,7 @@ Primary intent:
 - cover the H01 canonicals that remain defensible as execution tests on the shared stem
 - validate that Ben completes the encounter cleanly
 - record realized closest range and final relative-side state
-- keep one case-specific shoreside patch per launch, with the verdict owned by `pMissionEval` as far as the app actually supports it
+- keep one shoreside patch per launch, with the verdict owned by `pMissionEval` as far as the app actually supports it
 
 ## How This Harness Works
 
@@ -21,7 +21,7 @@ Primary intent:
 - let the mission run through completion instead of grading at first
   classification
 - launch each case with its own `*-shoreside.xmoos` patch
-- let `pMissionEval` own case-specific pass/fail for:
+- let `pMissionEval` own pass/fail expectations for each case:
   - CPA band
   - relative side outcome (`cn_port`, selective `cn_fore`, `cn_crossed=0`)
   - final `colregs_mode` where the case identity should persist through completion

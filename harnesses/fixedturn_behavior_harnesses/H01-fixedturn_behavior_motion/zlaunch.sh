@@ -488,17 +488,43 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 6: Select the cases, run, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    starboard_90_pass
+    port_90_pass
+    starboard_360_pass
+    port_360_pass
+    speed_auto_pass
+    fixed_speed_pass
+    turn_delay_pass
+    timeout_complete_pass
+    turn_spec_sequence_pass
+    turn_spec_fallback_pass
+    turn_spec_key_update_pass
+    turn_spec_bad_update_recover_pass
+    turn_spec_clear_pass
+    turn_spec_timeout_pass
+    zero_fix_turn_pass
+    runtime_static_update_pass
+    turn_spec_clear_add_pass
+    turn_spec_aliases_pass
+    bad_fix_turn_fail
+    bad_stale_nav_thresh_fail
+    bad_turn_dir_fail
+    bad_speed_fail
+    bad_turn_spec_fail
+    bad_schedule_repeat_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="starboard_90_pass port_90_pass starboard_360_pass port_360_pass speed_auto_pass fixed_speed_pass turn_delay_pass timeout_complete_pass turn_spec_sequence_pass turn_spec_fallback_pass turn_spec_key_update_pass turn_spec_bad_update_recover_pass turn_spec_clear_pass turn_spec_timeout_pass zero_fix_turn_pass runtime_static_update_pass turn_spec_clear_add_pass turn_spec_aliases_pass bad_fix_turn_fail bad_stale_nav_thresh_fail bad_turn_dir_fail bad_speed_fail bad_turn_spec_fail bad_schedule_repeat_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     case_idx=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$case_idx" "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -516,7 +542,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -545,7 +571,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 

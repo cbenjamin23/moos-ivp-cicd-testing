@@ -40,16 +40,16 @@ Wave mode notes:
   alongside other MOOS missions
 
 Current cases:
-- `baseline_center_pass`: one obstacle blocks the lane and the vehicle is expected to arrive cleanly with zero collisions.
-- `offset_clear_pass`: one obstacle sits well above the transit lane, the vehicle should arrive with zero encounters.
-- `tight_alert_pass`: the alert range is reduced but still large enough for a clean one-obstacle avoidance transit.
-- `runtime_given_late_pass`: the obstacle is mailed to `pObstacleMgr` after launch with `GIVEN_OBSTACLE` instead of being present in startup config; the vehicle should still receive a usable alert and complete cleanly.
-- `point_cluster_pass`: the obstacle is built from `TRACKED_FEATURE` points and a generated convex hull instead of a configured polygon; the resulting alert should still support a clean avoidance transit.
-- `lasso_cluster_pass`: the obstacle is built from point inputs with `lasso=true`, exercising the pseudo-hull branch while still requiring clean transit.
-- `two_sequential_fail`: two obstacles are placed in sequence as a stress case; the short stem is expected to fail its normal clean-transit criteria.
-- `wide_center_fail`: a wider centered obstacle exceeds what this short corridor stem can safely clear, so the baseline mission criteria are expected to fail.
-- `avoid_disabled_fail`: obstacle alerts are redirected onto an unused variable instead of `OBSTACLE_ALERT`, so no avoid behavior spawns and the vehicle is expected to fail the normal mission criteria.
-- `no_alert_request_fail`: the obstacle exists in `pObstacleMgr`, but no `OBM_ALERT_REQUEST` is sent; without an alert variable, no avoid behavior should spawn and the normal clean-transit criteria should fail.
+- `baseline_center_pass`: One obstacle blocks the lane and the vehicle is expected to arrive cleanly with zero collisions.
+- `offset_clear_pass`: One obstacle sits well above the transit lane, the vehicle should arrive with zero encounters.
+- `tight_alert_pass`: The alert range is reduced but still large enough for a clean one-obstacle avoidance transit.
+- `runtime_given_late_pass`: The obstacle is mailed to `pObstacleMgr` after launch with `GIVEN_OBSTACLE` instead of being present in startup config; the vehicle should still receive a usable alert and complete cleanly.
+- `point_cluster_pass`: The obstacle is built from `TRACKED_FEATURE` points and a generated convex hull instead of a configured polygon; the resulting alert should still support a clean avoidance transit.
+- `lasso_cluster_pass`: The obstacle is built from point inputs with `lasso=true`, exercising the pseudo-hull branch while still requiring clean transit.
+- `two_sequential_fail`: Two obstacles are placed in sequence as a stress case; the short stem is expected to fail its normal clean-transit criteria.
+- `wide_center_fail`: A wider centered obstacle exceeds what this short corridor stem can safely clear, so the baseline mission criteria are expected to fail.
+- `avoid_disabled_fail`: Obstacle alerts are redirected onto an unused variable instead of `OBSTACLE_ALERT`, so no avoid behavior spawns and the vehicle is expected to fail the normal mission criteria.
+- `no_alert_request_fail`: The obstacle exists in `pObstacleMgr`, but no `OBM_ALERT_REQUEST` is sent; without an alert variable, no avoid behavior should spawn and the normal clean-transit criteria should fail.
 
 Typical results line:
 

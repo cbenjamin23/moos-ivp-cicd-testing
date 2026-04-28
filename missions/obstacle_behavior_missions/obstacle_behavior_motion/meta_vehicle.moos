@@ -14,7 +14,7 @@ ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 50
 
-  Run = MOOSDB         @ NewConsole = false
+  Run = MOOSDB         @ NewConsole = false, ExtraProcessParams=MOOSDBArgs
   Run = uProcessWatch  @ NewConsole = false
   Run = pShare         @ NewConsole = false
   Run = pLogger        @ NewConsole = false
@@ -27,6 +27,8 @@ ProcessConfig = ANTLER
   Run = pRealm         @ NewConsole = false
   Run = uSimMarineV22  @ NewConsole = false
   Run = pObstacleMgr   @ NewConsole = false
+
+  MOOSDBArgs = --audit_port=$(AUDIT_PORT)
 }
 
 #include plugs.moos <uSimMarineV22>

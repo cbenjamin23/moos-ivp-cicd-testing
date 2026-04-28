@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 Avoid-Obstacle Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260427-1">
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
 </head>
 <body>
   <header class="site-header">
@@ -12,12 +13,17 @@
       <span class="brand-mark">CI</span>
       <span>MOOS-IvP Harnesses</span>
     </a>
-    <nav>
-      <a href="../index.html#families">Harnesses</a>
-      <a href="../user-guide.html">Run Tests</a>
-      <a href="../technical.html">Technical</a>
-      <a href="../developer-guide.html">Developer</a>
-    </nav>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
   </header>
 
   <main>
@@ -52,7 +58,7 @@
         </div>
         <div class="gif-meta">
           <h3>Two Obstacles Clean</h3>
-          <p>Description: Two obstacles are placed in the corridor with one lower and one upper bias. This is the suite&#x27;s multi-obstacle clean-completion case: the vehicle should still...</p>
+          <p>Description: Two obstacles are placed in the corridor with one lower and one upper bias. This is the suite&#x27;s multi-obstacle clean-completion case: the vehicle should still alert, avoid, and finish with zero collisions. This case deliberately grades on clean completion rather than a specific final OBAVOIDING state or exact encounter count, because those were less stable than the mission outcome itself.</p>
         </div>
       </article>
 
@@ -63,7 +69,7 @@
         </div>
         <div class="gif-meta">
           <h3>Avoid Disabled Fail</h3>
-          <p>Description: The behavior is case-specific so its AVOID=true condition can never hold. The alert request still happens, but the avoid-obstacle lifecycle should fail to...</p>
+          <p>Description: This case makes the AVOID=true condition impossible to satisfy. The alert request still happens, but the avoid-obstacle lifecycle should fail to complete and the mission should fail.</p>
         </div>
       </article>
 
@@ -86,37 +92,37 @@
 
         <article class="case-row">
           <code>rng_flag_pass</code>
-          <p>The behavior is case-specific with rng_flag=&lt;20 AVOID_RANGE_SEEN=true. The mission passes only if that behavior-owned range flag is actually seen.</p>
+          <p>This case adds rng_flag=&lt;20 AVOID_RANGE_SEEN=true. The mission passes only if that behavior-owned range flag is actually seen.</p>
         </article>
 
 
         <article class="case-row">
           <code>cpa_flag_pass</code>
-          <p>The behavior is case-specific with cpa_flag=AVOID_CPA_SEEN=true. This is a more niche path because the flag only posts after a real CPA event is observed. This...</p>
+          <p>This case adds cpa_flag=AVOID_CPA_SEEN=true. This is a more focused case because the flag only posts after a real CPA event is observed. It grades the CPA flag plus basic safety, not late transit completion, so the verdict stays behavior-owned.</p>
         </article>
 
 
         <article class="case-row">
           <code>offlane_no_engagement_pass</code>
-          <p>The obstacle is moved well above the lane. The behavior should still request its alert path, but it should never receive an obstacle alert or run.</p>
+          <p>The obstacle is moved well above the lane. The behavior should still request alerts, but it should never receive an obstacle alert or run.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_refinery_pass</code>
-          <p>The behavior is case-specific with use_refinery=false. This keeps the same geometry, but exercises a different internal objective-building path.</p>
+          <p>Disables the IvP refinery while keeping the obstacle geometry unchanged. The case should still complete avoidance, proving the non-refinery objective path remains valid.</p>
         </article>
 
 
         <article class="case-row">
           <code>two_obstacles_clean_pass</code>
-          <p>Two obstacles are placed in the corridor with one lower and one upper bias. This is the suite&#x27;s multi-obstacle clean-completion case: the vehicle should still...</p>
+          <p>Two obstacles are placed in the corridor with one lower and one upper bias. This is the suite&#x27;s multi-obstacle clean-completion case: the vehicle should still alert, avoid, and finish with zero collisions. This case deliberately grades on clean completion rather than a specific final OBAVOIDING state or exact encounter count, because those were less stable than the mission outcome itself.</p>
         </article>
 
 
         <article class="case-row">
           <code>static_polygon_pass</code>
-          <p>The behavior is configured with a launch-time polygon instead of the templated OBSTACLE_ALERT path. It should still complete avoidance and arrive without collision.</p>
+          <p>The behavior is configured with a launch-time polygon instead of the templated OBSTACLE_ALERT input. It should still complete avoidance and arrive without collision.</p>
         </article>
 
 
@@ -134,7 +140,7 @@
 
         <article class="case-row">
           <code>avoid_disabled_fail</code>
-          <p>The behavior is case-specific so its AVOID=true condition can never hold. The alert request still happens, but the avoid-obstacle lifecycle should fail to...</p>
+          <p>This case makes the AVOID=true condition impossible to satisfy. The alert request still happens, but the avoid-obstacle lifecycle should fail to complete and the mission should fail.</p>
         </article>
 
 

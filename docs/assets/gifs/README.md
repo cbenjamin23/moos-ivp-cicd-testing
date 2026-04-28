@@ -90,8 +90,8 @@ Typical capture launch: `./zlaunch.sh --case=head_on_execution_pass --gui 10`
 Capture from: `harnesses/colregs_harnesses/H04-colregs_parameters`
 Typical capture launch: `./zlaunch.sh --group=min_util_cpa_dist --gui 10`
 
-- `colregs-parameters-cpa-compare.gif` - Default vs High CPA; representative case `min_util_cpa_high_pass`
-- `colregs-parameters-headon-only.gif` - Head-on Only Toggle; representative case `headon_only_true_pass`
+- `colregs-parameters-bow-distance.gif` - Bow Distance Threshold; representative case `giveway_bow_dist_high_pass`
+- `colregs-parameters-turn-radius.gif` - Turn Radius Branch; representative case `turn_radius_high_pass`
 
 ## H01 Avoid-Collision Behavior
 
@@ -100,6 +100,7 @@ Typical capture launch: `./zlaunch.sh --case=head_on_resolve_pass --gui 10`
 
 - `collision-behavior-head-on-resolve.gif` - Head-on Resolve; representative case `head_on_resolve_pass`
 - `collision-behavior-no-alert-fail.gif` - No Alert Request Fail; representative case `no_alert_request_fail`
+- `collision-behavior-default-resolve.gif` - Baseline Resolve; representative case `default_resolve_pass`
 
 ## H01 Avoid-Obstacle Behavior
 
@@ -166,18 +167,27 @@ Typical capture launch: `./zlaunch.sh --case=static_convoy_pass --gui 10`
 Capture from: `harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion`
 Typical capture launch: `./zlaunch.sh --case=static_cutrange_pass --gui 10`
 
+- `cutrange-behavior-headon.gif` - Head-on Closure; representative case `headon_cutrange_pass`
+- `cutrange-behavior-crossing.gif` - Crossing Closure; representative case `crossing_cutrange_pass`
+- `cutrange-behavior-s-turn.gif` - S-turn Target; representative case `s_turn_target_pass`
 
 ## H01 FixedTurn Behavior
 
 Capture from: `harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion`
 Typical capture launch: `./zlaunch.sh --case=starboard_90_pass --gui 10`
 
+- `fixedturn-behavior-starboard-90.gif` - Starboard 90; representative case `starboard_90_pass`
+- `fixedturn-behavior-port-360.gif` - Port 360; representative case `port_360_pass`
+- `fixedturn-behavior-turn-spec-sequence.gif` - Turn Spec Sequence; representative case `turn_spec_sequence_pass`
 
 ## H01 Shadow Behavior
 
 Capture from: `harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion`
 Typical capture launch: `./zlaunch.sh --case=static_shadow_pass --gui 10`
 
+- `shadow-behavior-static.gif` - Static Shadow; representative case `static_shadow_pass`
+- `shadow-behavior-turn-north.gif` - Turn North Shadow; representative case `turn_north_shadow_pass`
+- `shadow-behavior-runtime-pwt-on.gif` - Runtime PWT On; representative case `runtime_pwt_outer_on_pass`
 
 ## P01 Obstacle Gauntlet
 

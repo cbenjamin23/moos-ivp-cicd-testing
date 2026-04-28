@@ -131,6 +131,37 @@ wait_for_result_line() {
     return 1
 }
 
+port_is_busy() {
+    local port="$1"
+    command -v lsof >/dev/null 2>&1 || return 1
+    lsof -nP -iTCP:"$port" >/dev/null 2>&1 || \
+        lsof -nP -iUDP:"$port" >/dev/null 2>&1
+}
+
+check_case_ports() {
+    local case_name="$1"
+    shift
+    local port
+    local busy_ports=""
+
+    for port in "$@"; do
+        if port_is_busy "$port"; then
+            busy_ports="$busy_ports $port"
+        fi
+    done
+
+    if [ "$busy_ports" != "" ]; then
+        echo "$ME: Port block for case [$case_name] is busy. Busy ports:$busy_ports"
+        for port in $busy_ports; do
+            { lsof -nP -iTCP:"$port" 2>/dev/null; lsof -nP -iUDP:"$port" 2>/dev/null; } | \
+                sed "s/^/$ME:   /"
+        done
+        return 1
+    fi
+
+    return 0
+}
+
 #------------------------------------------------------------
 #  Part 4: Set convenience functions for managing x-files
 #          and per-run cleanup.
@@ -214,6 +245,7 @@ get_case_config() {
         VEH_BHV_PATCH="$HARNESS_DIR/rng-flag-no-threshold-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "avoid_disabled_fail" ]; then
         EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/avoid-disabled-fail-shoreside.xmoos"
         VEH_BHV_PATCH="$HARNESS_DIR/avoid-disabled-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_polygon_fail" ]; then
         EXPECTED="fail"
@@ -296,6 +328,8 @@ run_case() {
     local veh_mport
     local shore_pshare
     local veh_pshare
+    local shore_audit_port
+    local veh_audit_port
     local line
     local actual
     local status
@@ -317,7 +351,15 @@ run_case() {
         veh_mport=$((case_base + 1))
         shore_pshare=$((case_base + 10))
         veh_pshare=$((case_base + 11))
-        XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
+        shore_audit_port=$((case_base + 20))
+        veh_audit_port=$((case_base + 21))
+        if ! check_case_ports "$case_name" "$shore_mport" "$veh_mport" "$shore_pshare" "$veh_pshare" "$shore_audit_port" "$veh_audit_port"; then
+            echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=port_busy" >> "$RESULTS_FILE"
+            ALL_OK="no"
+            cd "$HARNESS_DIR"
+            return 0
+        fi
+        XARGS="$XARGS --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --shore_audit_port=$shore_audit_port --veh_audit_port=$veh_audit_port"
     fi
     if [ "$NOGUI" != "" ]; then
         XARGS="$XARGS $NOGUI"
@@ -407,6 +449,8 @@ run_case_isolated() {
     local veh_mport
     local shore_pshare
     local veh_pshare
+    local shore_audit_port
+    local veh_audit_port
     local line
     local actual
     local status
@@ -429,11 +473,18 @@ run_case_isolated() {
     veh_mport=$((case_base + 1))
     shore_pshare=$((case_base + 10))
     veh_pshare=$((case_base + 11))
+    shore_audit_port=$((case_base + 20))
+    veh_audit_port=$((case_base + 21))
+
+    if ! check_case_ports "$case_name" "$shore_mport" "$veh_mport" "$shore_pshare" "$veh_pshare" "$shore_audit_port" "$veh_audit_port"; then
+        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=port_busy" > "$case_result_file"
+        return 1
+    fi
 
     (
         cd "$case_dir"
         : > results.txt
-        xargs="--max_time=$MAX_TIME --mmod=$case_name --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare $TIME_WARP"
+        xargs="--max_time=$MAX_TIME --mmod=$case_name --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --shore_audit_port=$shore_audit_port --veh_audit_port=$veh_audit_port $TIME_WARP"
         if [ "$NOGUI" != "" ]; then
             xargs="$xargs $NOGUI"
         fi
@@ -477,16 +528,39 @@ trap cleanup EXIT
 #------------------------------------------------------------
 #  Part 8: Select the case set, run the matrix, and report.
 #------------------------------------------------------------
+ALL_CASES=(
+    default_auto_request_pass
+    rng_flag_pass
+    cpa_flag_pass
+    offlane_no_engagement_pass
+    no_refinery_pass
+    two_obstacles_clean_pass
+    static_polygon_pass
+    poly_alias_pass
+    rng_flag_no_threshold_pass
+    avoid_disabled_fail
+    bad_polygon_fail
+    bad_pwt_inner_dist_fail
+    bad_pwt_outer_dist_fail
+    bad_completed_dist_fail
+    bad_min_util_cpa_dist_fail
+    bad_max_util_cpa_dist_fail
+    bad_allowable_ttc_fail
+    bad_rng_flag_fail
+    bad_cpa_flag_fail
+    bad_use_refinery_fail
+    bad_pwt_grade_fail
+)
+
+RUN_CASES=("${ALL_CASES[@]}")
 if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES="default_auto_request_pass rng_flag_pass cpa_flag_pass offlane_no_engagement_pass no_refinery_pass two_obstacles_clean_pass static_polygon_pass poly_alias_pass rng_flag_no_threshold_pass avoid_disabled_fail bad_polygon_fail bad_pwt_inner_dist_fail bad_pwt_outer_dist_fail bad_completed_dist_fail bad_min_util_cpa_dist_fail bad_max_util_cpa_dist_fail bad_allowable_ttc_fail bad_rng_flag_fail bad_cpa_flag_fail bad_use_refinery_fail bad_pwt_grade_fail"
+    RUN_CASES=("$CASE")
 fi
 
 : > "$RESULTS_FILE"
 
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
             echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
@@ -505,7 +579,7 @@ else
     case_idx=0
     wave_pids=""
     wave_count=0
-    for ONE_CASE in $CASES; do
+    for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case_isolated "$case_idx" "$ONE_CASE" &
         wave_pids="$wave_pids $!"
         wave_count=$((wave_count + 1))
@@ -534,7 +608,7 @@ else
 fi
 
 if [ "$JUST_MAKE" = "yes" ]; then
-    echo "$ME: Just_make complete for cases: $CASES"
+    echo "$ME: Just_make complete for cases: ${RUN_CASES[*]}"
     exit 0
 fi
 
