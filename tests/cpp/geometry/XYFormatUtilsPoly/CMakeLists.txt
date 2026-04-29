@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_xyformatutils_poly
+  SOURCES
+    XYFormatUtilsPolyTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYPolygon
+    XYFormatUtilsPoly
+    formats
+)

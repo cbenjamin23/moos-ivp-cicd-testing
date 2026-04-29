@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_contacts_noderider
+  SOURCES
+    NodeRiderTest.cpp
+  LIBS
+    contacts
+    mbutil
+  LABELS
+    contacts
+    NodeRider
+    NodeRiderSet
+    NodeReport
+)

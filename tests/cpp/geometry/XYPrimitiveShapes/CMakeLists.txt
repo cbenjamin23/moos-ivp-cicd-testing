@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_xyprimitive_shapes
+  SOURCES
+    XYPrimitiveShapesTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    math
+    XYPrimitiveShapes
+    XYArrow
+    XYSegment
+    XYSquare
+    primitive_shapes
+)

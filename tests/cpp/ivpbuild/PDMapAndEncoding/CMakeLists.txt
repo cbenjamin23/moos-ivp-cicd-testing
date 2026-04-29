@@ -1,0 +1,16 @@
+add_moos_cpp_test(test_ivpbuild_pdmap_encoding
+  SOURCES
+    PDMapAndEncodingTest.cpp
+  LIBS
+    ivpbuild
+    ivpcore
+    geometry
+    mbutil
+  LABELS
+    ivpbuild
+    math
+    PDMapBuilder
+    FunctionEncoder
+    OF_Coupler
+    OF_Rater
+)

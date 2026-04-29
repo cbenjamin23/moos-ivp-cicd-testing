@@ -1,0 +1,13 @@
+add_moos_cpp_test(test_mbutil_misc_objects
+  SOURCES
+    AckMailTimeFileTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    AckMessage
+    MailFlagSet
+    TStamp
+    Odometer
+    FileBuffer
+)

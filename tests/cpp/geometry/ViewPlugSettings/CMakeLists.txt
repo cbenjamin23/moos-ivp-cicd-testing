@@ -1,0 +1,16 @@
+add_moos_cpp_test(test_geometry_viewplug_settings
+  SOURCES
+    ViewPlugSettingsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    ViewPlugSettings
+    HintHolder
+    VPlug_GeoSettings
+    VPlug_VehiSettings
+    VPlug_DropPoints
+    VPlug_GeoShapesMap
+    viewer_plugins
+)

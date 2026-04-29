@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_cpaplatform
+  SOURCES
+    CPAPlatformTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    CPAPlatform
+    BNGEngine
+    CPA_Utils
+    PlatModel
+    encounters
+    math
+)

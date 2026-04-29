@@ -1,0 +1,87 @@
+//-------------------------------------------------
+// FILE: depth-elevator-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=MOOS_MANUAL_OVERRIDE, val=false, time=0.5
+  event = var=DESIRED_HEADING,      val=90,    time=2.0
+  event = var=DESIRED_SPEED,        val=2,     time=2.0
+  event = var=DESIRED_DEPTH,        val=6,     time=2.0
+  event = var=NAV_HEADING,          val=0,     time=2.0
+  event = var=NAV_SPEED,            val=0,     time=2.0
+  event = var=NAV_DEPTH,            val=5,     time=2.0
+  event = var=NAV_PITCH,            val=0,     time=2.0
+  event = var=TEST_EVAL_READY,      val=true,  time=4.0
+}
+
+ProcessConfig = pMarinePIDV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  verbose        = false
+  output_suffix  = _PID
+  depth_control  = true
+  tardy_helm_threshold = 30
+  tardy_nav_threshold  = 30
+
+  yaw_pid_kp             = 1.0
+  yaw_pid_kd             = 0.0
+  yaw_pid_ki             = 0.0
+  yaw_pid_integral_limit = 100
+  maxrudder              = 100
+
+  speed_factor              = 20
+  speed_pid_kp              = 20
+  speed_pid_kd              = 0.0
+  speed_pid_ki              = 0.0
+  speed_pid_integral_limit  = 100
+  maxthrust                 = 100
+
+  z_to_pitch_pid_kp             = 0.2
+  z_to_pitch_pid_kd             = 0
+  z_to_pitch_pid_ki             = 0
+  z_to_pitch_pid_integral_limit = 1
+  maxpitch                      = 15
+
+  pitch_pid_kp             = 1.0
+  pitch_pid_kd             = 0
+  pitch_pid_ki             = 0
+  pitch_pid_integral_limit = 1
+  maxelevator              = 13
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = DESIRED_RUDDER_PID > 1
+  pass_condition = DESIRED_THRUST_PID >= 39
+  pass_condition = DESIRED_THRUST_PID <= 41
+  pass_condition = DESIRED_ELEVATOR_PID >= 11.3
+  pass_condition = DESIRED_ELEVATOR_PID <= 11.7
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pid_unit
+  mission_mod  = depth_elevator_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = rudder=$[DESIRED_RUDDER_PID]
+  report_column    = thrust=$[DESIRED_THRUST_PID]
+  report_column    = elevator=$[DESIRED_ELEVATOR_PID]
+  report_column    = control=$[PID_HAS_CONTROL]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

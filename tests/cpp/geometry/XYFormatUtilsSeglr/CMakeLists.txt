@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_xyformatutils_seglr
+  SOURCES
+    XYFormatUtilsSeglrTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    formats
+    math
+    XYSeglr
+    XYFormatUtilsSeglr
+    Seglr
+    ray
+)

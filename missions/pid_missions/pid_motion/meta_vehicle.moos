@@ -1,0 +1,172 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = $(VNAME)
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+  Run = uSimMarineV22  @ NewConsole = false
+}
+
+#include plugs.moos <pShare>
+#include plugs.moos <pHostInfo>
+#include plugs.moos <uProcessWatch>
+#include plugs.moos <uLoadWatch>
+
+//----------------------------------------------------
+// uSimMarineV22 Config Block
+
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = $(START_POS),depth=$(START_DEPTH:=0)
+  prefix    = NAV
+
+  max_speed        = $(MAX_SPD)
+  max_deceleration = 0.1
+  turn_rate        = 95
+  turn_spd_loss    = 0.6
+
+  buoyancy_rate         = 0.025
+  max_depth_rate        = 5
+  max_depth_rate_speed  = 2.0
+  default_water_depth   = 400
+}
+
+//----------------------------------------------------
+// pHelmIvP Config Block
+
+ProcessConfig = pHelmIvP
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  term_report_interval = 0
+  bhv_dir_not_found_ok = true
+
+  behaviors = targ_$(VNAME).bhv
+  verbose   = false
+  domain    = course:0:359:360
+  domain    = speed:0:$(MAX_SPD):31
+}
+
+//----------------------------------------------------
+// pNodeReporter Config Block
+
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  platform_type  = kayak
+  platform_color = $(COLOR)
+  terse_reports  = true
+}
+
+//----------------------------------------------------
+// uFldNodeBroker Config Block
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=VIEW_POLYGON
+  bridge = src=ARRIVED
+  bridge = src=NAV_X,       alias=ABE_NAV_X
+  bridge = src=NAV_Y,       alias=ABE_NAV_Y
+  bridge = src=NAV_SPEED,   alias=ABE_NAV_SPEED
+  bridge = src=NAV_HEADING, alias=ABE_NAV_HEADING
+  bridge = src=NAV_DEPTH,   alias=ABE_NAV_DEPTH
+  bridge = src=DESIRED_THRUST, alias=ABE_DESIRED_THRUST
+  bridge = src=DESIRED_RUDDER, alias=ABE_DESIRED_RUDDER
+  bridge = src=DESIRED_ELEVATOR, alias=ABE_DESIRED_ELEVATOR
+  bridge = src=NODE_REPORT_LOCAL, alias=NODE_REPORT
+}
+
+//----------------------------------------------------
+// pMarinePIDV22 Config Block
+
+ProcessConfig = pMarinePIDV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  verbose       = false
+  depth_control = false
+
+  yaw_pid_kp             = 1.2
+  yaw_pid_kd             = 0.1
+  yaw_pid_ki             = 0.3
+  yaw_pid_integral_limit = 0.07
+
+  speed_pid_kp             = 20.0
+  speed_pid_kd             = 0.0
+  speed_pid_ki             = 0.0
+  speed_pid_integral_limit = 0.07
+
+  maxrudder = 100
+  maxthrust = 100
+
+  speed_factor = 20
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = LOG_%(VNAME)
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+  Log = BHV_WARNING @ 0 nosync
+  Log = BHV_ERROR @ 0 nosync
+  Log = NODE_REPORT_LOCAL @ 0 nosync
+
+  LogAuxSrc = true
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = APPCAST
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *ITER_GAP
+  WildCardOmitPattern = *ITER_LEN
+  WildCardOmitPattern = SIMULATION_MODE
+  WildCardOmitPattern = TRUE_X
+  WildCardOmitPattern = TRUE_Y
+  WildCardOmitPattern = NAV_LAT
+  WildCardOmitPattern = NAV_LONG
+  WildCardOmitPattern = DB_QOS
+}

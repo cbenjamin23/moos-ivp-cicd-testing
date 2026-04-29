@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_cpaengine
+  SOURCES
+    CPAEngineTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    CPAEngine
+    encounters
+    math
+)

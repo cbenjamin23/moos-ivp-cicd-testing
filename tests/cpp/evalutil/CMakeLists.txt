@@ -1,0 +1,2 @@
+add_subdirectory(VCheck)
+add_subdirectory(LogicTestSequence)

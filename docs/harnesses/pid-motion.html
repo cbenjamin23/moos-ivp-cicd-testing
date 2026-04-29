@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H02 Marine PID Motion | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Marine PID</p>
+      <h1>H02 Marine PID Motion</h1>
+      <p class="lede">Moving correctness tests for pMarinePIDV22 closed-loop behavior. These cases add pHelmIvP and uSimMarineV22 and verify that PID output drives arrival, turn recovery, speed-PID transit, depth response, and expected authority failures.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one simulated vehicle and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the shoreside evaluator grades bridged nav and actuator evidence.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pid-motion-hard-turn-recover.gif">
+          <img src="../assets/gifs/pid-motion-hard-turn-recover.gif" alt="Hard Turn Recovery GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Hard Turn Recovery</h3>
+          <p>Description: starting nearly opposite the desired leg must unwind and arrive with bounded speed and acceptable final heading.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pid-motion-depth-step.gif">
+          <img src="../assets/gifs/pid-motion-depth-step.gif" alt="Depth Step Response GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Depth Step Response</h3>
+          <p>Description: depth control must descend during transit and finish in the commanded depth band while holding eastbound heading.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_transit_pass</code>
+          <p>default straight-line transit must arrive inside the target corridor with eastbound heading and bounded speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_recover_pass</code>
+          <p>starting north of the eastbound leg must still recover to arrival inside a wider cross-track corridor.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hard_turn_recover_pass</code>
+          <p>starting nearly opposite the desired leg must unwind and arrive with bounded speed and acceptable final heading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rudder_bias_recover_pass</code>
+          <p>simulated rudder bias must be corrected strongly enough to arrive despite a wider heading tolerance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_pid_transit_pass</code>
+          <p>speed_factor=0 must still complete the transit through speed PID control and bounded final speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_speed_factor_update_pass</code>
+          <p>an underway SPEED_FACTOR update must restore actuator authority and still complete the transit.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>depth_step_pass</code>
+          <p>depth control must descend during transit and finish in the commanded depth band while holding eastbound heading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>override_release_pass</code>
+          <p>startup manual override must release cleanly, reacquire helm/nav mail, and still satisfy the arrival gate.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>low_rudder_authority_fail</code>
+          <p>intentionally low maxrudder should fail the same turn-recovery arrival gate within the evaluation window.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>low_thrust_authority_fail</code>
+          <p>intentionally low maxthrust should fail the arrival gate because the vehicle lacks forward authority.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>low_elevator_authority_fail</code>
+          <p>intentionally low maxelevator should fail an aggressive depth-response gate while still moving east.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>depth_control_disabled_fail</code>
+          <p>a depth behavior with depth_control=false should fail the depth band because no elevator response is produced.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>manual_override_fail</code>
+          <p>holding manual override should prevent actuator authority and fail the arrival gate.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pid_harnesses/H02-pid_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pid_missions/pid_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

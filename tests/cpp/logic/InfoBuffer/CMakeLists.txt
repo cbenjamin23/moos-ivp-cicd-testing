@@ -1,0 +1,11 @@
+add_moos_cpp_test(test_logic_infobuffer
+  SOURCES
+    InfoBufferAndLogicBufferTest.cpp
+  LIBS
+    logic
+    mbutil
+  LABELS
+    logic
+    InfoBuffer
+    LogicBuffer
+)

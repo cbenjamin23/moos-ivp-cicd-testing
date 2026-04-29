@@ -1,0 +1,11 @@
+add_moos_cpp_test(test_geometry_angleutils
+  SOURCES
+    AngleUtilsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    AngleUtils
+    math
+)

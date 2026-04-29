@@ -1,0 +1,50 @@
+//-------------------------------------------------
+// FILE: hard-turn-recover-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=55
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = (ARRIVED = true) or (TEST_EVAL_READY = true)
+  pass_condition = ARRIVED = true
+  pass_condition = ABE_NAV_X >= 55
+  pass_condition = ABE_NAV_X <= 80
+  pass_condition = ABE_NAV_Y >= -76
+  pass_condition = ABE_NAV_Y <= -44
+  pass_condition = ABE_NAV_HEADING >= 70
+  pass_condition = ABE_NAV_HEADING <= 115
+  pass_condition = ABE_NAV_SPEED <= 3.0
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = pid_motion
+  mission_mod  = hard_turn_recover_pass
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = arrived=$[ARRIVED]
+  report_column = x=$[ABE_NAV_X]
+  report_column = y=$[ABE_NAV_Y]
+  report_column = speed=$[ABE_NAV_SPEED]
+  report_column = heading=$[ABE_NAV_HEADING]
+  report_column = thrust=$[ABE_DESIRED_THRUST]
+  report_column = rudder=$[ABE_DESIRED_RUDDER]
+  report_column = mhash=$[MHASH_SHORT]
+}

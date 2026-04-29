@@ -1,0 +1,16 @@
+add_moos_cpp_test(test_geometry_misc_geometry_tools
+  SOURCES
+    MiscGeometryToolsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    MiscGeometryTools
+    SeglrUtils
+    WallEngine
+    XYEncoders
+    XYFormatUtilsConvexGrid
+    XYArtifactGrid
+    XYFieldGenerator
+)

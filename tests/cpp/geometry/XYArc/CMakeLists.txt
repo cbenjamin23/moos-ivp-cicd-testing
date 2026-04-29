@@ -1,0 +1,11 @@
+add_moos_cpp_test(test_geometry_xyarc
+  SOURCES
+    XYArcTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYArc
+    math
+)

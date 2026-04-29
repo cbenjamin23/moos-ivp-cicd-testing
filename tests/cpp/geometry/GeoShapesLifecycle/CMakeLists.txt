@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_geoshapes_lifecycle
+  SOURCES
+    GeoShapesLifecycleTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    GeoShapesLifecycle
+    VPlug_GeoShapes
+    viewer_plugins
+)

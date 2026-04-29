@@ -1,0 +1,4 @@
+Behavior = BHV_Waypoint\   
+{ name = survey }\
+condition = MODE==SURVEY
+endflag = RETURN=true\

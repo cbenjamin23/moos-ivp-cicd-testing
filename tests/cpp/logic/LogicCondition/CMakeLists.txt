@@ -1,0 +1,13 @@
+add_moos_cpp_test(test_logic_conditions
+  SOURCES
+    LogicConditionTest.cpp
+    LogicUtilsTest.cpp
+  LIBS
+    logic
+    mbutil
+  LABELS
+    logic
+    LogicCondition
+    LogicUtils
+    ParseNode
+)

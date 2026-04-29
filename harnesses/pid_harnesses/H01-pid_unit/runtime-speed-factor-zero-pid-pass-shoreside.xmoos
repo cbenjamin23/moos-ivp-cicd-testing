@@ -1,0 +1,45 @@
+//-------------------------------------------------
+// FILE: runtime-speed-factor-zero-pid-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=MOOS_MANUAL_OVERRIDE, val=false, time=0.5
+  event = var=SPEED_FACTOR,         val=0,     time=1.5
+  event = var=DESIRED_HEADING,      val=90,    time=2.0
+  event = var=DESIRED_SPEED,        val=2,     time=2.0
+  event = var=NAV_HEADING,          val=0,     time=2.0
+  event = var=NAV_SPEED,            val=0,     time=2.0
+  event = var=TEST_EVAL_READY,      val=true,  time=4.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = DESIRED_RUDDER_PID > 1
+  pass_condition = DESIRED_THRUST_PID >= 99
+  pass_condition = DESIRED_THRUST_PID <= 100
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pid_unit
+  mission_mod  = runtime_speed_factor_zero_pid_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = rudder=$[DESIRED_RUDDER_PID]
+  report_column    = thrust=$[DESIRED_THRUST_PID]
+  report_column    = control=$[PID_HAS_CONTROL]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

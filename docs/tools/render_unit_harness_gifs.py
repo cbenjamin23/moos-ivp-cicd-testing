@@ -82,6 +82,13 @@ FONT_SMALL = font(px(19))
 FONT_SMALL_BOLD = font(px(19), True)
 FONT_MED = font(px(26), True)
 
+PID_FONT_TITLE = font(px(34), True)
+PID_FONT_SUB = font(px(24))
+PID_FONT_LABEL = font(px(30), True)
+PID_FONT_DETAIL = font(px(22))
+PID_FONT_TAG = font(px(24), True)
+PID_FONT_CARD = font(px(32), True)
+
 
 def clamp01(x: float) -> float:
     return max(0.0, min(1.0, x))
@@ -140,6 +147,40 @@ def draw_base(title: str, subtitle: str, case_name: str) -> tuple[Image.Image, I
     draw.text((px(42), px(62)), subtitle, fill=MUTED, font=FONT_TINY)
     draw.text((W - px(392), H - px(54)), f"H01 {case_name}", fill=MUTED, font=FONT_TINY)
     return im, draw
+
+
+def draw_pid_base(title: str, subtitle: str, case_name: str) -> tuple[Image.Image, ImageDraw.ImageDraw]:
+    im = Image.new("RGB", (W, H), BG)
+    draw = ImageDraw.Draw(im, "RGBA")
+    for x in range(0, W, px(64)):
+        draw.line((x, 0, x, H), fill=GRID, width=1)
+    for y in range(0, H, px(64)):
+        draw.line((0, y, W, y), fill=GRID, width=1)
+    for x in range(0, W, px(256)):
+        draw.line((x, 0, x, H), fill=GRID_STRONG, width=1)
+    for y in range(0, H, px(256)):
+        draw.line((0, y, W, y), fill=GRID_STRONG, width=1)
+    draw.text((px(48), px(42)), title, fill=TEXT, font=PID_FONT_TITLE)
+    draw.text((px(48), px(88)), subtitle, fill=MUTED, font=PID_FONT_SUB)
+    draw.text((W - px(455), H - px(72)), f"H01 {case_name}", fill=MUTED, font=PID_FONT_DETAIL)
+    return im, draw
+
+
+def pid_tag(draw: ImageDraw.ImageDraw, p: tuple[float, float], text: str, color: str) -> None:
+    x, y = p
+    bbox = draw.textbbox((0, 0), text, font=PID_FONT_TAG)
+    w = bbox[2] - bbox[0] + px(24)
+    h = bbox[3] - bbox[1] + px(18)
+    draw.rounded_rectangle((x, y, x + w, y + h), radius=px(7), fill="#252b3a", outline=color, width=px(2))
+    draw.text((x + px(12), y + px(8)), text, fill=color, font=PID_FONT_TAG)
+
+
+def pid_pill(draw: ImageDraw.ImageDraw, xy: tuple[int, int, int, int], title: str, detail: str, ok: bool) -> None:
+    outline = TEAL if ok else ORANGE
+    fill = "#273142" if ok else "#262b39"
+    draw.rounded_rectangle(xy, radius=px(10), fill=fill, outline=outline, width=px(3))
+    draw.text((xy[0] + px(22), xy[1] + px(18)), title, fill=outline, font=PID_FONT_CARD)
+    draw.text((xy[0] + px(22), xy[1] + px(60)), detail, fill=TEXT if ok else MUTED, font=PID_FONT_DETAIL)
 
 
 def ownship(draw: ImageDraw.ImageDraw, p_world: tuple[float, float], label: str = "abe") -> None:
@@ -382,11 +423,142 @@ def cmgr_cpa_detection() -> None:
     save_gif(frames, "cmgr-unit-cpa-detection.gif")
 
 
+def pid_heading_wrap() -> None:
+    frames: list[Image.Image] = []
+    cx, cy = W // 2 + px(116), H // 2 - px(38)
+    radius = px(235)
+    for i in range(FRAMES):
+        t = i / (FRAMES - 1)
+        resolved = t >= 0.58
+        arc_t = ease((t - 0.20) / 0.46)
+
+        im, draw = draw_pid_base(
+            "Heading Wrap",
+            "Checks the short turn across 0 deg.",
+            "heading_wrap_pass",
+        )
+        draw.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), outline=WHITE_FAINT, width=px(3))
+        for label, angle in (("N", 0), ("E", 90), ("S", 180), ("W", 270)):
+            rad = math.radians(angle - 90)
+            x = cx + math.cos(rad) * (radius + px(46))
+            y = cy + math.sin(rad) * (radius + px(46))
+            draw.text((x - px(12), y - px(18)), label, fill=MUTED, font=PID_FONT_LABEL)
+
+        for angle, color, text, offset in (
+            (355, ORANGE, "NAV 355", (-px(210), px(10))),
+            (5, TEAL, "DESIRED 5", (px(58), px(10))),
+        ):
+            rad = math.radians(angle - 90)
+            x = cx + math.cos(rad) * radius
+            y = cy + math.sin(rad) * radius
+            draw.line((cx, cy, x, y), fill=color, width=px(5))
+            pid_tag(draw, (x + offset[0], y + offset[1]), text, color)
+
+        start = math.radians(355 - 90)
+        end = math.radians((355 + 10 * arc_t) - 90)
+        points = []
+        for step in range(22):
+            a = start + (end - start) * step / 21
+            points.append((cx + math.cos(a) * px(178), cy + math.sin(a) * px(178)))
+        draw.line(points, fill=TEAL if resolved else ORANGE, width=px(6))
+        pid_tag(draw, (px(72), px(158)), "short wrap: +10 deg", TEAL if resolved else ORANGE)
+        pid_pill(draw, (px(48), H - px(160), px(645), H - px(48)), "RUDDER_PID = +10", "Positive small-turn command, not a 350 deg swing.", resolved)
+        frames.append(im)
+    save_gif(frames, "pid-unit-heading-wrap.gif")
+
+
+def pid_depth_elevator() -> None:
+    frames: list[Image.Image] = []
+    current_depth = 5.0
+    target_depth = 6.0
+    expected_elevator = 11.5
+    for i in range(FRAMES):
+        t = i / (FRAMES - 1)
+        active = t >= 0.38
+        elevator = expected_elevator * ease((t - 0.38) / 0.42)
+        error_alpha = ease((t - 0.12) / 0.30)
+        gauge_alpha = ease((t - 0.42) / 0.38)
+
+        im, draw = draw_pid_base(
+            "Depth Elevator",
+            "Checks depth error maps to elevator authority.",
+            "depth_elevator_pass",
+        )
+        left, top = px(180), px(170)
+        right, bottom = W - px(500), H - px(230)
+        draw.rectangle((left, top, right, bottom), outline=WHITE_FAINT, width=px(2))
+        depth_min, depth_max = 4.0, 7.0
+        for depth in range(4, 8):
+            y = top + ((depth - depth_min) / (depth_max - depth_min)) * (bottom - top)
+            draw.line((left, y, right, y), fill=GRID_STRONG, width=1)
+            draw.text((left - px(96), y - px(16)), f"{depth}m", fill=MUTED, font=PID_FONT_DETAIL)
+
+        nav_y = top + ((current_depth - depth_min) / (depth_max - depth_min)) * (bottom - top)
+        des_y = top + ((target_depth - depth_min) / (depth_max - depth_min)) * (bottom - top)
+        draw.line((left, des_y, right, des_y), fill=TEAL, width=px(5))
+        pid_tag(draw, (right - px(290), des_y - px(70)), "TARGET 6m", TEAL)
+
+        sub_x = left + (right - left) * 0.47
+        marker_color = ORANGE if not active else YELLOW
+        draw.rounded_rectangle(
+            (sub_x - px(50), nav_y - px(18), sub_x + px(50), nav_y + px(18)),
+            radius=px(6),
+            fill=marker_color,
+            outline="#fff0c9",
+        )
+        draw.polygon(
+            [(sub_x + px(50), nav_y), (sub_x + px(82), nav_y - px(20)), (sub_x + px(82), nav_y + px(20))],
+            fill=marker_color,
+            outline="#fff0c9",
+        )
+        arrow_y = nav_y + (des_y - nav_y) * error_alpha
+        dashed_line(draw, (sub_x, nav_y + px(32)), (sub_x, arrow_y), fill=WHITE_FAINT, width=px(3))
+        if error_alpha > 0.7:
+            draw.polygon(
+                [
+                    (sub_x, des_y + px(8)),
+                    (sub_x - px(12), des_y - px(15)),
+                    (sub_x + px(12), des_y - px(15)),
+                ],
+                fill=WHITE_FAINT,
+            )
+            pid_tag(draw, (sub_x - px(118), (nav_y + des_y) / 2 - px(18)), "error +1m", WHITE_FAINT)
+        pid_tag(draw, (sub_x + px(104), nav_y - px(24)), "CURRENT 5m", ORANGE)
+
+        gauge_x0, gauge_y0 = right + px(80), top + px(20)
+        gauge_x1, gauge_y1 = W - px(120), bottom - px(10)
+        draw.rounded_rectangle((gauge_x0, gauge_y0, gauge_x1, gauge_y1), radius=px(10), fill="#252b3a", outline="#444b60", width=px(2))
+        draw.text((gauge_x0, gauge_y0 - px(48)), "ELEVATOR OUTPUT", fill=MUTED, font=PID_FONT_DETAIL)
+        band_y0 = gauge_y0 + (1 - (11.7 / 13.0)) * (gauge_y1 - gauge_y0)
+        band_y1 = gauge_y0 + (1 - (11.3 / 13.0)) * (gauge_y1 - gauge_y0)
+        draw.rectangle((gauge_x0 + px(18), band_y0, gauge_x1 - px(18), band_y1), fill="#38c6b544")
+        for value in (0, 6.5, 13):
+            y = gauge_y0 + (1 - (value / 13.0)) * (gauge_y1 - gauge_y0)
+            draw.line((gauge_x0, y, gauge_x1, y), fill=GRID_STRONG, width=1)
+            draw.text((gauge_x1 + px(12), y - px(12)), f"{value:g}", fill=MUTED, font=PID_FONT_DETAIL)
+        fill_y = gauge_y1 - (gauge_y1 - gauge_y0) * (elevator / 13.0) * gauge_alpha
+        draw.rounded_rectangle((gauge_x0 + px(42), fill_y, gauge_x1 - px(42), gauge_y1), radius=px(8), fill=TEAL if active else "#38c6b555")
+        draw.line((gauge_x0 + px(18), band_y0, gauge_x1 - px(18), band_y0), fill=TEAL, width=px(3))
+        draw.line((gauge_x0 + px(18), band_y1, gauge_x1 - px(18), band_y1), fill=TEAL, width=px(3))
+
+        pid_pill(
+            draw,
+            (px(48), H - px(160), px(785), H - px(48)),
+            "ELEVATOR_PID = 11.3..11.7",
+            f"Grades non-saturated output; sample is +{elevator:.1f}.",
+            active,
+        )
+        frames.append(im)
+    save_gif(frames, "pid-unit-depth-elevator.gif")
+
+
 def main() -> None:
     cmgr_runtime_alert()
     cmgr_cpa_detection()
     obmgr_given_baseline()
     obmgr_point_cluster()
+    pid_heading_wrap()
+    pid_depth_elevator()
 
 
 if __name__ == "__main__":

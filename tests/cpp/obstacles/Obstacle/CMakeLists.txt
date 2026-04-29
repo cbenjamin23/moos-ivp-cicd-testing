@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_obstacles_obstacle
+  SOURCES
+    ObstacleTest.cpp
+    ObstacleFieldGeneratorTest.cpp
+  LIBS
+    obstacles
+    geometry
+    mbutil
+  LABELS
+    obstacles
+    Obstacle
+    ObstacleFieldGenerator
+    uFldObstacleMgr
+)

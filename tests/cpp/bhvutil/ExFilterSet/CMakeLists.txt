@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_bhvutil_exfilterset
+  SOURCES
+    ExFilterSetTest.cpp
+  LIBS
+    bhvutil
+    contacts
+    geometry
+    mbutil
+  LABELS
+    bhvutil
+    ExFilterSet
+    contacts
+    filters
+)

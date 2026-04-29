@@ -1,0 +1,16 @@
+add_moos_cpp_test(test_geometry_cpavariants
+  SOURCES
+    CPAVariantsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    CPAVariants
+    CPAEngine
+    CPAEngineRoot
+    CPAEngineThin
+    CPAEngineV15
+    encounters
+    math
+)

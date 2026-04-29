@@ -1,0 +1,11 @@
+add_moos_cpp_test(test_logic_conditional_ledger
+  SOURCES
+    ConditionalParamAndLedgerSnapTest.cpp
+  LIBS
+    logic
+    mbutil
+  LABELS
+    logic
+    ConditionalParam
+    LedgerSnap
+)

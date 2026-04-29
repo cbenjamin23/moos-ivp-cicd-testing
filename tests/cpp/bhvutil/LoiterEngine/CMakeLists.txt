@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_bhvutil_loiter_engine
+  SOURCES
+    LoiterEngineTest.cpp
+  LIBS
+    bhvutil
+    geometry
+    mbutil
+  LABELS
+    bhvutil
+    LoiterEngine
+    BHV_Loiter
+)

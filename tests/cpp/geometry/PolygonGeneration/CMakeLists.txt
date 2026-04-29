@@ -1,0 +1,13 @@
+add_moos_cpp_test(test_geometry_polygon_generation
+  SOURCES
+    PolygonGenerationTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    ConvexHullGenerator
+    XYPolyExpander
+    XYPatternBlock
+    polygon_generation
+)

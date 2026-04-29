@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_xyformatutils_segl
+  SOURCES
+    XYFormatUtilsSeglTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYSegList
+    XYFormatUtilsSegl
+    formats
+)

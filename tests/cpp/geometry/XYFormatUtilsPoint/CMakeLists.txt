@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_xyformatutils_point
+  SOURCES
+    XYFormatUtilsPointTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYPoint
+    XYFormatUtilsPoint
+    formats
+)

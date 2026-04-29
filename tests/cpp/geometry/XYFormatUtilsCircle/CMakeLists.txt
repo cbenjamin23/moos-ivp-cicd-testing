@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_xyformatutils_circle
+  SOURCES
+    XYFormatUtilsCircleTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYCircle
+    XYFormatUtilsCircle
+    formats
+)

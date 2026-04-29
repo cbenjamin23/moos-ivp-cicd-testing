@@ -1,0 +1,9 @@
+add_moos_cpp_test(test_mbutil_vardatapair
+  SOURCES
+    VarDataPairTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    VarDataPair
+)

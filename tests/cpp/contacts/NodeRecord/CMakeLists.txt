@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_contacts_noderecord
+  SOURCES
+    NodeRecordTest.cpp
+    NodeRecordUtilsTest.cpp
+  LIBS
+    contacts
+    geometry
+    mbutil
+  LABELS
+    contacts
+    NodeRecord
+    NodeRecordUtils
+    NodeReport
+)

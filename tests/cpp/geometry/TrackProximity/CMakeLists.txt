@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_trackproximity
+  SOURCES
+    TrackProximityTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    TrackProximity
+    LinearExtrapolator
+    WrapDetector
+    ProxPoint
+    encounters
+    math
+)

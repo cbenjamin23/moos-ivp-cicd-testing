@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_xyviewer_shapes
+  SOURCES
+    XYViewerShapesTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYOval
+    XYTextBox
+    XYVessel
+    XYViewerShapes
+    viewer_shapes
+    formats
+)

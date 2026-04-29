@@ -1,0 +1,11 @@
+add_moos_cpp_test(test_geometry_circularutils
+  SOURCES
+    CircularUtilsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    CircularUtils
+    math
+)

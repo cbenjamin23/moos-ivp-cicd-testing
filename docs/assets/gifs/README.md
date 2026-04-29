@@ -8,7 +8,7 @@ case overlays before delegating to shared `xlaunch.sh`. Calling `xlaunch.sh`
 directly is useful inside those wrappers, but it is not the case-selection
 entry point for the harness pages.
 
-Generated visual standard: app-level unit and classification pages may use 16:9,
+Generated visual standard: app-level unit, classification, and variable-heavy motion pages may use 16:9,
 map-style explanatory GIFs when a raw `pMarineViewer` capture would not make
 the pass condition legible. Keep the look close to the PMV captures: dark chart
 background, simple ownship/contact/obstacle geometry, compact labels, and one
@@ -22,6 +22,7 @@ Generated COLREGS threshold overlay visuals live in
 `docs/tools/render_colregs_threshold_gifs.py`.
 Generated COLREGS parameter comparison visuals live in
 `docs/tools/render_colregs_parameter_gifs.py`.
+Generated PID motion visuals live in `docs/tools/render_pid_motion_gifs.py`.
 Headless harness runs remain the source of truth for the case behavior; the
 generated GIFs are documentation views of that same geometry and variable-level
 evidence.
@@ -59,6 +60,22 @@ Typical capture launch: `./zlaunch.sh --case=baseline_center_pass --gui 10`
 - `obmgr-motion-baseline-center.gif` - Baseline Center Pass; representative case `baseline_center_pass`
 - `obmgr-motion-offset-clear.gif` - Offset Clear Pass; representative case `offset_clear_pass`
 - `obmgr-motion-two-sequential.gif` - Two Sequential Fail; representative case `two_sequential_fail`
+
+## H01 Marine PID Unit
+
+Capture from: `harnesses/pid_harnesses/H01-pid_unit`
+Typical capture launch: `./zlaunch.sh --case=rudder_starboard_pass 10`
+
+- `pid-unit-heading-wrap.gif` - Heading Wrap; representative case `heading_wrap_pass`
+- `pid-unit-depth-elevator.gif` - Depth Elevator; representative case `depth_elevator_pass`
+
+## H02 Marine PID Motion
+
+Capture from: `harnesses/pid_harnesses/H02-pid_motion`
+Typical capture launch: `./zlaunch.sh --case=baseline_transit_pass --gui 10`
+
+- `pid-motion-hard-turn-recover.gif` - Hard Turn Recovery; representative case `hard_turn_recover_pass`
+- `pid-motion-depth-step.gif` - Depth Step Response; representative case `depth_step_pass`
 
 ## H01 COLREGS Classification
 

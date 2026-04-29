@@ -1,0 +1,54 @@
+add_moos_cpp_test(test_mbutil_mbutils_parsing
+  SOURCES
+    MBUtilsStringParsingTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    MBUtils
+    MBUtilsParsing
+)
+
+add_moos_cpp_test(test_mbutil_mbutils_tokens
+  SOURCES
+    MBUtilsTokenParsingTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    MBUtils
+    MBUtilsTokens
+)
+
+add_moos_cpp_test(test_mbutil_mbutils_validation
+  SOURCES
+    MBUtilsNumericAndValidationTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    MBUtils
+    MBUtilsValidation
+)
+
+add_moos_cpp_test(test_mbutil_mbutils_formatting
+  SOURCES
+    MBUtilsStringFormattingTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    MBUtils
+    MBUtilsFormatting
+)
+
+add_moos_cpp_test(test_mbutil_mbutils_misc
+  SOURCES
+    MBUtilsMiscTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    MBUtils
+    MBUtilsMisc
+)

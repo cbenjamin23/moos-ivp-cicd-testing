@@ -20,6 +20,7 @@ on:
         options:
           - cmgr
           - obmgr
+          - pid
           - colregs
           - collision_behavior
           - convoy_behavior
@@ -49,6 +50,10 @@ on:
         description: "MOOS-IvP branch, tag, or commit SHA to test"
         required: false
         default: "main"
+      cpp_test_filter:
+        description: "CTest label for C++ unit tests, or all"
+        required: false
+        default: "all"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'full' }}
@@ -150,7 +155,7 @@ jobs:
             build
             bin
             lib
-          key: ${{ runner.os }}-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', '.github/workflows/build_extend.yml') }}
+          key: ${{ runner.os }}-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', 'tests/cpp/**', '.github/workflows/build_extend.yml') }}
           restore-keys: |
             ${{ runner.os }}-moos-${{ steps.moos_sha.outputs.sha }}-
             ${{ runner.os }}-
@@ -167,7 +172,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .ccache
-          key: ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', '.github/workflows/build_extend.yml') }}
+          key: ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-repo-${{ hashFiles('build.sh', 'CMakeLists.txt', 'src/**', 'tests/cpp/**', '.github/workflows/build_extend.yml') }}
           restore-keys: |
             ${{ runner.os }}-ccache-moos-${{ steps.moos_sha.outputs.sha }}-
             ${{ runner.os }}-ccache-
@@ -239,6 +244,31 @@ jobs:
             echo ""
             echo "Exact build cache hit. Skipped MOOS-IvP and repo rebuild steps."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run C++ unit tests
+        env:
+          CPP_TEST_FILTER: ${{ inputs.cpp_test_filter }}
+        run: |
+          set -euo pipefail
+          report_path="${GITHUB_WORKSPACE}/build/cpp-unit-tests.xml"
+          if [ "$CPP_TEST_FILTER" = "all" ] || [ -z "$CPP_TEST_FILTER" ]; then
+            ctest --test-dir build --output-on-failure --no-tests=error --output-junit "$report_path"
+          else
+            ctest --test-dir build -L "$CPP_TEST_FILTER" --output-on-failure --no-tests=error --output-junit "$report_path"
+          fi
+          {
+            echo "### C++ Unit Tests"
+            echo ""
+            echo "- Filter: \`$CPP_TEST_FILTER\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload C++ unit test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cpp-unit-test-report
+          path: build/cpp-unit-tests.xml
+          if-no-files-found: warn
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7

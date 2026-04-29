@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_bhvutil_fixedturn
+  SOURCES
+    FixedTurnTest.cpp
+  LIBS
+    bhvutil
+    mbutil
+  LABELS
+    bhvutil
+    FixedTurn
+    FixedTurnSet
+    BHV_FixedTurn
+)

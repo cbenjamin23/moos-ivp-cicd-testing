@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_ucommand_command_folio
+  SOURCES
+    CommandItemAndFolioTest.cpp
+    CommandSummaryTest.cpp
+  LIBS
+    ucommand
+    apputil
+    mbutil
+  LABELS
+    ucommand
+    CommandItem
+    CommandFolio
+    CommandPost
+    CommandSummary
+)

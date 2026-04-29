@@ -1,0 +1,8 @@
+add_subdirectory(MBUtils)
+add_subdirectory(VarDataPair)
+add_subdirectory(NodeMessage)
+add_subdirectory(ColorAndFormatting)
+add_subdirectory(MacroAndHash)
+add_subdirectory(MiscObjects)
+add_subdirectory(UtilityFormats)
+add_subdirectory(GeneralObjects)

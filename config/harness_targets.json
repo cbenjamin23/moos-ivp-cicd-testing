@@ -28,6 +28,20 @@
     "families": ["obmgr"]
   },
   {
+    "key": "pid_h01",
+    "path": "harnesses/pid_harnesses/H01-pid_unit",
+    "harness": "H01-pid_unit",
+    "artifact": "manual-pid-h01-results",
+    "families": ["pid"]
+  },
+  {
+    "key": "pid_h02",
+    "path": "harnesses/pid_harnesses/H02-pid_motion",
+    "harness": "H02-pid_motion",
+    "artifact": "manual-pid-h02-results",
+    "families": ["pid"]
+  },
+  {
     "key": "colregs_h01",
     "path": "harnesses/colregs_harnesses/H01-colregs_classification",
     "harness": "H01-colregs_classification",

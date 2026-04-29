@@ -1,0 +1,10 @@
+add_moos_cpp_test(test_mbutil_macro_hash
+  SOURCES
+    MacroAndHashTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    MacroUtils
+    HashUtils
+)

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Marine PID Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260427-13">
+  <script src="../theme.js?v=20260427-13"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Marine PID</p>
+      <h1>H01 Marine PID Unit</h1>
+      <p class="lede">Simple correctness tests for pMarinePIDV22 output behavior. These cases keep the mission to one MOOS community and verify rudder, thrust, elevator, override, stale-input, yaw-source, and debug publication paths.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one shoreside MOOS community with scripted desired/nav mail and pMarinePIDV22 using suffixed outputs. It deliberately avoids a simulated vehicle so the cases can grade the PID app&#x27;s direct actuator contract.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">This unit harness uses variable-level PID evidence instead of pMarineViewer captures because it intentionally checks pMarinePIDV22 input/output behavior before adding vehicle dynamics. The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pid-unit-heading-wrap.gif">
+          <img src="../assets/gifs/pid-unit-heading-wrap.gif" alt="Heading Wrap GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Heading Wrap</h3>
+          <p>Description: desired 5 degrees from current 355 degrees must take the short positive wrap and produce rudder near 10.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pid-unit-depth-elevator.gif">
+          <img src="../assets/gifs/pid-unit-depth-elevator.gif" alt="Depth Elevator GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Depth Elevator</h3>
+          <p>Description: depth control must combine desired depth, current depth, and pitch into a non-saturated elevator command near 11.5.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>rudder_starboard_pass</code>
+          <p>default stem; desired heading east from north must yield positive rudder and thrust near 40.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rudder_port_pass</code>
+          <p>desired heading west from north must yield negative rudder while maintaining thrust near 40.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>heading_wrap_pass</code>
+          <p>desired 5 degrees from current 355 degrees must take the short positive wrap and produce rudder near 10.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_factor_update_pass</code>
+          <p>runtime SPEED_FACTOR=10 must map desired speed 3 to thrust near 30 with near-zero rudder.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_pid_control_pass</code>
+          <p>speed_factor=0 must switch to speed PID control and reach the configured thrust cap.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_thrust_limit_pass</code>
+          <p>high speed-factor demand must be clipped at maxthrust=60 while still producing a steering command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>depth_elevator_pass</code>
+          <p>depth control must combine desired depth, current depth, and pitch into a non-saturated elevator command near 11.5.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>manual_override_zero_pass</code>
+          <p>MOOS_MANUAL_OVERRIDE=true must zero rudder/thrust and publish PID_HAS_CONTROL=false.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stale_nav_pass</code>
+          <p>stale nav mail must zero actuator output and report a stale-input reason.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>nav_yaw_used_pass</code>
+          <p>NAV_YAW must be converted to heading when NAV_HEADING is absent, yielding the expected rudder sign.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ignore_nav_yaw_pass</code>
+          <p>ignore_nav_yaw=true must keep NAV_HEADING authoritative even when NAV_YAW is present.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>heading_debug_saturation_pass</code>
+          <p>heading debug output must be posted while rudder clips at maxrudder=10.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_zero_allstop_pass</code>
+          <p>desired speed 0 must suppress thrust and rudder even with a heading error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_negative_allstop_pass</code>
+          <p>negative desired speed must be clipped to all-stop output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>output_suffix_alt_pass</code>
+          <p>alternate output_suffix=_ALT must move actuator output to DESIRED_*_ALT.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>manual_overide_alias_zero_pass</code>
+          <p>legacy MOOS_MANUAL_OVERIDE must still zero output and drop PID control.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>override_release_needs_fresh_mail_pass</code>
+          <p>releasing override after old mail must keep output at zero until fresh desired/nav mail arrives.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>override_recover_fresh_mail_pass</code>
+          <p>fresh desired/nav mail after override release must restore rudder and thrust output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stale_helm_pass</code>
+          <p>stale desired heading/speed mail must zero actuator output and report PID_STALE.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stale_recover_pass</code>
+          <p>fresh desired/nav mail after a stale interval must restore rudder and thrust output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>depth_negative_elevator_pass</code>
+          <p>the opposite depth error sign must produce a negative elevator command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>depth_debug_pass</code>
+          <p>depth_debug=true must publish depth debug text alongside nonzero elevator output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_elevator_limit_pass</code>
+          <p>maxelevator=5 must clip otherwise larger elevator output at the configured limit.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_debug_pass</code>
+          <p>speed_debug=true must publish speed debug text alongside thrust output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>nav_heading_after_yaw_pass</code>
+          <p>a later NAV_HEADING update must override an earlier NAV_YAW-derived heading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>simulation_mode_fail</code>
+          <p>expected-fail coverage for current simulation=true behavior, where actuator output stays zero despite a misleading control flag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>thrust_cap_runtime_fail</code>
+          <p>expected-fail coverage for current runtime PID_THRUST_CAP behavior, which computes a cap but still posts uncapped thrust.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>heading_wrap_negative_pass</code>
+          <p>desired 355 degrees from current 5 degrees must take the short negative wrap, with bounded negative rudder.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>nav_heading_normalize_pass</code>
+          <p>out-of-range NAV_HEADING=-90 must be normalized before rudder calculation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_speed_factor_zero_pid_pass</code>
+          <p>runtime SPEED_FACTOR=0 must switch from factor mapping to PID speed control.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_speed_factor_negative_pass</code>
+          <p>runtime negative SPEED_FACTOR must be accepted and clip thrust to zero.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_desired_speed_zero_pass</code>
+          <p>missing initial desired-speed mail must keep actuator output at the all-stop publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_nav_speed_zero_pass</code>
+          <p>missing initial nav-speed mail must keep actuator output at the all-stop publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>depth_missing_pitch_zero_pass</code>
+          <p>depth control must wait for NAV_PITCH before publishing nonzero rudder, thrust, or elevator.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pid_harnesses/H01-pid_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pid_missions/pid_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

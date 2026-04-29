@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_xyformatutils_wedge
+  SOURCES
+    XYFormatUtilsWedgeTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYWedge
+    XYFormatUtilsWedge
+    formats
+)

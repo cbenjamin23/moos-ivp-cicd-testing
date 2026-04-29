@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_arcutils
+  SOURCES
+    ArcUtilsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    ArcUtils
+    ArcUtilsToDo
+    math
+)

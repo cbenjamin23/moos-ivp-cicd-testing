@@ -1,0 +1,47 @@
+//-------------------------------------------------
+// FILE: low-rudder-authority-fail-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = x=0,y=-60,heading=0,depth=0
+  prefix    = NAV
+
+  max_speed        = 3.0
+  max_deceleration = 0.1
+  turn_rate        = 95
+  turn_spd_loss    = 0.6
+
+  buoyancy_rate         = 0.025
+  max_depth_rate        = 5
+  max_depth_rate_speed  = 2.0
+  default_water_depth   = 400
+}
+
+ProcessConfig = pMarinePIDV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  verbose       = false
+  depth_control = false
+
+  yaw_pid_kp             = 1.2
+  yaw_pid_kd             = 0.1
+  yaw_pid_ki             = 0.3
+  yaw_pid_integral_limit = 0.07
+
+  speed_pid_kp             = 20.0
+  speed_pid_kd             = 0.0
+  speed_pid_ki             = 0.0
+  speed_pid_integral_limit = 0.07
+
+  maxrudder = 2
+  maxthrust = 100
+
+  speed_factor = 20
+}

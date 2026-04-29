@@ -1,0 +1,9 @@
+add_moos_cpp_test(test_mbutil_nodemessage
+  SOURCES
+    NodeMessageTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    NodeMessage
+)

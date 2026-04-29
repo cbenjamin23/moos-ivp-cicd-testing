@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_objectbasebuild
+  SOURCES
+    ObjectBaseBuildTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    ObjectBaseBuild
+    XYObject
+    XYBuildUtils
+    object_base
+    build_utils
+    viewer_metadata
+)

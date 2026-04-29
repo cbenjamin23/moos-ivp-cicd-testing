@@ -23,6 +23,7 @@ CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
 VISUAL_NOTES = {
     "cmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship geometry is intentionally simple and the verdict comes from MOOS publications such as contact alerts, reports, and filter messages.",
     "obmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship is stationary and the verdict comes from MOOS publications such as obstacle acceptance, distance reports, hull generation, and filter messages.",
+    "pid-unit": "This unit harness uses variable-level PID evidence instead of pMarineViewer captures because it intentionally checks pMarinePIDV22 input/output behavior before adding vehicle dynamics.",
     "colregs-classification": "This classification harness uses alog-backed explanatory GIFs instead of raw pMarineViewer captures because the vehicles do move, but the verdict comes from COLREGS publications such as mode, index, summary, and range reports.",
     "colregs-thresholds": "This threshold harness uses alog-backed overlay GIFs instead of raw pMarineViewer captures because the cases differ by small geometry changes and the verdict comes from boundary-specific COLREGS publications.",
 }
@@ -123,6 +124,42 @@ HARNESSES: tuple[Harness, ...] = (
         notes=(
             "This harness checks whether obstacle-manager alerts lead to clean short-corridor transit.",
             "Expected-fail cases capture conditions where alerts are missing, too difficult, or not actionable.",
+        ),
+    ),
+    Harness(
+        slug="pid-unit",
+        title="H01 Marine PID Unit",
+        family="Marine PID",
+        path="harnesses/pid_harnesses/H01-pid_unit",
+        mission="missions/pid_missions/pid_unit",
+        summary="Headless pMarinePIDV22 unit matrix covering heading, speed, depth, override, stale-input, yaw, and debug-output branches.",
+        proof="Checks suffixed rudder, thrust, elevator, control-state, stale-input, yaw-source, and debug publications from scripted MOOS mail.",
+        gifs=(
+            ("Heading Wrap", "heading_wrap_pass", "pid-unit-heading-wrap.gif"),
+            ("Depth Elevator", "depth_elevator_pass", "pid-unit-depth-elevator.gif"),
+        ),
+        run="./zlaunch.sh --case=rudder_starboard_pass 10",
+        notes=(
+            "This harness keeps the PID app isolated from simulation and helm behavior so actuator output can be checked directly.",
+            "The speed cases intentionally distinguish `speed_factor` mapping, runtime speed-factor updates, PID speed control, and thrust clipping.",
+        ),
+    ),
+    Harness(
+        slug="pid-motion",
+        title="H02 Marine PID Motion",
+        family="Marine PID",
+        path="harnesses/pid_harnesses/H02-pid_motion",
+        mission="missions/pid_missions/pid_motion",
+        summary="Closed-loop pMarinePIDV22 motion matrix covering transit, turn recovery, speed-PID mode, depth response, and authority failures.",
+        proof="Checks bridged arrival, corridor position, speed, heading, depth, and actuator evidence from pMarinePIDV22 driving uSimMarineV22.",
+        gifs=(
+            ("Hard Turn Recovery", "hard_turn_recover_pass", "pid-motion-hard-turn-recover.gif"),
+            ("Depth Step Response", "depth_step_pass", "pid-motion-depth-step.gif"),
+        ),
+        run="./zlaunch.sh --case=baseline_transit_pass --gui 10",
+        notes=(
+            "This harness adds pHelmIvP and uSimMarineV22 so PID output is judged as vehicle motion instead of only as actuator publications.",
+            "Expected-fail cases intentionally hold manual override or cap thrust too low to prove the motion gate catches lost authority.",
         ),
     ),
     Harness(
@@ -480,6 +517,12 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("obmgr-unit", "obmgr-motion"),
     ),
     Family(
+        name="pMarinePIDV22",
+        label="Marine PID",
+        summary="Converts desired heading, speed, and depth mail into direct actuator commands under override, stale-input, and yaw-source constraints.",
+        slugs=("pid-unit", "pid-motion"),
+    ),
+    Family(
         name="BHV_AvdColregsV22",
         label="COLREGS Behavior",
         summary="Exercises COLREGS classification, threshold edges, execution quality, parameter sensitivity, and multi-vehicle stress cases.",
@@ -569,6 +612,8 @@ TEST_STYLE: dict[str, str] = {
     "cmgr-motion": "Moving correctness tests for contact-management evidence. These cases check whether contact-manager alerts arrive early enough for downstream avoidance to produce a safe transit, while expected-fail cases prove the gate catches missing or late avoidance evidence.",
     "obmgr-unit": "Simple correctness tests for pObstacleMgr output behavior. These cases keep vehicle dynamics minimal and verify accepted obstacles, rejected obstacles, alert messages, point-cluster hulls, distance reports, and obstacle lifecycle messages.",
     "obmgr-motion": "Moving correctness tests for obstacle-manager alert output. These cases check whether obstacle alerts are actionable enough to support clean obstacle-avoidance transit, and whether intentionally bad setups fail for the expected reason.",
+    "pid-unit": "Simple correctness tests for pMarinePIDV22 output behavior. These cases keep the mission to one MOOS community and verify rudder, thrust, elevator, override, stale-input, yaw-source, and debug publication paths.",
+    "pid-motion": "Moving correctness tests for pMarinePIDV22 closed-loop behavior. These cases add pHelmIvP and uSimMarineV22 and verify that PID output drives arrival, turn recovery, speed-PID transit, depth response, and expected authority failures.",
     "colregs-classification": "Classification correctness tests for BHV_AvdColregsV22. These cases verify that canonical two-vessel geometries enter the expected COLREGS mode before execution quality is evaluated elsewhere.",
     "colregs-thresholds": "Boundary correctness tests for COLREGS classification. These cases probe below, edge, above, and mirrored geometries to catch regressions near rule-transition thresholds.",
     "colregs-execution": "Execution correctness tests for BHV_AvdColregsV22 after classification is known. These cases run encounters through completion and grade the realized maneuver using CPA, side outcome, timing, and collision evidence.",
@@ -595,6 +640,8 @@ STEM_CONTEXT: dict[str, str] = {
     "cmgr-motion": "The stem mission places `alpha` on a short transit with one or more synthetic contacts. The harness keeps the geometry compact and grades whether contact-manager output gives the avoidance behavior enough evidence to arrive safely.",
     "obmgr-unit": "The stem mission keeps the ownship context simple and introduces given obstacles or point clusters through the case inputs. That isolates pObstacleMgr message behavior before any moving obstacle-avoidance outcome is judged.",
     "obmgr-motion": "The stem mission sends one ownship through a short corridor with obstacle layouts that vary by case. The harness grades whether obstacle-manager alerts support arrival without collisions, near misses, or unresolved encounters.",
+    "pid-unit": "The stem mission runs one shoreside MOOS community with scripted desired/nav mail and pMarinePIDV22 using suffixed outputs. It deliberately avoids a simulated vehicle so the cases can grade the PID app's direct actuator contract.",
+    "pid-motion": "The stem mission runs one simulated vehicle and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the shoreside evaluator grades bridged nav and actuator evidence.",
     "colregs-classification": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Case overlays vary the encounter geometry for head-on, crossing, overtaking, and overtaken situations.",
     "colregs-thresholds": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Threshold cases reuse the same stem while moving the geometry just below, at, or above classification boundaries.",
     "colregs-execution": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Execution cases reuse trusted classification geometry and then judge the maneuver that actually unfolds.",
@@ -1698,7 +1745,7 @@ def render_gif_manifest() -> str:
         "directly is useful inside those wrappers, but it is not the case-selection",
         "entry point for the harness pages.",
         "",
-        "Generated visual standard: app-level unit and classification pages may use 16:9,",
+        "Generated visual standard: app-level unit, classification, and variable-heavy motion pages may use 16:9,",
         "map-style explanatory GIFs when a raw `pMarineViewer` capture would not make",
         "the pass condition legible. Keep the look close to the PMV captures: dark chart",
         "background, simple ownship/contact/obstacle geometry, compact labels, and one",
@@ -1712,6 +1759,7 @@ def render_gif_manifest() -> str:
         "`docs/tools/render_colregs_threshold_gifs.py`.",
         "Generated COLREGS parameter comparison visuals live in",
         "`docs/tools/render_colregs_parameter_gifs.py`.",
+        "Generated PID motion visuals live in `docs/tools/render_pid_motion_gifs.py`.",
         "Headless harness runs remain the source of truth for the case behavior; the",
         "generated GIFs are documentation views of that same geometry and variable-level",
         "evidence.",

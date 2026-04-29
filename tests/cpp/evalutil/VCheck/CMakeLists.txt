@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_evalutil_vcheck
+  SOURCES
+    VCheckTest.cpp
+    VCheckSetTest.cpp
+  LIBS
+    evalutil
+    apputil
+    logic
+    mbutil
+  LABELS
+    evalutil
+    VCheck
+    VCheckSet
+    pMissionEval
+)

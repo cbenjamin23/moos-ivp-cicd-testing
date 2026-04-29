@@ -1,0 +1,37 @@
+//-------------------------------------------------
+// FILE: low-thrust-authority-fail-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = (ARRIVED = true) or (TEST_EVAL_READY = true)
+  pass_condition = ARRIVED = true
+  pass_condition = ABE_NAV_X >= 55
+  pass_condition = ABE_NAV_X <= 80
+  pass_condition = ABE_NAV_Y >= -72
+  pass_condition = ABE_NAV_Y <= -48
+  pass_condition = ABE_NAV_HEADING >= 85
+  pass_condition = ABE_NAV_HEADING <= 95
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = pid_motion
+  mission_mod  = low_thrust_authority_fail
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = arrived=$[ARRIVED]
+  report_column = x=$[ABE_NAV_X]
+  report_column = y=$[ABE_NAV_Y]
+  report_column = speed=$[ABE_NAV_SPEED]
+  report_column = thrust=$[ABE_DESIRED_THRUST]
+  report_column = mhash=$[MHASH_SHORT]
+}

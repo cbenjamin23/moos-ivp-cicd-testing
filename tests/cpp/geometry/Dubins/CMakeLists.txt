@@ -1,0 +1,13 @@
+add_moos_cpp_test(test_geometry_dubins
+  SOURCES
+    DubinsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    Dubins
+    DubinsTurn
+    DubinsCache
+    math
+)

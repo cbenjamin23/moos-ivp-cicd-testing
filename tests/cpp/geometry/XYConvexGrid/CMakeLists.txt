@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_geometry_xyconvexgrid
+  SOURCES
+    XYConvexGridTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYConvexGrid
+    grid
+    formats
+)

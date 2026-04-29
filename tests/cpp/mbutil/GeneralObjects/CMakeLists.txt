@@ -1,0 +1,51 @@
+add_moos_cpp_test(test_mbutil_fcolormap
+  SOURCES
+    FColorMapTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    FColorMap
+)
+
+add_moos_cpp_test(test_mbutil_figlog
+  SOURCES
+    FiglogTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    Figlog
+)
+
+add_moos_cpp_test(test_mbutil_scopeentry
+  SOURCES
+    ScopeEntryTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    ScopeEntry
+)
+
+add_moos_cpp_test(test_mbutil_bundleout
+  SOURCES
+    BundleOutTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    BundleOut
+    OpenURL
+    ReleaseInfo
+)
+
+add_moos_cpp_test(test_mbutil_mbtimer
+  SOURCES
+    MBTimerTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    MBTimer
+)

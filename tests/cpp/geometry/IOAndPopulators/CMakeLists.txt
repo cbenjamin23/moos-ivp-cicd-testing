@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_io_and_populators
+  SOURCES
+    IOAndPopulatorsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    IOAndPopulators
+    IO_GeomUtils
+    Populator_OpField
+    OpField
+    files
+    populators
+)

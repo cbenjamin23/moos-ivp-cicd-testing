@@ -1,0 +1,39 @@
+add_moos_cpp_test(test_mbutil_jsonutils
+  SOURCES
+    JsonUtilsTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    JsonUtils
+)
+
+add_moos_cpp_test(test_mbutil_latlon_format_utils
+  SOURCES
+    LatLonFormatUtilsTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    LatLonFormatUtils
+)
+
+add_moos_cpp_test(test_mbutil_vquals
+  SOURCES
+    VQualsTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    VQuals
+)
+
+add_moos_cpp_test(test_mbutil_stringtree
+  SOURCES
+    StringTreeTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    StringTree
+)

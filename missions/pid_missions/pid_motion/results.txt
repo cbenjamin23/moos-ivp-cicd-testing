@@ -1,0 +1,1 @@
+  grade=pass  form=pid_motion  mmod=baseline_transit_pass  arrived=true  x=66.706  y=-60  speed=2  heading=90  depth=0  thrust=40  rudder=0  mhash=[JIMS-IZZY]

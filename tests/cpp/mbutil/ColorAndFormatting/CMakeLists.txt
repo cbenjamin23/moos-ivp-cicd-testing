@@ -1,0 +1,10 @@
+add_moos_cpp_test(test_mbutil_color
+  SOURCES
+    ColorPackAndParseTest.cpp
+  LIBS
+    mbutil
+  LABELS
+    mbutil
+    ColorPack
+    ColorParse
+)

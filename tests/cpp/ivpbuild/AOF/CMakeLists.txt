@@ -1,0 +1,19 @@
+add_moos_cpp_test(test_ivpbuild_aof
+  SOURCES
+    AOFTest.cpp
+  LIBS
+    ivpbuild
+    ivpcore
+    geometry
+    mbutil
+  LABELS
+    ivpbuild
+    math
+    AOF
+    AOF_Linear
+    AOF_Quadratic
+    AOF_Gaussian
+    AOF_MGaussian
+    AOF_Ring
+    AOF_Rings
+)

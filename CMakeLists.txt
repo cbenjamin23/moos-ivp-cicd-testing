@@ -6,7 +6,7 @@
 #        Chris Gagner, and tips borrowed from Dave Billin
 #=======================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.14)
 PROJECT( IVP_EXTEND )
 
 set (CMAKE_CXX_STANDARD 11)
@@ -102,3 +102,8 @@ ENDIF( ${WIN32} )
 # Add Subdirectories
 #=======================================================================
 ADD_SUBDIRECTORY( src )
+
+include(CTest)
+if(BUILD_TESTING)
+  ADD_SUBDIRECTORY( tests/cpp )
+endif()

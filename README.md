@@ -12,6 +12,10 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - `harnesses/obmgr_harnesses/H01-obmgr_unit` - patch-driven obstacle-manager unit matrix
 - `missions/obmgr_missions/obmgr_motion` - moving obstacle-avoidance integration stem
 - `harnesses/obmgr_harnesses/H02-obmgr_motion` - moving obstacle integration matrix
+- `missions/pid_missions/pid_unit` - pMarinePIDV22 unit-style stem mission
+- `harnesses/pid_harnesses/H01-pid_unit` - patch-driven pMarinePIDV22 unit matrix
+- `missions/pid_missions/pid_motion` - closed-loop pMarinePIDV22 motion stem
+- `harnesses/pid_harnesses/H02-pid_motion` - closed-loop pMarinePIDV22 motion matrix
 - `missions/colregs_missions/colregs_unit` - shared two-vessel COLREGS correctness stem
 - `harnesses/colregs_harnesses/H01-colregs_classification` - canonical COLREGS classification matrix
 - `harnesses/colregs_harnesses/H02-colregs_thresholds` - COLREGS threshold-boundary matrix
@@ -58,6 +62,10 @@ MOOS-IvP CI/CD workspace for mission-level tests.
 - [harnesses/obmgr_harnesses/H01-obmgr_unit/README.md](./harnesses/obmgr_harnesses/H01-obmgr_unit/README.md) for the obstacle-manager unit matrix
 - [missions/obmgr_missions/obmgr_motion/README.md](./missions/obmgr_missions/obmgr_motion/README.md) for the moving obstacle-avoidance stem
 - [harnesses/obmgr_harnesses/H02-obmgr_motion/README.md](./harnesses/obmgr_harnesses/H02-obmgr_motion/README.md) for the moving obstacle integration matrix
+- [missions/pid_missions/pid_unit/README.md](./missions/pid_missions/pid_unit/README.md) for the pMarinePIDV22 unit stem
+- [harnesses/pid_harnesses/H01-pid_unit/README.md](./harnesses/pid_harnesses/H01-pid_unit/README.md) for the pMarinePIDV22 unit matrix
+- [missions/pid_missions/pid_motion/README.md](./missions/pid_missions/pid_motion/README.md) for the pMarinePIDV22 motion stem
+- [harnesses/pid_harnesses/H02-pid_motion/README.md](./harnesses/pid_harnesses/H02-pid_motion/README.md) for the pMarinePIDV22 motion matrix
 - [missions/colregs_missions/colregs_unit/README.md](./missions/colregs_missions/colregs_unit/README.md) for the shared COLREGS unit stem
 - [harnesses/colregs_harnesses/H01-colregs_classification/README.md](./harnesses/colregs_harnesses/H01-colregs_classification/README.md) for the canonical COLREGS classification matrix
 - [harnesses/colregs_harnesses/H02-colregs_thresholds/README.md](./harnesses/colregs_harnesses/H02-colregs_thresholds/README.md) for the COLREGS threshold-boundary matrix

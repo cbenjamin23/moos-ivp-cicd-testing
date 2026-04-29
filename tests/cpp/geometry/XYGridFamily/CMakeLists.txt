@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_geometry_xygrid_family
+  SOURCES
+    XYGridFamilyTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    XYGrid
+    XYHexGrid
+    XYHexagon
+    XYGridUpdate
+    grid
+    formats
+)

@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_geometry_pathutils
+  SOURCES
+    PathUtilsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    PathUtils
+    EdgeTag
+    EdgeTagSet
+    math
+    waypoint
+)

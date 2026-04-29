@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_evalutil_logic_sequence
+  SOURCES
+    LogicTestSequenceTest.cpp
+  LIBS
+    evalutil
+    apputil
+    logic
+    mbutil
+  LABELS
+    evalutil
+    LogicAspect
+    LogicTestSequence
+    pMissionEval
+)

@@ -1,0 +1,20 @@
+add_moos_cpp_test(test_ivpbuild_zaic
+  SOURCES
+    ZAICTest.cpp
+  LIBS
+    ivpbuild
+    ivpcore
+    geometry
+    mbutil
+  LABELS
+    ivpbuild
+    math
+    ZAIC
+    ZAIC_PEAK
+    ZAIC_SPD
+    ZAIC_HDG
+    ZAIC_LEQ
+    ZAIC_HEQ
+    ZAIC_HLEQ
+    ZAIC_Vector
+)

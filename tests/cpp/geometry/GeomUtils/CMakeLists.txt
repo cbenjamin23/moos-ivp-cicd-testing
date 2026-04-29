@@ -1,0 +1,11 @@
+add_moos_cpp_test(test_geometry_geomutils
+  SOURCES
+    GeomUtilsTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    GeomUtils
+    math
+)
