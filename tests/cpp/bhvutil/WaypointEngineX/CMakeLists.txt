@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_bhvutil_waypoint_enginex
+  SOURCES
+    WaypointEngineXTest.cpp
+  LIBS
+    bhvutil
+    geometry
+    mbutil
+  LABELS
+    bhvutil
+    WaypointEngineX
+    BHV_Waypoint
+)

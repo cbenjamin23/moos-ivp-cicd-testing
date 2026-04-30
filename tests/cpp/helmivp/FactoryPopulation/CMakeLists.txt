@@ -1,0 +1,31 @@
+add_moos_cpp_test(test_helmivp_behavior_loading
+  SOURCES
+    HelmBehaviorLoadingTest.cpp
+  LIBS
+    helmivp
+    behaviors-marine
+    behaviors-colregs
+    dep_behaviors
+    behaviors
+    helmivp
+    bhvutil
+    contacts
+    genutil
+    logic
+    turngeo
+    ivpbuild
+    ivpcore
+    geometry
+    mbutil
+    ${MOOS_LIBRARIES}
+  LABELS
+    helmivp
+    pHelmIvP
+  SUITE_LABELS
+    BFactoryStaticTest=BFactoryStatic
+    BFactoryDynamicTest=BFactoryDynamic
+    SpecBuildTest=SpecBuild
+    BehaviorSetTest=BehaviorSet
+    PopulatorBehaviorSetTest=Populator_BehaviorSet
+    PlatformModelGeneratorTest=PMGen,PlatModelGenerator
+)

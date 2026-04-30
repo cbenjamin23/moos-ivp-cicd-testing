@@ -7,6 +7,7 @@
 #include "GeometryTestUtils.h"
 #include "NumericAssertions.h"
 
+// Covers angle utils heading conventions behavior: computes MOOS relative bearings from cartesian points.
 TEST(AngleUtilsHeadingConventionsTest, ComputesMoosRelativeBearingsFromCartesianPoints)
 {
   EXPECT_NEAR(relAng(0, 0, 0, 10), 0.0, kGeomTol);
@@ -22,6 +23,7 @@ TEST(AngleUtilsHeadingConventionsTest, ComputesMoosRelativeBearingsFromCartesian
   EXPECT_NEAR(relAng(ownship, waypoint), 90.0, kGeomTol);
 }
 
+// Covers angle utils heading conventions behavior: wraps angles for helm heading calculations.
 TEST(AngleUtilsHeadingConventionsTest, WrapsAnglesForHelmHeadingCalculations)
 {
   EXPECT_NEAR(angle360(-10), 350.0, kGeomTol);
@@ -36,6 +38,7 @@ TEST(AngleUtilsHeadingConventionsTest, WrapsAnglesForHelmHeadingCalculations)
   EXPECT_NEAR(aspectDiff(45, 135), 90.0, kGeomTol);
 }
 
+// Covers angle utils heading conventions behavior: converts between true heading and cartesian radians.
 TEST(AngleUtilsHeadingConventionsTest, ConvertsBetweenTrueHeadingAndCartesianRadians)
 {
   constexpr double pi = 3.14159265358979323846;
@@ -55,6 +58,7 @@ TEST(AngleUtilsHeadingConventionsTest, ConvertsBetweenTrueHeadingAndCartesianRad
   EXPECT_NEAR(radAngleWrap(-3.0 * pi), -pi, kLooseGeomTol);
 }
 
+// Covers angle utils heading conventions behavior: projects speed onto requested heading.
 TEST(AngleUtilsHeadingConventionsTest, ProjectsSpeedOntoRequestedHeading)
 {
   EXPECT_NEAR(speedInHeading(0, 4, 0), 4.0, kGeomTol);
@@ -65,6 +69,7 @@ TEST(AngleUtilsHeadingConventionsTest, ProjectsSpeedOntoRequestedHeading)
   EXPECT_NEAR(speedInHeading(90, 0, 90), 0.0, kGeomTol);
 }
 
+// Covers angle utils contact bearing behavior: computes contact relative bearings used by IvP contact behavior.
 TEST(AngleUtilsContactBearingTest, ComputesContactRelativeBearingsUsedByIvPContactBehavior)
 {
   EXPECT_NEAR(relBearing(0, 0, 350, 10, 10), 55.0, kGeomTol);
@@ -75,6 +80,7 @@ TEST(AngleUtilsContactBearingTest, ComputesContactRelativeBearingsUsedByIvPConta
   EXPECT_NEAR(totAbsRelBearing(0, 0, 0, 10, 0, 270), 90.0, kGeomTol);
 }
 
+// Covers angle utils angle range behavior: classifies angles inside acute wrap intervals.
 TEST(AngleUtilsAngleRangeTest, ClassifiesAnglesInsideAcuteWrapIntervals)
 {
   EXPECT_TRUE(containsAngle(350, 10, 0));
@@ -87,6 +93,7 @@ TEST(AngleUtilsAngleRangeTest, ClassifiesAnglesInsideAcuteWrapIntervals)
   EXPECT_TRUE(containsAngle(45, 45, 45));
 }
 
+// Covers angle utils angle range behavior: selects acute and reflex arc bounds.
 TEST(AngleUtilsAngleRangeTest, SelectsAcuteAndReflexArcBounds)
 {
   EXPECT_NEAR(angleMinAcute(10, 20), 10.0, kGeomTol);
@@ -99,6 +106,7 @@ TEST(AngleUtilsAngleRangeTest, SelectsAcuteAndReflexArcBounds)
   EXPECT_NEAR(angleMaxReflex(89, 271), 271.0, kGeomTol);
 }
 
+// Covers angle utils angle range behavior: selects arc bounds that contain or exclude query heading.
 TEST(AngleUtilsAngleRangeTest, SelectsArcBoundsThatContainOrExcludeQueryHeading)
 {
   EXPECT_NEAR(angleMinContains(10, 20, 5), 20.0, kGeomTol);
@@ -113,6 +121,7 @@ TEST(AngleUtilsAngleRangeTest, SelectsArcBoundsThatContainOrExcludeQueryHeading)
   EXPECT_NEAR(angleMaxExcludes(10, 350, 2), 350.0, kGeomTol);
 }
 
+// Covers angle utils heading average behavior: averages headings across north for hysteresis style windows.
 TEST(AngleUtilsHeadingAverageTest, AveragesHeadingsAcrossNorthForHysteresisStyleWindows)
 {
   EXPECT_NEAR(angleDiff(headingAvg(350, 10), 0), 0.0, kGeomTol);
@@ -129,6 +138,7 @@ TEST(AngleUtilsHeadingAverageTest, AveragesHeadingsAcrossNorthForHysteresisStyle
   EXPECT_NEAR(headingAvg(empty_headings), 0.0, kGeomTol);
 }
 
+// Covers angle utils ownship side behavior: classifies port and starboard for northbound ownship.
 TEST(AngleUtilsOwnshipSideTest, ClassifiesPortAndStarboardForNorthboundOwnship)
 {
   EXPECT_TRUE(ptPortOfOwnship(0, 0, 0, -10, 0));
@@ -141,6 +151,7 @@ TEST(AngleUtilsOwnshipSideTest, ClassifiesPortAndStarboardForNorthboundOwnship)
   EXPECT_FALSE(ptStarOfOwnship(0, 0, 0, 0, -10));
 }
 
+// Covers angle utils ownship side behavior: classifies convex polygons relative to ownship heading.
 TEST(AngleUtilsOwnshipSideTest, ClassifiesConvexPolygonsRelativeToOwnshipHeading)
 {
   XYPolygon port_poly = makeSquarePoly(-20, -5, -10, 5);
@@ -161,6 +172,7 @@ TEST(AngleUtilsOwnshipSideTest, ClassifiesConvexPolygonsRelativeToOwnshipHeading
   EXPECT_FALSE(polyAft(0, 0, 0, aft_poly, 200));
 }
 
+// Covers angle utils turn behavior: classifies port and starboard turn direction.
 TEST(AngleUtilsTurnTest, ClassifiesPortAndStarboardTurnDirection)
 {
   EXPECT_TRUE(portTurn(0, 270));
@@ -170,6 +182,7 @@ TEST(AngleUtilsTurnTest, ClassifiesPortAndStarboardTurnDirection)
   EXPECT_TRUE(portTurn(0, 180));
 }
 
+// Covers angle utils turn behavior: computes turn gap from immediate turn circle to obstacle line.
 TEST(AngleUtilsTurnTest, ComputesTurnGapFromImmediateTurnCircleToObstacleLine)
 {
   EXPECT_NEAR(turnGap(0, 0, 0, 10, 10, -20, 10, 20, true), 0.0, kGeomTol);
@@ -178,6 +191,7 @@ TEST(AngleUtilsTurnTest, ComputesTurnGapFromImmediateTurnCircleToObstacleLine)
   EXPECT_NEAR(turnGap(5, -5, 90, 4, -20, -9, 20, -9, true), 0.0, kGeomTol);
 }
 
+// Covers angle utils point geometry behavior: computes triangle angles and turn orientation.
 TEST(AngleUtilsPointGeometryTest, ComputesTriangleAnglesAndTurnOrientation)
 {
   EXPECT_NEAR(angleFromThreePoints(0, 0, 3, 0, 0, 4), 90.0, kGeomTol);

@@ -1,0 +1,28 @@
+add_moos_cpp_test(test_ipfview_core
+  SOURCES
+    IPFViewCoreTest.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/IPF_Bundle.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/IPF_BundleSeries.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/IPF_Entry.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/IPF_Utils.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/IPFViewUtils.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/Quad3D.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/QuadSet.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ipfview/QuadSet1D.cpp
+  LIBS
+    ivpbuild
+    ivpcore
+    geometry
+    mbutil
+  LABELS
+    ipfview
+  SUITE_LABELS
+    IPFEntryTest=IPF_Entry
+    IPFBundleTest=IPF_Bundle
+    IPFBundleSeriesTest=IPF_BundleSeries
+    IPFViewUtilsTest=IPF_Utils
+    IPFUtilsTest=IPF_Utils
+    QuadSetTest=QuadSet
+    Quad3DTest=Quad3D
+    QuadSet1DTest=QuadSet1D
+)

@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <cstdio>
-#include <fstream>
 #include <list>
 #include <string>
 #include <vector>
@@ -11,9 +9,11 @@
 #include "MailFlagSet.h"
 #include "NumericAssertions.h"
 #include "Odometer.h"
+#include "TestFileUtils.h"
 #include "TStamp.h"
 #include "VarDataPair.h"
 
+// Covers ack message behavior: builds and parses ack message specs.
 TEST(AckMessageTest, BuildsAndParsesAckMessageSpecs)
 {
   AckMessage ack("abe", "ben", "ack_42");
@@ -30,6 +30,7 @@ TEST(AckMessageTest, BuildsAndParsesAckMessageSpecs)
   EXPECT_FALSE(string2AckMessage("src=abe,id=ack_42").valid());
 }
 
+// Covers ack message behavior: rejects whitespace and self addressing through setters.
 TEST(AckMessageTest, RejectsWhitespaceAndSelfAddressingThroughSetters)
 {
   AckMessage ack;
@@ -46,6 +47,7 @@ TEST(AckMessageTest, RejectsWhitespaceAndSelfAddressingThroughSetters)
   EXPECT_EQ(ack.getDestNode(), "ben");
 }
 
+// Covers mail flag set behavior: expands mail count and UTC macros for matching keys.
 TEST(MailFlagSetTest, ExpandsMailCountAndUtcMacrosForMatchingKeys)
 {
   MailFlagSet flags;
@@ -71,6 +73,7 @@ TEST(MailFlagSetTest, ExpandsMailCountAndUtcMacrosForMatchingKeys)
   EXPECT_EQ(generated[0].get_sdata(), "$[KEY]");
 }
 
+// Covers mail flag set behavior: tracks per key counts any fallback and key ordering.
 TEST(MailFlagSetTest, TracksPerKeyCountsAnyFallbackAndKeyOrdering)
 {
   MailFlagSet flags;
@@ -107,6 +110,7 @@ TEST(MailFlagSetTest, TracksPerKeyCountsAnyFallbackAndKeyOrdering)
   EXPECT_EQ(generated[0].get_sdata(), "1");
 }
 
+// Covers mail flag set behavior: leaves unsupported macros and auto parses numeric flags.
 TEST(MailFlagSetTest, LeavesUnsupportedMacrosAndAutoParsesNumericFlags)
 {
   MailFlagSet flags;
@@ -126,6 +130,7 @@ TEST(MailFlagSetTest, LeavesUnsupportedMacrosAndAutoParsesNumericFlags)
   EXPECT_TRUE(flags.getNewFlags().empty());
 }
 
+// Covers t stamp behavior: parses and formats compact time strings.
 TEST(TStampTest, ParsesAndFormatsCompactTimeStrings)
 {
   TStamp stamp;
@@ -141,9 +146,12 @@ TEST(TStampTest, ParsesAndFormatsCompactTimeStrings)
   EXPECT_FALSE(stamp.setTimeStr("12345"));
 }
 
+// Covers t stamp behavior: pins set time validation boundary.
 TEST(TStampTest, PinsSetTimeValidationBoundary)
 {
   TStamp stamp;
+  // Hours/minutes/seconds reject their upper bounds, but negative seconds still
+  // pass through the current formatter.
   EXPECT_FALSE(stamp.setTime(24, 0, 0));
   EXPECT_FALSE(stamp.setTime(23, 60, 0));
   EXPECT_FALSE(stamp.setTime(23, 59, 60));
@@ -152,6 +160,7 @@ TEST(TStampTest, PinsSetTimeValidationBoundary)
   EXPECT_EQ(stamp.getTimeStr(), "00000-1");
 }
 
+// Covers t stamp behavior: parses partial seconds and preserves prior value on failure.
 TEST(TStampTest, ParsesPartialSecondsAndPreservesPriorValueOnFailure)
 {
   TStamp stamp;
@@ -173,6 +182,7 @@ TEST(TStampTest, ParsesPartialSecondsAndPreservesPriorValueOnFailure)
   EXPECT_EQ(stamp.getTimeStr(), "123456.007");
 }
 
+// Covers odometer behavior: accumulates distance extent elapsed time and pause state.
 TEST(OdometerTest, AccumulatesDistanceExtentElapsedTimeAndPauseState)
 {
   Odometer odom;
@@ -204,6 +214,7 @@ TEST(OdometerTest, AccumulatesDistanceExtentElapsedTimeAndPauseState)
   EXPECT_DOUBLE_EQ(odom.getMaxExtent(), 5);
 }
 
+// Covers odometer behavior: resets origin distance and elapsed time for mission legs.
 TEST(OdometerTest, ResetsOriginDistanceAndElapsedTimeForMissionLegs)
 {
   Odometer odom;
@@ -235,15 +246,14 @@ TEST(OdometerTest, ResetsOriginDistanceAndElapsedTimeForMissionLegs)
   EXPECT_DOUBLE_EQ(odom.getTotalDist(), 15);
 }
 
+// Covers file buffer behavior: reads lines lists limits and slash continuations.
 TEST(FileBufferTest, ReadsLinesListsLimitsAndSlashContinuations)
 {
-  const std::string path = "mbutil_filebuffer_fixture.txt";
-  {
-    std::ofstream out(path.c_str());
-    out << "alpha\n";
-    out << "bravo\n";
-    out << "charlie";
-  }
+  TempDir temp("mbutil_filebuffer");
+  const std::string path = temp.writeFile("fixture.txt",
+                                          "alpha\n"
+                                          "bravo\n"
+                                          "charlie");
 
   std::vector<std::string> lines = fileBuffer(path);
   ASSERT_EQ(lines.size(), 3u);
@@ -258,44 +268,37 @@ TEST(FileBufferTest, ReadsLinesListsLimitsAndSlashContinuations)
   ASSERT_EQ(limited.size(), 1u);
   EXPECT_EQ(limited[0], "alpha");
 
-  const std::string slash_path = "mbutil_filebuffer_slash_fixture.txt";
-  {
-    std::ofstream out(slash_path.c_str());
-    out << "alpha\\\n";
-    out << "bravo\n";
-    out << "charlie";
-  }
+  const std::string slash_path = temp.writeFile("slash_fixture.txt",
+                                                "alpha\\\n"
+                                                "bravo\n"
+                                                "charlie");
 
   std::vector<std::string> slash_lines = fileBufferSlash(slash_path);
   ASSERT_EQ(slash_lines.size(), 2u);
   EXPECT_EQ(slash_lines[0], "alphabravo");
   EXPECT_EQ(slash_lines[1], "charlie");
 
-  std::remove(path.c_str());
-  std::remove(slash_path.c_str());
 }
 
+// Covers file buffer behavior: pins missing empty and limit boundary behavior.
 TEST(FileBufferTest, PinsMissingEmptyAndLimitBoundaryBehavior)
 {
+  // FileBuffer limit is the maximum raw line count read, so a limit of N returns
+  // at most N-1 completed lines from normal files.
   EXPECT_TRUE(fileBuffer("does_not_exist.moos").empty());
   EXPECT_TRUE(fileBufferList("does_not_exist.moos").empty());
   EXPECT_TRUE(fileBufferSlash("does_not_exist.moos").empty());
 
-  const std::string empty_path = "mbutil_filebuffer_empty_fixture.txt";
-  {
-    std::ofstream out(empty_path.c_str());
-  }
+  TempDir temp("mbutil_filebuffer_limits");
+  const std::string empty_path = temp.writeFile("empty.txt", "");
   std::vector<std::string> empty_lines = fileBuffer(empty_path);
   ASSERT_EQ(empty_lines.size(), 1u);
   EXPECT_EQ(empty_lines[0], "");
 
-  const std::string path = "mbutil_filebuffer_limit_fixture.txt";
-  {
-    std::ofstream out(path.c_str());
-    out << "one\n";
-    out << "two\n";
-    out << "three\n";
-  }
+  const std::string path = temp.writeFile("limit.txt",
+                                          "one\n"
+                                          "two\n"
+                                          "three\n");
 
   std::vector<std::string> one_limit = fileBuffer(path, 1);
   ASSERT_EQ(one_limit.size(), 1u);
@@ -305,20 +308,19 @@ TEST(FileBufferTest, PinsMissingEmptyAndLimitBoundaryBehavior)
   EXPECT_EQ(two_limit[0], "one");
   EXPECT_EQ(two_limit[1], "two");
 
-  std::remove(empty_path.c_str());
-  std::remove(path.c_str());
 }
 
+// Covers file buffer behavior: joins mission style backslash continuations.
 TEST(FileBufferTest, JoinsMissionStyleBackslashContinuations)
 {
-  const std::string path = "mbutil_filebuffer_mission_continuation.txt";
-  {
-    std::ofstream out(path.c_str());
-    out << "Behavior = BHV_Waypoint\\   \n";
-    out << "{ name = survey }\\\n";
-    out << "condition = MODE==SURVEY\n";
-    out << "endflag = RETURN=true\\\n";
-  }
+  // .bhv/.moos mission files use trailing backslashes to continue logical lines;
+  // whitespace after the slash is ignored during joining.
+  TempDir temp("mbutil_filebuffer_mission");
+  const std::string path = temp.writeFile("mission_continuation.moos",
+                                          "Behavior = BHV_Waypoint\\   \n"
+                                          "{ name = survey }\\\n"
+                                          "condition = MODE==SURVEY\n"
+                                          "endflag = RETURN=true\\\n");
 
   std::vector<std::string> lines = fileBufferSlash(path);
   ASSERT_EQ(lines.size(), 2u);
@@ -331,5 +333,4 @@ TEST(FileBufferTest, JoinsMissionStyleBackslashContinuations)
   EXPECT_EQ(limited[0],
             "Behavior = BHV_Waypoint{ name = survey }condition = MODE==SURVEY");
 
-  std::remove(path.c_str());
 }

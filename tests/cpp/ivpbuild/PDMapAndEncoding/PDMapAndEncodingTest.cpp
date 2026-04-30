@@ -21,12 +21,14 @@ std::string packetPrefix(const std::string& function_id,
                          std::size_t total,
                          std::size_t index)
 {
+  // IvP function postings use one-based packet indices in P,<id>,<total>,<ix>.
   return "P," + function_id + "," + std::to_string(total) + "," +
          std::to_string(index) + ",";
 }
 
 }  // namespace
 
+// Covers pd map builder behavior: builds piecewise one dimensional utility and reports bad inputs.
 TEST(PDMapBuilderTest, BuildsPiecewiseOneDimensionalUtilityAndReportsBadInputs)
 {
   IvPDomain domain;
@@ -52,8 +54,11 @@ TEST(PDMapBuilderTest, BuildsPiecewiseOneDimensionalUtilityAndReportsBadInputs)
   EXPECT_TRUE(builder.getWarnings().find("preprocess failed") != std::string::npos);
 }
 
+// Covers pd map builder behavior: handles single point and consecutive point cases.
 TEST(PDMapBuilderTest, HandlesSinglePointAndConsecutivePointCases)
 {
+  // PDMapBuilder has special handling for degenerate one-point domains and
+  // consecutive breakpoints that would otherwise create zero-width intervals.
   IvPDomain single;
   single.addDomain("speed", 2, 2, 1);
   PDMapBuilder one;
@@ -77,6 +82,7 @@ TEST(PDMapBuilderTest, HandlesSinglePointAndConsecutivePointCases)
   EXPECT_NEAR(evalPDMapAtIndex(*pdmap, 1), 50.0, kGeomTol);
 }
 
+// Covers pd map builder behavior: builds non consecutive intervals without overlapping breakpoints.
 TEST(PDMapBuilderTest, BuildsNonConsecutiveIntervalsWithoutOverlappingBreakpoints)
 {
   IvPDomain domain;
@@ -104,6 +110,7 @@ TEST(PDMapBuilderTest, BuildsNonConsecutiveIntervalsWithoutOverlappingBreakpoint
   EXPECT_TRUE(multidim.hasWarnings());
 }
 
+// Covers pd map builder behavior: rejects malformed breakpoint tables before building pieces.
 TEST(PDMapBuilderTest, RejectsMalformedBreakpointTablesBeforeBuildingPieces)
 {
   IvPDomain domain;
@@ -145,8 +152,11 @@ TEST(PDMapBuilderTest, RejectsMalformedBreakpointTablesBeforeBuildingPieces)
   EXPECT_TRUE(descending_breakpoint.hasWarnings());
 }
 
+// Covers function encoder behavior: round trips IvP function string and packets like helm postings.
 TEST(FunctionEncoderTest, RoundTripsIvPFunctionStringAndPacketsLikeHelmPostings)
 {
+  // This mirrors the helm/uFunctionVis path: encode an IvP function, packetize
+  // it for posting, then decode it back into an objective function.
   ZAIC_PEAK zaic(makeCourseSpeedDomain(), "course");
   ASSERT_TRUE(zaic.setParams(90, 10, 40, 0, 0, 100));
   std::unique_ptr<IvPFunction> ipf(zaic.extractIvPFunction());
@@ -175,6 +185,7 @@ TEST(FunctionEncoderTest, RoundTripsIvPFunctionStringAndPacketsLikeHelmPostings)
   EXPECT_NEAR(decoded->getPWT(), 75.0, kGeomTol);
 }
 
+// Covers function encoder behavior: packetizes and reassembles helm posting fragments in order.
 TEST(FunctionEncoderTest, PacketizesAndReassemblesHelmPostingFragmentsInOrder)
 {
   ZAIC_PEAK zaic(makeCourseSpeedDomain(), "course");
@@ -191,6 +202,8 @@ TEST(FunctionEncoderTest, PacketizesAndReassemblesHelmPostingFragmentsInOrder)
       IvPFunctionToVector(encoded, function_id, 120);
   ASSERT_GT(packets.size(), 2u);
 
+  // Reassembly is just packet-body concatenation once prefixes verify the
+  // expected function id, packet count, and one-based packet order.
   std::string reassembled;
   for(std::size_t i = 0; i < packets.size(); ++i) {
     const std::string prefix = packetPrefix(function_id, packets.size(), i + 1);
@@ -207,11 +220,13 @@ TEST(FunctionEncoderTest, PacketizesAndReassemblesHelmPostingFragmentsInOrder)
   EXPECT_EQ(decoded->size(), ipf->size());
 }
 
+// Covers function encoder behavior: rejects empty encoded function string.
 TEST(FunctionEncoderTest, RejectsEmptyEncodedFunctionString)
 {
   EXPECT_EQ(StringToIvPFunction(""), nullptr);
 }
 
+// Covers of coupler behavior: couples independent course and speed objective functions.
 TEST(OFCouplerTest, CouplesIndependentCourseAndSpeedObjectiveFunctions)
 {
   ZAIC_PEAK course(makeCourseSpeedDomain(), "course");
@@ -241,6 +256,7 @@ TEST(OFCouplerTest, CouplesIndependentCourseAndSpeedObjectiveFunctions)
   EXPECT_EQ(coupler.couple(nullptr, speed.extractIvPFunction()), nullptr);
 }
 
+// Covers of coupler behavior: coupled function evaluates course speed peak above off peak choices.
 TEST(OFCouplerTest, CoupledFunctionEvaluatesCourseSpeedPeakAboveOffPeakChoices)
 {
   ZAIC_PEAK course(makeCourseSpeedDomain(), "course");
@@ -272,6 +288,7 @@ TEST(OFCouplerTest, CoupledFunctionEvaluatesCourseSpeedPeakAboveOffPeakChoices)
             coupled->getPDMap()->evalPoint(&both_wrong));
 }
 
+// Covers of coupler behavior: rejects non positive coupling weights and takes ownership.
 TEST(OFCouplerTest, RejectsNonPositiveCouplingWeightsAndTakesOwnership)
 {
   ZAIC_PEAK course(makeCourseSpeedDomain(), "course");
@@ -285,6 +302,7 @@ TEST(OFCouplerTest, RejectsNonPositiveCouplingWeightsAndTakesOwnership)
             nullptr);
 }
 
+// Covers of coupler behavior: rejects overlapping domains.
 TEST(OFCouplerTest, RejectsOverlappingDomains)
 {
   ZAIC_PEAK first(makeCourseSpeedDomain(), "course");
@@ -296,6 +314,7 @@ TEST(OFCouplerTest, RejectsOverlappingDomains)
   EXPECT_EQ(coupler.couple(first.extractIvPFunction(), second.extractIvPFunction()), nullptr);
 }
 
+// Covers of rater behavior: samples approximation error against gaussian AOF.
 TEST(OFRaterTest, SamplesApproximationErrorAgainstGaussianAOF)
 {
   AOF_Gaussian aof(makeXYDomain());
@@ -331,6 +350,7 @@ TEST(OFRaterTest, SamplesApproximationErrorAgainstGaussianAOF)
   EXPECT_EQ(rater.getSampleCount(), 0);
 }
 
+// Covers of rater behavior: reports zero error for exact linear approximation.
 TEST(OFRaterTest, ReportsZeroErrorForExactLinearApproximation)
 {
   IvPDomain domain;
@@ -362,6 +382,7 @@ TEST(OFRaterTest, ReportsZeroErrorForExactLinearApproximation)
   EXPECT_NEAR(rater.getSquaredErr(), 0.0, kGeomTol);
 }
 
+// Covers of rater behavior: resets samples when inputs change and ignores invalid amounts.
 TEST(OFRaterTest, ResetsSamplesWhenInputsChangeAndIgnoresInvalidAmounts)
 {
   IvPDomain domain;

@@ -6,7 +6,8 @@ add_moos_cpp_test(test_contacts_noderider
     mbutil
   LABELS
     contacts
-    NodeRider
-    NodeRiderSet
     NodeReport
+  SUITE_LABELS
+    NodeRiderTest=NodeRider
+    NodeRiderSetTest=NodeRiderSet
 )

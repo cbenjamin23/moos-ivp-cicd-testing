@@ -7,6 +7,7 @@
 #include "ColorParse.h"
 #include "NumericAssertions.h"
 
+// Covers color parse behavior: parses named hex and decimal colors.
 TEST(ColorParseTest, ParsesNamedHexAndDecimalColors)
 {
   std::vector<double> red = colorParse("red");
@@ -26,6 +27,7 @@ TEST(ColorParseTest, ParsesNamedHexAndDecimalColors)
   EXPECT_NEAR(decimal[2], 1.0, kGeomTol);
 }
 
+// Covers color parse behavior: parses viewer color forms and rejects malformed rgb.
 TEST(ColorParseTest, ParsesViewerColorFormsAndRejectsMalformedRgb)
 {
   std::vector<double> macpurple = colorParse("mac_purple");
@@ -54,6 +56,7 @@ TEST(ColorParseTest, ParsesViewerColorFormsAndRejectsMalformedRgb)
   EXPECT_EQ(colorDecToVector("0.1,blue,0.3"), std::vector<double>({0, 0, 0}));
 }
 
+// Covers color parse behavior: validates colors and converts back to strings.
 TEST(ColorParseTest, ValidatesColorsAndConvertsBackToStrings)
 {
   EXPECT_TRUE(isColor("blue"));
@@ -73,6 +76,7 @@ TEST(ColorParseTest, ValidatesColorsAndConvertsBackToStrings)
   EXPECT_EQ(color, "green");
 }
 
+// Covers color pack behavior: stores visibility named colors and vector colors.
 TEST(ColorPackTest, StoresVisibilityNamedColorsAndVectorColors)
 {
   ColorPack unset;
@@ -97,6 +101,7 @@ TEST(ColorPackTest, StoresVisibilityNamedColorsAndVectorColors)
   EXPECT_EQ(vector_color.str(':'), "0.1:0.2:0.3");
 }
 
+// Covers color pack behavior: handles viewer invisible clear and invalid updates.
 TEST(ColorPackTest, HandlesViewerInvisibleClearAndInvalidUpdates)
 {
   ColorPack off("off");
@@ -126,6 +131,7 @@ TEST(ColorPackTest, HandlesViewerInvisibleClearAndInvalidUpdates)
   EXPECT_EQ(color.str(), "invisible");
 }
 
+// Covers color pack behavior: shades and grays colors with clipping.
 TEST(ColorPackTest, ShadesAndGraysColorsWithClipping)
 {
   ColorPack color(0.25, 0.5, 1.0);
@@ -146,6 +152,7 @@ TEST(ColorPackTest, ShadesAndGraysColorsWithClipping)
   EXPECT_NEAR(gray.blu(), 0.5, kGeomTol);
 }
 
+// Covers term color behavior: removes terminal color codes.
 TEST(TermColorTest, RemovesTerminalColorCodes)
 {
   EXPECT_FALSE(isTermColor("light_blue"));

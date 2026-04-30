@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_encounters_cpaevent
+  SOURCES
+    CPAEventTest.cpp
+  LIBS
+    encounters
+    mbutil
+  LABELS
+    encounters
+    CPAEvent
+    CPA_EVENT
+    uFldCollisionDetect
+    uFldCollObDetect
+    app_alogeplot
+    logutils
+)

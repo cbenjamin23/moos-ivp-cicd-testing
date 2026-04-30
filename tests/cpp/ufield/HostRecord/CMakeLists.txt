@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_ufield_hostrecord
+  SOURCES
+    HostRecordTest.cpp
+  LIBS
+    ufield
+    mbutil
+  LABELS
+    ufield
+    PHI_HOST_INFO
+    NODE_BROKER
+  SUITE_LABELS
+    HostRecordTest=HostRecord
+    HostRecordUtilsTest=HostRecordUtils
+)

@@ -10,11 +10,10 @@ add_moos_cpp_test(test_ivpbuild_zaic
     ivpbuild
     math
     ZAIC
-    ZAIC_PEAK
-    ZAIC_SPD
-    ZAIC_HDG
-    ZAIC_LEQ
-    ZAIC_HEQ
-    ZAIC_HLEQ
-    ZAIC_Vector
+  SUITE_LABELS
+    ZAICPeakTest=ZAIC_PEAK
+    ZAICSpeedTest=ZAIC_SPD
+    ZAICHeadingTest=ZAIC_HDG
+    ZAICHleqLeqHeqTest=ZAIC_LEQ,ZAIC_HEQ,ZAIC_HLEQ
+    ZAICVectorTest=ZAIC_Vector
 )

@@ -5,6 +5,7 @@
 #include "NodeMessage.h"
 #include "NodeMessageUtils.h"
 
+// Covers node message behavior: builds valid node to node string message specs.
 TEST(NodeMessageTest, BuildsValidNodeToNodeStringMessageSpecs)
 {
   NodeMessage msg("abe", "ben", "RETURN_HOME");
@@ -26,6 +27,7 @@ TEST(NodeMessageTest, BuildsValidNodeToNodeStringMessageSpecs)
             "string_val=true");
 }
 
+// Covers node message behavior: quotes comma bearing string values for transmission.
 TEST(NodeMessageTest, QuotesCommaBearingStringValuesForTransmission)
 {
   NodeMessage msg("abe", "ben", "SAY");
@@ -39,8 +41,11 @@ TEST(NodeMessageTest, QuotesCommaBearingStringValuesForTransmission)
             "string_val=\"hold,station\"");
 }
 
+// Covers node message behavior: parses MOOS style node message strings.
 TEST(NodeMessageTest, ParsesMoosStyleNodeMessageStrings)
 {
+  // NODE_MESSAGE payloads are comma-separated MOOS mail specs, and quoted
+  // string values may contain commas that must stay inside the payload.
   NodeMessage msg = string2NodeMessage(
       "src_node=abe,dest_group=blue,var_name=SAY,"
       "string_val=\"hold,station\",string_val_quoted=true,"
@@ -57,6 +62,31 @@ TEST(NodeMessageTest, ParsesMoosStyleNodeMessageStrings)
   EXPECT_EQ(msg.getMessageID(), "42");
 }
 
+// Covers node message behavior: parses mission examples case insensitively and preserves values.
+TEST(NodeMessageTest, ParsesMissionExamplesCaseInsensitivelyAndPreservesValues)
+{
+  NodeMessage msg = string2NodeMessage(
+      "SRC_NODE=henry,DEST_NODE=ike,SRC_APP=uFldNodeComms,"
+      "SRC_BHV=avoid_collision,VAR_NAME=RETURN,string_val=true,"
+      "COLOR=yellow,ACK=TRUE,ACK_ID=ret-17,ignored=field");
+
+  ASSERT_TRUE(msg.valid());
+  EXPECT_EQ(msg.getSourceNode(), "henry");
+  EXPECT_EQ(msg.getDestNode(), "ike");
+  EXPECT_EQ(msg.getSourceApp(), "uFldNodeComms");
+  EXPECT_EQ(msg.getSourceBehavior(), "avoid_collision");
+  EXPECT_EQ(msg.getVarName(), "RETURN");
+  EXPECT_EQ(msg.getStringVal(), "true");
+  EXPECT_EQ(msg.getColor(), "yellow");
+  EXPECT_TRUE(msg.getAckRequested());
+  EXPECT_EQ(msg.getMessageID(), "ret-17");
+  EXPECT_EQ(msg.getSpec(),
+            "ack_id=ret-17,ack=true,src_node=henry,dest_node=ike,"
+            "src_app=uFldNodeComms,src_bhv=avoid_collision,var_name=RETURN,"
+            "color=yellow,string_val=true");
+}
+
+// Covers node message behavior: parses numeric messages and rejects missing required fields.
 TEST(NodeMessageTest, ParsesNumericMessagesAndRejectsMissingRequiredFields)
 {
   NodeMessage numeric = string2NodeMessage(
@@ -75,6 +105,23 @@ TEST(NodeMessageTest, ParsesNumericMessagesAndRejectsMissingRequiredFields)
       "src_node=abe,dest_node=ben,double_val=2.5").valid());
 }
 
+// Covers node message behavior: rejects conflicting payloads but allows dual destinations.
+TEST(NodeMessageTest, RejectsConflictingPayloadsButAllowsDualDestinations)
+{
+  NodeMessage conflict = string2NodeMessage(
+      "src_node=abe,dest_node=ben,var_name=FOO,string_val=bar,double_val=3.5");
+  EXPECT_FALSE(conflict.valid());
+  EXPECT_EQ(conflict.getSpec(), "");
+
+  NodeMessage dual_dest = string2NodeMessage(
+      "src_node=abe,dest_node=ben,dest_group=blue,var_name=FOO,double_val=3.5");
+  ASSERT_TRUE(dual_dest.valid());
+  EXPECT_EQ(dual_dest.getSpec(),
+            "src_node=abe,dest_node=ben,dest_group=blue,var_name=FOO,"
+            "double_val=3.5");
+}
+
+// Covers node message behavior: supports group destinations and payload length accounting.
 TEST(NodeMessageTest, SupportsGroupDestinationsAndPayloadLengthAccounting)
 {
   NodeMessage group_msg("abe", "", "NODE_MESSAGE_LOCAL");
@@ -96,8 +143,11 @@ TEST(NodeMessageTest, SupportsGroupDestinationsAndPayloadLengthAccounting)
             "double_val=270");
 }
 
+// Covers node message behavior: pins parser quirks for quoted and malformed payloads.
 TEST(NodeMessageTest, PinsParserQuirksForQuotedAndMalformedPayloads)
 {
+  // Pin current parser behavior: raw quoted strings stay quoted, malformed
+  // numeric payloads coerce to zero, and payload-less messages can be valid.
   NodeMessage raw_quoted = string2NodeMessage(
       "src_node=abe,dest_node=ben,var_name=SAY,string_val=\"hold,station\"");
   EXPECT_TRUE(raw_quoted.valid());
@@ -116,6 +166,38 @@ TEST(NodeMessageTest, PinsParserQuirksForQuotedAndMalformedPayloads)
   EXPECT_EQ(no_payload.getSpec(), "src_node=abe,dest_node=ben,var_name=PING");
 }
 
+// Covers node message behavior: pins duplicate fields and quoted payload round trips.
+TEST(NodeMessageTest, PinsDuplicateFieldsAndQuotedPayloadRoundTrips)
+{
+  // Later duplicate fields win, while string_val_quoted controls whether outer
+  // quotes are stripped or retained for a comma-bearing transmission value.
+  NodeMessage duplicate = string2NodeMessage(
+      "src_node=abe,src_node=ben,dest_node=cal,var_name=SAY,"
+      "string_val=first,string_val=second");
+  ASSERT_TRUE(duplicate.valid());
+  EXPECT_EQ(duplicate.getSourceNode(), "ben");
+  EXPECT_EQ(duplicate.getStringVal(), "second");
+
+  NodeMessage stripped = string2NodeMessage(
+      "src_node=abe,dest_node=ben,var_name=SAY,"
+      "string_val=\"hold\",string_val_quoted=true");
+  ASSERT_TRUE(stripped.valid());
+  EXPECT_EQ(stripped.getStringVal(), "hold");
+  EXPECT_EQ(stripped.getSpec(),
+            "src_node=abe,dest_node=ben,var_name=SAY,string_val=hold");
+
+  NodeMessage requoted = string2NodeMessage(
+      "src_node=abe,dest_node=ben,var_name=SAY,"
+      "string_val=\"hold,station\",string_val_quoted=true");
+  ASSERT_TRUE(requoted.valid());
+  EXPECT_EQ(requoted.getStringVal(), "\"hold,station\"");
+  EXPECT_EQ(requoted.getStringValX(), "hold,station");
+  EXPECT_EQ(requoted.getSpec(),
+            "src_node=abe,dest_node=ben,var_name=SAY,"
+            "string_val=\"hold,station\"");
+}
+
+// Covers node message behavior: ignores invalid colors and rejects conflicting payload types.
 TEST(NodeMessageTest, IgnoresInvalidColorsAndRejectsConflictingPayloadTypes)
 {
   NodeMessage msg("abe", "ben", "FOO");
@@ -126,4 +208,29 @@ TEST(NodeMessageTest, IgnoresInvalidColorsAndRejectsConflictingPayloadTypes)
 
   msg.setDoubleVal(3.0);
   EXPECT_FALSE(msg.valid());
+}
+
+// Covers node message behavior: pins ack serialization independent of ack requested.
+TEST(NodeMessageTest, PinsAckSerializationIndependentOfAckRequested)
+{
+  NodeMessage msg("abe", "ben", "FOO");
+  msg.setStringVal("bar");
+  msg.setMessageID("ack-only");
+
+  // A message id is serialized even when ack=false; getSpec(false) is the only
+  // path that suppresses ack metadata.
+  EXPECT_TRUE(msg.valid());
+  EXPECT_FALSE(msg.getAckRequested());
+  EXPECT_EQ(msg.getSpec(),
+            "ack_id=ack-only,src_node=abe,dest_node=ben,var_name=FOO,"
+            "string_val=bar");
+  EXPECT_EQ(msg.getSpec(false),
+            "src_node=abe,dest_node=ben,var_name=FOO,string_val=bar");
+
+  NodeMessage parsed = string2NodeMessage(
+      "src_node=abe,dest_node=ben,var_name=FOO,string_val=bar,"
+      "ack=false,ack_id=ack-only");
+  EXPECT_TRUE(parsed.valid());
+  EXPECT_FALSE(parsed.getAckRequested());
+  EXPECT_EQ(parsed.getMessageID(), "ack-only");
 }

@@ -7,9 +7,10 @@ add_moos_cpp_test(test_geometry_objectbasebuild
   LABELS
     geometry
     ObjectBaseBuild
-    XYObject
-    XYBuildUtils
     object_base
     build_utils
     viewer_metadata
+  SUITE_LABELS
+    XYObjectTest=XYObject
+    XYBuildUtilsTest=XYBuildUtils
 )

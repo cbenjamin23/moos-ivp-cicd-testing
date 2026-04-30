@@ -1,0 +1,60 @@
+set(BEHAVIORS_COMMON_LIBS
+  behaviors
+  helmivp
+  bhvutil
+  logic
+  ivpbuild
+  ivpcore
+  contacts
+  geometry
+  mbutil
+)
+
+add_moos_cpp_test(test_behaviors_core_state
+  SOURCES
+    ContactStateTest.cpp
+    ContactStateSetTest.cpp
+  LIBS
+    ${BEHAVIORS_COMMON_LIBS}
+  LABELS
+    behaviors
+    pHelmIvP
+  SUITE_LABELS
+    ContactStateTest=ContactState
+    ContactStateSetTest=ContactStateSet
+)
+
+add_moos_cpp_test(test_behaviors_life_events
+  SOURCES
+    LifeEventTest.cpp
+  LIBS
+    ${BEHAVIORS_COMMON_LIBS}
+  LABELS
+    behaviors
+    pHelmIvP
+  SUITE_LABELS
+    LifeEventTest=LifeEvent
+    LifeEventHistoryTest=LifeEventHistory
+)
+
+add_moos_cpp_test(test_behaviors_ivp_behavior
+  SOURCES
+    IvPBehaviorTest.cpp
+  LIBS
+    ${BEHAVIORS_COMMON_LIBS}
+  LABELS
+    behaviors
+    IvPBehavior
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_ivp_contact_behavior
+  SOURCES
+    IvPContactBehaviorTest.cpp
+  LIBS
+    ${BEHAVIORS_COMMON_LIBS}
+  LABELS
+    behaviors
+    IvPContactBehavior
+    pHelmIvP
+)

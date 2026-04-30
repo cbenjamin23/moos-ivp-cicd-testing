@@ -5,6 +5,7 @@ add_moos_cpp_test(test_mbutil_macro_hash
     mbutil
   LABELS
     mbutil
-    MacroUtils
-    HashUtils
+  SUITE_LABELS
+    MacroUtilsTest=MacroUtils
+    HashUtilsTest=HashUtils
 )

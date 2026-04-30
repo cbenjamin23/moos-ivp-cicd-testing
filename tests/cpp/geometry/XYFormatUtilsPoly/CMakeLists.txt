@@ -6,7 +6,8 @@ add_moos_cpp_test(test_geometry_xyformatutils_poly
     mbutil
   LABELS
     geometry
-    XYPolygon
-    XYFormatUtilsPoly
     formats
+  SUITE_LABELS
+    XYPolygonTest=XYPolygon
+    XYFormatUtilsPolyTest=XYFormatUtilsPoly
 )

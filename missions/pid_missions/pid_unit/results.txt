@@ -1,1 +1,1 @@
-form=pid_unit  mmod=heading_wrap_pass  grade=pass  eval=true  rudder=10  thrust=40  control=true  mhash=[GLUM-ODDS]
+form=pid_unit  mmod=manual_override_zero_pass  grade=pass  eval=true  rudder=0  thrust=0  control=false  mhash=[OPEN-USER]

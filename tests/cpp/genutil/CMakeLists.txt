@@ -1,0 +1,2 @@
+add_subdirectory(StringAndFile)
+add_subdirectory(ThreadsafePipe)

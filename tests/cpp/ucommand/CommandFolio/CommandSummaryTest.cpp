@@ -34,6 +34,7 @@ bool reportHasToken(const std::vector<std::string>& report,
 
 }  // namespace
 
+// Covers command summary behavior: reports newest command posts first and clears pending flag.
 TEST(CommandSummaryTest, ReportsNewestCommandPostsFirstAndClearsPendingFlag)
 {
   CommandSummary summary;
@@ -58,6 +59,7 @@ TEST(CommandSummaryTest, ReportsNewestCommandPostsFirstAndClearsPendingFlag)
   EXPECT_LT(joined.find("RETURN"), joined.find("DEPLOY"));
 }
 
+// Covers command summary behavior: test posts are shown once and then removed from history.
 TEST(CommandSummaryTest, TestPostsAreShownOnceAndThenRemovedFromHistory)
 {
   CommandSummary summary;
@@ -76,6 +78,50 @@ TEST(CommandSummaryTest, TestPostsAreShownOnceAndThenRemovedFromHistory)
   EXPECT_TRUE(reportContains(second, "pid_1"));
 }
 
+// Covers command summary behavior: consecutive test posts are removed from front only.
+TEST(CommandSummaryTest, ConsecutiveTestPostsAreRemovedFromFrontOnly)
+{
+  CommandSummary summary;
+  summary.addPosting("DEPLOY", "true", "pid_real_1");
+  summary.addPosting("RETURN", "true", "pid_real_2");
+  summary.addPosting("MOOS_MANUAL_OVERIDE", "true", "pid_test_1", true);
+  summary.addPosting("STATION_KEEP", "true", "pid_test_2", true);
+
+  std::vector<std::string> first = summary.getCommandReport();
+  EXPECT_TRUE(reportContains(first, "STATION_KEEP"));
+  EXPECT_TRUE(reportContains(first, "pid_test_2"));
+  EXPECT_TRUE(reportContains(first, "MOOS_MANUAL_OVERIDE"));
+  EXPECT_TRUE(reportContains(first, "pid_test_1"));
+  EXPECT_TRUE(reportContains(first, "RETURN"));
+  EXPECT_TRUE(reportContains(first, "pid_real_2"));
+  EXPECT_TRUE(reportContains(first, "DEPLOY"));
+  EXPECT_TRUE(reportContains(first, "pid_real_1"));
+
+  std::vector<std::string> second = summary.getCommandReport();
+  EXPECT_FALSE(reportContains(second, "STATION_KEEP"));
+  EXPECT_FALSE(reportContains(second, "pid_test_2"));
+  EXPECT_FALSE(reportContains(second, "MOOS_MANUAL_OVERIDE"));
+  EXPECT_FALSE(reportContains(second, "pid_test_1"));
+  EXPECT_TRUE(reportContains(second, "RETURN"));
+  EXPECT_TRUE(reportContains(second, "pid_real_2"));
+  EXPECT_TRUE(reportContains(second, "DEPLOY"));
+  EXPECT_TRUE(reportContains(second, "pid_real_1"));
+}
+
+// Covers command summary behavior: empty report contains only table header and clears pending.
+TEST(CommandSummaryTest, EmptyReportContainsOnlyTableHeaderAndClearsPending)
+{
+  CommandSummary summary;
+  std::vector<std::string> report = summary.getCommandReport();
+
+  EXPECT_FALSE(summary.reportPending());
+  EXPECT_TRUE(reportContains(report, "MOOSVar"));
+  EXPECT_TRUE(reportContains(report, "PID"));
+  EXPECT_TRUE(reportContains(report, "Value"));
+  EXPECT_FALSE(reportContains(report, "DEPLOY"));
+}
+
+// Covers command summary behavior: truncates command history to twenty posts.
 TEST(CommandSummaryTest, TruncatesCommandHistoryToTwentyPosts)
 {
   CommandSummary summary;

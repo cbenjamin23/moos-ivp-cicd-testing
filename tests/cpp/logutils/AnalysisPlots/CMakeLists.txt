@@ -1,0 +1,32 @@
+add_moos_cpp_test(test_logutils_analysis_plots
+  SOURCES
+    AnalysisPlotsTest.cpp
+  LIBS
+    logutils
+    helmivp
+    ivpbuild
+    ivpcore
+    apputil
+    encounters
+    contacts
+    geometry
+    mbutil
+  LABELS
+    logutils
+  SUITE_LABELS
+    TaskDiaryTest=TaskDiary
+    PopulatorTaskDiaryTest=Populator_TaskDiary
+    HelmPlotTest=HelmPlot
+    PopulatorHelmPlotsTest=Populator_HelmPlots
+    IPFPlotTest=IPF_Plot
+    PopulatorIPFPlotTest=Populator_IPF_Plot
+    VPlugPlotTest=VPlugPlot
+    PopulatorVPlugPlotsTest=Populator_VPlugPlots
+    EncounterPlotTest=EncounterPlot
+    PopulatorEncounterPlotTest=Populator_EncounterPlot
+    ALogDataBrokerTest=ALogDataBroker
+    ModelVarScopeTest=ModelVarScope
+    ModelHelmScopeTest=ModelHelmScope
+    ModelAppLogScopeTest=ModelAppLogScope
+    ModelTaskDiaryTest=ModelTaskDiary
+)

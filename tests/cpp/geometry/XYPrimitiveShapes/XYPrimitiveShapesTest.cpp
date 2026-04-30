@@ -32,6 +32,7 @@ void expectVectorNear(const std::vector<double>& actual,
 
 }  // namespace
 
+// Covers XY arrow primitive behavior: defaults expose viewer friendly style and north facing geometry.
 TEST(XYArrowPrimitiveTest, DefaultsExposeViewerFriendlyStyleAndNorthFacingGeometry)
 {
   XYArrow arrow;
@@ -54,6 +55,7 @@ TEST(XYArrowPrimitiveTest, DefaultsExposeViewerFriendlyStyleAndNorthFacingGeomet
   EXPECT_NEAR(arrow.getHeadCtrY(), 40.0 / 3.0, kGeomTol);
 }
 
+// Covers XY arrow primitive behavior: constructor and center mutators invalidate and rebuild cache.
 TEST(XYArrowPrimitiveTest, ConstructorAndCenterMutatorsInvalidateAndRebuildCache)
 {
   XYArrow arrow(10, -4);
@@ -77,6 +79,7 @@ TEST(XYArrowPrimitiveTest, ConstructorAndCenterMutatorsInvalidateAndRebuildCache
                    {9.0, 7.0, 4.0, -3.0, 14.0, -3.0});
 }
 
+// Covers XY arrow primitive behavior: angle uses MOOS heading convention and normalizes input.
 TEST(XYArrowPrimitiveTest, AngleUsesMoosHeadingConventionAndNormalizesInput)
 {
   XYArrow arrow;
@@ -91,6 +94,7 @@ TEST(XYArrowPrimitiveTest, AngleUsesMoosHeadingConventionAndNormalizesInput)
   EXPECT_TRUE(stringContains(spec, "ang=90"));
 }
 
+// Covers XY arrow primitive behavior: cardinal angles rotate drawable vertices clockwise.
 TEST(XYArrowPrimitiveTest, CardinalAnglesRotateDrawableVerticesClockwise)
 {
   XYArrow south;
@@ -110,6 +114,7 @@ TEST(XYArrowPrimitiveTest, CardinalAnglesRotateDrawableVerticesClockwise)
   EXPECT_TRUE(stringContains(west.get_spec(0), "ang=270"));
 }
 
+// Covers XY arrow primitive behavior: individual dimension setters invalidate cache and serialize.
 TEST(XYArrowPrimitiveTest, IndividualDimensionSettersInvalidateCacheAndSerialize)
 {
   XYArrow arrow;
@@ -130,6 +135,7 @@ TEST(XYArrowPrimitiveTest, IndividualDimensionSettersInvalidateCacheAndSerialize
   EXPECT_TRUE(stringContains(spec, "hlen=8"));
 }
 
+// Covers XY arrow primitive behavior: rejects non positive sizing but keeps prior shape.
 TEST(XYArrowPrimitiveTest, RejectsNonPositiveSizingButKeepsPriorShape)
 {
   XYArrow arrow;
@@ -153,6 +159,7 @@ TEST(XYArrowPrimitiveTest, RejectsNonPositiveSizingButKeepsPriorShape)
                    {0.0, 12.0, -7.0, 6.0, 7.0, 6.0});
 }
 
+// Covers XY arrow primitive behavior: resize scales all drawable dimensions.
 TEST(XYArrowPrimitiveTest, ResizeScalesAllDrawableDimensions)
 {
   XYArrow arrow;
@@ -164,6 +171,7 @@ TEST(XYArrowPrimitiveTest, ResizeScalesAllDrawableDimensions)
                    {0.0, 40.0, -10.0, 20.0, 10.0, 20.0});
 }
 
+// Covers XY arrow primitive behavior: super length uses current base width quirk.
 TEST(XYArrowPrimitiveTest, SuperLengthUsesCurrentBaseWidthQuirk)
 {
   XYArrow arrow;
@@ -177,16 +185,20 @@ TEST(XYArrowPrimitiveTest, SuperLengthUsesCurrentBaseWidthQuirk)
                    {0.0, 25.0, -1.875, 15.0, 1.875, 15.0});
 }
 
+// Covers XY arrow primitive behavior: bounds cache currently reports upper extents for both min and max.
 TEST(XYArrowPrimitiveTest, BoundsCacheCurrentlyReportsUpperExtentsForBothMinAndMax)
 {
   XYArrow arrow;
 
+  // Bounds are reported from the current cache, which starts with upper extents
+  // until the drawable point cache is rebuilt.
   EXPECT_NEAR(arrow.getMinX(), 5.0, kGeomTol);
   EXPECT_NEAR(arrow.getMaxX(), 5.0, kGeomTol);
   EXPECT_NEAR(arrow.getMinY(), 20.0, kGeomTol);
   EXPECT_NEAR(arrow.getMaxY(), 20.0, kGeomTol);
 }
 
+// Covers XY arrow primitive behavior: head center requires point cache population.
 TEST(XYArrowPrimitiveTest, HeadCenterRequiresPointCachePopulation)
 {
   XYArrow arrow;
@@ -199,11 +211,14 @@ TEST(XYArrowPrimitiveTest, HeadCenterRequiresPointCachePopulation)
   EXPECT_NEAR(arrow.getHeadCtrY(), 40.0 / 3.0, kGeomTol);
 }
 
+// Covers XY arrow primitive behavior: head center stays stale until point cache is rebuilt.
 TEST(XYArrowPrimitiveTest, HeadCenterStaysStaleUntilPointCacheIsRebuilt)
 {
   XYArrow arrow;
   ASSERT_FALSE(arrow.getHeadVertices().empty());
 
+  // Mutating the base center refreshes vertices before it refreshes the cached
+  // head center, so the first read still observes the old center.
   arrow.setBaseCenter(10, 10);
   EXPECT_NEAR(arrow.getHeadCtrX(), 0.0, kGeomTol);
   EXPECT_NEAR(arrow.getHeadCtrY(), 40.0 / 3.0, kGeomTol);
@@ -213,6 +228,7 @@ TEST(XYArrowPrimitiveTest, HeadCenterStaysStaleUntilPointCacheIsRebuilt)
   EXPECT_NEAR(arrow.getHeadCtrY(), 10.0 + (40.0 / 3.0), kGeomTol);
 }
 
+// Covers XY arrow primitive behavior: string payload parses object fields and serializes them.
 TEST(XYArrowPrimitiveTest, StringPayloadParsesObjectFieldsAndSerializesThem)
 {
   XYArrow arrow = stringToArrow("ctrx=1.25,ctry=-2.5,ang=-90,bwid=8,blen=12,"
@@ -245,6 +261,7 @@ TEST(XYArrowPrimitiveTest, StringPayloadParsesObjectFieldsAndSerializesThem)
   EXPECT_TRUE(stringContains(spec, "msg=gust"));
 }
 
+// Covers XY arrow primitive behavior: parses x1 alpha mission view arrow payload.
 TEST(XYArrowPrimitiveTest, ParsesX1AlphaMissionViewArrowPayload)
 {
   // ivp/missions/x1_alpha/alpha.moos has button-posted VIEW_ARROW specs
@@ -281,6 +298,7 @@ TEST(XYArrowPrimitiveTest, ParsesX1AlphaMissionViewArrowPayload)
   EXPECT_TRUE(stringContains(spec, "fill_transparency=0.2"));
 }
 
+// Covers XY arrow primitive behavior: malformed payload falls back to default arrow.
 TEST(XYArrowPrimitiveTest, MalformedPayloadFallsBackToDefaultArrow)
 {
   XYArrow unknown = stringToArrow("ctrx=9,bogus=1,label=bad");
@@ -293,6 +311,7 @@ TEST(XYArrowPrimitiveTest, MalformedPayloadFallsBackToDefaultArrow)
   EXPECT_EQ(nonnumeric.get_label(), "");
 }
 
+// Covers XY arrow primitive behavior: negative numeric payload dimensions are accepted but ignored.
 TEST(XYArrowPrimitiveTest, NegativeNumericPayloadDimensionsAreAcceptedButIgnored)
 {
   XYArrow arrow = stringToArrow("bwid=-8,blen=-12,hwid=-14,hlen=-6,label=kept");
@@ -304,6 +323,7 @@ TEST(XYArrowPrimitiveTest, NegativeNumericPayloadDimensionsAreAcceptedButIgnored
                    {0.0, 20.0, -5.0, 10.0, 5.0, 10.0});
 }
 
+// Covers XY arrow primitive behavior: payload parsing is case insensitive for parameter names.
 TEST(XYArrowPrimitiveTest, PayloadParsingIsCaseInsensitiveForParameterNames)
 {
   XYArrow arrow = stringToArrow("CTRX=3,CTRY=4,ANG=180,BWID=6,BLEN=8,"
@@ -316,6 +336,7 @@ TEST(XYArrowPrimitiveTest, PayloadParsingIsCaseInsensitiveForParameterNames)
                    {3.0, -4.0, 8.0, 0.0, -2.0, 0.0});
 }
 
+// Covers XY arrow primitive behavior: geo shapes arrow payload stores timestamps and inactive payload erases by label.
 TEST(XYArrowPrimitiveTest, GeoShapesArrowPayloadStoresTimestampsAndInactivePayloadErasesByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -329,6 +350,7 @@ TEST(XYArrowPrimitiveTest, GeoShapesArrowPayloadStoresTimestampsAndInactivePaylo
   EXPECT_EQ(shapes.sizeArrows(), 0u);
 }
 
+// Covers XY arrow primitive behavior: geo shapes manage memory expires arrow payloads.
 TEST(XYArrowPrimitiveTest, GeoShapesManageMemoryExpiresArrowPayloads)
 {
   VPlug_GeoShapes shapes;
@@ -345,6 +367,7 @@ TEST(XYArrowPrimitiveTest, GeoShapesManageMemoryExpiresArrowPayloads)
   EXPECT_EQ(shapes.getArrows().count("forever"), 1u);
 }
 
+// Covers XY arrow primitive behavior: geo shapes replaces x1 alpha button arrow by label.
 TEST(XYArrowPrimitiveTest, GeoShapesReplacesX1AlphaButtonArrowByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -370,6 +393,7 @@ TEST(XYArrowPrimitiveTest, GeoShapesReplacesX1AlphaButtonArrowByLabel)
   EXPECT_TRUE(stringContains(replacement.get_spec(1), "ang=270"));
 }
 
+// Covers VPlug geo shapes primitive vector behavior: direct add get and forget covers vector backed shape families.
 TEST(VPlugGeoShapesPrimitiveVectorTest, DirectAddGetAndForgetCoversVectorBackedShapeFamilies)
 {
   VPlug_GeoShapes shapes;
@@ -454,6 +478,7 @@ TEST(VPlugGeoShapesPrimitiveVectorTest, DirectAddGetAndForgetCoversVectorBackedS
   EXPECT_EQ(shapes.sizeCommsPulses(), 0u);
 }
 
+// Covers XY segment primitive behavior: defaults and set compute length and MOOS heading.
 TEST(XYSegmentPrimitiveTest, DefaultsAndSetComputeLengthAndMoosHeading)
 {
   XYSegment seg;
@@ -472,6 +497,7 @@ TEST(XYSegmentPrimitiveTest, DefaultsAndSetComputeLengthAndMoosHeading)
   EXPECT_NEAR(seg.getRAng21(), 270.0, kGeomTol);
 }
 
+// Covers XY segment primitive behavior: diagonal constructor uses MOOS compass bearings.
 TEST(XYSegmentPrimitiveTest, DiagonalConstructorUsesMoosCompassBearings)
 {
   XYSegment northeast(-2, -3, 2, 1);
@@ -485,6 +511,7 @@ TEST(XYSegmentPrimitiveTest, DiagonalConstructorUsesMoosCompassBearings)
   EXPECT_NEAR(southwest.getRAng21(), 45.0, kGeomTol);
 }
 
+// Covers XY segment primitive behavior: point setter uses point coordinates.
 TEST(XYSegmentPrimitiveTest, PointSetterUsesPointCoordinates)
 {
   XYPoint one(1, 2);
@@ -501,6 +528,7 @@ TEST(XYSegmentPrimitiveTest, PointSetterUsesPointCoordinates)
   EXPECT_NEAR(seg.getRAng21(), 216.86989765, kLooseGeomTol);
 }
 
+// Covers XY segment primitive behavior: shift translates endpoints without changing cached geometry.
 TEST(XYSegmentPrimitiveTest, ShiftTranslatesEndpointsWithoutChangingCachedGeometry)
 {
   XYSegment seg(0, 0, 3, 4);
@@ -517,6 +545,7 @@ TEST(XYSegmentPrimitiveTest, ShiftTranslatesEndpointsWithoutChangingCachedGeomet
   EXPECT_NEAR(seg.getRAng21(), 216.86989765, kLooseGeomTol);
 }
 
+// Covers XY segment primitive behavior: reverse swaps endpoints but leaves cached bearings as constructed.
 TEST(XYSegmentPrimitiveTest, ReverseSwapsEndpointsButLeavesCachedBearingsAsConstructed)
 {
   XYSegment seg(0, 0, 0, 10);
@@ -531,6 +560,7 @@ TEST(XYSegmentPrimitiveTest, ReverseSwapsEndpointsButLeavesCachedBearingsAsConst
   EXPECT_NEAR(seg.getRAng21(), 180.0, kGeomTol);
 }
 
+// Covers XY segment primitive behavior: clear resets coordinates and cached values.
 TEST(XYSegmentPrimitiveTest, ClearResetsCoordinatesAndCachedValues)
 {
   XYSegment seg(1, 2, 4, 6);
@@ -545,6 +575,7 @@ TEST(XYSegmentPrimitiveTest, ClearResetsCoordinatesAndCachedValues)
   EXPECT_NEAR(seg.getRAng21(), 0.0, kGeomTol);
 }
 
+// Covers XY segment primitive behavior: zero length set pins point segment bearings.
 TEST(XYSegmentPrimitiveTest, ZeroLengthSetPinsPointSegmentBearings)
 {
   XYSegment seg(1, 2, 3, 4);
@@ -559,6 +590,7 @@ TEST(XYSegmentPrimitiveTest, ZeroLengthSetPinsPointSegmentBearings)
   EXPECT_NEAR(seg.getRAng21(), 0.0, kGeomTol);
 }
 
+// Covers XY segment primitive behavior: intersects includes crossings and shared endpoints.
 TEST(XYSegmentPrimitiveTest, IntersectsIncludesCrossingsAndSharedEndpoints)
 {
   XYSegment horizontal(0, 0, 10, 0);
@@ -571,6 +603,7 @@ TEST(XYSegmentPrimitiveTest, IntersectsIncludesCrossingsAndSharedEndpoints)
   EXPECT_FALSE(horizontal.intersects(disjoint));
 }
 
+// Covers XY segment primitive behavior: intersects includes collinear overlap but rejects separated collinear segments.
 TEST(XYSegmentPrimitiveTest, IntersectsIncludesCollinearOverlapButRejectsSeparatedCollinearSegments)
 {
   XYSegment horizontal(0, 0, 10, 0);
@@ -591,6 +624,7 @@ TEST(XYSegmentPrimitiveTest, IntersectsIncludesCollinearOverlapButRejectsSeparat
   EXPECT_FALSE(vertical.intersects(vertical_separated));
 }
 
+// Covers XY segment primitive behavior: serializes with precision clamping and label prefix.
 TEST(XYSegmentPrimitiveTest, SerializesWithPrecisionClampingAndLabelPrefix)
 {
   XYSegment seg(1.234567, -2.345678, 9.876543, 0.444444);
@@ -601,6 +635,7 @@ TEST(XYSegmentPrimitiveTest, SerializesWithPrecisionClampingAndLabelPrefix)
   EXPECT_EQ(seg.get_spec(99), "label=leg#pts=1.234567,-2.345678:9.876543,0.444444");
 }
 
+// Covers XY segment primitive behavior: serializes without label prefix when label is empty.
 TEST(XYSegmentPrimitiveTest, SerializesWithoutLabelPrefixWhenLabelIsEmpty)
 {
   XYSegment seg(-1.2, 3.4, 5.6, -7.8);
@@ -608,6 +643,7 @@ TEST(XYSegmentPrimitiveTest, SerializesWithoutLabelPrefixWhenLabelIsEmpty)
   EXPECT_EQ(seg.get_spec(1), "pts=-1.2,3.4:5.6,-7.8");
 }
 
+// Covers XY square primitive behavior: constructors validity and equality use stored bounds.
 TEST(XYSquarePrimitiveTest, ConstructorsValidityAndEqualityUseStoredBounds)
 {
   XYSquare empty;
@@ -634,6 +670,7 @@ TEST(XYSquarePrimitiveTest, ConstructorsValidityAndEqualityUseStoredBounds)
   EXPECT_TRUE(bounds != unit);
 }
 
+// Covers XY square primitive behavior: set accepts zero area but marks reversed bounds invalid.
 TEST(XYSquarePrimitiveTest, SetAcceptsZeroAreaButMarksReversedBoundsInvalid)
 {
   XYSquare square;
@@ -649,6 +686,7 @@ TEST(XYSquarePrimitiveTest, SetAcceptsZeroAreaButMarksReversedBoundsInvalid)
   EXPECT_NEAR(square.get_max_x(), 1.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: invalid reversed bounds still expose raw negative lengths.
 TEST(XYSquarePrimitiveTest, InvalidReversedBoundsStillExposeRawNegativeLengths)
 {
   XYSquare square(5, 1, 10, 0);
@@ -661,6 +699,7 @@ TEST(XYSquarePrimitiveTest, InvalidReversedBoundsStillExposeRawNegativeLengths)
   EXPECT_FALSE(square.containsPoint(3, 5));
 }
 
+// Covers XY square primitive behavior: contains point includes boundary.
 TEST(XYSquarePrimitiveTest, ContainsPointIncludesBoundary)
 {
   XYSquare square(0, 10, -5, 5);
@@ -674,6 +713,7 @@ TEST(XYSquarePrimitiveTest, ContainsPointIncludesBoundary)
   EXPECT_FALSE(square.containsPoint(5, 5.01));
 }
 
+// Covers XY square primitive behavior: shifts preserve size and move center.
 TEST(XYSquarePrimitiveTest, ShiftsPreserveSizeAndMoveCenter)
 {
   XYSquare square(0, 10, 0, 20);
@@ -691,6 +731,7 @@ TEST(XYSquarePrimitiveTest, ShiftsPreserveSizeAndMoveCenter)
   EXPECT_NEAR(square.getLengthY(), 20.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: segment intersection length clips axis aligned segments.
 TEST(XYSquarePrimitiveTest, SegmentIntersectionLengthClipsAxisAlignedSegments)
 {
   XYSquare square(0, 10, 0, 10);
@@ -702,6 +743,7 @@ TEST(XYSquarePrimitiveTest, SegmentIntersectionLengthClipsAxisAlignedSegments)
   EXPECT_NEAR(square.segIntersectLength(11, -5, 11, 15), 0.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: segment intersection length clips diagonal segments.
 TEST(XYSquarePrimitiveTest, SegmentIntersectionLengthClipsDiagonalSegments)
 {
   XYSquare square(0, 10, 0, 10);
@@ -714,10 +756,12 @@ TEST(XYSquarePrimitiveTest, SegmentIntersectionLengthClipsDiagonalSegments)
   EXPECT_NEAR(square.segIntersectLength(-10, -10, -1, -1), 0.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: segment intersection length handles inside boundary and degenerate squares.
 TEST(XYSquarePrimitiveTest, SegmentIntersectionLengthHandlesInsideBoundaryAndDegenerateSquares)
 {
   XYSquare square(0, 10, 0, 10);
 
+  // Boundary segments count as inside length; zero-length segments do not.
   EXPECT_NEAR(square.segIntersectLength(2, 2, 8, 8), std::sqrt(72.0), kGeomTol);
   EXPECT_NEAR(square.segIntersectLength(0, 0, 10, 0), 10.0, kGeomTol);
   EXPECT_NEAR(square.segIntersectLength(10, 0, 10, 10), 10.0, kGeomTol);
@@ -729,6 +773,7 @@ TEST(XYSquarePrimitiveTest, SegmentIntersectionLengthHandlesInsideBoundaryAndDeg
   EXPECT_NEAR(vertical_line.segIntersectLength(1, -5, 1, 15), 0.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: segment distance measures distance to perimeter.
 TEST(XYSquarePrimitiveTest, SegmentDistanceMeasuresDistanceToPerimeter)
 {
   XYSquare square(0, 10, 0, 10);
@@ -738,6 +783,7 @@ TEST(XYSquarePrimitiveTest, SegmentDistanceMeasuresDistanceToPerimeter)
   EXPECT_NEAR(square.segDistToSquare(5, 5, 6, 5), 4.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: segment distance handles inside diagonal and exterior axis aligned segments.
 TEST(XYSquarePrimitiveTest, SegmentDistanceHandlesInsideDiagonalAndExteriorAxisAlignedSegments)
 {
   XYSquare square(0, 10, 0, 10);
@@ -747,6 +793,7 @@ TEST(XYSquarePrimitiveTest, SegmentDistanceHandlesInsideDiagonalAndExteriorAxisA
   EXPECT_NEAR(square.segDistToSquare(3, 12, 7, 12), 2.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: point distance uses square center.
 TEST(XYSquarePrimitiveTest, PointDistanceUsesSquareCenter)
 {
   XYSquare square(0, 10, -10, 10);
@@ -755,6 +802,7 @@ TEST(XYSquarePrimitiveTest, PointDistanceUsesSquareCenter)
   EXPECT_NEAR(square.ptDistToSquareCtr(8, 4), 5.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: get val selects low high x and y.
 TEST(XYSquarePrimitiveTest, GetValSelectsLowHighXAndY)
 {
   XYSquare square(-1, 4, -2, 6);
@@ -765,6 +813,7 @@ TEST(XYSquarePrimitiveTest, GetValSelectsLowHighXAndY)
   EXPECT_NEAR(square.getVal(1, 1), 6.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: get val treats any nonzero selectors as y or high.
 TEST(XYSquarePrimitiveTest, GetValTreatsAnyNonzeroSelectorsAsYOrHigh)
 {
   XYSquare square(-1, 4, -2, 6);
@@ -775,6 +824,7 @@ TEST(XYSquarePrimitiveTest, GetValTreatsAnyNonzeroSelectorsAsYOrHigh)
   EXPECT_NEAR(square.getVal(7, 99), 6.0, kGeomTol);
 }
 
+// Covers XY square primitive behavior: serializes as bounds poly and encoder payload.
 TEST(XYSquarePrimitiveTest, SerializesAsBoundsPolyAndEncoderPayload)
 {
   XYSquare square(-1.25, 4.5, -2.0, 6.75);

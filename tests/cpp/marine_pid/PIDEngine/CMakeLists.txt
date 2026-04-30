@@ -1,0 +1,38 @@
+add_moos_cpp_test(test_marine_pid_pid_engine
+  SOURCES
+    ScalarPIDTest.cpp
+    PIDEngineTest.cpp
+  LIBS
+    marine_pid
+    geometry
+    mbutil
+    ${MOOS_LIBRARIES}
+  LABELS
+    marine_pid
+    pMarinePIDV22
+  SUITE_LABELS
+    ScalarPIDTest=ScalarPID
+    PIDEngineConfigTest=PIDEngine
+    PIDEngineDiagnosticsTest=PIDEngine
+    PIDEngineOutputTest=PIDEngine
+    PIDEngineOverrideTest=PIDEngine
+    PIDEnginePostingsTest=PIDEngine
+    PIDEngineStalenessTest=PIDEngine
+)
+
+add_moos_cpp_test(test_marine_pid_v22_app
+  SOURCES
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/pMarinePIDV22/MarinePID.cpp
+    MarinePIDV22Test.cpp
+  LIBS
+    marine_pid
+    geometry
+    mbutil
+    ${MOOS_LIBRARIES}
+  INCLUDES
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/pMarinePIDV22
+  LABELS
+    marine_pid
+    PIDEngine
+    pMarinePIDV22
+)

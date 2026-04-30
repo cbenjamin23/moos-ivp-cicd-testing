@@ -9,7 +9,8 @@ add_moos_cpp_test(test_evalutil_vcheck
     mbutil
   LABELS
     evalutil
-    VCheck
-    VCheckSet
     pMissionEval
+  SUITE_LABELS
+    VCheckTest=VCheck
+    VCheckSetTest=VCheckSet
 )

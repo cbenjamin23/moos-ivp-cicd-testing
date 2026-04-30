@@ -1,0 +1,52 @@
+set(BEHAVIORS_COLREGS_COMMON_LIBS
+  behaviors-colregs
+  behaviors-marine
+  behaviors
+  bhvutil
+  helmivp
+  logic
+  ivpbuild
+  ivpcore
+  contacts
+  geometry
+  mbutil
+)
+
+add_moos_cpp_test(test_behaviors_colregs_velocity_filter
+  SOURCES
+    VelocityFilterTest.cpp
+  LIBS
+    ${BEHAVIORS_COLREGS_COMMON_LIBS}
+  LABELS
+    behaviors-colregs
+    VelocityFilter
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_colregs_aofs
+  SOURCES
+    ColregsAOFTest.cpp
+  LIBS
+    ${BEHAVIORS_COLREGS_COMMON_LIBS}
+  LABELS
+    behaviors-colregs
+    AOF_CPA
+    AOF_R13
+    AOF_R14
+    AOF_R16
+    AOF_R17
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_colregs_behaviors
+  SOURCES
+    AvdColregsBehaviorTest.cpp
+  LIBS
+    ${BEHAVIORS_COLREGS_COMMON_LIBS}
+  LABELS
+    behaviors-colregs
+    BHV_AvdColregsV17
+    BHV_AvdColregsV19
+    BHV_AvdColregsV22
+    pHelmIvP
+)

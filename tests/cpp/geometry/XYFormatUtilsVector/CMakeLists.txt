@@ -6,8 +6,9 @@ add_moos_cpp_test(test_geometry_xyformatutils_vector
     mbutil
   LABELS
     geometry
-    XYVector
-    XYFormatUtilsVector
     formats
     math
+  SUITE_LABELS
+    XYVectorTest=XYVector
+    XYFormatUtilsVectorTest=XYFormatUtilsVector
 )

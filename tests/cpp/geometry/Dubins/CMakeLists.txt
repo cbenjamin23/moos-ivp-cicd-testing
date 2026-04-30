@@ -7,7 +7,13 @@ add_moos_cpp_test(test_geometry_dubins
   LABELS
     geometry
     Dubins
-    DubinsTurn
-    DubinsCache
     math
+  SUITE_LABELS
+    DubinsTurnTest=DubinsTurn
+    DubinsTurnWallLookaheadTest=DubinsTurn
+    DubinsCacheValidationTest=DubinsCache
+    DubinsCacheQuirkTest=DubinsCache
+    DubinsCacheLookupTest=DubinsCache
+    DubinsCacheInvalidQueryTest=DubinsCache
+    DubinsCacheMaxTurnTest=DubinsCache
 )

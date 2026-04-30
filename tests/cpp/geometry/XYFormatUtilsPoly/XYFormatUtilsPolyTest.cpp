@@ -4,6 +4,7 @@
 #include "NumericAssertions.h"
 #include "XYFormatUtilsPoly.h"
 
+// Covers XY format utils poly behavior: parses view polygon pts spec used by op region and obstacles.
 TEST(XYFormatUtilsPolyTest, ParsesViewPolygonPtsSpecUsedByOpRegionAndObstacles)
 {
   XYPolygon poly = stringStandard2Poly("pts={0,0:20,0:20,10:0,10},label=safety_box,edge_color=white,vertex_color=green");
@@ -18,6 +19,7 @@ TEST(XYFormatUtilsPolyTest, ParsesViewPolygonPtsSpecUsedByOpRegionAndObstacles)
   EXPECT_EQ(poly.get_color_str("vertex"), "green");
 }
 
+// Covers XY format utils poly behavior: parses documented obstacle manager view polygon.
 TEST(XYFormatUtilsPolyTest, ParsesDocumentedObstacleManagerViewPolygon)
 {
   XYPolygon poly = string2Poly("pts={32,-100:38,-98:40,-100:32,-104},label=ob_23,duration=12");
@@ -32,6 +34,7 @@ TEST(XYFormatUtilsPolyTest, ParsesDocumentedObstacleManagerViewPolygon)
   EXPECT_FALSE(poly.contains(30, -100));
 }
 
+// Covers XY format utils poly behavior: parses radial loiter style spec.
 TEST(XYFormatUtilsPolyTest, ParsesRadialLoiterStyleSpec)
 {
   XYPolygon poly = stringRadial2Poly("x=10, y=20, radius=30, pts=12, snap=0.1, label=loiter_region");
@@ -43,6 +46,7 @@ TEST(XYFormatUtilsPolyTest, ParsesRadialLoiterStyleSpec)
   EXPECT_NEAR(poly.max_radius(), 30.0, 0.05);
 }
 
+// Covers XY format utils poly behavior: parses abbreviated point list with object metadata.
 TEST(XYFormatUtilsPolyTest, ParsesAbbreviatedPointListWithObjectMetadata)
 {
   XYPolygon poly = stringAbbreviated2Poly("0,0:10,0:10,10:0,10:label,abbr_box:source,unit_test:edge_color,blue");
@@ -55,6 +59,7 @@ TEST(XYFormatUtilsPolyTest, ParsesAbbreviatedPointListWithObjectMetadata)
   EXPECT_NEAR(poly.area(), 100.0, kGeomTol);
 }
 
+// Covers XY format utils poly behavior: parses BHV waypoint polygon list used by many alpha missions.
 TEST(XYFormatUtilsPolyTest, ParsesBhvWaypointPolygonListUsedByManyAlphaMissions)
 {
   XYPolygon poly = string2Poly("60,-40 : 60,-160 : 150,-160 : 180,-100 : 150,-40");
@@ -68,6 +73,7 @@ TEST(XYFormatUtilsPolyTest, ParsesBhvWaypointPolygonListUsedByManyAlphaMissions)
   EXPECT_NEAR(poly.get_center_y(), -100.0, kLooseGeomTol);
 }
 
+// Covers XY format utils poly behavior: parses up op region and contact manager polygon payloads.
 TEST(XYFormatUtilsPolyTest, ParsesUpOpRegionAndContactManagerPolygonPayloads)
 {
   XYPolygon op_region = string2Poly("0,-50:0,-250:150,-250:150,-50");
@@ -85,6 +91,7 @@ TEST(XYFormatUtilsPolyTest, ParsesUpOpRegionAndContactManagerPolygonPayloads)
   EXPECT_EQ(ignore.get_spec_pts(), "pts={60,-40:60,-160:150,-160:150,-40}");
 }
 
+// Covers XY format utils poly behavior: parses inactive deletion payload without points.
 TEST(XYFormatUtilsPolyTest, ParsesInactiveDeletionPayloadWithoutPoints)
 {
   XYPolygon poly = string2Poly("label=old_region,active=false");
@@ -95,6 +102,7 @@ TEST(XYFormatUtilsPolyTest, ParsesInactiveDeletionPayloadWithoutPoints)
   EXPECT_EQ(poly.get_spec(), "active=false,label=old_region");
 }
 
+// Covers XY format utils poly behavior: parses short radial compatibility spec.
 TEST(XYFormatUtilsPolyTest, ParsesShortRadialCompatibilitySpec)
 {
   XYPolygon poly = stringShortRadial2Poly("0,0,20,8,0.1,short_radial");
@@ -106,6 +114,7 @@ TEST(XYFormatUtilsPolyTest, ParsesShortRadialCompatibilitySpec)
   EXPECT_NEAR(poly.max_radius(), 20.0, 0.1);
 }
 
+// Covers XY format utils poly behavior: parses ellipse spec used for display and region approximation.
 TEST(XYFormatUtilsPolyTest, ParsesEllipseSpecUsedForDisplayAndRegionApproximation)
 {
   XYPolygon poly = stringEllipse2Poly("x=0,y=0,major=40,minor=20,degs=30,pts=16,snap=0.01,label=ellipse_region");
@@ -117,6 +126,7 @@ TEST(XYFormatUtilsPolyTest, ParsesEllipseSpecUsedForDisplayAndRegionApproximatio
   EXPECT_GT(poly.area(), 500.0);
 }
 
+// Covers XY format utils poly behavior: parses format ellipse payload used by loiter updates.
 TEST(XYFormatUtilsPolyTest, ParsesFormatEllipsePayloadUsedByLoiterUpdates)
 {
   XYPolygon poly = string2Poly("format=ellipse, x=110, y=-75, degs=150, pts=14, major=80, minor=20");
@@ -129,6 +139,7 @@ TEST(XYFormatUtilsPolyTest, ParsesFormatEllipsePayloadUsedByLoiterUpdates)
   EXPECT_NEAR(poly.max_radius(), 40.0, kLooseGeomTol);
 }
 
+// Covers XY format utils poly behavior: parses pie wedge and rejects non convex range wedge spec.
 TEST(XYFormatUtilsPolyTest, ParsesPieWedgeAndRejectsNonConvexRangeWedgeSpec)
 {
   XYPolygon wedge = stringPieWedge2Poly("x=0,y=0,lang=350,rang=20,range=50,pts=3,label=sector");
@@ -145,6 +156,7 @@ TEST(XYFormatUtilsPolyTest, ParsesPieWedgeAndRejectsNonConvexRangeWedgeSpec)
   EXPECT_EQ(range_wedge.size(), 0u);
 }
 
+// Covers XY format utils poly behavior: parses oval shape into convex display polygon.
 TEST(XYFormatUtilsPolyTest, ParsesOvalShapeIntoConvexDisplayPolygon)
 {
   XYPolygon oval = stringOval2Poly("x=0,y=0,rad=5,len=20,ang=90,label=turn_corridor");
@@ -155,6 +167,7 @@ TEST(XYFormatUtilsPolyTest, ParsesOvalShapeIntoConvexDisplayPolygon)
   EXPECT_EQ(oval.get_label(), "");
 }
 
+// Covers XY format utils poly behavior: parses pylon corridor spec between two points.
 TEST(XYFormatUtilsPolyTest, ParsesPylonCorridorSpecBetweenTwoPoints)
 {
   XYPolygon poly = stringPylon2Poly("x1=0,y1=0,x2=40,y2=0,axis_pad=5,perp_pad=10,label=corridor");
@@ -166,6 +179,7 @@ TEST(XYFormatUtilsPolyTest, ParsesPylonCorridorSpecBetweenTwoPoints)
   EXPECT_FALSE(poly.contains(20, 20));
 }
 
+// Covers XY format utils poly behavior: parses obstacle manager known obstacle with five vertices.
 TEST(XYFormatUtilsPolyTest, ParsesObstacleManagerKnownObstacleWithFiveVertices)
 {
   XYPolygon obstacle = string2Poly("pts={59,-101:64,-105:64,-112:59,-116:53,-108},label=ob_0");
@@ -178,6 +192,7 @@ TEST(XYFormatUtilsPolyTest, ParsesObstacleManagerKnownObstacleWithFiveVertices)
   EXPECT_NEAR(obstacle.dist_to_poly(70, -108), 6.0, kLooseGeomTol);
 }
 
+// Covers XY format utils poly behavior: rejects self intersecting polygon spec.
 TEST(XYFormatUtilsPolyTest, RejectsSelfIntersectingPolygonSpec)
 {
   XYPolygon poly = string2Poly("pts={0,0:10,10:0,10:10,0},label=bowtie");
@@ -186,6 +201,7 @@ TEST(XYFormatUtilsPolyTest, RejectsSelfIntersectingPolygonSpec)
   EXPECT_EQ(poly.size(), 0u);
 }
 
+// Covers XY format utils poly behavior: rejects missing mandatory generated shape fields.
 TEST(XYFormatUtilsPolyTest, RejectsMissingMandatoryGeneratedShapeFields)
 {
   EXPECT_FALSE(string2Poly("radial:: x=0,y=0,radius=10").is_convex());
@@ -194,6 +210,7 @@ TEST(XYFormatUtilsPolyTest, RejectsMissingMandatoryGeneratedShapeFields)
   EXPECT_FALSE(string2Poly("pylon: x1=0,y1=0,x2=10,y2=0,axis_pad=5").is_convex());
 }
 
+// Covers XY format utils poly behavior: sets polygon and overrides label from caller.
 TEST(XYFormatUtilsPolyTest, SetsPolygonAndOverridesLabelFromCaller)
 {
   XYPolygon poly;
@@ -205,6 +222,7 @@ TEST(XYFormatUtilsPolyTest, SetsPolygonAndOverridesLabelFromCaller)
   EXPECT_EQ(poly.get_label(), "caller_label");
 }
 
+// Covers XY format utils poly behavior: serializes polygon in view polygon compatible pts format.
 TEST(XYFormatUtilsPolyTest, SerializesPolygonInViewPolygonCompatiblePtsFormat)
 {
   XYPolygon poly = makeSquarePoly(0, 0, 10, 10);
@@ -217,6 +235,7 @@ TEST(XYFormatUtilsPolyTest, SerializesPolygonInViewPolygonCompatiblePtsFormat)
   EXPECT_TRUE(stringContains(spec, "label=box"));
 }
 
+// Covers XY polygon behavior: round trips avoid obstacle view polygon payloads.
 TEST(XYPolygonTest, RoundTripsAvoidObstacleViewPolygonPayloads)
 {
   // BHV_AvoidObstacle posts the original obstacle and buffer polygon on
@@ -262,6 +281,7 @@ TEST(XYPolygonTest, RoundTripsAvoidObstacleViewPolygonPayloads)
   EXPECT_TRUE(parsed_buffer.contains(35, -100));
 }
 
+// Covers XY polygon behavior: round trips avoid obstacle V21 precision and erase payloads.
 TEST(XYPolygonTest, RoundTripsAvoidObstacleV21PrecisionAndErasePayloads)
 {
   // BHV_AvoidObstacleV21 posts obstacle, min buffer, and max buffer polygons
@@ -300,6 +320,7 @@ TEST(XYPolygonTest, RoundTripsAvoidObstacleV21PrecisionAndErasePayloads)
   EXPECT_NEAR(erased.area(), 40.5, kGeomTol);
 }
 
+// Covers XY polygon behavior: round trips sim marine wormhole viewer polygons.
 TEST(XYPolygonTest, RoundTripsSimMarineWormholeViewerPolygons)
 {
   // uSimMarine V22/V23 asks each WormHole for its convex polygons and posts
@@ -327,6 +348,7 @@ TEST(XYPolygonTest, RoundTripsSimMarineWormholeViewerPolygons)
   EXPECT_FALSE(parsed_weber.intersects(parsed_madrid));
 }
 
+// Covers XY polygon behavior: computes containment area perimeter and boundary distance.
 TEST(XYPolygonTest, ComputesContainmentAreaPerimeterAndBoundaryDistance)
 {
   XYPolygon op_region = makeSquarePoly(0, 0, 10, 10);
@@ -343,6 +365,7 @@ TEST(XYPolygonTest, ComputesContainmentAreaPerimeterAndBoundaryDistance)
   EXPECT_NEAR(op_region.dist_to_poly(5, 5), 5.0, kGeomTol);
 }
 
+// Covers XY polygon behavior: computes ray segment and line intersections for obstacle checks.
 TEST(XYPolygonTest, ComputesRaySegmentAndLineIntersectionsForObstacleChecks)
 {
   XYPolygon obstacle = makeSquarePoly(0, 0, 10, 10);
@@ -365,6 +388,7 @@ TEST(XYPolygonTest, ComputesRaySegmentAndLineIntersectionsForObstacleChecks)
   EXPECT_NEAR(iy2, 5.0, kGeomTol);
 }
 
+// Covers XY polygon behavior: computes polygon containment intersection and separation.
 TEST(XYPolygonTest, ComputesPolygonContainmentIntersectionAndSeparation)
 {
   XYPolygon outer = makeSquarePoly(0, 0, 10, 10);
@@ -384,6 +408,7 @@ TEST(XYPolygonTest, ComputesPolygonContainmentIntersectionAndSeparation)
   EXPECT_NEAR(outer.dist_to_poly(far), 10.0, kGeomTol);
 }
 
+// Covers XY polygon behavior: intersects square for viewer selection and grid windowing.
 TEST(XYPolygonTest, IntersectsSquareForViewerSelectionAndGridWindowing)
 {
   XYPolygon poly = makeSquarePoly(0, 0, 10, 10);
@@ -397,6 +422,7 @@ TEST(XYPolygonTest, IntersectsSquareForViewerSelectionAndGridWindowing)
   EXPECT_FALSE(empty.intersects(XYSquare(0, 0, 1, 1)));
 }
 
+// Covers XY polygon behavior: handles degenerate point and segment polygons for distance and intersections.
 TEST(XYPolygonTest, HandlesDegeneratePointAndSegmentPolygonsForDistanceAndIntersections)
 {
   XYPolygon point_poly;
@@ -426,6 +452,7 @@ TEST(XYPolygonTest, HandlesDegeneratePointAndSegmentPolygonsForDistanceAndInters
   EXPECT_FALSE(segment_poly.seg_intercepts(20, -5, 20, 5));
 }
 
+// Covers XY polygon behavior: finds closest boundary point and exports waypoint loop from nearest vertex.
 TEST(XYPolygonTest, FindsClosestBoundaryPointAndExportsWaypointLoopFromNearestVertex)
 {
   XYPolygon region = makeSquarePoly(0, 0, 10, 10);
@@ -448,6 +475,7 @@ TEST(XYPolygonTest, FindsClosestBoundaryPointAndExportsWaypointLoopFromNearestVe
   EXPECT_NEAR(loop.get_vy(1), 10.0, kGeomTol);
 }
 
+// Covers XY polygon behavior: transforms and maintains convexity for viewable regions.
 TEST(XYPolygonTest, TransformsAndMaintainsConvexityForViewableRegions)
 {
   XYPolygon poly = makeSquarePoly(0, 0, 10, 10);
@@ -477,6 +505,7 @@ TEST(XYPolygonTest, TransformsAndMaintainsConvexityForViewableRegions)
   EXPECT_NEAR(poly.get_vy(2), 9.0, kGeomTol);
 }
 
+// Covers XY polygon behavior: reverse rotate about center and clear maintain expected state.
 TEST(XYPolygonTest, ReverseRotateAboutCenterAndClearMaintainExpectedState)
 {
   XYPolygon poly = string2Poly("pts={0,0:10,0:10,20:0,20},label=survey_box");
@@ -501,6 +530,7 @@ TEST(XYPolygonTest, ReverseRotateAboutCenterAndClearMaintainExpectedState)
   EXPECT_FALSE(poly.contains(0, 0));
 }
 
+// Covers XY polygon behavior: edits and simplifies convex polygon vertices.
 TEST(XYPolygonTest, EditsAndSimplifiesConvexPolygonVertices)
 {
   XYPolygon poly = string2Poly("pts={0,0:1,0:10,0:10,10:0,10}");
@@ -531,6 +561,7 @@ TEST(XYPolygonTest, EditsAndSimplifiesConvexPolygonVertices)
   EXPECT_TRUE(delta_poly.is_convex());
 }
 
+// Covers XY polygon behavior: alter delete and insert can invalidate concave edits.
 TEST(XYPolygonTest, AlterDeleteAndInsertCanInvalidateConcaveEdits)
 {
   XYPolygon poly = makeSquarePoly(0, 0, 10, 10);
@@ -555,6 +586,7 @@ TEST(XYPolygonTest, AlterDeleteAndInsertCanInvalidateConcaveEdits)
   EXPECT_EQ(poly.size(), 2u);
 }
 
+// Covers XY polygon behavior: snap rejects convexity breaking collapse but allows non convex collapse.
 TEST(XYPolygonTest, SnapRejectsConvexityBreakingCollapseButAllowsNonConvexCollapse)
 {
   XYPolygon thin;
@@ -580,6 +612,7 @@ TEST(XYPolygonTest, SnapRejectsConvexityBreakingCollapseButAllowsNonConvexCollap
   EXPECT_TRUE(nonconvex.apply_snap(10));
 }
 
+// Covers XY polygon behavior: settles non convex polygon by removing colinear weak point.
 TEST(XYPolygonTest, SettlesNonConvexPolygonByRemovingColinearWeakPoint)
 {
   XYPolygon nonconvex;
@@ -604,6 +637,7 @@ TEST(XYPolygonTest, SettlesNonConvexPolygonByRemovingColinearWeakPoint)
   EXPECT_TRUE(settled.contains(5, 3));
 }
 
+// Covers XY polygon behavior: builds radial polygon and classifies viewable vertices.
 TEST(XYPolygonTest, BuildsRadialPolygonAndClassifiesViewableVertices)
 {
   XYPolygon radial;

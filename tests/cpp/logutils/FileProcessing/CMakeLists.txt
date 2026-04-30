@@ -1,0 +1,17 @@
+add_moos_cpp_test(test_logutils_file_processing
+  SOURCES
+    FileProcessingTest.cpp
+  LIBS
+    logutils
+    contacts
+    geometry
+    mbutil
+  LABELS
+    logutils
+    ALogFiles
+  SUITE_LABELS
+    ScanReportTest=ScanReport
+    ALogScannerTest=ALogScanner
+    ALogSorterTest=ALogSorter
+    SplitHandlerTest=SplitHandler
+)

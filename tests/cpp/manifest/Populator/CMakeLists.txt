@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_manifest_populator
+  SOURCES
+    ManifestPopulatorTest.cpp
+  LIBS
+    manifest
+    mbutil
+  LABELS
+    manifest
+    Populator_ManifestSet
+    ManifestFile
+    LOCFile
+)

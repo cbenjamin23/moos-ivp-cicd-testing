@@ -109,6 +109,7 @@ void ExpectCacheMatchesDirectTurn(const DubinsCache& cache, double osx, double o
 
 }  // namespace
 
+// Covers dubins turn behavior: no turn keeps ray at ownship and builds zero length beam arc.
 TEST(DubinsTurnTest, NoTurnKeepsRayAtOwnshipAndBuildsZeroLengthBeamArc)
 {
   DubinsTurn turn(4, -2, 90, 5);
@@ -123,6 +124,7 @@ TEST(DubinsTurnTest, NoTurnKeepsRayAtOwnshipAndBuildsZeroLengthBeamArc)
   EXPECT_NEAR(turn.getTurnHdg(), 0.0, kGeomTol);
 }
 
+// Covers dubins turn behavior: computes starboard quarter turn from north to east.
 TEST(DubinsTurnTest, ComputesStarboardQuarterTurnFromNorthToEast)
 {
   DubinsTurn turn(0, 0, 0, 10);
@@ -141,6 +143,7 @@ TEST(DubinsTurnTest, ComputesStarboardQuarterTurnFromNorthToEast)
               turn.getArcLen(), kLooseGeomTol);
 }
 
+// Covers dubins turn behavior: computes port quarter turn from north to west.
 TEST(DubinsTurnTest, ComputesPortQuarterTurnFromNorthToWest)
 {
   DubinsTurn turn(0, 0, 0, 10);
@@ -159,6 +162,7 @@ TEST(DubinsTurnTest, ComputesPortQuarterTurnFromNorthToWest)
               turn.getArcLen(), kLooseGeomTol);
 }
 
+// Covers dubins turn behavior: chooses starboard for one hundred eighty degree tie.
 TEST(DubinsTurnTest, ChoosesStarboardForOneHundredEightyDegreeTie)
 {
   DubinsTurn turn(0, 0, 0, 10);
@@ -171,6 +175,7 @@ TEST(DubinsTurnTest, ChoosesStarboardForOneHundredEightyDegreeTie)
   EXPECT_NEAR(turn.getArcLen(), kPi * 10.0, kLooseGeomTol);
 }
 
+// Covers dubins turn behavior: uses MOOS heading convention for offset ownship pose.
 TEST(DubinsTurnTest, UsesMoosHeadingConventionForOffsetOwnshipPose)
 {
   const double osx = 100;
@@ -196,6 +201,7 @@ TEST(DubinsTurnTest, UsesMoosHeadingConventionForOffsetOwnshipPose)
   EXPECT_NEAR(turn.getArcLen(), 0.5 * kPi * radius, kLooseGeomTol);
 }
 
+// Covers dubins turn behavior: normalizes desired heading after turn decision.
 TEST(DubinsTurnTest, NormalizesDesiredHeadingAfterTurnDecision)
 {
   DubinsTurn starboard(0, 0, 0, 10);
@@ -211,6 +217,7 @@ TEST(DubinsTurnTest, NormalizesDesiredHeadingAfterTurnDecision)
   ExpectRay(port, -10, 10);
 }
 
+// Covers dubins turn behavior: normalized no turn leaves stored desired heading at default.
 TEST(DubinsTurnTest, NormalizedNoTurnLeavesStoredDesiredHeadingAtDefault)
 {
   DubinsTurn turn(1, 2, 0, 15);
@@ -222,6 +229,7 @@ TEST(DubinsTurnTest, NormalizedNoTurnLeavesStoredDesiredHeadingAtDefault)
   ExpectArc(turn, -14, 2, 15, 90, 90);
 }
 
+// Covers dubins turn behavior: zero radius builds degenerate directional turn.
 TEST(DubinsTurnTest, ZeroRadiusBuildsDegenerateDirectionalTurn)
 {
   DubinsTurn turn(0, 0, 0, 0);
@@ -236,6 +244,7 @@ TEST(DubinsTurnTest, ZeroRadiusBuildsDegenerateDirectionalTurn)
   EXPECT_NEAR(turn.getArcLen(), 0.0, kGeomTol);
 }
 
+// Covers dubins turn behavior: direct turn allows negative radius and negative arc length.
 TEST(DubinsTurnTest, DirectTurnAllowsNegativeRadiusAndNegativeArcLength)
 {
   DubinsTurn turn(0, 0, 0, -10);
@@ -248,6 +257,7 @@ TEST(DubinsTurnTest, DirectTurnAllowsNegativeRadiusAndNegativeArcLength)
   EXPECT_NEAR(turn.getArcLen(), -5.0 * kPi, kLooseGeomTol);
 }
 
+// Covers dubins turn behavior: unnormalized ownship heading can produce no turn before desired normalization.
 TEST(DubinsTurnTest, UnnormalizedOwnshipHeadingCanProduceNoTurnBeforeDesiredNormalization)
 {
   DubinsTurn turn(1, 2, 450, 10);
@@ -260,6 +270,7 @@ TEST(DubinsTurnTest, UnnormalizedOwnshipHeadingCanProduceNoTurnBeforeDesiredNorm
   EXPECT_NEAR(turn.getArcLen(), 0.0, kGeomTol);
 }
 
+// Covers dubins turn wall lookahead behavior: ray endpoint feeds wall engine ray CPA use case.
 TEST(DubinsTurnWallLookaheadTest, RayEndpointFeedsWallEngineRayCpaUseCase)
 {
   DubinsTurn turn(0, 0, 0, 10);
@@ -280,6 +291,7 @@ TEST(DubinsTurnWallLookaheadTest, RayEndpointFeedsWallEngineRayCpaUseCase)
   EXPECT_NEAR(ray_dist[0], 20.0, kGeomTol);
 }
 
+// Covers dubins turn wall lookahead behavior: arc geometry feeds wall engine arc CPA use case.
 TEST(DubinsTurnWallLookaheadTest, ArcGeometryFeedsWallEngineArcCpaUseCase)
 {
   DubinsTurn turn(0, 0, 0, 10);
@@ -300,6 +312,7 @@ TEST(DubinsTurnWallLookaheadTest, ArcGeometryFeedsWallEngineArcCpaUseCase)
   EXPECT_NEAR(arc_dist[0], turn.getArcLen(), kLooseGeomTol);
 }
 
+// Covers dubins cache validation behavior: starts invalid and rejects build before parameters.
 TEST(DubinsCacheValidationTest, StartsInvalidAndRejectsBuildBeforeParameters)
 {
   DubinsCache cache;
@@ -310,6 +323,7 @@ TEST(DubinsCacheValidationTest, StartsInvalidAndRejectsBuildBeforeParameters)
   EXPECT_FALSE(cache.valid());
 }
 
+// Covers dubins cache validation behavior: rejects negative radius without clearing existing cache.
 TEST(DubinsCacheValidationTest, RejectsNegativeRadiusWithoutClearingExistingCache)
 {
   DubinsCache cache;
@@ -323,6 +337,7 @@ TEST(DubinsCacheValidationTest, RejectsNegativeRadiusWithoutClearingExistingCach
   EXPECT_EQ(cache.size(), 360u);
 }
 
+// Covers dubins cache validation behavior: setting valid parameters clears existing cache.
 TEST(DubinsCacheValidationTest, SettingValidParametersClearsExistingCache)
 {
   DubinsCache cache;
@@ -339,6 +354,7 @@ TEST(DubinsCacheValidationTest, SettingValidParametersClearsExistingCache)
   EXPECT_NEAR(cache.getArcLenIX(90), 0.0, kGeomTol);
 }
 
+// Covers dubins cache validation behavior: rejects too coarse heading choice without clearing cache.
 TEST(DubinsCacheValidationTest, RejectsTooCoarseHeadingChoiceWithoutClearingCache)
 {
   DubinsCache cache;
@@ -350,6 +366,7 @@ TEST(DubinsCacheValidationTest, RejectsTooCoarseHeadingChoiceWithoutClearingCach
   EXPECT_EQ(cache.size(), 360u);
 }
 
+// Covers dubins cache quirk behavior: build cache validates but does not adopt heading choice argument.
 TEST(DubinsCacheQuirkTest, BuildCacheValidatesButDoesNotAdoptHeadingChoiceArgument)
 {
   DubinsCache cache;
@@ -361,6 +378,7 @@ TEST(DubinsCacheQuirkTest, BuildCacheValidatesButDoesNotAdoptHeadingChoiceArgume
   EXPECT_NEAR(cache.getArcLen(15), cache.getArcLenIX(15), kGeomTol);
 }
 
+// Covers dubins cache lookup behavior: cached turns match direct dubins turn geometry.
 TEST(DubinsCacheLookupTest, CachedTurnsMatchDirectDubinsTurnGeometry)
 {
   const double osx = 2;
@@ -379,6 +397,7 @@ TEST(DubinsCacheLookupTest, CachedTurnsMatchDirectDubinsTurnGeometry)
   ExpectCacheMatchesDirectTurn(cache, osx, osy, osh, radius, 359);
 }
 
+// Covers dubins cache lookup behavior: heading queries normalize and floor to current one degree grid.
 TEST(DubinsCacheLookupTest, HeadingQueriesNormalizeAndFloorToCurrentOneDegreeGrid)
 {
   DubinsCache cache;
@@ -400,6 +419,7 @@ TEST(DubinsCacheLookupTest, HeadingQueriesNormalizeAndFloorToCurrentOneDegreeGri
   EXPECT_NEAR(cache.getArcLen(765.25), cache.getArcLenIX(45), kGeomTol);
 }
 
+// Covers dubins cache lookup behavior: get arc and ray normalize out of range headings.
 TEST(DubinsCacheLookupTest, GetArcAndRayNormalizeOutOfRangeHeadings)
 {
   DubinsCache cache;
@@ -419,6 +439,7 @@ TEST(DubinsCacheLookupTest, GetArcAndRayNormalizeOutOfRangeHeadings)
   EXPECT_NEAR(ray_y, 10.0, kLooseGeomTol);
 }
 
+// Covers dubins cache lookup behavior: cache keeps unnormalized ownship heading for no turn index.
 TEST(DubinsCacheLookupTest, CacheKeepsUnnormalizedOwnshipHeadingForNoTurnIndex)
 {
   DubinsCache cache;
@@ -436,6 +457,7 @@ TEST(DubinsCacheLookupTest, CacheKeepsUnnormalizedOwnshipHeadingForNoTurnIndex)
   EXPECT_FALSE(cache.portTurnIX(90));
 }
 
+// Covers dubins cache invalid query behavior: queries before build fail without leaving stale outputs.
 TEST(DubinsCacheInvalidQueryTest, QueriesBeforeBuildFailWithoutLeavingStaleOutputs)
 {
   DubinsCache cache;
@@ -461,6 +483,7 @@ TEST(DubinsCacheInvalidQueryTest, QueriesBeforeBuildFailWithoutLeavingStaleOutpu
   EXPECT_NEAR(cache.getArcLen(90), -1.0, kGeomTol);
 }
 
+// Covers dubins cache invalid query behavior: invalid index queries return sentinels.
 TEST(DubinsCacheInvalidQueryTest, InvalidIndexQueriesReturnSentinels)
 {
   DubinsCache cache;
@@ -490,6 +513,7 @@ TEST(DubinsCacheInvalidQueryTest, InvalidIndexQueriesReturnSentinels)
   EXPECT_FALSE(cache.portTurnIX(360));
 }
 
+// Covers dubins cache max turn behavior: invalid cache returns minus one and leaves output untouched.
 TEST(DubinsCacheMaxTurnTest, InvalidCacheReturnsMinusOneAndLeavesOutputUntouched)
 {
   DubinsCache cache;
@@ -514,6 +538,7 @@ TEST(DubinsCacheMaxTurnTest, InvalidCacheReturnsMinusOneAndLeavesOutputUntouched
   EXPECT_NEAR(rangle, 5.0, kGeomTol);
 }
 
+// Covers dubins cache max turn behavior: reports current starboard and port boundary turns.
 TEST(DubinsCacheMaxTurnTest, ReportsCurrentStarboardAndPortBoundaryTurns)
 {
   DubinsCache cache;
@@ -533,6 +558,7 @@ TEST(DubinsCacheMaxTurnTest, ReportsCurrentStarboardAndPortBoundaryTurns)
   ExpectArc(MakeArcSpec(ax, ay, ar, langle, rangle), -10, 0, 10, 271, 90);
 }
 
+// Covers dubins cache max turn behavior: max port turn scan is asymmetric for non zero ownship heading.
 TEST(DubinsCacheMaxTurnTest, MaxPortTurnScanIsAsymmetricForNonZeroOwnshipHeading)
 {
   DubinsCache cache;

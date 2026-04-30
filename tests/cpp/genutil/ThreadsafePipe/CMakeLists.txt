@@ -1,0 +1,9 @@
+add_moos_cpp_test(test_genutil_threadsafe_pipe
+  SOURCES
+    ThreadsafePipeTest.cpp
+  LIBS
+    genutil
+  LABELS
+    genutil
+    Threadsafe_pipe
+)

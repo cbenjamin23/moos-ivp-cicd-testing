@@ -7,6 +7,7 @@
 #include "NumericAssertions.h"
 #include "XYFormatUtilsPoint.h"
 
+// Covers XY format utils point behavior: parses view point style standard spec with hints.
 TEST(XYFormatUtilsPointTest, ParsesViewPointStyleStandardSpecWithHints)
 {
   XYPoint point = stringStandard2Point(
@@ -36,6 +37,7 @@ TEST(XYFormatUtilsPointTest, ParsesViewPointStyleStandardSpecWithHints)
   EXPECT_NEAR(point.get_transparency(), 0.4, kGeomTol);
 }
 
+// Covers XY format utils point behavior: parses obstacle manager view point script payload.
 TEST(XYFormatUtilsPointTest, ParsesObstacleManagerViewPointScriptPayload)
 {
   XYPoint point = string2Point(
@@ -55,6 +57,7 @@ TEST(XYFormatUtilsPointTest, ParsesObstacleManagerViewPointScriptPayload)
   EXPECT_NEAR(point.get_vertex_size(), 2.0, kGeomTol);
 }
 
+// Covers XY format utils point behavior: applies standard spec shift and trans as object transparency.
 TEST(XYFormatUtilsPointTest, AppliesStandardSpecShiftAndTransAsObjectTransparency)
 {
   XYPoint point = string2Point("x=10,y=20,z=3,shiftx=-2,shifty=5,shiftz=7,trans=2,hdg=270");
@@ -68,6 +71,7 @@ TEST(XYFormatUtilsPointTest, AppliesStandardSpecShiftAndTransAsObjectTransparenc
   EXPECT_NEAR(point.get_transparency(), 1.0, kGeomTol);
 }
 
+// Covers XY format utils point behavior: clamps object transparency and duration hints from standard spec.
 TEST(XYFormatUtilsPointTest, ClampsObjectTransparencyAndDurationHintsFromStandardSpec)
 {
   XYPoint low = string2Point("x=1,y=2,fill_transparency=-2,duration=-5");
@@ -85,6 +89,7 @@ TEST(XYFormatUtilsPointTest, ClampsObjectTransparencyAndDurationHintsFromStandar
   EXPECT_NEAR(high.get_duration(), 7.0, kGeomTol);
 }
 
+// Covers XY format utils point behavior: supports simple coordinate only forms.
 TEST(XYFormatUtilsPointTest, SupportsSimpleCoordinateOnlyForms)
 {
   XYPoint comma = string2Point("3,4");
@@ -103,6 +108,7 @@ TEST(XYFormatUtilsPointTest, SupportsSimpleCoordinateOnlyForms)
   EXPECT_NEAR(negative.y(), -4.25, kGeomTol);
 }
 
+// Covers XY format utils point behavior: parses abbreviated point spec used in point lists.
 TEST(XYFormatUtilsPointTest, ParsesAbbreviatedPointSpecUsedInPointLists)
 {
   XYPoint point = stringAbbreviated2Point("5,6,7:label,bravo:vertex_size,3:active,false:edge_color,blue");
@@ -117,6 +123,7 @@ TEST(XYFormatUtilsPointTest, ParsesAbbreviatedPointSpecUsedInPointLists)
   EXPECT_EQ(point.get_color_str("edge"), "blue");
 }
 
+// Covers XY format utils point behavior: rejects malformed point spec.
 TEST(XYFormatUtilsPointTest, RejectsMalformedPointSpec)
 {
   EXPECT_FALSE(string2Point("5").valid());
@@ -126,6 +133,7 @@ TEST(XYFormatUtilsPointTest, RejectsMalformedPointSpec)
   EXPECT_FALSE(string2Point("1,2,3,4:label,too_many_numbers").valid());
 }
 
+// Covers XY format utils point behavior: preserves current standard spec numeric coercion.
 TEST(XYFormatUtilsPointTest, PreservesCurrentStandardSpecNumericCoercion)
 {
   XYPoint point = string2Point("x=not-a-number,y=4,z=also-bad,label=coerced");
@@ -137,6 +145,7 @@ TEST(XYFormatUtilsPointTest, PreservesCurrentStandardSpecNumericCoercion)
   EXPECT_EQ(point.get_label(), "coerced");
 }
 
+// Covers XY format utils point behavior: ignores invalid metadata but keeps valid vertex.
 TEST(XYFormatUtilsPointTest, IgnoresInvalidMetadataButKeepsValidVertex)
 {
   XYPoint point = string2Point(
@@ -154,6 +163,7 @@ TEST(XYFormatUtilsPointTest, IgnoresInvalidMetadataButKeepsValidVertex)
   EXPECT_FALSE(point.color_set("vertex"));
 }
 
+// Covers XY point behavior: constructs and clears validity and metadata.
 TEST(XYPointTest, ConstructsAndClearsValidityAndMetadata)
 {
   XYPoint point(1, 2, "marker");
@@ -180,6 +190,7 @@ TEST(XYPointTest, ConstructsAndClearsValidityAndMetadata)
   EXPECT_TRUE(point.active());
 }
 
+// Covers XY point behavior: renders generic sensor style point after setters without marking valid.
 TEST(XYPointTest, RendersGenericSensorStylePointAfterSettersWithoutMarkingValid)
 {
   XYPoint point;
@@ -198,6 +209,7 @@ TEST(XYPointTest, RendersGenericSensorStylePointAfterSettersWithoutMarkingValid)
   EXPECT_TRUE(stringContains(spec, "vertex_size=4"));
 }
 
+// Covers XY point behavior: direct vertex mutators shift invalidate and report squared magnitude.
 TEST(XYPointTest, DirectVertexMutatorsShiftInvalidateAndReportSquaredMagnitude)
 {
   XYPoint point;
@@ -222,6 +234,7 @@ TEST(XYPointTest, DirectVertexMutatorsShiftInvalidateAndReportSquaredMagnitude)
   EXPECT_FALSE(point.valid());
 }
 
+// Covers XY point behavior: applies snap and project point using MOOS heading convention.
 TEST(XYPointTest, AppliesSnapAndProjectPointUsingMoosHeadingConvention)
 {
   XYPoint point(1.24, 9.76, 2.26);
@@ -242,6 +255,7 @@ TEST(XYPointTest, AppliesSnapAndProjectPointUsingMoosHeadingConvention)
   EXPECT_NEAR(north.y(), 7.0, kGeomTol);
 }
 
+// Covers XY point behavior: serializes point transparency and spec digits.
 TEST(XYPointTest, SerializesPointTransparencyAndSpecDigits)
 {
   XYPoint point(1.23456789, 9.87654321, 3.456789);
@@ -261,6 +275,7 @@ TEST(XYPointTest, SerializesPointTransparencyAndSpecDigits)
   EXPECT_EQ(point.get_spec_xy(':'), "1:10");
 }
 
+// Covers XY point behavior: supports value comparison by coordinates and magnitude ordering.
 TEST(XYPointTest, SupportsValueComparisonByCoordinatesAndMagnitudeOrdering)
 {
   XYPoint near_point(1, 1);
@@ -278,6 +293,7 @@ TEST(XYPointTest, SupportsValueComparisonByCoordinatesAndMagnitudeOrdering)
   EXPECT_TRUE(points.front() == near_point);
 }
 
+// Covers XY format utils point behavior: serializes view point compatible payloads.
 TEST(XYFormatUtilsPointTest, SerializesViewPointCompatiblePayloads)
 {
   XYPoint point = string2Point("x=1.234,y=5.678,z=9,label=alpha,vertex_size=2,vertex_color=yellow,active=false");
@@ -295,6 +311,7 @@ TEST(XYFormatUtilsPointTest, SerializesViewPointCompatiblePayloads)
   EXPECT_EQ(point.get_spec_inactive(), "x=0,y=0,active=false,label=alpha");
 }
 
+// Covers XY point behavior: serializes waypoint and loiter view point lifecycle payloads.
 TEST(XYPointTest, SerializesWaypointAndLoiterViewPointLifecyclePayloads)
 {
   XYPoint nextpt(20, -5, "alpha_waypoint");
@@ -317,6 +334,7 @@ TEST(XYPointTest, SerializesWaypointAndLoiterViewPointLifecyclePayloads)
   EXPECT_EQ(nextpt.get_spec_inactive(), "x=0,y=0,active=false,label=alpha_waypoint");
 }
 
+// Covers XY point behavior: round trips attractor trail point lifecycle payloads.
 TEST(XYPointTest, RoundTripsAttractorTrailPointLifecyclePayloads)
 {
   // BHV_Attractor keeps a cached trail point, updates its vertex from the
@@ -341,6 +359,7 @@ TEST(XYPointTest, RoundTripsAttractorTrailPointLifecyclePayloads)
   EXPECT_FALSE(erased.active());
 }
 
+// Covers XY point behavior: round trips rubber band station point with behavior source.
 TEST(XYPointTest, RoundTripsRubberBandStationPointWithBehaviorSource)
 {
   // BHV_RubberBand adds type/source metadata to the station point before it

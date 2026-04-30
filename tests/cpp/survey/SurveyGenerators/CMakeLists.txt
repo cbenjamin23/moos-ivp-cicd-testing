@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_survey_generators
+  SOURCES
+    SurveyGeneratorsTest.cpp
+  LIBS
+    survey
+    geometry
+    mbutil
+  LABELS
+    survey
+    pMarineViewer
+    SURVEY_UPDATES
+  SUITE_LABELS
+    RectHullGeneratorTest=RectHullGenerator
+    SurveyGeneratorTest=SurveyGenerator,XYPatternBlock
+)

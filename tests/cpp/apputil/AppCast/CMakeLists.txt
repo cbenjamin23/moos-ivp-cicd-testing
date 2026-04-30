@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_apputil_appcast
+  SOURCES
+    AppCastRepoTest.cpp
+  LIBS
+    apputil
+    mbutil
+    ${MOOS_LIBRARIES}
+  LABELS
+    apputil
+  SUITE_LABELS
+    AppCastSetTest=AppCastSet
+    AppCastTreeTest=AppCastTree
+    AppCastRepoTest=AppCastRepo
+)

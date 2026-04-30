@@ -1,0 +1,16 @@
+add_moos_cpp_test(test_polar_plot
+  SOURCES
+    PolarPlotTest.cpp
+  LIBS
+    polar
+    geometry
+    mbutil
+  LABELS
+    polar
+    uSimMarineV22
+    uSimMarineV23
+  SUITE_LABELS
+    PolarPlotTest=PolarPlot
+    WindModelTest=WindModel
+    PopulatorPolarPlotTest=PopulatorPolarPlot
+)

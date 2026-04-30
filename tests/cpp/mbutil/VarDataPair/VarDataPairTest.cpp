@@ -7,6 +7,7 @@
 #include "VarDataPair.h"
 #include "VarDataPairUtils.h"
 
+// Covers var data pair behavior: constructs numeric and string postings.
 TEST(VarDataPairTest, ConstructsNumericAndStringPostings)
 {
   VarDataPair numeric("RETURN", 1.0);
@@ -30,8 +31,11 @@ TEST(VarDataPairTest, ConstructsNumericAndStringPostings)
   EXPECT_EQ(quoted_number.getPrintable(), "MODE=\"27\"");
 }
 
+// Covers var data pair behavior: pins setter overwrite and zero value behavior.
 TEST(VarDataPairTest, PinsSetterOverwriteAndZeroValueBehavior)
 {
+  // Current setters do not symmetrically replace string/numeric state, and a
+  // numeric zero posting is treated as invalid unless supplied in a valid spec.
   VarDataPair pair;
   EXPECT_EQ(pair.why_invalid(), 1);
   EXPECT_TRUE(pair.set_var("DEPLOY"));
@@ -52,6 +56,7 @@ TEST(VarDataPairTest, PinsSetterOverwriteAndZeroValueBehavior)
   EXPECT_DOUBLE_EQ(zero.get_ddata(), 0.0);
 }
 
+// Covers var data pair behavior: extracts macros from behavior flag strings.
 TEST(VarDataPairTest, ExtractsMacrosFromBehaviorFlagStrings)
 {
   VarDataPair pair("CONTACT_SUMMARY", "vname=$[VNAME],rng=$[RANGE],rng=$[RANGE]");
@@ -73,8 +78,11 @@ TEST(VarDataPairTest, ExtractsMacrosFromBehaviorFlagStrings)
   EXPECT_FALSE(not_solo.is_solo_macro());
 }
 
+// Covers var data pair utils behavior: parses range and destination tagged postings.
 TEST(VarDataPairUtilsTest, ParsesRangeAndDestinationTaggedPostings)
 {
+  // Behavior flag specs can carry range tags, destination tags, and conditions
+  // before the variable assignment.
   VarDataPair pair;
   ASSERT_TRUE(setVarDataPairOnString(
       pair, "@cpa #group RETURN_HOME=true [if] MTYPE=survey"));
@@ -89,6 +97,7 @@ TEST(VarDataPairUtilsTest, ParsesRangeAndDestinationTaggedPostings)
   EXPECT_EQ(pair.getPrintable(), "@cpa group RETURN_HOME=true");
 }
 
+// Covers var data pair utils behavior: parses contact behavior range and broadcast tags.
 TEST(VarDataPairUtilsTest, ParsesContactBehaviorRangeAndBroadcastTags)
 {
   VarDataPair pair;
@@ -111,6 +120,7 @@ TEST(VarDataPairUtilsTest, ParsesContactBehaviorRangeAndBroadcastTags)
   EXPECT_EQ(pair.get_var(), "RETURN_FLAG");
 }
 
+// Covers var data pair utils behavior: parses quoted string values and rejects malformed inputs.
 TEST(VarDataPairUtilsTest, ParsesQuotedStringValuesAndRejectsMalformedInputs)
 {
   VarDataPair pair;
@@ -126,6 +136,7 @@ TEST(VarDataPairUtilsTest, ParsesQuotedStringValuesAndRejectsMalformedInputs)
   EXPECT_FALSE(setVarDataPairOnString(pair, "=NO_VAR"));
 }
 
+// Covers var data pair utils behavior: auto parses numbers booleans and stringified numbers.
 TEST(VarDataPairUtilsTest, AutoParsesNumbersBooleansAndStringifiedNumbers)
 {
   VarDataPair pair;
@@ -146,6 +157,7 @@ TEST(VarDataPairUtilsTest, AutoParsesNumbersBooleansAndStringifiedNumbers)
   EXPECT_EQ(pair.getPrintable(), "MODE=\"007\"");
 }
 
+// Covers var data pair utils behavior: adds pairs and supports clear all.
 TEST(VarDataPairUtilsTest, AddsPairsAndSupportsClearAll)
 {
   std::vector<VarDataPair> pairs;
@@ -158,6 +170,7 @@ TEST(VarDataPairUtilsTest, AddsPairsAndSupportsClearAll)
   EXPECT_TRUE(pairs.empty());
 }
 
+// Covers var data pair utils behavior: longest field ignores numeric data fields.
 TEST(VarDataPairUtilsTest, LongestFieldIgnoresNumericDataFields)
 {
   std::vector<VarDataPair> pairs;
@@ -168,6 +181,7 @@ TEST(VarDataPairUtilsTest, LongestFieldIgnoresNumericDataFields)
   EXPECT_EQ(longestField(pairs), std::string("keep_station").size());
 }
 
+// Covers var data pair behavior: round trips structured var data pair specs.
 TEST(VarDataPairTest, RoundTripsStructuredVarDataPairSpecs)
 {
   VarDataPair parsed = stringToVarDataPair("var=MSG,sval={hello,abe},key=k1,ptype=post");
@@ -181,8 +195,11 @@ TEST(VarDataPairTest, RoundTripsStructuredVarDataPairSpecs)
   EXPECT_FALSE(bad.valid());
 }
 
+// Covers var data pair behavior: pins structured spec edge cases.
 TEST(VarDataPairTest, PinsStructuredSpecEdgeCases)
 {
+  // stringToVarDataPair accepts the structured string form only for supported
+  // fields; numeric dval and duplicate sval currently invalidate the result.
   VarDataPair numeric = stringToVarDataPair("var=SPD,dval=2.5,key=helm,ptype=post");
   EXPECT_FALSE(numeric.valid());
   EXPECT_EQ(numeric.get_var(), "");

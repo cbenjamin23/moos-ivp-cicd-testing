@@ -51,6 +51,7 @@ AOF_Ring makeFFViewRing(const IvPDomain& domain,
 
 }  // namespace
 
+// Covers AOF linear behavior: evaluates mission XY payload style linear utility.
 TEST(AOFLinearTest, EvaluatesMissionXYPayloadStyleLinearUtility)
 {
   AOF_Linear aof(makeXYDomain());
@@ -63,6 +64,7 @@ TEST(AOFLinearTest, EvaluatesMissionXYPayloadStyleLinearUtility)
   EXPECT_NEAR(aof.evalBox(&point), 5.0, kGeomTol);
 }
 
+// Covers AOF linear behavior: replays app ff view linear data file domain and coefficients.
 TEST(AOFLinearTest, ReplaysAppFFViewLinearDataFileDomainAndCoefficients)
 {
   AOF_Linear aof(makeFFViewSignedDomain());
@@ -79,6 +81,7 @@ TEST(AOFLinearTest, ReplaysAppFFViewLinearDataFileDomainAndCoefficients)
   EXPECT_NEAR(aof.evalBox(&high_x), 82.7, kLooseGeomTol);
 }
 
+// Covers AOF quadratic behavior: requires XY domain and evaluates offset bowl.
 TEST(AOFQuadraticTest, RequiresXYDomainAndEvaluatesOffsetBowl)
 {
   AOF_Quadratic aof(makeXYDomain());
@@ -100,6 +103,7 @@ TEST(AOFQuadraticTest, RequiresXYDomainAndEvaluatesOffsetBowl)
   EXPECT_FALSE(missing_xy.initialize());
 }
 
+// Covers AOF gaussian behavior: evaluates center and sigma falloff.
 TEST(AOFGaussianTest, EvaluatesCenterAndSigmaFalloff)
 {
   AOF_Gaussian aof(makeXYDomain());
@@ -116,6 +120,7 @@ TEST(AOFGaussianTest, EvaluatesCenterAndSigmaFalloff)
   EXPECT_NEAR(aof.evalBox(&point), aof.evalPoint({60, 40}), kGeomTol);
 }
 
+// Covers AOF gaussian behavior: replays app ff view gaussian data file with domain values.
 TEST(AOFGaussianTest, ReplaysAppFFViewGaussianDataFileWithDomainValues)
 {
   AOF_Gaussian aof(makeFFViewDomain());
@@ -134,6 +139,7 @@ TEST(AOFGaussianTest, ReplaysAppFFViewGaussianDataFileWithDomainValues)
   EXPECT_NEAR(aof.evalPoint({50, 422}), expected, kLooseGeomTol);
 }
 
+// Covers AOF multi gaussian behavior: sums configured mission peaks and rejects wrong point dim.
 TEST(AOFMultiGaussianTest, SumsConfiguredMissionPeaksAndRejectsWrongPointDim)
 {
   AOF_MGaussian aof(makeXYDomain());
@@ -145,6 +151,7 @@ TEST(AOFMultiGaussianTest, SumsConfiguredMissionPeaksAndRejectsWrongPointDim)
   EXPECT_NEAR(aof.evalPoint({0}), 0.0, kGeomTol);
 }
 
+// Covers AOF ring behavior: pins ring peak valley and gradient modes.
 TEST(AOFRingTest, PinsRingPeakValleyAndGradientModes)
 {
   AOF_Ring ring(makeXYDomain());
@@ -182,6 +189,7 @@ TEST(AOFRingTest, PinsRingPeakValleyAndGradientModes)
   EXPECT_TRUE(std::isfinite(ring.evalBox(&center)));
 }
 
+// Covers AOF ring behavior: linear gradient plateau creates band around configured radius.
 TEST(AOFRingTest, LinearGradientPlateauCreatesBandAroundConfiguredRadius)
 {
   AOF_Ring ring(makeXYDomain());
@@ -206,6 +214,7 @@ TEST(AOFRingTest, LinearGradientPlateauCreatesBandAroundConfiguredRadius)
   EXPECT_LT(ring.evalBox(&center), 100.0);
 }
 
+// Covers AOF rings behavior: aggregates multiple ffview style ring specs.
 TEST(AOFRingsTest, AggregatesMultipleFfviewStyleRingSpecs)
 {
   AOF_Rings rings(makeXYDomain());
@@ -230,6 +239,7 @@ TEST(AOFRingsTest, AggregatesMultipleFfviewStyleRingSpecs)
   EXPECT_TRUE(rings.latexSTR(1).find("f(x, y)") != std::string::npos);
 }
 
+// Covers AOF rings behavior: replays app ff view new ring06 data file semantics.
 TEST(AOFRingsTest, ReplaysAppFFViewNewRing06DataFileSemantics)
 {
   IvPDomain domain = makeFFViewDomain();

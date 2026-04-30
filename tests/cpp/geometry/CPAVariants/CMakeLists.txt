@@ -8,9 +8,14 @@ add_moos_cpp_test(test_geometry_cpavariants
     geometry
     CPAVariants
     CPAEngine
-    CPAEngineRoot
-    CPAEngineThin
-    CPAEngineV15
     encounters
     math
+  SUITE_LABELS
+    CPAEngineRootVariantTest=CPAEngineRoot
+    CPAModernThinEquivalenceTest=CPAEngineThin,CPAEngineV15
+    CPABowSternGeometryTest=CPAEngineThin,CPAEngineV15
+    CPAPassGeometryTest=CPAEngineThin,CPAEngineV15
+    CPAEngineThinVariantTest=CPAEngineThin
+    CPAEngineV15VariantTest=CPAEngineV15
+    CPAEngineVariantEdgeCaseTest=CPAEngineThin,CPAEngineV15
 )

@@ -14,6 +14,7 @@
 #include "GeometryTestUtils.h"
 #include "NumericAssertions.h"
 #include "OpField.h"
+#include "TestFileUtils.h"
 #include "XYPolygon.h"
 #include "XYSegList.h"
 #include "XYVector.h"
@@ -44,13 +45,9 @@ double parseArtifactValue(const std::string& artifact, char key)
   return std::atof(artifact.substr(pos, end - pos).c_str());
 }
 
-std::string makeTempFieldFile(const std::string& contents)
+TempFile makeTempFieldFile(const std::string& contents)
 {
-  const std::string path = ::testing::TempDir() + "/current_field_test.txt";
-  std::ofstream out(path.c_str());
-  out << contents;
-  out.close();
-  return path;
+  return TempFile("current_field", contents);
 }
 
 std::vector<std::string> sortedAliases(const OpField& field)
@@ -62,6 +59,7 @@ std::vector<std::string> sortedAliases(const OpField& field)
 
 }  // namespace
 
+// Covers artifact utils lawnmower behavior: rejects starting point outside polygon.
 TEST(ArtifactUtilsLawnmowerTest, RejectsStartingPointOutsidePolygon)
 {
   XYSegList path = generateLawnmower(makeSurveyBox(), 150, 50, 0, 10, true);
@@ -70,6 +68,7 @@ TEST(ArtifactUtilsLawnmowerTest, RejectsStartingPointOutsidePolygon)
   EXPECT_FALSE(path.valid());
 }
 
+// Covers artifact utils lawnmower behavior: generates clockwise north south survey swaths inside box.
 TEST(ArtifactUtilsLawnmowerTest, GeneratesClockwiseNorthSouthSurveySwathsInsideBox)
 {
   XYSegList path = generateLawnmower(makeSurveyBox(), 50, 50, 0, 10, true);
@@ -85,6 +84,7 @@ TEST(ArtifactUtilsLawnmowerTest, GeneratesClockwiseNorthSouthSurveySwathsInsideB
   expectVertex(path, 5, 90, 100);
 }
 
+// Covers artifact utils lawnmower behavior: counter clockwise first turn sweeps opposite side.
 TEST(ArtifactUtilsLawnmowerTest, CounterClockwiseFirstTurnSweepsOppositeSide)
 {
   XYSegList path = generateLawnmower(makeSurveyBox(), 50, 50, 0, 10, false);
@@ -100,6 +100,7 @@ TEST(ArtifactUtilsLawnmowerTest, CounterClockwiseFirstTurnSweepsOppositeSide)
   expectVertex(path, 5, 10, 100);
 }
 
+// Covers artifact utils lawnmower behavior: oblique lawnmower keeps all vertices in polygon.
 TEST(ArtifactUtilsLawnmowerTest, ObliqueLawnmowerKeepsAllVerticesInPolygon)
 {
   XYSegList path = generateLawnmower(makeSurveyBox(), 50, 50, 45, 15, true);
@@ -110,6 +111,7 @@ TEST(ArtifactUtilsLawnmowerTest, ObliqueLawnmowerKeepsAllVerticesInPolygon)
     EXPECT_TRUE(box.contains(path.get_vx(i), path.get_vy(i)));
 }
 
+// Covers artifact utils lawnmower behavior: full pattern combines opposite sweeps around center.
 TEST(ArtifactUtilsLawnmowerTest, FullPatternCombinesOppositeSweepsAroundCenter)
 {
   XYSegList path = generateLawnmowerFull(makeSurveyBox(), 0, 20);
@@ -125,6 +127,7 @@ TEST(ArtifactUtilsLawnmowerTest, FullPatternCombinesOppositeSweepsAroundCenter)
   expectVertex(path, 5, 90, 100);
 }
 
+// Covers artifact utils artifacts behavior: generate artifacts returns unique snapped interior specs.
 TEST(ArtifactUtilsArtifactsTest, GenerateArtifactsReturnsUniqueSnappedInteriorSpecs)
 {
   XYPolygon box = makeSquarePoly(0, 0, 10, 10);
@@ -146,6 +149,7 @@ TEST(ArtifactUtilsArtifactsTest, GenerateArtifactsReturnsUniqueSnappedInteriorSp
   }
 }
 
+// Covers current field behavior: defaults to generic inactive field.
 TEST(CurrentFieldTest, DefaultsToGenericInactiveField)
 {
   CurrentField field;
@@ -168,6 +172,7 @@ TEST(CurrentFieldTest, DefaultsToGenericInactiveField)
   EXPECT_TRUE(stringContains(out, "Current Field [generic_cfield]:"));
 }
 
+// Covers current field behavior: set radius clamps below one.
 TEST(CurrentFieldTest, SetRadiusClampsBelowOne)
 {
   CurrentField field;
@@ -182,6 +187,7 @@ TEST(CurrentFieldTest, SetRadiusClampsBelowOne)
   EXPECT_NEAR(field.getRadius(), 7.5, kGeomTol);
 }
 
+// Covers current field behavior: add vector tracks marked and unmarked vectors.
 TEST(CurrentFieldTest, AddVectorTracksMarkedAndUnmarkedVectors)
 {
   CurrentField field;
@@ -200,6 +206,7 @@ TEST(CurrentFieldTest, AddVectorTracksMarkedAndUnmarkedVectors)
   EXPECT_NEAR(field.getDirection(1), 180.0, kGeomTol);
 }
 
+// Covers current field behavior: local force uses squared distance weight and averages nearby vectors.
 TEST(CurrentFieldTest, LocalForceUsesSquaredDistanceWeightAndAveragesNearbyVectors)
 {
   CurrentField field;
@@ -216,6 +223,7 @@ TEST(CurrentFieldTest, LocalForceUsesSquaredDistanceWeightAndAveragesNearbyVecto
   EXPECT_NEAR(fy, 1.25, kGeomTol);
 }
 
+// Covers current field behavior: local force ignores vectors at or beyond radius.
 TEST(CurrentFieldTest, LocalForceIgnoresVectorsAtOrBeyondRadius)
 {
   CurrentField field;
@@ -230,6 +238,7 @@ TEST(CurrentFieldTest, LocalForceIgnoresVectorsAtOrBeyondRadius)
   EXPECT_NEAR(fy, 0.0, kGeomTol);
 }
 
+// Covers current field behavior: mark unmark and active index apis follow source semantics.
 TEST(CurrentFieldTest, MarkUnmarkAndActiveIndexApisFollowSourceSemantics)
 {
   CurrentField field;
@@ -257,6 +266,7 @@ TEST(CurrentFieldTest, MarkUnmarkAndActiveIndexApisFollowSourceSemantics)
   EXPECT_FALSE(field.isMarked(99));
 }
 
+// Covers current field behavior: mark all and unmark all report whether anything changed.
 TEST(CurrentFieldTest, MarkAllAndUnmarkAllReportWhetherAnythingChanged)
 {
   CurrentField field;
@@ -274,6 +284,7 @@ TEST(CurrentFieldTest, MarkAllAndUnmarkAllReportWhetherAnythingChanged)
   EXPECT_FALSE(field.isMarked(1));
 }
 
+// Covers current field behavior: delete vector and delete marked vectors preserve unmarked order.
 TEST(CurrentFieldTest, DeleteVectorAndDeleteMarkedVectorsPreserveUnmarkedOrder)
 {
   CurrentField field;
@@ -295,6 +306,7 @@ TEST(CurrentFieldTest, DeleteVectorAndDeleteMarkedVectorsPreserveUnmarkedOrder)
   EXPECT_FALSE(field.deleteVector(5));
 }
 
+// Covers current field behavior: modify and snap apis update selected vectors.
 TEST(CurrentFieldTest, ModifyAndSnapApisUpdateSelectedVectors)
 {
   CurrentField field;
@@ -318,6 +330,7 @@ TEST(CurrentFieldTest, ModifyAndSnapApisUpdateSelectedVectors)
   EXPECT_NEAR(field.getYPos(1), 1.0, kGeomTol);
 }
 
+// Covers current field behavior: select vector returns closest and signals empty field.
 TEST(CurrentFieldTest, SelectVectorReturnsClosestAndSignalsEmptyField)
 {
   CurrentField empty;
@@ -334,6 +347,7 @@ TEST(CurrentFieldTest, SelectVectorReturnsClosestAndSignalsEmptyField)
   EXPECT_NEAR(dist, std::sqrt(5.0), kGeomTol);
 }
 
+// Covers current field behavior: listing serializes field metadata and vector rows.
 TEST(CurrentFieldTest, ListingSerializesFieldMetadataAndVectorRows)
 {
   CurrentField field;
@@ -349,9 +363,10 @@ TEST(CurrentFieldTest, ListingSerializesFieldMetadataAndVectorRows)
   EXPECT_TRUE(stringContains(listing[3], "1.235,2.346,3.457,45.12"));
 }
 
+// Covers current field behavior: populate applies metadata hints and current duplicate vector behavior.
 TEST(CurrentFieldTest, PopulateAppliesMetadataHintsAndCurrentDuplicateVectorBehavior)
 {
-  const std::string file = makeTempFieldFile(
+  TempFile file = makeTempFieldFile(
       "FieldName: TestField\n"
       "Radius: 8\n"
       "Render_Hint: vector_edge_color=yellow\n"
@@ -359,7 +374,7 @@ TEST(CurrentFieldTest, PopulateAppliesMetadataHintsAndCurrentDuplicateVectorBeha
 
   CurrentField field;
   testing::internal::CaptureStdout();
-  bool ok = field.populate(file);
+  bool ok = field.populate(file.path());
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_TRUE(ok);
@@ -371,9 +386,10 @@ TEST(CurrentFieldTest, PopulateAppliesMetadataHintsAndCurrentDuplicateVectorBeha
   EXPECT_EQ(field.getVector(1).get_color_str("edge"), "yellow");
 }
 
+// Covers current field behavior: populates uSim current mission file shape from bravo example.
 TEST(CurrentFieldTest, PopulatesUSimCurrentMissionFileShapeFromBravoExample)
 {
-  const std::string file = makeTempFieldFile(
+  TempFile file = makeTempFieldFile(
       "\n"
       "FieldName: Alpha\n"
       "Radius: 15\n"
@@ -401,7 +417,7 @@ TEST(CurrentFieldTest, PopulatesUSimCurrentMissionFileShapeFromBravoExample)
 
   CurrentField field;
   testing::internal::CaptureStdout();
-  bool ok = field.populate(file);
+  bool ok = field.populate(file.path());
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_TRUE(ok);
@@ -427,9 +443,10 @@ TEST(CurrentFieldTest, PopulatesUSimCurrentMissionFileShapeFromBravoExample)
   EXPECT_NEAR(fy, -0.828, kLooseGeomTol);
 }
 
+// Covers current field behavior: render hints fill missing vector style without overriding inline style.
 TEST(CurrentFieldTest, RenderHintsFillMissingVectorStyleWithoutOverridingInlineStyle)
 {
-  const std::string file = makeTempFieldFile(
+  TempFile file = makeTempFieldFile(
       "FieldName: Styled\n"
       "Radius: 10\n"
       "Render_Hint: vector_edge_color=yellow\n"
@@ -439,7 +456,7 @@ TEST(CurrentFieldTest, RenderHintsFillMissingVectorStyleWithoutOverridingInlineS
 
   CurrentField field;
   testing::internal::CaptureStdout();
-  ASSERT_TRUE(field.populate(file));
+  ASSERT_TRUE(field.populate(file.path()));
   testing::internal::GetCapturedStdout();
 
   ASSERT_EQ(field.size(), 4u);
@@ -451,6 +468,7 @@ TEST(CurrentFieldTest, RenderHintsFillMissingVectorStyleWithoutOverridingInlineS
   EXPECT_NEAR(field.getVector(2).get_vertex_size(), 4.0, kGeomTol);
 }
 
+// Covers op field behavior: config parses points and colors while tolerating stdout.
 TEST(OpFieldTest, ConfigParsesPointsAndColorsWhileToleratingStdout)
 {
   OpField field;
@@ -473,6 +491,7 @@ TEST(OpFieldTest, ConfigParsesPointsAndColorsWhileToleratingStdout)
   EXPECT_NEAR(field.getPoint("ne").y(), 100.0, kGeomTol);
 }
 
+// Covers op field behavior: config strips outer quotes and reports invalid point entries.
 TEST(OpFieldTest, ConfigStripsOuterQuotesAndReportsInvalidPointEntries)
 {
   OpField field;
@@ -487,6 +506,7 @@ TEST(OpFieldTest, ConfigStripsOuterQuotesAndReportsInvalidPointEntries)
   EXPECT_FALSE(field.hasKeyPt("bad"));
 }
 
+// Covers op field behavior: add point rejects duplicate and set point overwrites existing alias.
 TEST(OpFieldTest, AddPointRejectsDuplicateAndSetPointOverwritesExistingAlias)
 {
   OpField field;
@@ -502,6 +522,7 @@ TEST(OpFieldTest, AddPointRejectsDuplicateAndSetPointOverwritesExistingAlias)
   EXPECT_FALSE(field.getPoint("bad").valid());
 }
 
+// Covers op field behavior: add and set polygon maintain separate key space from points.
 TEST(OpFieldTest, AddAndSetPolygonMaintainSeparateKeySpaceFromPoints)
 {
   OpField field;
@@ -524,6 +545,7 @@ TEST(OpFieldTest, AddAndSetPolygonMaintainSeparateKeySpaceFromPoints)
   EXPECT_EQ(field.size(), 2u);
 }
 
+// Covers op field behavior: point aliases are returned from map order.
 TEST(OpFieldTest, PointAliasesAreReturnedFromMapOrder)
 {
   OpField field;
@@ -539,6 +561,7 @@ TEST(OpFieldTest, PointAliasesAreReturnedFromMapOrder)
   EXPECT_EQ(aliases[2], "charlie");
 }
 
+// Covers op field behavior: simplify keeps shorter alias by default for duplicate locations.
 TEST(OpFieldTest, SimplifyKeepsShorterAliasByDefaultForDuplicateLocations)
 {
   OpField field;
@@ -557,6 +580,7 @@ TEST(OpFieldTest, SimplifyKeepsShorterAliasByDefaultForDuplicateLocations)
   EXPECT_NE(std::find(aliases.begin(), aliases.end(), "EF"), aliases.end());
 }
 
+// Covers op field behavior: simplify false removes unequal length duplicates and leaves equal length duplicates.
 TEST(OpFieldTest, SimplifyFalseRemovesUnequalLengthDuplicatesAndLeavesEqualLengthDuplicates)
 {
   OpField field;
@@ -577,6 +601,7 @@ TEST(OpFieldTest, SimplifyFalseRemovesUnequalLengthDuplicatesAndLeavesEqualLengt
   EXPECT_NE(std::find(aliases.begin(), aliases.end(), "CY"), aliases.end());
 }
 
+// Covers op field behavior: merge combines points and polygons but rejects duplicate point keys.
 TEST(OpFieldTest, MergeCombinesPointsAndPolygonsButRejectsDuplicatePointKeys)
 {
   OpField left;

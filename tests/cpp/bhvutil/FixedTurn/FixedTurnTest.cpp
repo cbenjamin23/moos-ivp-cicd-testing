@@ -6,6 +6,7 @@
 #include "FixedTurnSet.h"
 #include "VarDataPair.h"
 
+// Covers fixed turn behavior: defaults represent caller provided turn settings.
 TEST(FixedTurnTest, DefaultsRepresentCallerProvidedTurnSettings)
 {
   FixedTurn turn;
@@ -19,6 +20,7 @@ TEST(FixedTurnTest, DefaultsRepresentCallerProvidedTurnSettings)
   EXPECT_TRUE(turn.getFlags().empty());
 }
 
+// Covers fixed turn behavior: parses fixed turn behavior parameters and flags.
 TEST(FixedTurnTest, ParsesFixedTurnBehaviorParametersAndFlags)
 {
   FixedTurn turn;
@@ -41,6 +43,25 @@ TEST(FixedTurnTest, ParsesFixedTurnBehaviorParametersAndFlags)
   EXPECT_EQ(flags[0].get_sdata(), "true");
 }
 
+// Covers fixed turn behavior: supports auto syntax and pins accepted random direction behavior.
+TEST(FixedTurnTest, SupportsAutoSyntaxAndPinsAcceptedRandomDirectionBehavior)
+{
+  FixedTurn turn;
+  ASSERT_TRUE(turn.setTurnParams("key=turn_a,spd=3,turn=rand,timeout=5"));
+  EXPECT_DOUBLE_EQ(turn.getTurnSpd(), 3);
+  EXPECT_EQ(turn.getTurnDir(), "auto");
+  EXPECT_DOUBLE_EQ(turn.getTurnTimeOut(), 5);
+
+  EXPECT_TRUE(turn.setTurnParams("spd=auto,turn=auto"));
+  EXPECT_DOUBLE_EQ(turn.getTurnSpd(), -1);
+  EXPECT_EQ(turn.getTurnDir(), "auto");
+
+  EXPECT_FALSE(turn.setTurnParams("flag=NOT_A_PAIR"));
+  EXPECT_TRUE(turn.getFlags().empty());
+  EXPECT_EQ(turn.getTurnKey(), "turn_a");
+}
+
+// Covers fixed turn behavior: rejects unknown parameters invalid numbers and key changes atomically.
 TEST(FixedTurnTest, RejectsUnknownParametersInvalidNumbersAndKeyChangesAtomically)
 {
   FixedTurn turn;
@@ -56,6 +77,20 @@ TEST(FixedTurnTest, RejectsUnknownParametersInvalidNumbersAndKeyChangesAtomicall
   EXPECT_EQ(turn.getTurnDir(), "star");
 }
 
+// Covers fixed turn behavior: adds only valid var data pairs programmatically.
+TEST(FixedTurnTest, AddsOnlyValidVarDataPairsProgrammatically)
+{
+  FixedTurn turn;
+  VarDataPair invalid;
+  EXPECT_FALSE(turn.addVarDataPair(invalid));
+
+  VarDataPair flag("TURN_DONE", "true", "auto");
+  EXPECT_TRUE(turn.addVarDataPair(flag));
+  ASSERT_EQ(turn.getFlags().size(), 1u);
+  EXPECT_EQ(turn.getFlags()[0].get_var(), "TURN_DONE");
+}
+
+// Covers fixed turn set behavior: adds updates and advances keyed turn schedule.
 TEST(FixedTurnSetTest, AddsUpdatesAndAdvancesKeyedTurnSchedule)
 {
   FixedTurnSet turns;
@@ -78,6 +113,22 @@ TEST(FixedTurnSetTest, AddsUpdatesAndAdvancesKeyedTurnSchedule)
   EXPECT_EQ(turns.getFixedTurn().getTurnDir(), "auto");
 }
 
+// Covers fixed turn set behavior: clear prefix resets existing schedule before adding new turn.
+TEST(FixedTurnSetTest, ClearPrefixResetsExistingScheduleBeforeAddingNewTurn)
+{
+  FixedTurnSet turns;
+  ASSERT_TRUE(turns.setTurnParams("key=first,spd=1"));
+  ASSERT_TRUE(turns.setTurnParams("key=second,spd=2"));
+
+  ASSERT_TRUE(turns.setTurnParams("clear,key=third,spd=3,turn=port"));
+  EXPECT_EQ(turns.size(), 1u);
+  EXPECT_FALSE(turns.completed());
+  EXPECT_EQ(turns.getFixedTurn().getTurnKey(), "third");
+  EXPECT_DOUBLE_EQ(turns.getFixedTurn().getTurnSpd(), 3);
+  EXPECT_EQ(turns.getFixedTurn().getTurnDir(), "port");
+}
+
+// Covers fixed turn set behavior: repeats schedule when configured and can clear.
 TEST(FixedTurnSetTest, RepeatsScheduleWhenConfiguredAndCanClear)
 {
   FixedTurnSet turns;

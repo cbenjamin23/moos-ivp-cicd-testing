@@ -5,6 +5,8 @@ add_moos_cpp_test(test_mbutil_color
     mbutil
   LABELS
     mbutil
-    ColorPack
-    ColorParse
+  SUITE_LABELS
+    ColorPackTest=ColorPack
+    ColorParseTest=ColorParse
+    TermColorTest=TermColor
 )

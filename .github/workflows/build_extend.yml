@@ -262,6 +262,12 @@ jobs:
             echo "- Filter: \`$CPP_TEST_FILTER\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Validate C++ test registry
+        run: |
+          python3 scripts/check_cpp_tests.py \
+            --build-dir build \
+            --moos-src moos-ivp/ivp/src
+
       - name: Upload C++ unit test report
         if: always()
         uses: actions/upload-artifact@v7

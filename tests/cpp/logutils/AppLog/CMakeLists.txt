@@ -1,0 +1,13 @@
+add_moos_cpp_test(test_logutils_app_log
+  SOURCES
+    AppLogTest.cpp
+  LIBS
+    logutils
+    mbutil
+  LABELS
+    logutils
+  SUITE_LABELS
+    AppLogEntryTest=AppLogEntry
+    AppLogPlotTest=AppLogPlot
+    PopulatorAppLogPlotTest=Populator_AppLogPlot
+)

@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_bhvutil_obshipmodel_v24
+  SOURCES
+    ObShipModelV24Test.cpp
+  LIBS
+    bhvutil
+    geometry
+    mbutil
+  LABELS
+    bhvutil
+    ObShipModelV24
+    BHV_AvoidObstacleV24
+)

@@ -28,6 +28,7 @@ XYPolygon squarePoly(const std::string& label = "")
 
 }  // namespace
 
+// Covers obstacle behavior: tracks default state range minimum and time to live.
 TEST(ObstacleTest, TracksDefaultStateRangeMinimumAndTimeToLive)
 {
   Obstacle obstacle;
@@ -54,6 +55,7 @@ TEST(ObstacleTest, TracksDefaultStateRangeMinimumAndTimeToLive)
   EXPECT_DOUBLE_EQ(obstacle.getTimeToLive(140), 0);
 }
 
+// Covers obstacle behavior: stores recent obstacle points newest first and prunes by age.
 TEST(ObstacleTest, StoresRecentObstaclePointsNewestFirstAndPrunesByAge)
 {
   Obstacle obstacle;
@@ -93,6 +95,7 @@ TEST(ObstacleTest, StoresRecentObstaclePointsNewestFirstAndPrunesByAge)
   EXPECT_EQ(obstacle.size(), 0u);
 }
 
+// Covers obstacle behavior: accepts given convex view polygon and skips rounded noop updates.
 TEST(ObstacleTest, AcceptsGivenConvexViewPolygonAndSkipsRoundedNoopUpdates)
 {
   Obstacle obstacle;
@@ -118,6 +121,7 @@ TEST(ObstacleTest, AcceptsGivenConvexViewPolygonAndSkipsRoundedNoopUpdates)
   EXPECT_EQ(obstacle.getUpdatesTotal(), 2u);
 }
 
+// Covers obstacle behavior: rejects non convex given polygons.
 TEST(ObstacleTest, RejectsNonConvexGivenPolygons)
 {
   Obstacle obstacle;
@@ -135,6 +139,7 @@ TEST(ObstacleTest, RejectsNonConvexGivenPolygons)
   EXPECT_EQ(obstacle.getUpdatesTotal(), 0u);
 }
 
+// Covers obstacle behavior: prunes given obstacles only when duration expires.
 TEST(ObstacleTest, PrunesGivenObstaclesOnlyWhenDurationExpires)
 {
   Obstacle obstacle;
@@ -146,4 +151,43 @@ TEST(ObstacleTest, PrunesGivenObstaclesOnlyWhenDurationExpires)
   obstacle.setDuration(30);
   EXPECT_FALSE(obstacle.pruneByAge(5, 129.9));
   EXPECT_TRUE(obstacle.pruneByAge(5, 131));
+}
+
+// Covers obstacle behavior: pins point obstacle max zero and future timestamp behavior.
+TEST(ObstacleTest, PinsPointObstacleMaxZeroAndFutureTimestampBehavior)
+{
+  Obstacle obstacle;
+  obstacle.setMaxPts(0);
+  XYPoint point(1, 2, "ping");
+  point.set_time(100);
+
+  // setMaxPts(0) still counts accepted points in totals, but stores no retained
+  // point history and leaves duration at the zero default.
+  EXPECT_TRUE(obstacle.addPoint(point));
+  EXPECT_TRUE(obstacle.hasChanged());
+  EXPECT_EQ(obstacle.size(), 0u);
+  EXPECT_EQ(obstacle.getPtsTotal(), 1u);
+  EXPECT_DOUBLE_EQ(obstacle.getDuration(), 0);
+  EXPECT_TRUE(obstacle.pruneByAge(5, 110));
+
+  obstacle.setDuration(30);
+  obstacle.setTStamp(200);
+  // Future obstacle timestamps extend the apparent time-to-live.
+  EXPECT_DOUBLE_EQ(obstacle.getTimeToLive(190), 40);
+}
+
+// Covers obstacle behavior: given polygon updated after points remains point based.
+TEST(ObstacleTest, GivenPolygonUpdatedAfterPointsRemainsPointBased)
+{
+  Obstacle obstacle;
+  XYPoint point(5, 5, "contact");
+  point.set_time(10);
+  ASSERT_TRUE(obstacle.addPoint(point));
+  ASSERT_TRUE(obstacle.setPoly(squarePoly("generated")));
+
+  EXPECT_FALSE(obstacle.isGiven());
+  EXPECT_EQ(obstacle.size(), 1u);
+  EXPECT_EQ(obstacle.getPoly().get_label(), "generated");
+  EXPECT_TRUE(obstacle.pruneByAge(5, 20));
+  EXPECT_TRUE(obstacle.getPoly().is_convex());
 }

@@ -7,9 +7,18 @@ add_moos_cpp_test(test_geometry_cpaplatform
   LABELS
     geometry
     CPAPlatform
-    BNGEngine
-    CPA_Utils
-    PlatModel
     encounters
     math
+  SUITE_LABELS
+    BNGEngineTest=BNGEngine
+    CPAUtilsEvalCPATest=CPA_Utils
+    CPAUtilsCrossesBowTest=CPA_Utils
+    CPAUtilsClosingSpeedTest=CPA_Utils
+    CPAUtilsVelocityVectorSumTest=CPA_Utils
+    CPAUtilsRelAngRateTest=CPA_Utils
+    PlatModelPoseTest=PlatModel
+    PlatModelParseTest=PlatModel
+    PlatModelSpokeTest=PlatModel
+    PlatModelTurnSeglrTest=PlatModel
+    PlatModelCacheTest=PlatModel
 )

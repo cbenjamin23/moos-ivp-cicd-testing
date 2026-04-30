@@ -8,8 +8,10 @@ add_moos_cpp_test(test_geometry_xyformatutils_seglr
     geometry
     formats
     math
-    XYSeglr
-    XYFormatUtilsSeglr
-    Seglr
     ray
+  SUITE_LABELS
+    XYSeglrTest=XYSeglr
+    XYFormatUtilsSeglrTest=XYFormatUtilsSeglr
+    SeglrTest=Seglr
+    XYSeglrGeomUtilsTest=XYSeglr
 )

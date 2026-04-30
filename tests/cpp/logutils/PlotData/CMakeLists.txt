@@ -1,0 +1,13 @@
+add_moos_cpp_test(test_logutils_plot_data
+  SOURCES
+    PlotDataTest.cpp
+  LIBS
+    logutils
+    mbutil
+  LABELS
+    logutils
+  SUITE_LABELS
+    LogPlotTest=LogPlot
+    VarPlotTest=VarPlot
+    VarPlotEntryTest=VarPlotEntry
+)

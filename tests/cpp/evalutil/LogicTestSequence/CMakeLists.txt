@@ -8,7 +8,8 @@ add_moos_cpp_test(test_evalutil_logic_sequence
     mbutil
   LABELS
     evalutil
-    LogicAspect
-    LogicTestSequence
     pMissionEval
+  SUITE_LABELS
+    LogicAspectTest=LogicAspect
+    LogicTestSequenceTest=LogicTestSequence
 )

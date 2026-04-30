@@ -14,6 +14,7 @@
 #include "ZAIC_SPD.h"
 #include "ZAIC_Vector.h"
 
+// Covers ZAIC peak behavior: builds course peak and pins warnings for out of range component access.
 TEST(ZAICPeakTest, BuildsCoursePeakAndPinsWarningsForOutOfRangeComponentAccess)
 {
   ZAIC_PEAK zaic(makeCourseSpeedDomain(), "course");
@@ -45,6 +46,7 @@ TEST(ZAICPeakTest, BuildsCoursePeakAndPinsWarningsForOutOfRangeComponentAccess)
   EXPECT_EQ(valid.getIvPDomain().getVarName(0), "course");
 }
 
+// Covers ZAIC peak behavior: rejects unknown domain and clamps negative widths.
 TEST(ZAICPeakTest, RejectsUnknownDomainAndClampsNegativeWidths)
 {
   ZAIC_PEAK clamped(makeCourseSpeedDomain(), "speed");
@@ -60,6 +62,7 @@ TEST(ZAICPeakTest, RejectsUnknownDomainAndClampsNegativeWidths)
   EXPECT_TRUE(clamped.getWarnings().find("min>=max") != std::string::npos);
 }
 
+// Covers ZAIC peak behavior: course peak wraps across north for helm heading domains.
 TEST(ZAICPeakTest, CoursePeakWrapsAcrossNorthForHelmHeadingDomains)
 {
   ZAIC_PEAK wrapped(makeCourseSpeedDomain(), "course");
@@ -91,6 +94,7 @@ TEST(ZAICPeakTest, CoursePeakWrapsAcrossNorthForHelmHeadingDomains)
             evalPDMapAtIndex(*unwrapped_ipf->getPDMap(), 0));
 }
 
+// Covers ZAIC speed behavior: matches typical speed preference config and summary.
 TEST(ZAICSpeedTest, MatchesTypicalSpeedPreferenceConfigAndSummary)
 {
   ZAIC_SPD zaic(makeCourseSpeedDomain(), "speed");
@@ -123,6 +127,7 @@ TEST(ZAICSpeedTest, MatchesTypicalSpeedPreferenceConfigAndSummary)
   EXPECT_TRUE(ipf->valid());
 }
 
+// Covers ZAIC speed behavior: clamps speeds and rejects missing domain.
 TEST(ZAICSpeedTest, ClampsSpeedsAndRejectsMissingDomain)
 {
   ZAIC_SPD zaic(makeCourseSpeedDomain(), "speed");
@@ -142,6 +147,7 @@ TEST(ZAICSpeedTest, ClampsSpeedsAndRejectsMissingDomain)
   EXPECT_EQ(missing.extractOF(), nullptr);
 }
 
+// Covers ZAIC speed behavior: generates expected BHV waypoint cruise speed utility shape.
 TEST(ZAICSpeedTest, GeneratesExpectedBHVWaypointCruiseSpeedUtilityShape)
 {
   ZAIC_SPD zaic(makeCourseSpeedDomain(), "speed");
@@ -160,6 +166,7 @@ TEST(ZAICSpeedTest, GeneratesExpectedBHVWaypointCruiseSpeedUtilityShape)
   EXPECT_NEAR(evalPDMapAtIndex(pdmap, 5), 10.0, kGeomTol);
 }
 
+// Covers ZAIC heading behavior: builds wrap aware course preference.
 TEST(ZAICHeadingTest, BuildsWrapAwareCoursePreference)
 {
   ZAIC_HDG zaic(makeCourseSpeedDomain(), "course");
@@ -186,6 +193,7 @@ TEST(ZAICHeadingTest, BuildsWrapAwareCoursePreference)
   EXPECT_TRUE(ipf->valid());
 }
 
+// Covers ZAIC heading behavior: repairs non heading course domain to standard zero to359.
 TEST(ZAICHeadingTest, RepairsNonHeadingCourseDomainToStandardZeroTo359)
 {
   IvPDomain odd_course;
@@ -196,6 +204,7 @@ TEST(ZAICHeadingTest, RepairsNonHeadingCourseDomainToStandardZeroTo359)
   EXPECT_EQ(zaic.getIvPDomain().getVarPoints(0), 360u);
 }
 
+// Covers ZAIC heading behavior: generated course utility uses port and starboard deltas across north.
 TEST(ZAICHeadingTest, GeneratedCourseUtilityUsesPortAndStarboardDeltasAcrossNorth)
 {
   ZAIC_HDG zaic(makeCourseSpeedDomain(), "course");
@@ -214,6 +223,7 @@ TEST(ZAICHeadingTest, GeneratedCourseUtilityUsesPortAndStarboardDeltasAcrossNort
   EXPECT_NEAR(evalPDMapAtIndex(pdmap, 170), 10.0, kGeomTol);
 }
 
+// Covers ZAIC HLEQ LEQ HEQ behavior: configures one sided utilities used by speed bounds.
 TEST(ZAICHleqLeqHeqTest, ConfiguresOneSidedUtilitiesUsedBySpeedBounds)
 {
   ZAIC_HLEQ base(makeCourseSpeedDomain(), "speed");
@@ -247,6 +257,7 @@ TEST(ZAICHleqLeqHeqTest, ConfiguresOneSidedUtilitiesUsedBySpeedBounds)
   EXPECT_TRUE(heq_ipf->valid());
 }
 
+// Covers ZAIC HLEQ LEQ HEQ behavior: generated LEQ and HEQ functions pin one sided speed bounds.
 TEST(ZAICHleqLeqHeqTest, GeneratedLeqAndHeqFunctionsPinOneSidedSpeedBounds)
 {
   ZAIC_LEQ leq(makeCourseSpeedDomain(), "speed");
@@ -280,6 +291,7 @@ TEST(ZAICHleqLeqHeqTest, GeneratedLeqAndHeqFunctionsPinOneSidedSpeedBounds)
   EXPECT_NEAR(evalPDMapAtIndex(*heq_ipf->getPDMap(), 5), 90.0, kLooseGeomTol);
 }
 
+// Covers ZAIC vector behavior: builds vector mapping and reports config warnings.
 TEST(ZAICVectorTest, BuildsVectorMappingAndReportsConfigWarnings)
 {
   ZAIC_Vector zaic(makeCourseSpeedDomain(), "speed");
@@ -319,6 +331,7 @@ TEST(ZAICVectorTest, BuildsVectorMappingAndReportsConfigWarnings)
   EXPECT_EQ(bad.getErrors(), "");
 }
 
+// Covers ZAIC vector behavior: generated vector map preserves explicit domain range pairs.
 TEST(ZAICVectorTest, GeneratedVectorMapPreservesExplicitDomainRangePairs)
 {
   ZAIC_Vector zaic(makeCourseSpeedDomain(), "speed");

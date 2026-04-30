@@ -6,6 +6,7 @@ add_moos_cpp_test(test_logic_conditional_ledger
     mbutil
   LABELS
     logic
-    ConditionalParam
-    LedgerSnap
+  SUITE_LABELS
+    ConditionalParamTest=ConditionalParam
+    LedgerSnapTest=LedgerSnap
 )

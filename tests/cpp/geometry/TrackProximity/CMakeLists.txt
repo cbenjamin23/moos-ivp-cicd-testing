@@ -7,9 +7,17 @@ add_moos_cpp_test(test_geometry_trackproximity
   LABELS
     geometry
     TrackProximity
-    LinearExtrapolator
-    WrapDetector
-    ProxPoint
     encounters
     math
+  SUITE_LABELS
+    LinearExtrapolatorStateTest=LinearExtrapolator
+    LinearExtrapolatorMotionTest=LinearExtrapolator
+    LinearExtrapolatorTimeTest=LinearExtrapolator
+    LinearExtrapolatorDecayTest=LinearExtrapolator
+    LinearExtrapolatorMoosUseTest=LinearExtrapolator
+    WrapDetectorStateTest=WrapDetector
+    WrapDetectorWrapTest=WrapDetector
+    WrapDetectorHistoryTest=WrapDetector
+    ProxPointStateTest=ProxPoint
+    ProxPointOrderingTest=ProxPoint
 )

@@ -136,7 +136,7 @@ HARNESSES: tuple[Harness, ...] = (
         proof="Checks suffixed rudder, thrust, elevator, control-state, stale-input, yaw-source, and debug publications from scripted MOOS mail.",
         gifs=(
             ("Heading Wrap", "heading_wrap_pass", "pid-unit-heading-wrap.gif"),
-            ("Depth Elevator", "depth_elevator_pass", "pid-unit-depth-elevator.gif"),
+            ("Manual Override", "manual_override_zero_pass", "pid-unit-manual-override.gif"),
         ),
         run="./zlaunch.sh --case=rudder_starboard_pass 10",
         notes=(

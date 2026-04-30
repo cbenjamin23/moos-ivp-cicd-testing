@@ -28,6 +28,7 @@ void ExpectMapHasLabel(const std::map<std::string, XYPoint>& points,
 
 }  // namespace
 
+// Covers VPlug geo shapes lifecycle behavior: defaults are empty with zero bounds.
 TEST(VPlugGeoShapesLifecycleTest, DefaultsAreEmptyWithZeroBounds)
 {
   VPlug_GeoShapes shapes;
@@ -51,6 +52,7 @@ TEST(VPlugGeoShapesLifecycleTest, DefaultsAreEmptyWithZeroBounds)
   EXPECT_NEAR(shapes.getYMax(), 0.0, kGeomTol);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: polygon and vector payloads replace by label.
 TEST(VPlugGeoShapesLifecycleTest, PolygonAndVectorPayloadsReplaceByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -75,6 +77,7 @@ TEST(VPlugGeoShapesLifecycleTest, PolygonAndVectorPayloadsReplaceByLabel)
   EXPECT_EQ(shapes.getVectors()[0].get_label(), "drift");
 }
 
+// Covers VPlug geo shapes lifecycle behavior: map backed shapes auto label and replace by label.
 TEST(VPlugGeoShapesLifecycleTest, MapBackedShapesAutoLabelAndReplaceByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -105,6 +108,7 @@ TEST(VPlugGeoShapesLifecycleTest, MapBackedShapesAutoLabelAndReplaceByLabel)
               kGeomTol);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: seg lists use separate map storage excluded from size.
 TEST(VPlugGeoShapesLifecycleTest, SegListsUseSeparateMapStorageExcludedFromSize)
 {
   VPlug_GeoShapes shapes;
@@ -128,6 +132,7 @@ TEST(VPlugGeoShapesLifecycleTest, SegListsUseSeparateMapStorageExcludedFromSize)
   EXPECT_NE(shapes.getSegLists().find("seglx"), shapes.getSegLists().end());
 }
 
+// Covers VPlug geo shapes lifecycle behavior: seglrs use map storage included in size.
 TEST(VPlugGeoShapesLifecycleTest, SeglrsUseMapStorageIncludedInSize)
 {
   VPlug_GeoShapes shapes;
@@ -149,6 +154,7 @@ TEST(VPlugGeoShapesLifecycleTest, SeglrsUseMapStorageIncludedInSize)
   EXPECT_EQ(shapes.sizeTotalShapes(), 0u);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: active false payloads delete existing shapes by label.
 TEST(VPlugGeoShapesLifecycleTest, ActiveFalsePayloadsDeleteExistingShapesByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -181,6 +187,7 @@ TEST(VPlugGeoShapesLifecycleTest, ActiveFalsePayloadsDeleteExistingShapesByLabel
   EXPECT_EQ(shapes.sizeTotalShapes(), 0u);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: duration expiry only visits some collections.
 TEST(VPlugGeoShapesLifecycleTest, DurationExpiryOnlyVisitsSomeCollections)
 {
   VPlug_GeoShapes shapes;
@@ -213,6 +220,7 @@ TEST(VPlugGeoShapesLifecycleTest, DurationExpiryOnlyVisitsSomeCollections)
   EXPECT_EQ(shapes.sizeTotalShapes(), 3u);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: total size excludes map backed seg lists.
 TEST(VPlugGeoShapesLifecycleTest, TotalSizeExcludesMapBackedSegLists)
 {
   VPlug_GeoShapes shapes;
@@ -234,6 +242,7 @@ TEST(VPlugGeoShapesLifecycleTest, TotalSizeExcludesMapBackedSegLists)
   EXPECT_EQ(shapes.sizeTotalShapes(), 10u);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: clear without args leaves several live collections.
 TEST(VPlugGeoShapesLifecycleTest, ClearWithoutArgsLeavesSeveralLiveCollections)
 {
   VPlug_GeoShapes shapes;
@@ -258,6 +267,7 @@ TEST(VPlugGeoShapesLifecycleTest, ClearWithoutArgsLeavesSeveralLiveCollections)
   EXPECT_NEAR(shapes.getXMax(), 0.0, kGeomTol);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: public clear recognizes only subset of shape names.
 TEST(VPlugGeoShapesLifecycleTest, PublicClearRecognizesOnlySubsetOfShapeNames)
 {
   VPlug_GeoShapes shapes;
@@ -285,6 +295,7 @@ TEST(VPlugGeoShapesLifecycleTest, PublicClearRecognizesOnlySubsetOfShapeNames)
   EXPECT_TRUE(shapes.getVectors().empty());
 }
 
+// Covers VPlug geo shapes lifecycle behavior: set param clear swaps polygon and seglist targets.
 TEST(VPlugGeoShapesLifecycleTest, SetParamClearSwapsPolygonAndSeglistTargets)
 {
   VPlug_GeoShapes shapes;
@@ -302,6 +313,7 @@ TEST(VPlugGeoShapesLifecycleTest, SetParamClearSwapsPolygonAndSeglistTargets)
   EXPECT_EQ(shapes.getSegLists().size(), 1u);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: type filtered clear retains matching types.
 TEST(VPlugGeoShapesLifecycleTest, TypeFilteredClearRetainsMatchingTypes)
 {
   VPlug_GeoShapes shapes;
@@ -315,6 +327,7 @@ TEST(VPlugGeoShapesLifecycleTest, TypeFilteredClearRetainsMatchingTypes)
   EXPECT_NE(shapes.getPoints().find("survey"), shapes.getPoints().end());
 }
 
+// Covers VPlug geo shapes lifecycle behavior: bounds only expand until full clear.
 TEST(VPlugGeoShapesLifecycleTest, BoundsOnlyExpandUntilFullClear)
 {
   VPlug_GeoShapes shapes;
@@ -335,6 +348,7 @@ TEST(VPlugGeoShapesLifecycleTest, BoundsOnlyExpandUntilFullClear)
   EXPECT_NEAR(shapes.getYMax(), 0.0, kGeomTol);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: invalid payload return values match current api.
 TEST(VPlugGeoShapesLifecycleTest, InvalidPayloadReturnValuesMatchCurrentApi)
 {
   VPlug_GeoShapes shapes;
@@ -352,6 +366,7 @@ TEST(VPlugGeoShapesLifecycleTest, InvalidPayloadReturnValuesMatchCurrentApi)
   EXPECT_TRUE(shapes.getCircles().empty());
 }
 
+// Covers VPlug geo shapes lifecycle behavior: grid replacement and updates are label driven.
 TEST(VPlugGeoShapesLifecycleTest, GridReplacementAndUpdatesAreLabelDriven)
 {
   VPlug_GeoShapes shapes;
@@ -379,6 +394,7 @@ TEST(VPlugGeoShapesLifecycleTest, GridReplacementAndUpdatesAreLabelDriven)
               12.0, kGeomTol);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: set param routes marine viewer grid and marker aliases.
 TEST(VPlugGeoShapesLifecycleTest, SetParamRoutesMarineViewerGridAndMarkerAliases)
 {
   VPlug_GeoShapes shapes;
@@ -407,6 +423,7 @@ TEST(VPlugGeoShapesLifecycleTest, SetParamRoutesMarineViewerGridAndMarkerAliases
   EXPECT_NEAR(shapes.getGrids()[0].getVal(0), 7.0, kGeomTol);
 }
 
+// Covers VPlug geo shapes lifecycle behavior: grid updates apply before aggregate mismatch failure.
 TEST(VPlugGeoShapesLifecycleTest, GridUpdatesApplyBeforeAggregateMismatchFailure)
 {
   VPlug_GeoShapes shapes;

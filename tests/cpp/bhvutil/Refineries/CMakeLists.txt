@@ -1,0 +1,17 @@
+add_moos_cpp_test(test_bhvutil_refineries
+  SOURCES
+    BhvutilRefineriesTest.cpp
+  LIBS
+    bhvutil
+    ivpbuild
+    ivpcore
+    geometry
+    mbutil
+  LABELS
+    bhvutil
+    BHV_AvoidCollision
+    BHV_AvoidObstacleV24
+  SUITE_LABELS
+    RefineryCPATest=RefineryCPA
+    RefineryObAvoidV24Test=RefineryObAvoidV24
+)

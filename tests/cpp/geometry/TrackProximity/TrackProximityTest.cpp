@@ -55,6 +55,7 @@ void feedSelfCrossingLegRun(InspectableWrapDetector& detector)
 
 }  // namespace
 
+// Covers linear extrapolator state behavior: fails before ownship or contact position is known.
 TEST(LinearExtrapolatorStateTest, FailsBeforeOwnshipOrContactPositionIsKnown)
 {
   LinearExtrapolator extrapolator;
@@ -68,6 +69,7 @@ TEST(LinearExtrapolatorStateTest, FailsBeforeOwnshipOrContactPositionIsKnown)
   EXPECT_FALSE(extrapolator.isDecayMaxed());
 }
 
+// Covers linear extrapolator motion behavior: projects nominal contact motion using MOOS heading convention.
 TEST(LinearExtrapolatorMotionTest, ProjectsNominalContactMotionUsingMoosHeadingConvention)
 {
   LinearExtrapolator extrapolator;
@@ -83,6 +85,7 @@ TEST(LinearExtrapolatorMotionTest, ProjectsNominalContactMotionUsingMoosHeadingC
   EXPECT_FALSE(extrapolator.isDecayMaxed());
 }
 
+// Covers linear extrapolator motion behavior: handles cardinal headings and heading normalization.
 TEST(LinearExtrapolatorMotionTest, HandlesCardinalHeadingsAndHeadingNormalization)
 {
   LinearExtrapolator north;
@@ -106,6 +109,7 @@ TEST(LinearExtrapolatorMotionTest, HandlesCardinalHeadingsAndHeadingNormalizatio
   EXPECT_NEAR(y, 2.0, kGeomTol);
 }
 
+// Covers linear extrapolator motion behavior: allows negative speed as reverse motion quirk.
 TEST(LinearExtrapolatorMotionTest, AllowsNegativeSpeedAsReverseMotionQuirk)
 {
   LinearExtrapolator extrapolator;
@@ -119,6 +123,7 @@ TEST(LinearExtrapolatorMotionTest, AllowsNegativeSpeedAsReverseMotionQuirk)
   EXPECT_NEAR(y, -1.0, kGeomTol);
 }
 
+// Covers linear extrapolator time behavior: rejects clearly negative delta time and reports clock skew.
 TEST(LinearExtrapolatorTimeTest, RejectsClearlyNegativeDeltaTimeAndReportsClockSkew)
 {
   LinearExtrapolator extrapolator;
@@ -134,6 +139,7 @@ TEST(LinearExtrapolatorTimeTest, RejectsClearlyNegativeDeltaTimeAndReportsClockS
   EXPECT_TRUE(failureContains(extrapolator, "delta_time=-0.20000"));
 }
 
+// Covers linear extrapolator time behavior: allows tiny negative delta time as backward projection quirk.
 TEST(LinearExtrapolatorTimeTest, AllowsTinyNegativeDeltaTimeAsBackwardProjectionQuirk)
 {
   LinearExtrapolator extrapolator;
@@ -148,6 +154,7 @@ TEST(LinearExtrapolatorTimeTest, AllowsTinyNegativeDeltaTimeAsBackwardProjection
   EXPECT_EQ(extrapolator.getFailureReason(), "");
 }
 
+// Covers linear extrapolator time behavior: returns current position at exact timestamp.
 TEST(LinearExtrapolatorTimeTest, ReturnsCurrentPositionAtExactTimestamp)
 {
   LinearExtrapolator extrapolator;
@@ -161,6 +168,7 @@ TEST(LinearExtrapolatorTimeTest, ReturnsCurrentPositionAtExactTimestamp)
   EXPECT_NEAR(y, 7.0, kGeomTol);
 }
 
+// Covers linear extrapolator decay behavior: applies piecewise linear decay window.
 TEST(LinearExtrapolatorDecayTest, AppliesPiecewiseLinearDecayWindow)
 {
   LinearExtrapolator extrapolator;
@@ -191,6 +199,7 @@ TEST(LinearExtrapolatorDecayTest, AppliesPiecewiseLinearDecayWindow)
   EXPECT_TRUE(extrapolator.isDecayMaxed());
 }
 
+// Covers linear extrapolator decay behavior: uses equal begin and end decay as hard clip.
 TEST(LinearExtrapolatorDecayTest, UsesEqualBeginAndEndDecayAsHardClip)
 {
   LinearExtrapolator extrapolator;
@@ -211,6 +220,7 @@ TEST(LinearExtrapolatorDecayTest, UsesEqualBeginAndEndDecayAsHardClip)
   EXPECT_TRUE(extrapolator.isDecayMaxed());
 }
 
+// Covers linear extrapolator decay behavior: rejects invalid decay settings without replacing last valid policy.
 TEST(LinearExtrapolatorDecayTest, RejectsInvalidDecaySettingsWithoutReplacingLastValidPolicy)
 {
   LinearExtrapolator extrapolator;
@@ -228,6 +238,7 @@ TEST(LinearExtrapolatorDecayTest, RejectsInvalidDecaySettingsWithoutReplacingLas
   EXPECT_TRUE(extrapolator.isDecayMaxed());
 }
 
+// Covers linear extrapolator decay behavior: can disable decay after using a clipping policy.
 TEST(LinearExtrapolatorDecayTest, CanDisableDecayAfterUsingAClippingPolicy)
 {
   LinearExtrapolator extrapolator;
@@ -244,6 +255,7 @@ TEST(LinearExtrapolatorDecayTest, CanDisableDecayAfterUsingAClippingPolicy)
   EXPECT_FALSE(extrapolator.isDecayMaxed());
 }
 
+// Covers linear extrapolator decay behavior: exact timestamp does not clear prior decay maxed flag quirk.
 TEST(LinearExtrapolatorDecayTest, ExactTimestampDoesNotClearPriorDecayMaxedFlagQuirk)
 {
   LinearExtrapolator extrapolator;
@@ -261,6 +273,7 @@ TEST(LinearExtrapolatorDecayTest, ExactTimestampDoesNotClearPriorDecayMaxedFlagQ
   EXPECT_TRUE(extrapolator.isDecayMaxed());
 }
 
+// Covers LinearExtrapolator MOOS usage: max-delta decay clips stale NODE_REPORT projection.
 TEST(LinearExtrapolatorMoosUseTest,
      NodeRecordUtilsStyleMaxDeltaClipsStaleNodeReport)
 {
@@ -283,6 +296,7 @@ TEST(LinearExtrapolatorMoosUseTest,
   EXPECT_TRUE(extrapolator.isDecayMaxed());
 }
 
+// Covers LinearExtrapolator MOOS usage: contact ranges compare actual and extrapolated positions.
 TEST(LinearExtrapolatorMoosUseTest,
      ContactManagersComputeActualAndExtrapolatedContactRange)
 {
@@ -309,6 +323,7 @@ TEST(LinearExtrapolatorMoosUseTest,
   EXPECT_NEAR(range_extrap, 80.0, kGeomTol);
 }
 
+// Covers wrap detector state behavior: starts empty and stores first position without leg.
 TEST(WrapDetectorStateTest, StartsEmptyAndStoresFirstPositionWithoutLeg)
 {
   InspectableWrapDetector detector;
@@ -324,6 +339,7 @@ TEST(WrapDetectorStateTest, StartsEmptyAndStoresFirstPositionWithoutLeg)
   EXPECT_NEAR(detector.osy(), 4.0, kGeomTol);
 }
 
+// Covers wrap detector state behavior: ignores legs below minimum distance and keeps previous anchor.
 TEST(WrapDetectorStateTest, IgnoresLegsBelowMinimumDistanceAndKeepsPreviousAnchor)
 {
   InspectableWrapDetector detector;
@@ -347,6 +363,7 @@ TEST(WrapDetectorStateTest, IgnoresLegsBelowMinimumDistanceAndKeepsPreviousAncho
   EXPECT_NEAR(detector.osx(), 6.0, kGeomTol);
 }
 
+// Covers wrap detector state behavior: accepts zero minimum leg including repeated position segments.
 TEST(WrapDetectorStateTest, AcceptsZeroMinimumLegIncludingRepeatedPositionSegments)
 {
   InspectableWrapDetector detector;
@@ -361,6 +378,7 @@ TEST(WrapDetectorStateTest, AcceptsZeroMinimumLegIncludingRepeatedPositionSegmen
   EXPECT_NEAR(detector.osy(), 2.0, kGeomTol);
 }
 
+// Covers wrap detector wrap behavior: counts leg run style self intersection and clears history.
 TEST(WrapDetectorWrapTest, CountsLegRunStyleSelfIntersectionAndClearsHistory)
 {
   InspectableWrapDetector detector;
@@ -375,6 +393,7 @@ TEST(WrapDetectorWrapTest, CountsLegRunStyleSelfIntersectionAndClearsHistory)
   EXPECT_NE(output.find("Wrap detected!!!"), std::string::npos);
 }
 
+// Covers wrap detector wrap behavior: does not count intersection with immediate previous leg.
 TEST(WrapDetectorWrapTest, DoesNotCountIntersectionWithImmediatePreviousLeg)
 {
   InspectableWrapDetector detector;
@@ -390,6 +409,7 @@ TEST(WrapDetectorWrapTest, DoesNotCountIntersectionWithImmediatePreviousLeg)
   EXPECT_NEAR(detector.osy(), 0.0, kGeomTol);
 }
 
+// Covers wrap detector wrap behavior: counts fresh wraps after wrap reset from next reported position.
 TEST(WrapDetectorWrapTest, CountsFreshWrapsAfterWrapResetFromNextReportedPosition)
 {
   InspectableWrapDetector detector;
@@ -404,6 +424,7 @@ TEST(WrapDetectorWrapTest, CountsFreshWrapsAfterWrapResetFromNextReportedPositio
   EXPECT_EQ(detector.legCount(), 0u);
 }
 
+// Covers wrap detector history behavior: prunes old legs at max leg limit.
 TEST(WrapDetectorHistoryTest, PrunesOldLegsAtMaxLegLimit)
 {
   InspectableWrapDetector detector;
@@ -421,6 +442,7 @@ TEST(WrapDetectorHistoryTest, PrunesOldLegsAtMaxLegLimit)
   EXPECT_NEAR(detector.legAt(1).get_x2(), 30.0, kGeomTol);
 }
 
+// Covers wrap detector history behavior: zero max legs keeps current anchor but no history.
 TEST(WrapDetectorHistoryTest, ZeroMaxLegsKeepsCurrentAnchorButNoHistory)
 {
   InspectableWrapDetector detector;
@@ -437,6 +459,7 @@ TEST(WrapDetectorHistoryTest, ZeroMaxLegsKeepsCurrentAnchorButNoHistory)
   EXPECT_EQ(detector.getWraps(), 0u);
 }
 
+// Covers wrap detector history behavior: pruned history no longer contributes to wrap detection.
 TEST(WrapDetectorHistoryTest, PrunedHistoryNoLongerContributesToWrapDetection)
 {
   InspectableWrapDetector detector;
@@ -455,6 +478,7 @@ TEST(WrapDetectorHistoryTest, PrunedHistoryNoLongerContributesToWrapDetection)
   EXPECT_NEAR(detector.osy(), -5.0, kGeomTol);
 }
 
+// Covers wrap detector state behavior: clear and reset remove wrap count and leg history.
 TEST(WrapDetectorStateTest, ClearAndResetRemoveWrapCountAndLegHistory)
 {
   InspectableWrapDetector detector;
@@ -485,6 +509,7 @@ TEST(WrapDetectorStateTest, ClearAndResetRemoveWrapCountAndLegHistory)
   EXPECT_EQ(detector.legCount(), 0u);
 }
 
+// Covers prox point state behavior: defaults CPA and distance to zero.
 TEST(ProxPointStateTest, DefaultsCpaAndDistanceToZero)
 {
   ProxPoint point;
@@ -493,6 +518,7 @@ TEST(ProxPointStateTest, DefaultsCpaAndDistanceToZero)
   EXPECT_NEAR(point.getCPADist(), 0.0, kGeomTol);
 }
 
+// Covers prox point state behavior: stores wall cache metadata without validation.
 TEST(ProxPointStateTest, StoresWallCacheMetadataWithoutValidation)
 {
   ProxPoint point;
@@ -505,6 +531,7 @@ TEST(ProxPointStateTest, StoresWallCacheMetadataWithoutValidation)
   EXPECT_EQ(point.getType(), 2);
 }
 
+// Covers prox point ordering behavior: sorts by distance to CPA for wall proximity caches.
 TEST(ProxPointOrderingTest, SortsByDistanceToCpaForWallProximityCaches)
 {
   std::vector<ProxPoint> points;
@@ -522,6 +549,7 @@ TEST(ProxPointOrderingTest, SortsByDistanceToCpaForWallProximityCaches)
   EXPECT_EQ(points[1].getType(), 2);
 }
 
+// Covers prox point ordering behavior: ordering ignores CPA value and type for equal distances.
 TEST(ProxPointOrderingTest, OrderingIgnoresCpaValueAndTypeForEqualDistances)
 {
   ProxPoint arc = makeProxPoint(1, 15, 1);
@@ -531,6 +559,7 @@ TEST(ProxPointOrderingTest, OrderingIgnoresCpaValueAndTypeForEqualDistances)
   EXPECT_FALSE(ray < arc);
 }
 
+// Covers prox point ordering behavior: strict less than handles negative distances.
 TEST(ProxPointOrderingTest, StrictLessThanHandlesNegativeDistances)
 {
   ProxPoint negative = makeProxPoint(5, -1, 1);

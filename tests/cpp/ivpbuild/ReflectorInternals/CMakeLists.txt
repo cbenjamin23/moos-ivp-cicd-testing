@@ -1,0 +1,25 @@
+add_moos_cpp_test(test_ivpbuild_reflector_internals
+  SOURCES
+    ReflectorInternalsTest.cpp
+  LIBS
+    ivpbuild
+    ivpcore
+    ivpsolve
+    geometry
+    mbutil
+  LABELS
+    ivpbuild
+    pHelmIvP
+    uFunctionVis
+  SUITE_LABELS
+    BuildUtilsTest=BuildUtils
+    BuildUtilsBetaTest=BuildUtilsBeta
+    DemuxUnitTest=DemuxUnit,DemuxedResult
+    DemuxerTest=Demuxer
+    FunctionEncoderMKTest=FunctionEncoderMK
+    IOUtilitiesTest=IO_Utilities
+    PQueueTest=PQueue
+    RegressorTest=Regressor
+    ReflectorToolsTest=RT_Uniform,RT_UniformX,RT_Directed,RT_Evaluator,RT_Smart,RT_AutoPeak
+    OFReflectorTest=OF_Reflector,RT_Uniform,RT_UniformX,RT_Directed,RT_Evaluator,RT_Smart,RT_AutoPeak
+)

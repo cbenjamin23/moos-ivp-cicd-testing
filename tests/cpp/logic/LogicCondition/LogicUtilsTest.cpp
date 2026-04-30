@@ -7,6 +7,19 @@
 #include "LogicCondition.h"
 #include "LogicUtils.h"
 
+namespace {
+
+void expectVectorEq(const std::vector<std::string>& actual,
+                    const std::vector<std::string>& expected)
+{
+  ASSERT_EQ(actual.size(), expected.size());
+  for(std::size_t i = 0; i < expected.size(); ++i)
+    EXPECT_EQ(actual[i], expected[i]) << "at index " << i;
+}
+
+}  // namespace
+
+// Covers logic utils behavior: classifies parentheses and prunes global parens.
 TEST(LogicUtilsTest, ClassifiesParenthesesAndPrunesGlobalParens)
 {
   EXPECT_TRUE(legalParens("(MODE=ACTIVE) and (NAV_X>10)"));
@@ -23,6 +36,20 @@ TEST(LogicUtilsTest, ClassifiesParenthesesAndPrunesGlobalParens)
             "(MODE=ACTIVE) or (MODE=RETURN)");
 }
 
+// Covers logic utils behavior: parses behavior condition relations at top level only.
+TEST(LogicUtilsTest, ParsesBehaviorConditionRelationsAtTopLevelOnly)
+{
+  expectVectorEq(parseRelation("(MODE=ACTIVE) and (NAV_X>10)"),
+                 {"and", "(MODE=ACTIVE)", "(NAV_X>10)"});
+  expectVectorEq(parseRelation("!(DEPLOY=true)"), {"not", " (DEPLOY=true)"});
+  expectVectorEq(parseRelation("MODE == ACTIVE:SURVEYING"),
+                 {"==", "MODE", "ACTIVE:SURVEYING"});
+  expectVectorEq(parseRelation("CONTACT_RANGE_$[CONTACT] < 100"),
+                 {"<", "CONTACT_RANGE_$[CONTACT]", "100"});
+  expectVectorEq(parseRelation("(MODE=ACTIVE"), {});
+}
+
+// Covers logic utils behavior: validates variables literals and right side variables.
 TEST(LogicUtilsTest, ValidatesVariablesLiteralsAndRightSideVariables)
 {
   EXPECT_TRUE(isValidVariable("NAV_X"));
@@ -40,6 +67,23 @@ TEST(LogicUtilsTest, ValidatesVariablesLiteralsAndRightSideVariables)
   EXPECT_FALSE(isValidRightVariable("$(BAD>VAR)"));
 }
 
+// Covers logic utils behavior: validates quoted literals and conditional param strings.
+TEST(LogicUtilsTest, ValidatesQuotedLiteralsAndConditionalParamStrings)
+{
+  EXPECT_TRUE(isValidLiteral("\"or\""));
+  EXPECT_TRUE(isValidLiteral("\"AND\""));
+  EXPECT_FALSE(isValidLiteral("\"bad\"quote\""));
+  EXPECT_FALSE(isValidVariable(""));
+  EXPECT_FALSE(isValidVariable("MODE)"));
+
+  EXPECT_TRUE(isConditionalParamString("speed = 2.0 [DEPLOY=true]"));
+  EXPECT_TRUE(isConditionalParamString("speed = 2.0 [DEPLOY=true] // comment"));
+  EXPECT_TRUE(isConditionalParamString("speed[0] = 2.0 [DEPLOY=true]"));
+  EXPECT_FALSE(isConditionalParamString("speed = 2.0 [DEPLOY=true] extra"));
+  EXPECT_FALSE(isConditionalParamString("speed = 2.0 DEPLOY=true]"));
+}
+
+// Covers logic utils behavior: matches colon separated mode fields.
 TEST(LogicUtilsTest, MatchesColonSeparatedModeFields)
 {
   EXPECT_TRUE(strFieldMatch("ACTIVE:SURVEYING", "SURVEYING"));
@@ -49,6 +93,18 @@ TEST(LogicUtilsTest, MatchesColonSeparatedModeFields)
   EXPECT_FALSE(strFieldMatch("ACTIVE:SURVEYING", "RETURNING"));
 }
 
+// Covers logic utils behavior: matches mode paths on whole colon delimited fields.
+TEST(LogicUtilsTest, MatchesModePathsOnWholeColonDelimitedFields)
+{
+  EXPECT_TRUE(strFieldMatch("ACTIVE:SURVEYING:LEG1", "ACTIVE:SURVEYING"));
+  EXPECT_TRUE(strFieldMatch("ACTIVE:SURVEYING:LEG1", "SURVEYING"));
+  EXPECT_TRUE(strFieldMatch("ACTIVE:SURVEYING:LEG1", "LEG1"));
+  EXPECT_FALSE(strFieldMatch("ACTIVE:SURVEYING:LEG1", "ACTIVE:LEG1"));
+  EXPECT_FALSE(strFieldMatch("ACTIVE:SURVEYING:LEG1", "SURVEYING:LEG2"));
+  EXPECT_TRUE(strFieldMatch("ACTIVE, SURVEYING, LEG1", "SURVEYING", ','));
+}
+
+// Covers logic utils behavior: builds condition vectors and extracts unique variables.
 TEST(LogicUtilsTest, BuildsConditionVectorsAndExtractsUniqueVariables)
 {
   std::vector<LogicCondition> conditions;

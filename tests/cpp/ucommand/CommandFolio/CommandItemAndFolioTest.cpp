@@ -25,6 +25,7 @@ CommandItem makeCommand(const std::string& label,
 
 }  // namespace
 
+// Covers command item behavior: stores string and double command posts.
 TEST(CommandItemTest, StoresStringAndDoubleCommandPosts)
 {
   CommandItem item;
@@ -45,6 +46,7 @@ TEST(CommandItemTest, StoresStringAndDoubleCommandPosts)
   EXPECT_EQ(item.getCmdPostType(), "double");
 }
 
+// Covers command item behavior: rejects whitespace in MOOS vars and receivers.
 TEST(CommandItemTest, RejectsWhitespaceInMoosVarsAndReceivers)
 {
   CommandItem item;
@@ -63,6 +65,7 @@ TEST(CommandItemTest, RejectsWhitespaceInMoosVarsAndReceivers)
   EXPECT_EQ(item.getCmdReceiver(3), "");
 }
 
+// Covers command item behavior: limits receivers to known vehicles and broadcast tokens.
 TEST(CommandItemTest, LimitsReceiversToKnownVehiclesAndBroadcastTokens)
 {
   CommandItem item = makeCommand("return", "RETURN", "true",
@@ -77,6 +80,31 @@ TEST(CommandItemTest, LimitsReceiversToKnownVehiclesAndBroadcastTokens)
   EXPECT_EQ(receivers[3], "each");
 }
 
+// Covers command item behavior: pins receiver duplicates and empty tokens.
+TEST(CommandItemTest, PinsReceiverDuplicatesAndEmptyTokens)
+{
+  CommandItem item;
+  EXPECT_TRUE(item.setCmdPostStr("", ""));
+  EXPECT_EQ(item.getCmdPostVar(), "");
+  EXPECT_EQ(item.getCmdPostStr(), "");
+  EXPECT_EQ(item.getCmdPostType(), "string");
+
+  EXPECT_TRUE(item.addCmdPostReceiver(""));
+  EXPECT_TRUE(item.addCmdPostReceiver("abe"));
+  EXPECT_TRUE(item.addCmdPostReceiver("abe"));
+  EXPECT_EQ(item.totalReceivers(), 3u);
+  EXPECT_TRUE(item.hasReceiver(""));
+  EXPECT_EQ(item.getCmdReceiver(0), "");
+  EXPECT_EQ(item.getCmdReceiver(1), "abe");
+  EXPECT_EQ(item.getCmdReceiver(2), "abe");
+
+  item.limitedVNames({"abe"});
+  ASSERT_EQ(item.getAllReceivers().size(), 2u);
+  EXPECT_EQ(item.getCmdReceiver(0), "abe");
+  EXPECT_EQ(item.getCmdReceiver(1), "abe");
+}
+
+// Covers command folio behavior: stores commands and indexes receivers labels and colors.
 TEST(CommandFolioTest, StoresCommandsAndIndexesReceiversLabelsAndColors)
 {
   CommandFolio folio;
@@ -103,6 +131,25 @@ TEST(CommandFolioTest, StoresCommandsAndIndexesReceiversLabelsAndColors)
   EXPECT_EQ(folio.getAllLabels("abe"), (std::set<std::string>{"deploy"}));
 }
 
+// Covers command folio behavior: copies items and returns copies to GUI callers.
+TEST(CommandFolioTest, CopiesItemsAndReturnsCopiesToGuiCallers)
+{
+  CommandFolio folio;
+  CommandItem deploy = makeCommand("deploy", "DEPLOY", "true", {"abe"});
+  deploy.setCmdColor("green");
+  ASSERT_TRUE(folio.addCmdItem(deploy));
+
+  deploy.setCmdLabel("return");
+  deploy.setCmdColor("red");
+  EXPECT_EQ(folio.getCmdItem(0).getCmdLabel(), "deploy");
+  EXPECT_EQ(folio.getCmdColor("deploy"), "green");
+
+  CommandItem fetched = folio.getCmdItem(0);
+  fetched.setCmdLabel("mutated");
+  EXPECT_EQ(folio.getCmdItem(0).getCmdLabel(), "deploy");
+}
+
+// Covers command folio behavior: applies vehicle limits across existing commands.
 TEST(CommandFolioTest, AppliesVehicleLimitsAcrossExistingCommands)
 {
   CommandFolio folio;
@@ -120,6 +167,27 @@ TEST(CommandFolioTest, AppliesVehicleLimitsAcrossExistingCommands)
   EXPECT_EQ(folio.getAllLabels("each"), (std::set<std::string>{"return"}));
 }
 
+// Covers command folio behavior: pins empty limits no op and color last match wins.
+TEST(CommandFolioTest, PinsEmptyLimitsNoOpAndColorLastMatchWins)
+{
+  CommandFolio folio;
+  CommandItem first = makeCommand("deploy", "DEPLOY", "true", {"abe", "bad"});
+  first.setCmdColor("green");
+  CommandItem second = makeCommand("deploy", "DEPLOY", "false", {"ben"});
+  second.setCmdColor("red");
+  CommandItem no_color = makeCommand("deploy", "DEPLOY", "maybe", {"cal"});
+  ASSERT_TRUE(folio.addCmdItem(first));
+  ASSERT_TRUE(folio.addCmdItem(second));
+  ASSERT_TRUE(folio.addCmdItem(no_color));
+
+  EXPECT_EQ(folio.getCmdColor("deploy"), "red");
+  folio.limitedVNames({});
+  EXPECT_FALSE(folio.hasLimitedVNames());
+  EXPECT_EQ(folio.getAllReceivers(),
+            (std::set<std::string>{"abe", "bad", "ben", "cal"}));
+}
+
+// Covers command post behavior: wraps pending command metadata from GUI selection.
 TEST(CommandPostTest, WrapsPendingCommandMetadataFromGuiSelection)
 {
   CommandItem deploy = makeCommand("deploy", "DEPLOY", "true", {"abe"});

@@ -10,6 +10,7 @@
 #include "XYFormatUtilsCircle.h"
 #include "XYPoint.h"
 
+// Covers XY format utils circle behavior: parses view circle style spec used by viewer apps.
 TEST(XYFormatUtilsCircleTest, ParsesViewCircleStyleSpecUsedByViewerApps)
 {
   XYCircle circle = string2Circle(
@@ -42,6 +43,7 @@ TEST(XYFormatUtilsCircleTest, ParsesViewCircleStyleSpecUsedByViewerApps)
   EXPECT_EQ(circle.getDrawVertices(), 32u);
 }
 
+// Covers XY format utils circle behavior: parses contact manager alert radii payload.
 TEST(XYFormatUtilsCircleTest, ParsesContactManagerAlertRadiiPayload)
 {
   XYCircle circle = string2Circle(
@@ -61,6 +63,7 @@ TEST(XYFormatUtilsCircleTest, ParsesContactManagerAlertRadiiPayload)
   EXPECT_TRUE(circle.active());
 }
 
+// Covers XY format utils circle behavior: parses quoted viewer message payloads with commas.
 TEST(XYFormatUtilsCircleTest, ParsesQuotedViewerMessagePayloadsWithCommas)
 {
   XYCircle circle = string2Circle(
@@ -81,6 +84,7 @@ TEST(XYFormatUtilsCircleTest, ParsesQuotedViewerMessagePayloadsWithCommas)
   EXPECT_TRUE(circle.active());
 }
 
+// Covers XY format utils circle behavior: requires coordinate and radius fields.
 TEST(XYFormatUtilsCircleTest, RequiresCoordinateAndRadiusFields)
 {
   EXPECT_FALSE(string2Circle("y=2,radius=3,label=missing_x").valid());
@@ -90,6 +94,7 @@ TEST(XYFormatUtilsCircleTest, RequiresCoordinateAndRadiusFields)
   EXPECT_FALSE(string2Circle("x=1,y=2,rad=3,label=rad_alias_not_supported").valid());
 }
 
+// Covers XY format utils circle behavior: preserves parser treatment of unknown and loose fields.
 TEST(XYFormatUtilsCircleTest, PreservesParserTreatmentOfUnknownAndLooseFields)
 {
   XYCircle circle = string2Circle(
@@ -113,6 +118,7 @@ TEST(XYFormatUtilsCircleTest, PreservesParserTreatmentOfUnknownAndLooseFields)
   EXPECT_FALSE(circle.color_set("edge"));
 }
 
+// Covers XY circle behavior: initializes simple io geom utils circle format.
 TEST(XYCircleTest, InitializesSimpleIoGeomUtilsCircleFormat)
 {
   XYCircle circle;
@@ -128,6 +134,7 @@ TEST(XYCircleTest, InitializesSimpleIoGeomUtilsCircleFormat)
   EXPECT_FALSE(circle.initialize("10,-20,-3"));
 }
 
+// Covers XY circle behavior: setters clamp or reject negative radius by entry point.
 TEST(XYCircleTest, SettersClampOrRejectNegativeRadiusByEntryPoint)
 {
   XYCircle circle;
@@ -156,6 +163,7 @@ TEST(XYCircleTest, SettersClampOrRejectNegativeRadiusByEntryPoint)
   EXPECT_NEAR(circle.getY(), -23.0, kGeomTol);
 }
 
+// Covers XY circle behavior: computes bounds containment and perimeter distance.
 TEST(XYCircleTest, ComputesBoundsContainmentAndPerimeterDistance)
 {
   XYCircle circle(10, -5, 7);
@@ -175,6 +183,7 @@ TEST(XYCircleTest, ComputesBoundsContainmentAndPerimeterDistance)
   EXPECT_NEAR(circle.ptDistToCircle(20, -5), 3.0, kGeomTol);
 }
 
+// Covers XY circle behavior: distinguishes contained segments from strict perimeter crossings.
 TEST(XYCircleTest, DistinguishesContainedSegmentsFromStrictPerimeterCrossings)
 {
   XYCircle circle(0, 0, 10);
@@ -192,6 +201,7 @@ TEST(XYCircleTest, DistinguishesContainedSegmentsFromStrictPerimeterCrossings)
   EXPECT_FALSE(circle.segIntersectStrict(20, 20, 30, 20));
 }
 
+// Covers XY circle behavior: handles tangent and diagonal perimeter intersections.
 TEST(XYCircleTest, HandlesTangentAndDiagonalPerimeterIntersections)
 {
   XYCircle circle(0, 0, 5);
@@ -217,6 +227,7 @@ TEST(XYCircleTest, HandlesTangentAndDiagonalPerimeterIntersections)
   EXPECT_NEAR(circle.segIntersectLen(-10, -10, 10, 10), 10.0, kLooseGeomTol);
 }
 
+// Covers XY circle behavior: treats zero radius as point circle for containment and segment checks.
 TEST(XYCircleTest, TreatsZeroRadiusAsPointCircleForContainmentAndSegmentChecks)
 {
   XYCircle circle(0, 0, 0);
@@ -240,6 +251,7 @@ TEST(XYCircleTest, TreatsZeroRadiusAsPointCircleForContainmentAndSegmentChecks)
   EXPECT_NEAR(circle.segIntersectLen(-1, 0, 1, 0), 0.0, kGeomTol);
 }
 
+// Covers XY circle behavior: reports horizontal and vertical segment intersection points.
 TEST(XYCircleTest, ReportsHorizontalAndVerticalSegmentIntersectionPoints)
 {
   XYCircle circle(0, 0, 5);
@@ -265,6 +277,7 @@ TEST(XYCircleTest, ReportsHorizontalAndVerticalSegmentIntersectionPoints)
   EXPECT_NEAR(ry1, 0.0, kGeomTol);
 }
 
+// Covers XY circle behavior: computes length of segment inside circle.
 TEST(XYCircleTest, ComputesLengthOfSegmentInsideCircle)
 {
   XYCircle circle(0, 0, 5);
@@ -276,6 +289,7 @@ TEST(XYCircleTest, ComputesLengthOfSegmentInsideCircle)
   EXPECT_NEAR(circle.segIntersectLen(10, 10, 20, 10), 0.0, kGeomTol);
 }
 
+// Covers XY circle behavior: serializes viewer circle specs with digits and metadata.
 TEST(XYCircleTest, SerializesViewerCircleSpecsWithDigitsAndMetadata)
 {
   XYCircle circle(1.234567, -2.345678, 9.876543);
@@ -302,6 +316,7 @@ TEST(XYCircleTest, SerializesViewerCircleSpecsWithDigitsAndMetadata)
   EXPECT_TRUE(stringContains(spec, "duration=3"));
 }
 
+// Covers XY circle behavior: round trips collision detector encounter ring payload.
 TEST(XYCircleTest, RoundTripsCollisionDetectorEncounterRingPayload)
 {
   // uFldCollisionDetect builds XYCircle rings from NodeRecord positions and
@@ -322,6 +337,7 @@ TEST(XYCircleTest, RoundTripsCollisionDetectorEncounterRingPayload)
   EXPECT_EQ(parsed.get_color_str("label"), "invisible");
 }
 
+// Covers XY circle behavior: round trips contact manager warning and alert radii payloads.
 TEST(XYCircleTest, RoundTripsContactManagerWarningAndAlertRadiiPayloads)
 {
   // pContactMgrV20 posts short-lived VIEW_CIRCLE objects for early-warning
@@ -368,6 +384,7 @@ TEST(XYCircleTest, RoundTripsContactManagerWarningAndAlertRadiiPayloads)
   EXPECT_NEAR(parsed_alert.getRad(), 80.0, kGeomTol);
 }
 
+// Covers XY circle behavior: clamps serialization digits to supported range.
 TEST(XYCircleTest, ClampsSerializationDigitsToSupportedRange)
 {
   XYCircle circle(1.234567, -2.345678, 9.876543);
@@ -389,6 +406,7 @@ TEST(XYCircleTest, ClampsSerializationDigitsToSupportedRange)
   EXPECT_TRUE(stringContains(circle.get_spec(), "x=1"));
 }
 
+// Covers XY circle behavior: builds point cache using MOOS heading convention.
 TEST(XYCircleTest, BuildsPointCacheUsingMoosHeadingConvention)
 {
   XYCircle circle(0, 0, 10);

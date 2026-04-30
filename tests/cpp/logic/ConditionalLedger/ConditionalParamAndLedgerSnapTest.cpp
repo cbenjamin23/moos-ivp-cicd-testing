@@ -5,6 +5,7 @@
 #include "ConditionalParam.h"
 #include "LedgerSnap.h"
 
+// Covers conditional param behavior: parses combined param value and condition syntax.
 TEST(ConditionalParamTest, ParsesCombinedParamValueAndConditionSyntax)
 {
   ConditionalParam param;
@@ -18,6 +19,7 @@ TEST(ConditionalParamTest, ParsesCombinedParamValueAndConditionSyntax)
   EXPECT_FALSE(param.getCondition().eval());
 }
 
+// Covers conditional param behavior: parses split param and value condition syntax.
 TEST(ConditionalParamTest, ParsesSplitParamAndValueConditionSyntax)
 {
   ConditionalParam param;
@@ -36,6 +38,7 @@ TEST(ConditionalParamTest, ParsesSplitParamAndValueConditionSyntax)
   EXPECT_TRUE(condition.eval());
 }
 
+// Covers conditional param behavior: rejects malformed conditional param strings.
 TEST(ConditionalParamTest, RejectsMalformedConditionalParamStrings)
 {
   ConditionalParam param;
@@ -44,6 +47,23 @@ TEST(ConditionalParamTest, RejectsMalformedConditionalParamStrings)
   EXPECT_FALSE(param.ok());
 }
 
+// Covers conditional param behavior: supports custom comments and pins sticky ok state.
+TEST(ConditionalParamTest, SupportsCustomCommentsAndPinsStickyOkState)
+{
+  ConditionalParam param;
+  param.setCommentHeader("#");
+  EXPECT_TRUE(param.setFromString("heading", "45 [MODE=ACTIVE] # inline"));
+  EXPECT_TRUE(param.ok());
+  EXPECT_EQ(param.getParam(), "heading");
+  EXPECT_EQ(param.getParamVal(), "45");
+
+  EXPECT_FALSE(param.setFromString("heading", "45 MODE=ACTIVE"));
+  EXPECT_TRUE(param.ok());
+  EXPECT_EQ(param.getParam(), "heading");
+  EXPECT_EQ(param.getParamVal(), "45");
+}
+
+// Covers ledger snap behavior: stores contact ledger fields used by behavior population.
 TEST(LedgerSnapTest, StoresContactLedgerFieldsUsedByBehaviorPopulation)
 {
   LedgerSnap ledger;
@@ -74,6 +94,7 @@ TEST(LedgerSnapTest, StoresContactLedgerFieldsUsedByBehaviorPopulation)
   EXPECT_TRUE(ok);
 }
 
+// Covers ledger snap behavior: serializes node spec and reports missing fields.
 TEST(LedgerSnapTest, SerializesNodeSpecAndReportsMissingFields)
 {
   LedgerSnap ledger;
@@ -100,6 +121,7 @@ TEST(LedgerSnapTest, SerializesNodeSpecAndReportsMissingFields)
   EXPECT_FALSE(ok);
 }
 
+// Covers ledger snap behavior: pins clear leaving v source map in current implementation.
 TEST(LedgerSnapTest, PinsClearLeavingVSourceMapInCurrentImplementation)
 {
   LedgerSnap ledger;
@@ -112,4 +134,28 @@ TEST(LedgerSnapTest, PinsClearLeavingVSourceMapInCurrentImplementation)
   bool ok = false;
   EXPECT_EQ(ledger.getInfoString("abe", "vsource", ok), "pNodeReporter");
   EXPECT_TRUE(ok);
+}
+
+// Covers ledger snap behavior: tracks optional UTC age fields and missing spec insertion.
+TEST(LedgerSnapTest, TracksOptionalUtcAgeFieldsAndMissingSpecInsertion)
+{
+  LedgerSnap ledger;
+  ledger.setUTCAge("abe", 4.5);
+  ledger.setUTCReceived("abe", 1000.25);
+  ledger.setUTCAgeReceived("abe", 0.75);
+
+  bool ok = false;
+  EXPECT_DOUBLE_EQ(ledger.getInfoDouble("abe", "utc_age", ok), 4.5);
+  EXPECT_TRUE(ok);
+  EXPECT_DOUBLE_EQ(ledger.getInfoDouble("abe", "utc_received", ok), 1000.25);
+  EXPECT_TRUE(ok);
+  EXPECT_DOUBLE_EQ(ledger.getInfoDouble("abe", "utc_age_received", ok), 0.75);
+  EXPECT_TRUE(ok);
+  EXPECT_FALSE(ledger.hasVName("abe"));
+  EXPECT_EQ(ledger.size(), 1u);
+
+  EXPECT_EQ(ledger.getSpec("ghost"),
+            "x=0,y=0,h=0,v=0,d=0,lat=0,lon=0,utc=0,grp=,type=,vsrc=");
+  EXPECT_TRUE(ledger.hasVName("ghost"));
+  EXPECT_EQ(ledger.size(), 1u);
 }

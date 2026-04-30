@@ -6,7 +6,8 @@ add_moos_cpp_test(test_geometry_xyformatutils_point
     mbutil
   LABELS
     geometry
-    XYPoint
-    XYFormatUtilsPoint
     formats
+  SUITE_LABELS
+    XYPointTest=XYPoint
+    XYFormatUtilsPointTest=XYFormatUtilsPoint
 )

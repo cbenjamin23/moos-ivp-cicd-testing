@@ -10,10 +10,11 @@ add_moos_cpp_test(test_ivpbuild_aof
     ivpbuild
     math
     AOF
-    AOF_Linear
-    AOF_Quadratic
-    AOF_Gaussian
-    AOF_MGaussian
-    AOF_Ring
-    AOF_Rings
+  SUITE_LABELS
+    AOFLinearTest=AOF_Linear
+    AOFQuadraticTest=AOF_Quadratic
+    AOFGaussianTest=AOF_Gaussian
+    AOFMultiGaussianTest=AOF_MGaussian
+    AOFRingTest=AOF_Ring
+    AOFRingsTest=AOF_Rings
 )

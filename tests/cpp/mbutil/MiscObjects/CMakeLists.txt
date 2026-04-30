@@ -5,9 +5,10 @@ add_moos_cpp_test(test_mbutil_misc_objects
     mbutil
   LABELS
     mbutil
-    AckMessage
-    MailFlagSet
-    TStamp
-    Odometer
-    FileBuffer
+  SUITE_LABELS
+    AckMessageTest=AckMessage
+    MailFlagSetTest=MailFlagSet
+    TStampTest=TStamp
+    OdometerTest=Odometer
+    FileBufferTest=FileBuffer
 )

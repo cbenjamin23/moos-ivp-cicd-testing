@@ -8,7 +8,8 @@ add_moos_cpp_test(test_obstacles_obstacle
     mbutil
   LABELS
     obstacles
-    Obstacle
-    ObstacleFieldGenerator
     uFldObstacleMgr
+  SUITE_LABELS
+    ObstacleTest=Obstacle
+    ObstacleFieldGeneratorTest=ObstacleFieldGenerator
 )

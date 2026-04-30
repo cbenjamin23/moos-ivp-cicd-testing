@@ -17,7 +17,7 @@ input/output contract before introducing a vehicle simulator or helm behavior.
 - `speed_pid_control_pass` - `speed_factor=0` must switch to speed PID control and reach the configured thrust cap.
 - `max_thrust_limit_pass` - high speed-factor demand must be clipped at `maxthrust=60` while still producing a steering command.
 - `depth_elevator_pass` - depth control must combine desired depth, current depth, and pitch into a non-saturated elevator command near `11.5`.
-- `manual_override_zero_pass` - `MOOS_MANUAL_OVERRIDE=true` must zero rudder/thrust and publish `PID_HAS_CONTROL=false`.
+- `manual_override_zero_pass` - active manual override must release PID control and publish zero rudder/thrust commands.
 - `stale_nav_pass` - stale nav mail must zero actuator output and report a stale-input reason.
 - `nav_yaw_used_pass` - `NAV_YAW` must be converted to heading when `NAV_HEADING` is absent, yielding the expected rudder sign.
 - `ignore_nav_yaw_pass` - `ignore_nav_yaw=true` must keep `NAV_HEADING` authoritative even when `NAV_YAW` is present.

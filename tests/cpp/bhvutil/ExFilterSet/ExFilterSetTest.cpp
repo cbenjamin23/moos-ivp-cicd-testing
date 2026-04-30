@@ -25,6 +25,7 @@ NodeRecord contact(const std::string& name,
 
 }  // namespace
 
+// Covers ex filter set behavior: applies name group type and region filters for contact behaviors.
 TEST(ExFilterSetTest, AppliesNameGroupTypeAndRegionFiltersForContactBehaviors)
 {
   ExFilterSet filters;
@@ -40,6 +41,7 @@ TEST(ExFilterSetTest, AppliesNameGroupTypeAndRegionFiltersForContactBehaviors)
   EXPECT_FALSE(filters.filterCheck(contact("eve", "alpha", "uuv", 50, 50)));
 }
 
+// Covers ex filter set behavior: strict ignore controls empty field rejection.
 TEST(ExFilterSetTest, StrictIgnoreControlsEmptyFieldRejection)
 {
   ExFilterSet filters;
@@ -54,6 +56,7 @@ TEST(ExFilterSetTest, StrictIgnoreControlsEmptyFieldRejection)
   EXPECT_FALSE(filters.filterCheckGroup("red"));
 }
 
+// Covers ex filter set behavior: rejects conflicting name filters and supports removal.
 TEST(ExFilterSetTest, RejectsConflictingNameFiltersAndSupportsRemoval)
 {
   ExFilterSet filters;
@@ -73,6 +76,7 @@ TEST(ExFilterSetTest, RejectsConflictingNameFiltersAndSupportsRemoval)
   EXPECT_TRUE(filters.filterCheckVName("abe"));
 }
 
+// Covers ex filter set behavior: config filter applies supported fields and reports unhandled tokens.
 TEST(ExFilterSetTest, ConfigFilterAppliesSupportedFieldsAndReportsUnhandledTokens)
 {
   ExFilterSet filters;
@@ -86,6 +90,7 @@ TEST(ExFilterSetTest, ConfigFilterAppliesSupportedFieldsAndReportsUnhandledToken
   EXPECT_TRUE(filters.filterCheckVType(""));
 }
 
+// Covers ex filter set behavior: serializes summary in deterministic filter order.
 TEST(ExFilterSetTest, SerializesSummaryInDeterministicFilterOrder)
 {
   ExFilterSet filters;
@@ -106,4 +111,40 @@ TEST(ExFilterSetTest, SerializesSummaryInDeterministicFilterOrder)
     found_ignore_region = found_ignore_region || stringContains(item, "ignore_region=pts={");
   EXPECT_TRUE(found_ignore_region);
   EXPECT_EQ(summary.back(), "strict_ignore=true");
+}
+
+// Covers ex filter set behavior: combines match and ignore regions for operating area filters.
+TEST(ExFilterSetTest, CombinesMatchAndIgnoreRegionsForOperatingAreaFilters)
+{
+  ExFilterSet filters;
+  ASSERT_TRUE(filters.addMatchRegion("pts={0,0:100,0:100,100:0,100}"));
+  ASSERT_TRUE(filters.addIgnoreRegion("pts={40,40:60,40:60,60:40,60}"));
+  EXPECT_FALSE(filters.addMatchRegion("pts={0,0:10,10:0,10:10,0}"));
+
+  EXPECT_TRUE(filters.filterCheckRegion(10, 10));
+  EXPECT_FALSE(filters.filterCheckRegion(50, 50));
+  EXPECT_FALSE(filters.filterCheckRegion(150, 50));
+
+  EXPECT_TRUE(filters.filterCheck(contact("abe", "", "", 10, 10)));
+  EXPECT_FALSE(filters.filterCheck(contact("ben", "", "", 50, 50)));
+}
+
+// Covers ex filter set behavior: direct checks expect already normalized case for names groups and types.
+TEST(ExFilterSetTest, DirectChecksExpectAlreadyNormalizedCaseForNamesGroupsAndTypes)
+{
+  ExFilterSet filters;
+  ASSERT_TRUE(filters.addMatchName("ABE"));
+  ASSERT_TRUE(filters.addMatchGroup("ALPHA"));
+  ASSERT_TRUE(filters.addMatchType("UUV"));
+
+  EXPECT_TRUE(filters.filterCheckVName("abe"));
+  EXPECT_FALSE(filters.filterCheckVName("ABE"));
+  EXPECT_TRUE(filters.filterCheckGroup("alpha"));
+  EXPECT_FALSE(filters.filterCheckGroup("ALPHA"));
+  EXPECT_TRUE(filters.filterCheckVType("uuv"));
+  EXPECT_FALSE(filters.filterCheckVType("UUV"));
+
+  EXPECT_TRUE(filters.filterCheck(contact("ABE", "alpha", "uuv", 0, 0)));
+  EXPECT_FALSE(filters.filterCheck(contact("ABE", "ALPHA", "uuv", 0, 0)));
+  EXPECT_FALSE(filters.filterCheck(contact("ABE", "alpha", "UUV", 0, 0)));
 }

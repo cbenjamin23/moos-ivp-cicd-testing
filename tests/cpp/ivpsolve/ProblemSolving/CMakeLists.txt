@@ -1,0 +1,19 @@
+add_moos_cpp_test(test_ivpsolve_problem_solving
+  SOURCES
+    ProblemSolvingTest.cpp
+  LIBS
+    ivpsolve
+    ivpbuild
+    ivpcore
+    mbutil
+  LABELS
+    ivpsolve
+    pHelmIvP
+    ivpbuild
+    math
+  SUITE_LABELS
+    ProblemTest=Problem
+    IvPProblemTest=IvPProblem
+    IvPProblemVariantTest=IvPProblem_v2,IvPProblem_v3
+    PopulatorIPPTest=PopulatorIPP,FunctionEncoder
+)

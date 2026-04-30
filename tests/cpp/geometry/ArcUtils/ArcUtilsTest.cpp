@@ -16,6 +16,7 @@ constexpr double kPi = 3.14159265358979323846;
 
 }  // namespace
 
+// Covers arc utils angle behavior: treats arc angles as clockwise heading intervals.
 TEST(ArcUtilsAngleTest, TreatsArcAnglesAsClockwiseHeadingIntervals)
 {
   EXPECT_TRUE(angleInArc(45, 180, 45));
@@ -29,6 +30,7 @@ TEST(ArcUtilsAngleTest, TreatsArcAnglesAsClockwiseHeadingIntervals)
   EXPECT_FALSE(angleInArc(350, 10, 180));
 }
 
+// Covers arc utils angle behavior: normalizes angles before arc membership checks.
 TEST(ArcUtilsAngleTest, NormalizesAnglesBeforeArcMembershipChecks)
 {
   EXPECT_TRUE(angleInArc(-10, 10, 0));
@@ -38,6 +40,7 @@ TEST(ArcUtilsAngleTest, NormalizesAnglesBeforeArcMembershipChecks)
   EXPECT_FALSE(angleInArc(90, 90, 91));
 }
 
+// Covers arc utils point membership behavior: classifies points by bearing from arc center.
 TEST(ArcUtilsPointMembershipTest, ClassifiesPointsByBearingFromArcCenter)
 {
   EXPECT_TRUE(pointInArc(0, 10, 0, 0, 10, 350, 10));
@@ -45,6 +48,7 @@ TEST(ArcUtilsPointMembershipTest, ClassifiesPointsByBearingFromArcCenter)
   EXPECT_FALSE(pointInArc(-10, 0, 0, 0, 10, 80, 100));
 }
 
+// Covers arc utils distance behavior: computes closest distance to turn arc interior and endpoints.
 TEST(ArcUtilsDistanceTest, ComputesClosestDistanceToTurnArcInteriorAndEndpoints)
 {
   EXPECT_NEAR(distPointToArc(0, 5, 0, 0, 10, 270, 90), 5.0, kGeomTol);
@@ -58,6 +62,7 @@ TEST(ArcUtilsDistanceTest, ComputesClosestDistanceToTurnArcInteriorAndEndpoints)
   EXPECT_NEAR(iy, 0.0, kGeomTol);
 }
 
+// Covers arc utils distance behavior: projects center point to left arc endpoint.
 TEST(ArcUtilsDistanceTest, ProjectsCenterPointToLeftArcEndpoint)
 {
   double ix = 99;
@@ -68,6 +73,7 @@ TEST(ArcUtilsDistanceTest, ProjectsCenterPointToLeftArcEndpoint)
   EXPECT_NEAR(iy, 0.0, kGeomTol);
 }
 
+// Covers arc utils distance behavior: computes segment and seglist distances to arc.
 TEST(ArcUtilsDistanceTest, ComputesSegmentAndSeglistDistancesToArc)
 {
   EXPECT_NEAR(distSegToArc(-20, 0, 20, 0, 0, 0, 10, 270, 90), 0.0, kGeomTol);
@@ -80,6 +86,7 @@ TEST(ArcUtilsDistanceTest, ComputesSegmentAndSeglistDistancesToArc)
   EXPECT_NEAR(distSegListToArc(0, 0, 10, 270, 90, lane), 10.0, kGeomTol);
 }
 
+// Covers arc utils distance behavior: computes distance along arc from either origin.
 TEST(ArcUtilsDistanceTest, ComputesDistanceAlongArcFromEitherOrigin)
 {
   EXPECT_NEAR(arclen(90, 10), 78.53981634, kLooseGeomTol);
@@ -90,12 +97,14 @@ TEST(ArcUtilsDistanceTest, ComputesDistanceAlongArcFromEitherOrigin)
   EXPECT_EQ(distPointOnArc(0, -10, 0, 0, 10, 270, 90), -2);
 }
 
+// Covers arc utils distance behavior: computes distance between two points on arc.
 TEST(ArcUtilsDistanceTest, ComputesDistanceBetweenTwoPointsOnArc)
 {
   EXPECT_NEAR(distPtsOnArc(-10, 0, 0, 10, 0, 0, 10, 270, 90), 15.7259632679, kLooseGeomTol);
   EXPECT_EQ(distPtsOnArc(-10, 0, 0, -10, 0, 0, 10, 270, 90), -1);
 }
 
+// Covers arc utils turn geometry behavior: computes starboard and port fixed turn endpoints.
 TEST(ArcUtilsTurnGeometryTest, ComputesStarboardAndPortFixedTurnEndpoints)
 {
   double rx = 0;
@@ -110,6 +119,7 @@ TEST(ArcUtilsTurnGeometryTest, ComputesStarboardAndPortFixedTurnEndpoints)
   EXPECT_NEAR(ry, -10.0, kGeomTol);
 }
 
+// Covers arc utils turn geometry behavior: leaves position unchanged for degenerate turn inputs.
 TEST(ArcUtilsTurnGeometryTest, LeavesPositionUnchangedForDegenerateTurnInputs)
 {
   double rx = 0;
@@ -124,6 +134,7 @@ TEST(ArcUtilsTurnGeometryTest, LeavesPositionUnchangedForDegenerateTurnInputs)
   EXPECT_NEAR(ry, 4.0, kGeomTol);
 }
 
+// Covers arc utils turn geometry behavior: arcturn currently ignores input heading.
 TEST(ArcUtilsTurnGeometryTest, ArcturnCurrentlyIgnoresInputHeading)
 {
   // This helper is still used as a low-level turn endpoint calculator. Pin
@@ -147,6 +158,7 @@ TEST(ArcUtilsTurnGeometryTest, ArcturnCurrentlyIgnoresInputHeading)
   EXPECT_NEAR(ry_south, -75.0, kGeomTol);
 }
 
+// Covers arc utils intersection behavior: finds segment and seglist intersections with arc.
 TEST(ArcUtilsIntersectionTest, FindsSegmentAndSeglistIntersectionsWithArc)
 {
   EXPECT_TRUE(arcSegCross(-20, 0, 20, 0, 0, 0, 10, 270, 90));
@@ -165,6 +177,7 @@ TEST(ArcUtilsIntersectionTest, FindsSegmentAndSeglistIntersectionsWithArc)
   EXPECT_TRUE(arcSegListCross(0, 0, 25, 0, 120, lane));
 }
 
+// Covers arc utils intersection behavior: finds turn preview chord endpoints for leg run style turn.
 TEST(ArcUtilsIntersectionTest, FindsTurnPreviewChordEndpointsForLegRunStyleTurn)
 {
   // BHV_LegRun and fixed-turn visualizations reason about turn arcs against
@@ -205,6 +218,7 @@ TEST(ArcUtilsIntersectionTest, FindsTurnPreviewChordEndpointsForLegRunStyleTurn)
   EXPECT_NEAR(ys[1], -50.0, kLooseGeomTol);
 }
 
+// Covers arc utils intersection behavior: reports two crossing points when both circle hits are in arc.
 TEST(ArcUtilsIntersectionTest, ReportsTwoCrossingPointsWhenBothCircleHitsAreInArc)
 {
   double ix1 = 0;
@@ -220,6 +234,7 @@ TEST(ArcUtilsIntersectionTest, ReportsTwoCrossingPointsWhenBothCircleHitsAreInAr
   EXPECT_NEAR(std::abs(iy2), 10.0, kGeomTol);
 }
 
+// Covers arc utils intersection behavior: reports seglist crossing points and clears output vectors.
 TEST(ArcUtilsIntersectionTest, ReportsSeglistCrossingPointsAndClearsOutputVectors)
 {
   XYSegList lane;
@@ -240,6 +255,7 @@ TEST(ArcUtilsIntersectionTest, ReportsSeglistCrossingPointsAndClearsOutputVector
   EXPECT_NEAR(std::abs(ys[1]), 10.0, kGeomTol);
 }
 
+// Covers arc utils CPA behavior: reports ray CPA for survey lane crossing projected ray.
 TEST(ArcUtilsCpaTest, ReportsRayCpaForSurveyLaneCrossingProjectedRay)
 {
   XYSegList lane;
@@ -255,6 +271,7 @@ TEST(ArcUtilsCpaTest, ReportsRayCpaForSurveyLaneCrossingProjectedRay)
   EXPECT_NEAR(ray[0], 10.0, kGeomTol);
 }
 
+// Covers arc utils CPA behavior: reports arc CPA for lane near turn arc.
 TEST(ArcUtilsCpaTest, ReportsArcCpaForLaneNearTurnArc)
 {
   XYSegList lane;
@@ -269,6 +286,7 @@ TEST(ArcUtilsCpaTest, ReportsArcCpaForLaneNearTurnArc)
   EXPECT_GE(arc_dist[0], 0.0);
 }
 
+// Covers arc utils to do distance points behavior: reports both intersection points for full arc perimeter crossing.
 TEST(ArcUtilsToDoDistancePointsTest, ReportsBothIntersectionPointsForFullArcPerimeterCrossing)
 {
   std::vector<double> xs;
@@ -289,6 +307,7 @@ TEST(ArcUtilsToDoDistancePointsTest, ReportsBothIntersectionPointsForFullArcPeri
   EXPECT_NEAR(dists[1], 0.0, kGeomTol);
 }
 
+// Covers arc utils to do distance points behavior: reports single intersection for transit leg entering turn arc.
 TEST(ArcUtilsToDoDistancePointsTest, ReportsSingleIntersectionForTransitLegEnteringTurnArc)
 {
   std::vector<double> xs;
@@ -306,6 +325,7 @@ TEST(ArcUtilsToDoDistancePointsTest, ReportsSingleIntersectionForTransitLegEnter
   EXPECT_NEAR(dists[0], 0.0, kGeomTol);
 }
 
+// Covers arc utils to do distance points behavior: reports closest projection for parallel survey lane outside arc.
 TEST(ArcUtilsToDoDistancePointsTest, ReportsClosestProjectionForParallelSurveyLaneOutsideArc)
 {
   std::vector<double> xs;
@@ -323,6 +343,7 @@ TEST(ArcUtilsToDoDistancePointsTest, ReportsClosestProjectionForParallelSurveyLa
   EXPECT_NEAR(dists[0], 5.0, kGeomTol);
 }
 
+// Covers arc utils to do distance points behavior: suppresses closest points when minimum distance exceeds threshold.
 TEST(ArcUtilsToDoDistancePointsTest, SuppressesClosestPointsWhenMinimumDistanceExceedsThreshold)
 {
   std::vector<double> xs;
@@ -337,6 +358,7 @@ TEST(ArcUtilsToDoDistancePointsTest, SuppressesClosestPointsWhenMinimumDistanceE
   EXPECT_TRUE(dists.empty());
 }
 
+// Covers arc utils to do distance points behavior: pins duplicate left endpoint report when segment is inside circle.
 TEST(ArcUtilsToDoDistancePointsTest, PinsDuplicateLeftEndpointReportWhenSegmentIsInsideCircle)
 {
   std::vector<double> xs;

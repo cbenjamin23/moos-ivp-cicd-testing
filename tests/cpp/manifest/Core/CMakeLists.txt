@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_manifest_core
+  SOURCES
+    ManifestCoreTest.cpp
+  LIBS
+    manifest
+    mbutil
+  LABELS
+    manifest
+  SUITE_LABELS
+    ManifestTest=Manifest
+    ManifestSetTest=ManifestSet
+)

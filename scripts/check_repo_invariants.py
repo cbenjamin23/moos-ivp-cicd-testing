@@ -15,7 +15,7 @@ from typing import Iterable
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import ci_harness_case_count, harness_targets  # noqa: E402
+from scripts import check_cpp_tests, ci_harness_case_count, harness_targets  # noqa: E402
 
 WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "build_extend.yml"
 DOCS_BUILD_PATH = REPO_ROOT / "docs" / "tools" / "build_pages.py"
@@ -240,6 +240,13 @@ def check_docs_generated_clean() -> list[CheckFailure]:
     return []
 
 
+def check_cpp_test_tree(_targets: list[dict[str, object]]) -> list[CheckFailure]:
+    return [
+        CheckFailure(failure.label, failure.detail)
+        for failure in check_cpp_tests.check_static()
+    ]
+
+
 def snapshot_tree(root: Path) -> dict[str, str]:
     snapshot: dict[str, str] = {}
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
@@ -277,6 +284,7 @@ def main() -> int:
         check_harness_targets,
         check_docs_catalog,
         check_workflow_inputs,
+        check_cpp_test_tree,
     ]
 
     for check in check_steps:

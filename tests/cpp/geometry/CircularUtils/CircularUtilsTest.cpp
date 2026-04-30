@@ -23,26 +23,31 @@ void ExpectArcFlight(double x, double y, double heading, double radius, double d
 
 }  // namespace
 
+// Covers circular utils behavior: computes starboard quarter turn from north heading.
 TEST(CircularUtilsTest, ComputesStarboardQuarterTurnFromNorthHeading)
 {
   ExpectArcFlight(0, 0, 0, 10, 5 * kPi, false, 10, 10, 90);
 }
 
+// Covers circular utils behavior: computes port quarter turn from north heading.
 TEST(CircularUtilsTest, ComputesPortQuarterTurnFromNorthHeading)
 {
   ExpectArcFlight(0, 0, 0, 10, 5 * kPi, true, -10, 10, 270);
 }
 
+// Covers circular utils behavior: computes starboard quarter turn from east heading.
 TEST(CircularUtilsTest, ComputesStarboardQuarterTurnFromEastHeading)
 {
   ExpectArcFlight(0, 0, 90, 10, 5 * kPi, false, 10, -10, 180);
 }
 
+// Covers circular utils behavior: computes port quarter turn from east heading.
 TEST(CircularUtilsTest, ComputesPortQuarterTurnFromEastHeading)
 {
   ExpectArcFlight(0, 0, 90, 10, 5 * kPi, true, 10, 10, 0);
 }
 
+// Covers circular utils behavior: computes fixed turn preview from offset ownship pose.
 TEST(CircularUtilsTest, ComputesFixedTurnPreviewFromOffsetOwnshipPose)
 {
   // Fixed-turn style behaviors use the current NAV_X/Y/HEADING plus a turn
@@ -53,24 +58,28 @@ TEST(CircularUtilsTest, ComputesFixedTurnPreviewFromOffsetOwnshipPose)
                   100, -14.644660940673, 315);
 }
 
+// Covers circular utils behavior: leaves position and heading unchanged for zero distance.
 TEST(CircularUtilsTest, LeavesPositionAndHeadingUnchangedForZeroDistance)
 {
   ExpectArcFlight(3, -4, 123, 25, 0, false, 3, -4, 123);
   ExpectArcFlight(3, -4, 123, 25, 0, true, 3, -4, 123);
 }
 
+// Covers circular utils behavior: normalizes full circle distance to starting state.
 TEST(CircularUtilsTest, NormalizesFullCircleDistanceToStartingState)
 {
   ExpectArcFlight(0, 0, 37, 10, 20 * kPi, false, 0, 0, 37);
   ExpectArcFlight(0, 0, 37, 10, 20 * kPi, true, 0, 0, 37);
 }
 
+// Covers circular utils behavior: normalizes more than full circle distance.
 TEST(CircularUtilsTest, NormalizesMoreThanFullCircleDistance)
 {
   ExpectArcFlight(0, 0, 0, 10, 25 * kPi, false, 10, 10, 90);
   ExpectArcFlight(0, 0, 0, 10, 25 * kPi, true, -10, 10, 270);
 }
 
+// Covers circular utils behavior: handles unnormalized headings with single wrap adjustment.
 TEST(CircularUtilsTest, HandlesUnnormalizedHeadingsWithSingleWrapAdjustment)
 {
   ExpectArcFlight(0, 0, 450, 10, 5 * kPi, false, 10, -10, 180);
@@ -78,6 +87,7 @@ TEST(CircularUtilsTest, HandlesUnnormalizedHeadingsWithSingleWrapAdjustment)
   ExpectArcFlight(3, -4, 450, 25, 0, false, 3, -4, 90);
 }
 
+// Covers circular utils behavior: arc overload builds starboard turn preview arc.
 TEST(CircularUtilsTest, ArcOverloadBuildsStarboardTurnPreviewArc)
 {
   XYArc arc = arcFlight(0, 0, 0, 10, 5 * kPi, false);
@@ -93,6 +103,7 @@ TEST(CircularUtilsTest, ArcOverloadBuildsStarboardTurnPreviewArc)
   EXPECT_NEAR(arc.getAY2(), 0.0, kGeomTol);
 }
 
+// Covers circular utils behavior: arc overload builds port turn preview arc.
 TEST(CircularUtilsTest, ArcOverloadBuildsPortTurnPreviewArc)
 {
   XYArc arc = arcFlight(0, 0, 0, 10, 5 * kPi, true);
@@ -108,6 +119,7 @@ TEST(CircularUtilsTest, ArcOverloadBuildsPortTurnPreviewArc)
   EXPECT_NEAR(arc.getAY2(), 10.0, kGeomTol);
 }
 
+// Covers circular utils behavior: arc overload matches fixed turn preview geometry.
 TEST(CircularUtilsTest, ArcOverloadMatchesFixedTurnPreviewGeometry)
 {
   XYArc starboard = arcFlight(100, -50, 45, 25, 25 * kPi / 2, false);
@@ -137,6 +149,7 @@ TEST(CircularUtilsTest, ArcOverloadMatchesFixedTurnPreviewGeometry)
   EXPECT_NEAR(port.getAY2(), -14.644660940673, kLooseGeomTol);
 }
 
+// Covers circular utils behavior: arc overload stores partially normalized geometry for unnormalized heading.
 TEST(CircularUtilsTest, ArcOverloadStoresPartiallyNormalizedGeometryForUnnormalizedHeading)
 {
   XYArc arc = arcFlight(0, 0, 450, 10, 5 * kPi, false);
@@ -152,6 +165,7 @@ TEST(CircularUtilsTest, ArcOverloadStoresPartiallyNormalizedGeometryForUnnormali
   EXPECT_NEAR(arc.getAY2(), 0.0, kLooseGeomTol);
 }
 
+// Covers circular utils behavior: arc overload rejects negative inputs with default arc.
 TEST(CircularUtilsTest, ArcOverloadRejectsNegativeInputsWithDefaultArc)
 {
   XYArc negative_distance = arcFlight(1, 2, 30, 10, -1, true);
@@ -169,6 +183,7 @@ TEST(CircularUtilsTest, ArcOverloadRejectsNegativeInputsWithDefaultArc)
   EXPECT_NEAR(negative_radius.getRangle(), 0.0, kGeomTol);
 }
 
+// Covers circular utils behavior: rejects negative distance or radius.
 TEST(CircularUtilsTest, RejectsNegativeDistanceOrRadius)
 {
   double rx = 99;

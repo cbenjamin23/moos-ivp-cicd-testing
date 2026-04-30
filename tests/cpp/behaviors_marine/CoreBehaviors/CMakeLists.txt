@@ -1,0 +1,442 @@
+set(BEHAVIORS_MARINE_COMMON_LIBS
+  behaviors-marine
+  behaviors
+  helmivp
+  logic
+  bhvutil
+  ivpbuild
+  ivpcore
+  turngeo
+  contacts
+  geometry
+  mbutil
+)
+
+add_moos_cpp_test(test_behaviors_marine_constant_speed
+  SOURCES
+    ConstantSpeedTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_ConstantSpeed
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_abort_to_point
+  SOURCES
+    AbortToPointTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_AbortToPoint
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_bearing_line
+  SOURCES
+    BearingLineTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_BearingLine
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_constant_heading
+  SOURCES
+    ConstantHeadingTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_ConstantHeading
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_max_speed
+  SOURCES
+    MaxSpeedTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_MaxSpeed
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_constant_depth
+  SOURCES
+    ConstantDepthTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_ConstantDepth
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_max_depth
+  SOURCES
+    MaxDepthTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_MaxDepth
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_full_stop
+  SOURCES
+    FullStopTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_FullStop
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_goto_depth
+  SOURCES
+    GoToDepthTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_GoToDepth
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_hsline
+  SOURCES
+    HSLineTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_HSLine
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_heading_bias
+  SOURCES
+    HeadingBiasTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_HeadingBias
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_maintain_heading
+  SOURCES
+    MaintainHeadingTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_MaintainHeading
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_heading_change
+  SOURCES
+    HeadingChangeTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_HeadingChange
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_periodic_speed
+  SOURCES
+    PeriodicSpeedTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_PeriodicSpeed
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_periodic_surface
+  SOURCES
+    PeriodicSurfaceTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_PeriodicSurface
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_test_failure
+  SOURCES
+    TestFailureTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_TestFailure
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_timer
+  SOURCES
+    TimerTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_Timer
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_timeout
+  SOURCES
+    TimeOutTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_TimeOut
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_heading_hysteresis
+  SOURCES
+    HeadingHysteresisTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_HeadingHysteresis
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_hysteresis
+  SOURCES
+    HysteresisTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_Hysteresis
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_memory_turn_limit
+  SOURCES
+    MemoryTurnLimitTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_MemoryTurnLimit
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_min_altitude_x
+  SOURCES
+    MinAltitudeXTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_MinAltitudeX
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_station_keep
+  SOURCES
+    StationKeepTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_StationKeep
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_waypoint
+  SOURCES
+    WaypointTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_Waypoint
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_loiter
+  SOURCES
+    LoiterTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_Loiter
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_leg_run
+  SOURCES
+    LegRunTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_LegRun
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_zig_zag
+  SOURCES
+    ZigZagTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_ZigZag
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_shadow
+  SOURCES
+    ShadowTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_Shadow
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_cut_range
+  SOURCES
+    CutRangeTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_CutRange
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_trail
+  SOURCES
+    TrailTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_Trail
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_avoid_collision
+  SOURCES
+    AvoidCollisionTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_AvoidCollision
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_rstation_keep
+  SOURCES
+    RStationKeepTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_RStationKeep
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_convoy
+  SOURCES
+    ConvoyTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_Convoy
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_fixed_turn
+  SOURCES
+    FixedTurnTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_FixedTurn
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_op_region
+  SOURCES
+    OpRegionTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_OpRegion
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_op_region_recover
+  SOURCES
+    OpRegionRecoverTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_OpRegionRecover
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_op_region_v24
+  SOURCES
+    OpRegionV24Test.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_OpRegionV24
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_pmodel_view
+  SOURCES
+    PModelViewTest.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_PModelView
+    pHelmIvP
+)
+
+add_moos_cpp_test(test_behaviors_marine_avoid_obstacle_v24
+  SOURCES
+    AvoidObstacleV24Test.cpp
+  LIBS
+    ${BEHAVIORS_MARINE_COMMON_LIBS}
+  LABELS
+    behaviors-marine
+    BHV_AvoidObstacleV24
+    pHelmIvP
+)

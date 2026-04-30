@@ -8,6 +8,7 @@
 #include "XYFormatUtilsPoly.h"
 #include "XYSegList.h"
 
+// Covers geom utils projection behavior: projects points using MOOS heading convention.
 TEST(GeomUtilsProjectionTest, ProjectsPointsUsingMoosHeadingConvention)
 {
   double x = 0;
@@ -29,6 +30,7 @@ TEST(GeomUtilsProjectionTest, ProjectsPointsUsingMoosHeadingConvention)
   EXPECT_NEAR(midpoint.y(), 1.0, kGeomTol);
 }
 
+// Covers geom utils projection behavior: combines heading magnitude vectors.
 TEST(GeomUtilsProjectionTest, CombinesHeadingMagnitudeVectors)
 {
   double heading = 0;
@@ -39,6 +41,7 @@ TEST(GeomUtilsProjectionTest, CombinesHeadingMagnitudeVectors)
   EXPECT_NEAR(magnitude, 14.1421356237, kLooseGeomTol);
 }
 
+// Covers geom utils distance behavior: computes point segment and line distances with closest point.
 TEST(GeomUtilsDistanceTest, ComputesPointSegmentAndLineDistancesWithClosestPoint)
 {
   double ix = 0;
@@ -59,6 +62,7 @@ TEST(GeomUtilsDistanceTest, ComputesPointSegmentAndLineDistancesWithClosestPoint
   EXPECT_NEAR(distPointToLine(5, 4, 0, 0, 10, 0), 4.0, kGeomTol);
 }
 
+// Covers geom utils distance behavior: projects perpendiculars to lines and segments.
 TEST(GeomUtilsDistanceTest, ProjectsPerpendicularsToLinesAndSegments)
 {
   double ix = 0;
@@ -73,6 +77,7 @@ TEST(GeomUtilsDistanceTest, ProjectsPerpendicularsToLinesAndSegments)
   EXPECT_NEAR(iy, 0.0, kGeomTol);
 }
 
+// Covers geom utils intersection behavior: finds line and segment crossings.
 TEST(GeomUtilsIntersectionTest, FindsLineAndSegmentCrossings)
 {
   double ix = 0;
@@ -114,6 +119,7 @@ TEST(GeomUtilsIntersectionTest, FindsLineAndSegmentCrossings)
   EXPECT_NEAR(segmentAngle(0, 0, 0, 0, 10, 0), 0.0, kGeomTol);
 }
 
+// Covers geom utils intersection behavior: computes distances between segments.
 TEST(GeomUtilsIntersectionTest, ComputesDistancesBetweenSegments)
 {
   double ix = 0;
@@ -128,6 +134,7 @@ TEST(GeomUtilsIntersectionTest, ComputesDistancesBetweenSegments)
   EXPECT_NEAR(iy, 0.0, kGeomTol);
 }
 
+// Covers geom utils ray behavior: computes ray crossings and closest approach.
 TEST(GeomUtilsRayTest, ComputesRayCrossingsAndClosestApproach)
 {
   double ix = 0;
@@ -147,6 +154,7 @@ TEST(GeomUtilsRayTest, ComputesRayCrossingsAndClosestApproach)
   EXPECT_NEAR(iy, 0.0, kGeomTol);
 }
 
+// Covers geom utils ray behavior: computes seglist and polygon ray CPA for obstacle lookahead.
 TEST(GeomUtilsRayTest, ComputesSeglistAndPolygonRayCpaForObstacleLookahead)
 {
   double ix = 0;
@@ -172,6 +180,7 @@ TEST(GeomUtilsRayTest, ComputesSeglistAndPolygonRayCpaForObstacleLookahead)
   EXPECT_NEAR(iy, 0.0, kGeomTol);
 }
 
+// Covers geom utils seg list behavior: computes distances to seglist and polygon.
 TEST(GeomUtilsSegListTest, ComputesDistancesToSeglistAndPolygon)
 {
   double ix = 0;
@@ -197,6 +206,7 @@ TEST(GeomUtilsSegListTest, ComputesDistancesToSeglistAndPolygon)
   EXPECT_NEAR(stemDistSeglFromPoint(lane, 5, 3), 8.0, kGeomTol);
 }
 
+// Covers geom utils segment modifier behavior: adjusts segment length angle and location.
 TEST(GeomUtilsSegmentModifierTest, AdjustsSegmentLengthAngleAndLocation)
 {
   double rx1 = 0;
@@ -227,6 +237,7 @@ TEST(GeomUtilsSegmentModifierTest, AdjustsSegmentLengthAngleAndLocation)
   EXPECT_NEAR(center.y(), 0.0, kGeomTol);
 }
 
+// Covers geom utils circle behavior: computes line circle intersection cases.
 TEST(GeomUtilsCircleTest, ComputesLineCircleIntersectionCases)
 {
   double ix1 = 0;
@@ -252,6 +263,7 @@ TEST(GeomUtilsCircleTest, ComputesLineCircleIntersectionCases)
   EXPECT_NEAR(distCircleToLine(0, 0, 5, -10, 3, 10, 3), 0.0, kGeomTol);
 }
 
+// Covers geom utils circle behavior: filters circle intersections to segment extent.
 TEST(GeomUtilsCircleTest, FiltersCircleIntersectionsToSegmentExtent)
 {
   double ix1 = 0;
@@ -274,6 +286,7 @@ TEST(GeomUtilsCircleTest, FiltersCircleIntersectionsToSegmentExtent)
   EXPECT_EQ(segCircleIntPts(6, 0, 10, 0, 0, 0, 5, ix1, iy1, ix2, iy2), 0);
 }
 
+// Covers geom utils polygon measure behavior: computes rotated width height and aspect ratio.
 TEST(GeomUtilsPolygonMeasureTest, ComputesRotatedWidthHeightAndAspectRatio)
 {
   XYPolygon rect = string2Poly("pts={0,0:20,0:20,10:0,10}");
@@ -292,6 +305,7 @@ TEST(GeomUtilsPolygonMeasureTest, ComputesRotatedWidthHeightAndAspectRatio)
   EXPECT_NEAR(polyAspectRatio(diamond), 1.4142135624, kLooseGeomTol);
 }
 
+// Covers geom utils polygon measure behavior: computes bearing cone and samples points for obstacle views.
 TEST(GeomUtilsPolygonMeasureTest, ComputesBearingConeAndSamplesPointsForObstacleViews)
 {
   XYPolygon obstacle = string2Poly("pts={10,-5:20,-5:20,5:10,5}");
@@ -325,6 +339,7 @@ TEST(GeomUtilsPolygonMeasureTest, ComputesBearingConeAndSamplesPointsForObstacle
   EXPECT_NEAR(ry, box.get_center_y(), kGeomTol);
 }
 
+// Covers geom utils mutator behavior: shifts vertex vectors and leaves invalid input unchanged.
 TEST(GeomUtilsMutatorTest, ShiftsVertexVectorsAndLeavesInvalidInputUnchanged)
 {
   std::vector<double> vx{1, 2, 3};
@@ -347,6 +362,7 @@ TEST(GeomUtilsMutatorTest, ShiftsVertexVectorsAndLeavesInvalidInputUnchanged)
   EXPECT_NEAR(bad_y[0], 3.0, kGeomTol);
 }
 
+// Covers geom utils mutator behavior: parses point and seglist into existing objects atomically.
 TEST(GeomUtilsMutatorTest, ParsesPointAndSeglistIntoExistingObjectsAtomically)
 {
   XYPoint point(9, 9);
@@ -364,12 +380,14 @@ TEST(GeomUtilsMutatorTest, ParsesPointAndSeglistIntoExistingObjectsAtomically)
   EXPECT_EQ(segl.size(), 2u);
 }
 
+// Covers geom utils deprecated alias behavior: keeps legacy distance wrappers equivalent.
 TEST(GeomUtilsDeprecatedAliasTest, KeepsLegacyDistanceWrappersEquivalent)
 {
   EXPECT_NEAR(distToPoint(0, 0, 3, 4), distPointToPoint(0, 0, 3, 4), kGeomTol);
   EXPECT_NEAR(distToSegment(0, 0, 10, 0, 5, 4), distPointToSeg(0, 0, 10, 0, 5, 4), kGeomTol);
 }
 
+// Covers geom utils segment modifier behavior: rejects zero length segments.
 TEST(GeomUtilsSegmentModifierTest, RejectsZeroLengthSegments)
 {
   double rx1 = 1;

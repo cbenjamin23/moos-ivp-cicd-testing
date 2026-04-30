@@ -21,17 +21,16 @@ add_moos_cpp_test(test_geometry_field_artifacts
     geometry
     mbutil
     ${MOOSGEODESY_LIBRARY}
+  INCLUDES
+    ${MOOSGEODESY_INCLUDE_DIR}
   LABELS
     geometry
     FieldArtifacts
-    ArtifactUtils
-    CurrentField
-    OpField
     current
     artifacts
-)
-
-target_include_directories(test_geometry_field_artifacts
-  PRIVATE
-    ${MOOSGEODESY_INCLUDE_DIR}
+  SUITE_LABELS
+    ArtifactUtilsLawnmowerTest=ArtifactUtils
+    ArtifactUtilsArtifactsTest=ArtifactUtils
+    CurrentFieldTest=CurrentField
+    OpFieldTest=OpField
 )

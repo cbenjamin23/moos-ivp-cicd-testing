@@ -1,0 +1,13 @@
+add_moos_cpp_test(test_apputil_formatting
+  SOURCES
+    FormattingTest.cpp
+  LIBS
+    apputil
+    mbutil
+  LABELS
+    apputil
+    AppCastFormatting
+  SUITE_LABELS
+    ACTableTest=ACTable
+    ACBlockTest=ACBlock
+)

@@ -23,6 +23,7 @@ bool vectorContains(const std::vector<std::string>& lines,
 
 }  // namespace
 
+// Covers logic aspect behavior: evaluates mission eval lead pass and fail conditions.
 TEST(LogicAspectTest, EvaluatesMissionEvalLeadPassAndFailConditions)
 {
   InfoBuffer info;
@@ -63,6 +64,7 @@ TEST(LogicAspectTest, EvaluatesMissionEvalLeadPassAndFailConditions)
   EXPECT_TRUE(vectorContains(spec, "Satisfied(true)"));
 }
 
+// Covers logic aspect behavior: fails when fail condition is met after pass conditions.
 TEST(LogicAspectTest, FailsWhenFailConditionIsMetAfterPassConditions)
 {
   InfoBuffer info;
@@ -83,6 +85,7 @@ TEST(LogicAspectTest, FailsWhenFailConditionIsMetAfterPassConditions)
   EXPECT_EQ(aspect.getStatus(), "met_fail_cond: [COLLISION = true]");
 }
 
+// Covers logic test sequence behavior: splits mission eval conditions into sequential aspects.
 TEST(LogicTestSequenceTest, SplitsMissionEvalConditionsIntoSequentialAspects)
 {
   InfoBuffer info;
@@ -129,6 +132,7 @@ TEST(LogicTestSequenceTest, SplitsMissionEvalConditionsIntoSequentialAspects)
   EXPECT_TRUE(vectorContains(spec, "Satisfied: true"));
 }
 
+// Covers logic test sequence behavior: stops sequence at first unsatisfied aspect.
 TEST(LogicTestSequenceTest, StopsSequenceAtFirstUnsatisfiedAspect)
 {
   InfoBuffer info;
@@ -150,4 +154,72 @@ TEST(LogicTestSequenceTest, StopsSequenceAtFirstUnsatisfiedAspect)
   EXPECT_FALSE(sequence.isSatisfied());
   EXPECT_EQ(sequence.currIndex(), 0u);
   EXPECT_EQ(sequence.getStatus(), "met_fail_cond: [COLLISION = true]");
+}
+
+// Covers logic test sequence behavior: reports configuration warnings before enablement.
+TEST(LogicTestSequenceTest, ReportsConfigurationWarningsBeforeEnablement)
+{
+  LogicTestSequence empty;
+  EXPECT_FALSE(empty.enabled());
+  EXPECT_EQ(empty.checkConfig(), "LogicAspect 0: No lead_conditions");
+  EXPECT_FALSE(empty.enabled());
+
+  LogicTestSequence no_pass;
+  ASSERT_TRUE(no_pass.addLeadCondition("DEPLOY=true"));
+  EXPECT_EQ(no_pass.checkConfig(), "");
+  EXPECT_TRUE(no_pass.enabled());
+}
+
+// Covers logic test sequence behavior: appends new lead conditions after any pass or fail condition.
+TEST(LogicTestSequenceTest, AppendsNewLeadConditionsAfterAnyPassOrFailCondition)
+{
+  InfoBuffer info;
+  LogicTestSequence sequence;
+  sequence.setInfoBuffer(&info);
+
+  ASSERT_TRUE(sequence.addLeadCondition("LEG_ONE=true"));
+  ASSERT_TRUE(sequence.addFailCondition("COLLISION=true"));
+  ASSERT_TRUE(sequence.addLeadCondition("LEG_TWO=true"));
+  ASSERT_TRUE(sequence.addPassCondition("DONE=true"));
+
+  EXPECT_EQ(sequence.size(), 2u);
+  EXPECT_EQ(sequence.failConditions(0), 1u);
+  EXPECT_EQ(sequence.leadConditions(1), 1u);
+  EXPECT_EQ(sequence.passConditions(1), 1u);
+  EXPECT_EQ(sequence.checkConfig(), "");
+
+  info.setValue("LEG_ONE", "true");
+  info.setValue("COLLISION", "false");
+  sequence.update();
+  EXPECT_FALSE(sequence.isEvaluated());
+  EXPECT_EQ(sequence.currIndex(), 1u);
+
+  info.setValue("LEG_TWO", "true");
+  info.setValue("DONE", "true");
+  sequence.update();
+  EXPECT_TRUE(sequence.isEvaluated());
+  EXPECT_TRUE(sequence.isSatisfied());
+}
+
+// Covers logic test sequence behavior: report includes current aspect and info buffer state.
+TEST(LogicTestSequenceTest, ReportIncludesCurrentAspectAndInfoBufferState)
+{
+  InfoBuffer info;
+  LogicTestSequence sequence;
+  sequence.setInfoBuffer(&info);
+  ASSERT_TRUE(sequence.addLeadCondition("DEPLOY=true"));
+  ASSERT_TRUE(sequence.addPassCondition("MISSION_DONE=true"));
+  ASSERT_EQ(sequence.checkConfig(), "");
+
+  info.setValue("DEPLOY", "false");
+  std::list<std::string> report = sequence.getReport();
+  std::string joined;
+  for(const std::string& line : report)
+    joined += line + "\n";
+
+  EXPECT_NE(joined.find("Logic Test Sequence: Total Aspects (1 total)"),
+            std::string::npos);
+  EXPECT_NE(joined.find("InfoBuffer:"), std::string::npos);
+  EXPECT_NE(joined.find("DEPLOY"), std::string::npos);
+  EXPECT_NE(joined.find("MISSION_DONE"), std::string::npos);
 }

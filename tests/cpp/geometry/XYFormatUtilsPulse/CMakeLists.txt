@@ -9,9 +9,10 @@ add_moos_cpp_test(test_geometry_xyformatutils_pulse
     geometry
     formats
     XYFormatUtilsPulse
-    XYRangePulse
-    XYFormatUtilsRangePulse
-    XYCommsPulse
-    XYFormatUtilsCommsPulse
     pulse
+  SUITE_LABELS
+    XYFormatUtilsRangePulseTest=XYFormatUtilsRangePulse
+    XYRangePulseTest=XYRangePulse
+    XYFormatUtilsCommsPulseTest=XYFormatUtilsCommsPulse
+    XYCommsPulseTest=XYCommsPulse
 )

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -17,16 +18,17 @@
 #include "XYHexagon.h"
 #include "XYPolygon.h"
 #include "XYPoint.h"
+#include "TestFileUtils.h"
 
 namespace {
 
 std::string makeTempFile(const std::string& stem, const std::string& contents)
 {
-  const std::string path = ::testing::TempDir() + "/" + stem;
-  std::ofstream out(path.c_str());
-  out << contents;
-  out.close();
-  return path;
+  // Keep fixture files alive for the duration of the test process while giving
+  // every test a unique path for parallel CTest runs.
+  static std::vector<std::unique_ptr<TempFile>> files;
+  files.emplace_back(new TempFile(stem, contents));
+  return files.back()->path();
 }
 
 std::vector<std::string> sortedAliases(const OpField& field)
@@ -45,6 +47,7 @@ void expectPoint(const XYPoint& point, double x, double y)
 
 }  // namespace
 
+// Covers io geom utils poly string file behavior: extracts only polygon aliases and keeps raw right hand specs.
 TEST(IOGeomUtilsPolyStringFileTest, ExtractsOnlyPolygonAliasesAndKeepsRawRightHandSpecs)
 {
   const std::string path = makeTempFile("io_geom_poly_strings.txt",
@@ -68,6 +71,7 @@ TEST(IOGeomUtilsPolyStringFileTest, ExtractsOnlyPolygonAliasesAndKeepsRawRightHa
   EXPECT_EQ(specs[3], "pts={1,1:2,1:2,2:1,2},label=with=equals");
 }
 
+// Covers io geom utils poly file behavior: parses mission polygons and generated shape configs.
 TEST(IOGeomUtilsPolyFileTest, ParsesMissionPolygonsAndGeneratedShapeConfigs)
 {
   const std::string path = makeTempFile("io_geom_polys.txt",
@@ -97,6 +101,7 @@ TEST(IOGeomUtilsPolyFileTest, ParsesMissionPolygonsAndGeneratedShapeConfigs)
   EXPECT_EQ(polys[5].size(), 10u);
 }
 
+// Covers io geom utils poly file behavior: keeps multi equals payloads but drops malformed polygons.
 TEST(IOGeomUtilsPolyFileTest, KeepsMultiEqualsPayloadsButDropsMalformedPolygons)
 {
   const std::string path = makeTempFile("io_geom_bad_polys.txt",
@@ -116,6 +121,7 @@ TEST(IOGeomUtilsPolyFileTest, KeepsMultiEqualsPayloadsButDropsMalformedPolygons)
   EXPECT_NEAR(polys[0].area(), 100.0, kGeomTol);
 }
 
+// Covers io geom utils shape file behavior: reads circles arcs and hexagons while skipping bad rows.
 TEST(IOGeomUtilsShapeFileTest, ReadsCirclesArcsAndHexagonsWhileSkippingBadRows)
 {
   const std::string path = makeTempFile("io_geom_shapes.txt",
@@ -152,6 +158,7 @@ TEST(IOGeomUtilsShapeFileTest, ReadsCirclesArcsAndHexagonsWhileSkippingBadRows)
   EXPECT_EQ(hexagons[0].size(), 6u);
 }
 
+// Covers io geom utils grid file behavior: reads search grid and pushes default full grid on decode failures.
 TEST(IOGeomUtilsGridFileTest, ReadsSearchGridAndPushesDefaultFullGridOnDecodeFailures)
 {
   XYGrid original;
@@ -191,6 +198,7 @@ TEST(IOGeomUtilsGridFileTest, ReadsSearchGridAndPushesDefaultFullGridOnDecodeFai
   EXPECT_TRUE(stringContains(summary, "# 3,9.25"));
 }
 
+// Covers io geom utils output behavior: print square writes legacy labels to stdout.
 TEST(IOGeomUtilsOutputTest, PrintSquareWritesLegacyLabelsToStdout)
 {
   XYSquare square(1, 2, 3, 4);
@@ -202,6 +210,7 @@ TEST(IOGeomUtilsOutputTest, PrintSquareWritesLegacyLabelsToStdout)
   EXPECT_EQ(out, "xl:1 xh:2 yl:3 yh:4\n");
 }
 
+// Covers op field point behavior: adds sets and rejects duplicate or invalid points.
 TEST(OpFieldPointTest, AddsSetsAndRejectsDuplicateOrInvalidPoints)
 {
   OpField field;
@@ -224,6 +233,7 @@ TEST(OpFieldPointTest, AddsSetsAndRejectsDuplicateOrInvalidPoints)
   EXPECT_FALSE(field.getPoint("missing").valid());
 }
 
+// Covers op field poly behavior: adds sets and rejects duplicate or invalid polygons.
 TEST(OpFieldPolyTest, AddsSetsAndRejectsDuplicateOrInvalidPolygons)
 {
   OpField field;
@@ -244,6 +254,7 @@ TEST(OpFieldPolyTest, AddsSetsAndRejectsDuplicateOrInvalidPolygons)
   EXPECT_FALSE(field.hasKeyPoly("bad"));
 }
 
+// Covers op field config behavior: parses point and color entries and prints debug lines.
 TEST(OpFieldConfigTest, ParsesPointAndColorEntriesAndPrintsDebugLines)
 {
   OpField field;
@@ -267,6 +278,7 @@ TEST(OpFieldConfigTest, ParsesPointAndColorEntriesAndPrintsDebugLines)
   EXPECT_TRUE(stringContains(out, "ok=false\n"));
 }
 
+// Covers op field merge and simplify behavior: merges distinct fields and rejects conflicting keys.
 TEST(OpFieldMergeAndSimplifyTest, MergesDistinctFieldsAndRejectsConflictingKeys)
 {
   OpField left;
@@ -289,6 +301,7 @@ TEST(OpFieldMergeAndSimplifyTest, MergesDistinctFieldsAndRejectsConflictingKeys)
   expectPoint(left.getPoint("sw"), 0, 0);
 }
 
+// Covers op field merge and simplify behavior: simplify drops duplicate locations by alias length.
 TEST(OpFieldMergeAndSimplifyTest, SimplifyDropsDuplicateLocationsByAliasLength)
 {
   OpField field;
@@ -314,6 +327,7 @@ TEST(OpFieldMergeAndSimplifyTest, SimplifyDropsDuplicateLocationsByAliasLength)
   EXPECT_TRUE(sortedAliases(keep_longer).empty());
 }
 
+// Covers populator op field file behavior: add file requires readable unique files.
 TEST(PopulatorOpFieldFileTest, AddFileRequiresReadableUniqueFiles)
 {
   Populator_OpField populator;
@@ -324,6 +338,7 @@ TEST(PopulatorOpFieldFileTest, AddFileRequiresReadableUniqueFiles)
   EXPECT_FALSE(populator.addFileOPF(path + ".missing"));
 }
 
+// Covers populator op field file behavior: populate reads mission point payloads and skips comments and blanks.
 TEST(PopulatorOpFieldFileTest, PopulateReadsMissionPointPayloadsAndSkipsCommentsAndBlanks)
 {
   const std::string path = makeTempFile("populator_points.opf",
@@ -347,6 +362,7 @@ TEST(PopulatorOpFieldFileTest, PopulateReadsMissionPointPayloadsAndSkipsComments
   expectPoint(field.getPoint("beacon"), 5, 6);
 }
 
+// Covers populator op field file behavior: populates projfield pav style aliases used by map markers.
 TEST(PopulatorOpFieldFileTest, PopulatesProjfieldPavStyleAliasesUsedByMapMarkers)
 {
   // ivp/missions/m3_casar/fld_base.opf is generated by projfield with paired
@@ -380,6 +396,7 @@ TEST(PopulatorOpFieldFileTest, PopulatesProjfieldPavStyleAliasesUsedByMapMarkers
   EXPECT_FALSE(field.hasKeyPt("BAT"));
 }
 
+// Covers populator op field file behavior: aggregates map markers config field with loaded opf.
 TEST(PopulatorOpFieldFileTest, AggregatesMapMarkersConfigFieldWithLoadedOpf)
 {
   OpField configured;
@@ -405,6 +422,7 @@ TEST(PopulatorOpFieldFileTest, AggregatesMapMarkersConfigFieldWithLoadedOpf)
   EXPECT_EQ(configured.getColor("beta_color"), "yellow");
 }
 
+// Covers populator op field file behavior: populate rejects lines without equals and reports whole line.
 TEST(PopulatorOpFieldFileTest, PopulateRejectsLinesWithoutEqualsAndReportsWholeLine)
 {
   const std::string path = makeTempFile("populator_no_equals.opf",
@@ -422,6 +440,7 @@ TEST(PopulatorOpFieldFileTest, PopulateRejectsLinesWithoutEqualsAndReportsWholeL
   EXPECT_EQ(out, "Populator_OpField Bad Line: 5,6\n");
 }
 
+// Covers populator op field file behavior: populate rejects malformed point and reports alias to stdout.
 TEST(PopulatorOpFieldFileTest, PopulateRejectsMalformedPointAndReportsAliasToStdout)
 {
   const std::string path = makeTempFile("populator_bad_line.opf",
@@ -442,6 +461,7 @@ TEST(PopulatorOpFieldFileTest, PopulateRejectsMalformedPointAndReportsAliasToStd
   EXPECT_EQ(out, "Populator_OpField Bad Line: broken\n");
 }
 
+// Covers populator op field file behavior: populate rejects duplicate aliases after keeping first point.
 TEST(PopulatorOpFieldFileTest, PopulateRejectsDuplicateAliasesAfterKeepingFirstPoint)
 {
   const std::string path = makeTempFile("populator_duplicate.opf",
@@ -460,6 +480,7 @@ TEST(PopulatorOpFieldFileTest, PopulateRejectsDuplicateAliasesAfterKeepingFirstP
   EXPECT_EQ(out, "Populator_OpField Bad Line: dock\n");
 }
 
+// Covers populator op field file behavior: populate returns false when readable files contain no points.
 TEST(PopulatorOpFieldFileTest, PopulateReturnsFalseWhenReadableFilesContainNoPoints)
 {
   const std::string path = makeTempFile("populator_empty.opf",
@@ -473,6 +494,7 @@ TEST(PopulatorOpFieldFileTest, PopulateReturnsFalseWhenReadableFilesContainNoPoi
   EXPECT_EQ(populator.getOpField().size(), 0u);
 }
 
+// Covers populator op field file behavior: populate aggregates multiple files in order.
 TEST(PopulatorOpFieldFileTest, PopulateAggregatesMultipleFilesInOrder)
 {
   const std::string first = makeTempFile("populator_first.opf",

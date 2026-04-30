@@ -6,6 +6,7 @@
 
 #include "MBUtils.h"
 
+// Covers mb utils string formatting behavior: converts and compacts numbers for specs.
 TEST(MBUtilsStringFormattingTest, ConvertsAndCompactsNumbersForSpecs)
 {
   EXPECT_EQ(boolToString(true), "true");
@@ -18,6 +19,7 @@ TEST(MBUtilsStringFormattingTest, ConvertsAndCompactsNumbersForSpecs)
   EXPECT_EQ(doubleToStringX(-0.00001, 3), "0");
 }
 
+// Covers mb utils string formatting behavior: truncates pads and compacts strings.
 TEST(MBUtilsStringFormattingTest, TruncatesPadsAndCompactsStrings)
 {
   EXPECT_EQ(truncString("abcdefghijkl", 5), "abcde");
@@ -31,6 +33,7 @@ TEST(MBUtilsStringFormattingTest, TruncatesPadsAndCompactsStrings)
   EXPECT_EQ(stripComment("value=10 // mission note", "//"), "value=10 ");
 }
 
+// Covers mb utils collection formatting behavior: sorts merges and serializes containers.
 TEST(MBUtilsCollectionFormattingTest, SortsMergesAndSerializesContainers)
 {
   std::vector<std::string> sorted = sortStrings({"bravo", "alpha", "charlie"});
@@ -50,6 +53,7 @@ TEST(MBUtilsCollectionFormattingTest, SortsMergesAndSerializesContainers)
   EXPECT_EQ(setToString(mergeSets(set1, set2)), "alpha,bravo,charlie");
 }
 
+// Covers mb utils collection formatting behavior: pads vectors and checks membership.
 TEST(MBUtilsCollectionFormattingTest, PadsVectorsAndChecksMembership)
 {
   std::vector<std::string> padded = padVector({"x", "long"}, true);
@@ -65,6 +69,7 @@ TEST(MBUtilsCollectionFormattingTest, PadsVectorsAndChecksMembership)
   EXPECT_FALSE(listContains(names, "ABE", true));
 }
 
+// Covers mb utils string formatting behavior: handles case and prefix suffix checks.
 TEST(MBUtilsStringFormattingTest, HandlesCaseAndPrefixSuffixChecks)
 {
   EXPECT_EQ(tolower("Alpha_123"), "alpha_123");
@@ -78,6 +83,7 @@ TEST(MBUtilsStringFormattingTest, HandlesCaseAndPrefixSuffixChecks)
   EXPECT_TRUE(strBeginsWhite("\tNAV_X"));
 }
 
+// Covers mb utils string formatting behavior: increments embedded integer strings.
 TEST(MBUtilsStringFormattingTest, IncrementsEmbeddedIntegerStrings)
 {
   EXPECT_EQ(incIntString("foo23"), "24");

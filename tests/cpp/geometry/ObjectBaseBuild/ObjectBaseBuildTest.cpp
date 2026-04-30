@@ -19,6 +19,7 @@ void ExpectSpecContainsAll(const std::string& spec,
 
 }  // namespace
 
+// Covers XY object behavior: defaults are active valid and unset for viewer metadata.
 TEST(XYObjectTest, DefaultsAreActiveValidAndUnsetForViewerMetadata)
 {
   XYObject object;
@@ -34,6 +35,7 @@ TEST(XYObjectTest, DefaultsAreActiveValidAndUnsetForViewerMetadata)
   EXPECT_EQ(object.get_spec(), "");
 }
 
+// Covers XY object behavior: serializes marine viewer metadata and render hints in stable order.
 TEST(XYObjectTest, SerializesMarineViewerMetadataAndRenderHintsInStableOrder)
 {
   XYObject object;
@@ -63,6 +65,7 @@ TEST(XYObjectTest, SerializesMarineViewerMetadataAndRenderHintsInStableOrder)
             "duration=4,vertex_size=3,edge_size=2,fill_transparency=0.25");
 }
 
+// Covers XY object behavior: active override parameter controls explicit lifecycle serialization.
 TEST(XYObjectTest, ActiveOverrideParameterControlsExplicitLifecycleSerialization)
 {
   XYObject object;
@@ -76,6 +79,7 @@ TEST(XYObjectTest, ActiveOverrideParameterControlsExplicitLifecycleSerialization
   EXPECT_EQ(object.get_spec("active=true"), "active=true");
 }
 
+// Covers XY object behavior: set param accepts viewer metadata aliases and render hints.
 TEST(XYObjectTest, SetParamAcceptsViewerMetadataAliasesAndRenderHints)
 {
   XYObject object;
@@ -115,6 +119,7 @@ TEST(XYObjectTest, SetParamAcceptsViewerMetadataAliasesAndRenderHints)
   EXPECT_NEAR(object.get_vertex_size(), 4.0, kGeomTol);
 }
 
+// Covers XY object behavior: set param rejects unknown active but reports invalid color as handled.
 TEST(XYObjectTest, SetParamRejectsUnknownActiveButReportsInvalidColorAsHandled)
 {
   XYObject object;
@@ -130,6 +135,7 @@ TEST(XYObjectTest, SetParamRejectsUnknownActiveButReportsInvalidColorAsHandled)
   EXPECT_EQ(object.get_color_str("edge"), "red");
 }
 
+// Covers XY object behavior: numeric hint setters clamp or ignore current boundary cases.
 TEST(XYObjectTest, NumericHintSettersClampOrIgnoreCurrentBoundaryCases)
 {
   XYObject object;
@@ -157,6 +163,7 @@ TEST(XYObjectTest, NumericHintSettersClampOrIgnoreCurrentBoundaryCases)
   EXPECT_NEAR(object.get_duration(), -1.0, kGeomTol);
 }
 
+// Covers XY object behavior: label visibility can be represented with invisible color tokens.
 TEST(XYObjectTest, LabelVisibilityCanBeRepresentedWithInvisibleColorTokens)
 {
   XYObject object;
@@ -173,6 +180,7 @@ TEST(XYObjectTest, LabelVisibilityCanBeRepresentedWithInvisibleColorTokens)
   EXPECT_EQ(object.get_color_str("vertex"), "invisible");
 }
 
+// Covers XY object behavior: legacy vertex color helpers and color pack getter remain usable.
 TEST(XYObjectTest, LegacyVertexColorHelpersAndColorPackGetterRemainUsable)
 {
   XYObject object;
@@ -192,6 +200,7 @@ TEST(XYObjectTest, LegacyVertexColorHelpersAndColorPackGetterRemainUsable)
   EXPECT_EQ(object.get_color("missing").str(), "black");
 }
 
+// Covers XY object behavior: expiration requires time duration and positive start time.
 TEST(XYObjectTest, ExpirationRequiresTimeDurationAndPositiveStartTime)
 {
   XYObject object;
@@ -210,6 +219,7 @@ TEST(XYObjectTest, ExpirationRequiresTimeDurationAndPositiveStartTime)
   EXPECT_FALSE(object.expired(100));
 }
 
+// Covers XY object behavior: clear resets lifecycle and drawing state but leaves source type fields.
 TEST(XYObjectTest, ClearResetsLifecycleAndDrawingStateButLeavesSourceTypeFields)
 {
   XYObject object;
@@ -243,6 +253,7 @@ TEST(XYObjectTest, ClearResetsLifecycleAndDrawingStateButLeavesSourceTypeFields)
   EXPECT_EQ(object.get_type(), "type");
 }
 
+// Covers XY build utils behavior: string to point wrapper preserves viewer metadata and hints.
 TEST(XYBuildUtilsTest, StringToPointWrapperPreservesViewerMetadataAndHints)
 {
   XYPoint point = stringToPoint(
@@ -274,6 +285,7 @@ TEST(XYBuildUtilsTest, StringToPointWrapperPreservesViewerMetadataAndHints)
   EXPECT_NEAR(point.get_transparency(), 0.4, kGeomTol);
 }
 
+// Covers XY build utils behavior: string to point wrapper pins permissive numeric parsing and clamps.
 TEST(XYBuildUtilsTest, StringToPointWrapperPinsPermissiveNumericParsingAndClamps)
 {
   XYPoint point = stringToPoint(
@@ -296,6 +308,7 @@ TEST(XYBuildUtilsTest, StringToPointWrapperPinsPermissiveNumericParsingAndClamps
   EXPECT_FALSE(point.color_set("vertex"));
 }
 
+// Covers XY build utils behavior: string to point wrapper supports abbreviated metadata form.
 TEST(XYBuildUtilsTest, StringToPointWrapperSupportsAbbreviatedMetadataForm)
 {
   XYPoint point = stringToPoint(
@@ -316,6 +329,7 @@ TEST(XYBuildUtilsTest, StringToPointWrapperSupportsAbbreviatedMetadataForm)
   EXPECT_NEAR(point.get_vertex_size(), 3.0, kGeomTol);
 }
 
+// Covers XY build utils behavior: string to seg list wrapper parses route metadata and render hints.
 TEST(XYBuildUtilsTest, StringToSegListWrapperParsesRouteMetadataAndRenderHints)
 {
   XYSegList route = stringToSegList(
@@ -345,6 +359,7 @@ TEST(XYBuildUtilsTest, StringToSegListWrapperParsesRouteMetadataAndRenderHints)
   EXPECT_NEAR(route.get_duration(), 4.0, kGeomTol);
 }
 
+// Covers XY build utils behavior: string to seg list wrapper accepts inactive label only deletion.
 TEST(XYBuildUtilsTest, StringToSegListWrapperAcceptsInactiveLabelOnlyDeletion)
 {
   XYSegList route = stringToSegList(
@@ -362,6 +377,7 @@ TEST(XYBuildUtilsTest, StringToSegListWrapperAcceptsInactiveLabelOnlyDeletion)
             "pts={0,0:9,0:0,9},active=false,label=stale_route,duration=0");
 }
 
+// Covers XY build utils behavior: string to poly wrapper parses area metadata and fill hints.
 TEST(XYBuildUtilsTest, StringToPolyWrapperParsesAreaMetadataAndFillHints)
 {
   XYPolygon poly = stringToPoly(
@@ -393,6 +409,7 @@ TEST(XYBuildUtilsTest, StringToPolyWrapperParsesAreaMetadataAndFillHints)
   EXPECT_NEAR(poly.get_duration(), 8.0, kGeomTol);
 }
 
+// Covers XY build utils behavior: string to poly wrapper pins inactive label only deletion.
 TEST(XYBuildUtilsTest, StringToPolyWrapperPinsInactiveLabelOnlyDeletion)
 {
   XYPolygon poly = stringToPoly("label=stale_poly,active=false");
@@ -404,6 +421,7 @@ TEST(XYBuildUtilsTest, StringToPolyWrapperPinsInactiveLabelOnlyDeletion)
   EXPECT_EQ(poly.get_spec(), "active=false,label=stale_poly");
 }
 
+// Covers XY build utils behavior: string to poly wrapper rejects malformed pts before metadata can rescue.
 TEST(XYBuildUtilsTest, StringToPolyWrapperRejectsMalformedPtsBeforeMetadataCanRescue)
 {
   XYPolygon poly = stringToPoly(
@@ -416,6 +434,7 @@ TEST(XYBuildUtilsTest, StringToPolyWrapperRejectsMalformedPtsBeforeMetadataCanRe
   EXPECT_FALSE(poly.color_set("edge"));
 }
 
+// Covers XY build utils behavior: wrapper round trips viewer style specs with base object fields.
 TEST(XYBuildUtilsTest, WrapperRoundTripsViewerStyleSpecsWithBaseObjectFields)
 {
   XYPoint point = stringToPoint("x=1,y=2,label=pt,source=unit,label_color=invisible");

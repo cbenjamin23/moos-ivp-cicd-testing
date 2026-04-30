@@ -1,0 +1,5 @@
+add_subdirectory(CoreALog)
+add_subdirectory(PlotData)
+add_subdirectory(AppLog)
+add_subdirectory(FileProcessing)
+add_subdirectory(AnalysisPlots)

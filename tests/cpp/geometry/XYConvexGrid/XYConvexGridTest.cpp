@@ -23,6 +23,7 @@ void expectSquareNear(const XYSquare& square,
 
 }  // namespace
 
+// Covers XY convex grid behavior: initializes search grid from convex polygon and cell vars.
 TEST(XYConvexGridTest, InitializesSearchGridFromConvexPolygonAndCellVars)
 {
   XYConvexGrid grid;
@@ -46,6 +47,7 @@ TEST(XYConvexGridTest, InitializesSearchGridFromConvexPolygonAndCellVars)
   EXPECT_NEAR(grid.getCellSize(), 10.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: retains partial cells outside polygon bounding square.
 TEST(XYConvexGridTest, RetainsPartialCellsOutsidePolygonBoundingSquare)
 {
   XYConvexGrid grid;
@@ -62,6 +64,7 @@ TEST(XYConvexGridTest, RetainsPartialCellsOutsidePolygonBoundingSquare)
   EXPECT_NEAR(grid.getVal(2), 3.5, kGeomTol);
 }
 
+// Covers XY convex grid behavior: initializes with default single cell var.
 TEST(XYConvexGridTest, InitializesWithDefaultSingleCellVar)
 {
   XYConvexGrid grid;
@@ -74,6 +77,7 @@ TEST(XYConvexGridTest, InitializesWithDefaultSingleCellVar)
   EXPECT_NEAR(grid.getVal(0), 2.5, kGeomTol);
 }
 
+// Covers XY convex grid behavior: rejects invalid initialization inputs.
 TEST(XYConvexGridTest, RejectsInvalidInitializationInputs)
 {
   XYConvexGrid empty_poly_grid;
@@ -92,6 +96,7 @@ TEST(XYConvexGridTest, RejectsInvalidInitializationInputs)
   EXPECT_FALSE(oversized_cell_grid.initialize(makeSquarePoly(0, 0, 5, 5), 10, 0));
 }
 
+// Covers XY convex grid behavior: reinitializing existing object keeps prior cell value rows.
 TEST(XYConvexGridTest, ReinitializingExistingObjectKeepsPriorCellValueRows)
 {
   XYConvexGrid grid;
@@ -106,6 +111,7 @@ TEST(XYConvexGridTest, ReinitializingExistingObjectKeepsPriorCellValueRows)
   EXPECT_NEAR(grid.getVal(0), 7.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: handles point and segment intersections against cells and bounds.
 TEST(XYConvexGridTest, HandlesPointAndSegmentIntersectionsAgainstCellsAndBounds)
 {
   XYConvexGrid grid;
@@ -126,6 +132,7 @@ TEST(XYConvexGridTest, HandlesPointAndSegmentIntersectionsAgainstCellsAndBounds)
   EXPECT_NEAR(grid.segIntersect(0, -5, 5, 25, 5), 10.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: applies cell limits for p search grid style scores.
 TEST(XYConvexGridTest, AppliesCellLimitsForPSearchGridStyleScores)
 {
   XYConvexGrid grid;
@@ -143,6 +150,7 @@ TEST(XYConvexGridTest, AppliesCellLimitsForPSearchGridStyleScores)
   EXPECT_NEAR(grid.getVal(0), 0.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: clips contradictory min max limits to current implementation.
 TEST(XYConvexGridTest, ClipsContradictoryMinMaxLimitsToCurrentImplementation)
 {
   XYConvexGrid grid;
@@ -160,6 +168,7 @@ TEST(XYConvexGridTest, ClipsContradictoryMinMaxLimitsToCurrentImplementation)
   EXPECT_NEAR(grid.getVal(0), 10.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: parsed cell entries use set val limits and track min max.
 TEST(XYConvexGridTest, ParsedCellEntriesUseSetValLimitsAndTrackMinMax)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -175,6 +184,7 @@ TEST(XYConvexGridTest, ParsedCellEntriesUseSetValLimitsAndTrackMinMax)
   EXPECT_NEAR(grid.getMax(score_ix), 50.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: parses view grid spec with cell updates and limits.
 TEST(XYConvexGridTest, ParsesViewGridSpecWithCellUpdatesAndLimits)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -192,6 +202,7 @@ TEST(XYConvexGridTest, ParsesViewGridSpecWithCellUpdatesAndLimits)
   EXPECT_TRUE(grid.cellVarMaxLimited(grid.getCellVarIX("score")));
 }
 
+// Covers XY convex grid behavior: parses documented p search grid view grid publication.
 TEST(XYConvexGridTest, ParsesDocumentedPSearchGridViewGridPublication)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -226,6 +237,7 @@ TEST(XYConvexGridTest, ParsesDocumentedPSearchGridViewGridPublication)
   expectSquareNear(grid.getSBound(), -50, 90, -150, 0);
 }
 
+// Covers XY convex grid behavior: parses p search grid MOOS config folded into view grid payload.
 TEST(XYConvexGridTest, ParsesPSearchGridMoosConfigFoldedIntoViewGridPayload)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -261,6 +273,7 @@ TEST(XYConvexGridTest, ParsesPSearchGridMoosConfigFoldedIntoViewGridPayload)
   EXPECT_TRUE(stringContains(config, "cell_max=y:1000"));
 }
 
+// Covers XY convex grid behavior: applies p search grid view grid delta messages.
 TEST(XYConvexGridTest, AppliesPSearchGridViewGridDeltaMessages)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -281,6 +294,7 @@ TEST(XYConvexGridTest, AppliesPSearchGridViewGridDeltaMessages)
   EXPECT_NEAR(grid.getVal(212, grid.getCellVarIX("y")), 11.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: rejects malformed view grid specs.
 TEST(XYConvexGridTest, RejectsMalformedViewGridSpecs)
 {
   EXPECT_EQ(string2ConvexGrid("cell_size=10,cell_vars=visited:0").size(), 0u);
@@ -288,6 +302,7 @@ TEST(XYConvexGridTest, RejectsMalformedViewGridSpecs)
   EXPECT_EQ(string2ConvexGrid("pts={0,0:20,0:20,20:0,20},cell_size=bad").size(), 0u);
 }
 
+// Covers XY convex grid behavior: processes named grid delta updates.
 TEST(XYConvexGridTest, ProcessesNamedGridDeltaUpdates)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -305,6 +320,7 @@ TEST(XYConvexGridTest, ProcessesNamedGridDeltaUpdates)
   EXPECT_FALSE(grid.processDelta("wrong_grid@2,visited,0"));
 }
 
+// Covers XY convex grid behavior: default variable delta applies to single cell var view grid.
 TEST(XYConvexGridTest, DefaultVariableDeltaAppliesToSingleCellVarViewGrid)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -318,6 +334,7 @@ TEST(XYConvexGridTest, DefaultVariableDeltaAppliesToSingleCellVarViewGrid)
   EXPECT_NEAR(grid.getVal(1), -2.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: process delta bypasses limits and min max sofar tracking.
 TEST(XYConvexGridTest, ProcessDeltaBypassesLimitsAndMinMaxSofarTracking)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -333,6 +350,7 @@ TEST(XYConvexGridTest, ProcessDeltaBypassesLimitsAndMinMaxSofarTracking)
   EXPECT_NEAR(grid.getMax(score_ix), 0.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: rejects invalid delta atomically.
 TEST(XYConvexGridTest, RejectsInvalidDeltaAtomically)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -347,6 +365,7 @@ TEST(XYConvexGridTest, RejectsInvalidDeltaAtomically)
   EXPECT_NEAR(grid.getVal(1, grid.getCellVarIX("visited")), 0.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: accepts average update payload but leaves values unchanged.
 TEST(XYConvexGridTest, AcceptsAverageUpdatePayloadButLeavesValuesUnchanged)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -357,6 +376,7 @@ TEST(XYConvexGridTest, AcceptsAverageUpdatePayloadButLeavesValuesUnchanged)
   EXPECT_NEAR(grid.getVal(1, grid.getCellVarIX("score")), 5.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: resets all cells or one cell variable to initial values.
 TEST(XYConvexGridTest, ResetsAllCellsOrOneCellVariableToInitialValues)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -373,6 +393,7 @@ TEST(XYConvexGridTest, ResetsAllCellsOrOneCellVariableToInitialValues)
   EXPECT_NEAR(grid.getVal(2, grid.getCellVarIX("score")), 5.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: reset restores values but leaves historical min max sofar.
 TEST(XYConvexGridTest, ResetRestoresValuesButLeavesHistoricalMinMaxSofar)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -396,6 +417,7 @@ TEST(XYConvexGridTest, ResetRestoresValuesButLeavesHistoricalMinMaxSofar)
   EXPECT_NEAR(grid.getMax(score_ix), 20.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: edge cache scales cell corners and no ops unchanged scale.
 TEST(XYConvexGridTest, EdgeCacheScalesCellCornersAndNoOpsUnchangedScale)
 {
   XYConvexGrid grid;
@@ -419,6 +441,7 @@ TEST(XYConvexGridTest, EdgeCacheScalesCellCornersAndNoOpsUnchangedScale)
   EXPECT_NEAR(cache[0][7], -30.0, kGeomTol);
 }
 
+// Covers XY convex grid behavior: serializes config and changed cells as view grid payload.
 TEST(XYConvexGridTest, SerializesConfigAndChangedCellsAsViewGridPayload)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -454,6 +477,7 @@ TEST(XYConvexGridTest, SerializesConfigAndChangedCellsAsViewGridPayload)
   EXPECT_TRUE(stringContains(out, "[0]:"));
 }
 
+// Covers XY grid update behavior: parses and serializes grid update payloads.
 TEST(XYGridUpdateTest, ParsesAndSerializesGridUpdatePayloads)
 {
   XYGridUpdate delta = stringToGridUpdate("search_grid@2,visited,1:2,score,12");

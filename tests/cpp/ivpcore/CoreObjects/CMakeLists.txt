@@ -1,0 +1,20 @@
+add_moos_cpp_test(test_ivpcore_core_objects
+  SOURCES
+    CoreObjectsTest.cpp
+  LIBS
+    ivpcore
+    mbutil
+  LABELS
+    ivpcore
+    pHelmIvP
+    ivpbuild
+    math
+  SUITE_LABELS
+    IvPDomainTest=IvPDomain
+    IvPBoxTest=IvPBox
+    BoxSetTest=BoxSet
+    IvPGridTest=IvPGrid
+    CompactorNullTest=CompactorNull
+    PDMapTest=PDMap
+    IvPFunctionTest=IvPFunction
+)

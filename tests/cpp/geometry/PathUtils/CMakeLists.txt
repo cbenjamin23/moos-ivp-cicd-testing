@@ -6,9 +6,10 @@ add_moos_cpp_test(test_geometry_pathutils
     mbutil
   LABELS
     geometry
-    PathUtils
-    EdgeTag
-    EdgeTagSet
     math
     waypoint
+  SUITE_LABELS
+    PathUtilsGreedyPathTest=PathUtils
+    EdgeTagTest=EdgeTag
+    EdgeTagSetTest=EdgeTagSet
 )

@@ -37,6 +37,7 @@ void ExpectPointNear(const std::vector<double>& cache, unsigned int index,
 
 }  // namespace
 
+// Covers XY format utils wedge behavior: parses canonical view wedge payload used by marine viewer.
 TEST(XYFormatUtilsWedgeTest, ParsesCanonicalViewWedgePayloadUsedByMarineViewer)
 {
   XYWedge wedge = string2Wedge(
@@ -66,6 +67,7 @@ TEST(XYFormatUtilsWedgeTest, ParsesCanonicalViewWedgePayloadUsedByMarineViewer)
   EXPECT_FALSE(wedge.active());
 }
 
+// Covers XY format utils wedge behavior: ignores unsupported object metadata in parser.
 TEST(XYFormatUtilsWedgeTest, IgnoresUnsupportedObjectMetadataInParser)
 {
   XYWedge wedge = string2Wedge(
@@ -84,6 +86,7 @@ TEST(XYFormatUtilsWedgeTest, IgnoresUnsupportedObjectMetadataInParser)
   EXPECT_FALSE(wedge.duration_set());
 }
 
+// Covers XY format utils wedge behavior: clamps loose drawing hints and treats any non true active as false.
 TEST(XYFormatUtilsWedgeTest, ClampsLooseDrawingHintsAndTreatsAnyNonTrueActiveAsFalse)
 {
   XYWedge wedge = string2Wedge(
@@ -100,6 +103,7 @@ TEST(XYFormatUtilsWedgeTest, ClampsLooseDrawingHintsAndTreatsAnyNonTrueActiveAsF
   EXPECT_FALSE(wedge.active());
 }
 
+// Covers XY format utils wedge behavior: parser normalizes angles and radii in encounter sector payloads.
 TEST(XYFormatUtilsWedgeTest, ParserNormalizesAnglesAndRadiiInEncounterSectorPayloads)
 {
   XYWedge wrapped = string2Wedge(
@@ -126,6 +130,7 @@ TEST(XYFormatUtilsWedgeTest, ParserNormalizesAnglesAndRadiiInEncounterSectorPayl
   EXPECT_NEAR(high_first.getRadHigh(), 50.0, kGeomTol);
 }
 
+// Covers XY format utils wedge behavior: requires all six geometry fields only through is valid.
 TEST(XYFormatUtilsWedgeTest, RequiresAllSixGeometryFieldsOnlyThroughIsValid)
 {
   XYWedge missing_x = string2Wedge("y=2,rad_low=3,rad_hgh=4,ang_low=5,ang_hgh=6");
@@ -146,6 +151,7 @@ TEST(XYFormatUtilsWedgeTest, RequiresAllSixGeometryFieldsOnlyThroughIsValid)
   EXPECT_FALSE(IsValidQuietly(missing_ang_high));
 }
 
+// Covers XY format utils wedge behavior: rejects malformed numbers and negative radii by leaving wedge invalid.
 TEST(XYFormatUtilsWedgeTest, RejectsMalformedNumbersAndNegativeRadiiByLeavingWedgeInvalid)
 {
   EXPECT_FALSE(IsValidQuietly(
@@ -158,6 +164,7 @@ TEST(XYFormatUtilsWedgeTest, RejectsMalformedNumbersAndNegativeRadiiByLeavingWed
       string2Wedge("x=1,y=2,rad_low=3,rad_hgh=4,ang_low=bad,ang_hgh=6")));
 }
 
+// Covers XY wedge behavior: setters normalize angles and maintain radius ordering.
 TEST(XYWedgeTest, SettersNormalizeAnglesAndMaintainRadiusOrdering)
 {
   XYWedge wedge;
@@ -185,6 +192,7 @@ TEST(XYWedgeTest, SettersNormalizeAnglesAndMaintainRadiusOrdering)
   EXPECT_NEAR(wedge.getRadHigh(), 20.0, kGeomTol);
 }
 
+// Covers XY wedge behavior: initializes bounds and point cache using MOOS heading convention.
 TEST(XYWedgeTest, InitializesBoundsAndPointCacheUsingMoosHeadingConvention)
 {
   XYWedge wedge = string2Wedge("x=0,y=0,rad_low=10,rad_hgh=20,ang_low=0,ang_hgh=90");
@@ -211,6 +219,7 @@ TEST(XYWedgeTest, InitializesBoundsAndPointCacheUsingMoosHeadingConvention)
   ExpectPointNear(cache, 9, 5.0, 8.660254);
 }
 
+// Covers XY wedge behavior: bounds expand across cardinal axes inside arc.
 TEST(XYWedgeTest, BoundsExpandAcrossCardinalAxesInsideArc)
 {
   XYWedge wedge = string2Wedge("x=5,y=-5,rad_low=2,rad_hgh=10,ang_low=45,ang_hgh=225");
@@ -224,6 +233,7 @@ TEST(XYWedgeTest, BoundsExpandAcrossCardinalAxesInsideArc)
   EXPECT_NEAR(wedge.getMaxY(), 2.071068, kLooseGeomTol);
 }
 
+// Covers XY wedge behavior: setters invalidate cache and reinitialize shifted sector bounds.
 TEST(XYWedgeTest, SettersInvalidateCacheAndReinitializeShiftedSectorBounds)
 {
   XYWedge wedge = string2Wedge("x=0,y=0,rad_low=5,rad_hgh=10,ang_low=0,ang_hgh=90");
@@ -250,6 +260,7 @@ TEST(XYWedgeTest, SettersInvalidateCacheAndReinitializeShiftedSectorBounds)
   ExpectPointNear(cache, 1, 100.0, -60.0);
 }
 
+// Covers XY wedge behavior: coarse draw resolution still includes radial edges and endcaps.
 TEST(XYWedgeTest, CoarseDrawResolutionStillIncludesRadialEdgesAndEndcaps)
 {
   XYWedge wedge = string2Wedge("x=0,y=0,rad_low=5,rad_hgh=10,ang_low=10,ang_hgh=20");
@@ -267,6 +278,7 @@ TEST(XYWedgeTest, CoarseDrawResolutionStillIncludesRadialEdgesAndEndcaps)
   ExpectPointNear(cache, 5, 1.710101, 4.698463);
 }
 
+// Covers XY wedge behavior: wraparound arc computes bounds but current cache omits arc samples.
 TEST(XYWedgeTest, WraparoundArcComputesBoundsButCurrentCacheOmitsArcSamples)
 {
   XYWedge wedge = string2Wedge("x=0,y=0,rad_low=5,rad_hgh=10,ang_low=350,ang_hgh=20");
@@ -289,6 +301,7 @@ TEST(XYWedgeTest, WraparoundArcComputesBoundsButCurrentCacheOmitsArcSamples)
   ExpectPointNear(cache, 3, 1.710101, 4.698463);
 }
 
+// Covers XY wedge behavior: full circle like equal angles degenerates to two radial edges.
 TEST(XYWedgeTest, FullCircleLikeEqualAnglesDegeneratesToTwoRadialEdges)
 {
   XYWedge wedge = string2Wedge("x=0,y=0,rad_low=5,rad_hgh=10,ang_low=90,ang_hgh=90");
@@ -309,6 +322,7 @@ TEST(XYWedgeTest, FullCircleLikeEqualAnglesDegeneratesToTwoRadialEdges)
   ExpectPointNear(cache, 3, 5.0, 0.0);
 }
 
+// Covers XY wedge behavior: serializes spec and round trips supported fields.
 TEST(XYWedgeTest, SerializesSpecAndRoundTripsSupportedFields)
 {
   XYWedge wedge;
@@ -371,6 +385,7 @@ TEST(XYWedgeTest, SerializesSpecAndRoundTripsSupportedFields)
   EXPECT_FALSE(reparsed.duration_set());
 }
 
+// Covers XY wedge behavior: is valid currently emits debug diagnostics.
 TEST(XYWedgeTest, IsValidCurrentlyEmitsDebugDiagnostics)
 {
   XYWedge wedge = string2Wedge("x=0,y=0,rad_low=1,rad_hgh=2,ang_low=3,ang_hgh=4");

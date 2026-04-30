@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_bhvutil_legrun
+  SOURCES
+    LegRunTest.cpp
+  LIBS
+    bhvutil
+    geometry
+    turngeo
+    mbutil
+  LABELS
+    bhvutil
+    BHV_LegRun
+  SUITE_LABELS
+    LegRunTest=LegRun
+    LegRunSetTest=LegRunSet
+)

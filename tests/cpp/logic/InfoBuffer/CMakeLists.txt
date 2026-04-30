@@ -6,6 +6,7 @@ add_moos_cpp_test(test_logic_infobuffer
     mbutil
   LABELS
     logic
-    InfoBuffer
-    LogicBuffer
+  SUITE_LABELS
+    InfoBufferTest=InfoBuffer
+    LogicBufferTest=LogicBuffer
 )

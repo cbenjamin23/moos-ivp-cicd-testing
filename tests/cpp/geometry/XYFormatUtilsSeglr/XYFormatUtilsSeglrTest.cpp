@@ -36,6 +36,7 @@ XYPolygon makeBox(double low_x, double low_y, double high_x, double high_y)
 
 }  // namespace
 
+// Covers XY seglr behavior: defaults and constructors expose ray specific state.
 TEST(XYSeglrTest, DefaultsAndConstructorsExposeRaySpecificState)
 {
   XYSeglr empty;
@@ -69,6 +70,7 @@ TEST(XYSeglrTest, DefaultsAndConstructorsExposeRaySpecificState)
   EXPECT_NEAR(two_vertices.getRayBaseY(), 4.0, kGeomTol);
 }
 
+// Covers XY seglr behavior: edits vertices and reports stem only extents.
 TEST(XYSeglrTest, EditsVerticesAndReportsStemOnlyExtents)
 {
   XYSeglr seglr;
@@ -98,6 +100,7 @@ TEST(XYSeglrTest, EditsVerticesAndReportsStemOnlyExtents)
   EXPECT_NEAR(base.get_vy(1), 0.0, kGeomTol);
 }
 
+// Covers XY seglr behavior: translates from first stem vertex and reflects ray angle.
 TEST(XYSeglrTest, TranslatesFromFirstStemVertexAndReflectsRayAngle)
 {
   XYSeglr seglr;
@@ -122,6 +125,7 @@ TEST(XYSeglrTest, TranslatesFromFirstStemVertexAndReflectsRayAngle)
   EXPECT_NEAR(seglr.getRayAngle(), -90.0, kGeomTol);
 }
 
+// Covers XY seglr behavior: clamps visual sizing and cache values.
 TEST(XYSeglrTest, ClampsVisualSizingAndCacheValues)
 {
   XYSeglr seglr(0, 0, 90);
@@ -152,6 +156,7 @@ TEST(XYSeglrTest, ClampsVisualSizingAndCacheValues)
   EXPECT_NEAR(seglr.getCacheCPAPoint().y(), 4.0, kGeomTol);
 }
 
+// Covers XY seglr behavior: serializes ray fields drawing hints and optional CPA.
 TEST(XYSeglrTest, SerializesRayFieldsDrawingHintsAndOptionalCpa)
 {
   XYSeglr seglr;
@@ -185,6 +190,7 @@ TEST(XYSeglrTest, SerializesRayFieldsDrawingHintsAndOptionalCpa)
   EXPECT_FALSE(stringContains(spec, "stem"));
 }
 
+// Covers XY format utils seglr behavior: parses standard seglr with object drawing fields.
 TEST(XYFormatUtilsSeglrTest, ParsesStandardSeglrWithObjectDrawingFields)
 {
   XYSeglr seglr = string2Seglr(
@@ -212,6 +218,7 @@ TEST(XYFormatUtilsSeglrTest, ParsesStandardSeglrWithObjectDrawingFields)
   EXPECT_NEAR(seglr.get_transparency(), 1.0, kGeomTol);
 }
 
+// Covers XY format utils seglr behavior: parses marine viewer dubins style view seglr payload.
 TEST(XYFormatUtilsSeglrTest, ParsesMarineViewerDubinsStyleViewSeglrPayload)
 {
   XYSeglr seglr = string2Seglr(
@@ -230,6 +237,7 @@ TEST(XYFormatUtilsSeglrTest, ParsesMarineViewerDubinsStyleViewSeglrPayload)
   EXPECT_EQ(seglr.get_color_str("vertex"), "white");
 }
 
+// Covers XY format utils seglr behavior: parses minimal and out of order payloads.
 TEST(XYFormatUtilsSeglrTest, ParsesMinimalAndOutOfOrderPayloads)
 {
   XYSeglr minimal = string2Seglr("pts={1,2}");
@@ -250,6 +258,7 @@ TEST(XYFormatUtilsSeglrTest, ParsesMinimalAndOutOfOrderPayloads)
   EXPECT_NEAR(out_of_order.getHeadSize(), 1.5, kGeomTol);
 }
 
+// Covers XY format utils seglr behavior: preserves current parser quirks for numeric ray fields.
 TEST(XYFormatUtilsSeglrTest, PreservesCurrentParserQuirksForNumericRayFields)
 {
   XYSeglr negative_visuals =
@@ -278,6 +287,7 @@ TEST(XYFormatUtilsSeglrTest, PreservesCurrentParserQuirksForNumericRayFields)
   EXPECT_NEAR(trailing_vertex_separator.getRayAngle(), 90.0, kGeomTol);
 }
 
+// Covers XY format utils seglr behavior: rejects malformed point payloads.
 TEST(XYFormatUtilsSeglrTest, RejectsMalformedPointPayloads)
 {
   EXPECT_FALSE(string2Seglr("").valid());
@@ -289,6 +299,7 @@ TEST(XYFormatUtilsSeglrTest, RejectsMalformedPointPayloads)
   EXPECT_FALSE(string2Seglr("pts={0},ray=90").valid());
 }
 
+// Covers seglr behavior: maintains ray stem geometry and formats compact string.
 TEST(SeglrTest, MaintainsRayStemGeometryAndFormatsCompactString)
 {
   Seglr seglr;
@@ -316,6 +327,7 @@ TEST(SeglrTest, MaintainsRayStemGeometryAndFormatsCompactString)
   EXPECT_NEAR(seglr.getRayAngle(), 0.0, kGeomTol);
 }
 
+// Covers seglr behavior: crosses line can prefer ray or stem intersection.
 TEST(SeglrTest, CrossesLineCanPreferRayOrStemIntersection)
 {
   Seglr seglr;
@@ -336,6 +348,7 @@ TEST(SeglrTest, CrossesLineCanPreferRayOrStemIntersection)
   EXPECT_FALSE(Seglr().crossesLine(0, 0, 1, 1));
 }
 
+// Covers seglr behavior: crosses line handles ray only and stem only boundary cases.
 TEST(SeglrTest, CrossesLineHandlesRayOnlyAndStemOnlyBoundaryCases)
 {
   Seglr seglr;
@@ -360,6 +373,7 @@ TEST(SeglrTest, CrossesLineHandlesRayOnlyAndStemOnlyBoundaryCases)
   EXPECT_NEAR(iy, 0.0, kGeomTol);
 }
 
+// Covers seglr behavior: translates reflects and rotates around first stem vertex.
 TEST(SeglrTest, TranslatesReflectsAndRotatesAroundFirstStemVertex)
 {
   Seglr seglr;
@@ -386,6 +400,7 @@ TEST(SeglrTest, TranslatesReflectsAndRotatesAroundFirstStemVertex)
   EXPECT_NEAR(rotated.getRayAngle(), 280.0, kGeomTol);
 }
 
+// Covers XY seglr geom utils behavior: uses cached stem CPA when valid and ray is farther.
 TEST(XYSeglrGeomUtilsTest, UsesCachedStemCpaWhenValidAndRayIsFarther)
 {
   XYSeglr seglr = makeTurnRay();
@@ -404,6 +419,7 @@ TEST(XYSeglrGeomUtilsTest, UsesCachedStemCpaWhenValidAndRayIsFarther)
   EXPECT_NEAR(stemdist, 7.5, kGeomTol);
 }
 
+// Covers XY seglr geom utils behavior: ignores incomplete cache and computes stem CPA.
 TEST(XYSeglrGeomUtilsTest, IgnoresIncompleteCacheAndComputesStemCpa)
 {
   XYSeglr seglr = makeTurnRay();
@@ -421,6 +437,7 @@ TEST(XYSeglrGeomUtilsTest, IgnoresIncompleteCacheAndComputesStemCpa)
   EXPECT_NEAR(stemdist, 6.0, kGeomTol);
 }
 
+// Covers XY seglr geom utils behavior: ray CPA beats cached stem CPA and extends stem distance.
 TEST(XYSeglrGeomUtilsTest, RayCpaBeatsCachedStemCpaAndExtendsStemDistance)
 {
   XYSeglr seglr = makeTurnRay();
@@ -439,6 +456,7 @@ TEST(XYSeglrGeomUtilsTest, RayCpaBeatsCachedStemCpaAndExtendsStemDistance)
   EXPECT_NEAR(stemdist, 29.0, kGeomTol);
 }
 
+// Covers XY seglr geom utils behavior: dist to point uses ray projection for single vertex seglr.
 TEST(XYSeglrGeomUtilsTest, DistToPointUsesRayProjectionForSingleVertexSeglr)
 {
   XYSeglr seglr(10, 0, 0);
@@ -454,6 +472,7 @@ TEST(XYSeglrGeomUtilsTest, DistToPointUsesRayProjectionForSingleVertexSeglr)
   EXPECT_NEAR(stemdist, 3.0, kGeomTol);
 }
 
+// Covers XY seglr geom utils behavior: dist to point falls back to ray base for point behind ray.
 TEST(XYSeglrGeomUtilsTest, DistToPointFallsBackToRayBaseForPointBehindRay)
 {
   XYSeglr seglr(10, 0, 0);

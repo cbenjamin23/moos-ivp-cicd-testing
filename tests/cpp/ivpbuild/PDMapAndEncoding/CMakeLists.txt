@@ -9,8 +9,9 @@ add_moos_cpp_test(test_ivpbuild_pdmap_encoding
   LABELS
     ivpbuild
     math
-    PDMapBuilder
-    FunctionEncoder
-    OF_Coupler
-    OF_Rater
+  SUITE_LABELS
+    PDMapBuilderTest=PDMapBuilder
+    FunctionEncoderTest=FunctionEncoder
+    OFCouplerTest=OF_Coupler
+    OFRaterTest=OF_Rater
 )

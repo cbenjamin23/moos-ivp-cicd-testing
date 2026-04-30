@@ -6,7 +6,8 @@ add_moos_cpp_test(test_geometry_xyformatutils_wedge
     mbutil
   LABELS
     geometry
-    XYWedge
-    XYFormatUtilsWedge
     formats
+  SUITE_LABELS
+    XYWedgeTest=XYWedge
+    XYFormatUtilsWedgeTest=XYFormatUtilsWedge
 )

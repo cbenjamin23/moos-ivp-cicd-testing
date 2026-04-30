@@ -30,6 +30,7 @@ void expectPointNear(const XYPoint& point, double x, double y)
 
 }  // namespace
 
+// Covers bng engine behavior: default engine returns zero for bearing and rate.
 TEST(BNGEngineTest, DefaultEngineReturnsZeroForBearingAndRate)
 {
   BNGEngine engine;
@@ -40,6 +41,7 @@ TEST(BNGEngineTest, DefaultEngineReturnsZeroForBearingAndRate)
   EXPECT_NEAR(engine.evalBNGRate(270, 4), 0.0, kGeomTol);
 }
 
+// Covers bng engine behavior: configured engine currently ignores encounter geometry.
 TEST(BNGEngineTest, ConfiguredEngineCurrentlyIgnoresEncounterGeometry)
 {
   BNGEngine crossing(100, 50, 270, 3, -20, 10);
@@ -52,6 +54,7 @@ TEST(BNGEngineTest, ConfiguredEngineCurrentlyIgnoresEncounterGeometry)
   EXPECT_NEAR(head_on.evalBNGRate(0, 2), 0.0, kGeomTol);
 }
 
+// Covers CPA utils eval CPA behavior: computes head on collision and clips to time on leg.
 TEST(CPAUtilsEvalCPATest, ComputesHeadOnCollisionAndClipsToTimeOnLeg)
 {
   EXPECT_NEAR(evalCPA(0, 100, 2, 180, 0, 0, 2, 0, 120), 0.0,
@@ -63,6 +66,7 @@ TEST(CPAUtilsEvalCPATest, ComputesHeadOnCollisionAndClipsToTimeOnLeg)
               kGeomTol);
 }
 
+// Covers CPA utils eval CPA behavior: minus one time on leg is unlimited sentinel.
 TEST(CPAUtilsEvalCPATest, MinusOneTimeOnLegIsUnlimitedSentinel)
 {
   EXPECT_NEAR(evalCPA(0, 100, 2, 180, 0, 0, 2, 0, -1), 0.0,
@@ -73,6 +77,7 @@ TEST(CPAUtilsEvalCPATest, MinusOneTimeOnLegIsUnlimitedSentinel)
               kGeomTol);
 }
 
+// Covers CPA utils eval CPA behavior: handles parallel and opening encounters.
 TEST(CPAUtilsEvalCPATest, HandlesParallelAndOpeningEncounters)
 {
   EXPECT_NEAR(evalCPA(0, 100, 2, 0, 0, 0, 2, 0, 120), 100.0,
@@ -81,6 +86,7 @@ TEST(CPAUtilsEvalCPATest, HandlesParallelAndOpeningEncounters)
               kGeomTol);
 }
 
+// Covers CPA utils eval CPA behavior: handles crossing contact avoidance geometry.
 TEST(CPAUtilsEvalCPATest, HandlesCrossingContactAvoidanceGeometry)
 {
   EXPECT_NEAR(evalCPA(100, 100, 2, 270, 0, 0, 2, 0, 120), 0.0,
@@ -89,6 +95,7 @@ TEST(CPAUtilsEvalCPATest, HandlesCrossingContactAvoidanceGeometry)
               kLooseGeomTol);
 }
 
+// Covers CPA utils crosses bow behavior: detects ownship arriving at intersection first.
 TEST(CPAUtilsCrossesBowTest, DetectsOwnshipArrivingAtIntersectionFirst)
 {
   EXPECT_TRUE(crossesBow(-20, 0, 1, 90, -10, -10, 2, 0));
@@ -96,18 +103,21 @@ TEST(CPAUtilsCrossesBowTest, DetectsOwnshipArrivingAtIntersectionFirst)
   EXPECT_FALSE(crossesBow(-20, 0, 1, 90, -10, -10, 0.5, 0));
 }
 
+// Covers CPA utils crosses bow behavior: rejects parallel or diverging tracks.
 TEST(CPAUtilsCrossesBowTest, RejectsParallelOrDivergingTracks)
 {
   EXPECT_FALSE(crossesBow(0, 0, 1, 0, 10, 0, 1, 0));
   EXPECT_FALSE(crossesBow(0, 0, 1, 90, -10, -10, 2, 0));
 }
 
+// Covers CPA utils crosses bow behavior: pins zero contact speed division behavior.
 TEST(CPAUtilsCrossesBowTest, PinsZeroContactSpeedDivisionBehavior)
 {
   EXPECT_TRUE(crossesBow(0, 0, 0, 0, -10, -10, 2, 45));
   EXPECT_FALSE(crossesBow(0, 0, 1, 0, -10, -10, 0, 45));
 }
 
+// Covers CPA utils closing speed behavior: computes closing rate against stationary point.
 TEST(CPAUtilsClosingSpeedTest, ComputesClosingRateAgainstStationaryPoint)
 {
   EXPECT_NEAR(closingSpeed(0, 0, 2, 0, 0, 10), 2.0, kGeomTol);
@@ -116,6 +126,7 @@ TEST(CPAUtilsClosingSpeedTest, ComputesClosingRateAgainstStationaryPoint)
   EXPECT_NEAR(closingSpeed(0, 0, 2, 45, 0, 0), 0.0, kGeomTol);
 }
 
+// Covers CPA utils closing speed behavior: computes relative closing rate for moving contact.
 TEST(CPAUtilsClosingSpeedTest, ComputesRelativeClosingRateForMovingContact)
 {
   EXPECT_NEAR(closingSpeed(0, 0, 2, 0, 0, 10, 3, 180), 5.0,
@@ -130,6 +141,7 @@ TEST(CPAUtilsClosingSpeedTest, ComputesRelativeClosingRateForMovingContact)
               kGeomTol);
 }
 
+// Covers CPA utils velocity vector sum behavior: sums orthogonal and opposing velocity vectors.
 TEST(CPAUtilsVelocityVectorSumTest, SumsOrthogonalAndOpposingVelocityVectors)
 {
   double hdg = -1;
@@ -147,6 +159,7 @@ TEST(CPAUtilsVelocityVectorSumTest, SumsOrthogonalAndOpposingVelocityVectors)
   EXPECT_NEAR(spd, 0.0, kGeomTol);
 }
 
+// Covers CPA utils velocity vector sum behavior: handles unequal opposing vectors.
 TEST(CPAUtilsVelocityVectorSumTest, HandlesUnequalOpposingVectors)
 {
   double hdg = -1;
@@ -161,6 +174,7 @@ TEST(CPAUtilsVelocityVectorSumTest, HandlesUnequalOpposingVectors)
   EXPECT_NEAR(spd, 3.0, kGeomTol);
 }
 
+// Covers CPA utils rel ang rate behavior: computes signed bearing rate with wraparound.
 TEST(CPAUtilsRelAngRateTest, ComputesSignedBearingRateWithWraparound)
 {
   double x_350 = 0;
@@ -176,6 +190,7 @@ TEST(CPAUtilsRelAngRateTest, ComputesSignedBearingRateWithWraparound)
               -4.0, kGeomTol);
 }
 
+// Covers CPA utils rel ang rate behavior: pins zero time and one eighty degree tie behavior.
 TEST(CPAUtilsRelAngRateTest, PinsZeroTimeAndOneEightyDegreeTieBehavior)
 {
   EXPECT_NEAR(relAngRate(0, 0, 0, 10, 0, 0, 10, 0, 0), 0.0, kGeomTol);
@@ -185,6 +200,7 @@ TEST(CPAUtilsRelAngRateTest, PinsZeroTimeAndOneEightyDegreeTieBehavior)
               kGeomTol);
 }
 
+// Covers plat model pose behavior: default model is invalid until all pose fields are set.
 TEST(PlatModelPoseTest, DefaultModelIsInvalidUntilAllPoseFieldsAreSet)
 {
   PlatModel model("holo");
@@ -218,6 +234,7 @@ TEST(PlatModelPoseTest, DefaultModelIsInvalidUntilAllPoseFieldsAreSet)
   EXPECT_TRUE(stringContains(out, " type: holo"));
 }
 
+// Covers plat model pose behavior: pose constructor normalizes heading and clamps speed.
 TEST(PlatModelPoseTest, PoseConstructorNormalizesHeadingAndClampsSpeed)
 {
   PlatModel model(12.345, -7.5, -90, -4);
@@ -230,6 +247,7 @@ TEST(PlatModelPoseTest, PoseConstructorNormalizesHeadingAndClampsSpeed)
   EXPECT_EQ(model.getSpec(), "osx=12.35,osy=-7.5,osh=270,osv=0");
 }
 
+// Covers plat model parse behavior: parses compact MOOS-IvP style pose spec.
 TEST(PlatModelParseTest, ParsesCompactMoosIvPStylePoseSpec)
 {
   PlatModel model = stringToPlatModel("osx=1.25,osy=-2.5,osh=-90,osv=-3");
@@ -242,6 +260,7 @@ TEST(PlatModelParseTest, ParsesCompactMoosIvPStylePoseSpec)
   EXPECT_EQ(model.getSpec(), "osx=1.25,osy=-2.5,osh=270,osv=0");
 }
 
+// Covers plat model parse behavior: rejects unknown or non numeric parameters.
 TEST(PlatModelParseTest, RejectsUnknownOrNonNumericParameters)
 {
   EXPECT_FALSE(stringToPlatModel("osx=1,osy=2,osh=3,osv=4,color=red")
@@ -250,6 +269,7 @@ TEST(PlatModelParseTest, RejectsUnknownOrNonNumericParameters)
   EXPECT_FALSE(stringToPlatModel("osx=1,osy=2,osh=3").valid());
 }
 
+// Covers plat model parse behavior: duplicate pose fields are accepted with last value winning.
 TEST(PlatModelParseTest, DuplicatePoseFieldsAreAcceptedWithLastValueWinning)
 {
   PlatModel model = stringToPlatModel("osx=1,osy=2,osx=9,osh=450,osv=4");
@@ -261,6 +281,7 @@ TEST(PlatModelParseTest, DuplicatePoseFieldsAreAcceptedWithLastValueWinning)
   EXPECT_NEAR(model.getOSV(), 4.0, kGeomTol);
 }
 
+// Covers plat model spoke behavior: stores port and starboard spoke points with stable labels.
 TEST(PlatModelSpokeTest, StoresPortAndStarboardSpokePointsWithStableLabels)
 {
   PlatModel model;
@@ -286,6 +307,7 @@ TEST(PlatModelSpokeTest, StoresPortAndStarboardSpokePointsWithStableLabels)
   EXPECT_TRUE(model.getPoints("bogus_spoke").empty());
 }
 
+// Covers plat model turn seglr behavior: falls back to single ray without valid spoke cache.
 TEST(PlatModelTurnSeglrTest, FallsBackToSingleRayWithoutValidSpokeCache)
 {
   PlatModel model(10, 20, 0, 2);
@@ -301,6 +323,7 @@ TEST(PlatModelTurnSeglrTest, FallsBackToSingleRayWithoutValidSpokeCache)
   EXPECT_NEAR(seglr.getRayAngle(), 45.0, kGeomTol);
 }
 
+// Covers plat model turn seglr behavior: selects cached port or starboard turn by heading.
 TEST(PlatModelTurnSeglrTest, SelectsCachedPortOrStarboardTurnByHeading)
 {
   PlatModel model(0, 0, 0, 2);
@@ -327,6 +350,7 @@ TEST(PlatModelTurnSeglrTest, SelectsCachedPortOrStarboardTurnByHeading)
   EXPECT_NEAR(port_turn.getRayAngle(), 315.0, kGeomTol);
 }
 
+// Covers plat model turn seglr behavior: clamps turn cache index at largest available spoke.
 TEST(PlatModelTurnSeglrTest, ClampsTurnCacheIndexAtLargestAvailableSpoke)
 {
   PlatModel model(0, 0, 0, 2);
@@ -347,6 +371,7 @@ TEST(PlatModelTurnSeglrTest, ClampsTurnCacheIndexAtLargestAvailableSpoke)
   EXPECT_NEAR(port_turn.getRayAngle(), 190.0, kGeomTol);
 }
 
+// Covers plat model cache behavior: exposes cached CPA distance stem distance and point.
 TEST(PlatModelCacheTest, ExposesCachedCpaDistanceStemDistanceAndPoint)
 {
   PlatModel model(0, 0, 0, 2);
@@ -376,6 +401,7 @@ TEST(PlatModelCacheTest, ExposesCachedCpaDistanceStemDistanceAndPoint)
   EXPECT_FALSE(star_turn.getCacheCPAPoint().valid());
 }
 
+// Covers plat model cache behavior: out of range port cache update falls through to starboard.
 TEST(PlatModelCacheTest, OutOfRangePortCacheUpdateFallsThroughToStarboard)
 {
   PlatModel model(0, 0, 0, 2);
@@ -394,6 +420,7 @@ TEST(PlatModelCacheTest, OutOfRangePortCacheUpdateFallsThroughToStarboard)
   EXPECT_NEAR(star_turn.getCacheCPA(), 8.5, kGeomTol);
 }
 
+// Covers plat model cache behavior: out of range port point and stem updates fall through to starboard.
 TEST(PlatModelCacheTest, OutOfRangePortPointAndStemUpdatesFallThroughToStarboard)
 {
   PlatModel model(0, 0, 0, 2);

@@ -2,14 +2,17 @@ add_moos_cpp_test(test_ucommand_command_folio
   SOURCES
     CommandItemAndFolioTest.cpp
     CommandSummaryTest.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ucommand/CommandFolio.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ucommand/CommandItem.cpp
+    ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/lib_ucommand/CommandSummary.cpp
   LIBS
-    ucommand
     apputil
     mbutil
   LABELS
     ucommand
-    CommandItem
-    CommandFolio
-    CommandPost
-    CommandSummary
+  SUITE_LABELS
+    CommandItemTest=CommandItem
+    CommandFolioTest=CommandFolio
+    CommandPostTest=CommandPost
+    CommandSummaryTest=CommandSummary
 )

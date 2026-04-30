@@ -5,6 +5,7 @@
 #include "CPAEngine.h"
 #include "NumericAssertions.h"
 
+// Covers CPA engine encounter behavior: computes head on closing contact CPA.
 TEST(CPAEngineEncounterTest, ComputesHeadOnClosingContactCpa)
 {
   CPAEngine engine(100, 0, 180, 2, 0, 0);
@@ -15,6 +16,7 @@ TEST(CPAEngineEncounterTest, ComputesHeadOnClosingContactCpa)
   EXPECT_GT(engine.evalROC(0, 2), 0.0);
 }
 
+// Covers CPA engine encounter behavior: clips CPA distance to ownship time on leg.
 TEST(CPAEngineEncounterTest, ClipsCpaDistanceToOwnshipTimeOnLeg)
 {
   CPAEngine engine(100, 0, 180, 2, 0, 0);
@@ -25,6 +27,7 @@ TEST(CPAEngineEncounterTest, ClipsCpaDistanceToOwnshipTimeOnLeg)
   EXPECT_NEAR(engine.getARangeRate(0, 2, 10), -480.0, kGeomTol);
 }
 
+// Covers CPA engine encounter behavior: pins zero and negative time on leg literal behavior.
 TEST(CPAEngineEncounterTest, PinsZeroAndNegativeTimeOnLegLiteralBehavior)
 {
   CPAEngine engine(100, 0, 180, 2, 0, 0);
@@ -36,6 +39,7 @@ TEST(CPAEngineEncounterTest, PinsZeroAndNegativeTimeOnLegLiteralBehavior)
   EXPECT_NEAR(engine.evalRangeRateOverRange(0, 2, 10), 0.0, kGeomTol);
 }
 
+// Covers CPA engine encounter behavior: computes crossing geometry used by contact avoidance.
 TEST(CPAEngineEncounterTest, ComputesCrossingGeometryUsedByContactAvoidance)
 {
   CPAEngine engine(100, 100, 270, 2, 0, 0);
@@ -61,6 +65,7 @@ TEST(CPAEngineEncounterTest, ComputesCrossingGeometryUsedByContactAvoidance)
   EXPECT_NEAR(engine.passesStarDist(0, 2), 0.0, kGeomTol);
 }
 
+// Covers CPA engine encounter behavior: mirrors IvP contact behavior forward and reciprocal state.
 TEST(CPAEngineEncounterTest, MirrorsIvPContactBehaviorForwardAndReciprocalState)
 {
   const double osx = 0;
@@ -114,6 +119,7 @@ TEST(CPAEngineEncounterTest, MirrorsIvPContactBehaviorForwardAndReciprocalState)
   EXPECT_TRUE(contact_to_os.crossesStern(cnh, cnv));
 }
 
+// Covers CPA engine encounter behavior: reports opening range for parallel same direction contact.
 TEST(CPAEngineEncounterTest, ReportsOpeningRangeForParallelSameDirectionContact)
 {
   CPAEngine engine(100, 0, 0, 2, 0, 0);
@@ -123,6 +129,7 @@ TEST(CPAEngineEncounterTest, ReportsOpeningRangeForParallelSameDirectionContact)
   EXPECT_NEAR(engine.evalROC(0, 2), 0.0, kGeomTol);
 }
 
+// Covers CPA engine encounter behavior: classifies port side pass with distance from contact.
 TEST(CPAEngineEncounterTest, ClassifiesPortSidePassWithDistanceFromContact)
 {
   CPAEngine engine(100, 50, 0, 1, 0, 0);
@@ -145,6 +152,7 @@ TEST(CPAEngineEncounterTest, ClassifiesPortSidePassWithDistanceFromContact)
   EXPECT_FALSE(engine.crossesBowOrStern(0, 3));
 }
 
+// Covers CPA engine encounter behavior: classifies starboard side pass with distance from contact.
 TEST(CPAEngineEncounterTest, ClassifiesStarboardSidePassWithDistanceFromContact)
 {
   CPAEngine engine(100, -50, 0, 1, 0, 0);
@@ -167,6 +175,7 @@ TEST(CPAEngineEncounterTest, ClassifiesStarboardSidePassWithDistanceFromContact)
   EXPECT_FALSE(engine.crossesBowOrStern(0, 3));
 }
 
+// Covers CPA engine encounter behavior: reports stern crossing distance for beam transit.
 TEST(CPAEngineEncounterTest, ReportsSternCrossingDistanceForBeamTransit)
 {
   CPAEngine engine(100, 50, 0, 1, 0, 0);
@@ -181,6 +190,7 @@ TEST(CPAEngineEncounterTest, ReportsSternCrossingDistanceForBeamTransit)
   EXPECT_NEAR(engine.evalTimeCPA(90, 2, 120), 0.0, kGeomTol);
 }
 
+// Covers CPA engine encounter behavior: exposes beam transit gamma and epsilon components.
 TEST(CPAEngineEncounterTest, ExposesBeamTransitGammaAndEpsilonComponents)
 {
   CPAEngine engine(100, 50, 0, 1, 0, 0);
@@ -200,6 +210,7 @@ TEST(CPAEngineEncounterTest, ExposesBeamTransitGammaAndEpsilonComponents)
   EXPECT_NEAR(engine.getOSTimeEpsilon(90, 0), -100.0, kLooseGeomTol);
 }
 
+// Covers CPA engine encounter behavior: public init non cache clears cached geometry.
 TEST(CPAEngineEncounterTest, PublicInitNonCacheClearsCachedGeometry)
 {
   CPAEngine engine(100, 50, 0, 1, 0, 0);
@@ -216,6 +227,7 @@ TEST(CPAEngineEncounterTest, PublicInitNonCacheClearsCachedGeometry)
   EXPECT_FALSE(engine.starboardOfContact());
 }
 
+// Covers CPA engine encounter behavior: handles stationary contact intercept.
 TEST(CPAEngineEncounterTest, HandlesStationaryContactIntercept)
 {
   CPAEngine engine(50, 50, 90, 0, 0, 0);
@@ -230,6 +242,7 @@ TEST(CPAEngineEncounterTest, HandlesStationaryContactIntercept)
   EXPECT_TRUE(engine.passesStar(45, 1));
 }
 
+// Covers CPA engine encounter behavior: resets geometry and cached classification.
 TEST(CPAEngineEncounterTest, ResetsGeometryAndCachedClassification)
 {
   CPAEngine engine(100, 0, 180, 2, 0, 0);
@@ -248,6 +261,7 @@ TEST(CPAEngineEncounterTest, ResetsGeometryAndCachedClassification)
   EXPECT_TRUE(engine.passesStar(90, 2));
 }
 
+// Covers CPA engine turn behavior: turn direction pins wrap and one eighty tie behavior.
 TEST(CPAEngineTurnTest, TurnDirectionPinsWrapAndOneEightyTieBehavior)
 {
   CPAEngine engine;
@@ -262,6 +276,7 @@ TEST(CPAEngineTurnTest, TurnDirectionPinsWrapAndOneEightyTieBehavior)
   EXPECT_FALSE(engine.turnsLeft(90, 90));
 }
 
+// Covers CPA engine encounter behavior: samples min and max rate of closure by heading grid.
 TEST(CPAEngineEncounterTest, SamplesMinAndMaxRateOfClosureByHeadingGrid)
 {
   CPAEngine engine(100, 100, 270, 2, 0, 0);

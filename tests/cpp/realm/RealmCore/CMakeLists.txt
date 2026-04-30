@@ -1,0 +1,21 @@
+add_moos_cpp_test(test_realm_core
+  SOURCES
+    RealmCoreTest.cpp
+  LIBS
+    realm
+    apputil
+    mbutil
+  LABELS
+    realm
+    pMarineViewer
+    REALMCAST
+    REALMCAST_CHANNELS
+    WATCHCAST
+  SUITE_LABELS
+    RealmCastTest=RealmCast
+    RealmSummaryTest=RealmSummary
+    WatchCastTest=WatchCast
+    RealmCastSetTest=RealmCastSet
+    RealmCastTreeTest=RealmCastTree
+    RealmRepoTest=RealmRepo,WatchCluster
+)

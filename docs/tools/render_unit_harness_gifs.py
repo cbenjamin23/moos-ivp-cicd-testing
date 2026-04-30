@@ -99,6 +99,13 @@ def ease(x: float) -> float:
     return x * x * (3 - 2 * x)
 
 
+def blend_hex(a: str, b: str, t: float) -> str:
+    t = clamp01(t)
+    ar, ag, ab = int(a[1:3], 16), int(a[3:5], 16), int(a[5:7], 16)
+    br, bg, bb = int(b[1:3], 16), int(b[3:5], 16), int(b[5:7], 16)
+    return f"#{round(ar + (br - ar) * t):02x}{round(ag + (bg - ag) * t):02x}{round(ab + (bb - ab) * t):02x}"
+
+
 def world_to_screen(
     p: tuple[float, float],
     bounds: tuple[float, float, float, float] = (WORLD_X_MIN, WORLD_X_MAX, WORLD_Y_MIN, WORLD_Y_MAX),
@@ -467,89 +474,82 @@ def pid_heading_wrap() -> None:
     save_gif(frames, "pid-unit-heading-wrap.gif")
 
 
-def pid_depth_elevator() -> None:
+def pid_manual_override() -> None:
     frames: list[Image.Image] = []
-    current_depth = 5.0
-    target_depth = 6.0
-    expected_elevator = 11.5
     for i in range(FRAMES):
         t = i / (FRAMES - 1)
-        active = t >= 0.38
-        elevator = expected_elevator * ease((t - 0.38) / 0.42)
-        error_alpha = ease((t - 0.12) / 0.30)
-        gauge_alpha = ease((t - 0.42) / 0.38)
+        switch_t = ease((t - 0.17) / 0.24)
+        drop_t = ease((t - 0.34) / 0.08)
+        override = t >= 0.28
+        rudder = 90 * (1 - drop_t)
+        thrust = 40 * (1 - drop_t)
 
         im, draw = draw_pid_base(
-            "Depth Elevator",
-            "Checks depth error maps to elevator authority.",
-            "depth_elevator_pass",
+            "Manual Override",
+            "Checks override suppresses actuator output.",
+            "manual_override_zero_pass",
         )
-        left, top = px(180), px(170)
-        right, bottom = W - px(500), H - px(230)
-        draw.rectangle((left, top, right, bottom), outline=WHITE_FAINT, width=px(2))
-        depth_min, depth_max = 4.0, 7.0
-        for depth in range(4, 8):
-            y = top + ((depth - depth_min) / (depth_max - depth_min)) * (bottom - top)
-            draw.line((left, y, right, y), fill=GRID_STRONG, width=1)
-            draw.text((left - px(96), y - px(16)), f"{depth}m", fill=MUTED, font=PID_FONT_DETAIL)
 
-        nav_y = top + ((current_depth - depth_min) / (depth_max - depth_min)) * (bottom - top)
-        des_y = top + ((target_depth - depth_min) / (depth_max - depth_min)) * (bottom - top)
-        draw.line((left, des_y, right, des_y), fill=TEAL, width=px(5))
-        pid_tag(draw, (right - px(290), des_y - px(70)), "TARGET 6m", TEAL)
+        card_y0, card_y1 = px(200), px(575)
+        input_x0, input_x1 = px(90), px(620)
+        output_x0, output_x1 = px(760), px(1190)
+        for x0, x1, title in (
+            (input_x0, input_x1, "Input Mail"),
+            (output_x0, output_x1, "PID Output"),
+        ):
+            draw.rounded_rectangle((x0, card_y0, x1, card_y1), radius=px(14), fill="#252b3a", outline="#444b60", width=px(2))
+            draw.text((x0 + px(30), card_y0 + px(26)), title, fill=TEXT, font=PID_FONT_LABEL)
 
-        sub_x = left + (right - left) * 0.47
-        marker_color = ORANGE if not active else YELLOW
-        draw.rounded_rectangle(
-            (sub_x - px(50), nav_y - px(18), sub_x + px(50), nav_y + px(18)),
-            radius=px(6),
-            fill=marker_color,
-            outline="#fff0c9",
-        )
+        # A simple switch is easier to read than a variable table for this case.
+        switch_x0, switch_y0 = input_x0 + px(120), card_y0 + px(150)
+        switch_x1, switch_y1 = input_x1 - px(120), switch_y0 + px(72)
+        track_fill = blend_hex("#3a4052", TEAL, switch_t)
+        track_outline = blend_hex("#657087", TEAL, switch_t)
+        draw.rounded_rectangle((switch_x0, switch_y0, switch_x1, switch_y1), radius=px(36), fill=track_fill, outline=track_outline, width=px(3))
+        knob_r = px(28)
+        knob_x = switch_x0 + px(42) + (switch_x1 - switch_x0 - px(84)) * switch_t
+        knob_y = (switch_y0 + switch_y1) / 2
+        draw.ellipse((knob_x - knob_r, knob_y - knob_r, knob_x + knob_r, knob_y + knob_r), fill=TEXT, outline="#ffffff")
+        state_text = "OVERRIDE ON" if override else "override off"
+        state_bbox = draw.textbbox((0, 0), state_text, font=PID_FONT_CARD)
+        state_x = input_x0 + (input_x1 - input_x0 - (state_bbox[2] - state_bbox[0])) / 2
+        draw.text((state_x, switch_y1 + px(46)), state_text, fill=TEAL if override else MUTED, font=PID_FONT_CARD)
+
+        arrow_y = (card_y0 + card_y1) / 2
+        draw.line((input_x1 + px(48), arrow_y, output_x0 - px(48), arrow_y), fill=WHITE_FAINT, width=px(5))
         draw.polygon(
-            [(sub_x + px(50), nav_y), (sub_x + px(82), nav_y - px(20)), (sub_x + px(82), nav_y + px(20))],
-            fill=marker_color,
-            outline="#fff0c9",
+            [
+                (output_x0 - px(48), arrow_y),
+                (output_x0 - px(84), arrow_y - px(20)),
+                (output_x0 - px(84), arrow_y + px(20)),
+            ],
+            fill=WHITE_FAINT,
         )
-        arrow_y = nav_y + (des_y - nav_y) * error_alpha
-        dashed_line(draw, (sub_x, nav_y + px(32)), (sub_x, arrow_y), fill=WHITE_FAINT, width=px(3))
-        if error_alpha > 0.7:
-            draw.polygon(
-                [
-                    (sub_x, des_y + px(8)),
-                    (sub_x - px(12), des_y - px(15)),
-                    (sub_x + px(12), des_y - px(15)),
-                ],
-                fill=WHITE_FAINT,
-            )
-            pid_tag(draw, (sub_x - px(118), (nav_y + des_y) / 2 - px(18)), "error +1m", WHITE_FAINT)
-        pid_tag(draw, (sub_x + px(104), nav_y - px(24)), "CURRENT 5m", ORANGE)
 
-        gauge_x0, gauge_y0 = right + px(80), top + px(20)
-        gauge_x1, gauge_y1 = W - px(120), bottom - px(10)
-        draw.rounded_rectangle((gauge_x0, gauge_y0, gauge_x1, gauge_y1), radius=px(10), fill="#252b3a", outline="#444b60", width=px(2))
-        draw.text((gauge_x0, gauge_y0 - px(48)), "ELEVATOR OUTPUT", fill=MUTED, font=PID_FONT_DETAIL)
-        band_y0 = gauge_y0 + (1 - (11.7 / 13.0)) * (gauge_y1 - gauge_y0)
-        band_y1 = gauge_y0 + (1 - (11.3 / 13.0)) * (gauge_y1 - gauge_y0)
-        draw.rectangle((gauge_x0 + px(18), band_y0, gauge_x1 - px(18), band_y1), fill="#38c6b544")
-        for value in (0, 6.5, 13):
-            y = gauge_y0 + (1 - (value / 13.0)) * (gauge_y1 - gauge_y0)
-            draw.line((gauge_x0, y, gauge_x1, y), fill=GRID_STRONG, width=1)
-            draw.text((gauge_x1 + px(12), y - px(12)), f"{value:g}", fill=MUTED, font=PID_FONT_DETAIL)
-        fill_y = gauge_y1 - (gauge_y1 - gauge_y0) * (elevator / 13.0) * gauge_alpha
-        draw.rounded_rectangle((gauge_x0 + px(42), fill_y, gauge_x1 - px(42), gauge_y1), radius=px(8), fill=TEAL if active else "#38c6b555")
-        draw.line((gauge_x0 + px(18), band_y0, gauge_x1 - px(18), band_y0), fill=TEAL, width=px(3))
-        draw.line((gauge_x0 + px(18), band_y1, gauge_x1 - px(18), band_y1), fill=TEAL, width=px(3))
+        def output_bar(y: int, label: str, value: float, max_value: float, color: str) -> None:
+            draw.text((output_x0 + px(44), y - px(8)), label, fill=TEXT, font=PID_FONT_TAG)
+            bar_x0, bar_y0 = output_x0 + px(210), y
+            bar_x1, bar_y1 = output_x1 - px(64), y + px(38)
+            draw.rounded_rectangle((bar_x0, bar_y0, bar_x1, bar_y1), radius=px(18), fill="#1d2230", outline="#454c60", width=px(2))
+            fill_x = bar_x0 + (bar_x1 - bar_x0) * clamp01(abs(value) / max_value)
+            if fill_x > bar_x0 + px(3):
+                draw.rounded_rectangle((bar_x0, bar_y0, fill_x, bar_y1), radius=px(18), fill=color)
+            draw.text((bar_x1 + px(18), y - px(2)), f"{value:+.0f}", fill=color if abs(value) > 0.1 else TEAL, font=PID_FONT_TAG)
+
+        output_bar(card_y0 + px(150), "Rudder", rudder, 100, ORANGE)
+        output_bar(card_y0 + px(235), "Thrust", thrust, 60, YELLOW)
+        status = "Control released" if override else "PID has control"
+        pid_tag(draw, (output_x0 + px(44), card_y0 + px(315)), status, TEAL if override else MUTED)
 
         pid_pill(
             draw,
-            (px(48), H - px(160), px(785), H - px(48)),
-            "ELEVATOR_PID = 11.3..11.7",
-            f"Grades non-saturated output; sample is +{elevator:.1f}.",
-            active,
+            (px(48), H - px(160), px(760), H - px(48)),
+            "OVERRIDE -> ZERO OUTPUT",
+            "Rudder and thrust are suppressed while manual override is active.",
+            override,
         )
         frames.append(im)
-    save_gif(frames, "pid-unit-depth-elevator.gif")
+    save_gif(frames, "pid-unit-manual-override.gif")
 
 
 def main() -> None:
@@ -558,7 +558,7 @@ def main() -> None:
     obmgr_given_baseline()
     obmgr_point_cluster()
     pid_heading_wrap()
-    pid_depth_elevator()
+    pid_manual_override()
 
 
 if __name__ == "__main__":

@@ -6,8 +6,9 @@ add_moos_cpp_test(test_geometry_polygon_generation
     mbutil
   LABELS
     geometry
-    ConvexHullGenerator
-    XYPolyExpander
-    XYPatternBlock
     polygon_generation
+  SUITE_LABELS
+    ConvexHullGeneratorTest=ConvexHullGenerator
+    XYPolyExpanderTest=XYPolyExpander
+    XYPatternBlockTest=XYPatternBlock
 )

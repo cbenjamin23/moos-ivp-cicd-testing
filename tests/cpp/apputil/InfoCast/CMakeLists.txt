@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_apputil_infocast
+  SOURCES
+    InfoCastSettingsTest.cpp
+  LIBS
+    apputil
+    mbutil
+  LABELS
+    apputil
+    InfoCastSettings
+    AppCastSettings
+    RealmCastSettings
+)

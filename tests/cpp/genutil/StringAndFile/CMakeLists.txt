@@ -1,0 +1,11 @@
+add_moos_cpp_test(test_genutil_string_file
+  SOURCES
+    StringAndFileTest.cpp
+  LIBS
+    genutil
+  LABELS
+    genutil
+  SUITE_LABELS
+    StringUtilTest=stringutil
+    FileUtilTest=fileutil
+)

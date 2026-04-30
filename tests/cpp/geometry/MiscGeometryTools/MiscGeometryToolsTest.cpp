@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <string>
 #include <vector>
 
@@ -81,6 +82,7 @@ bool pointInAnyPolygon(const XYPoint& point, const std::vector<XYPolygon>& polys
 
 }  // namespace
 
+// Covers seglr utils behavior: serializes empty and populated seglr with fixed legacy precision.
 TEST(SeglrUtilsTest, SerializesEmptyAndPopulatedSeglrWithFixedLegacyPrecision)
 {
   EXPECT_EQ(seglrToString(Seglr()), "#0.0");
@@ -93,6 +95,7 @@ TEST(SeglrUtilsTest, SerializesEmptyAndPopulatedSeglrWithFixedLegacyPrecision)
   EXPECT_EQ(seglrToString(seglr), "0.00,0.00:1.23,-5.68#92.2");
 }
 
+// Covers seglr utils behavior: rotates stem around first vertex and normalizes ray angle.
 TEST(SeglrUtilsTest, RotatesStemAroundFirstVertexAndNormalizesRayAngle)
 {
   Seglr seglr;
@@ -112,6 +115,7 @@ TEST(SeglrUtilsTest, RotatesStemAroundFirstVertexAndNormalizesRayAngle)
   EXPECT_NEAR(rotated.getRayAngle(), 80.0, kGeomTol);
 }
 
+// Covers seglr utils behavior: rotating empty seglr preserves unnormalized ray angle.
 TEST(SeglrUtilsTest, RotatingEmptySeglrPreservesUnnormalizedRayAngle)
 {
   Seglr seglr;
@@ -123,6 +127,7 @@ TEST(SeglrUtilsTest, RotatingEmptySeglrPreservesUnnormalizedRayAngle)
   EXPECT_NEAR(rotated.getRayAngle(), 725.0, kGeomTol);
 }
 
+// Covers wall engine behavior: rejects missing empty and self crossing walls.
 TEST(WallEngineTest, RejectsMissingEmptyAndSelfCrossingWalls)
 {
   WallEngine engine;
@@ -141,6 +146,7 @@ TEST(WallEngineTest, RejectsMissingEmptyAndSelfCrossingWalls)
   EXPECT_FALSE(engine.setEngine(0, 0, 0, 5, walls));
 }
 
+// Covers wall engine behavior: initializes caches and reports minimum range to nearest wall.
 TEST(WallEngineTest, InitializesCachesAndReportsMinimumRangeToNearestWall)
 {
   WallEngine engine;
@@ -158,6 +164,7 @@ TEST(WallEngineTest, InitializesCachesAndReportsMinimumRangeToNearestWall)
   EXPECT_NEAR(engine.getXCPA(450, 2.0, 0, 0), 0.0, kGeomTol);
 }
 
+// Covers wall engine behavior: non positive speed uses legacy point one fallback.
 TEST(WallEngineTest, NonPositiveSpeedUsesLegacyPointOneFallback)
 {
   WallEngine engine;
@@ -168,13 +175,17 @@ TEST(WallEngineTest, NonPositiveSpeedUsesLegacyPointOneFallback)
   ASSERT_TRUE(engine.setEngine(0, 0, 0, 5, walls));
   testing::internal::GetCapturedStdout();
 
+  // WallEngine substitutes 0.1 for non-positive speed when projecting wall CPA.
   const double stopped = engine.getXCPA(90, 0.0, 0, 0);
   const double slow = engine.getXCPA(90, 0.1, 0, 0);
   EXPECT_NEAR(stopped, slow, kGeomTol);
 }
 
+// Covers wall engine behavior: parses avoid walls mission payloads and caches nearest wall range.
 TEST(WallEngineTest, ParsesAvoidWallsMissionPayloadsAndCachesNearestWallRange)
 {
+  // These wall specs mirror BHV_AvoidWalls mission payloads with labels and
+  // loose whitespace around point separators.
   std::vector<XYSegList> walls;
   walls.push_back(parseWall("pts={0,-72: 47,-72 : 43,-89 : 40,-100}, label=west"));
   walls.push_back(parseWall("pts={120,-72 : 93,-72 : 67,-89 : 47,-121}, label=east"));
@@ -195,6 +206,7 @@ TEST(WallEngineTest, ParsesAvoidWallsMissionPayloadsAndCachesNearestWallRange)
               engine.getXCPA(0, 2.0, 8, 0.5), kGeomTol);
 }
 
+// Covers wall engine behavior: time to collision penalty increases distant wall CPA.
 TEST(WallEngineTest, TimeToCollisionPenaltyIncreasesDistantWallCpa)
 {
   WallEngine engine;
@@ -212,6 +224,7 @@ TEST(WallEngineTest, TimeToCollisionPenaltyIncreasesDistantWallCpa)
   EXPECT_GT(penalized, immediate);
 }
 
+// Covers wall engine behavior: returns negative CPA when heading has no wall intercept.
 TEST(WallEngineTest, ReturnsNegativeCpaWhenHeadingHasNoWallIntercept)
 {
   WallEngine engine;
@@ -226,6 +239,7 @@ TEST(WallEngineTest, ReturnsNegativeCpaWhenHeadingHasNoWallIntercept)
   EXPECT_LT(engine.getXCPA(90, 2.0, 0, 0), 0.0);
 }
 
+// Covers XY encoders behavior: serializes square bounds in low high low high order.
 TEST(XYEncodersTest, SerializesSquareBoundsInLowHighLowHighOrder)
 {
   XYSquare square(-1.5, 2.25, 3.5, 4.75);
@@ -233,6 +247,7 @@ TEST(XYEncodersTest, SerializesSquareBoundsInLowHighLowHighOrder)
   EXPECT_EQ(XYSquareToString(square), "-1.5,2.25,3.5,4.75");
 }
 
+// Covers XY encoders behavior: decodes legacy grid payload and restores values.
 TEST(XYEncodersTest, DecodesLegacyGridPayloadAndRestoresValues)
 {
   XYGrid grid = StringToXYGrid(kLegacyGridEncoding);
@@ -246,6 +261,7 @@ TEST(XYEncodersTest, DecodesLegacyGridPayloadAndRestoresValues)
   EXPECT_NEAR(grid.getVal(3), 9.0, kGeomTol);
 }
 
+// Covers XY encoders behavior: current grid encoder payload does not round trip through legacy decoder.
 TEST(XYEncodersTest, CurrentGridEncoderPayloadDoesNotRoundTripThroughLegacyDecoder)
 {
   XYGrid grid;
@@ -262,6 +278,7 @@ TEST(XYEncodersTest, CurrentGridEncoderPayloadDoesNotRoundTripThroughLegacyDecod
   EXPECT_EQ(round_trip.size(), 0);
 }
 
+// Covers XY encoders behavior: rejects malformed legacy grid payloads.
 TEST(XYEncodersTest, RejectsMalformedLegacyGridPayloads)
 {
   EXPECT_EQ(StringToXYGrid("label=grid#size=1#min_val=0#max_val=1").size(), 0);
@@ -276,6 +293,7 @@ TEST(XYEncodersTest, RejectsMalformedLegacyGridPayloads)
             1);
 }
 
+// Covers XY format utils convex grid behavior: parses MOOS view grid with limits and unknown style.
 TEST(XYFormatUtilsConvexGridTest, ParsesMoosViewGridWithLimitsAndUnknownStyle)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -292,6 +310,7 @@ TEST(XYFormatUtilsConvexGridTest, ParsesMoosViewGridWithLimitsAndUnknownStyle)
   EXPECT_TRUE(stringContains(grid.get_spec(), "edge_color=white"));
 }
 
+// Covers XY format utils convex grid behavior: init val applies when cell vars are omitted.
 TEST(XYFormatUtilsConvexGridTest, InitValAppliesWhenCellVarsAreOmitted)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -303,6 +322,7 @@ TEST(XYFormatUtilsConvexGridTest, InitValAppliesWhenCellVarsAreOmitted)
   EXPECT_NEAR(grid.getVal(3), 7.0, kGeomTol);
 }
 
+// Covers XY format utils convex grid behavior: rejects malformed geometry cell size and cell vars.
 TEST(XYFormatUtilsConvexGridTest, RejectsMalformedGeometryCellSizeAndCellVars)
 {
   EXPECT_EQ(string2ConvexGrid("pts={},cell_size=10").size(), 0u);
@@ -311,6 +331,7 @@ TEST(XYFormatUtilsConvexGridTest, RejectsMalformedGeometryCellSizeAndCellVars)
   EXPECT_EQ(string2ConvexGrid("pts={0,0:10,0:10,10:0,10},cell_vars=score:bad").size(), 0u);
 }
 
+// Covers XY format utils convex grid behavior: ignores unknown cell vars and atoi parses bad cell index as zero.
 TEST(XYFormatUtilsConvexGridTest, IgnoresUnknownCellVarsAndAtoiParsesBadCellIndexAsZero)
 {
   XYConvexGrid grid = string2ConvexGrid(
@@ -322,6 +343,7 @@ TEST(XYFormatUtilsConvexGridTest, IgnoresUnknownCellVarsAndAtoiParsesBadCellInde
   EXPECT_NEAR(grid.getVal(1, grid.getCellVarIX("score")), 5.0, kGeomTol);
 }
 
+// Covers XY artifact grid behavior: initializes labeled MOOS polygon into column major cells.
 TEST(XYArtifactGridTest, InitializesLabeledMoosPolygonIntoColumnMajorCells)
 {
   XYArtifactGrid grid;
@@ -338,6 +360,7 @@ TEST(XYArtifactGridTest, InitializesLabeledMoosPolygonIntoColumnMajorCells)
   EXPECT_NEAR(grid.getAvgClearance(), 0.0, kGeomTol);
 }
 
+// Covers XY artifact grid behavior: rejects malformed configs and requires labeled convex polygon.
 TEST(XYArtifactGridTest, RejectsMalformedConfigsAndRequiresLabeledConvexPolygon)
 {
   XYArtifactGrid grid;
@@ -352,6 +375,7 @@ TEST(XYArtifactGridTest, RejectsMalformedConfigsAndRequiresLabeledConvexPolygon)
   EXPECT_FALSE(grid.initialize("pts={0,0:5,0:5,5:0,5},label=bad@10,10"));
 }
 
+// Covers XY artifact grid behavior: clamps clearance and ignores out of range setters.
 TEST(XYArtifactGridTest, ClampsClearanceAndIgnoresOutOfRangeSetters)
 {
   XYArtifactGrid grid;
@@ -369,6 +393,7 @@ TEST(XYArtifactGridTest, ClampsClearanceAndIgnoresOutOfRangeSetters)
   EXPECT_NEAR(grid.getAvgClearance(), 0.3125, kGeomTol);
 }
 
+// Covers XY artifact grid behavior: tracks artifact vectors and detected artifact count.
 TEST(XYArtifactGridTest, TracksArtifactVectorsAndDetectedArtifactCount)
 {
   XYArtifactGrid grid;
@@ -386,6 +411,7 @@ TEST(XYArtifactGridTest, TracksArtifactVectorsAndDetectedArtifactCount)
   EXPECT_EQ(grid.getDetectedArts(), 2u);
 }
 
+// Covers XY artifact grid behavior: point and segment intersection use cells and bounding square.
 TEST(XYArtifactGridTest, PointAndSegmentIntersectionUseCellsAndBoundingSquare)
 {
   XYArtifactGrid grid;
@@ -399,6 +425,7 @@ TEST(XYArtifactGridTest, PointAndSegmentIntersectionUseCellsAndBoundingSquare)
   EXPECT_FALSE(grid.segIntersectBound(-5, -5, -1, -1));
 }
 
+// Covers XY artifact grid behavior: process delta uses label clamps new values and ignores old values.
 TEST(XYArtifactGridTest, ProcessDeltaUsesLabelClampsNewValuesAndIgnoresOldValues)
 {
   XYArtifactGrid grid;
@@ -413,6 +440,7 @@ TEST(XYArtifactGridTest, ProcessDeltaUsesLabelClampsNewValuesAndIgnoresOldValues
   EXPECT_FALSE(grid.processDelta("artifact_grid@0,0"));
 }
 
+// Covers XY artifact grid behavior: invalid delta is not atomic after earlier cells are applied.
 TEST(XYArtifactGridTest, InvalidDeltaIsNotAtomicAfterEarlierCellsAreApplied)
 {
   XYArtifactGrid grid;
@@ -424,6 +452,7 @@ TEST(XYArtifactGridTest, InvalidDeltaIsNotAtomicAfterEarlierCellsAreApplied)
   EXPECT_NEAR(grid.getClearance(1), 0.0, kGeomTol);
 }
 
+// Covers XY field generator behavior: accepts convex polygons from object and spec.
 TEST(XYFieldGeneratorTest, AcceptsConvexPolygonsFromObjectAndSpec)
 {
   XYFieldGenerator generator;
@@ -436,6 +465,7 @@ TEST(XYFieldGeneratorTest, AcceptsConvexPolygonsFromObjectAndSpec)
   EXPECT_EQ(generator.getPolygon(99).size(), 0u);
 }
 
+// Covers XY field generator behavior: rejects non convex polygons and invalid snap.
 TEST(XYFieldGeneratorTest, RejectsNonConvexPolygonsAndInvalidSnap)
 {
   XYFieldGenerator generator;
@@ -453,6 +483,7 @@ TEST(XYFieldGeneratorTest, RejectsNonConvexPolygonsAndInvalidSnap)
   EXPECT_TRUE(generator.setSnap(0.5));
 }
 
+// Covers XY field generator behavior: accepts pick pos abbreviated polygon regions.
 TEST(XYFieldGeneratorTest, AcceptsPickPosAbbreviatedPolygonRegions)
 {
   XYFieldGenerator generator;
@@ -466,6 +497,7 @@ TEST(XYFieldGeneratorTest, AcceptsPickPosAbbreviatedPolygonRegions)
   EXPECT_FALSE(pavlab.contains(-40, -20));
 }
 
+// Covers XY field generator behavior: manual points respect region and buffer rules.
 TEST(XYFieldGeneratorTest, ManualPointsRespectRegionAndBufferRules)
 {
   XYFieldGenerator generator;
@@ -485,6 +517,7 @@ TEST(XYFieldGeneratorTest, ManualPointsRespectRegionAndBufferRules)
   EXPECT_EQ(generator.getPoints()[2].get_label(), "P2");
 }
 
+// Covers XY field generator behavior: pick pos style generation honors multiple regions and snap.
 TEST(XYFieldGeneratorTest, PickPosStyleGenerationHonorsMultipleRegionsAndSnap)
 {
   std::vector<XYPolygon> regions;
@@ -510,6 +543,7 @@ TEST(XYFieldGeneratorTest, PickPosStyleGenerationHonorsMultipleRegionsAndSnap)
   }
 }
 
+// Covers XY field generator behavior: nearest distance cache updates and can be forced.
 TEST(XYFieldGeneratorTest, NearestDistanceCacheUpdatesAndCanBeForced)
 {
   XYFieldGenerator generator;
@@ -529,6 +563,7 @@ TEST(XYFieldGeneratorTest, NearestDistanceCacheUpdatesAndCanBeForced)
   EXPECT_NEAR(generator.getGlobalNearest(), 5.0, kGeomTol);
 }
 
+// Covers XY field generator behavior: generate point falls back to first polygon center when max tries is zero.
 TEST(XYFieldGeneratorTest, GeneratePointFallsBackToFirstPolygonCenterWhenMaxTriesIsZero)
 {
   XYFieldGenerator generator;
@@ -544,6 +579,7 @@ TEST(XYFieldGeneratorTest, GeneratePointFallsBackToFirstPolygonCenterWhenMaxTrie
   EXPECT_NEAR(point.y(), 40.0, kGeomTol);
 }
 
+// Covers XY field generator behavior: generate point without polygons returns invalid origin point.
 TEST(XYFieldGeneratorTest, GeneratePointWithoutPolygonsReturnsInvalidOriginPoint)
 {
   XYFieldGenerator generator;
@@ -561,6 +597,7 @@ TEST(XYFieldGeneratorTest, GeneratePointWithoutPolygonsReturnsInvalidOriginPoint
   EXPECT_TRUE(generator.addAllRandomPoints(1));
 }
 
+// Covers XY field generator behavior: generate points honors target amount and optional flexible buffer.
 TEST(XYFieldGeneratorTest, GeneratePointsHonorsTargetAmountAndOptionalFlexibleBuffer)
 {
   XYFieldGenerator generator;
@@ -582,12 +619,14 @@ TEST(XYFieldGeneratorTest, GeneratePointsHonorsTargetAmountAndOptionalFlexibleBu
   EXPECT_EQ(generator.getPoints().size(), 2u);
 }
 
+// Covers XY field generator behavior: clear removes points but keeps configured polygons.
 TEST(XYFieldGeneratorTest, ClearRemovesPointsButKeepsConfiguredPolygons)
 {
   XYFieldGenerator generator;
   ASSERT_TRUE(generator.addPolygon(labeledSquare("field", 0, 0, 10, 10)));
   ASSERT_TRUE(generator.addPoint(1, 1));
 
+  // clear() resets generated points but preserves configured generation regions.
   generator.clear();
 
   EXPECT_EQ(generator.getPoints().size(), 0u);

@@ -1,0 +1,18 @@
+add_moos_cpp_test(test_logutils_core_alog
+  SOURCES
+    CoreALogTest.cpp
+  LIBS
+    logutils
+    mbutil
+  LABELS
+    logutils
+    LogUtils
+    ALogParsing
+  SUITE_LABELS
+    ALogEntryTest=ALogEntry
+    LogUtilsFieldParsingTest=LogUtils,ALogParsing
+    LogUtilsTimeTest=LogUtils,ALogParsing
+    LogUtilsIndexTest=LogUtils,ALogParsing
+    LogUtilsVectorKeyTest=LogUtils,ALogParsing
+    LogUtilsFileParsingTest=LogUtils,ALogParsing
+)

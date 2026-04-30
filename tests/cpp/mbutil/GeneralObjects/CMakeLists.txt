@@ -35,9 +35,10 @@ add_moos_cpp_test(test_mbutil_bundleout
     mbutil
   LABELS
     mbutil
-    BundleOut
-    OpenURL
-    ReleaseInfo
+  SUITE_LABELS
+    BundleOutTest=BundleOut
+    OpenURLTest=OpenURL
+    ReleaseInfoTest=ReleaseInfo
 )
 
 add_moos_cpp_test(test_mbutil_mbtimer

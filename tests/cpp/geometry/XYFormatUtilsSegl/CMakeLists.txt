@@ -6,7 +6,8 @@ add_moos_cpp_test(test_geometry_xyformatutils_segl
     mbutil
   LABELS
     geometry
-    XYSegList
-    XYFormatUtilsSegl
     formats
+  SUITE_LABELS
+    XYSegListTest=XYSegList
+    XYFormatUtilsSeglTest=XYFormatUtilsSegl
 )

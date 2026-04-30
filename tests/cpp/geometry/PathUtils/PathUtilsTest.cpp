@@ -16,6 +16,8 @@ namespace {
 
 XYSegList makeOutOfOrderWaypointLane()
 {
+  // A waypoint lane with metadata and out-of-order vertices lets tests separate
+  // route reordering behavior from metadata preservation behavior.
   XYSegList lane;
   lane.set_label("survey_lane");
   lane.add_vertex(0, 20, 11, "north_gate");
@@ -39,6 +41,7 @@ void expectVertex(const XYSegList& segl,
 
 }  // namespace
 
+// Covers path utils greedy path behavior: reorders waypoint lane by nearest neighbor progression.
 TEST(PathUtilsGreedyPathTest, ReordersWaypointLaneByNearestNeighborProgression)
 {
   XYSegList lane = makeOutOfOrderWaypointLane();
@@ -54,6 +57,7 @@ TEST(PathUtilsGreedyPathTest, ReordersWaypointLaneByNearestNeighborProgression)
   EXPECT_NEAR(ordered.length(), 1.0 + std::hypot(11.0, 20.0) + 1.0, kGeomTol);
 }
 
+// Covers path utils greedy path behavior: uses current chosen vertex as next search origin.
 TEST(PathUtilsGreedyPathTest, UsesCurrentChosenVertexAsNextSearchOrigin)
 {
   XYSegList route;
@@ -69,6 +73,7 @@ TEST(PathUtilsGreedyPathTest, UsesCurrentChosenVertexAsNextSearchOrigin)
   expectVertex(ordered, 2, 100, 8, "far_from_second");
 }
 
+// Covers path utils greedy path behavior: preserves duplicate waypoints as distinct visits.
 TEST(PathUtilsGreedyPathTest, PreservesDuplicateWaypointsAsDistinctVisits)
 {
   XYSegList route;
@@ -84,8 +89,11 @@ TEST(PathUtilsGreedyPathTest, PreservesDuplicateWaypointsAsDistinctVisits)
   expectVertex(ordered, 2, 10, 0, "exit");
 }
 
+// Covers path utils greedy path behavior: reorders BHV waypoint mission pts from current ownship position.
 TEST(PathUtilsGreedyPathTest, ReordersBhvWaypointMissionPtsFromCurrentOwnshipPosition)
 {
+  // Mirrors a BHV_Waypoint pts={...} route where greedy ordering begins from
+  // the vehicle's current position rather than from the first listed point.
   XYSegList route = string2SegList("pts={60,-40:60,-160:150,-160:150,-40}");
 
   ASSERT_TRUE(route.valid());
@@ -99,6 +107,7 @@ TEST(PathUtilsGreedyPathTest, ReordersBhvWaypointMissionPtsFromCurrentOwnshipPos
   EXPECT_NEAR(ordered.length(), 90.0 + 120.0 + 90.0, kGeomTol);
 }
 
+// Covers path utils greedy path behavior: keeps already ordered colregs transit route from start point.
 TEST(PathUtilsGreedyPathTest, KeepsAlreadyOrderedColregsTransitRouteFromStartPoint)
 {
   XYSegList route = string2SegList("pts={190,25:155,-20:45,-85:-40,-100}");
@@ -113,6 +122,7 @@ TEST(PathUtilsGreedyPathTest, KeepsAlreadyOrderedColregsTransitRouteFromStartPoi
   expectVertex(ordered, 3, -40, -100, "");
 }
 
+// Covers path utils greedy path behavior: breaks equal distance ties by original vertex order.
 TEST(PathUtilsGreedyPathTest, BreaksEqualDistanceTiesByOriginalVertexOrder)
 {
   XYSegList route;
@@ -128,6 +138,7 @@ TEST(PathUtilsGreedyPathTest, BreaksEqualDistanceTiesByOriginalVertexOrder)
   expectVertex(ordered, 2, -1, 0, "west");
 }
 
+// Covers path utils greedy path behavior: handles empty and single vertex routes.
 TEST(PathUtilsGreedyPathTest, HandlesEmptyAndSingleVertexRoutes)
 {
   XYSegList empty;
@@ -143,8 +154,11 @@ TEST(PathUtilsGreedyPathTest, HandlesEmptyAndSingleVertexRoutes)
   expectVertex(one_ordered, 0, 42, -7, "only_waypoint");
 }
 
+// Covers path utils greedy path behavior: current behavior drops route metadata and vertex z values.
 TEST(PathUtilsGreedyPathTest, CurrentBehaviorDropsRouteMetadataAndVertexZValues)
 {
+  // Pin current greedyPath behavior: it rebuilds a bare XYSegList and does not
+  // carry labels, edge tags, or vertex z values forward.
   XYSegList lane = makeOutOfOrderWaypointLane();
   EdgeTagSet tags;
   ASSERT_TRUE(tags.addEdgeTag(EdgeTag(0, 1, "survey_edge")));
@@ -159,6 +173,7 @@ TEST(PathUtilsGreedyPathTest, CurrentBehaviorDropsRouteMetadataAndVertexZValues)
     EXPECT_NEAR(ordered.get_vz(i), 0.0, kGeomTol);
 }
 
+// Covers edge tag behavior: default tag is invalid until adjacent indices and tag are set.
 TEST(EdgeTagTest, DefaultTagIsInvalidUntilAdjacentIndicesAndTagAreSet)
 {
   EdgeTag tag;
@@ -175,6 +190,7 @@ TEST(EdgeTagTest, DefaultTagIsInvalidUntilAdjacentIndicesAndTagAreSet)
   EXPECT_EQ(tag.getSpec(), "2:3:boundary");
 }
 
+// Covers edge tag behavior: constructs serializes and matches undirected adjacent edges.
 TEST(EdgeTagTest, ConstructsSerializesAndMatchesUndirectedAdjacentEdges)
 {
   EdgeTag tag(7, 6, "no_cross");
@@ -191,6 +207,7 @@ TEST(EdgeTagTest, ConstructsSerializesAndMatchesUndirectedAdjacentEdges)
   EXPECT_FALSE(tag.matches(6, 8));
 }
 
+// Covers edge tag behavior: rejects non adjacent index updates without changing valid tag.
 TEST(EdgeTagTest, RejectsNonAdjacentIndexUpdatesWithoutChangingValidTag)
 {
   EdgeTag tag(4, 5, "lane");
@@ -202,6 +219,7 @@ TEST(EdgeTagTest, RejectsNonAdjacentIndexUpdatesWithoutChangingValidTag)
   EXPECT_FALSE(tag.matches(1, 3, "lane"));
 }
 
+// Covers edge tag behavior: parses trimmed specs and rejects malformed inputs.
 TEST(EdgeTagTest, ParsesTrimmedSpecsAndRejectsMalformedInputs)
 {
   EdgeTag tag;
@@ -219,15 +237,18 @@ TEST(EdgeTagTest, ParsesTrimmedSpecsAndRejectsMalformedInputs)
   EXPECT_FALSE(tag.setOnSpec("12:13"));
 }
 
+// Covers edge tag behavior: current parser ignores fields after the third colon token.
 TEST(EdgeTagTest, CurrentParserIgnoresFieldsAfterTheThirdColonToken)
 {
   EdgeTag tag;
 
+  // Extra colon-separated fields are silently dropped after the tag token.
   EXPECT_TRUE(tag.setOnSpec("1:2:gate:ignored"));
   EXPECT_TRUE(tag.valid());
   EXPECT_EQ(tag.getSpec(), "1:2:gate");
 }
 
+// Covers edge tag set behavior: adds only valid tags and serializes in insertion order.
 TEST(EdgeTagSetTest, AddsOnlyValidTagsAndSerializesInInsertionOrder)
 {
   EdgeTagSet tags;
@@ -248,10 +269,13 @@ TEST(EdgeTagSetTest, AddsOnlyValidTagsAndSerializesInInsertionOrder)
   EXPECT_FALSE(tags.matches(1, 0, "exit"));
 }
 
+// Covers edge tag set behavior: parses all supported spec wrappers while returning false on success.
 TEST(EdgeTagSetTest, ParsesAllSupportedSpecWrappersWhileReturningFalseOnSuccess)
 {
   EdgeTagSet tags;
 
+  // setOnSpec() currently returns false even when it successfully parses and
+  // appends tags; callers inspect the resulting set instead of the return code.
   EXPECT_FALSE(tags.setOnSpec("tags={2:3:end#4:5:start}"));
   ASSERT_EQ(tags.size(), 2u);
   EXPECT_TRUE(tags.matches(3, 2, "end"));
@@ -266,6 +290,7 @@ TEST(EdgeTagSetTest, ParsesAllSupportedSpecWrappersWhileReturningFalseOnSuccess)
   EXPECT_TRUE(tags.matches(9, 8, "gate"));
 }
 
+// Covers edge tag set behavior: malformed batch does not partially merge earlier valid tags.
 TEST(EdgeTagSetTest, MalformedBatchDoesNotPartiallyMergeEarlierValidTags)
 {
   EdgeTagSet tags;
@@ -278,6 +303,7 @@ TEST(EdgeTagSetTest, MalformedBatchDoesNotPartiallyMergeEarlierValidTags)
   EXPECT_FALSE(tags.matches(2, 3, "valid"));
 }
 
+// Covers edge tag set behavior: appends parsed tags instead of replacing existing tags.
 TEST(EdgeTagSetTest, AppendsParsedTagsInsteadOfReplacingExistingTags)
 {
   EdgeTagSet tags;
@@ -289,6 +315,7 @@ TEST(EdgeTagSetTest, AppendsParsedTagsInsteadOfReplacingExistingTags)
   EXPECT_EQ(tags.getSpec(), "tags={0:1:entry#1:2:middle#2:3:exit}");
 }
 
+// Covers edge tag set behavior: round trips through XY seg list specs for tagged region boundaries.
 TEST(EdgeTagSetTest, RoundTripsThroughXYSegListSpecsForTaggedRegionBoundaries)
 {
   EdgeTagSet tags;

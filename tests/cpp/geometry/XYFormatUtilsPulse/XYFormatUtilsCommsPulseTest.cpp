@@ -9,6 +9,7 @@
 #include "XYCommsPulse.h"
 #include "XYFormatUtilsCommsPulse.h"
 
+// Covers XY format utils comms pulse behavior: parses view comms pulse payload from node comms.
 TEST(XYFormatUtilsCommsPulseTest, ParsesViewCommsPulsePayloadFromNodeComms)
 {
   XYCommsPulse pulse = stringStandard2CommsPulse(
@@ -41,6 +42,7 @@ TEST(XYFormatUtilsCommsPulseTest, ParsesViewCommsPulsePayloadFromNodeComms)
   EXPECT_FALSE(pulse.active());
 }
 
+// Covers XY format utils comms pulse behavior: parses documented node comms pulse info payload.
 TEST(XYFormatUtilsCommsPulseTest, ParsesDocumentedNodeCommsPulseInfoPayload)
 {
   XYCommsPulse pulse = string2CommsPulse(
@@ -59,6 +61,7 @@ TEST(XYFormatUtilsCommsPulseTest, ParsesDocumentedNodeCommsPulseInfoPayload)
   EXPECT_EQ(pulse.get_color_str("edge"), "green");
 }
 
+// Covers XY format utils comms pulse behavior: round trips node comms generated auto pulse.
 TEST(XYFormatUtilsCommsPulseTest, RoundTripsNodeCommsGeneratedAutoPulse)
 {
   // uFldNodeComms::postViewCommsPulse uses label=vname1+"2"+vname2
@@ -91,6 +94,7 @@ TEST(XYFormatUtilsCommsPulseTest, RoundTripsNodeCommsGeneratedAutoPulse)
   EXPECT_EQ(parsed.get_color_str("fill"), "orange");
 }
 
+// Covers XY format utils comms pulse behavior: round trips node comms explicit color label suffix.
 TEST(XYFormatUtilsCommsPulseTest, RoundTripsNodeCommsExplicitColorLabelSuffix)
 {
   // Explicit pcolor values are appended to the uFldNodeComms label and used
@@ -115,6 +119,7 @@ TEST(XYFormatUtilsCommsPulseTest, RoundTripsNodeCommsExplicitColorLabelSuffix)
   EXPECT_NEAR(parsed.get_time(), 42.0, kGeomTol);
 }
 
+// Covers XY format utils comms pulse behavior: requires all source and target coordinates.
 TEST(XYFormatUtilsCommsPulseTest, RequiresAllSourceAndTargetCoordinates)
 {
   EXPECT_FALSE(string2CommsPulse("sy=0,tx=10,ty=20").valid());
@@ -135,6 +140,7 @@ TEST(XYFormatUtilsCommsPulseTest, RequiresAllSourceAndTargetCoordinates)
   EXPECT_NEAR(defaults.get_edge_size(), 0.0, kGeomTol);
 }
 
+// Covers XY format utils comms pulse behavior: preserves loose optional field behavior.
 TEST(XYFormatUtilsCommsPulseTest, PreservesLooseOptionalFieldBehavior)
 {
   XYCommsPulse pulse = string2CommsPulse(
@@ -157,6 +163,7 @@ TEST(XYFormatUtilsCommsPulseTest, PreservesLooseOptionalFieldBehavior)
   EXPECT_EQ(pulse.get_color_str("fill"), "green");
 }
 
+// Covers XY comms pulse behavior: builds triangle at target with beam width perpendicular to path.
 TEST(XYCommsPulseTest, BuildsTriangleAtTargetWithBeamWidthPerpendicularToPath)
 {
   XYCommsPulse pulse;
@@ -185,6 +192,7 @@ TEST(XYCommsPulseTest, BuildsTriangleAtTargetWithBeamWidthPerpendicularToPath)
   EXPECT_TRUE(pulse.get_triangle(14.01).empty());
 }
 
+// Covers XY comms pulse behavior: builds eastbound triangle and handles zero beam width.
 TEST(XYCommsPulseTest, BuildsEastboundTriangleAndHandlesZeroBeamWidth)
 {
   XYCommsPulse pulse(0, 0, 100, 0);
@@ -209,6 +217,7 @@ TEST(XYCommsPulseTest, BuildsEastboundTriangleAndHandlesZeroBeamWidth)
   EXPECT_NEAR(zero_width[5], 0.0, kGeomTol);
 }
 
+// Covers XY comms pulse behavior: fades fill over duration.
 TEST(XYCommsPulseTest, FadesFillOverDuration)
 {
   XYCommsPulse pulse(0, 0, 10, 0);
@@ -222,6 +231,7 @@ TEST(XYCommsPulseTest, FadesFillOverDuration)
   EXPECT_NEAR(pulse.get_fill(23), 0.0, kGeomTol);
 }
 
+// Covers XY comms pulse behavior: zero duration pulse exists only at post time.
 TEST(XYCommsPulseTest, ZeroDurationPulseExistsOnlyAtPostTime)
 {
   XYCommsPulse pulse(0, 0, 10, 0);
@@ -235,6 +245,7 @@ TEST(XYCommsPulseTest, ZeroDurationPulseExistsOnlyAtPostTime)
   EXPECT_NEAR(pulse.get_fill(20.01), 0.0, kGeomTol);
 }
 
+// Covers XY comms pulse behavior: documents current target getter quirk.
 TEST(XYCommsPulseTest, DocumentsCurrentTargetGetterQuirk)
 {
   XYCommsPulse pulse(1, 2, 30, 40);
@@ -249,6 +260,7 @@ TEST(XYCommsPulseTest, DocumentsCurrentTargetGetterQuirk)
   EXPECT_TRUE(stringContains(spec, "ty=40"));
 }
 
+// Covers XY comms pulse behavior: serializes viewer compatible spec.
 TEST(XYCommsPulseTest, SerializesViewerCompatibleSpec)
 {
   XYCommsPulse pulse(1.234567, -2.345678, 9.876543, 8.765432);

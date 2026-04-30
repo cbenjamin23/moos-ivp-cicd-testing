@@ -1,17 +1,104 @@
-# C++ Unit Tests
+# C++ Tests
 
-This tree contains MOOS-IvP library-level tests that do not launch missions.
-They are built with the repo through CMake, registered with CTest, and written
-with GoogleTest.
+## TLDR
 
-## Run Everything
+This directory contains fast C++ tests for MOOS-IvP libraries and helpers. They
+do not launch MOOS missions. Use them when you want to check a parser, geometry
+object, math helper, app utility, or other C++ component directly.
+
+The setup has two parts:
+
+- GoogleTest is what you write in `*Test.cpp`: `TEST(SuiteName, CaseName)`.
+- CTest is what you run from the build tree. CI uses CTest labels to run all
+  tests or focused subsets.
+
+To add tests, put the test file under `tests/cpp/<library>/<area>`, register it
+with `add_moos_cpp_test` in that area's `CMakeLists.txt`, and give it useful
+labels.
+
+Run a focused label:
+
+```bash
+ctest --test-dir build -L geometry --output-on-failure
+```
+
+Run one GoogleTest suite while editing:
+
+```bash
+./bin/test_geometry_arcutils --gtest_filter='ArcUtilsIntersectionTest.*'
+```
+
+The sections below explain the structure and conventions in more detail. The
+suite is designed for targeted regression work. A developer should be able to
+run:
+
+- all C++ tests with `ctest --test-dir build --output-on-failure`
+- one library with a label, such as `ctest --test-dir build -L geometry`
+- one component with a label, such as `ctest --test-dir build -L XYArc`
+- one GoogleTest suite with an executable filter, such as
+  `./bin/test_geometry_arcutils --gtest_filter='ArcUtilsIntersectionTest.*'`
+
+## Mental Model
+
+Each test target has three layers:
+
+- CMake target: one executable, created with `add_moos_cpp_test`
+- GoogleTest suites: source-level groups such as `XYPointTest` or
+  `ZAICPeakTest`
+- CTest cases: one registered test per GoogleTest test case, with labels
+
+CTest is the main runner because it understands labels and is what CI uses.
+GoogleTest is the assertion framework inside each executable.
+
+## CTest And GoogleTest
+
+GoogleTest is where tests are written. A test source usually contains cases
+like this:
+
+```cpp
+TEST(XYPointTest, ParsesViewerPointWithLabelAndColor)
+{
+  XYPoint point = string2Point("x=10,y=20,label=alpha,vertex_color=red");
+
+  EXPECT_TRUE(point.valid());
+  EXPECT_DOUBLE_EQ(point.x(), 10);
+  EXPECT_DOUBLE_EQ(point.y(), 20);
+  EXPECT_EQ(point.get_label(), "alpha");
+}
+```
+
+The first argument, `XYPointTest`, is the GoogleTest suite. The second argument
+is the case name. Together they form the GoogleTest filter name:
+
+```text
+XYPointTest.ParsesViewerPointWithLabelAndColor
+```
+
+CTest is the runner around those GoogleTest cases. CMake discovers each
+GoogleTest case and registers it as a separate CTest case with the executable
+name prepended:
+
+```text
+test_geometry_xyformatutils_point.XYPointTest.ParsesViewerPointWithLabelAndColor
+```
+
+That means:
+
+- use CTest when you want CI-equivalent behavior, labels, or broad subsets
+- use `--gtest_filter` on the executable when iterating on one suite or case
+- use CTest labels when the boundary is a library, component, app impact, or
+  cross-cutting domain
+
+## Run Tests
+
+Build and run everything:
 
 ```bash
 ./build.sh
 ctest --test-dir build --output-on-failure
 ```
 
-If the local build cache has an old `MOOSIVP_SOURCE_TREE_BASE`, reconfigure once:
+If the build cache points at the wrong MOOS-IvP checkout, reconfigure once:
 
 ```bash
 cmake -S . -B build -DMOOSIVP_SOURCE_TREE_BASE=/path/to/moos-ivp
@@ -19,266 +106,277 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-## Run One Tool
-
-Each suite has CTest labels for the library area and the specific tool. Examples:
+Run a focused CTest label:
 
 ```bash
-ctest --test-dir build -L ArcUtils --output-on-failure
-ctest --test-dir build -L ArcUtilsToDo --output-on-failure
+ctest --test-dir build -L geometry --output-on-failure
 ctest --test-dir build -L XYArc --output-on-failure
-ctest --test-dir build -L CircularUtils --output-on-failure
-ctest --test-dir build -L XYPrimitiveShapes --output-on-failure
-ctest --test-dir build -L Dubins --output-on-failure
-ctest --test-dir build -L TrackProximity --output-on-failure
-ctest --test-dir build -L GeomUtils --output-on-failure
-ctest --test-dir build -L XYFormatUtilsCircle --output-on-failure
-ctest --test-dir build -L XYFormatUtilsVector --output-on-failure
-ctest --test-dir build -L XYFormatUtilsMarker --output-on-failure
-ctest --test-dir build -L XYFormatUtilsPulse --output-on-failure
-ctest --test-dir build -L XYFormatUtilsSeglr --output-on-failure
-ctest --test-dir build -L XYFormatUtilsWedge --output-on-failure
-ctest --test-dir build -L XYViewerShapes --output-on-failure
-ctest --test-dir build -L XYConvexGrid --output-on-failure
-ctest --test-dir build -L XYGridUpdate --output-on-failure
-ctest --test-dir build -L PathUtils --output-on-failure
-ctest --test-dir build -L CPAEngine --output-on-failure
-ctest --test-dir build -L CPAPlatform --output-on-failure
-ctest --test-dir build -L CPAVariants --output-on-failure
-ctest --test-dir build -L FieldArtifacts --output-on-failure
-ctest --test-dir build -L PolygonGeneration --output-on-failure
-ctest --test-dir build -L ViewPlugSettings --output-on-failure
-ctest --test-dir build -L MiscGeometryTools --output-on-failure
-ctest --test-dir build -L IOAndPopulators --output-on-failure
-ctest --test-dir build -L ObjectBaseBuild --output-on-failure
-ctest --test-dir build -L GeoShapesLifecycle --output-on-failure
-ctest --test-dir build -L ivpbuild --output-on-failure
-ctest --test-dir build -L ZAIC --output-on-failure
-ctest --test-dir build -L AOF --output-on-failure
-ctest --test-dir build -L PDMapBuilder --output-on-failure
-ctest --test-dir build -L FunctionEncoder --output-on-failure
-ctest --test-dir build -L OF_Coupler --output-on-failure
-ctest --test-dir build -L OF_Rater --output-on-failure
-ctest --test-dir build -L bhvutil --output-on-failure
-ctest --test-dir build -L ExFilterSet --output-on-failure
-ctest --test-dir build -L FixedTurn --output-on-failure
-ctest --test-dir build -L WaypointEngine --output-on-failure
-ctest --test-dir build -L LoiterEngine --output-on-failure
-ctest --test-dir build -L formats --output-on-failure
-ctest --test-dir build -L mbutil --output-on-failure
-ctest --test-dir build -L MBUtilsParsing --output-on-failure
-ctest --test-dir build -L MBUtilsMisc --output-on-failure
-ctest --test-dir build -L VarDataPair --output-on-failure
-ctest --test-dir build -L NodeMessage --output-on-failure
-ctest --test-dir build -L JsonUtils --output-on-failure
-ctest --test-dir build -L StringTree --output-on-failure
-ctest --test-dir build -L FColorMap --output-on-failure
-ctest --test-dir build -L logic --output-on-failure
-ctest --test-dir build -L LogicCondition --output-on-failure
-ctest --test-dir build -L InfoBuffer --output-on-failure
-ctest --test-dir build -L LedgerSnap --output-on-failure
-ctest --test-dir build -L contacts --output-on-failure
-ctest --test-dir build -L NodeRecord --output-on-failure
-ctest --test-dir build -L NodeRider --output-on-failure
-ctest --test-dir build -L evalutil --output-on-failure
-ctest --test-dir build -L VCheck --output-on-failure
-ctest --test-dir build -L LogicTestSequence --output-on-failure
-ctest --test-dir build -L obstacles --output-on-failure
-ctest --test-dir build -L ObstacleFieldGenerator --output-on-failure
-ctest --test-dir build -L ucommand --output-on-failure
-ctest --test-dir build -L CommandFolio --output-on-failure
+ctest --test-dir build -L BHV_Waypoint --output-on-failure
+ctest --test-dir build -L pMarineViewer --output-on-failure
 ```
 
-You can also run one test executable directly:
+CTest label matching is regex-based. Anchor broad labels when needed:
+
+```bash
+ctest --test-dir build -L '^behaviors$' --output-on-failure
+```
+
+Run one executable directly:
 
 ```bash
 ./bin/test_geometry_arcutils
-./bin/test_geometry_xyarc
-./bin/test_geometry_circularutils
-./bin/test_geometry_xyprimitive_shapes
-./bin/test_geometry_dubins
-./bin/test_geometry_trackproximity
-./bin/test_geometry_xyformatutils_circle
-./bin/test_geometry_xyformatutils_vector
-./bin/test_geometry_xyformatutils_marker
-./bin/test_geometry_xyformatutils_pulse
-./bin/test_geometry_xyformatutils_seglr
-./bin/test_geometry_xyformatutils_wedge
-./bin/test_geometry_xyviewer_shapes
-./bin/test_geometry_xyconvexgrid
-./bin/test_geometry_xygrid_family
-./bin/test_geometry_pathutils
-./bin/test_geometry_cpaengine
-./bin/test_geometry_cpaplatform
-./bin/test_geometry_cpavariants
-./bin/test_geometry_field_artifacts
-./bin/test_geometry_polygon_generation
-./bin/test_geometry_viewplug_settings
-./bin/test_geometry_misc_geometry_tools
-./bin/test_geometry_io_and_populators
-./bin/test_geometry_objectbasebuild
-./bin/test_geometry_geoshapes_lifecycle
-./bin/test_ivpbuild_aof
 ./bin/test_ivpbuild_zaic
-./bin/test_ivpbuild_pdmap_encoding
-./bin/test_bhvutil_exfilterset
-./bin/test_bhvutil_fixedturn
-./bin/test_bhvutil_waypoint_engine
-./bin/test_bhvutil_loiter_engine
-./bin/test_mbutil_mbutils_parsing
-./bin/test_mbutil_mbutils_tokens
-./bin/test_mbutil_mbutils_validation
-./bin/test_mbutil_mbutils_formatting
-./bin/test_mbutil_mbutils_misc
-./bin/test_mbutil_vardatapair
-./bin/test_mbutil_nodemessage
-./bin/test_mbutil_color
-./bin/test_mbutil_macro_hash
-./bin/test_mbutil_misc_objects
-./bin/test_mbutil_jsonutils
-./bin/test_mbutil_latlon_format_utils
-./bin/test_mbutil_vquals
-./bin/test_mbutil_stringtree
-./bin/test_mbutil_fcolormap
-./bin/test_mbutil_figlog
-./bin/test_mbutil_scopeentry
-./bin/test_mbutil_bundleout
-./bin/test_mbutil_mbtimer
-./bin/test_logic_conditions
-./bin/test_logic_infobuffer
-./bin/test_logic_conditional_ledger
-./bin/test_contacts_noderecord
-./bin/test_contacts_noderider
-./bin/test_evalutil_vcheck
-./bin/test_evalutil_logic_sequence
-./bin/test_obstacles_obstacle
-./bin/test_ucommand_command_folio
 ```
 
-## Run In GitHub Actions
+Run one GoogleTest suite or case directly:
 
-The `Build And Check Active Harnesses` workflow has a `cpp_test_filter` dispatch
-input. Use `all` for the full C++ suite, or pass any CTest label such as
-`ArcUtils`, `ArcUtilsToDo`, `XYArc`, `CircularUtils`, `XYPrimitiveShapes`,
-`Dubins`, `TrackProximity`, `XYFormatUtilsPoly`, `XYFormatUtilsVector`,
-`XYFormatUtilsMarker`, `XYFormatUtilsPulse`, `XYFormatUtilsSeglr`,
-`XYFormatUtilsWedge`, `XYViewerShapes`, `XYGridUpdate`, `PathUtils`,
-`XYConvexGrid`, `CPAEngine`, `CPAPlatform`, `CPAVariants`,
-`FieldArtifacts`, `PolygonGeneration`, `ViewPlugSettings`,
-`MiscGeometryTools`, `IOAndPopulators`, `ObjectBaseBuild`,
-`GeoShapesLifecycle`, `ivpbuild`, `ZAIC`, `AOF`, `PDMapBuilder`,
-`FunctionEncoder`, `OF_Coupler`, `OF_Rater`, `bhvutil`, `ExFilterSet`,
-`FixedTurn`, `FixedTurnSet`, `WaypointEngine`, `LoiterEngine`, `formats`, `math`,
-`mbutil`, `MBUtils`, `MBUtilsParsing`, `MBUtilsTokens`,
-`MBUtilsValidation`, `MBUtilsFormatting`, `MBUtilsMisc`, `VarDataPair`,
-`NodeMessage`, `ColorPack`, `ColorParse`, `MacroUtils`, `HashUtils`,
-`AckMessage`, `MailFlagSet`, `TStamp`, `Odometer`, `FileBuffer`,
-`JsonUtils`, `LatLonFormatUtils`, `VQuals`, `StringTree`, `FColorMap`,
-`Figlog`, `ScopeEntry`, `BundleOut`, `MBTimer`, `logic`,
-`LogicCondition`, `LogicUtils`, `ParseNode`, `InfoBuffer`, `LogicBuffer`,
-`ConditionalParam`, or `LedgerSnap`.
-`NodeReport`, `NodeRecord`, `NodeRecordUtils`, `NodeRider`, `NodeRiderSet`,
-`evalutil`, `VCheck`, `VCheckSet`, `LogicAspect`, or `LogicTestSequence`.
-`obstacles`, `Obstacle`, or `ObstacleFieldGenerator`.
-`ucommand`, `CommandItem`, `CommandFolio`, `CommandPost`, or
-`CommandSummary`.
+```bash
+./bin/test_geometry_arcutils --gtest_filter='ArcUtilsIntersectionTest.*'
+./bin/test_ivpbuild_zaic --gtest_filter='ZAICPeakTest.CoursePeakWrapsAcrossNorthForHelmHeadingDomains'
+```
 
-## Current Seed Suites
+List labels and discovered tests:
 
-- `AngleUtils`
-- `GeomUtils`
-- `ArcUtils` / `ArcUtilsToDo`
-- `XYArc`
-- `CircularUtils`
-- `XYPrimitiveShapes` / `XYArrow` / `XYSegment` / `XYSquare`
-- `Dubins` / `DubinsTurn` / `DubinsCache`
-- `TrackProximity` / `LinearExtrapolator` / `WrapDetector` / `ProxPoint`
-- `XYFormatUtilsPoint` / `XYPoint`
-- `XYFormatUtilsPoly` / `XYPolygon`
-- `XYFormatUtilsSegl` / `XYSegList`
-- `XYFormatUtilsSeglr` / `XYSeglr` / `Seglr`
-- `XYFormatUtilsCircle` / `XYCircle`
-- `XYFormatUtilsVector` / `XYVector`
-- `XYFormatUtilsMarker` / `XYMarker`
-- `XYFormatUtilsPulse` / `XYRangePulse` / `XYCommsPulse`
-- `XYFormatUtilsWedge` / `XYWedge`
-- `XYViewerShapes` / `XYOval` / `XYTextBox` / `XYVessel`
-- `XYConvexGrid`
-- `XYGrid` / `XYHexGrid` / `XYHexagon` / `XYGridUpdate`
-- `PathUtils` / `EdgeTag` / `EdgeTagSet`
-- `CPAEngine`
-- `CPAPlatform` / `BNGEngine` / `CPA_Utils` / `PlatModel`
-- `CPAVariants` / `CPAEngineRoot` / `CPAEngineThin` / `CPAEngineV15`
-- `FieldArtifacts` / `ArtifactUtils` / `CurrentField` / `OpField`
-- `PolygonGeneration` / `ConvexHullGenerator` / `XYPolyExpander` /
-  `XYPatternBlock`
-- `ViewPlugSettings` / `HintHolder` / `VPlug_GeoSettings` /
-  `VPlug_VehiSettings` / `VPlug_DropPoints` / `VPlug_GeoShapesMap`
-- `MiscGeometryTools` / `SeglrUtils` / `WallEngine` / `XYEncoders` /
-  `XYFormatUtilsConvexGrid` / `XYArtifactGrid` / `XYFieldGenerator`
-- `IOAndPopulators` / `IO_GeomUtils` / `Populator_OpField`
-- `ObjectBaseBuild` / `XYObject` / `XYBuildUtils`
-- `GeoShapesLifecycle` / `VPlug_GeoShapes`
-- `AOF` / `AOF_Linear` / `AOF_Quadratic` / `AOF_Gaussian` /
-  `AOF_MGaussian` / `AOF_Ring` / `AOF_Rings`
-- `ZAIC` / `ZAIC_PEAK` / `ZAIC_SPD` / `ZAIC_HDG` / `ZAIC_LEQ` /
-  `ZAIC_HEQ` / `ZAIC_HLEQ` / `ZAIC_Vector`
-- `PDMapBuilder` / `FunctionEncoder` / `OF_Coupler` / `OF_Rater`
-- `ExFilterSet`
-- `FixedTurn` / `FixedTurnSet`
-- `WaypointEngine`
-- `LoiterEngine`
-- `MBUtils` / `MBUtilsParsing` / `MBUtilsTokens` / `MBUtilsValidation` /
-  `MBUtilsFormatting` / `MBUtilsMisc`
-- `VarDataPair` / `NodeMessage`
-- `ColorPack` / `ColorParse`
-- `MacroUtils` / `HashUtils`
-- `AckMessage` / `MailFlagSet` / `TStamp` / `Odometer` / `FileBuffer`
-- `JsonUtils` / `LatLonFormatUtils` / `VQuals` / `StringTree`
-- `FColorMap` / `Figlog` / `ScopeEntry` / `BundleOut` / `MBTimer`
-- `LogicCondition` / `LogicUtils` / `ParseNode`
-- `InfoBuffer` / `LogicBuffer`
-- `ConditionalParam` / `LedgerSnap`
-- `NodeRecord` / `NodeRecordUtils` / `NodeRider` / `NodeRiderSet`
-- `VCheck` / `VCheckSet` / `LogicAspect` / `LogicTestSequence`
-- `Obstacle` / `ObstacleFieldGenerator`
-- `CommandItem` / `CommandFolio` / `CommandPost` / `CommandSummary`
+```bash
+ctest --test-dir build --print-labels
+ctest --test-dir build -N
+```
 
-Use tool-centric directories for new tests. Prefer names that explain the
-MOOS-IvP use case or format being protected, for example
-`ParsesViewPolygonPtsSpecUsedByOpRegionAndObstacles`.
+## Layout
 
-## Per-Tool Coverage Standard
-
-The goal is not one smoke test per tool. Each tool suite should cover the
-shape of that tool thoroughly enough that a changed MOOS-IvP checkout gives a
-specific failure.
-
-For format parsers, include:
-
-- canonical payloads posted by apps or behaviors, such as `VIEW_POLYGON`,
-  `VIEW_SEGLIST`, `VIEW_POINT`, and `VIEW_GRID`
-- abbreviated and standard forms when both are supported
-- render hints and object metadata such as labels, colors, source, type, and
-  sizes
-- malformed inputs and edge inputs accepted by the current implementation
-- serialization or round-trip checks where the API exposes a stable spec
-
-For geometry objects and algorithms, include:
-
-- nominal geometry and boundary cases
-- degenerate inputs such as empty objects, one-point objects, zero radius, or
-  zero turn angle
-- wraparound heading/angle cases
-- both crossing/intersection and non-crossing/non-intersection cases
-- distance/value-returning functions as well as boolean classifiers
-- MOOS-IvP use cases when applicable, such as waypoint lanes, loiter regions,
-  OpRegion polygons, obstacle polygons, turn arcs, contact CPA, and search
-  grids
-
-For each test name, prefer `ToolArea.Context.ExpectedBehavior`, for example:
+Use this structure:
 
 ```text
-ArcUtilsIntersectionTest.ReportsSeglistCrossingPointsAndClearsOutputVectors
-XYConvexGridTest.ParsesViewGridSpecWithCellUpdatesAndLimits
+tests/cpp/<library>/CMakeLists.txt
+tests/cpp/<library>/<area>/CMakeLists.txt
+tests/cpp/<library>/<area>/*Test.cpp
+tests/cpp/support/*
 ```
+
+Examples:
+
+```text
+tests/cpp/geometry/XYFormatUtilsPoint/XYFormatUtilsPointTest.cpp
+tests/cpp/ivpbuild/ZAIC/ZAICTest.cpp
+tests/cpp/mbutil/CoreString/MBUtilsTest.cpp
+```
+
+The top-level library directory should match the upstream library or practical
+repo bucket. The `<area>` directory should group a coherent component family,
+not a random collection of unrelated tests.
+
+Shared helpers live in `tests/cpp/support` and are automatically included for
+every target created with `add_moos_cpp_test`.
+
+## CMake Pattern
+
+Every leaf test target should use `add_moos_cpp_test`. It is this repo's CMake
+wrapper for a C++ test executable. It creates the executable, links GoogleTest,
+adds shared test includes, asks CMake to discover the GoogleTest cases, and
+attaches CTest labels/environment settings.
+
+Use it instead of hand-writing `add_executable`, `target_link_libraries`, and
+`gtest_discover_tests` for normal C++ tests:
+
+```cmake
+add_moos_cpp_test(test_geometry_xyformatutils_point
+  SOURCES
+    XYFormatUtilsPointTest.cpp
+  LIBS
+    geometry
+    mbutil
+  LABELS
+    geometry
+    formats
+  SUITE_LABELS
+    XYPointTest=XYPoint
+    XYFormatUtilsPointTest=XYFormatUtilsPoint
+)
+```
+
+Supported arguments:
+
+- `SOURCES`: test files and any extra app/library source files
+- `LIBS`: libraries to link
+- `INCLUDES`: target-specific include directories
+- `DEFINES`: target-specific compile definitions
+- `LABELS`: CTest labels applied to every discovered case in the executable
+- `SUITE_LABELS`: labels applied only to matching GoogleTest suites, written as
+  `SuiteName=LabelA,LabelB`
+- `WORKING_DIRECTORY`: optional CTest working directory
+- `DISCOVERY_MODE`: optional GoogleTest discovery mode, such as `PRE_TEST`
+- `ENVIRONMENT`: optional CTest environment entries such as `NAME=value`
+
+Keep target setup inside `add_moos_cpp_test` when possible. Avoid follow-up
+`target_link_libraries`, `target_include_directories`, or
+`set_tests_properties` blocks unless there is a clear local reason.
+
+For external MOOS-IvP dependencies, use CMake discovery. Prefer imported
+targets or variables from `find_package`; otherwise use `find_library` and
+`find_path`. Do not link directly to hardcoded `.dylib`, `.so`, or platform
+build-output paths from test `CMakeLists.txt` files.
+
+## Labels
+
+Labels are a public interface for developers and CI. Treat them as carefully as
+test names.
+
+Use target-wide `LABELS` only when the label truthfully applies to every CTest
+case in the executable. Common target-wide labels are:
+
+- library labels: `geometry`, `mbutil`, `ivpbuild`, `bhvutil`
+- domain labels: `math`, `formats`, `grid`, `populators`, `viewer_plugins`
+- app-impact labels: `pHelmIvP`, `pMarineViewer`, `pMarinePIDV22`
+
+Use `SUITE_LABELS` for concrete component labels in mixed executables:
+
+```cmake
+LABELS
+  geometry
+  formats
+SUITE_LABELS
+  XYRangePulseTest=XYRangePulse
+  XYFormatUtilsRangePulseTest=XYFormatUtilsRangePulse
+  XYCommsPulseTest=XYCommsPulse
+  XYFormatUtilsCommsPulseTest=XYFormatUtilsCommsPulse
+```
+
+Rules:
+
+- every CTest case must have at least one useful label
+- no duplicate labels on a case
+- concrete class/tool labels should not spill across unrelated suites
+- family labels may be broad when the whole executable is the family
+- app-impact labels mean the test protects behavior used by that app; they do
+  not mean the app itself is launched
+- prefer canonical MOOS-IvP names, including existing capitalization such as
+  `XYPolygon`, `ZAIC_PEAK`, `BHV_Waypoint`, or `VIEW_POLYGON`
+
+## Test Quality Standard
+
+The goal is not a smoke test per class. Each suite should be deep enough that a
+changed MOOS-IvP checkout produces a specific, actionable failure.
+
+For parsers and format utilities, cover:
+
+- canonical MOOS-IvP payloads, such as `VIEW_POINT`, `VIEW_POLYGON`,
+  `VIEW_SEGLIST`, `VIEW_GRID`, `NODE_REPORT`, and behavior config strings
+- abbreviated and standard forms when both are supported
+- labels, colors, render hints, source/type metadata, duration, active flags,
+  and other viewer-facing fields
+- malformed input, empty input, duplicate fields, unknown fields, numeric
+  quirks, and tolerated legacy behavior
+- serialization, spec output, or round-trip behavior when stable
+
+For geometry and math tools, cover:
+
+- nominal cases plus boundaries
+- degenerate inputs: empty objects, one-point objects, zero radius, zero
+  length, zero speed, zero duration, invalid domains
+- wraparound headings and angle intervals across north
+- crossing and non-crossing cases
+- distance/value outputs as well as boolean classifiers
+- ownership/copy/cache behavior when objects maintain internal state
+- MOOS-IvP use cases such as waypoint lanes, loiter regions, OpRegion
+  polygons, obstacle polygons, turn arcs, contact CPA, Dubins lookahead,
+  search grids, viewer shapes, and IvP course/speed domains
+
+For app-facing helpers, cover the payloads and state transitions used by the
+app, but keep the test local unless the target is a mission harness.
+
+## Naming
+
+Use suite names that identify the unit under test:
+
+```cpp
+TEST(XYConvexGridTest, ParsesViewGridSpecWithCellUpdatesAndLimits)
+TEST(ZAICPeakTest, CoursePeakWrapsAcrossNorthForHelmHeadingDomains)
+```
+
+Good test case names state the condition and expected behavior. Prefer:
+
+```text
+ToolOrObjectTest.ContextAndExpectedBehavior
+```
+
+Avoid names like `Basic`, `Works`, `Test1`, or names that only restate the API
+call. A failure should tell the reader what contract was broken.
+
+## Assertions
+
+Use direct, narrow assertions. Prefer:
+
+- exact string checks for stable serialized specs
+- tolerance checks for floating-point geometry/math values
+- explicit false-path checks for malformed input
+- separate assertions for independent behavior when a failure needs a precise
+  location
+
+When testing a known upstream quirk, name it clearly in the test case. These
+tests intentionally protect current behavior until the project decides to
+change it.
+
+## MOOS-IvP Grounding
+
+Tests should include abstract edge cases when they improve coverage, but each
+library family should also include examples grounded in actual MOOS-IvP usage.
+
+Good grounded inputs include:
+
+- viewer postings: `VIEW_POINT`, `VIEW_POLYGON`, `VIEW_SEGLIST`, `VIEW_GRID`,
+  `VIEW_RANGE_PULSE`, `VIEW_COMMS_PULSE`
+- contact reports: `NODE_REPORT`, `CONTACT_INFO`, CPA-related geometry
+- behavior configs: waypoint, loiter, op-region, obstacle, cut-range, shadow,
+  and avoid-collision style parameters
+- IvP domains and functions: course/speed domains, ZAICs, AOFs, PDMaps, IPF
+  strings, and function encoder packets
+- log/app utilities: `.alog`-style lines, helm summaries, appcast/realmcast
+  strings, command posts, and mission-eval conditions
+
+Do not require a launched mission just to test a pure library contract. Use a
+mission harness only when the behavior depends on live MOOS process interaction.
+
+## Adding Coverage
+
+Before adding a new test family:
+
+1. Find the upstream library or app source under `moos-ivp/ivp/src`.
+2. Check nearby tests for the closest pattern.
+3. Choose the smallest coherent `<area>` bucket.
+4. Add or extend a leaf `CMakeLists.txt` with precise `LABELS` and
+   `SUITE_LABELS`.
+5. Add focused GoogleTest suites with grounded and edge-case examples.
+6. Run the focused label first, then the invariant checker.
+
+Useful local commands:
+
+```bash
+ctest --test-dir build -L XYFormatUtilsPoint --output-on-failure
+ctest --test-dir build -L geometry --output-on-failure
+python3 scripts/check_cpp_tests.py \
+  --build-dir build \
+  --moos-src /path/to/moos-ivp/ivp/src
+```
+
+Run the full suite before handing off broad changes:
+
+```bash
+ctest --test-dir build --output-on-failure
+```
+
+## Invariants
+
+`scripts/check_cpp_tests.py` enforces repo-level C++ test invariants. It checks
+registration, labels, source-file references, stale discovery placeholders,
+platform-specific link literals, and optional upstream `lib_*` to `tests/cpp`
+bucket mapping.
+
+The GitHub Actions workflow uses the same CTest registry and checker. Its
+`cpp_test_filter` dispatch input accepts:
+
+- `all`: run the full C++ suite
+- any CTest label: run a focused subset, such as `geometry`, `BHV_Waypoint`,
+  `LogPlot`, or `pMarineViewer`
+
+If a new convention cannot be expressed in this README and enforced or audited
+reasonably, reconsider the convention.

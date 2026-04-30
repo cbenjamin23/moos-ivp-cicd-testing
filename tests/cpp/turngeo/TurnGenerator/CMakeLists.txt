@@ -1,0 +1,15 @@
+add_moos_cpp_test(test_turngeo_turn_generator
+  SOURCES
+    TurnGeneratorTest.cpp
+  LIBS
+    turngeo
+    geometry
+    mbutil
+  LABELS
+    turngeo
+    LegRun
+  SUITE_LABELS
+    TurnGeneratorTest=TurnGenerator
+    TurnGen180Test=TurnGen180
+    TurnGenWilliamsonTest=TurnGenWilliamson
+)

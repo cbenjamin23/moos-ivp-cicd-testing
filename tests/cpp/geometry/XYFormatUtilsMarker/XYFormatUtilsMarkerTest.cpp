@@ -8,6 +8,7 @@
 #include "XYFormatUtilsMarker.h"
 #include "XYMarker.h"
 
+// Covers XY format utils marker behavior: parses map markers view marker payload.
 TEST(XYFormatUtilsMarkerTest, ParsesMapMarkersViewMarkerPayload)
 {
   XYMarker marker = stringStandard2Marker(
@@ -28,6 +29,7 @@ TEST(XYFormatUtilsMarkerTest, ParsesMapMarkersViewMarkerPayload)
   EXPECT_EQ(marker.get_color_str("label"), "gray60");
 }
 
+// Covers XY format utils marker behavior: parses beacon style color alias and range.
 TEST(XYFormatUtilsMarkerTest, ParsesBeaconStyleColorAliasAndRange)
 {
   XYMarker marker = string2Marker(
@@ -48,6 +50,7 @@ TEST(XYFormatUtilsMarkerTest, ParsesBeaconStyleColorAliasAndRange)
   EXPECT_FALSE(marker.active());
 }
 
+// Covers XY format utils marker behavior: parses documented beacon range sensor view marker payload.
 TEST(XYFormatUtilsMarkerTest, ParsesDocumentedBeaconRangeSensorViewMarkerPayload)
 {
   XYMarker marker = string2Marker(
@@ -66,6 +69,7 @@ TEST(XYFormatUtilsMarkerTest, ParsesDocumentedBeaconRangeSensorViewMarkerPayload
   EXPECT_TRUE(marker.active());
 }
 
+// Covers XY format utils marker behavior: round trips beacon range sensor generated marker.
 TEST(XYFormatUtilsMarkerTest, RoundTripsBeaconRangeSensorGeneratedMarker)
 {
   // uFldBeaconRangeSensor constructs an XYMarker and posts marker.get_spec()
@@ -93,6 +97,7 @@ TEST(XYFormatUtilsMarkerTest, RoundTripsBeaconRangeSensorGeneratedMarker)
   EXPECT_TRUE(marker.active());
 }
 
+// Covers XY format utils marker behavior: parses map markers hide marker erase payload.
 TEST(XYFormatUtilsMarkerTest, ParsesMapMarkersHideMarkerErasePayload)
 {
   // pMapMarkers posts this when markers are hidden, one erase payload per
@@ -108,6 +113,7 @@ TEST(XYFormatUtilsMarkerTest, ParsesMapMarkersHideMarkerErasePayload)
   EXPECT_FALSE(marker.is_set_type());
 }
 
+// Covers XY format utils marker behavior: parses compound colors field.
 TEST(XYFormatUtilsMarkerTest, ParsesCompoundColorsField)
 {
   XYMarker marker = string2Marker("x=1,y=2,colors=white:blue,type=square");
@@ -119,6 +125,7 @@ TEST(XYFormatUtilsMarkerTest, ParsesCompoundColorsField)
   EXPECT_EQ(marker.get_type(), "square");
 }
 
+// Covers XY format utils marker behavior: parses partial compound colors independently.
 TEST(XYFormatUtilsMarkerTest, ParsesPartialCompoundColorsIndependently)
 {
   XYMarker primary_only = string2Marker("x=1,y=2,colors=white:notacolor,type=circle");
@@ -132,6 +139,7 @@ TEST(XYFormatUtilsMarkerTest, ParsesPartialCompoundColorsIndependently)
   EXPECT_EQ(secondary_only.get_color_str("secondary_color"), "blue");
 }
 
+// Covers XY format utils marker behavior: missing or invalid position returns unset marker.
 TEST(XYFormatUtilsMarkerTest, MissingOrInvalidPositionReturnsUnsetMarker)
 {
   XYMarker missing_x = string2Marker("y=2,type=square");
@@ -147,6 +155,7 @@ TEST(XYFormatUtilsMarkerTest, MissingOrInvalidPositionReturnsUnsetMarker)
   EXPECT_FALSE(invalid_x.is_set_y());
 }
 
+// Covers XY format utils marker behavior: preserves loose hint behavior.
 TEST(XYFormatUtilsMarkerTest, PreservesLooseHintBehavior)
 {
   XYMarker marker = string2Marker(
@@ -169,6 +178,7 @@ TEST(XYFormatUtilsMarkerTest, PreservesLooseHintBehavior)
   EXPECT_NEAR(marker.get_duration(), -1.0, kGeomTol);
 }
 
+// Covers XY marker behavior: default and convenience constructors do not mark position as set.
 TEST(XYMarkerTest, DefaultAndConvenienceConstructorsDoNotMarkPositionAsSet)
 {
   XYMarker marker;
@@ -187,6 +197,7 @@ TEST(XYMarkerTest, DefaultAndConvenienceConstructorsDoNotMarkPositionAsSet)
   EXPECT_NEAR(located.get_vy(), 20.0, kGeomTol);
 }
 
+// Covers XY marker behavior: setters clamp dimensions and constrain marker types.
 TEST(XYMarkerTest, SettersClampDimensionsAndConstrainMarkerTypes)
 {
   XYMarker marker;
@@ -219,6 +230,7 @@ TEST(XYMarkerTest, SettersClampDimensionsAndConstrainMarkerTypes)
   EXPECT_EQ(marker.get_type(), "circle");
 }
 
+// Covers XY marker behavior: accepts full viewer marker type set case sensitively.
 TEST(XYMarkerTest, AcceptsFullViewerMarkerTypeSetCaseSensitively)
 {
   const std::vector<std::string> marker_types = {
@@ -238,6 +250,7 @@ TEST(XYMarkerTest, AcceptsFullViewerMarkerTypeSetCaseSensitively)
   EXPECT_EQ(marker.get_type(), "circle");
 }
 
+// Covers XY marker behavior: serializes view marker spec with object hints.
 TEST(XYMarkerTest, SerializesViewMarkerSpecWithObjectHints)
 {
   XYMarker marker;
@@ -270,6 +283,7 @@ TEST(XYMarkerTest, SerializesViewMarkerSpecWithObjectHints)
   EXPECT_TRUE(stringContains(spec, "duration=5"));
 }
 
+// Covers XY marker behavior: serializes concise inactive erase spec.
 TEST(XYMarkerTest, SerializesConciseInactiveEraseSpec)
 {
   XYMarker marker;

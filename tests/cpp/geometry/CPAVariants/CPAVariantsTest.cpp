@@ -89,8 +89,11 @@ void expectV15CpaNearModern(const Encounter& enc)
 
 }  // namespace
 
+// Covers CPA engine root variant behavior: base class pins stub evaluation and counters.
 TEST(CPAEngineRootVariantTest, BaseClassPinsStubEvaluationAndCounters)
 {
+  // CPAEngineRoot is a stub base: it preserves construction/reset data but
+  // returns neutral CPA values until a concrete engine implements evaluation.
   CPAEngineRoot root(5, 6, 725, -2, 1, 2);
 
   EXPECT_NEAR(root.evalCPA(0, 1, 2), 0.0, kGeomTol);
@@ -103,6 +106,7 @@ TEST(CPAEngineRootVariantTest, BaseClassPinsStubEvaluationAndCounters)
   EXPECT_NEAR(root.evalCPAX(180, 3, 20), 0.0, kGeomTol);
 }
 
+// Covers CPA modern thin equivalence behavior: head on contact matches and clips at time on leg.
 TEST(CPAModernThinEquivalenceTest, HeadOnContactMatchesAndClipsAtTimeOnLeg)
 {
   Encounter head_on = {100, 0, 180, 2, 0, 0, 0, 2, 60};
@@ -123,8 +127,11 @@ TEST(CPAModernThinEquivalenceTest, HeadOnContactMatchesAndClipsAtTimeOnLeg)
               60.0, kGeomTol);
 }
 
+// Covers CPA modern thin equivalence behavior: modern thin and V15 pin literal negative time on leg.
 TEST(CPAModernThinEquivalenceTest, ModernThinAndV15PinLiteralNegativeTimeOnLeg)
 {
+  // Negative time-on-leg is passed through literally rather than clipped to
+  // zero, so CPA can increase beyond the current range in a head-on case.
   Encounter head_on = {100, 0, 180, 2, 0, 0, 0, 2, 0};
   CPAEngine engine = makeEngine(head_on);
   CPAEngineThin thin = makeThin(head_on);
@@ -145,6 +152,7 @@ TEST(CPAModernThinEquivalenceTest, ModernThinAndV15PinLiteralNegativeTimeOnLeg)
               kGeomTol);
 }
 
+// Covers CPA modern thin equivalence behavior: crossing contact reaches zero CPA.
 TEST(CPAModernThinEquivalenceTest, CrossingContactReachesZeroCpa)
 {
   Encounter crossing = {100, 100, 270, 2, 0, 0, 0, 2, 120};
@@ -162,6 +170,7 @@ TEST(CPAModernThinEquivalenceTest, CrossingContactReachesZeroCpa)
   EXPECT_TRUE(engine.passesStar(crossing.osh, crossing.osv));
 }
 
+// Covers CPA modern thin equivalence behavior: overtaking contact closes from aft.
 TEST(CPAModernThinEquivalenceTest, OvertakingContactClosesFromAft)
 {
   Encounter overtaking = {100, 0, 0, 1, 0, 0, 0, 3, 120};
@@ -180,6 +189,7 @@ TEST(CPAModernThinEquivalenceTest, OvertakingContactClosesFromAft)
               50.0, kGeomTol);
 }
 
+// Covers CPA modern thin equivalence behavior: parallel same speed contact is opening.
 TEST(CPAModernThinEquivalenceTest, ParallelSameSpeedContactIsOpening)
 {
   Encounter opening = {100, 0, 0, 2, 0, 0, 0, 2, 60};
@@ -194,6 +204,7 @@ TEST(CPAModernThinEquivalenceTest, ParallelSameSpeedContactIsOpening)
   EXPECT_FALSE(engine.passesPortOrStar(opening.osh, opening.osv));
 }
 
+// Covers CPA modern thin equivalence behavior: stationary contact intercept matches.
 TEST(CPAModernThinEquivalenceTest, StationaryContactInterceptMatches)
 {
   Encounter stationary = {50, 50, 90, 0, 0, 0, 45, 1, 120};
@@ -210,6 +221,7 @@ TEST(CPAModernThinEquivalenceTest, StationaryContactInterceptMatches)
   EXPECT_TRUE(engine.passesPortOrStar(stationary.osh, stationary.osv));
 }
 
+// Covers CPA modern thin equivalence behavior: negative contact speed is treated as stationary.
 TEST(CPAModernThinEquivalenceTest, NegativeContactSpeedIsTreatedAsStationary)
 {
   Encounter negative_speed = {50, 0, 90, -5, 0, 0, 0, 1, 120};
@@ -227,6 +239,7 @@ TEST(CPAModernThinEquivalenceTest, NegativeContactSpeedIsTreatedAsStationary)
               kGeomTol);
 }
 
+// Covers CPA modern thin equivalence behavior: reset recomputes cached geometry.
 TEST(CPAModernThinEquivalenceTest, ResetRecomputesCachedGeometry)
 {
   CPAEngine engine(100, 0, 180, 2, 0, 0);
@@ -248,8 +261,11 @@ TEST(CPAModernThinEquivalenceTest, ResetRecomputesCachedGeometry)
   EXPECT_TRUE(thin.passesStar(90, 2));
 }
 
+// Covers CPA modern thin equivalence behavior: wrapped and fractional headings use current integer cache behavior.
 TEST(CPAModernThinEquivalenceTest, WrappedAndFractionalHeadingsUseCurrentIntegerCacheBehavior)
 {
+  // These cases pin the integer heading cache used by the modern/thin engines:
+  // wrapped headings normalize, while fractional headings are effectively binned.
   Encounter wrapped = {100, 0, 540, 2, 0, 0, 360, 2, 60};
   expectModernAndThinMatch(wrapped);
   expectV15CpaNearModern(wrapped);
@@ -272,6 +288,7 @@ TEST(CPAModernThinEquivalenceTest, WrappedAndFractionalHeadingsUseCurrentInteger
               5.14263, kLooseGeomTol);
 }
 
+// Covers CPA bow stern geometry behavior: modern and thin pin bowline and sternline sentinels.
 TEST(CPABowSternGeometryTest, ModernAndThinPinBowlineAndSternlineSentinels)
 {
   Encounter bowline = {100, 0, 0, 1, 0, 0, 0, 2, 120};
@@ -295,6 +312,7 @@ TEST(CPABowSternGeometryTest, ModernAndThinPinBowlineAndSternlineSentinels)
               kGeomTol);
 }
 
+// Covers CPA bow stern geometry behavior: beam transit reports stern crossing distance.
 TEST(CPABowSternGeometryTest, BeamTransitReportsSternCrossingDistance)
 {
   Encounter beam = {100, 50, 0, 1, 0, 0, 90, 2, 120};
@@ -309,6 +327,7 @@ TEST(CPABowSternGeometryTest, BeamTransitReportsSternCrossingDistance)
               engine.getRange(), kGeomTol);
 }
 
+// Covers CPA pass geometry behavior: port and starboard pass distances mirror.
 TEST(CPAPassGeometryTest, PortAndStarboardPassDistancesMirror)
 {
   Encounter port = {100, 50, 0, 1, 0, 0, 0, 3, 120};
@@ -332,6 +351,7 @@ TEST(CPAPassGeometryTest, PortAndStarboardPassDistancesMirror)
               kGeomTol);
 }
 
+// Covers CPA engine thin variant behavior: min max ROC pins legacy zero accumulator quirk.
 TEST(CPAEngineThinVariantTest, MinMaxROCPinsLegacyZeroAccumulatorQuirk)
 {
   CPAEngine engine(100, 100, 270, 2, 0, 0);
@@ -354,6 +374,7 @@ TEST(CPAEngineThinVariantTest, MinMaxROCPinsLegacyZeroAccumulatorQuirk)
   EXPECT_NEAR(thin_max, 0.0, kGeomTol);
 }
 
+// Covers CPA engine V15 variant behavior: CPA matches modern but ROC is unnormalized polynomial rate.
 TEST(CPAEngineV15VariantTest, CpaMatchesModernButRocIsUnnormalizedPolynomialRate)
 {
   Encounter head_on = {100, 0, 180, 2, 0, 0, 0, 2, 60};
@@ -369,8 +390,11 @@ TEST(CPAEngineV15VariantTest, CpaMatchesModernButRocIsUnnormalizedPolynomialRate
   EXPECT_NEAR(v15.evalROC(head_on.osh, head_on.osv), 800.0, kGeomTol);
 }
 
+// Covers CPA engine V15 variant behavior: legacy bowline and sternline classifications differ from modern.
 TEST(CPAEngineV15VariantTest, LegacyBowlineAndSternlineClassificationsDifferFromModern)
 {
+  // V15 keeps legacy bow/stern line classification rules even when CPA values
+  // are close to the modern engine.
   Encounter bowline = {100, 0, 0, 1, 0, 0, 0, 2, 120};
   CPAEngine modern_bow = makeEngine(bowline);
   CPAEngineV15 v15_bow = makeV15(bowline);
@@ -398,6 +422,7 @@ TEST(CPAEngineV15VariantTest, LegacyBowlineAndSternlineClassificationsDifferFrom
   EXPECT_FALSE(v15_stern.crossesStern(sternline.osh, sternline.osv));
 }
 
+// Covers CPA engine V15 variant behavior: crossing and stationary pass side differs from modern.
 TEST(CPAEngineV15VariantTest, CrossingAndStationaryPassSideDiffersFromModern)
 {
   Encounter crossing = {100, 100, 270, 2, 0, 0, 0, 2, 120};
@@ -422,6 +447,7 @@ TEST(CPAEngineV15VariantTest, CrossingAndStationaryPassSideDiffersFromModern)
                                                      stationary.osv));
 }
 
+// Covers CPA engine V15 variant behavior: exposes contact state and accepts cache configuration.
 TEST(CPAEngineV15VariantTest, ExposesContactStateAndAcceptsCacheConfiguration)
 {
   Encounter encounter = {100, 50, 270, 2, 0, 0, 0, 2, 120};
@@ -445,6 +471,7 @@ TEST(CPAEngineV15VariantTest, ExposesContactStateAndAcceptsCacheConfiguration)
               baseline, kGeomTol);
 }
 
+// Covers CPA engine V15 variant behavior: crosses lines uses unnormalized ownship heading.
 TEST(CPAEngineV15VariantTest, CrossesLinesUsesUnnormalizedOwnshipHeading)
 {
   Encounter wrapped = {100, 0, 540, 2, 0, 0, 360, 2, 60};
@@ -460,6 +487,7 @@ TEST(CPAEngineV15VariantTest, CrossesLinesUsesUnnormalizedOwnshipHeading)
   EXPECT_FALSE(v15.crossesLines(360));
 }
 
+// Covers CPA engine V15 variant behavior: bearing rate finite difference tracks modern sign.
 TEST(CPAEngineV15VariantTest, BearingRateFiniteDifferenceTracksModernSign)
 {
   Encounter port_pass = {100, 50, 0, 1, 0, 0, 0, 3, 120};
@@ -485,8 +513,11 @@ TEST(CPAEngineV15VariantTest, BearingRateFiniteDifferenceTracksModernSign)
               kGeomTol);
 }
 
+// Covers CPA engine variant edge case behavior: same point pins zero range special cases.
 TEST(CPAEngineVariantEdgeCaseTest, SamePointPinsZeroRangeSpecialCases)
 {
+  // Same-position encounters are singular for bearing-rate and pass-side logic;
+  // this test documents current zero-range behavior across engine variants.
   Encounter same_point = {0, 0, 90, 1, 0, 0, 45, 2, 120};
   expectModernAndThinMatch(same_point);
   expectV15CpaNearModern(same_point);

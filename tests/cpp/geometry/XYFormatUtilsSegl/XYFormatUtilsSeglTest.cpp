@@ -6,6 +6,7 @@
 #include "NumericAssertions.h"
 #include "XYFormatUtilsSegl.h"
 
+// Covers XY format utils segl behavior: parses waypoint style pts spec with label.
 TEST(XYFormatUtilsSeglTest, ParsesWaypointStylePtsSpecWithLabel)
 {
   XYSegList segl = stringStandard2SegList("pts={0,0:50,0:100,25},label=survey_line,edge_color=yellow");
@@ -17,6 +18,7 @@ TEST(XYFormatUtilsSeglTest, ParsesWaypointStylePtsSpecWithLabel)
   EXPECT_EQ(segl.get_color_str("edge"), "yellow");
 }
 
+// Covers XY format utils segl behavior: parses classic BHV waypoint mission point list.
 TEST(XYFormatUtilsSeglTest, ParsesClassicBHVWaypointMissionPointList)
 {
   XYSegList segl = string2SegList("60,-40 : 60,-160 : 150,-160 : 180,-100 : 150,-40");
@@ -34,6 +36,7 @@ TEST(XYFormatUtilsSeglTest, ParsesClassicBHVWaypointMissionPointList)
               kLooseGeomTol);
 }
 
+// Covers XY format utils segl behavior: parses mission transit label and wall payloads.
 TEST(XYFormatUtilsSeglTest, ParsesMissionTransitLabelAndWallPayloads)
 {
   XYSegList transit = string2SegList("label,transit:190,25:155,-20:45,-85:-40,-100");
@@ -52,6 +55,7 @@ TEST(XYFormatUtilsSeglTest, ParsesMissionTransitLabelAndWallPayloads)
   EXPECT_NEAR(wall.length(), 47.0 + std::hypot(4.0, 17.0) + std::hypot(3.0, 11.0), kLooseGeomTol);
 }
 
+// Covers XY format utils segl behavior: parses single point return and station keeping routes.
 TEST(XYFormatUtilsSeglTest, ParsesSinglePointReturnAndStationKeepingRoutes)
 {
   XYSegList return_point = string2SegList("0,-20");
@@ -71,6 +75,7 @@ TEST(XYFormatUtilsSeglTest, ParsesSinglePointReturnAndStationKeepingRoutes)
   EXPECT_NEAR(view.get_vertex_size(), 4.0, kGeomTol);
 }
 
+// Covers XY format utils segl behavior: parses standard pts with XY fields z and vertex properties.
 TEST(XYFormatUtilsSeglTest, ParsesStandardPtsWithXYFieldsZAndVertexProperties)
 {
   XYSegList segl = string2SegList(
@@ -88,6 +93,7 @@ TEST(XYFormatUtilsSeglTest, ParsesStandardPtsWithXYFieldsZAndVertexProperties)
   EXPECT_EQ(segl.get_vprop(1), "exit_gate");
 }
 
+// Covers XY format utils segl behavior: parses abbreviated and deprecated point list syntax.
 TEST(XYFormatUtilsSeglTest, ParsesAbbreviatedAndDeprecatedPointListSyntax)
 {
   XYSegList abbreviated = stringAbbreviated2SegList("label,abbr_route:0,0:10,0,3:20,5");
@@ -102,6 +108,7 @@ TEST(XYFormatUtilsSeglTest, ParsesAbbreviatedAndDeprecatedPointListSyntax)
   EXPECT_EQ(deprecated.size(), 3u);
 }
 
+// Covers XY format utils segl behavior: parses inactive deletion payload without vertices.
 TEST(XYFormatUtilsSeglTest, ParsesInactiveDeletionPayloadWithoutVertices)
 {
   XYSegList segl = string2SegList("label=erase_me,active=false");
@@ -114,6 +121,7 @@ TEST(XYFormatUtilsSeglTest, ParsesInactiveDeletionPayloadWithoutVertices)
   EXPECT_EQ(getSeglSpecInactive("erase_me"), "pts={0,0:9,0:0,9},active=false,label=erase_me");
 }
 
+// Covers XY format utils segl behavior: parses lawnmower pattern used by survey missions.
 TEST(XYFormatUtilsSeglTest, ParsesLawnmowerPatternUsedBySurveyMissions)
 {
   XYSegList segl = stringLawnmower2SegList(
@@ -133,6 +141,7 @@ TEST(XYFormatUtilsSeglTest, ParsesLawnmowerPatternUsedBySurveyMissions)
   EXPECT_NEAR(segl.get_vertex_size(), 3.0, kGeomTol);
 }
 
+// Covers XY format utils segl behavior: filters inactive generated lawnmower payload at top level.
 TEST(XYFormatUtilsSeglTest, FiltersInactiveGeneratedLawnmowerPayloadAtTopLevel)
 {
   XYSegList segl = string2SegList(
@@ -141,6 +150,7 @@ TEST(XYFormatUtilsSeglTest, FiltersInactiveGeneratedLawnmowerPayloadAtTopLevel)
   EXPECT_EQ(segl.size(), 0u);
 }
 
+// Covers XY format utils segl behavior: parses zig zag pattern for maneuver test routes.
 TEST(XYFormatUtilsSeglTest, ParsesZigZagPatternForManeuverTestRoutes)
 {
   XYSegList segl = stringZigZag2SegList("0,0,90,100,20,10,0.1");
@@ -152,6 +162,7 @@ TEST(XYFormatUtilsSeglTest, ParsesZigZagPatternForManeuverTestRoutes)
   EXPECT_GT(segl.length(), 100.0);
 }
 
+// Covers XY format utils segl behavior: parses bow tie pattern for survey coverage routes.
 TEST(XYFormatUtilsSeglTest, ParsesBowTiePatternForSurveyCoverageRoutes)
 {
   XYSegList segl = stringBowTie2SegList("x=0,y=0,height=80,wid1=10,wid2=20,wid3=30,startx=40,starty=40,label=bowtie");
@@ -163,6 +174,7 @@ TEST(XYFormatUtilsSeglTest, ParsesBowTiePatternForSurveyCoverageRoutes)
   EXPECT_GT(segl.length(), 200.0);
 }
 
+// Covers XY format utils segl behavior: rejects malformed generated patterns and point lists.
 TEST(XYFormatUtilsSeglTest, RejectsMalformedGeneratedPatternsAndPointLists)
 {
   EXPECT_EQ(string2SegList("format=zigzag,startx=0").size(), 0u);
@@ -175,6 +187,7 @@ TEST(XYFormatUtilsSeglTest, RejectsMalformedGeneratedPatternsAndPointLists)
   EXPECT_EQ(string2SegList("0,0:bad_token").size(), 0u);
 }
 
+// Covers XY format utils segl behavior: serializes transit lane as pts payload.
 TEST(XYFormatUtilsSeglTest, SerializesTransitLaneAsPtsPayload)
 {
   XYSegList lane = makeTransitLane();
@@ -187,6 +200,7 @@ TEST(XYFormatUtilsSeglTest, SerializesTransitLaneAsPtsPayload)
   EXPECT_TRUE(stringContains(spec, "label=transit"));
 }
 
+// Covers XY seg list behavior: round trips contact behavior bearing line payloads.
 TEST(XYSegListTest, RoundTripsContactBehaviorBearingLinePayloads)
 {
   // IvPContactBehavior posts a two-point bearing line from ownship to contact
@@ -224,6 +238,7 @@ TEST(XYSegListTest, RoundTripsContactBehaviorBearingLinePayloads)
   EXPECT_FALSE(inactive.active());
 }
 
+// Covers XY seg list behavior: round trips fix turn radial visualization payload.
 TEST(XYSegListTest, RoundTripsFixTurnRadialVisualizationPayload)
 {
   // BHV_FixTurn posts radial diameter segments with labels like abeft7 and
@@ -257,6 +272,7 @@ TEST(XYSegListTest, RoundTripsFixTurnRadialVisualizationPayload)
   EXPECT_FALSE(erased.active());
 }
 
+// Covers XY seg list behavior: computes route metrics and points along waypoint track.
 TEST(XYSegListTest, ComputesRouteMetricsAndPointsAlongWaypointTrack)
 {
   XYSegList lane = makeTransitLane();
@@ -320,6 +336,7 @@ TEST(XYSegListTest, ComputesRouteMetricsAndPointsAlongWaypointTrack)
   EXPECT_NEAR(end.y(), 25.0, kGeomTol);
 }
 
+// Covers XY seg list behavior: finds closest vertices segments and distances for route monitoring.
 TEST(XYSegListTest, FindsClosestVerticesSegmentsAndDistancesForRouteMonitoring)
 {
   XYSegList lane = makeTransitLane();
@@ -340,6 +357,7 @@ TEST(XYSegListTest, FindsClosestVerticesSegmentsAndDistancesForRouteMonitoring)
   EXPECT_EQ(empty.closest_segment(10, 10), 0u);
 }
 
+// Covers XY seg list behavior: closest segment can use implicit loop segment for closed viewer shapes.
 TEST(XYSegListTest, ClosestSegmentCanUseImplicitLoopSegmentForClosedViewerShapes)
 {
   XYSegList open_square = string2SegList("pts={0,0:10,0:10,10:0,10}");
@@ -352,6 +370,7 @@ TEST(XYSegListTest, ClosestSegmentCanUseImplicitLoopSegmentForClosedViewerShapes
   EXPECT_NEAR(open_square.dist_to_point(0, 5), 5.0, kGeomTol);
 }
 
+// Covers XY seg list behavior: degenerate repeated waypoints retain literal length and distance behavior.
 TEST(XYSegListTest, DegenerateRepeatedWaypointsRetainLiteralLengthAndDistanceBehavior)
 {
   XYSegList route;
@@ -369,6 +388,7 @@ TEST(XYSegListTest, DegenerateRepeatedWaypointsRetainLiteralLengthAndDistanceBeh
   EXPECT_EQ(route.closest_segment(0, 1, false), 0u);
 }
 
+// Covers XY seg list behavior: edits vertices using closest point and segment rules.
 TEST(XYSegListTest, EditsVerticesUsingClosestPointAndSegmentRules)
 {
   XYSegList route;
@@ -400,6 +420,7 @@ TEST(XYSegListTest, EditsVerticesUsingClosestPointAndSegmentRules)
   EXPECT_EQ(route.size(), 1u);
 }
 
+// Covers XY seg list behavior: applies route transforms for viewable waypoint lists.
 TEST(XYSegListTest, AppliesRouteTransformsForViewableWaypointLists)
 {
   XYSegList route;
@@ -431,6 +452,7 @@ TEST(XYSegListTest, AppliesRouteTransformsForViewableWaypointLists)
   EXPECT_NEAR(route.get_vy(0), 6.0, kGeomTol);
 }
 
+// Covers XY seg list behavior: rotates and grows routes around centers.
 TEST(XYSegListTest, RotatesAndGrowsRoutesAroundCenters)
 {
   XYSegList segment;
@@ -454,6 +476,7 @@ TEST(XYSegListTest, RotatesAndGrowsRoutesAroundCenters)
   EXPECT_NEAR(box.get_centroid_y(), 0.0, kGeomTol);
 }
 
+// Covers XY seg list behavior: detects self crossing when interpreted as closed shape.
 TEST(XYSegListTest, DetectsSelfCrossingWhenInterpretedAsClosedShape)
 {
   XYSegList bowtie;
@@ -473,6 +496,7 @@ TEST(XYSegListTest, DetectsSelfCrossingWhenInterpretedAsClosedShape)
   EXPECT_TRUE(square.is_clockwise());
 }
 
+// Covers XY seg list behavior: serializes points labels and inactive duration payloads.
 TEST(XYSegListTest, SerializesPointsLabelsAndInactiveDurationPayloads)
 {
   XYSegList route;

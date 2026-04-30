@@ -6,7 +6,8 @@ add_moos_cpp_test(test_geometry_xyformatutils_circle
     mbutil
   LABELS
     geometry
-    XYCircle
-    XYFormatUtilsCircle
     formats
+  SUITE_LABELS
+    XYCircleTest=XYCircle
+    XYFormatUtilsCircleTest=XYFormatUtilsCircle
 )

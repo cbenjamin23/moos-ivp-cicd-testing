@@ -5,6 +5,7 @@
 
 #include "MBUtils.h"
 
+// Covers mb utils token parse behavior: extracts string double and bool values from specs.
 TEST(MBUtilsTokenParseTest, ExtractsStringDoubleAndBoolValuesFromSpecs)
 {
   const std::string spec =
@@ -27,6 +28,7 @@ TEST(MBUtilsTokenParseTest, ExtractsStringDoubleAndBoolValuesFromSpecs)
   EXPECT_EQ(note, "\"alpha,beta\"");
 }
 
+// Covers mb utils token parse behavior: preserves raw string values but trims keys.
 TEST(MBUtilsTokenParseTest, PreservesRawStringValuesButTrimsKeys)
 {
   const std::string spec = " name = abe , mode = SURVEY , note = spaced value ";
@@ -39,6 +41,7 @@ TEST(MBUtilsTokenParseTest, PreservesRawStringValuesButTrimsKeys)
   EXPECT_EQ(tokStringParse(spec, "note"), "spaced value");
 }
 
+// Covers mb utils token parse behavior: rejects malformed pairs and leaves typed values alone.
 TEST(MBUtilsTokenParseTest, RejectsMalformedPairsAndLeavesTypedValuesAlone)
 {
   std::string value = "unchanged";
@@ -54,6 +57,7 @@ TEST(MBUtilsTokenParseTest, RejectsMalformedPairsAndLeavesTypedValuesAlone)
   EXPECT_TRUE(flag);
 }
 
+// Covers mb utils token parse behavior: returns before later malformed pairs after target.
 TEST(MBUtilsTokenParseTest, ReturnsBeforeLaterMalformedPairsAfterTarget)
 {
   std::string value;
@@ -63,6 +67,7 @@ TEST(MBUtilsTokenParseTest, ReturnsBeforeLaterMalformedPairsAfterTarget)
   EXPECT_EQ(value, "error");
 }
 
+// Covers mb utils token string parse behavior: returns trimmed values and all keys.
 TEST(MBUtilsTokenStringParseTest, ReturnsTrimmedValuesAndAllKeys)
 {
   const std::string spec = "x=12, y=-4, label=alpha, label=beta";
@@ -81,6 +86,7 @@ TEST(MBUtilsTokenStringParseTest, ReturnsTrimmedValuesAndAllKeys)
   EXPECT_EQ(keys.size(), 3u);
 }
 
+// Covers mb utils token string parse behavior: protects quoted and braced group separators.
 TEST(MBUtilsTokenStringParseTest, ProtectsQuotedAndBracedGroupSeparators)
 {
   const std::string spec =
@@ -94,6 +100,7 @@ TEST(MBUtilsTokenStringParseTest, ProtectsQuotedAndBracedGroupSeparators)
   EXPECT_EQ(keys, (std::set<std::string>{"msg", "poly", "speed"}));
 }
 
+// Covers mb utils token string parse behavior: pins value separator limitations.
 TEST(MBUtilsTokenStringParseTest, PinsValueSeparatorLimitations)
 {
   EXPECT_EQ(tokStringParse("expr=a=b,mode=survey", "expr"), "");
@@ -101,6 +108,7 @@ TEST(MBUtilsTokenStringParseTest, PinsValueSeparatorLimitations)
   EXPECT_DOUBLE_EQ(tokDoubleParse("poly={0,0:1,1},speed=2", "speed"), 0);
 }
 
+// Covers mb utils token string parse behavior: supports custom separators used by mode specs.
 TEST(MBUtilsTokenStringParseTest, SupportsCustomSeparatorsUsedByModeSpecs)
 {
   const std::string spec = "MODE:SURVEY#SPEED:2.0#ACTIVE:true";
@@ -112,6 +120,7 @@ TEST(MBUtilsTokenStringParseTest, SupportsCustomSeparatorsUsedByModeSpecs)
   EXPECT_TRUE(active);
 }
 
+// Covers mb utils augment spec behavior: appends fields with caller selected separators.
 TEST(MBUtilsAugmentSpecTest, AppendsFieldsWithCallerSelectedSeparators)
 {
   EXPECT_EQ(augmentSpec("", "x=1"), "x=1");

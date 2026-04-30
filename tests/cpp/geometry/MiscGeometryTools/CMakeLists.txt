@@ -7,10 +7,11 @@ add_moos_cpp_test(test_geometry_misc_geometry_tools
   LABELS
     geometry
     MiscGeometryTools
-    SeglrUtils
-    WallEngine
-    XYEncoders
-    XYFormatUtilsConvexGrid
-    XYArtifactGrid
-    XYFieldGenerator
+  SUITE_LABELS
+    SeglrUtilsTest=SeglrUtils
+    WallEngineTest=WallEngine
+    XYEncodersTest=XYEncoders
+    XYFormatUtilsConvexGridTest=XYFormatUtilsConvexGrid
+    XYArtifactGridTest=XYArtifactGrid
+    XYFieldGeneratorTest=XYFieldGenerator
 )

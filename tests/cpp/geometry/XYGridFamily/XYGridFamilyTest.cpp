@@ -37,6 +37,7 @@ void expectHexCenter(XYHexagon& hex, double x, double y, double dist)
 
 }  // namespace
 
+// Covers XY grid behavior: initializes from MOOS poly spec with column major cells and initial values.
 TEST(XYGridTest, InitializesFromMoosPolySpecWithColumnMajorCellsAndInitialValues)
 {
   XYGrid grid;
@@ -55,6 +56,7 @@ TEST(XYGridTest, InitializesFromMoosPolySpecWithColumnMajorCellsAndInitialValues
   EXPECT_NEAR(grid.getVal(99), 0.0, kGeomTol);
 }
 
+// Covers XY grid behavior: initializes multi row search grid column major from negative origin.
 TEST(XYGridTest, InitializesMultiRowSearchGridColumnMajorFromNegativeOrigin)
 {
   XYGrid grid;
@@ -73,6 +75,7 @@ TEST(XYGridTest, InitializesMultiRowSearchGridColumnMajorFromNegativeOrigin)
   EXPECT_NEAR(grid.getMaxVal(), 0.0, kGeomTol);
 }
 
+// Covers XY grid behavior: retains partial cells that intersect polygon outside bounding square.
 TEST(XYGridTest, RetainsPartialCellsThatIntersectPolygonOutsideBoundingSquare)
 {
   XYGrid grid;
@@ -91,6 +94,7 @@ TEST(XYGridTest, RetainsPartialCellsThatIntersectPolygonOutsideBoundingSquare)
   EXPECT_FALSE(grid.ptIntersectBound(28, 11));
 }
 
+// Covers XY grid behavior: rejects malformed initialization and clears previous grid.
 TEST(XYGridTest, RejectsMalformedInitializationAndClearsPreviousGrid)
 {
   XYGrid grid;
@@ -108,6 +112,7 @@ TEST(XYGridTest, RejectsMalformedInitializationAndClearsPreviousGrid)
   EXPECT_FALSE(grid.initialize("not_a_poly@10,10"));
 }
 
+// Covers XY grid behavior: distinguishes cell containment from bounding box and segment bounds.
 TEST(XYGridTest, DistinguishesCellContainmentFromBoundingBoxAndSegmentBounds)
 {
   XYGrid grid;
@@ -124,6 +129,7 @@ TEST(XYGridTest, DistinguishesCellContainmentFromBoundingBoxAndSegmentBounds)
   EXPECT_FALSE(grid.segIntersectBound(-5, -5, -1, -1));
 }
 
+// Covers XY grid behavior: handle segment stores per cell intersection lengths.
 TEST(XYGridTest, HandleSegmentStoresPerCellIntersectionLengths)
 {
   XYGrid grid;
@@ -141,6 +147,7 @@ TEST(XYGridTest, HandleSegmentStoresPerCellIntersectionLengths)
   EXPECT_NEAR(grid.getMaxVal(), 10.0, kGeomTol);
 }
 
+// Covers XY grid behavior: tracks min max values ever seen and reset from minimum.
 TEST(XYGridTest, TracksMinMaxValuesEverSeenAndResetFromMinimum)
 {
   XYGrid grid;
@@ -157,6 +164,7 @@ TEST(XYGridTest, TracksMinMaxValuesEverSeenAndResetFromMinimum)
   EXPECT_NEAR(grid.getMaxVal(), 10.0, kGeomTol);
 }
 
+// Covers XY grid behavior: utility range clips existing utilities and rejects inverted range.
 TEST(XYGridTest, UtilityRangeClipsExistingUtilitiesAndRejectsInvertedRange)
 {
   XYGrid grid;
@@ -176,12 +184,15 @@ TEST(XYGridTest, UtilityRangeClipsExistingUtilitiesAndRejectsInvertedRange)
   EXPECT_NEAR(grid.getMaxUtilPoss(), 0.6, kGeomTol);
 }
 
+// Covers XY grid behavior: process delta applies value and utility updates with legacy five field format.
 TEST(XYGridTest, ProcessDeltaAppliesValueAndUtilityUpdatesWithLegacyFiveFieldFormat)
 {
   XYGrid grid;
   ASSERT_TRUE(grid.initialize(kRectGridSpec));
   grid.setUtilRange(0, 1);
 
+  // VIEW_GRID deltas may use the legacy five-field cell tuple:
+  // index, old-value, new-value, old-util, new-util.
   EXPECT_TRUE(grid.processDelta("search_grid@0,2.5,6,0,0.75:1,2.5,4,0,2"));
   EXPECT_NEAR(grid.getVal(0), 6.0, kGeomTol);
   EXPECT_NEAR(grid.getVal(1), 4.0, kGeomTol);
@@ -193,16 +204,20 @@ TEST(XYGridTest, ProcessDeltaAppliesValueAndUtilityUpdatesWithLegacyFiveFieldFor
   EXPECT_FALSE(grid.processDelta("search_grid@0,0"));
 }
 
+// Covers XY grid behavior: invalid delta is not atomic after earlier cells are applied.
 TEST(XYGridTest, InvalidDeltaIsNotAtomicAfterEarlierCellsAreApplied)
 {
   XYGrid grid;
   ASSERT_TRUE(grid.initialize(kRectGridSpec));
 
+  // processDelta() applies earlier valid cells before discovering a later bad
+  // index, so a false return can still leave partial grid state.
   EXPECT_FALSE(grid.processDelta("search_grid@0,2.5,9:99,2.5,8"));
   EXPECT_NEAR(grid.getVal(0), 9.0, kGeomTol);
   EXPECT_NEAR(grid.getVal(1), 2.5, kGeomTol);
 }
 
+// Covers XY grid behavior: process delta trims cells and uses atof for non numeric payload values.
 TEST(XYGridTest, ProcessDeltaTrimsCellsAndUsesAtofForNonNumericPayloadValues)
 {
   XYGrid grid;
@@ -215,6 +230,7 @@ TEST(XYGridTest, ProcessDeltaTrimsCellsAndUsesAtofForNonNumericPayloadValues)
   EXPECT_NEAR(grid.getMaxVal(), 0.0, kGeomTol);
 }
 
+// Covers XY grid behavior: utility setter clips to range but updates value extrema fields.
 TEST(XYGridTest, UtilitySetterClipsToRangeButUpdatesValueExtremaFields)
 {
   XYGrid grid;
@@ -233,6 +249,7 @@ TEST(XYGridTest, UtilitySetterClipsToRangeButUpdatesValueExtremaFields)
   EXPECT_NEAR(grid.getMinVal(), -1.0, kGeomTol);
 }
 
+// Covers XY grid behavior: encoder payload documents legacy decoder compatibility.
 TEST(XYGridTest, EncoderPayloadDocumentsLegacyDecoderCompatibility)
 {
   XYGrid grid;
@@ -248,6 +265,8 @@ TEST(XYGridTest, EncoderPayloadDocumentsLegacyDecoderCompatibility)
   XYGrid standard_round_trip = StringToXYGrid(encoded);
   EXPECT_EQ(standard_round_trip.size(), 0);
 
+  // StringToXYGrid still accepts the older bare pbound/squares encoding used by
+  // historical VIEW_GRID logs.
   XYGrid legacy_round_trip = StringToXYGrid(
       "label=search_grid#size=2#min_val=0#max_val=9#sbound=0,20,0,10#"
       "pbound=0,0:20,0:20,10:0,10#squares=0,10,0,10,3@10,20,0,10,9");
@@ -258,6 +277,7 @@ TEST(XYGridTest, EncoderPayloadDocumentsLegacyDecoderCompatibility)
   expectSquareNear(legacy_round_trip.getSBound(), 0, 20, 0, 10);
 }
 
+// Covers XY hexagon behavior: initializes from numbers with expected vertices and containment.
 TEST(XYHexagonTest, InitializesFromNumbersWithExpectedVerticesAndContainment)
 {
   XYHexagon hex;
@@ -282,6 +302,7 @@ TEST(XYHexagonTest, InitializesFromNumbersWithExpectedVerticesAndContainment)
   EXPECT_FALSE(hex.contains(15, -5));
 }
 
+// Covers XY hexagon behavior: initializes from trimmed string and rejects bad tokens.
 TEST(XYHexagonTest, InitializesFromTrimmedStringAndRejectsBadTokens)
 {
   XYHexagon hex;
@@ -295,6 +316,7 @@ TEST(XYHexagonTest, InitializesFromTrimmedStringAndRejectsBadTokens)
   EXPECT_FALSE(hex.initialize("3.5,-2,0"));
 }
 
+// Covers XY hexagon behavior: invalid string initialization leaves existing hex untouched.
 TEST(XYHexagonTest, InvalidStringInitializationLeavesExistingHexUntouched)
 {
   XYHexagon hex;
@@ -305,6 +327,7 @@ TEST(XYHexagonTest, InvalidStringInitializationLeavesExistingHexUntouched)
   expectHexCenter(hex, 7, 8, 3);
 }
 
+// Covers XY hexagon behavior: invalid numeric initialization clears vertices but leaves old center fields.
 TEST(XYHexagonTest, InvalidNumericInitializationClearsVerticesButLeavesOldCenterFields)
 {
   XYHexagon hex;
@@ -315,6 +338,7 @@ TEST(XYHexagonTest, InvalidNumericInitializationClearsVerticesButLeavesOldCenter
   expectHexCenter(hex, 7, 8, 3);
 }
 
+// Covers XY hexagon behavior: add neighbor creates six adjacent hexes with expected centers.
 TEST(XYHexagonTest, AddNeighborCreatesSixAdjacentHexesWithExpectedCenters)
 {
   XYHexagon hex;
@@ -332,6 +356,7 @@ TEST(XYHexagonTest, AddNeighborCreatesSixAdjacentHexesWithExpectedCenters)
   }
 }
 
+// Covers XY hexagon behavior: polygon mutators are disabled for hexagons.
 TEST(XYHexagonTest, PolygonMutatorsAreDisabledForHexagons)
 {
   XYHexagon hex;
@@ -344,10 +369,13 @@ TEST(XYHexagonTest, PolygonMutatorsAreDisabledForHexagons)
   EXPECT_EQ(hex.size(), 6u);
 }
 
+// Covers XY hex grid behavior: initialize accepts labeled poly but current implementation creates no elements.
 TEST(XYHexGridTest, InitializeAcceptsLabeledPolyButCurrentImplementationCreatesNoElements)
 {
   XYHexGrid grid;
 
+  // The config parser accepts the labeled polygon form, but this implementation
+  // currently records config metadata without creating hex elements.
   ASSERT_TRUE(grid.initialize("pts={0,0:20,0:20,20:0,20},label=hex_search@10,10"));
   EXPECT_EQ(grid.getLabel(), "hex_search");
   EXPECT_EQ(grid.getConfigString(),
@@ -356,6 +384,7 @@ TEST(XYHexGridTest, InitializeAcceptsLabeledPolyButCurrentImplementationCreatesN
   EXPECT_EQ(grid.getElement(0).size(), 0u);
 }
 
+// Covers XY hex grid behavior: accepts initial value field but still creates no elements.
 TEST(XYHexGridTest, AcceptsInitialValueFieldButStillCreatesNoElements)
 {
   XYHexGrid grid;
@@ -368,6 +397,7 @@ TEST(XYHexGridTest, AcceptsInitialValueFieldButStillCreatesNoElements)
   EXPECT_EQ(grid.size(), 0);
 }
 
+// Covers XY hex grid behavior: rejects invalid specs but clear is currently no op.
 TEST(XYHexGridTest, RejectsInvalidSpecsButClearIsCurrentlyNoOp)
 {
   XYHexGrid grid;
@@ -382,6 +412,7 @@ TEST(XYHexGridTest, RejectsInvalidSpecsButClearIsCurrentlyNoOp)
   EXPECT_FALSE(grid.initialize("not_a_poly@10,10"));
 }
 
+// Covers XY grid update behavior: programmatic updates require name and at least one cell.
 TEST(XYGridUpdateTest, ProgrammaticUpdatesRequireNameAndAtLeastOneCell)
 {
   XYGridUpdate update;
@@ -408,6 +439,7 @@ TEST(XYGridUpdateTest, ProgrammaticUpdatesRequireNameAndAtLeastOneCell)
   EXPECT_EQ(update.get_spec(), "search_grid@avg@4,visited,1");
 }
 
+// Covers XY grid update behavior: parses search grid payloads and normalizes explicit delta.
 TEST(XYGridUpdateTest, ParsesSearchGridPayloadsAndNormalizesExplicitDelta)
 {
   XYGridUpdate update =
@@ -426,6 +458,7 @@ TEST(XYGridUpdateTest, ParsesSearchGridPayloadsAndNormalizesExplicitDelta)
   EXPECT_EQ(update.get_spec(), "search_grid@2,visited,1:2,score,12.25");
 }
 
+// Covers XY grid update behavior: programmatic default var and explicit delta normalize to same spec.
 TEST(XYGridUpdateTest, ProgrammaticDefaultVarAndExplicitDeltaNormalizeToSameSpec)
 {
   XYGridUpdate programmatic("search_grid");
@@ -439,6 +472,7 @@ TEST(XYGridUpdateTest, ProgrammaticDefaultVarAndExplicitDeltaNormalizeToSameSpec
   EXPECT_EQ(parsed.get_spec(), programmatic.get_spec());
 }
 
+// Covers XY grid update behavior: parses replace average and default variable payloads.
 TEST(XYGridUpdateTest, ParsesReplaceAverageAndDefaultVariablePayloads)
 {
   XYGridUpdate replace = stringToGridUpdate("search_grid@replace@3,score,44");
@@ -458,6 +492,7 @@ TEST(XYGridUpdateTest, ParsesReplaceAverageAndDefaultVariablePayloads)
   EXPECT_EQ(default_var.get_spec(), "search_grid@8,33");
 }
 
+// Covers XY grid update behavior: rejects missing grid bad type and malformed tuples.
 TEST(XYGridUpdateTest, RejectsMissingGridBadTypeAndMalformedTuples)
 {
   EXPECT_FALSE(stringToGridUpdate("@2,score,1").valid());
@@ -466,8 +501,11 @@ TEST(XYGridUpdateTest, RejectsMissingGridBadTypeAndMalformedTuples)
   EXPECT_FALSE(stringToGridUpdate("search_grid@2,score,1,extra").valid());
 }
 
+// Covers XY grid update behavior: parser currently accepts non numeric and negative indices via atoi.
 TEST(XYGridUpdateTest, ParserCurrentlyAcceptsNonNumericAndNegativeIndicesViaAtoi)
 {
+  // Grid update parsing uses atoi-style conversion, so nonnumeric values become
+  // zero and negative indices wrap through unsigned storage.
   XYGridUpdate non_numeric = stringToGridUpdate("search_grid@abc,score,notnum");
   ASSERT_TRUE(non_numeric.valid());
   EXPECT_EQ(non_numeric.getCellIX(0), 0u);
@@ -481,6 +519,7 @@ TEST(XYGridUpdateTest, ParserCurrentlyAcceptsNonNumericAndNegativeIndicesViaAtoi
   EXPECT_EQ(negative.get_spec(), "search_grid@4294967295,score,5");
 }
 
+// Covers XY grid update behavior: empty variable name round trips as default variable.
 TEST(XYGridUpdateTest, EmptyVariableNameRoundTripsAsDefaultVariable)
 {
   XYGridUpdate update = stringToGridUpdate("search_grid@1,,5");

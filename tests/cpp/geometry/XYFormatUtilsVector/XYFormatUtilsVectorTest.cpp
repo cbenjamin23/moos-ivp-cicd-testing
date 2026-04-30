@@ -8,6 +8,7 @@
 #include "XYFormatUtilsVector.h"
 #include "XYVector.h"
 
+// Covers XY format utils vector behavior: parses view vector style magnitude angle spec.
 TEST(XYFormatUtilsVectorTest, ParsesViewVectorStyleMagnitudeAngleSpec)
 {
   XYVector vector = string2Vector(
@@ -48,6 +49,7 @@ TEST(XYFormatUtilsVectorTest, ParsesViewVectorStyleMagnitudeAngleSpec)
   EXPECT_FALSE(vector.active());
 }
 
+// Covers XY format utils vector behavior: parses current field vector spec with xdot ydot components.
 TEST(XYFormatUtilsVectorTest, ParsesCurrentFieldVectorSpecWithXdotYdotComponents)
 {
   XYVector vector = string2Vector("xpos=0,ypos=0,mag=1,ang=0,xdot=1,ydot=0");
@@ -61,6 +63,7 @@ TEST(XYFormatUtilsVectorTest, ParsesCurrentFieldVectorSpecWithXdotYdotComponents
   EXPECT_NEAR(vector.ang(), 45.0, kGeomTol);
 }
 
+// Covers XY format utils vector behavior: parses bravo current field mission row.
 TEST(XYFormatUtilsVectorTest, ParsesBravoCurrentFieldMissionRow)
 {
   // ivp/missions/s2_bravo/bravo.cfd rows are loaded by CurrentField via
@@ -76,6 +79,7 @@ TEST(XYFormatUtilsVectorTest, ParsesBravoCurrentFieldMissionRow)
   EXPECT_NEAR(vector.ydot(), -1.54269026324769, 1e-12);
 }
 
+// Covers XY format utils vector behavior: requires position but defaults missing magnitude and angle.
 TEST(XYFormatUtilsVectorTest, RequiresPositionButDefaultsMissingMagnitudeAndAngle)
 {
   EXPECT_FALSE(string2Vector("y=2,mag=3,ang=4").valid());
@@ -90,6 +94,7 @@ TEST(XYFormatUtilsVectorTest, RequiresPositionButDefaultsMissingMagnitudeAndAngl
   EXPECT_NEAR(vector.ydot(), 0.0, kGeomTol);
 }
 
+// Covers XY format utils vector behavior: normalizes parsed negative magnitude and wrapped angles through components.
 TEST(XYFormatUtilsVectorTest, NormalizesParsedNegativeMagnitudeAndWrappedAnglesThroughComponents)
 {
   XYVector negative_mag = string2Vector("x=0,y=0,mag=-5,ang=90,label=reverse_current");
@@ -108,6 +113,7 @@ TEST(XYFormatUtilsVectorTest, NormalizesParsedNegativeMagnitudeAndWrappedAnglesT
   EXPECT_NEAR(wrapped_angle.ydot(), 0.0, kGeomTol);
 }
 
+// Covers XY format utils vector behavior: preserves parser treatment of loose hints.
 TEST(XYFormatUtilsVectorTest, PreservesParserTreatmentOfLooseHints)
 {
   XYVector vector = string2Vector(
@@ -127,6 +133,7 @@ TEST(XYFormatUtilsVectorTest, PreservesParserTreatmentOfLooseHints)
   EXPECT_FALSE(vector.color_set("vertex"));
 }
 
+// Covers XY vector behavior: constructs and converts magnitude angle using MOOS heading convention.
 TEST(XYVectorTest, ConstructsAndConvertsMagnitudeAngleUsingMoosHeadingConvention)
 {
   XYVector east(1, 2, 5, 90);
@@ -144,6 +151,7 @@ TEST(XYVectorTest, ConstructsAndConvertsMagnitudeAngleUsingMoosHeadingConvention
   EXPECT_NEAR(north.ydot(), 5.0, kGeomTol);
 }
 
+// Covers XY vector behavior: setters and merges keep representations in sync.
 TEST(XYVectorTest, SettersAndMergesKeepRepresentationsInSync)
 {
   XYVector vector;
@@ -171,6 +179,7 @@ TEST(XYVectorTest, SettersAndMergesKeepRepresentationsInSync)
   EXPECT_NEAR(vector.mag(), 0.0, kGeomTol);
 }
 
+// Covers XY vector behavior: direct magnitude setter does not normalize or mark position valid.
 TEST(XYVectorTest, DirectMagnitudeSetterDoesNotNormalizeOrMarkPositionValid)
 {
   XYVector vector;
@@ -183,6 +192,7 @@ TEST(XYVectorTest, DirectMagnitudeSetterDoesNotNormalizeOrMarkPositionValid)
   EXPECT_NEAR(vector.ydot(), 0.0, kGeomTol);
 }
 
+// Covers XY vector behavior: augments magnitude and angle with wraparound.
 TEST(XYVectorTest, AugmentsMagnitudeAndAngleWithWraparound)
 {
   XYVector vector(0, 0, 4, 350);
@@ -196,6 +206,7 @@ TEST(XYVectorTest, AugmentsMagnitudeAndAngleWithWraparound)
   EXPECT_NEAR(vector.ang(), 15.0, kGeomTol);
 }
 
+// Covers XY vector behavior: augmenting magnitude can reverse component direction.
 TEST(XYVectorTest, AugmentingMagnitudeCanReverseComponentDirection)
 {
   XYVector vector(0, 0, 4, 0);
@@ -208,6 +219,7 @@ TEST(XYVectorTest, AugmentingMagnitudeCanReverseComponentDirection)
   EXPECT_NEAR(vector.ydot(), -2.0, kGeomTol);
 }
 
+// Covers XY vector behavior: applies position transforms and snap.
 TEST(XYVectorTest, AppliesPositionTransformsAndSnap)
 {
   XYVector vector(1.24, -2.76, 3, 45);
@@ -222,6 +234,7 @@ TEST(XYVectorTest, AppliesPositionTransformsAndSnap)
   EXPECT_NEAR(vector.ypos(), -4.0, kGeomTol);
 }
 
+// Covers XY vector behavior: clears vector and object specific hints.
 TEST(XYVectorTest, ClearsVectorAndObjectSpecificHints)
 {
   XYVector vector(1, 2, 3, 4);
@@ -238,6 +251,7 @@ TEST(XYVectorTest, ClearsVectorAndObjectSpecificHints)
   EXPECT_EQ(vector.get_label(), "flow");
 }
 
+// Covers XY vector behavior: serializes viewer vector spec.
 TEST(XYVectorTest, SerializesViewerVectorSpec)
 {
   XYVector vector(1.234567, -2.345678, 9.876543, 45.5);

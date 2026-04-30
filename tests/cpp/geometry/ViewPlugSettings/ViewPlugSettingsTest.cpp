@@ -34,6 +34,7 @@ void ExpectColorPackNear(const ColorPack& color,
 
 }  // namespace
 
+// Covers hint holder behavior: defaults return empty color and zero measure.
 TEST(HintHolderTest, DefaultsReturnEmptyColorAndZeroMeasure)
 {
   HintHolder hints;
@@ -45,6 +46,7 @@ TEST(HintHolderTest, DefaultsReturnEmptyColorAndZeroMeasure)
   EXPECT_EQ(hints.getSpec(), "");
 }
 
+// Covers hint holder behavior: parses behavior style visual hints and serializes deterministically.
 TEST(HintHolderTest, ParsesBehaviorStyleVisualHintsAndSerializesDeterministically)
 {
   HintHolder hints;
@@ -64,6 +66,7 @@ TEST(HintHolderTest, ParsesBehaviorStyleVisualHintsAndSerializesDeterministicall
             "edge_size=2.5,vertex_size=4");
 }
 
+// Covers hint holder behavior: rejects invalid colors and does not store invalid measures.
 TEST(HintHolderTest, RejectsInvalidColorsAndDoesNotStoreInvalidMeasures)
 {
   HintHolder hints;
@@ -84,6 +87,7 @@ TEST(HintHolderTest, RejectsInvalidColorsAndDoesNotStoreInvalidMeasures)
   EXPECT_FALSE(hints.hasMeasure("vertex_size"));
 }
 
+// Covers hint holder behavior: set hints leaves prior entries when later entry fails.
 TEST(HintHolderTest, SetHintsLeavesPriorEntriesWhenLaterEntryFails)
 {
   HintHolder hints;
@@ -96,6 +100,7 @@ TEST(HintHolderTest, SetHintsLeavesPriorEntriesWhenLaterEntryFails)
   EXPECT_FALSE(hints.hasMeasure("vertex_size"));
 }
 
+// Covers hint holder behavior: applies general and prefix specific hints to geometry objects.
 TEST(HintHolderTest, AppliesGeneralAndPrefixSpecificHintsToGeometryObjects)
 {
   HintHolder hints;
@@ -124,6 +129,7 @@ TEST(HintHolderTest, AppliesGeneralAndPrefixSpecificHintsToGeometryObjects)
   EXPECT_EQ(poly.get_color_str("edge"), "blue");
 }
 
+// Covers hint holder behavior: accepts unknown numeric measures and color named parameters.
 TEST(HintHolderTest, AcceptsUnknownNumericMeasuresAndColorNamedParameters)
 {
   HintHolder hints;
@@ -136,6 +142,7 @@ TEST(HintHolderTest, AcceptsUnknownNumericMeasuresAndColorNamedParameters)
   EXPECT_EQ(hints.getColor("bogus_color_channel"), "purple");
 }
 
+// Covers VPlug geo settings behavior: constructor defaults match viewer geo attribute defaults.
 TEST(VPlugGeoSettingsTest, ConstructorDefaultsMatchViewerGeoAttributeDefaults)
 {
   VPlug_GeoSettings settings;
@@ -158,6 +165,7 @@ TEST(VPlugGeoSettingsTest, ConstructorDefaultsMatchViewerGeoAttributeDefaults)
   EXPECT_EQ(settings.colorname("datum_color"), "red");
 }
 
+// Covers VPlug geo settings behavior: applies marine viewer geo attr payloads and aliases.
 TEST(VPlugGeoSettingsTest, AppliesMarineViewerGeoAttrPayloadsAndAliases)
 {
   VPlug_GeoSettings settings;
@@ -177,6 +185,7 @@ TEST(VPlugGeoSettingsTest, AppliesMarineViewerGeoAttrPayloadsAndAliases)
   EXPECT_EQ(settings.attribute("polygon_label_pos"), "MID");
 }
 
+// Covers VPlug geo settings behavior: toggles viewability and rejects unknown boolean values.
 TEST(VPlugGeoSettingsTest, TogglesViewabilityAndRejectsUnknownBooleanValues)
 {
   VPlug_GeoSettings settings;
@@ -190,6 +199,7 @@ TEST(VPlugGeoSettingsTest, TogglesViewabilityAndRejectsUnknownBooleanValues)
   EXPECT_FALSE(settings.setParam("bogus_viewable", "on"));
 }
 
+// Covers VPlug geo settings behavior: size mappings accept delta scale and clip to viewer ranges.
 TEST(VPlugGeoSettingsTest, SizeMappingsAcceptDeltaScaleAndClipToViewerRanges)
 {
   VPlug_GeoSettings settings;
@@ -210,6 +220,7 @@ TEST(VPlugGeoSettingsTest, SizeMappingsAcceptDeltaScaleAndClipToViewerRanges)
   EXPECT_DOUBLE_EQ(settings.geosize("marker_scale"), 0.1);
 }
 
+// Covers VPlug geo settings behavior: opaqueness supports more less numeric and clamps.
 TEST(VPlugGeoSettingsTest, OpaquenessSupportsMoreLessNumericAndClamps)
 {
   VPlug_GeoSettings settings;
@@ -224,6 +235,7 @@ TEST(VPlugGeoSettingsTest, OpaquenessSupportsMoreLessNumericAndClamps)
   EXPECT_DOUBLE_EQ(settings.opaqueness("grid_opaqueness"), 0.9);
 }
 
+// Covers VPlug geo settings behavior: color mappings validate and expose color packs.
 TEST(VPlugGeoSettingsTest, ColorMappingsValidateAndExposeColorPacks)
 {
   VPlug_GeoSettings settings;
@@ -238,6 +250,7 @@ TEST(VPlugGeoSettingsTest, ColorMappingsValidateAndExposeColorPacks)
                       0.0, 128.0 / 255.0, 0.0);
 }
 
+// Covers VPlug geo settings behavior: strvalue only reports supported subset.
 TEST(VPlugGeoSettingsTest, StrvalueOnlyReportsSupportedSubset)
 {
   VPlug_GeoSettings settings;
@@ -249,6 +262,7 @@ TEST(VPlugGeoSettingsTest, StrvalueOnlyReportsSupportedSubset)
   EXPECT_EQ(settings.strvalue("vector_label_color"), "");
 }
 
+// Covers VPlug vehi settings behavior: constructor defaults match marine viewer vehicle defaults.
 TEST(VPlugVehiSettingsTest, ConstructorDefaultsMatchMarineViewerVehicleDefaults)
 {
   VPlug_VehiSettings settings;
@@ -270,6 +284,7 @@ TEST(VPlugVehiSettingsTest, ConstructorDefaultsMatchMarineViewerVehicleDefaults)
   EXPECT_EQ(settings.strvalue("vehicles_name_color"), "white");
 }
 
+// Covers VPlug vehi settings behavior: color aliases accept valid colors and reject bad ones.
 TEST(VPlugVehiSettingsTest, ColorAliasesAcceptValidColorsAndRejectBadOnes)
 {
   VPlug_VehiSettings settings;
@@ -289,6 +304,7 @@ TEST(VPlugVehiSettingsTest, ColorAliasesAcceptValidColorsAndRejectBadOnes)
   EXPECT_EQ(settings.strvalue("trails_color"), "white");
 }
 
+// Covers VPlug vehi settings behavior: boolean vehicle and trail settings use on off yes no toggle.
 TEST(VPlugVehiSettingsTest, BooleanVehicleAndTrailSettingsUseOnOffYesNoToggle)
 {
   VPlug_VehiSettings settings;
@@ -303,6 +319,7 @@ TEST(VPlugVehiSettingsTest, BooleanVehicleAndTrailSettingsUseOnOffYesNoToggle)
   EXPECT_TRUE(settings.isViewableBearingLines());
 }
 
+// Covers VPlug vehi settings behavior: vehicle name mode supports deprecated names and toggle cycle.
 TEST(VPlugVehiSettingsTest, VehicleNameModeSupportsDeprecatedNamesAndToggleCycle)
 {
   VPlug_VehiSettings settings;
@@ -323,6 +340,7 @@ TEST(VPlugVehiSettingsTest, VehicleNameModeSupportsDeprecatedNamesAndToggleCycle
   EXPECT_EQ(settings.getVehiclesNameMode(), "off");
 }
 
+// Covers VPlug vehi settings behavior: numeric settings clip and commands scale current values.
 TEST(VPlugVehiSettingsTest, NumericSettingsClipAndCommandsScaleCurrentValues)
 {
   VPlug_VehiSettings settings;
@@ -350,6 +368,7 @@ TEST(VPlugVehiSettingsTest, NumericSettingsClipAndCommandsScaleCurrentValues)
   EXPECT_DOUBLE_EQ(settings.getStaleRemoveThresh(), 0.0);
 }
 
+// Covers VPlug vehi settings behavior: rejects negative numbers unknown attributes and bad commands.
 TEST(VPlugVehiSettingsTest, RejectsNegativeNumbersUnknownAttributesAndBadCommands)
 {
   VPlug_VehiSettings settings;
@@ -364,6 +383,7 @@ TEST(VPlugVehiSettingsTest, RejectsNegativeNumbersUnknownAttributesAndBadCommand
   EXPECT_EQ(settings.strvalue("unknown_vehicle_setting"), "");
 }
 
+// Covers VPlug drop points behavior: defaults and simple add point use as dropped coordinates.
 TEST(VPlugDropPointsTest, DefaultsAndSimpleAddPointUseAsDroppedCoordinates)
 {
   VPlug_DropPoints drops;
@@ -379,6 +399,7 @@ TEST(VPlugDropPointsTest, DefaultsAndSimpleAddPointUseAsDroppedCoordinates)
   EXPECT_EQ(drops.getCoordinates(0), "");
 }
 
+// Covers VPlug drop points behavior: metadata add colors labels by native coordinate kind.
 TEST(VPlugDropPointsTest, MetadataAddColorsLabelsByNativeCoordinateKind)
 {
   VPlug_DropPoints drops;
@@ -392,6 +413,7 @@ TEST(VPlugDropPointsTest, MetadataAddColorsLabelsByNativeCoordinateKind)
   EXPECT_EQ(drops.getPoint(1).get_color_str("label"), "lightgreen");
 }
 
+// Covers VPlug drop points behavior: coordinate mode relabels points but get coordinates stays native.
 TEST(VPlugDropPointsTest, CoordinateModeRelabelsPointsButGetCoordinatesStaysNative)
 {
   VPlug_DropPoints drops;
@@ -412,6 +434,7 @@ TEST(VPlugDropPointsTest, CoordinateModeRelabelsPointsButGetCoordinatesStaysNati
   EXPECT_FALSE(drops.setParam("drop_point_coords", "utm"));
 }
 
+// Covers VPlug drop points behavior: edit commands clear last and clear all.
 TEST(VPlugDropPointsTest, EditCommandsClearLastAndClearAll)
 {
   VPlug_DropPoints drops;
@@ -431,6 +454,7 @@ TEST(VPlugDropPointsTest, EditCommandsClearLastAndClearAll)
   EXPECT_FALSE(drops.setParam("drop_point_edit", "undo"));
 }
 
+// Covers VPlug drop points behavior: vertex size clips and color settings currently use param name.
 TEST(VPlugDropPointsTest, VertexSizeClipsAndColorSettingsCurrentlyUseParamName)
 {
   VPlug_DropPoints drops;
@@ -450,6 +474,7 @@ TEST(VPlugDropPointsTest, VertexSizeClipsAndColorSettingsCurrentlyUseParamName)
   EXPECT_EQ(drops.getPoint(0).get_color_str("label"), "black");
 }
 
+// Covers VPlug drop points behavior: viewable menu setting is currently unsupported.
 TEST(VPlugDropPointsTest, ViewableMenuSettingIsCurrentlyUnsupported)
 {
   VPlug_DropPoints drops;
@@ -458,6 +483,7 @@ TEST(VPlugDropPointsTest, ViewableMenuSettingIsCurrentlyUnsupported)
   EXPECT_TRUE(drops.viewable());
 }
 
+// Covers VPlug geo shapes map behavior: adds viewer point payloads per community but point size counts polygons.
 TEST(VPlugGeoShapesMapTest, AddsViewerPointPayloadsPerCommunityButPointSizeCountsPolygons)
 {
   VPlug_GeoShapesMap shapes;
@@ -478,6 +504,7 @@ TEST(VPlugGeoShapesMapTest, AddsViewerPointPayloadsPerCommunityButPointSizeCount
   EXPECT_EQ(shapes.size("points", "abe"), 0u);
 }
 
+// Covers VPlug geo shapes map behavior: aggregates polygon wedge and hexagon accessors by vehicle.
 TEST(VPlugGeoShapesMapTest, AggregatesPolygonWedgeAndHexagonAccessorsByVehicle)
 {
   VPlug_GeoShapesMap shapes;
@@ -498,6 +525,7 @@ TEST(VPlugGeoShapesMapTest, AggregatesPolygonWedgeAndHexagonAccessorsByVehicle)
   EXPECT_EQ(shapes.getHexagons("abe").size(), 0u);
 }
 
+// Covers VPlug geo shapes map behavior: unsupported or invalid viewer payloads may still create vehicle slot.
 TEST(VPlugGeoShapesMapTest, UnsupportedOrInvalidViewerPayloadsMayStillCreateVehicleSlot)
 {
   VPlug_GeoShapesMap shapes;
@@ -515,6 +543,7 @@ TEST(VPlugGeoShapesMapTest, UnsupportedOrInvalidViewerPayloadsMayStillCreateVehi
   EXPECT_EQ(shapes.getVehiNames().size(), 1u);
 }
 
+// Covers VPlug geo shapes map behavior: replaces and deletes map backed shapes by label and active flag.
 TEST(VPlugGeoShapesMapTest, ReplacesAndDeletesMapBackedShapesByLabelAndActiveFlag)
 {
   VPlug_GeoShapesMap shapes;
@@ -537,6 +566,7 @@ TEST(VPlugGeoShapesMapTest, ReplacesAndDeletesMapBackedShapesByLabelAndActiveFla
   EXPECT_TRUE(shapes.getMarkers("abe").empty());
 }
 
+// Covers VPlug geo shapes map behavior: manage memory expires duration limited viewer objects.
 TEST(VPlugGeoShapesMapTest, ManageMemoryExpiresDurationLimitedViewerObjects)
 {
   VPlug_GeoShapesMap shapes;
@@ -552,6 +582,7 @@ TEST(VPlugGeoShapesMapTest, ManageMemoryExpiresDurationLimitedViewerObjects)
   EXPECT_TRUE(shapes.getTextBoxes("shoreside").empty());
 }
 
+// Covers VPlug geo shapes map behavior: routes marine viewer registered variables from MOOS postings.
 TEST(VPlugGeoShapesMapTest, RoutesMarineViewerRegisteredVariablesFromMoosPostings)
 {
   VPlug_GeoShapesMap shapes;
@@ -666,6 +697,7 @@ TEST(VPlugGeoShapesMapTest, RoutesMarineViewerRegisteredVariablesFromMoosPosting
               kGeomTol);
 }
 
+// Covers VPlug geo shapes map behavior: clear specific vehicle leaves vehicle slot but removes shapes.
 TEST(VPlugGeoShapesMapTest, ClearSpecificVehicleLeavesVehicleSlotButRemovesShapes)
 {
   VPlug_GeoShapesMap shapes;

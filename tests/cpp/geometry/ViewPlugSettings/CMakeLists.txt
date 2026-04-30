@@ -7,10 +7,11 @@ add_moos_cpp_test(test_geometry_viewplug_settings
   LABELS
     geometry
     ViewPlugSettings
-    HintHolder
-    VPlug_GeoSettings
-    VPlug_VehiSettings
-    VPlug_DropPoints
-    VPlug_GeoShapesMap
     viewer_plugins
+  SUITE_LABELS
+    HintHolderTest=HintHolder
+    VPlugGeoSettingsTest=VPlug_GeoSettings
+    VPlugVehiSettingsTest=VPlug_VehiSettings
+    VPlugDropPointsTest=VPlug_DropPoints
+    VPlugGeoShapesMapTest=VPlug_GeoShapesMap
 )

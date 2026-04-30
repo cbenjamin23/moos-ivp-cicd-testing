@@ -8,8 +8,10 @@ add_moos_cpp_test(test_geometry_xyprimitive_shapes
     geometry
     math
     XYPrimitiveShapes
-    XYArrow
-    XYSegment
-    XYSquare
     primitive_shapes
+  SUITE_LABELS
+    XYArrowPrimitiveTest=XYArrow
+    VPlugGeoShapesPrimitiveVectorTest=VPlug_GeoShapes
+    XYSegmentPrimitiveTest=XYSegment
+    XYSquarePrimitiveTest=XYSquare
 )

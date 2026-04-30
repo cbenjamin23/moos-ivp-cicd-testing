@@ -1,0 +1,14 @@
+add_moos_cpp_test(test_ufield_utils
+  SOURCES
+    UFieldUtilsTest.cpp
+  LIBS
+    ufield
+    mbutil
+  LABELS
+    ufield
+    pShare
+  SUITE_LABELS
+    UFieldUtilsTest=UFieldUtils
+    CommsEntryTest=CommsEntry
+    CommsCatalogTest=CommsCatalog
+)

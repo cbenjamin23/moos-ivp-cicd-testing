@@ -1,13 +1,12 @@
 #include <gtest/gtest.h>
 
 #include <list>
-#include <cstdio>
-#include <fstream>
 #include <set>
 #include <string>
 #include <vector>
 
 #include "MBUtils.h"
+#include "TestFileUtils.h"
 
 namespace {
 
@@ -21,6 +20,7 @@ std::vector<char*> makeArgv(std::vector<std::string>& args)
 
 }  // namespace
 
+// Covers mb utils misc behavior: shortens helm mode strings for ui displays.
 TEST(MBUtilsMiscTest, ShortensHelmModeStringsForUiDisplays)
 {
   EXPECT_EQ(modeShorten("MODE_A@Alpha:Bravo$MODE_B@Charlie:Delta"),
@@ -31,6 +31,7 @@ TEST(MBUtilsMiscTest, ShortensHelmModeStringsForUiDisplays)
   EXPECT_EQ(modeShorten("STATION_KEEP"), "STATION_KEEP");
 }
 
+// Covers mb utils misc behavior: parses application names and vehicle types.
 TEST(MBUtilsMiscTest, ParsesApplicationNamesAndVehicleTypes)
 {
   EXPECT_EQ(parseAppName("../pHelmIvP"), "pHelmIvP");
@@ -50,6 +51,7 @@ TEST(MBUtilsMiscTest, ParsesApplicationNamesAndVehicleTypes)
   EXPECT_FALSE(isKnownVehicleType("submarine"));
 }
 
+// Covers mb utils misc behavior: computes checksums digits and months.
 TEST(MBUtilsMiscTest, ComputesChecksumsDigitsAndMonths)
 {
   EXPECT_EQ(checksumHexStr(""), "00");
@@ -64,6 +66,7 @@ TEST(MBUtilsMiscTest, ComputesChecksumsDigitsAndMonths)
   EXPECT_EQ(intToMonth(13, true), "unk");
 }
 
+// Covers mb utils misc behavior: serializes collections with caller selected separators.
 TEST(MBUtilsMiscTest, SerializesCollectionsWithCallerSelectedSeparators)
 {
   EXPECT_EQ(stringListToString(std::list<std::string>{"alpha", "bravo"}, '|'),
@@ -78,6 +81,7 @@ TEST(MBUtilsMiscTest, SerializesCollectionsWithCallerSelectedSeparators)
             std::vector<std::string>({"alpha", "zulu"}));
 }
 
+// Covers mb utils misc behavior: computes min max and hex encodings.
 TEST(MBUtilsMiscTest, ComputesMinMaxAndHexEncodings)
 {
   EXPECT_DOUBLE_EQ(minElement({}), 0);
@@ -90,6 +94,7 @@ TEST(MBUtilsMiscTest, ComputesMinMaxAndHexEncodings)
   EXPECT_EQ(doubleToHex(1.5), "FF");
 }
 
+// Covers mb utils arg behavior: finds and validates command line style arguments.
 TEST(MBUtilsArgTest, FindsAndValidatesCommandLineStyleArguments)
 {
   std::vector<std::string> args = {
@@ -110,6 +115,7 @@ TEST(MBUtilsArgTest, FindsAndValidatesCommandLineStyleArguments)
   EXPECT_EQ(validateArgs(argc, argv.data(), "--mission:1 --speed:0"), 3);
 }
 
+// Covers mb utils text layout behavior: joins justifies and breaks mission help text.
 TEST(MBUtilsTextLayoutTest, JoinsJustifiesAndBreaksMissionHelpText)
 {
   std::vector<std::string> joined =
@@ -131,18 +137,18 @@ TEST(MBUtilsTextLayoutTest, JoinsJustifiesAndBreaksMissionHelpText)
             std::vector<std::string>({"alpha beta", "gamma", "delta"}));
 }
 
+// Covers mb utils file and range setter behavior: checks file access and coupled ranges.
 TEST(MBUtilsFileAndRangeSetterTest, ChecksFileAccessAndCoupledRanges)
 {
-  const std::string path = "mbutils_file_access_fixture.txt";
-  {
-    std::ofstream out(path.c_str());
-    out << "ServerHost = localhost\n";
-  }
+  TempDir temp("mbutils_file_access");
+  const std::string path = temp.writeFile("fixture.moos",
+                                          "ServerHost = localhost\n");
+  const std::string writable_path = temp.filePath("new_file.moos");
 
   EXPECT_TRUE(okFileToRead(path));
   EXPECT_FALSE(okFileToRead("missing_file.moos"));
   EXPECT_TRUE(okFileToWrite(path));
-  EXPECT_TRUE(okFileToWrite("new_file_in_current_dir.txt"));
+  EXPECT_TRUE(okFileToWrite(writable_path));
   EXPECT_FALSE(okFileToWrite("/definitely_missing_dir/new.moos"));
 
   double minv = 5;
@@ -157,5 +163,4 @@ TEST(MBUtilsFileAndRangeSetterTest, ChecksFileAccessAndCoupledRanges)
   EXPECT_TRUE(setMinPartOfPairOnString(minv, maxv, "-1", true));
   EXPECT_DOUBLE_EQ(minv, -1);
 
-  std::remove(path.c_str());
 }

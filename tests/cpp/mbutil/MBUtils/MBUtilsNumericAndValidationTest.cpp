@@ -5,6 +5,7 @@
 
 #include "MBUtils.h"
 
+// Covers mb utils validation behavior: classifies numbers booleans and delimited wrappers.
 TEST(MBUtilsValidationTest, ClassifiesNumbersBooleansAndDelimitedWrappers)
 {
   EXPECT_TRUE(isNumber("12.5"));
@@ -29,6 +30,7 @@ TEST(MBUtilsValidationTest, ClassifiesNumbersBooleansAndDelimitedWrappers)
   EXPECT_FALSE(isChevroned(" <mode> "));
 }
 
+// Covers mb utils validation behavior: validates IP addresses and turns.
 TEST(MBUtilsValidationTest, ValidatesIpAddressesAndTurns)
 {
   EXPECT_TRUE(isValidIPAddress("192.168.1.10"));
@@ -43,6 +45,7 @@ TEST(MBUtilsValidationTest, ValidatesIpAddressesAndTurns)
   EXPECT_FALSE(isValidTurn("left"));
 }
 
+// Covers mb utils setter behavior: sets boolean and turn values from strings.
 TEST(MBUtilsSetterTest, SetsBooleanAndTurnValuesFromStrings)
 {
   bool flag = false;
@@ -70,6 +73,7 @@ TEST(MBUtilsSetterTest, SetsBooleanAndTurnValuesFromStrings)
   EXPECT_EQ(side, "start");
 }
 
+// Covers mb utils setter behavior: sets numbers with strict positive and range semantics.
 TEST(MBUtilsSetterTest, SetsNumbersWithStrictPositiveAndRangeSemantics)
 {
   double dval = 1;
@@ -97,6 +101,7 @@ TEST(MBUtilsSetterTest, SetsNumbersWithStrictPositiveAndRangeSemantics)
   EXPECT_DOUBLE_EQ(dval, 7);
 }
 
+// Covers mb utils setter behavior: sets integer and variable values.
 TEST(MBUtilsSetterTest, SetsIntegerAndVariableValues)
 {
   unsigned int uval = 9;
@@ -122,6 +127,7 @@ TEST(MBUtilsSetterTest, SetsIntegerAndVariableValues)
   EXPECT_EQ(var, "");
 }
 
+// Covers mb utils math and formatting behavior: clips snaps and formats values.
 TEST(MBUtilsMathAndFormattingTest, ClipsSnapsAndFormatsValues)
 {
   EXPECT_DOUBLE_EQ(vclip(12, 0, 10), 10);

@@ -6,7 +6,8 @@ add_moos_cpp_test(test_bhvutil_fixedturn
     mbutil
   LABELS
     bhvutil
-    FixedTurn
-    FixedTurnSet
     BHV_FixedTurn
+  SUITE_LABELS
+    FixedTurnTest=FixedTurn
+    FixedTurnSetTest=FixedTurnSet
 )

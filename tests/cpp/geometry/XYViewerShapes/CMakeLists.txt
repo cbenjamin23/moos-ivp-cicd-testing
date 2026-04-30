@@ -6,10 +6,11 @@ add_moos_cpp_test(test_geometry_xyviewer_shapes
     mbutil
   LABELS
     geometry
-    XYOval
-    XYTextBox
-    XYVessel
     XYViewerShapes
     viewer_shapes
     formats
+  SUITE_LABELS
+    XYOvalTest=XYOval,VPlug_GeoShapes
+    XYTextBoxTest=XYTextBox,VPlug_GeoShapes
+    XYVesselTest=XYVessel,VPlug_GeoShapes
 )

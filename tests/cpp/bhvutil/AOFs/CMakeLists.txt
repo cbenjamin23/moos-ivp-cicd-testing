@@ -1,0 +1,23 @@
+add_moos_cpp_test(test_bhvutil_aofs
+  SOURCES
+    BhvutilAOFTest.cpp
+  LIBS
+    bhvutil
+    ivpbuild
+    ivpcore
+    geometry
+    mbutil
+  LABELS
+    bhvutil
+    AOF
+  SUITE_LABELS
+    AOFWaypointTest=AOF_Waypoint,BHV_Waypoint
+    AOFContactTest=AOF_Contact
+    AOFAvoidCollisionTest=AOF_AvoidCollision,BHV_AvoidCollision
+    AOFAvoidCollisionDepthTest=AOF_AvoidCollisionDepth,BHV_AvoidCollisionDepth
+    AOFAvoidObstacleV24Test=AOF_AvoidObstacleV24,BHV_AvoidObstacleV24
+    AOFAvoidWallsTest=AOF_AvoidWalls,BHV_AvoidWalls
+    AOFCutRangeCPATest=AOF_CutRangeCPA,BHV_CutRange
+    AOFAttractorCPATest=AOF_AttractorCPA
+    AOFShadowTest=AOF_Shadow,BHV_Shadow
+)

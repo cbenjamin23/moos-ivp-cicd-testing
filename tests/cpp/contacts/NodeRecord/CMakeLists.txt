@@ -8,7 +8,8 @@ add_moos_cpp_test(test_contacts_noderecord
     mbutil
   LABELS
     contacts
-    NodeRecord
-    NodeRecordUtils
     NodeReport
+  SUITE_LABELS
+    NodeRecordTest=NodeRecord
+    NodeRecordUtilsTest=NodeRecordUtils
 )

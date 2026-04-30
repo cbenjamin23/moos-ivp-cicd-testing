@@ -1,0 +1,19 @@
+add_moos_cpp_test(test_helmivp_core_state
+  SOURCES
+    CoreStateTest.cpp
+  LIBS
+    helmivp
+    logic
+    ivpbuild
+    ivpcore
+    mbutil
+  LABELS
+    helmivp
+    pHelmIvP
+  SUITE_LABELS
+    ModeEntryTest=ModeEntry
+    ModeSetTest=ModeSet
+    BehaviorReportTest=BehaviorReport
+    BehaviorSpecTest=BehaviorSpec
+    HelmReportTest=HelmReport
+)

@@ -5,5 +5,7 @@ add_moos_cpp_test(test_mbutil_vardatapair
     mbutil
   LABELS
     mbutil
-    VarDataPair
+  SUITE_LABELS
+    VarDataPairTest=VarDataPair
+    VarDataPairUtilsTest=VarDataPairUtils
 )

@@ -7,9 +7,17 @@ add_moos_cpp_test(test_geometry_io_and_populators
   LABELS
     geometry
     IOAndPopulators
-    IO_GeomUtils
-    Populator_OpField
-    OpField
     files
     populators
+  SUITE_LABELS
+    IOGeomUtilsPolyStringFileTest=IO_GeomUtils
+    IOGeomUtilsPolyFileTest=IO_GeomUtils
+    IOGeomUtilsShapeFileTest=IO_GeomUtils
+    IOGeomUtilsGridFileTest=IO_GeomUtils
+    IOGeomUtilsOutputTest=IO_GeomUtils
+    OpFieldPointTest=OpField
+    OpFieldPolyTest=OpField
+    OpFieldConfigTest=OpField
+    OpFieldMergeAndSimplifyTest=OpField
+    PopulatorOpFieldFileTest=Populator_OpField
 )

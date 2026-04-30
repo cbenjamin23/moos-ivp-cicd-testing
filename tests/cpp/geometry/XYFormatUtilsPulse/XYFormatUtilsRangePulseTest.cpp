@@ -9,6 +9,7 @@
 #include "XYFormatUtilsRangePulse.h"
 #include "XYRangePulse.h"
 
+// Covers XY format utils range pulse behavior: parses view range pulse payload from range sensors.
 TEST(XYFormatUtilsRangePulseTest, ParsesViewRangePulsePayloadFromRangeSensors)
 {
   XYRangePulse pulse = stringStandard2RangePulse(
@@ -36,6 +37,7 @@ TEST(XYFormatUtilsRangePulseTest, ParsesViewRangePulsePayloadFromRangeSensors)
   EXPECT_FALSE(pulse.active());
 }
 
+// Covers XY format utils range pulse behavior: parses documented beacon range sensor view range pulse payload.
 TEST(XYFormatUtilsRangePulseTest, ParsesDocumentedBeaconRangeSensorViewRangePulsePayload)
 {
   XYRangePulse pulse = string2RangePulse(
@@ -58,6 +60,7 @@ TEST(XYFormatUtilsRangePulseTest, ParsesDocumentedBeaconRangeSensorViewRangePuls
   EXPECT_NEAR(pulse.get_time(), 3892830128.5, 0.1);
 }
 
+// Covers XY format utils range pulse behavior: parses collision detector generated alert pulse payload.
 TEST(XYFormatUtilsRangePulseTest, ParsesCollisionDetectorGeneratedAlertPulsePayload)
 {
   XYRangePulse pulse = string2RangePulse(
@@ -76,6 +79,7 @@ TEST(XYFormatUtilsRangePulseTest, ParsesCollisionDetectorGeneratedAlertPulsePayl
   EXPECT_TRUE(pulse.time_set());
 }
 
+// Covers XY format utils range pulse behavior: parses BHV range pulse minimal behavior posting.
 TEST(XYFormatUtilsRangePulseTest, ParsesBhvRangePulseMinimalBehaviorPosting)
 {
   // BHV_RangePulse posts this compact VIEW_RANGE_PULSE form from NAV_X/Y
@@ -96,6 +100,7 @@ TEST(XYFormatUtilsRangePulseTest, ParsesBhvRangePulseMinimalBehaviorPosting)
   EXPECT_EQ(pulse.get_color_str("fill"), "green");
 }
 
+// Covers XY format utils range pulse behavior: round trips generated beacon and contact sensor pulse.
 TEST(XYFormatUtilsRangePulseTest, RoundTripsGeneratedBeaconAndContactSensorPulse)
 {
   // uFldBeaconRangeSensor and uFldContactRangeSensor generate XYRangePulse
@@ -125,6 +130,7 @@ TEST(XYFormatUtilsRangePulseTest, RoundTripsGeneratedBeaconAndContactSensorPulse
   EXPECT_EQ(parsed.get_color_str("fill"), "blue");
 }
 
+// Covers XY format utils range pulse behavior: requires only pulse center coordinates.
 TEST(XYFormatUtilsRangePulseTest, RequiresOnlyPulseCenterCoordinates)
 {
   EXPECT_FALSE(string2RangePulse("y=2,radius=30,duration=5").valid());
@@ -142,6 +148,7 @@ TEST(XYFormatUtilsRangePulseTest, RequiresOnlyPulseCenterCoordinates)
   EXPECT_EQ(defaults.get_color_str("fill"), "green");
 }
 
+// Covers XY format utils range pulse behavior: preserves loose optional field behavior.
 TEST(XYFormatUtilsRangePulseTest, PreservesLooseOptionalFieldBehavior)
 {
   XYRangePulse pulse = string2RangePulse(
@@ -170,6 +177,7 @@ TEST(XYFormatUtilsRangePulseTest, PreservesLooseOptionalFieldBehavior)
   EXPECT_EQ(pulse.get_id(), "pulse-1");
 }
 
+// Covers XY range pulse behavior: evolves circle radius with duration and linger window.
 TEST(XYRangePulseTest, EvolvesCircleRadiusWithDurationAndLingerWindow)
 {
   XYRangePulse pulse;
@@ -201,6 +209,7 @@ TEST(XYRangePulseTest, EvolvesCircleRadiusWithDurationAndLingerWindow)
   EXPECT_TRUE(pulse.get_circle(63.01, 4).empty());
 }
 
+// Covers XY range pulse behavior: starts at center and clamps low circle point count.
 TEST(XYRangePulseTest, StartsAtCenterAndClampsLowCirclePointCount)
 {
   XYRangePulse pulse(10, -20);
@@ -223,6 +232,7 @@ TEST(XYRangePulseTest, StartsAtCenterAndClampsLowCirclePointCount)
   }
 }
 
+// Covers XY range pulse behavior: clamps circle point count and rejects degenerate ranges.
 TEST(XYRangePulseTest, ClampsCirclePointCountAndRejectsDegenerateRanges)
 {
   XYRangePulse pulse(0, 0);
@@ -241,6 +251,7 @@ TEST(XYRangePulseTest, ClampsCirclePointCountAndRejectsDegenerateRanges)
   EXPECT_TRUE(pulse.get_circle(3, 4).empty());
 }
 
+// Covers XY range pulse behavior: fades fill unless marked invariant.
 TEST(XYRangePulseTest, FadesFillUnlessMarkedInvariant)
 {
   XYRangePulse pulse(0, 0);
@@ -258,6 +269,7 @@ TEST(XYRangePulseTest, FadesFillUnlessMarkedInvariant)
   EXPECT_NEAR(pulse.get_fill(110), 0.8, kGeomTol);
 }
 
+// Covers XY range pulse behavior: serializes viewer compatible spec.
 TEST(XYRangePulseTest, SerializesViewerCompatibleSpec)
 {
   XYRangePulse pulse(1.234567, -2.345678);

@@ -42,6 +42,7 @@ XYPolygon GetOvalPolyQuietly(XYOval& oval, double draw_degs)
 
 }  // namespace
 
+// Covers XY oval behavior: parses canonical view oval payload used by marine viewer.
 TEST(XYOvalTest, ParsesCanonicalViewOvalPayloadUsedByMarineViewer)
 {
   XYOval oval = stringToOval(
@@ -76,6 +77,7 @@ TEST(XYOvalTest, ParsesCanonicalViewOvalPayloadUsedByMarineViewer)
   EXPECT_FALSE(oval.active());
 }
 
+// Covers XY oval behavior: requires positive radius and length at least diameter.
 TEST(XYOvalTest, RequiresPositiveRadiusAndLengthAtLeastDiameter)
 {
   EXPECT_FALSE(stringToOval("x=0,y=0,rad=0,len=10,ang=0").valid());
@@ -86,6 +88,7 @@ TEST(XYOvalTest, RequiresPositiveRadiusAndLengthAtLeastDiameter)
   EXPECT_TRUE(circle_like.valid());
 }
 
+// Covers XY oval behavior: parser uses atof for coordinates angles and ignores unknown fields.
 TEST(XYOvalTest, ParserUsesAtofForCoordinatesAnglesAndIgnoresUnknownFields)
 {
   XYOval oval = stringToOval(
@@ -107,6 +110,7 @@ TEST(XYOvalTest, ParserUsesAtofForCoordinatesAnglesAndIgnoresUnknownFields)
   EXPECT_FALSE(oval.color_set("edge"));
 }
 
+// Covers XY oval behavior: setters invalidate caches and reject non positive radius length.
 TEST(XYOvalTest, SettersInvalidateCachesAndRejectNonPositiveRadiusLength)
 {
   XYOval oval(10, -5, 2, 10, 90);
@@ -137,6 +141,7 @@ TEST(XYOvalTest, SettersInvalidateCachesAndRejectNonPositiveRadiusLength)
   EXPECT_NEAR(oval.getAngle(), 360.0, kGeomTol);
 }
 
+// Covers XY oval behavior: boundary cache uses capsule ends and axis aligned circle bounds.
 TEST(XYOvalTest, BoundaryCacheUsesCapsuleEndsAndAxisAlignedCircleBounds)
 {
   XYOval oval(10, -5, 2, 10, 90);
@@ -161,6 +166,7 @@ TEST(XYOvalTest, BoundaryCacheUsesCapsuleEndsAndAxisAlignedCircleBounds)
   EXPECT_TRUE(rect.contains(10, -5));
 }
 
+// Covers XY oval behavior: contains point covers rectangle and both rounded ends.
 TEST(XYOvalTest, ContainsPointCoversRectangleAndBothRoundedEnds)
 {
   XYOval oval(10, -5, 2, 10, 90);
@@ -173,6 +179,7 @@ TEST(XYOvalTest, ContainsPointCoversRectangleAndBothRoundedEnds)
   EXPECT_FALSE(oval.containsPoint(10, -7.1));
 }
 
+// Covers XY oval behavior: point cache uses MOOS heading convention and whitelisted resolution.
 TEST(XYOvalTest, PointCacheUsesMoosHeadingConventionAndWhitelistedResolution)
 {
   XYOval oval(10, -5, 2, 10, 90);
@@ -195,6 +202,7 @@ TEST(XYOvalTest, PointCacheUsesMoosHeadingConventionAndWhitelistedResolution)
   EXPECT_FALSE(oval.isSetPointCache());
 }
 
+// Covers XY oval behavior: oval polygon builds from point cache.
 TEST(XYOvalTest, OvalPolygonBuildsFromPointCache)
 {
   XYOval oval(10, -5, 2, 10, 90);
@@ -205,6 +213,7 @@ TEST(XYOvalTest, OvalPolygonBuildsFromPointCache)
   EXPECT_TRUE(poly.contains(10, -5));
 }
 
+// Covers XY oval behavior: diameter length oval is valid but current boundary cache stays empty.
 TEST(XYOvalTest, DiameterLengthOvalIsValidButCurrentBoundaryCacheStaysEmpty)
 {
   XYOval oval(10, -5, 2, 4, 90);
@@ -219,6 +228,7 @@ TEST(XYOvalTest, DiameterLengthOvalIsValidButCurrentBoundaryCacheStaysEmpty)
   EXPECT_FALSE(oval.containsPoint(10, -5));
 }
 
+// Covers XY oval behavior: serializes spec with object metadata and precision.
 TEST(XYOvalTest, SerializesSpecWithObjectMetadataAndPrecision)
 {
   XYOval oval(1.23456, -2.34567, 3.45678, 12.34567, -45.6789);
@@ -258,6 +268,7 @@ TEST(XYOvalTest, SerializesSpecWithObjectMetadataAndPrecision)
   EXPECT_TRUE(stringContains(out, "x:1.23456"));
 }
 
+// Covers XY oval behavior: geo shapes adds caches expires and erases by label.
 TEST(XYOvalTest, GeoShapesAddsCachesExpiresAndErasesByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -280,6 +291,7 @@ TEST(XYOvalTest, GeoShapesAddsCachesExpiresAndErasesByLabel)
   EXPECT_EQ(shapes.sizeOvals(), 0u);
 }
 
+// Covers XY oval behavior: geo shapes rejects invalid ovals and auto labels unlabeled ones.
 TEST(XYOvalTest, GeoShapesRejectsInvalidOvalsAndAutoLabelsUnlabeledOnes)
 {
   VPlug_GeoShapes shapes;
@@ -294,6 +306,7 @@ TEST(XYOvalTest, GeoShapesRejectsInvalidOvalsAndAutoLabelsUnlabeledOnes)
   EXPECT_EQ(shapes.getOvals().count("1"), 1u);
 }
 
+// Covers XY text box behavior: parses canonical view text box payload used by marine viewer.
 TEST(XYTextBoxTest, ParsesCanonicalViewTextBoxPayloadUsedByMarineViewer)
 {
   XYTextBox tbox = stringToTextBox(
@@ -321,6 +334,7 @@ TEST(XYTextBoxTest, ParsesCanonicalViewTextBoxPayloadUsedByMarineViewer)
   EXPECT_EQ(tbox.get_color_str("label"), "gray50");
 }
 
+// Covers XY text box behavior: constructor setters snap and clear maintain validity.
 TEST(XYTextBoxTest, ConstructorSettersSnapAndClearMaintainValidity)
 {
   XYTextBox tbox(1.2, -2.6, "status");
@@ -349,6 +363,7 @@ TEST(XYTextBoxTest, ConstructorSettersSnapAndClearMaintainValidity)
   EXPECT_EQ(tbox.getFSize(), 10);
 }
 
+// Covers XY text box behavior: rejects unsupported font sizes and invalid message color.
 TEST(XYTextBoxTest, RejectsUnsupportedFontSizesAndInvalidMessageColor)
 {
   XYTextBox tbox(0, 0);
@@ -365,6 +380,7 @@ TEST(XYTextBoxTest, RejectsUnsupportedFontSizesAndInvalidMessageColor)
   EXPECT_EQ(tbox.getMColor(), "red");
 }
 
+// Covers XY text box behavior: requires coordinates and rejects unknown fields.
 TEST(XYTextBoxTest, RequiresCoordinatesAndRejectsUnknownFields)
 {
   EXPECT_FALSE(stringToTextBox("y=2,msg=missing_x").valid());
@@ -372,6 +388,7 @@ TEST(XYTextBoxTest, RequiresCoordinatesAndRejectsUnknownFields)
   EXPECT_FALSE(stringToTextBox("x=1,y=2,msg=ok,unknown=value").valid());
 }
 
+// Covers XY text box behavior: parser uses atof for coordinates and can parse bare color.
 TEST(XYTextBoxTest, ParserUsesAtofForCoordinatesAndCanParseBareColor)
 {
   XYTextBox tbox = stringToTextBox(
@@ -392,6 +409,7 @@ TEST(XYTextBoxTest, ParserUsesAtofForCoordinatesAndCanParseBareColor)
   EXPECT_FALSE(tbox.vertex_size_set());
 }
 
+// Covers XY text box behavior: invalid active token currently invalidates whole payload.
 TEST(XYTextBoxTest, InvalidActiveTokenCurrentlyInvalidatesWholePayload)
 {
   XYTextBox tbox = stringToTextBox("x=1,y=2,msg=hello,active=maybe");
@@ -400,6 +418,7 @@ TEST(XYTextBoxTest, InvalidActiveTokenCurrentlyInvalidatesWholePayload)
   EXPECT_EQ(tbox.size(), 0u);
 }
 
+// Covers XY text box behavior: unquoted comma message currently invalidates behavior style payload.
 TEST(XYTextBoxTest, UnquotedCommaMessageCurrentlyInvalidatesBehaviorStylePayload)
 {
   XYTextBox tbox = stringToTextBox(
@@ -411,6 +430,7 @@ TEST(XYTextBoxTest, UnquotedCommaMessageCurrentlyInvalidatesBehaviorStylePayload
   EXPECT_EQ(tbox.size(), 0u);
 }
 
+// Covers XY text box behavior: empty textbox without duration becomes short lived erase payload.
 TEST(XYTextBoxTest, EmptyTextboxWithoutDurationBecomesShortLivedErasePayload)
 {
   XYTextBox tbox = stringToTextBox("x=1,y=2,label=status");
@@ -426,6 +446,7 @@ TEST(XYTextBoxTest, EmptyTextboxWithoutDurationBecomesShortLivedErasePayload)
   EXPECT_NEAR(explicit_duration.get_duration(), 7.0, kGeomTol);
 }
 
+// Covers XY text box behavior: serializes quoted messages and inactive erase spec.
 TEST(XYTextBoxTest, SerializesQuotedMessagesAndInactiveEraseSpec)
 {
   XYTextBox tbox(1.234, -2.345, "status");
@@ -451,6 +472,7 @@ TEST(XYTextBoxTest, SerializesQuotedMessagesAndInactiveEraseSpec)
   EXPECT_EQ(tbox.get_spec_inactive(), "x=0,y=0,msg=null,active=false,label=status");
 }
 
+// Covers XY text box behavior: geo shapes adds expires auto labels and erases by label.
 TEST(XYTextBoxTest, GeoShapesAddsExpiresAutoLabelsAndErasesByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -473,6 +495,7 @@ TEST(XYTextBoxTest, GeoShapesAddsExpiresAutoLabelsAndErasesByLabel)
   EXPECT_EQ(shapes.sizeTextBoxes(), 0u);
 }
 
+// Covers XY text box behavior: geo shapes rejects invalid textboxes and replaces matching labels.
 TEST(XYTextBoxTest, GeoShapesRejectsInvalidTextboxesAndReplacesMatchingLabels)
 {
   VPlug_GeoShapes shapes;
@@ -487,6 +510,7 @@ TEST(XYTextBoxTest, GeoShapesRejectsInvalidTextboxesAndReplacesMatchingLabels)
   EXPECT_EQ(shapes.getTextBoxes().at("status").getMsg(0), "second");
 }
 
+// Covers XY vessel behavior: defaults represent ship and have no geometry validity gate.
 TEST(XYVesselTest, DefaultsRepresentShipAndHaveNoGeometryValidityGate)
 {
   XYVessel vessel;
@@ -500,6 +524,7 @@ TEST(XYVesselTest, DefaultsRepresentShipAndHaveNoGeometryValidityGate)
   EXPECT_EQ(vessel.get_type(), "ship");
 }
 
+// Covers XY vessel behavior: parses view vessel payload converted from NODE_REPORT.
 TEST(XYVesselTest, ParsesViewVesselPayloadConvertedFromNodeReport)
 {
   XYVessel vessel = stringToVessel(
@@ -520,6 +545,7 @@ TEST(XYVesselTest, ParsesViewVesselPayloadConvertedFromNodeReport)
   EXPECT_NEAR(vessel.get_duration(), 3.0, kGeomTol);
 }
 
+// Covers XY vessel behavior: setters reject non positive length but do not normalize heading.
 TEST(XYVesselTest, SettersRejectNonPositiveLengthButDoNotNormalizeHeading)
 {
   XYVessel vessel(1, 2, 370, 5);
@@ -541,6 +567,7 @@ TEST(XYVesselTest, SettersRejectNonPositiveLengthButDoNotNormalizeHeading)
   EXPECT_NEAR(vessel.getLen(), 7.0, kGeomTol);
 }
 
+// Covers XY vessel behavior: parser ignores malformed heading length unknown fields and invalid type.
 TEST(XYVesselTest, ParserIgnoresMalformedHeadingLengthUnknownFieldsAndInvalidType)
 {
   XYVessel vessel = stringToVessel(
@@ -559,6 +586,7 @@ TEST(XYVesselTest, ParserIgnoresMalformedHeadingLengthUnknownFieldsAndInvalidTyp
   EXPECT_TRUE(vessel.active());
 }
 
+// Covers XY vessel behavior: parser accepts known vehicle types and color alias only.
 TEST(XYVesselTest, ParserAcceptsKnownVehicleTypesAndColorAliasOnly)
 {
   XYVessel vessel = stringToVessel(
@@ -571,6 +599,7 @@ TEST(XYVesselTest, ParserAcceptsKnownVehicleTypesAndColorAliasOnly)
   EXPECT_EQ(vessel.get_color_str("edge"), "yellow");
 }
 
+// Covers XY vessel behavior: serializes spec with trailing comma quirk and metadata.
 TEST(XYVesselTest, SerializesSpecWithTrailingCommaQuirkAndMetadata)
 {
   XYVessel vessel(1.234, -2.345, 361.5, 8.765);
@@ -594,6 +623,7 @@ TEST(XYVesselTest, SerializesSpecWithTrailingCommaQuirkAndMetadata)
   EXPECT_TRUE(stringContains(spec, "duration=3"));
 }
 
+// Covers XY vessel behavior: geo shapes adds replaces expires and erases by label.
 TEST(XYVesselTest, GeoShapesAddsReplacesExpiresAndErasesByLabel)
 {
   VPlug_GeoShapes shapes;
@@ -617,6 +647,7 @@ TEST(XYVesselTest, GeoShapesAddsReplacesExpiresAndErasesByLabel)
   EXPECT_EQ(shapes.sizeVessels(), 0u);
 }
 
+// Covers XY vessel behavior: geo shapes allows unlabeled duplicates and out of range getter sentinel.
 TEST(XYVesselTest, GeoShapesAllowsUnlabeledDuplicatesAndOutOfRangeGetterSentinel)
 {
   VPlug_GeoShapes shapes;
@@ -632,6 +663,7 @@ TEST(XYVesselTest, GeoShapesAllowsUnlabeledDuplicatesAndOutOfRangeGetterSentinel
   EXPECT_NEAR(sentinel.getLen(), 4.0, kGeomTol);
 }
 
+// Covers XY vessel behavior: geo shapes bounds ignore only zero zero vessels.
 TEST(XYVesselTest, GeoShapesBoundsIgnoreOnlyZeroZeroVessels)
 {
   VPlug_GeoShapes shapes;

@@ -61,6 +61,7 @@ XYPolygon makeNonConvexArrow()
 
 }  // namespace
 
+// Covers convex hull generator behavior: empty input returns null polygon.
 TEST(ConvexHullGeneratorTest, EmptyInputReturnsNullPolygon)
 {
   ConvexHullGenerator generator;
@@ -71,6 +72,7 @@ TEST(ConvexHullGeneratorTest, EmptyInputReturnsNullPolygon)
   EXPECT_FALSE(hull.is_convex());
 }
 
+// Covers convex hull generator behavior: single point produces tiny triangle around point.
 TEST(ConvexHullGeneratorTest, SinglePointProducesTinyTriangleAroundPoint)
 {
   ConvexHullGenerator generator;
@@ -85,6 +87,7 @@ TEST(ConvexHullGeneratorTest, SinglePointProducesTinyTriangleAroundPoint)
   EXPECT_NEAR(hull.max_dist_to_ctr(), 0.1145643924, kLooseGeomTol);
 }
 
+// Covers convex hull generator behavior: two distinct points produce thin rectangle one tenth as wide as length.
 TEST(ConvexHullGeneratorTest, TwoDistinctPointsProduceThinRectangleOneTenthAsWideAsLength)
 {
   ConvexHullGenerator generator;
@@ -103,6 +106,7 @@ TEST(ConvexHullGeneratorTest, TwoDistinctPointsProduceThinRectangleOneTenthAsWid
   EXPECT_NEAR(maxY(hull), 1.0, kGeomTol);
 }
 
+// Covers convex hull generator behavior: two nearly coincident points collapse to single point special case.
 TEST(ConvexHullGeneratorTest, TwoNearlyCoincidentPointsCollapseToSinglePointSpecialCase)
 {
   ConvexHullGenerator generator;
@@ -118,6 +122,7 @@ TEST(ConvexHullGeneratorTest, TwoNearlyCoincidentPointsCollapseToSinglePointSpec
   EXPECT_NEAR(hull.max_dist_to_ctr(), 0.1145643924, kLooseGeomTol);
 }
 
+// Covers convex hull generator behavior: root is lowest y then lowest x.
 TEST(ConvexHullGeneratorTest, RootIsLowestYThenLowestX)
 {
   ConvexHullGenerator generator;
@@ -134,6 +139,7 @@ TEST(ConvexHullGeneratorTest, RootIsLowestYThenLowestX)
   EXPECT_NEAR(root.y(), 0.0, kGeomTol);
 }
 
+// Covers convex hull generator behavior: duplicate radial angle keeps farthest point and drops interior point.
 TEST(ConvexHullGeneratorTest, DuplicateRadialAngleKeepsFarthestPointAndDropsInteriorPoint)
 {
   ConvexHullGenerator generator;
@@ -155,6 +161,7 @@ TEST(ConvexHullGeneratorTest, DuplicateRadialAngleKeepsFarthestPointAndDropsInte
   EXPECT_NEAR(maxY(hull), 20.0, kGeomTol);
 }
 
+// Covers convex hull generator behavior: disable settling still builds already convex hull.
 TEST(ConvexHullGeneratorTest, DisableSettlingStillBuildsAlreadyConvexHull)
 {
   ConvexHullGenerator generator;
@@ -173,6 +180,7 @@ TEST(ConvexHullGeneratorTest, DisableSettlingStillBuildsAlreadyConvexHull)
   EXPECT_NEAR(hull.area(), 400.0, kGeomTol);
 }
 
+// Covers convex hull generator behavior: nearly duplicate radial angles within point one degrees also keep farthest.
 TEST(ConvexHullGeneratorTest, NearlyDuplicateRadialAnglesWithinPointOneDegreesAlsoKeepFarthest)
 {
   ConvexHullGenerator generator;
@@ -190,6 +198,7 @@ TEST(ConvexHullGeneratorTest, NearlyDuplicateRadialAnglesWithinPointOneDegreesAl
   EXPECT_GT(maxX(hull), 20.0);
 }
 
+// Covers convex hull generator behavior: builds obstacle manager style hull from sensor point cloud.
 TEST(ConvexHullGeneratorTest, BuildsObstacleManagerStyleHullFromSensorPointCloud)
 {
   ConvexHullGenerator generator;
@@ -219,6 +228,7 @@ TEST(ConvexHullGeneratorTest, BuildsObstacleManagerStyleHullFromSensorPointCloud
   EXPECT_TRUE(stringContains(alert_update, "label=buoy#id=buoy"));
 }
 
+// Covers XY poly expander behavior: rejects non convex source polygon and keeps null buffer.
 TEST(XYPolyExpanderTest, RejectsNonConvexSourcePolygonAndKeepsNullBuffer)
 {
   XYPolyExpander expander;
@@ -232,6 +242,7 @@ TEST(XYPolyExpanderTest, RejectsNonConvexSourcePolygonAndKeepsNullBuffer)
   EXPECT_FALSE(buffer.is_convex());
 }
 
+// Covers XY poly expander behavior: zero buffer returns same square envelope.
 TEST(XYPolyExpanderTest, ZeroBufferReturnsSameSquareEnvelope)
 {
   XYPolyExpander expander;
@@ -249,6 +260,7 @@ TEST(XYPolyExpanderTest, ZeroBufferReturnsSameSquareEnvelope)
   EXPECT_NEAR(maxY(buffer), 10.0, kGeomTol);
 }
 
+// Covers XY poly expander behavior: expands square by buffer distance with rounded corner vertices.
 TEST(XYPolyExpanderTest, ExpandsSquareByBufferDistanceWithRoundedCornerVertices)
 {
   XYPolyExpander expander;
@@ -269,6 +281,7 @@ TEST(XYPolyExpanderTest, ExpandsSquareByBufferDistanceWithRoundedCornerVertices)
   EXPECT_FALSE(buffer.contains(13, 5));
 }
 
+// Covers XY poly expander behavior: expands irregular obstacle hull for alert buffer use case.
 TEST(XYPolyExpanderTest, ExpandsIrregularObstacleHullForAlertBufferUseCase)
 {
   XYPolygon obstacle;
@@ -295,6 +308,7 @@ TEST(XYPolyExpanderTest, ExpandsIrregularObstacleHullForAlertBufferUseCase)
   EXPECT_TRUE(buffer.contains(89.0, -86.0));
 }
 
+// Covers XY poly expander behavior: large degree delta is clamped to forty five degrees.
 TEST(XYPolyExpanderTest, LargeDegreeDeltaIsClampedToFortyFiveDegrees)
 {
   XYPolyExpander expander;
@@ -308,6 +322,7 @@ TEST(XYPolyExpanderTest, LargeDegreeDeltaIsClampedToFortyFiveDegrees)
   EXPECT_EQ(buffer.size(), 12u);
 }
 
+// Covers XY poly expander behavior: vertex proximity threshold still returns valid containing buffer.
 TEST(XYPolyExpanderTest, VertexProximityThresholdStillReturnsValidContainingBuffer)
 {
   XYPolyExpander expander;
@@ -323,6 +338,7 @@ TEST(XYPolyExpanderTest, VertexProximityThresholdStillReturnsValidContainingBuff
   EXPECT_TRUE(buffer.contains(square));
 }
 
+// Covers XY poly expander behavior: disable settling still returns convex buffer for clean square.
 TEST(XYPolyExpanderTest, DisableSettlingStillReturnsConvexBufferForCleanSquare)
 {
   XYPolyExpander expander;
@@ -338,6 +354,7 @@ TEST(XYPolyExpanderTest, DisableSettlingStillReturnsConvexBufferForCleanSquare)
   EXPECT_TRUE(buffer.contains(square));
 }
 
+// Covers XY poly expander behavior: negative buffer partially shrinks square with current stitching behavior.
 TEST(XYPolyExpanderTest, NegativeBufferPartiallyShrinksSquareWithCurrentStitchingBehavior)
 {
   XYPolyExpander expander;
@@ -359,6 +376,7 @@ TEST(XYPolyExpanderTest, NegativeBufferPartiallyShrinksSquareWithCurrentStitchin
   EXPECT_FALSE(buffer.contains(5, 9));
 }
 
+// Covers XY pattern block behavior: defaults build five north south lane segments around id point.
 TEST(XYPatternBlockTest, DefaultsBuildFiveNorthSouthLaneSegmentsAroundIdPoint)
 {
   XYPatternBlock block;
@@ -387,6 +405,7 @@ TEST(XYPatternBlockTest, DefaultsBuildFiveNorthSouthLaneSegmentsAroundIdPoint)
   EXPECT_TRUE(route.get_edge_tags().matches(8, 9, "lane"));
 }
 
+// Covers XY pattern block behavior: auto drop toggle currently preserves generated coverage route.
 TEST(XYPatternBlockTest, AutoDropToggleCurrentlyPreservesGeneratedCoverageRoute)
 {
   XYPatternBlock block;
@@ -400,6 +419,7 @@ TEST(XYPatternBlockTest, AutoDropToggleCurrentlyPreservesGeneratedCoverageRoute)
   EXPECT_EQ(block.getCompositeSegList().size(), 10u);
 }
 
+// Covers XY pattern block behavior: parses id point string and uses average of multiple id points as center.
 TEST(XYPatternBlockTest, ParsesIdPointStringAndUsesAverageOfMultipleIdPointsAsCenter)
 {
   XYPatternBlock block;
@@ -416,6 +436,7 @@ TEST(XYPatternBlockTest, ParsesIdPointStringAndUsesAverageOfMultipleIdPointsAsCe
   EXPECT_NEAR(lane_points[1].y(), 5.0, kGeomTol);
 }
 
+// Covers XY pattern block behavior: rejects invalid string params.
 TEST(XYPatternBlockTest, RejectsInvalidStringParams)
 {
   XYPatternBlock block;
@@ -425,6 +446,7 @@ TEST(XYPatternBlockTest, RejectsInvalidStringParams)
   EXPECT_FALSE(block.setParam("block_width", "wide"));
 }
 
+// Covers XY pattern block behavior: angle zero is rejected even though default angle is zero.
 TEST(XYPatternBlockTest, AngleZeroIsRejectedEvenThoughDefaultAngleIsZero)
 {
   XYPatternBlock block;
@@ -448,6 +470,7 @@ TEST(XYPatternBlockTest, AngleZeroIsRejectedEvenThoughDefaultAngleIsZero)
   EXPECT_NEAR(lane_segments[0].get_vy(1), -10.0, kGeomTol);
 }
 
+// Covers XY pattern block behavior: core width mutates block width on repeated builds.
 TEST(XYPatternBlockTest, CoreWidthMutatesBlockWidthOnRepeatedBuilds)
 {
   XYPatternBlock block;
@@ -466,6 +489,7 @@ TEST(XYPatternBlockTest, CoreWidthMutatesBlockWidthOnRepeatedBuilds)
   EXPECT_EQ(block.getLanePoints().size(), 2u);
 }
 
+// Covers XY pattern block behavior: composite route starts at closest outer endpoint and tags lane legs.
 TEST(XYPatternBlockTest, CompositeRouteStartsAtClosestOuterEndpointAndTagsLaneLegs)
 {
   XYPatternBlock block;
@@ -489,6 +513,7 @@ TEST(XYPatternBlockTest, CompositeRouteStartsAtClosestOuterEndpointAndTagsLaneLe
   EXPECT_FALSE(route.get_edge_tags().matches(1, 2, "lane"));
 }
 
+// Covers XY pattern block behavior: distance helpers use generated lane geometry.
 TEST(XYPatternBlockTest, DistanceHelpersUseGeneratedLaneGeometry)
 {
   XYPatternBlock block;

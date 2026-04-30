@@ -6,7 +6,9 @@ add_moos_cpp_test(test_geometry_xyconvexgrid
     mbutil
   LABELS
     geometry
-    XYConvexGrid
     grid
     formats
+  SUITE_LABELS
+    XYConvexGridTest=XYConvexGrid
+    XYGridUpdateTest=XYGridUpdate
 )

@@ -9,6 +9,7 @@
 
 inline IvPDomain makeCourseSpeedDomain()
 {
+  // Standard pHelmIvP decision space used by ZAIC, AOF, and solver tests.
   IvPDomain domain;
   domain.addDomain("course", 0, 359, 360);
   domain.addDomain("speed", 0, 5, 6);
@@ -25,6 +26,8 @@ inline IvPDomain makeXYDomain()
 
 inline IvPBox makePointBox(unsigned int dim, const std::vector<int>& pts)
 {
+  // Solver and encoder tests evaluate utility at discrete domain indices, not
+  // continuous navigation values.
   IvPBox box(dim);
   for(unsigned int i = 0; i < dim; ++i)
     box.setPTS(i, pts[i], pts[i]);
@@ -40,6 +43,8 @@ inline IvPBox makeOneDimPoint(unsigned int pt)
 
 inline double evalPDMapAtIndex(const PDMap& pdmap, unsigned int pt)
 {
+  // One-dimensional PDMap checks use point boxes to exercise the same eval
+  // path used after an IvP function is decoded.
   IvPBox box = makeOneDimPoint(pt);
   return pdmap.evalPoint(&box);
 }

@@ -67,7 +67,7 @@ Capture from: `harnesses/pid_harnesses/H01-pid_unit`
 Typical capture launch: `./zlaunch.sh --case=rudder_starboard_pass 10`
 
 - `pid-unit-heading-wrap.gif` - Heading Wrap; representative case `heading_wrap_pass`
-- `pid-unit-depth-elevator.gif` - Depth Elevator; representative case `depth_elevator_pass`
+- `pid-unit-manual-override.gif` - Manual Override; representative case `manual_override_zero_pass`
 
 ## H02 Marine PID Motion
 

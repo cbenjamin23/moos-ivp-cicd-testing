@@ -14,6 +14,7 @@ constexpr double kPi = 3.14159265358979323846;
 
 }  // namespace
 
+// Covers XY arc behavior: initializes io geom utils arc format.
 TEST(XYArcTest, InitializesIoGeomUtilsArcFormat)
 {
   XYArc arc;
@@ -33,6 +34,7 @@ TEST(XYArcTest, InitializesIoGeomUtilsArcFormat)
   EXPECT_NEAR(arc.lengthUnits(), 5.0 * kPi, kLooseGeomTol);
 }
 
+// Covers XY arc behavior: rejects malformed and negative radius initialization.
 TEST(XYArcTest, RejectsMalformedAndNegativeRadiusInitialization)
 {
   XYArc arc(1, 2, 3, 90, 0);
@@ -49,6 +51,7 @@ TEST(XYArcTest, RejectsMalformedAndNegativeRadiusInitialization)
   EXPECT_NEAR(arc.getRangle(), 0.0, kGeomTol);
 }
 
+// Covers XY arc behavior: normalizes constructor and angle setter inputs.
 TEST(XYArcTest, NormalizesConstructorAndAngleSetterInputs)
 {
   XYArc arc(0, 0, 10, 450, -90);
@@ -67,6 +70,7 @@ TEST(XYArcTest, NormalizesConstructorAndAngleSetterInputs)
   EXPECT_NEAR(arc.getAY2(), 10.0 * std::sqrt(2.0) / 2.0, kGeomTol);
 }
 
+// Covers XY arc behavior: contains angles across normal and wrapped ranges.
 TEST(XYArcTest, ContainsAnglesAcrossNormalAndWrappedRanges)
 {
   XYArc northeast(0, 0, 10, 90, 0);
@@ -83,6 +87,7 @@ TEST(XYArcTest, ContainsAnglesAcrossNormalAndWrappedRanges)
   EXPECT_FALSE(north_wrap.containsAngle(180));
 }
 
+// Covers XY arc behavior: contains angle uses stored range without normalizing query.
 TEST(XYArcTest, ContainsAngleUsesStoredRangeWithoutNormalizingQuery)
 {
   XYArc northeast(0, 0, 10, 90, 0);
@@ -95,6 +100,7 @@ TEST(XYArcTest, ContainsAngleUsesStoredRangeWithoutNormalizingQuery)
   EXPECT_TRUE(north_wrap.containsAngle(-10));
 }
 
+// Covers XY arc behavior: contains points using MOOS heading convention.
 TEST(XYArcTest, ContainsPointsUsingMoosHeadingConvention)
 {
   XYArc northeast(0, 0, 10, 90, 0);
@@ -106,6 +112,7 @@ TEST(XYArcTest, ContainsPointsUsingMoosHeadingConvention)
   EXPECT_FALSE(northeast.containsPoint(20, 0));
 }
 
+// Covers XY arc behavior: computes point distance to arc or nearest endpoint.
 TEST(XYArcTest, ComputesPointDistanceToArcOrNearestEndpoint)
 {
   XYArc northeast(0, 0, 10, 90, 0);
@@ -116,6 +123,7 @@ TEST(XYArcTest, ComputesPointDistanceToArcOrNearestEndpoint)
   EXPECT_NEAR(northeast.ptDistToArc(-10, 0), std::sqrt(200.0), kGeomTol);
 }
 
+// Covers XY arc behavior: reports only segment intersection points on the arc.
 TEST(XYArcTest, ReportsOnlySegmentIntersectionPointsOnTheArc)
 {
   XYArc northeast(0, 0, 10, 90, 0);
@@ -135,6 +143,7 @@ TEST(XYArcTest, ReportsOnlySegmentIntersectionPointsOnTheArc)
   EXPECT_EQ(northeast.segIntersectPts(-20, -20, -10, -10, rx1, ry1, rx2, ry2), 0);
 }
 
+// Covers XY arc behavior: strict segment intersection requires crossing arc perimeter.
 TEST(XYArcTest, StrictSegmentIntersectionRequiresCrossingArcPerimeter)
 {
   XYArc northeast(0, 0, 10, 90, 0);
@@ -145,6 +154,7 @@ TEST(XYArcTest, StrictSegmentIntersectionRequiresCrossingArcPerimeter)
   EXPECT_FALSE(northeast.segIntersectStrict(1, 1, 2, 2));
 }
 
+// Covers XY arc behavior: reports endpoint tangent as strict intersection.
 TEST(XYArcTest, ReportsEndpointTangentAsStrictIntersection)
 {
   XYArc northeast(0, 0, 10, 90, 0);
@@ -161,6 +171,7 @@ TEST(XYArcTest, ReportsEndpointTangentAsStrictIntersection)
   EXPECT_NEAR(ry2, 0.0, kGeomTol);
 }
 
+// Covers XY arc behavior: serializes current arc string format.
 TEST(XYArcTest, SerializesCurrentArcStringFormat)
 {
   XYArc arc(1, 2, 3, 90, 0);
@@ -173,6 +184,7 @@ TEST(XYArcTest, SerializesCurrentArcStringFormat)
   EXPECT_TRUE(stringContains(spec, ",0"));
 }
 
+// Covers XY arc behavior: set overloads expose cached endpoint difference.
 TEST(XYArcTest, SetOverloadsExposeCachedEndpointDifference)
 {
   XYArc arc(0, 0, 10, 90, 0);
@@ -195,6 +207,7 @@ TEST(XYArcTest, SetOverloadsExposeCachedEndpointDifference)
   EXPECT_NEAR(arc.getAY2(), 10.0, kGeomTol);
 }
 
+// Covers XY arc behavior: arc flight builds starboard and port turn geometry.
 TEST(XYArcTest, ArcFlightBuildsStarboardAndPortTurnGeometry)
 {
   XYArc starboard = arcFlight(0, 0, 0, 10, 5 * kPi, false);
@@ -222,6 +235,7 @@ TEST(XYArcTest, ArcFlightBuildsStarboardAndPortTurnGeometry)
   EXPECT_NEAR(port.getAY2(), 10.0, kLooseGeomTol);
 }
 
+// Covers XY arc behavior: arc flight preview arc contains only swept turn sector.
 TEST(XYArcTest, ArcFlightPreviewArcContainsOnlySweptTurnSector)
 {
   // A fixed-turn preview from an offset ownship pose should contain the
@@ -239,6 +253,7 @@ TEST(XYArcTest, ArcFlightPreviewArcContainsOnlySweptTurnSector)
               0.0, kLooseGeomTol);
 }
 
+// Covers XY arc behavior: arc flight rejects negative inputs with default zero arc.
 TEST(XYArcTest, ArcFlightRejectsNegativeInputsWithDefaultZeroArc)
 {
   XYArc negative_radius = arcFlight(0, 0, 0, -10, 5, true);
