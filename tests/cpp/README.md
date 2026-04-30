@@ -10,7 +10,7 @@ The setup has two parts:
 
 - GoogleTest is what you write in `*Test.cpp`: `TEST(SuiteName, CaseName)`.
 - CTest is what you run from the build tree. CI uses CTest family selectors to
-  run all tests, one component family, or a batch of component families.
+  run one component family or an explicit batch of component families.
 
 To add tests, put the test file under `tests/cpp/<library>/<area>`, register it
 with `add_moos_cpp_test` in that area's `CMakeLists.txt`, and give it the
@@ -32,7 +32,6 @@ The sections below explain the structure and conventions in more detail. The
 suite is designed for targeted regression work. A developer should be able to
 run:
 
-- all C++ tests with `ctest --test-dir build --output-on-failure`
 - one component family with a label, such as `ctest --test-dir build -L geometry`
 - one executable directly, such as `./bin/test_geometry_arcutils`
 - one GoogleTest suite with an executable filter, such as
@@ -392,10 +391,12 @@ python3 scripts/check_cpp_tests.py \
   --moos-src /path/to/moos-ivp/ivp/src
 ```
 
-Run the full suite before handing off broad changes:
+Run the relevant family or explicit family batch before handing off broad
+changes:
 
 ```bash
-ctest --test-dir build --output-on-failure
+ctest --test-dir build -L geometry --output-on-failure
+ctest --test-dir build -L 'geometry|ivpbuild|mbutil' --output-on-failure
 ```
 
 ## Invariants
@@ -409,7 +410,6 @@ The GitHub Actions workflow uses the same CTest registry and checker. Its C++
 dispatch inputs mirror the harness inputs:
 
 - `cpp_test_mode=none`: run no C++ unit tests
-- `cpp_test_mode=all`: run the full C++ suite
 - `cpp_test_mode=family_run`: run one family from the `cpp_test_family`
   dropdown, such as `geometry`, `ivpbuild`, or `mbutil`
 - `cpp_test_mode=batch_family_run`: run comma-separated families from

@@ -89,8 +89,8 @@ def parse_args() -> argparse.Namespace:
     )
     select_parser.add_argument(
         "--mode",
-        default="all",
-        choices=("none", "all", "family_run", "batch_family_run"),
+        default="family_run",
+        choices=("none", "family_run", "batch_family_run"),
         help="C++ unit test selection mode.",
     )
     select_parser.add_argument(
@@ -121,8 +121,8 @@ def parse_args() -> argparse.Namespace:
     run_parser.add_argument("--build-dir", required=True, help="CMake build directory.")
     run_parser.add_argument(
         "--targets",
-        default="all",
-        help="all or comma-separated CTest families to run.",
+        required=True,
+        help="Comma-separated CTest families to run.",
     )
     run_parser.add_argument(
         "--reports-dir",
@@ -139,7 +139,9 @@ def parse_args() -> argparse.Namespace:
 
 def selected_targets(raw: str) -> list[str]:
     targets = [item.strip() for item in raw.split(",") if item.strip()]
-    return targets or ["all"]
+    if not targets:
+        raise ValueError("No CTest families were selected.")
+    return targets
 
 
 def comma_list(raw: str) -> list[str]:
@@ -153,8 +155,6 @@ def select_targets_for_mode(
 ) -> list[str]:
     if mode == "none":
         return []
-    if mode == "all":
-        return ["all"]
     if mode == "family_run":
         if family not in CPP_FAMILIES:
             raise ValueError(
@@ -181,7 +181,7 @@ def select_targets_for_mode(
 
 def safe_filename(target: str) -> str:
     safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", target.strip())
-    return safe.strip("._") or "all"
+    return safe.strip("._") or "ctest"
 
 
 def matrix_for_targets(raw: str) -> dict[str, list[dict[str, str]]]:
@@ -276,8 +276,7 @@ def ctest_command(build_dir: Path, target: str, report_path: Path) -> list[str]:
         "--output-junit",
         str(report_path),
     ]
-    if target != "all":
-        command[4:4] = ["-L", target]
+    command[4:4] = ["-L", target]
     return command
 
 

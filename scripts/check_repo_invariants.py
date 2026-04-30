@@ -21,14 +21,12 @@ WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "build_extend.yml"
 DOCS_BUILD_PATH = REPO_ROOT / "docs" / "tools" / "build_pages.py"
 EXPECTED_DISPATCH_MODES = {
     "none",
-    "full",
     "family_run",
     "batch_family_run",
     "specific_harnesses",
 }
 EXPECTED_CPP_TEST_MODES = {
     "none",
-    "all",
     "family_run",
     "batch_family_run",
 }

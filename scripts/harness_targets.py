@@ -11,7 +11,6 @@ import sys
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TARGETS_PATH = REPO_ROOT / "config" / "harness_targets.json"
 REQUIRED_FIELDS = ("key", "path", "harness", "artifact", "families")
-FULL_MODES = ("correctness",)
 SPECIFIC_HARNESSES_MODES = ("specific_harnesses", "correctness_subset")
 
 
@@ -51,15 +50,6 @@ def validate_targets(targets: list[dict[str, object]], repo_root: Path = REPO_RO
         perf_profile = target.get("perf_profile")
         if perf_profile is not None and not isinstance(perf_profile, str):
             raise ValueError(f"target #{idx} field 'perf_profile' must be a string")
-
-        full_modes = target.get("full_modes", [])
-        if (
-            not isinstance(full_modes, list)
-            or any(mode not in FULL_MODES for mode in full_modes)
-        ):
-            raise ValueError(
-                f"target #{idx} field 'full_modes' must use only: {', '.join(FULL_MODES)}"
-            )
 
         key = str(target["key"])
         if key in seen_keys:
@@ -140,16 +130,6 @@ def select_targets(
     return selected
 
 
-def select_full_targets(
-    targets: list[dict[str, object]],
-    full_mode: str,
-) -> list[dict[str, object]]:
-    selected = [target for target in targets if full_mode in target.get("full_modes", [])]
-    if not selected:
-        raise ValueError(f"No targets are configured for full {full_mode}.")
-    return selected
-
-
 def matrix_json(selected: list[dict[str, object]]) -> str:
     return json.dumps({"include": selected}, separators=(",", ":"))
 
@@ -204,8 +184,6 @@ def print_target_list(targets: list[dict[str, object]]) -> None:
         flags: list[str] = []
         if target.get("perf_profile"):
             flags.append(str(target["perf_profile"]))
-        if target.get("full_modes"):
-            flags.append("full:" + ",".join(str(item) for item in target["full_modes"]))
         suffix = f" [{' | '.join(flags)}]" if flags else ""
         print(f"{target['key']}: {families} -> {target['path']}{suffix}")
 
@@ -226,7 +204,6 @@ def parse_args() -> argparse.Namespace:
         required=True,
         choices=(
             "none",
-            "full",
             "family_run",
             "batch_family_run",
             "specific_harnesses",
@@ -261,9 +238,6 @@ def main() -> int:
             if args.mode == "none":
                 selected = []
                 runtime = []
-            elif args.mode == "full":
-                runtime = select_full_targets(targets, "correctness")
-                selected = runtime
             else:
                 selected = select_targets(
                     targets,

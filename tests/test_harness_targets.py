@@ -78,20 +78,6 @@ class HarnessTargetTests(unittest.TestCase):
                 raw_targets="missing_target",
             )
 
-    def test_full_correctness_targets_match_current_full_jobs(self) -> None:
-        selected = harness_targets.select_full_targets(self.targets, "correctness")
-
-        self.assertEqual(
-            [target["key"] for target in selected],
-            [
-                "colregs_h01",
-                "colregs_h03",
-                "collision_h01",
-                "p01_obstacle",
-                "p03_colregs",
-            ],
-        )
-
 
 if __name__ == "__main__":
     unittest.main()

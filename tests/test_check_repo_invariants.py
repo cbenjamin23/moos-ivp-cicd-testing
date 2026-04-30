@@ -13,9 +13,9 @@ on:
         description: "Mode"
         required: true
         type: choice
-        default: full
+        default: none
         options:
-          - full
+          - none
           - family_run
       family:
         description: "Family"
@@ -36,7 +36,7 @@ class CheckRepoInvariantParsingTests(unittest.TestCase):
     def test_workflow_choice_block_reads_named_input_options(self) -> None:
         self.assertEqual(
             check_repo_invariants.workflow_choice_block("dispatch_mode", WORKFLOW_SNIPPET),
-            ["full", "family_run"],
+            ["none", "family_run"],
         )
         self.assertEqual(
             check_repo_invariants.workflow_choice_block("family", WORKFLOW_SNIPPET),
@@ -46,7 +46,7 @@ class CheckRepoInvariantParsingTests(unittest.TestCase):
     def test_workflow_default_reads_named_input_default(self) -> None:
         self.assertEqual(
             check_repo_invariants.workflow_default("dispatch_mode", WORKFLOW_SNIPPET),
-            "full",
+            "none",
         )
         self.assertEqual(
             check_repo_invariants.workflow_default("targets", WORKFLOW_SNIPPET),

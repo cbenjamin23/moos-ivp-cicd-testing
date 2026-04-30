@@ -1302,19 +1302,12 @@ def load_manual_targets() -> list[dict[str, object]]:
 def manual_target_rows() -> str:
     rows = []
     for target in load_manual_targets():
-        flags = []
-        if target.get("full_modes"):
-            flags.append("full")
-        if target.get("perf_profile"):
-            flags.append(str(target["perf_profile"]))
-        flag_text = ", ".join(flags) if flags else "manual"
         rows.append(
             f"""
           <tr>
             <th><code>{escape(str(target["key"]))}</code></th>
             <td>{escape(", ".join(str(item) for item in target["families"]))}</td>
             <td>{escape(str(target["harness"]))}</td>
-            <td>{escape(flag_text)}</td>
           </tr>
 """
         )
@@ -1464,7 +1457,7 @@ def render_user_guide() -> str:
         </article>
         <article class="technical-card">
           <h3>Exact harnesses</h3>
-          <p>Harnesses can also run exact target keys through <code>targets</code>. CTest runs broad sets, one family, or family batches.</p>
+          <p>Harnesses can also run exact target keys through <code>targets</code>. CTest selection stays at the family level.</p>
         </article>
         <article class="technical-card">
           <h3>Selected workloads</h3>
@@ -1477,7 +1470,7 @@ def render_user_guide() -> str:
       <div class="section-heading">
         <p class="eyebrow">Normal Flow</p>
         <h2>Pick one lane, or run both</h2>
-        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. The two lanes use the same selection patterns for broad sets, one family, and family batches; harnesses also support exact target keys.</p>
+        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. Both lanes support one family or comma-separated family batches; harnesses also support exact target keys.</p>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
@@ -1486,11 +1479,11 @@ def render_user_guide() -> str:
         </article>
         <article class="technical-card">
           <h3>2. Choose CTest coverage</h3>
-          <p>Use <code>cpp_test_mode: all</code> for the default source-level sweep, or narrow it with <code>family_run</code> or <code>batch_family_run</code>.</p>
+          <p>Use <code>cpp_test_mode: family_run</code> for one component family, or <code>batch_family_run</code> for a comma-separated batch.</p>
         </article>
         <article class="technical-card">
           <h3>3. Choose harness coverage</h3>
-          <p>Use <code>dispatch_mode: none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, <code>specific_harnesses</code>, or <code>full</code>.</p>
+          <p>Use <code>dispatch_mode: none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, or <code>specific_harnesses</code>.</p>
         </article>
       </div>
     </section>
@@ -1514,11 +1507,6 @@ def render_user_guide() -> str:
               <th>Skip this lane</th>
               <td><code>cpp_test_mode: none</code></td>
               <td><code>dispatch_mode: none</code></td>
-            </tr>
-            <tr>
-              <th>Broad set</th>
-              <td><code>cpp_test_mode: all</code></td>
-              <td><code>dispatch_mode: full</code></td>
             </tr>
             <tr>
               <th>One family</th>
@@ -1548,9 +1536,10 @@ def render_user_guide() -> str:
       </div>
       <div class="explain-stack">
         <article>
-          <h3>CTest broad set</h3>
+          <h3>CTest one family</h3>
           <pre><code>dispatch_mode: none
-cpp_test_mode: all
+cpp_test_mode: family_run
+cpp_test_family: geometry
 moos_ivp_ref: main</code></pre>
         </article>
         <article>
@@ -1626,7 +1615,6 @@ moos_ivp_ref: main</code></pre>
               <th>Key</th>
               <th>Family</th>
               <th>Harness</th>
-              <th>Profile</th>
             </tr>
           </thead>
           <tbody>
@@ -1634,6 +1622,7 @@ moos_ivp_ref: main</code></pre>
           </tbody>
         </table>
       </div>
+      <p class="guide-note">There is no catch-all harness or CTest mode. Use family batches when you want a broad run, and keep the batch explicit so runtime stays predictable as coverage grows.</p>
     </section>
 
     <section class="workflow">
@@ -1641,50 +1630,41 @@ moos_ivp_ref: main</code></pre>
       <h2>What success means</h2>
       <div class="guide-figures">
         <figure class="guide-figure">
-          <img src="assets/images/workflow-graph-example.png" alt="GitHub Actions workflow graph showing workflow-lint, select-targets, build, and runtime-harnesses jobs">
-          <figcaption>The workflow graph shows setup jobs, one shared build, and whichever CTest or runtime matrices are active for the selected inputs.</figcaption>
+          <img src="assets/images/workflow-graph-ctest-runtime-example.png" alt="GitHub Actions workflow graph showing prepare, build, ctest geometry, and runtime harness jobs">
+          <figcaption>Example run <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/runs/25176874485">25176874485</a> selected one CTest family and two runtime harness jobs. The graph shows one shared build feeding both selected lanes.</figcaption>
         </figure>
         <article class="run-summary-example">
-          <h3>Example harness summary</h3>
+          <h3>Reading a passing run</h3>
           <ul class="summary-meta">
-            <li>Target: <code>obstacle_behavior_h01</code></li>
-            <li>Harness: <code>H01-obstacle_behavior_motion</code></li>
+            <li>CTest row: <code>ctest / geometry</code></li>
+            <li>Runtime matrix: <code>2 jobs completed</code></li>
             <li>Requested MOOS-IvP ref: <code>main</code></li>
-            <li>Parsed cases: <code>21</code></li>
-            <li>Verdict: <code class="result-pass">pass</code></li>
+            <li>Workflow verdict: <code class="result-pass">green</code></li>
           </ul>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>case</th>
-                  <th>case_result</th>
-                  <th>expected</th>
-                  <th>actual</th>
-                  <th>grade</th>
+                  <th>Stage</th>
+                  <th>What it proves</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th><code>default_auto_request_pass</code></th>
-                  <td>success</td>
-                  <td>pass</td>
-                  <td>pass</td>
-                  <td><span class="result-pass">pass</span></td>
+                  <th><code>prepare</code></th>
+                  <td>Inputs were valid and resolved into CTest and harness matrix rows.</td>
                 </tr>
                 <tr>
-                  <th><code>rng_flag_pass</code></th>
-                  <td>success</td>
-                  <td>pass</td>
-                  <td>pass</td>
-                  <td><span class="result-pass">pass</span></td>
+                  <th><code>build</code></th>
+                  <td>MOOS-IvP and this repo built once, then the shared build artifact was published.</td>
                 </tr>
                 <tr>
-                  <th><code>avoid_disabled_fail</code></th>
-                  <td>success</td>
-                  <td>fail</td>
-                  <td>fail</td>
-                  <td><span class="result-fail">fail</span></td>
+                  <th><code>ctest / geometry</code></th>
+                  <td>The selected CTest family passed and produced a JUnit report artifact.</td>
+                </tr>
+                <tr>
+                  <th><code>runtime / ...</code></th>
+                  <td>Each selected harness ran its case matrix and uploaded its result summary.</td>
                 </tr>
               </tbody>
             </table>
@@ -1692,12 +1672,14 @@ moos_ivp_ref: main</code></pre>
         </article>
       </div>
       <ol>
-        <li><code>select-cpp-targets</code> and <code>select-targets</code> resolve the two lanes into matrix rows.</li>
-        <li>Each <code>cpp / &lt;target&gt;</code> row runs CTest with the selected label or family and uploads JUnit XML.</li>
+        <li><code>prepare</code> validates the workflow inputs and resolves CTest families and harness selections into matrix rows.</li>
+        <li><code>build</code> compiles once and validates the CTest registry before either test lane runs.</li>
+        <li>Each <code>ctest / &lt;family&gt;</code> row runs the selected CTest family and uploads JUnit XML.</li>
         <li>Each <code>runtime / &lt;key&gt; / &lt;harness&gt;</code> row runs one harness <code>zlaunch.sh</code> and uploads <code>results.txt</code>.</li>
         <li>A green run means every selected CTest row passed and every selected harness completed with its expected case matrix.</li>
       </ol>
       <div class="workflow-actions">
+        <a class="text-link" href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/runs/25176874485">Open example run</a>
         <a class="text-link" href="technical.html">Read the technical architecture</a>
       </div>
     </section>

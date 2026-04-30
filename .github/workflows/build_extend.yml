@@ -3,13 +3,12 @@ on:
   workflow_dispatch:
     inputs:
       dispatch_mode:
-        description: "[Harness] mode: none, full, family_run, batch_family_run, or specific_harnesses"
+        description: "[Harness] mode: none, family_run, batch_family_run, or specific_harnesses"
         required: true
         type: choice
         default: none
         options:
           - none
-          - full
           - family_run
           - batch_family_run
           - specific_harnesses
@@ -44,13 +43,12 @@ on:
         required: false
         default: "convoy_behavior,cutrange_behavior,fixedturn_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion"
       cpp_test_mode:
-        description: "[CTest] C++ test mode: none, all, family_run, or batch_family_run"
+        description: "[CTest] C++ test mode: none, family_run, or batch_family_run"
         required: true
         type: choice
-        default: all
+        default: family_run
         options:
           - none
-          - all
           - family_run
           - batch_family_run
       cpp_test_family:
@@ -104,7 +102,7 @@ on:
         default: "main"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'full' }}-${{ inputs.cpp_test_mode }}-${{ inputs.cpp_test_mode == 'family_run' && inputs.cpp_test_family || inputs.cpp_test_mode == 'batch_family_run' && inputs.cpp_test_families || 'all' }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'none' }}-${{ inputs.cpp_test_mode }}-${{ inputs.cpp_test_mode == 'family_run' && inputs.cpp_test_family || inputs.cpp_test_mode == 'batch_family_run' && inputs.cpp_test_families || 'none' }}
   cancel-in-progress: true
 
 jobs:
@@ -396,7 +394,7 @@ jobs:
 
   runtime-harnesses:
     name: runtime / ${{ matrix.key }} / ${{ matrix.harness }}
-    if: ${{ inputs.dispatch_mode == 'full' || inputs.dispatch_mode == 'specific_harnesses' || inputs.dispatch_mode == 'family_run' || inputs.dispatch_mode == 'batch_family_run' }}
+    if: ${{ inputs.dispatch_mode == 'specific_harnesses' || inputs.dispatch_mode == 'family_run' || inputs.dispatch_mode == 'batch_family_run' }}
     needs:
       - prepare
       - build

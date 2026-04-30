@@ -15,22 +15,21 @@ class CppTestTargetSummaryTests(unittest.TestCase):
         path.write_text(text, encoding="utf-8")
         return path
 
-    def test_selected_targets_accepts_all_or_comma_list(self) -> None:
-        self.assertEqual(ci_cpp_test_targets.selected_targets("all"), ["all"])
+    def test_selected_targets_accepts_one_or_comma_list(self) -> None:
+        self.assertEqual(ci_cpp_test_targets.selected_targets("geometry"), ["geometry"])
         self.assertEqual(
             ci_cpp_test_targets.selected_targets(" geometry, ivpbuild ,, mbutil "),
             ["geometry", "ivpbuild", "mbutil"],
         )
-        self.assertEqual(ci_cpp_test_targets.selected_targets(" , "), ["all"])
+
+    def test_selected_targets_rejects_empty_selection(self) -> None:
+        with self.assertRaisesRegex(ValueError, "No CTest families"):
+            ci_cpp_test_targets.selected_targets(" , ")
 
     def test_select_targets_for_mode_matches_workflow_modes(self) -> None:
         self.assertEqual(
             ci_cpp_test_targets.select_targets_for_mode("none", "", ""),
             [],
-        )
-        self.assertEqual(
-            ci_cpp_test_targets.select_targets_for_mode("all", "", ""),
-            ["all"],
         )
         self.assertEqual(
             ci_cpp_test_targets.select_targets_for_mode("family_run", "geometry", ""),

@@ -46,8 +46,7 @@
     "path": "harnesses/colregs_harnesses/H01-colregs_classification",
     "harness": "H01-colregs_classification",
     "artifact": "manual-colregs-h01-results",
-    "families": ["colregs"],
-    "full_modes": ["correctness"]
+    "families": ["colregs"]
   },
   {
     "key": "colregs_h02",
@@ -61,8 +60,7 @@
     "path": "harnesses/colregs_harnesses/H03-colregs_execution",
     "harness": "H03-colregs_execution",
     "artifact": "manual-colregs-h03-results",
-    "families": ["colregs"],
-    "full_modes": ["correctness"]
+    "families": ["colregs"]
   },
   {
     "key": "colregs_h04",
@@ -76,8 +74,7 @@
     "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion",
     "harness": "H01-collision_behavior_motion",
     "artifact": "manual-collision-h01-results",
-    "families": ["collision_behavior"],
-    "full_modes": ["correctness"]
+    "families": ["collision_behavior"]
   },
   {
     "key": "convoy_h01",
@@ -127,7 +124,6 @@
     "harness": "P01-obstacle_gauntlet",
     "artifact": "manual-p01-obstacle-results",
     "families": ["performance"],
-    "full_modes": ["correctness"],
     "perf_profile": "ci"
   },
   {
@@ -171,7 +167,6 @@
     "harness": "P03-colregs_traffic_ring",
     "artifact": "manual-p03-colregs-results",
     "families": ["colregs", "performance"],
-    "full_modes": ["correctness"],
     "perf_profile": "ci"
   }
 ]
