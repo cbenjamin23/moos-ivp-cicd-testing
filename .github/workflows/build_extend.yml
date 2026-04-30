@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       dispatch_mode:
-        description: "Harness mode: none, full, family_run, batch_family_run, or specific_harnesses"
+        description: "[Harness] mode: none, full, family_run, batch_family_run, or specific_harnesses"
         required: true
         type: choice
         default: none
@@ -14,7 +14,7 @@ on:
           - batch_family_run
           - specific_harnesses
       family:
-        description: "Family for family_run"
+        description: "[Harness] family for family_run"
         required: false
         type: choice
         default: colregs
@@ -36,23 +36,15 @@ on:
           - trail_behavior
           - waypoint_behavior
       targets:
-        description: "Comma-separated target keys for specific_harnesses mode"
+        description: "[Harness] comma-separated target keys for specific_harnesses mode"
         required: false
         default: "colregs_h01,colregs_h03"
       families:
-        description: "Comma-separated families for batch_family_run mode"
+        description: "[Harness] comma-separated families for batch_family_run mode"
         required: false
         default: "convoy_behavior,cutrange_behavior,fixedturn_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion"
-      time_warp:
-        description: "Time warp for manual runs that do not use a harness-specific CI profile"
-        required: false
-        default: "10"
-      moos_ivp_ref:
-        description: "MOOS-IvP branch, tag, or commit SHA to test"
-        required: false
-        default: "main"
       cpp_test_mode:
-        description: "C++ test mode: none, all, family_run, batch_family_run, or specific_labels"
+        description: "[CTest] C++ test mode: none, all, family_run, batch_family_run, or specific_labels"
         required: true
         type: choice
         default: all
@@ -63,7 +55,7 @@ on:
           - batch_family_run
           - specific_labels
       cpp_test_family:
-        description: "C++ test family for family_run"
+        description: "[CTest] C++ test family for family_run"
         required: false
         type: choice
         default: geometry
@@ -100,13 +92,21 @@ on:
           - ufield
           - zaicview
       cpp_test_families:
-        description: "Comma-separated C++ families for batch_family_run mode"
+        description: "[CTest] comma-separated C++ families for batch_family_run mode"
         required: false
         default: "geometry,ivpbuild,mbutil"
       cpp_test_labels:
-        description: "Comma-separated CTest labels for specific_labels mode"
+        description: "[CTest] comma-separated CTest labels for specific_labels mode"
         required: false
         default: "BuildUtils,IPF_Bundle"
+      time_warp:
+        description: "[Run settings] time warp for manual runs without a harness-specific CI profile"
+        required: false
+        default: "10"
+      moos_ivp_ref:
+        description: "[Run settings] MOOS-IvP branch, tag, or commit SHA to test"
+        required: false
+        default: "main"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'full' }}-${{ inputs.cpp_test_mode }}-${{ inputs.cpp_test_mode == 'family_run' && inputs.cpp_test_family || inputs.cpp_test_mode == 'batch_family_run' && inputs.cpp_test_families || inputs.cpp_test_labels || 'all' }}
