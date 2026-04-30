@@ -11,5 +11,4 @@ add_moos_cpp_test(test_encounters_cpaevent
     uFldCollisionDetect
     uFldCollObDetect
     app_alogeplot
-    logutils
 )

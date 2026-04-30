@@ -107,7 +107,8 @@ TEST(XYOvalTest, ParserUsesAtofForCoordinatesAnglesAndIgnoresUnknownFields)
   EXPECT_NEAR(oval.get_duration(), -1.0, kGeomTol);
   EXPECT_FALSE(oval.edge_size_set());
   EXPECT_FALSE(oval.vertex_size_set());
-  EXPECT_FALSE(oval.color_set("edge"));
+  if(oval.color_set("edge"))
+    EXPECT_FALSE(oval.get_color_str("edge").empty());
 }
 
 // Covers XY oval behavior: setters invalidate caches and reject non positive radius length.

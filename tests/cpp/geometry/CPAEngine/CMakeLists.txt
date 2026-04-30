@@ -7,6 +7,5 @@ add_moos_cpp_test(test_geometry_cpaengine
   LABELS
     geometry
     CPAEngine
-    encounters
     math
 )

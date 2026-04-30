@@ -7,6 +7,9 @@ Current repo-specific helpers:
 
 - `ci_harness_case_count.py` derives the default case count from a harness
   `zlaunch.sh` so GitHub Actions can reject incomplete `results.txt` files.
+- `ci_cpp_test_targets.py` builds the C++ unit test target matrix, runs CTest
+  label targets, writes per-target JUnit XML reports, and appends a C++ unit
+  test summary to GitHub Actions.
 - `harness_targets.py` validates and selects the manual-dispatch harness
   target metadata in `config/harness_targets.json`.
 - `check_repo_invariants.py` checks that harness target metadata, docs catalog

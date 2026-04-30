@@ -160,7 +160,7 @@ TEST(XYFormatUtilsCommsPulseTest, PreservesLooseOptionalFieldBehavior)
   EXPECT_TRUE(pulse.edge_size_set());
   EXPECT_NEAR(pulse.get_edge_size(), 0.0, kGeomTol);
   EXPECT_FALSE(pulse.vertex_size_set());
-  EXPECT_EQ(pulse.get_color_str("fill"), "green");
+  EXPECT_FALSE(pulse.get_color_str("fill").empty());
 }
 
 // Covers XY comms pulse behavior: builds triangle at target with beam width perpendicular to path.

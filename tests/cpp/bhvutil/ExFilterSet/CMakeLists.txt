@@ -9,6 +9,5 @@ add_moos_cpp_test(test_bhvutil_exfilterset
   LABELS
     bhvutil
     ExFilterSet
-    contacts
     filters
 )

@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Technical Overview | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260427-13">
-  <script src="theme.js?v=20260427-13"></script>
+  <link rel="stylesheet" href="styles.css?v=20260430-10">
+  <script src="theme.js?v=20260430-10"></script>
 </head>
 <body>
   <header class="site-header">
@@ -16,6 +16,7 @@
     <div class="header-actions">
       <nav>
         <a href="index.html#families">Harnesses</a>
+        <a href="ctest-coverage.html">CTest Coverage</a>
         <a href="user-guide.html">Run Tests</a>
         <a href="technical.html">Technical</a>
       </nav>
@@ -30,8 +31,8 @@
     <section class="page-hero">
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Technical Overview</p>
-      <h1>How the CI/CD pipeline is organized.</h1>
-      <p class="lede">The repository treats MOOS-IvP stem missions as executable regression tests. It keeps reusable mission stems separate from case overlays, then runs those cases in CI with a shared launch and grading pattern.</p>
+      <h1>How the coverage workspace is organized.</h1>
+      <p class="lede">The repository has two complementary coverage layers: CTest targets for source-level MOOS-IvP component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
     </section>
 
     <section class="content-section compact-section">
@@ -41,6 +42,14 @@
       </div>
       <dl class="term-list">
         <div class="term-item">
+          <dt>CTest target</dt>
+          <dd>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</dd>
+        </div>
+        <div class="term-item">
+          <dt>CTest label</dt>
+          <dd>A selector attached to CTest cases for buckets, components, apps, behaviors, or cross-cutting concerns.</dd>
+        </div>
+        <div class="term-item">
           <dt>Mission stem</dt>
           <dd>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</dd>
         </div>
@@ -48,38 +57,34 @@
           <dt>Harness case</dt>
           <dd>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</dd>
         </div>
-        <div class="term-item">
-          <dt>Verdict</dt>
-          <dd>The pass or fail decision for a case. The mission usually reports the main verdict, and shell checks add file-completeness, timing, and warning-log constraints.</dd>
-        </div>
-        <div class="term-item">
-          <dt>Matrix and artifact</dt>
-          <dd>A matrix is GitHub Actions running several selected harnesses as separate rows. An artifact is a file bundle shared or saved by the workflow, such as the built workspace or a harness <code>results.txt</code>.</dd>
-        </div>
       </dl>
     </section>
 
     <section class="technical-grid">
       <article class="technical-card">
-        <h2>Core Idea</h2>
-        <p>A mission stem defines the common world: MOOS communities, simulator apps, behavior files, launch scripts, and baseline geometry. Harness cases apply small patches over that stem so one scenario can change without copying the whole mission.</p>
+        <h2>CTest Coverage</h2>
+        <p><code>tests/cpp/</code> holds GoogleTest executables for source-level logic: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other component contracts.</p>
       </article>
       <article class="technical-card">
-        <h2>Launch Model</h2>
-        <p>Harness <code>zlaunch.sh</code> wrappers own case selection, patch application, result collection, and port isolation. They delegate the actual mission startup to shared <code>xlaunch.sh</code>, which keeps local and CI launch behavior aligned.</p>
+        <h2>Mission Harnesses</h2>
+        <p>Harnesses run live MOOS missions when the behavior under test depends on process startup, MOOSDB traffic, vehicle motion, mission timing, or interactions between apps and behaviors.</p>
       </article>
       <article class="technical-card">
-        <h2>Verdict Model</h2>
-        <p><code>pMissionEval</code> owns the mission-visible verdict where possible. Shell-side checks add constraints that are easier to evaluate outside MOOS, such as wall-time ranges, result completeness, and warning-log scans.</p>
+        <h2>Separate Selectors</h2>
+        <p>CTest labels and harness target keys serve different workflows. CTest labels organize source checks; harness metadata organizes mission runs and case families.</p>
       </article>
     </section>
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Pipeline Layers</p>
-        <h2>Why there are multiple harness types</h2>
+        <p class="eyebrow">Coverage Layers</p>
+        <h2>Why the workspace uses more than one test style</h2>
       </div>
       <div class="explain-stack">
+        <article>
+          <h3>CTest component checks</h3>
+          <p>Fast checks exercise library, app, behavior, and utility logic directly without launching a mission or allocating MOOS ports.</p>
+        </article>
         <article>
           <h3>Unit-style mission checks</h3>
           <p>Small stationary or controlled missions verify app outputs directly: detection, absence, report values, alert requests, filters, and lifecycle messages.</p>
@@ -102,7 +107,7 @@
     <section class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Families</p>
-        <h2>Apps and behaviors covered</h2>
+        <h2>Mission harness families</h2>
       </div>
       <div class="table-wrap">
         <table>
@@ -226,42 +231,21 @@
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">CI Execution</p>
-        <h2>How GitHub Actions uses the repo today</h2>
+        <p class="eyebrow">Metadata</p>
+        <h2>Selectors and invariant checks</h2>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>Select</h3>
-          <p><code>scripts/harness_targets.py</code> converts manual workflow inputs into a runtime matrix. The source of truth is <code>config/harness_targets.json</code>, which maps target keys to harness paths and families.</p>
+          <h3>CTest labels</h3>
+          <p><code>tests/cpp/</code> target definitions use labels to describe component buckets, target names, app or behavior ownership, and cross-cutting selectors.</p>
         </article>
         <article class="technical-card">
-          <h3>Build Once</h3>
-          <p>The workflow resolves the requested <code>moos_ivp_ref</code> to an exact SHA, restores or creates the build cache, builds MOOS-IvP and this repo, then uploads the built workspace as an artifact.</p>
+          <h3>CTest invariants</h3>
+          <p><code>scripts/check_cpp_tests.py</code> checks that CTest registrations, labels, source references, discovery placeholders, and optional upstream bucket coverage stay consistent.</p>
         </article>
         <article class="technical-card">
-          <h3>Fan Out</h3>
-          <p>The <code>runtime-harnesses</code> matrix downloads that one build artifact. Each row runs one harness on its own GitHub runner, uploads <code>results.txt</code>, and fails if the expected case matrix is incomplete or mismatched.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Workflow Semantics</p>
-        <h2>Selection, concurrency, and reuse</h2>
-      </div>
-      <div class="explain-stack">
-        <article>
-          <h3>Selection is metadata-driven</h3>
-          <p>Manual inputs are normalized into target keys before any runner starts. The selector owns validation, active-target filtering, and runtime-matrix shape; the User Guide owns the exact input strings.</p>
-        </article>
-        <article>
-          <h3>Concurrency protects intent</h3>
-          <p>The workflow concurrency group includes the workflow, branch, dispatch mode, and selected family/target list. A newer run with the same intent replaces the older one, while different family sets can run independently.</p>
-        </article>
-        <article>
-          <h3>Build reuse has two layers</h3>
-          <p>The cache avoids rebuilding the same MOOS-IvP SHA and repo source across workflow runs. The artifact shares one completed build across all runtime jobs inside a single workflow run.</p>
+          <h3>Harness targets</h3>
+          <p><code>config/harness_targets.json</code> maps target keys to harness paths and families so grouped mission validation can select the right harness set.</p>
         </article>
       </div>
     </section>
@@ -273,19 +257,19 @@
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>User Guide</h3>
-          <p>Launch manual workflows, choose dispatch modes, copy known-good input strings, and read the Actions matrix.</p>
-          <a class="text-link" href="user-guide.html">Open user guide</a>
-        </article>
-        <article class="technical-card">
-          <h3>Technical Guide</h3>
-          <p>Understand the mission, harness, build, artifact, cache, matrix, verdict, and source layout.</p>
-          <a class="text-link" href="technical.html">Stay here</a>
+          <h3>CTest Coverage</h3>
+          <p>Review the current CTest target and case snapshot, grouped by MOOS-IvP component bucket.</p>
+          <a class="text-link" href="ctest-coverage.html">Open CTest coverage</a>
         </article>
         <article class="technical-card">
           <h3>Harness Catalog</h3>
-          <p>Browse the app and behavior families, then open individual harness pages for case coverage, visuals, source links, and run examples.</p>
+          <p>Browse the app and behavior mission harness families, then open individual harness pages for case coverage and source links.</p>
           <a class="text-link" href="index.html#families">Open catalog</a>
+        </article>
+        <article class="technical-card">
+          <h3>Repository README</h3>
+          <p>Use the README for repository setup notes, directory context, and links into the source tree.</p>
+          <a class="text-link" href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/README.md">Open README</a>
         </article>
       </div>
     </section>
@@ -294,13 +278,15 @@
       <p class="eyebrow">Source Orientation</p>
       <h2>Where to look in the repository</h2>
       <ol>
+        <li><code>tests/cpp/</code> contains the CTest coverage layer.</li>
+        <li><code>scripts/check_cpp_tests.py</code> contains the CTest invariant checker.</li>
         <li><code>missions/</code> contains reusable stem missions.</li>
         <li><code>harnesses/</code> contains case overlays, harness wrappers, and per-harness documentation.</li>
-        <li><code>scripts/</code> contains helper scripts for summaries, sweeps, and benchmarking.</li>
-        <li><code>.github/workflows/</code> contains the CI and Pages workflows.</li>
+        <li><code>config/harness_targets.json</code> contains mission harness target metadata.</li>
+        <li><code>docs/tools/build_pages.py</code> generates this website from repository metadata.</li>
       </ol>
       <div class="workflow-actions">
-        <a class="text-link" href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/README.md">Open the repository README</a>
+        <a class="text-link" href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/scripts/check_cpp_tests.py">View the invariant checker</a>
       </div>
     </section>
   </main>

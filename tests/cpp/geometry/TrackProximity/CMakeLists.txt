@@ -7,7 +7,6 @@ add_moos_cpp_test(test_geometry_trackproximity
   LABELS
     geometry
     TrackProximity
-    encounters
     math
   SUITE_LABELS
     LinearExtrapolatorStateTest=LinearExtrapolator

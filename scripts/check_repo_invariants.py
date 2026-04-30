@@ -15,15 +15,23 @@ from typing import Iterable
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import check_cpp_tests, ci_harness_case_count, harness_targets  # noqa: E402
+from scripts import check_cpp_tests, ci_cpp_test_targets, ci_harness_case_count, harness_targets  # noqa: E402
 
 WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "build_extend.yml"
 DOCS_BUILD_PATH = REPO_ROOT / "docs" / "tools" / "build_pages.py"
 EXPECTED_DISPATCH_MODES = {
+    "none",
     "full",
     "family_run",
     "batch_family_run",
     "specific_harnesses",
+}
+EXPECTED_CPP_TEST_MODES = {
+    "none",
+    "all",
+    "family_run",
+    "batch_family_run",
+    "specific_labels",
 }
 
 
@@ -186,6 +194,30 @@ def check_workflow_inputs(targets: list[dict[str, object]]) -> list[CheckFailure
                 + ", ".join(sorted(dispatch_modes)),
             )
         )
+
+    cpp_test_modes = set(workflow_choice_block("cpp_test_mode", workflow_text))
+    if cpp_test_modes != EXPECTED_CPP_TEST_MODES:
+        failures.append(
+            CheckFailure(
+                "workflow C++ test modes",
+                "expected "
+                + ", ".join(sorted(EXPECTED_CPP_TEST_MODES))
+                + "; found "
+                + ", ".join(sorted(cpp_test_modes)),
+            )
+        )
+
+    cpp_test_families = set(workflow_choice_block("cpp_test_family", workflow_text))
+    expected_cpp_test_families = set(ci_cpp_test_targets.CPP_FAMILIES)
+    if cpp_test_families != expected_cpp_test_families:
+        missing = sorted(expected_cpp_test_families - cpp_test_families)
+        extra = sorted(cpp_test_families - expected_cpp_test_families)
+        detail_parts = []
+        if missing:
+            detail_parts.append("missing: " + ", ".join(missing))
+        if extra:
+            detail_parts.append("extra: " + ", ".join(extra))
+        failures.append(CheckFailure("workflow C++ test family choices", "; ".join(detail_parts)))
 
     workflow_families = set(workflow_choice_block("family", workflow_text))
     if workflow_families != target_families:

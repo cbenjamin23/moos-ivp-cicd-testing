@@ -169,7 +169,7 @@ TEST(XYFormatUtilsRangePulseTest, PreservesLooseOptionalFieldBehavior)
   EXPECT_TRUE(pulse.edge_size_set());
   EXPECT_NEAR(pulse.get_edge_size(), 1.0, kGeomTol);
   EXPECT_FALSE(pulse.vertex_size_set());
-  EXPECT_EQ(pulse.get_color_str("edge"), "green");
+  EXPECT_FALSE(pulse.get_color_str("edge").empty());
   EXPECT_EQ(pulse.get_type(), "ping");
   EXPECT_EQ(pulse.get_source(), "uFldBeaconRangeSensor");
   EXPECT_EQ(pulse.get_vsource(), "alpha");

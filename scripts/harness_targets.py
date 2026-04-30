@@ -80,6 +80,9 @@ def select_targets(
     raw_families: str,
     raw_targets: str,
 ) -> list[dict[str, object]]:
+    if dispatch_mode == "none":
+        return []
+
     if dispatch_mode == "correctness_subset":
         dispatch_mode = "specific_harnesses"
 
@@ -183,6 +186,9 @@ def write_github_summary(selected: list[dict[str, object]], summary_path: Path |
 
     with summary_path.open("a", encoding="utf-8") as stream:
         stream.write("### Selected Harness Targets\n\n")
+        if not selected:
+            stream.write("- _none_\n")
+            return
         for target in selected:
             stream.write(
                 f"- `{target['key']}`: `{target['harness']}` at `{target['path']}`\n"
@@ -219,6 +225,7 @@ def parse_args() -> argparse.Namespace:
         "--mode",
         required=True,
         choices=(
+            "none",
             "full",
             "family_run",
             "batch_family_run",
@@ -251,7 +258,10 @@ def main() -> int:
         elif args.command == "list":
             print_target_list(targets)
         elif args.command == "select":
-            if args.mode == "full":
+            if args.mode == "none":
+                selected = []
+                runtime = []
+            elif args.mode == "full":
                 runtime = select_full_targets(targets, "correctness")
                 selected = runtime
             else:

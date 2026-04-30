@@ -146,10 +146,24 @@ def normalize_source_lib_dir(lib_name: str) -> str:
     return lib_name.removeprefix("lib_").replace("-", "_")
 
 
+def canonical_area_label(area: str) -> str:
+    return area.replace("_colregs", "-colregs").replace("_marine", "-marine")
+
+
+def cpp_area_labels() -> dict[str, str]:
+    return {
+        path.name: canonical_area_label(path.name)
+        for path in CPP_TEST_ROOT.iterdir()
+        if path.is_dir() and path.name != "support"
+    }
+
+
 def check_static(moos_src: Path | None = None) -> list[CheckFailure]:
     failures: list[CheckFailure] = []
     targets = all_targets()
     target_names = [target.target for target in targets]
+    area_labels = cpp_area_labels()
+    area_label_values = set(area_labels.values())
 
     duplicate_targets = sorted({name for name in target_names if target_names.count(name) > 1})
     for target_name in duplicate_targets:
@@ -165,7 +179,7 @@ def check_static(moos_src: Path | None = None) -> list[CheckFailure]:
             failures.append(CheckFailure("C++ test target labels", f"{target_file}: {target.target}"))
 
         top_dir = target.file.relative_to(CPP_TEST_ROOT).parts[0]
-        expected_label = top_dir.replace("_colregs", "-colregs").replace("_marine", "-marine")
+        expected_label = area_labels[top_dir]
         if target.file != ROOT_CMAKE and expected_label not in target.values("LABELS"):
             failures.append(
                 CheckFailure(
@@ -173,6 +187,14 @@ def check_static(moos_src: Path | None = None) -> list[CheckFailure]:
                     f"{target_file}: {target.target} missing {expected_label}",
                 )
             )
+        for label in target.values("LABELS"):
+            if label in area_label_values and label != expected_label:
+                failures.append(
+                    CheckFailure(
+                        "C++ test area label leakage",
+                        f"{target_file}: {target.target} has {label}; expected only {expected_label}",
+                    )
+                )
 
         for suite_label in target.values("SUITE_LABELS"):
             if "$" in suite_label:
@@ -244,7 +266,20 @@ def labels_for_ctest(ctest_test: dict[str, object]) -> list[str]:
     return []
 
 
-def check_build(build_dir: Path) -> list[CheckFailure]:
+def def_source_for_ctest(ctest_test: dict[str, object]) -> Path | None:
+    for prop in ctest_test.get("properties", []):
+        if prop.get("name") == "DEF_SOURCE_LINE":
+            value = str(prop.get("value", ""))
+            source = value.rsplit(":", 1)[0]
+            return Path(source)
+    return None
+
+
+def is_not_built_placeholder(ctest_test: dict[str, object]) -> bool:
+    return str(ctest_test.get("name", "")).endswith("_NOT_BUILT")
+
+
+def check_build(build_dir: Path, allow_not_built: bool = False) -> list[CheckFailure]:
     failures: list[CheckFailure] = []
     ctest_n = subprocess.run(
         ["ctest", "--test-dir", str(build_dir), "-N"],
@@ -255,7 +290,7 @@ def check_build(build_dir: Path) -> list[CheckFailure]:
     )
     if ctest_n.returncode != 0:
         return [CheckFailure("CTest discovery", f"ctest -N failed with exit {ctest_n.returncode}")]
-    if "NOT_BUILT" in ctest_n.stdout:
+    if "NOT_BUILT" in ctest_n.stdout and not allow_not_built:
         failures.append(CheckFailure("CTest discovery", "stale NOT_BUILT placeholder present"))
 
     ctest_json = subprocess.run(
@@ -278,19 +313,64 @@ def check_build(build_dir: Path) -> list[CheckFailure]:
     ctest_tests = registry.get("tests", [])
     if not ctest_tests:
         failures.append(CheckFailure("CTest registry", "no tests discovered"))
+    active_ctest_tests = [
+        test
+        for test in ctest_tests
+        if not (allow_not_built and is_not_built_placeholder(test))
+    ]
 
-    static_targets = {target.target for target in all_targets()}
-    ctest_targets = {str(test["name"]).split(".", 1)[0] for test in ctest_tests}
+    static_targets = {
+        target.target
+        for target in all_targets()
+        if (REPO_ROOT / "bin" / target.target).exists()
+    }
+    not_built_targets = {
+        str(test["name"]).removesuffix("_NOT_BUILT")
+        for test in ctest_tests
+        if is_not_built_placeholder(test)
+    }
+    if allow_not_built:
+        static_targets -= not_built_targets
+    ctest_targets = {str(test["name"]).split(".", 1)[0] for test in active_ctest_tests}
     for target in sorted(static_targets - ctest_targets):
         failures.append(CheckFailure("CTest target missing from registry", target))
     for target in sorted(ctest_targets - static_targets):
         failures.append(CheckFailure("CTest target without add_moos_cpp_test", target))
 
-    unlabelled = sorted(str(test["name"]) for test in ctest_tests if not labels_for_ctest(test))
+    unlabelled = sorted(str(test["name"]) for test in active_ctest_tests if not labels_for_ctest(test))
     for test_name in unlabelled[:20]:
         failures.append(CheckFailure("unlabelled CTest", test_name))
     if len(unlabelled) > 20:
         failures.append(CheckFailure("unlabelled CTest", f"{len(unlabelled) - 20} additional unlabelled tests"))
+
+    area_labels = cpp_area_labels()
+    area_label_values = set(area_labels.values())
+    for test in active_ctest_tests:
+        source = def_source_for_ctest(test)
+        if source is None:
+            continue
+        try:
+            top_dir = source.relative_to(CPP_TEST_ROOT).parts[0]
+        except ValueError:
+            continue
+        expected_label = area_labels.get(top_dir)
+        if expected_label is None:
+            continue
+        if expected_label not in labels_for_ctest(test):
+            failures.append(
+                CheckFailure(
+                    "CTest area label missing",
+                    f"{test['name']} missing {expected_label}",
+                )
+            )
+        for label in labels_for_ctest(test):
+            if label in area_label_values and label != expected_label:
+                failures.append(
+                    CheckFailure(
+                        "CTest area label leakage",
+                        f"{test['name']} has {label}; expected only {expected_label}",
+                    )
+                )
 
     return failures
 
@@ -312,6 +392,11 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help="Optional MOOS-IvP ivp/src directory for lib_* test-bucket mapping checks.",
     )
+    parser.add_argument(
+        "--allow-not-built",
+        action="store_true",
+        help="Ignore generated *_NOT_BUILT placeholder tests during build registry checks.",
+    )
     return parser.parse_args()
 
 
@@ -319,7 +404,7 @@ def main() -> int:
     args = parse_args()
     failures = check_static(args.moos_src)
     if args.build_dir is not None:
-        failures.extend(check_build(args.build_dir))
+        failures.extend(check_build(args.build_dir, args.allow_not_built))
 
     if failures:
         print_failures(failures)

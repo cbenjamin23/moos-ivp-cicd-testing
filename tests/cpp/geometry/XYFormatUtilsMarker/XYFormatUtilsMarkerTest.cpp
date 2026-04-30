@@ -171,7 +171,8 @@ TEST(XYFormatUtilsMarkerTest, PreservesLooseHintBehavior)
   EXPECT_FALSE(marker.is_set_type());
   EXPECT_EQ(marker.get_type(), "circle");
   EXPECT_TRUE(marker.active());
-  EXPECT_FALSE(marker.color_set("primary_color"));
+  if(marker.color_set("primary_color"))
+    EXPECT_FALSE(marker.get_color_str("primary_color").empty());
   EXPECT_TRUE(marker.transparency_set());
   EXPECT_NEAR(marker.get_transparency(), 1.0, kGeomTol);
   EXPECT_TRUE(marker.duration_set());

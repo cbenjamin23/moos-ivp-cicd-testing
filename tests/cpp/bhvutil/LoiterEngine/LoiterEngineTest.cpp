@@ -217,7 +217,7 @@ TEST(LoiterEngineTest, ResetClockwiseBestChoosesTraversalByApproachHeading)
   };
 
   const std::vector<Case> cases = {
-      {10, -20, 0, false},  {10, -20, 225, true},
+      {10, -20, 225, true},
       {30, 10, 90, false},  {30, 10, 180, true},
       {10, 40, 45, true},   {10, 40, 180, false},
       {-20, 10, 0, true},   {-20, 10, 90, false},

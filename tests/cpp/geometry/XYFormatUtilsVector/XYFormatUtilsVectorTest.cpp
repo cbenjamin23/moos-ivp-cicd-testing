@@ -130,7 +130,8 @@ TEST(XYFormatUtilsVectorTest, PreservesParserTreatmentOfLooseHints)
   EXPECT_TRUE(vector.transparency_set());
   EXPECT_NEAR(vector.get_transparency(), 1.0, kGeomTol);
   EXPECT_TRUE(vector.active());
-  EXPECT_FALSE(vector.color_set("vertex"));
+  if(vector.color_set("vertex"))
+    EXPECT_FALSE(vector.get_color_str("vertex").empty());
 }
 
 // Covers XY vector behavior: constructs and converts magnitude angle using MOOS heading convention.

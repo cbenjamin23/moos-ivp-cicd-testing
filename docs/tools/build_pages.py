@@ -6,6 +6,7 @@ from __future__ import annotations
 import re
 import json
 import shlex
+import sys
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -14,9 +15,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS_DIR = REPO_ROOT / "harnesses"
+CPP_TEST_DIR = REPO_ROOT / "tests" / "cpp"
+SCRIPTS_DIR = REPO_ROOT / "scripts"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
-ASSET_VERSION = "20260427-13"
+ASSET_VERSION = "20260430-10"
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
 CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
@@ -49,6 +52,17 @@ class Family:
     label: str
     summary: str
     slugs: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class CTestArea:
+    key: str
+    label: str
+    target_count: int
+    source_count: int
+    case_count: int
+    labels: tuple[str, ...]
+    path: str
 
 
 HARNESSES: tuple[Harness, ...] = (
@@ -667,6 +681,104 @@ def repo_url(path: str) -> str:
     return f"{REPO_BLOB}/{path}"
 
 
+def ctest_targets():
+    if str(SCRIPTS_DIR) not in sys.path:
+        sys.path.insert(0, str(SCRIPTS_DIR))
+    import check_cpp_tests
+
+    return check_cpp_tests.all_targets()
+
+
+def count_gtest_cases(path: Path) -> int:
+    count = 0
+    for source in path.rglob("*Test.cpp"):
+        text = source.read_text(encoding="utf-8", errors="ignore")
+        count += len(re.findall(r"^\s*TEST(?:_F)?\s*\(", text, re.MULTILINE))
+    return count
+
+
+def ctest_area_label(area: str) -> str:
+    explicit = {
+        "apputil": "App Utilities",
+        "behaviors": "Behavior Core",
+        "behaviors_colregs": "COLREGS Behaviors",
+        "behaviors_marine": "Marine Behaviors",
+        "bhvutil": "Behavior Utilities",
+        "contacts": "Contact Records",
+        "dep_behaviors": "Deprecated Behaviors",
+        "evalutil": "Evaluation Utilities",
+        "genutil": "General Utilities",
+        "geodaid": "Geodesy Aids",
+        "helmivp": "Helm IvP",
+        "ipfview": "IPF View",
+        "ivpbuild": "IvP Build",
+        "ivpcore": "IvP Core",
+        "ivpsolve": "IvP Solve",
+        "logutils": "Log Utilities",
+        "marine_pid": "Marine PID",
+        "marineview": "Marine Viewer",
+        "mbutil": "MB Utilities",
+        "ucommand": "Command Utilities",
+        "ufield": "Field Utilities",
+        "zaicview": "ZAIC View",
+    }
+    if area in explicit:
+        return explicit[area]
+    return area.replace("_", " ").title()
+
+
+def ctest_area_rows(targets=None) -> list[CTestArea]:
+    targets = list(ctest_targets() if targets is None else targets)
+    area_targets: dict[str, list[object]] = {}
+    for target in targets:
+        area = target.file.relative_to(CPP_TEST_DIR).parts[0]
+        area_targets.setdefault(area, []).append(target)
+
+    areas: list[CTestArea] = []
+    for area, grouped_targets in area_targets.items():
+        area_path = CPP_TEST_DIR / area
+        labels: set[str] = set()
+        for target in grouped_targets:
+            labels.update(target.values("LABELS"))
+        areas.append(
+            CTestArea(
+                key=area,
+                label=ctest_area_label(area),
+                target_count=len(grouped_targets),
+                source_count=sum(1 for _ in area_path.rglob("*Test.cpp")),
+                case_count=count_gtest_cases(area_path),
+                labels=tuple(sorted(label for label in labels if label)),
+                path=f"tests/cpp/{area}",
+            )
+        )
+    return sorted(areas, key=lambda item: (-item.target_count, item.label))
+
+
+def ctest_total_target_count(targets=None) -> int:
+    return len(list(ctest_targets() if targets is None else targets))
+
+
+def ctest_total_source_count() -> int:
+    return sum(1 for _ in CPP_TEST_DIR.rglob("*Test.cpp"))
+
+
+def ctest_total_case_count() -> int:
+    return count_gtest_cases(CPP_TEST_DIR)
+
+
+def ctest_area_count(targets=None) -> int:
+    return len(ctest_area_rows(targets))
+
+
+def compact_label_summary(labels: tuple[str, ...], limit: int = 4) -> str:
+    visible = labels[:limit]
+    hidden = len(labels) - len(visible)
+    chips = "".join(f'<span class="label-chip"><code>{escape(label)}</code></span>' for label in visible)
+    if hidden > 0:
+        chips += f'<span class="label-chip label-chip--more">+{hidden} more</span>'
+    return f'<span class="label-chip-strip">{chips}</span>'
+
+
 def inline_code(text: str) -> str:
     parts = re.split(r"(`[^`]+`)", text)
     rendered: list[str] = []
@@ -697,6 +809,7 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
     <div class="header-actions">
       <nav>
         <a href="{prefix}index.html#families">Harnesses</a>
+        <a href="{prefix}ctest-coverage.html">CTest Coverage</a>
         <a href="{prefix}user-guide.html">Run Tests</a>
         <a href="{prefix}technical.html">Technical</a>
       </nav>
@@ -1123,10 +1236,10 @@ def total_case_count() -> int:
 
 def render_stats() -> str:
     stats = (
-        (str(total_case_count()), "Cases", "Harness case matrices across the catalog."),
-        (str(harness_count()), "Harnesses", "Case matrices covering app-level units, motion checks, behavior checks, and performance gates."),
-        (str(app_behavior_target_count()), "Apps and Behaviors", "MOOS apps and IvP behavior targets, plus their related stress missions."),
-        ("3", "Evidence Layers", "Simple mode validation, moving mission outcomes, and longer stress/endurance runs."),
+        (str(ctest_total_case_count()), "CTest Cases", "Source-level checks for component behavior that does not need a mission scenario."),
+        (str(ctest_area_count()), "Libraries & Components", "Source-level MOOS-IvP areas covered by GoogleTest/CTest."),
+        (str(total_case_count()), "Harness Cases", "Mission-run cases with expected outcomes and generated result summaries."),
+        (str(app_behavior_target_count()), "Apps & Behaviors", "MOOS apps and IvP behaviors covered by mission harness cases."),
     )
     return "\n".join(
         f"""
@@ -1167,6 +1280,91 @@ def manual_target_rows() -> str:
 """
         )
     return "\n".join(rows)
+
+
+def ctest_area_table_rows(areas: list[CTestArea]) -> str:
+    rows = []
+    for area in areas:
+        rows.append(
+            f"""
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>{escape(area.key)}</code></span>
+                <span class="component-name">{escape(area.label)}</span>
+              </th>
+              <td>{area.target_count}</td>
+              <td>{area.case_count}</td>
+              <td class="ctest-label-summary">{compact_label_summary(area.labels)}</td>
+            </tr>
+"""
+        )
+    return "\n".join(rows)
+
+
+def render_ctest_coverage() -> str:
+    targets = ctest_targets()
+    areas = ctest_area_rows(targets)
+    body = f"""
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="index.html">Back to overview</a>
+      <p class="eyebrow">CTest Coverage</p>
+      <h1>Fast source-level coverage for MOOS-IvP components.</h1>
+      <p class="lede">These tests use GoogleTest and CTest to check MOOS-IvP component behavior that does not need a mission scenario: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#buckets">Browse coverage buckets</a>
+        <a class="button secondary" href="{repo_url('tests/cpp/README.md')}">CTest README</a>
+      </div>
+    </section>
+
+    <section class="content-section stats-section">
+      <div class="section-heading">
+        <p class="eyebrow">Current Snapshot</p>
+        <h2>CTest coverage at a glance</h2>
+      </div>
+      <div class="stats-grid stats-grid--three">
+        <article class="stat-card">
+          <strong>{ctest_total_case_count()}</strong>
+          <span>Test Cases</span>
+          <p>Individual GoogleTest checks covering expected and edge-case behavior.</p>
+        </article>
+        <article class="stat-card">
+          <strong>{ctest_total_target_count(targets)}</strong>
+          <span>CTest Targets</span>
+          <p>Focused executables that group related component checks.</p>
+        </article>
+        <article class="stat-card">
+          <strong>{len(areas)}</strong>
+          <span>Coverage Buckets</span>
+          <p>Component groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="buckets" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Coverage Buckets</p>
+        <h2>CTest targets by MOOS-IvP component group</h2>
+      </div>
+      <div class="table-wrap">
+        <table class="ctest-table">
+          <thead>
+            <tr>
+              <th>Component group</th>
+              <th>Targets</th>
+              <th>Cases</th>
+              <th>Target labels</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ctest_area_table_rows(areas)}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+"""
+    return page_shell("CTest Coverage", body)
 
 
 def render_user_guide() -> str:
@@ -1411,10 +1609,11 @@ def render_index() -> str:
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">MOOS-IvP CI/CD Pipeline</p>
-        <h1>Regression harnesses for MOOS-IvP Apps and Behaviors.</h1>
-        <p class="lede">This site introduces a CI/CD workspace that packages MOOS-IvP missions into repeatable gates for contact management, obstacle management, COLREGS, and avoidance behavior changes.</p>
+        <h1>Regression tests for MOOS-IvP Apps, Behaviors, and Libraries</h1>
+        <p class="lede">This workspace collects fast CTest coverage for source-level component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
         <div class="hero-actions">
           <a class="button primary" href="#families">Browse catalog</a>
+          <a class="button secondary" href="ctest-coverage.html">CTest coverage</a>
           <a class="button secondary" href="user-guide.html">Run tests</a>
           <a class="button secondary" href="technical.html">Technical overview</a>
         </div>
@@ -1427,10 +1626,35 @@ def render_index() -> str:
     <section class="content-section stats-section">
       <div class="section-heading">
         <p class="eyebrow">Repository Snapshot</p>
-        <h2>Current pipeline at a glance</h2>
+        <h2>Current coverage at a glance</h2>
       </div>
       <div class="stats-grid">
         {render_stats()}
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Coverage Layers</p>
+        <h2>Two complementary ways to catch regressions</h2>
+        <p>CTest coverage checks component behavior directly, while mission harnesses check live MOOS process behavior and motion outcomes.</p>
+      </div>
+      <div class="technical-grid">
+        <article class="technical-card">
+          <h3>CTest Coverage</h3>
+          <p>Fast GoogleTest/CTest targets for MOOS-IvP components/libraries such as geometry, behaviors, contacts, utilities, viewers, and IvP construction.</p>
+          <a class="text-link" href="ctest-coverage.html">Browse CTest coverage</a>
+        </article>
+        <article class="technical-card">
+          <h3>Mission Harnesses</h3>
+          <p>Patch-driven MOOS mission matrices that exercise app postings, behavior lifecycle, vehicle motion, timing, and multi-process outcomes.</p>
+          <a class="text-link" href="#families">Browse harness catalog</a>
+        </article>
+        <article class="technical-card">
+          <h3>Choosing A Layer</h3>
+          <p>Use CTest for local C++ contracts. Use a harness when the behavior depends on live MOOS mail, helm state, simulator motion, or ports.</p>
+          <a class="text-link" href="technical.html">Read the technical overview</a>
+        </article>
       </div>
     </section>
 
@@ -1446,13 +1670,13 @@ def render_index() -> str:
     </section>
 
     <section id="workflow" class="workflow">
-      <p class="eyebrow">How It Works</p>
-      <h2>From scenario to CI verdict</h2>
+      <p class="eyebrow">Mission Harness Flow</p>
+      <h2>From scenario to mission result</h2>
       <ol>
         <li>Stem missions define reusable MOOS community layouts, behavior configs, and baseline geometry.</li>
         <li>Harness overlays use small patches so each run isolates one scenario or regression risk.</li>
         <li>The harness <code>zlaunch.sh</code> wrapper selects the case and then delegates to the shared <code>xlaunch.sh</code> path, keeping local and CI runs aligned.</li>
-        <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact CI result lines.</li>
+        <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact result lines.</li>
       </ol>
       <div class="workflow-actions">
         <a class="text-link" href="user-guide.html">Run harnesses manually</a>
@@ -1551,8 +1775,8 @@ def render_technical() -> str:
     <section class="page-hero">
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Technical Overview</p>
-      <h1>How the CI/CD pipeline is organized.</h1>
-      <p class="lede">The repository treats MOOS-IvP stem missions as executable regression tests. It keeps reusable mission stems separate from case overlays, then runs those cases in CI with a shared launch and grading pattern.</p>
+      <h1>How the coverage workspace is organized.</h1>
+      <p class="lede">The repository has two complementary coverage layers: CTest targets for source-level MOOS-IvP component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
     </section>
 
     <section class="content-section compact-section">
@@ -1562,6 +1786,14 @@ def render_technical() -> str:
       </div>
       <dl class="term-list">
         <div class="term-item">
+          <dt>CTest target</dt>
+          <dd>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</dd>
+        </div>
+        <div class="term-item">
+          <dt>CTest label</dt>
+          <dd>A selector attached to CTest cases for buckets, components, apps, behaviors, or cross-cutting concerns.</dd>
+        </div>
+        <div class="term-item">
           <dt>Mission stem</dt>
           <dd>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</dd>
         </div>
@@ -1569,38 +1801,34 @@ def render_technical() -> str:
           <dt>Harness case</dt>
           <dd>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</dd>
         </div>
-        <div class="term-item">
-          <dt>Verdict</dt>
-          <dd>The pass or fail decision for a case. The mission usually reports the main verdict, and shell checks add file-completeness, timing, and warning-log constraints.</dd>
-        </div>
-        <div class="term-item">
-          <dt>Matrix and artifact</dt>
-          <dd>A matrix is GitHub Actions running several selected harnesses as separate rows. An artifact is a file bundle shared or saved by the workflow, such as the built workspace or a harness <code>results.txt</code>.</dd>
-        </div>
       </dl>
     </section>
 
     <section class="technical-grid">
       <article class="technical-card">
-        <h2>Core Idea</h2>
-        <p>A mission stem defines the common world: MOOS communities, simulator apps, behavior files, launch scripts, and baseline geometry. Harness cases apply small patches over that stem so one scenario can change without copying the whole mission.</p>
+        <h2>CTest Coverage</h2>
+        <p><code>tests/cpp/</code> holds GoogleTest executables for source-level logic: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other component contracts.</p>
       </article>
       <article class="technical-card">
-        <h2>Launch Model</h2>
-        <p>Harness <code>zlaunch.sh</code> wrappers own case selection, patch application, result collection, and port isolation. They delegate the actual mission startup to shared <code>xlaunch.sh</code>, which keeps local and CI launch behavior aligned.</p>
+        <h2>Mission Harnesses</h2>
+        <p>Harnesses run live MOOS missions when the behavior under test depends on process startup, MOOSDB traffic, vehicle motion, mission timing, or interactions between apps and behaviors.</p>
       </article>
       <article class="technical-card">
-        <h2>Verdict Model</h2>
-        <p><code>pMissionEval</code> owns the mission-visible verdict where possible. Shell-side checks add constraints that are easier to evaluate outside MOOS, such as wall-time ranges, result completeness, and warning-log scans.</p>
+        <h2>Separate Selectors</h2>
+        <p>CTest labels and harness target keys serve different workflows. CTest labels organize source checks; harness metadata organizes mission runs and case families.</p>
       </article>
     </section>
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Pipeline Layers</p>
-        <h2>Why there are multiple harness types</h2>
+        <p class="eyebrow">Coverage Layers</p>
+        <h2>Why the workspace uses more than one test style</h2>
       </div>
       <div class="explain-stack">
+        <article>
+          <h3>CTest component checks</h3>
+          <p>Fast checks exercise library, app, behavior, and utility logic directly without launching a mission or allocating MOOS ports.</p>
+        </article>
         <article>
           <h3>Unit-style mission checks</h3>
           <p>Small stationary or controlled missions verify app outputs directly: detection, absence, report values, alert requests, filters, and lifecycle messages.</p>
@@ -1623,7 +1851,7 @@ def render_technical() -> str:
     <section class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Families</p>
-        <h2>Apps and behaviors covered</h2>
+        <h2>Mission harness families</h2>
       </div>
       <div class="table-wrap">
         <table>
@@ -1643,42 +1871,21 @@ def render_technical() -> str:
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">CI Execution</p>
-        <h2>How GitHub Actions uses the repo today</h2>
+        <p class="eyebrow">Metadata</p>
+        <h2>Selectors and invariant checks</h2>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>Select</h3>
-          <p><code>scripts/harness_targets.py</code> converts manual workflow inputs into a runtime matrix. The source of truth is <code>config/harness_targets.json</code>, which maps target keys to harness paths and families.</p>
+          <h3>CTest labels</h3>
+          <p><code>tests/cpp/</code> target definitions use labels to describe component buckets, target names, app or behavior ownership, and cross-cutting selectors.</p>
         </article>
         <article class="technical-card">
-          <h3>Build Once</h3>
-          <p>The workflow resolves the requested <code>moos_ivp_ref</code> to an exact SHA, restores or creates the build cache, builds MOOS-IvP and this repo, then uploads the built workspace as an artifact.</p>
+          <h3>CTest invariants</h3>
+          <p><code>scripts/check_cpp_tests.py</code> checks that CTest registrations, labels, source references, discovery placeholders, and optional upstream bucket coverage stay consistent.</p>
         </article>
         <article class="technical-card">
-          <h3>Fan Out</h3>
-          <p>The <code>runtime-harnesses</code> matrix downloads that one build artifact. Each row runs one harness on its own GitHub runner, uploads <code>results.txt</code>, and fails if the expected case matrix is incomplete or mismatched.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Workflow Semantics</p>
-        <h2>Selection, concurrency, and reuse</h2>
-      </div>
-      <div class="explain-stack">
-        <article>
-          <h3>Selection is metadata-driven</h3>
-          <p>Manual inputs are normalized into target keys before any runner starts. The selector owns validation, active-target filtering, and runtime-matrix shape; the User Guide owns the exact input strings.</p>
-        </article>
-        <article>
-          <h3>Concurrency protects intent</h3>
-          <p>The workflow concurrency group includes the workflow, branch, dispatch mode, and selected family/target list. A newer run with the same intent replaces the older one, while different family sets can run independently.</p>
-        </article>
-        <article>
-          <h3>Build reuse has two layers</h3>
-          <p>The cache avoids rebuilding the same MOOS-IvP SHA and repo source across workflow runs. The artifact shares one completed build across all runtime jobs inside a single workflow run.</p>
+          <h3>Harness targets</h3>
+          <p><code>config/harness_targets.json</code> maps target keys to harness paths and families so grouped mission validation can select the right harness set.</p>
         </article>
       </div>
     </section>
@@ -1690,19 +1897,19 @@ def render_technical() -> str:
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>User Guide</h3>
-          <p>Launch manual workflows, choose dispatch modes, copy known-good input strings, and read the Actions matrix.</p>
-          <a class="text-link" href="user-guide.html">Open user guide</a>
-        </article>
-        <article class="technical-card">
-          <h3>Technical Guide</h3>
-          <p>Understand the mission, harness, build, artifact, cache, matrix, verdict, and source layout.</p>
-          <a class="text-link" href="technical.html">Stay here</a>
+          <h3>CTest Coverage</h3>
+          <p>Review the current CTest target and case snapshot, grouped by MOOS-IvP component bucket.</p>
+          <a class="text-link" href="ctest-coverage.html">Open CTest coverage</a>
         </article>
         <article class="technical-card">
           <h3>Harness Catalog</h3>
-          <p>Browse the app and behavior families, then open individual harness pages for case coverage, visuals, source links, and run examples.</p>
+          <p>Browse the app and behavior mission harness families, then open individual harness pages for case coverage and source links.</p>
           <a class="text-link" href="index.html#families">Open catalog</a>
+        </article>
+        <article class="technical-card">
+          <h3>Repository README</h3>
+          <p>Use the README for repository setup notes, directory context, and links into the source tree.</p>
+          <a class="text-link" href="{repo_url('README.md')}">Open README</a>
         </article>
       </div>
     </section>
@@ -1711,13 +1918,15 @@ def render_technical() -> str:
       <p class="eyebrow">Source Orientation</p>
       <h2>Where to look in the repository</h2>
       <ol>
+        <li><code>tests/cpp/</code> contains the CTest coverage layer.</li>
+        <li><code>scripts/check_cpp_tests.py</code> contains the CTest invariant checker.</li>
         <li><code>missions/</code> contains reusable stem missions.</li>
         <li><code>harnesses/</code> contains case overlays, harness wrappers, and per-harness documentation.</li>
-        <li><code>scripts/</code> contains helper scripts for summaries, sweeps, and benchmarking.</li>
-        <li><code>.github/workflows/</code> contains the CI and Pages workflows.</li>
+        <li><code>config/harness_targets.json</code> contains mission harness target metadata.</li>
+        <li><code>docs/tools/build_pages.py</code> generates this website from repository metadata.</li>
       </ol>
       <div class="workflow-actions">
-        <a class="text-link" href="{repo_url('README.md')}">Open the repository README</a>
+        <a class="text-link" href="{repo_url('scripts/check_cpp_tests.py')}">View the invariant checker</a>
       </div>
     </section>
   </main>
@@ -1783,6 +1992,7 @@ def render_gif_manifest() -> str:
 
 def main() -> None:
     write(ROOT / "index.html", render_index())
+    write(ROOT / "ctest-coverage.html", render_ctest_coverage())
     write(ROOT / "user-guide.html", render_user_guide())
     write(ROOT / "technical.html", render_technical())
     for harness in HARNESSES:

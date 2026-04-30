@@ -32,6 +32,17 @@ class HarnessTargetTests(unittest.TestCase):
             ],
         )
 
+    def test_none_selects_no_harness_targets(self) -> None:
+        selected = harness_targets.select_targets(
+            self.targets,
+            dispatch_mode="none",
+            family="",
+            raw_families="",
+            raw_targets="",
+        )
+
+        self.assertEqual(selected, [])
+
     def test_specific_harnesses_preserves_requested_order(self) -> None:
         selected = harness_targets.select_targets(
             self.targets,

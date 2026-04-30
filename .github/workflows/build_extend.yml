@@ -3,11 +3,12 @@ on:
   workflow_dispatch:
     inputs:
       dispatch_mode:
-        description: "full, family_run, batch_family_run, or specific_harnesses"
+        description: "Harness mode: none, full, family_run, batch_family_run, or specific_harnesses"
         required: true
         type: choice
-        default: full
+        default: none
         options:
+          - none
           - full
           - family_run
           - batch_family_run
@@ -50,13 +51,65 @@ on:
         description: "MOOS-IvP branch, tag, or commit SHA to test"
         required: false
         default: "main"
-      cpp_test_filter:
-        description: "CTest label for C++ unit tests, or all"
+      cpp_test_mode:
+        description: "C++ test mode: none, all, family_run, batch_family_run, or specific_labels"
+        required: true
+        type: choice
+        default: all
+        options:
+          - none
+          - all
+          - family_run
+          - batch_family_run
+          - specific_labels
+      cpp_test_family:
+        description: "C++ test family for family_run"
         required: false
-        default: "all"
+        type: choice
+        default: geometry
+        options:
+          - apputil
+          - behaviors
+          - behaviors_colregs
+          - behaviors_marine
+          - bhvutil
+          - contacts
+          - dep_behaviors
+          - encounters
+          - evalutil
+          - genutil
+          - geodaid
+          - geometry
+          - helmivp
+          - ipfview
+          - ivpbuild
+          - ivpcore
+          - ivpsolve
+          - logic
+          - logutils
+          - manifest
+          - marine_pid
+          - marineview
+          - mbutil
+          - obstacles
+          - polar
+          - realm
+          - survey
+          - turngeo
+          - ucommand
+          - ufield
+          - zaicview
+      cpp_test_families:
+        description: "Comma-separated C++ families for batch_family_run mode"
+        required: false
+        default: "geometry,ivpbuild,mbutil"
+      cpp_test_labels:
+        description: "Comma-separated CTest labels for specific_labels mode"
+        required: false
+        default: "BuildUtils,IPF_Bundle"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'full' }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'full' }}-${{ inputs.cpp_test_mode }}-${{ inputs.cpp_test_mode == 'family_run' && inputs.cpp_test_family || inputs.cpp_test_mode == 'batch_family_run' && inputs.cpp_test_families || inputs.cpp_test_labels || 'all' }}
   cancel-in-progress: true
 
 jobs:
@@ -102,8 +155,57 @@ jobs:
             --github-output "$GITHUB_OUTPUT" \
             --github-summary "$GITHUB_STEP_SUMMARY"
 
+  select-cpp-targets:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+      selected_targets: ${{ steps.select.outputs.selected_targets }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Select requested C++ unit test targets
+        id: select
+        env:
+          CPP_TEST_MODE: ${{ inputs.cpp_test_mode }}
+          CPP_TEST_FAMILY: ${{ inputs.cpp_test_family }}
+          CPP_TEST_FAMILIES: ${{ inputs.cpp_test_families }}
+          CPP_TEST_LABELS: ${{ inputs.cpp_test_labels }}
+        run: |
+          python3 scripts/ci_cpp_test_targets.py select \
+            --mode "$CPP_TEST_MODE" \
+            --family "$CPP_TEST_FAMILY" \
+            --families "$CPP_TEST_FAMILIES" \
+            --targets "$CPP_TEST_LABELS" \
+            --github-output "$GITHUB_OUTPUT" \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+  validate-selection:
+    needs:
+      - select-targets
+      - select-cpp-targets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require at least one selected workload
+        env:
+          HARNESS_KEYS: ${{ needs.select-targets.outputs.selected_keys }}
+          CPP_TARGETS: ${{ needs.select-cpp-targets.outputs.selected_targets }}
+        run: |
+          set -euo pipefail
+          if [ -z "$HARNESS_KEYS" ] && [ -z "$CPP_TARGETS" ]; then
+            echo "Select at least one harness target or one C++ test target."
+            exit 1
+          fi
+          {
+            echo "### Selected Workloads"
+            echo ""
+            echo "- Harness targets: \`${HARNESS_KEYS:-none}\`"
+            echo "- C++ test targets: \`${CPP_TARGETS:-none}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   build:
-    needs: workflow-lint
+    needs:
+      - workflow-lint
+      - validate-selection
     runs-on: ubuntu-latest
     outputs:
       moos_ivp_sha: ${{ steps.moos_sha.outputs.sha }}
@@ -245,36 +347,11 @@ jobs:
             echo "Exact build cache hit. Skipped MOOS-IvP and repo rebuild steps."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Run C++ unit tests
-        env:
-          CPP_TEST_FILTER: ${{ inputs.cpp_test_filter }}
-        run: |
-          set -euo pipefail
-          report_path="${GITHUB_WORKSPACE}/build/cpp-unit-tests.xml"
-          if [ "$CPP_TEST_FILTER" = "all" ] || [ -z "$CPP_TEST_FILTER" ]; then
-            ctest --test-dir build --output-on-failure --no-tests=error --output-junit "$report_path"
-          else
-            ctest --test-dir build -L "$CPP_TEST_FILTER" --output-on-failure --no-tests=error --output-junit "$report_path"
-          fi
-          {
-            echo "### C++ Unit Tests"
-            echo ""
-            echo "- Filter: \`$CPP_TEST_FILTER\`"
-          } >> "$GITHUB_STEP_SUMMARY"
-
       - name: Validate C++ test registry
         run: |
           python3 scripts/check_cpp_tests.py \
             --build-dir build \
             --moos-src moos-ivp/ivp/src
-
-      - name: Upload C++ unit test report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: cpp-unit-test-report
-          path: build/cpp-unit-tests.xml
-          if-no-files-found: warn
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
@@ -290,6 +367,58 @@ jobs:
             bin
             lib
           if-no-files-found: error
+
+  cpp-unit-tests:
+    name: cpp / ${{ matrix.target }}
+    if: ${{ inputs.cpp_test_mode != 'none' }}
+    needs:
+      - select-cpp-targets
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.select-cpp-targets.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: workspace-build
+          path: .
+
+      - name: Restore executable bits
+        run: |
+          find "${GITHUB_WORKSPACE}/moos-ivp/bin" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/moos-ivp/scripts" -type f -exec chmod 755 {} +
+          find "${GITHUB_WORKSPACE}/bin" -type f -exec chmod 755 {} +
+
+      - name: Put built tools on PATH
+        run: |
+          {
+            echo "${GITHUB_WORKSPACE}/moos-ivp/bin"
+            echo "${GITHUB_WORKSPACE}/moos-ivp/scripts"
+            echo "${GITHUB_WORKSPACE}/bin"
+          } >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSCore/lib:${GITHUB_WORKSPACE}/moos-ivp/build/MOOS/MOOSGeodesy/lib:${GITHUB_WORKSPACE}/moos-ivp/lib:${GITHUB_WORKSPACE}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Run selected C++ unit tests
+        run: |
+          set -euo pipefail
+          rm -rf build/cpp-unit-test-reports
+          python3 scripts/ci_cpp_test_targets.py run \
+            --build-dir build \
+            --targets "${{ matrix.target }}" \
+            --reports-dir build/cpp-unit-test-reports \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload selected C++ unit test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.artifact }}
+          path: build/cpp-unit-test-reports/*.xml
+          if-no-files-found: warn
 
   runtime-harnesses:
     name: runtime / ${{ matrix.key }} / ${{ matrix.harness }}

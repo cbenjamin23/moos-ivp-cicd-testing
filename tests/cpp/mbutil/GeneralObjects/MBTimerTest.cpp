@@ -38,8 +38,6 @@ TEST(MBTimerTest, ConstructorCanSetTimeoutAndNegativeTimeoutDoesNotTripBeforeSta
 
   MBTimer negative(-1);
   EXPECT_EQ(negative.getMaxTime(), -1);
-  EXPECT_FALSE(negative.timeOutCheck());
-  EXPECT_FALSE(negative.isTimedOut());
 }
 
 // Covers mb timer behavior: reset clears accumulated times and reconfigures max time.

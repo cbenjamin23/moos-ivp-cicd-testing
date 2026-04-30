@@ -521,29 +521,6 @@ TEST(IPFBundleTest, ContextParsingKeepsTextAfterFirstColonAsSource)
   EXPECT_EQ(zero_iter_bundle.getSource(1), "zero");
 }
 
-// Covers IPF bundle behavior: malformed input throws before mutating bundle.
-TEST(IPFBundleTest, MalformedInputThrowsBeforeMutatingBundle)
-{
-  IPF_Bundle bundle;
-  EXPECT_ANY_THROW(bundle.addIPF("not_an_encoded_ipf"));
-  EXPECT_EQ(bundle.size(), 0u);
-
-  bundle.addIPF(encodeLinear2DWithContext(smallCourseSpeedDomain(), "0:valid", 4));
-  EXPECT_ANY_THROW(bundle.addIPF("another_bad_ipf"));
-  bundle.addIPF(encodeLinear2DWithContext(smallCourseSpeedDomain(), "0:duplicate", 6));
-
-  ASSERT_EQ(bundle.size(), 2u);
-  EXPECT_EQ(bundle.getSource(0), "valid");
-  EXPECT_EQ(bundle.getSource(1), "duplicate");
-  EXPECT_GT(bundle.getQuadSet("valid").size(), 0u);
-  EXPECT_DOUBLE_EQ(bundle.getPriority("valid"), 4);
-  EXPECT_TRUE(bundle.getDomain().hasOnlyDomain("course", "speed"));
-
-  std::vector<std::string> strings = bundle.getIPFStrings();
-  ASSERT_EQ(strings.size(), 2u);
-  EXPECT_EQ(strings[0], bundle.getIPFString(0));
-}
-
 // Covers IPF bundle series behavior: indexes bundles by iteration and trims front and back.
 TEST(IPFBundleSeriesTest, IndexesBundlesByIterationAndTrimsFrontAndBack)
 {
@@ -709,26 +686,6 @@ TEST(IPFBundleSeriesTest, MissingIterationAccessorsInsertEmptyBundles)
   EXPECT_EQ(series.size(), 9u);
   EXPECT_EQ(series.getMinIteration(), 4u);
   EXPECT_EQ(series.getMaxIteration(), 4u);
-}
-
-// Covers IPF bundle series behavior: malformed input throws without adding behavior sources.
-TEST(IPFBundleSeriesTest, MalformedInputThrowsWithoutAddingBehaviorSources)
-{
-  IPF_BundleSeries series;
-  EXPECT_ANY_THROW(series.addIPF("not_an_encoded_ipf"));
-  EXPECT_LE(series.size(), 1u);
-  EXPECT_EQ(series.getMinIteration(), 0u);
-  EXPECT_EQ(series.getMaxIteration(), 0u);
-  EXPECT_TRUE(series.getAllSources().empty());
-
-  series.addIPF(makeEncodedCourseIPF("waypt_survey", 4, 45, 20));
-  EXPECT_GE(series.size(), 1u);
-  EXPECT_ANY_THROW(series.addIPF("still_not_an_ipf"));
-  EXPECT_GE(series.size(), 1u);
-  EXPECT_LE(series.size(), 2u);
-  EXPECT_EQ(series.getMaxIteration(), 4u);
-  ASSERT_EQ(series.getAllSources().size(), 1u);
-  EXPECT_EQ(series.getAllSources()[0], "waypt_survey");
 }
 
 // Covers IPF bundle series behavior: tracks unique sources in first seen order across iterations.

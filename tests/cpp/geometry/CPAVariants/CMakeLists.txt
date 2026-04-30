@@ -8,7 +8,6 @@ add_moos_cpp_test(test_geometry_cpavariants
     geometry
     CPAVariants
     CPAEngine
-    encounters
     math
   SUITE_LABELS
     CPAEngineRootVariantTest=CPAEngineRoot

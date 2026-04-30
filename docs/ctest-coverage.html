@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CTest Coverage | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="styles.css?v=20260430-10">
+  <script src="theme.js?v=20260430-10"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="index.html#families">Harnesses</a>
+        <a href="ctest-coverage.html">CTest Coverage</a>
+        <a href="user-guide.html">Run Tests</a>
+        <a href="technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="index.html">Back to overview</a>
+      <p class="eyebrow">CTest Coverage</p>
+      <h1>Fast source-level coverage for MOOS-IvP components.</h1>
+      <p class="lede">These tests use GoogleTest and CTest to check MOOS-IvP component behavior that does not need a mission scenario: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#buckets">Browse coverage buckets</a>
+        <a class="button secondary" href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/tests/cpp/README.md">CTest README</a>
+      </div>
+    </section>
+
+    <section class="content-section stats-section">
+      <div class="section-heading">
+        <p class="eyebrow">Current Snapshot</p>
+        <h2>CTest coverage at a glance</h2>
+      </div>
+      <div class="stats-grid stats-grid--three">
+        <article class="stat-card">
+          <strong>2145</strong>
+          <span>Test Cases</span>
+          <p>Individual GoogleTest checks covering expected and edge-case behavior.</p>
+        </article>
+        <article class="stat-card">
+          <strong>154</strong>
+          <span>CTest Targets</span>
+          <p>Focused executables that group related component checks.</p>
+        </article>
+        <article class="stat-card">
+          <strong>31</strong>
+          <span>Coverage Buckets</span>
+          <p>Component groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="buckets" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Coverage Buckets</p>
+        <h2>CTest targets by MOOS-IvP component group</h2>
+      </div>
+      <div class="table-wrap">
+        <table class="ctest-table">
+          <thead>
+            <tr>
+              <th>Component group</th>
+              <th>Targets</th>
+              <th>Cases</th>
+              <th>Target labels</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>behaviors_marine</code></span>
+                <span class="component-name">Marine Behaviors</span>
+              </th>
+              <td>39</td>
+              <td>202</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>BHV_AbortToPoint</code></span><span class="label-chip"><code>BHV_AvoidCollision</code></span><span class="label-chip"><code>BHV_AvoidObstacleV24</code></span><span class="label-chip"><code>BHV_BearingLine</code></span><span class="label-chip label-chip--more">+37 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>geometry</code></span>
+                <span class="component-name">Geometry</span>
+              </th>
+              <td>31</td>
+              <td>706</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AngleUtils</code></span><span class="label-chip"><code>ArcUtils</code></span><span class="label-chip"><code>ArcUtilsToDo</code></span><span class="label-chip"><code>CPAEngine</code></span><span class="label-chip label-chip--more">+35 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>mbutil</code></span>
+                <span class="component-name">MB Utilities</span>
+              </th>
+              <td>19</td>
+              <td>167</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>FColorMap</code></span><span class="label-chip"><code>Figlog</code></span><span class="label-chip"><code>JsonUtils</code></span><span class="label-chip"><code>LatLonFormatUtils</code></span><span class="label-chip label-chip--more">+12 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>bhvutil</code></span>
+                <span class="component-name">Behavior Utilities</span>
+              </th>
+              <td>9</td>
+              <td>96</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF</code></span><span class="label-chip"><code>BHV_AvoidCollision</code></span><span class="label-chip"><code>BHV_AvoidObstacleV24</code></span><span class="label-chip"><code>BHV_FixedTurn</code></span><span class="label-chip label-chip--more">+10 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>logutils</code></span>
+                <span class="component-name">Log Utilities</span>
+              </th>
+              <td>5</td>
+              <td>69</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ALogFiles</code></span><span class="label-chip"><code>ALogParsing</code></span><span class="label-chip"><code>LogUtils</code></span><span class="label-chip"><code>logutils</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>marineview</code></span>
+                <span class="component-name">Marine Viewer</span>
+              </th>
+              <td>5</td>
+              <td>45</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>MarineViewShapes</code></span><span class="label-chip"><code>gui</code></span><span class="label-chip"><code>marineview</code></span><span class="label-chip"><code>pMarineViewer</code></span><span class="label-chip label-chip--more">+3 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>behaviors</code></span>
+                <span class="component-name">Behavior Core</span>
+              </th>
+              <td>4</td>
+              <td>32</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>IvPBehavior</code></span><span class="label-chip"><code>IvPContactBehavior</code></span><span class="label-chip"><code>behaviors</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>ivpbuild</code></span>
+                <span class="component-name">IvP Build</span>
+              </th>
+              <td>4</td>
+              <td>51</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF</code></span><span class="label-chip"><code>ZAIC</code></span><span class="label-chip"><code>ivpbuild</code></span><span class="label-chip"><code>math</code></span><span class="label-chip label-chip--more">+2 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>apputil</code></span>
+                <span class="component-name">App Utilities</span>
+              </th>
+              <td>3</td>
+              <td>28</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AppCastFormatting</code></span><span class="label-chip"><code>AppCastSettings</code></span><span class="label-chip"><code>InfoCastSettings</code></span><span class="label-chip"><code>RealmCastSettings</code></span><span class="label-chip label-chip--more">+1 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>behaviors_colregs</code></span>
+                <span class="component-name">COLREGS Behaviors</span>
+              </th>
+              <td>3</td>
+              <td>22</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF_CPA</code></span><span class="label-chip"><code>AOF_R13</code></span><span class="label-chip"><code>AOF_R14</code></span><span class="label-chip"><code>AOF_R16</code></span><span class="label-chip label-chip--more">+7 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>logic</code></span>
+                <span class="component-name">Logic</span>
+              </th>
+              <td>3</td>
+              <td>31</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>logic</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>contacts</code></span>
+                <span class="component-name">Contact Records</span>
+              </th>
+              <td>2</td>
+              <td>106</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>NodeReport</code></span><span class="label-chip"><code>contacts</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>dep_behaviors</code></span>
+                <span class="component-name">Deprecated Behaviors</span>
+              </th>
+              <td>2</td>
+              <td>77</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF_AvoidObstacle</code></span><span class="label-chip"><code>AOF_AvoidObstacleX</code></span><span class="label-chip"><code>BHV_Attractor</code></span><span class="label-chip"><code>BHV_AvoidObstacle</code></span><span class="label-chip label-chip--more">+8 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>evalutil</code></span>
+                <span class="component-name">Evaluation Utilities</span>
+              </th>
+              <td>2</td>
+              <td>23</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>evalutil</code></span><span class="label-chip"><code>pMissionEval</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>ufield</code></span>
+                <span class="component-name">Field Utilities</span>
+              </th>
+              <td>2</td>
+              <td>20</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>NODE_BROKER</code></span><span class="label-chip"><code>PHI_HOST_INFO</code></span><span class="label-chip"><code>pShare</code></span><span class="label-chip"><code>ufield</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>genutil</code></span>
+                <span class="component-name">General Utilities</span>
+              </th>
+              <td>2</td>
+              <td>21</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>Threadsafe_pipe</code></span><span class="label-chip"><code>genutil</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>helmivp</code></span>
+                <span class="component-name">Helm IvP</span>
+              </th>
+              <td>2</td>
+              <td>20</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>helmivp</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>manifest</code></span>
+                <span class="component-name">Manifest</span>
+              </th>
+              <td>2</td>
+              <td>19</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>LOCFile</code></span><span class="label-chip"><code>ManifestFile</code></span><span class="label-chip"><code>Populator_ManifestSet</code></span><span class="label-chip"><code>manifest</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>marine_pid</code></span>
+                <span class="component-name">Marine PID</span>
+              </th>
+              <td>2</td>
+              <td>108</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>PIDEngine</code></span><span class="label-chip"><code>marine_pid</code></span><span class="label-chip"><code>pMarinePIDV22</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>zaicview</code></span>
+                <span class="component-name">ZAIC View</span>
+              </th>
+              <td>2</td>
+              <td>21</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>gui</code></span><span class="label-chip"><code>requires_fltk</code></span><span class="label-chip"><code>requires_opengl</code></span><span class="label-chip"><code>zaicview</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>ucommand</code></span>
+                <span class="component-name">Command Utilities</span>
+              </th>
+              <td>1</td>
+              <td>14</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ucommand</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>encounters</code></span>
+                <span class="component-name">Encounters</span>
+              </th>
+              <td>1</td>
+              <td>8</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>CPAEvent</code></span><span class="label-chip"><code>CPA_EVENT</code></span><span class="label-chip"><code>app_alogeplot</code></span><span class="label-chip"><code>encounters</code></span><span class="label-chip label-chip--more">+2 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>geodaid</code></span>
+                <span class="component-name">Geodesy Aids</span>
+              </th>
+              <td>1</td>
+              <td>21</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>NodeReport</code></span><span class="label-chip"><code>geodaid</code></span><span class="label-chip"><code>pContactMgrV20</code></span><span class="label-chip"><code>pHelmIvP</code></span><span class="label-chip label-chip--more">+1 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>ipfview</code></span>
+                <span class="component-name">IPF View</span>
+              </th>
+              <td>1</td>
+              <td>69</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ipfview</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>ivpcore</code></span>
+                <span class="component-name">IvP Core</span>
+              </th>
+              <td>1</td>
+              <td>86</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ivpcore</code></span><span class="label-chip"><code>math</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>ivpsolve</code></span>
+                <span class="component-name">IvP Solve</span>
+              </th>
+              <td>1</td>
+              <td>10</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ivpsolve</code></span><span class="label-chip"><code>math</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>obstacles</code></span>
+                <span class="component-name">Obstacles</span>
+              </th>
+              <td>1</td>
+              <td>14</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>obstacles</code></span><span class="label-chip"><code>uFldObstacleMgr</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>polar</code></span>
+                <span class="component-name">Polar</span>
+              </th>
+              <td>1</td>
+              <td>19</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>polar</code></span><span class="label-chip"><code>uSimMarineV22</code></span><span class="label-chip"><code>uSimMarineV23</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>realm</code></span>
+                <span class="component-name">Realm</span>
+              </th>
+              <td>1</td>
+              <td>11</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>REALMCAST</code></span><span class="label-chip"><code>REALMCAST_CHANNELS</code></span><span class="label-chip"><code>WATCHCAST</code></span><span class="label-chip"><code>pMarineViewer</code></span><span class="label-chip label-chip--more">+1 more</span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>survey</code></span>
+                <span class="component-name">Survey</span>
+              </th>
+              <td>1</td>
+              <td>11</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>SURVEY_UPDATES</code></span><span class="label-chip"><code>pMarineViewer</code></span><span class="label-chip"><code>survey</code></span></span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>turngeo</code></span>
+                <span class="component-name">Turngeo</span>
+              </th>
+              <td>1</td>
+              <td>18</td>
+              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>LegRun</code></span><span class="label-chip"><code>turngeo</code></span></span></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

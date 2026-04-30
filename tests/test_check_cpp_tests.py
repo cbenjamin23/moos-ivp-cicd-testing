@@ -44,6 +44,11 @@ add_moos_cpp_test(test_example_target
         self.assertEqual(check_cpp_tests.normalize_source_lib_dir("lib_behaviors-marine"), "behaviors_marine")
         self.assertEqual(check_cpp_tests.normalize_source_lib_dir("lib_ivpbuild"), "ivpbuild")
 
+    def test_canonical_area_label_matches_ctest_bucket_label(self) -> None:
+        self.assertEqual(check_cpp_tests.canonical_area_label("behaviors_marine"), "behaviors-marine")
+        self.assertEqual(check_cpp_tests.canonical_area_label("behaviors_colregs"), "behaviors-colregs")
+        self.assertEqual(check_cpp_tests.canonical_area_label("ivpbuild"), "ivpbuild")
+
     def test_labels_for_ctest_accepts_list_and_scalar_values(self) -> None:
         self.assertEqual(
             check_cpp_tests.labels_for_ctest(
@@ -54,6 +59,14 @@ add_moos_cpp_test(test_example_target
         self.assertEqual(
             check_cpp_tests.labels_for_ctest({"properties": [{"name": "LABELS", "value": "geometry"}]}),
             ["geometry"],
+        )
+
+    def test_def_source_for_ctest_strips_line_number(self) -> None:
+        self.assertEqual(
+            check_cpp_tests.def_source_for_ctest(
+                {"properties": [{"name": "DEF_SOURCE_LINE", "value": "/tmp/ExampleTest.cpp:42"}]}
+            ),
+            Path("/tmp/ExampleTest.cpp"),
         )
 
 

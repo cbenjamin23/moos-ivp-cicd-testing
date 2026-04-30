@@ -7,7 +7,6 @@ add_moos_cpp_test(test_ivpcore_core_objects
   LABELS
     ivpcore
     pHelmIvP
-    ivpbuild
     math
   SUITE_LABELS
     IvPDomainTest=IvPDomain

@@ -1,6 +1,6 @@
 (() => {
   const STORAGE_KEY = "moos-ivp-docs-theme";
-  const ASSET_VERSION = "20260427-13";
+  const ASSET_VERSION = "20260430-10";
   const THEMES = {
     default: null,
     frost: "frost.css",
@@ -81,5 +81,6 @@
         }
       });
     }
+
   });
 })();

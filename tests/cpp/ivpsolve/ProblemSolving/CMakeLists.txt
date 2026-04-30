@@ -9,7 +9,6 @@ add_moos_cpp_test(test_ivpsolve_problem_solving
   LABELS
     ivpsolve
     pHelmIvP
-    ivpbuild
     math
   SUITE_LABELS
     ProblemTest=Problem

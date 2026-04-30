@@ -257,6 +257,10 @@ Rules:
 The goal is not a smoke test per class. Each suite should be deep enough that a
 changed MOOS-IvP checkout produces a specific, actionable failure.
 
+Tests are expected to pass on both the local macOS development build and the
+Linux GitHub Actions build. Treat the Linux `--nogui` build as a first-class
+target, not a reduced mode where failures can be ignored.
+
 For parsers and format utilities, cover:
 
 - canonical MOOS-IvP payloads, such as `VIEW_POINT`, `VIEW_POLYGON`,
@@ -283,6 +287,32 @@ For geometry and math tools, cover:
 
 For app-facing helpers, cover the payloads and state transitions used by the
 app, but keep the test local unless the target is a mission harness.
+
+## Portability Standard
+
+Keep C++ tests portable across macOS and Linux:
+
+- include the standard headers used by the test directly, such as `<cmath>` for
+  math helpers, even if a platform happens to compile through transitive
+  includes
+- do not assume Apple linker behavior; order static libraries so dependents
+  come before the libraries that satisfy their symbols
+- do not require GUI-only MOOS-IvP libraries in normal library tests because
+  CI builds MOOS-IvP with `--nogui`
+- if a test needs logic from a GUI-adjacent library, prefer compiling the small
+  non-GUI source files needed by the test over linking an unavailable GUI
+  archive
+- assert stable contracts, not incidental parser fallback colors, exception
+  text, allocation side effects, or other platform-dependent details
+- avoid malformed-input tests that can crash inside upstream MOOS-IvP code; if
+  the crash itself is important, keep it outside the normal CTest path and tie
+  it to an explicit upstream bug or decision
+
+Platform guards should be rare and narrow. Prefer guarding one unstable
+assertion over skipping an entire test case, and include a comment explaining
+the upstream behavior that makes the guard necessary. A guarded or skipped test
+should be treated as temporary technical debt unless it documents a deliberate
+compatibility boundary.
 
 ## Naming
 
@@ -371,12 +401,27 @@ registration, labels, source-file references, stale discovery placeholders,
 platform-specific link literals, and optional upstream `lib_*` to `tests/cpp`
 bucket mapping.
 
-The GitHub Actions workflow uses the same CTest registry and checker. Its
-`cpp_test_filter` dispatch input accepts:
+The GitHub Actions workflow uses the same CTest registry and checker. Its C++
+dispatch inputs mirror the harness inputs:
 
-- `all`: run the full C++ suite
-- any CTest label: run a focused subset, such as `geometry`, `BHV_Waypoint`,
-  `LogPlot`, or `pMarineViewer`
+- `cpp_test_mode=none`: run no C++ unit tests
+- `cpp_test_mode=all`: run the full C++ suite
+- `cpp_test_mode=family_run`: run one family from the `cpp_test_family`
+  dropdown, such as `geometry`, `ivpbuild`, or `mbutil`
+- `cpp_test_mode=batch_family_run`: run comma-separated families from
+  `cpp_test_families`, such as `geometry,ivpbuild,mbutil`
+- `cpp_test_mode=specific_labels`: run comma-separated CTest labels from
+  `cpp_test_labels`, such as `BuildUtils,IPF_Bundle`
+
+At least one harness target or one C++ test target must be selected. Use
+`dispatch_mode=none` for C++-only runs, or `cpp_test_mode=none` for
+harness-only runs.
+
+The workflow runs selected C++ coverage areas as separate `cpp / <target>`
+matrix jobs after the shared build job. Each C++ job writes a unit test table
+to the GitHub Actions step summary. If a target fails, the summary includes the
+failing CTest case names and the per-target JUnit XML report is uploaded as a
+`cpp-unit-test-report-<target>` artifact.
 
 If a new convention cannot be expressed in this README and enforced or audited
 reasonably, reconsider the convention.

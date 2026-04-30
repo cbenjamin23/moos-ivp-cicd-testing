@@ -7,7 +7,6 @@ add_moos_cpp_test(test_geometry_cpaplatform
   LABELS
     geometry
     CPAPlatform
-    encounters
     math
   SUITE_LABELS
     BNGEngineTest=BNGEngine

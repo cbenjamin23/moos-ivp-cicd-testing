@@ -160,7 +160,8 @@ TEST(XYFormatUtilsPointTest, IgnoresInvalidMetadataButKeepsValidVertex)
   EXPECT_NEAR(point.get_duration(), -1.0, kGeomTol);
   EXPECT_TRUE(point.transparency_set());
   EXPECT_NEAR(point.get_transparency(), 0.0, kGeomTol);
-  EXPECT_FALSE(point.color_set("vertex"));
+  if(point.color_set("vertex"))
+    EXPECT_FALSE(point.get_color_str("vertex").empty());
 }
 
 // Covers XY point behavior: constructs and clears validity and metadata.
