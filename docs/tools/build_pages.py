@@ -19,7 +19,7 @@ CPP_TEST_DIR = REPO_ROOT / "tests" / "cpp"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
-ASSET_VERSION = "20260430-10"
+ASSET_VERSION = "20260430-15"
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
 CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
@@ -61,6 +61,7 @@ class CTestArea:
     target_count: int
     source_count: int
     case_count: int
+    description: str
     labels: tuple[str, ...]
     path: str
 
@@ -706,6 +707,7 @@ def ctest_area_label(area: str) -> str:
         "bhvutil": "Behavior Utilities",
         "contacts": "Contact Records",
         "dep_behaviors": "Deprecated Behaviors",
+        "encounters": "Encounters",
         "evalutil": "Evaluation Utilities",
         "genutil": "General Utilities",
         "geodaid": "Geodesy Aids",
@@ -718,6 +720,12 @@ def ctest_area_label(area: str) -> str:
         "marine_pid": "Marine PID",
         "marineview": "Marine Viewer",
         "mbutil": "MB Utilities",
+        "manifest": "Manifest",
+        "obstacles": "Obstacles",
+        "polar": "Polar Geometry",
+        "realm": "Realm Core",
+        "survey": "Survey Utilities",
+        "turngeo": "Turn Geometry",
         "ucommand": "Command Utilities",
         "ufield": "Field Utilities",
         "zaicview": "ZAIC View",
@@ -725,6 +733,45 @@ def ctest_area_label(area: str) -> str:
     if area in explicit:
         return explicit[area]
     return area.replace("_", " ").title()
+
+
+def ctest_area_description(area: str) -> str:
+    explicit = {
+        "apputil": "AppCast, InfoCast, and display-formatting helpers used by app-facing utilities.",
+        "behaviors": "Core IvP behavior state, contact behavior state, and lifecycle records.",
+        "behaviors_colregs": "COLREGS behavior support logic, velocity filtering, AOF helpers, and behavior contracts.",
+        "behaviors_marine": "Marine behavior implementations such as waypoint, loiter, station keeping, collision avoidance, and obstacle avoidance.",
+        "bhvutil": "Behavior utility engines, AOF helpers, refineries, waypoint/loiter helpers, and fixed-turn support.",
+        "contacts": "Node record and rider parsing, serialization, and contact-report behavior.",
+        "dep_behaviors": "Deprecated behavior and obstacle-model code kept under regression coverage.",
+        "encounters": "CPA encounter events and alog-facing encounter records.",
+        "evalutil": "Mission-evaluation helpers, logic-test sequences, and variable-check utilities.",
+        "genutil": "General-purpose string, file, pipe, and utility helpers.",
+        "geodaid": "Contact-ledger and geodesy-aid logic used by contact-aware apps.",
+        "geometry": "Geometry primitives, parsers, CPA utilities, shape lifecycles, grids, paths, and polygon generation.",
+        "helmivp": "Helm behavior-loading and core helm state helpers.",
+        "ipfview": "IPF viewer parsing and model support.",
+        "ivpbuild": "AOFs, ZAICs, PDMaps, reflector internals, and IvP function construction.",
+        "ivpcore": "Core IvP objects, domains, boxes, functions, and priority data structures.",
+        "ivpsolve": "IvP problem-solving and encoded-function behavior.",
+        "logic": "Logic conditions, info buffers, conditional ledgers, and related parsing helpers.",
+        "logutils": "ALog parsing, log files, plot data, app logs, and analysis-plot utilities.",
+        "manifest": "Manifest file parsing, population, and manifest-set behavior.",
+        "marine_pid": "Marine PID engines and pMarinePIDV22 app-level control logic.",
+        "marineview": "Marine viewer shapes, GUI-adjacent models, image handling, and viewer support classes.",
+        "mbutil": "MOOS-IvP utility objects, formatting, timers, macros, hashes, JSON helpers, and node messages.",
+        "obstacles": "Obstacle parsing, representation, and obstacle-manager support objects.",
+        "polar": "Polar plotting and simulator-facing polar helpers.",
+        "realm": "RealmCast and WatchCast core records and channel logic.",
+        "survey": "Survey pattern generation and survey-update helpers.",
+        "turngeo": "Turn-generation geometry and leg-run turn helpers.",
+        "ucommand": "Command item, command folio, command summary, and command-routing helpers.",
+        "ufield": "Field utilities, host records, pShare-facing records, and field communication helpers.",
+        "zaicview": "ZAIC viewer models and GUI-adjacent support code.",
+    }
+    if area in explicit:
+        return explicit[area]
+    return f"Source-level checks for the {ctest_area_label(area)} component group."
 
 
 def ctest_area_rows(targets=None) -> list[CTestArea]:
@@ -747,6 +794,7 @@ def ctest_area_rows(targets=None) -> list[CTestArea]:
                 target_count=len(grouped_targets),
                 source_count=sum(1 for _ in area_path.rglob("*Test.cpp")),
                 case_count=count_gtest_cases(area_path),
+                description=ctest_area_description(area),
                 labels=tuple(sorted(label for label in labels if label)),
                 path=f"tests/cpp/{area}",
             )
@@ -768,15 +816,6 @@ def ctest_total_case_count() -> int:
 
 def ctest_area_count(targets=None) -> int:
     return len(ctest_area_rows(targets))
-
-
-def compact_label_summary(labels: tuple[str, ...], limit: int = 4) -> str:
-    visible = labels[:limit]
-    hidden = len(labels) - len(visible)
-    chips = "".join(f'<span class="label-chip"><code>{escape(label)}</code></span>' for label in visible)
-    if hidden > 0:
-        chips += f'<span class="label-chip label-chip--more">+{hidden} more</span>'
-    return f'<span class="label-chip-strip">{chips}</span>'
 
 
 def inline_code(text: str) -> str:
@@ -1282,6 +1321,24 @@ def manual_target_rows() -> str:
     return "\n".join(rows)
 
 
+def cpp_test_family_rows() -> str:
+    if str(SCRIPTS_DIR) not in sys.path:
+        sys.path.insert(0, str(SCRIPTS_DIR))
+    import ci_cpp_test_targets
+
+    rows = []
+    for family in ci_cpp_test_targets.CPP_FAMILIES:
+        rows.append(
+            f"""
+          <tr>
+            <th><code>{escape(family)}</code></th>
+            <td>{escape(ctest_area_label(family))}</td>
+          </tr>
+"""
+        )
+    return "\n".join(rows)
+
+
 def ctest_area_table_rows(areas: list[CTestArea]) -> str:
     rows = []
     for area in areas:
@@ -1294,7 +1351,7 @@ def ctest_area_table_rows(areas: list[CTestArea]) -> str:
               </th>
               <td>{area.target_count}</td>
               <td>{area.case_count}</td>
-              <td class="ctest-label-summary">{compact_label_summary(area.labels)}</td>
+              <td class="ctest-description">{escape(area.description)}</td>
             </tr>
 """
         )
@@ -1312,7 +1369,7 @@ def render_ctest_coverage() -> str:
       <h1>Fast source-level coverage for MOOS-IvP components.</h1>
       <p class="lede">These tests use GoogleTest and CTest to check MOOS-IvP component behavior that does not need a mission scenario: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
       <div class="hero-actions">
-        <a class="button primary" href="#buckets">Browse coverage buckets</a>
+        <a class="button primary" href="#buckets">Browse component families</a>
         <a class="button secondary" href="{repo_url('tests/cpp/README.md')}">CTest README</a>
       </div>
     </section>
@@ -1335,25 +1392,25 @@ def render_ctest_coverage() -> str:
         </article>
         <article class="stat-card">
           <strong>{len(areas)}</strong>
-          <span>Coverage Buckets</span>
-          <p>Component groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
+          <span>Component Families</span>
+          <p>Groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
         </article>
       </div>
     </section>
 
     <section id="buckets" class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Coverage Buckets</p>
-        <h2>CTest targets by MOOS-IvP component group</h2>
+        <p class="eyebrow">Component Families</p>
+        <h2>CTest coverage by MOOS-IvP component family</h2>
       </div>
       <div class="table-wrap">
         <table class="ctest-table">
           <thead>
             <tr>
-              <th>Component group</th>
+              <th>Component family</th>
               <th>Targets</th>
               <th>Cases</th>
-              <th>Target labels</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
@@ -1373,11 +1430,12 @@ def render_user_guide() -> str:
     <section class="page-hero">
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">User Guide</p>
-      <h1>Run harnesses from GitHub Actions.</h1>
-      <p class="lede">This guide is for people who want to launch manual CI runs, choose the right target set, and read the result page without changing repository code.</p>
+      <h1>Run regression checks from GitHub Actions.</h1>
+      <p class="lede">Launch CTest coverage, mission harnesses, or both. CTest runs source-level component checks; mission harnesses run live MOOS scenarios.</p>
       <div class="hero-actions">
         <a class="button primary" href="{REPO_ACTIONS}">Open workflow</a>
-        <a class="button secondary" href="#target-keys">Target keys</a>
+        <a class="button secondary" href="#example-values">Example values</a>
+        <a class="button secondary" href="#target-keys">Selectors</a>
       </div>
     </section>
 
@@ -1385,7 +1443,7 @@ def render_user_guide() -> str:
       <div class="section-heading">
         <p class="eyebrow">Before You Run</p>
         <h2>Plain-language workflow terms</h2>
-        <p>You do not need to know MOOS internals to launch a run. The <strong>Open workflow</strong> button above opens the GitHub Actions workflow page where you start one.</p>
+        <p>The workflow form has two similar selection lanes. The CTest lane chooses source-level GoogleTest/CTest coverage; the harness lane chooses live MOOS mission scenarios.</p>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
@@ -1393,24 +1451,24 @@ def render_user_guide() -> str:
           <p>A workflow is a GitHub Actions page that runs CI. This guide uses the <code>Build And Check Active Harnesses</code> workflow.</p>
         </article>
         <article class="technical-card">
+          <h3>CTest mode</h3>
+          <p><code>cpp_test_mode</code> selects the CTest lane. Use it for source-level checks that do not need a mission scenario.</p>
+        </article>
+        <article class="technical-card">
+          <h3>Harness mode</h3>
+          <p><code>dispatch_mode</code> selects the mission-harness lane. Use it when behavior depends on live MOOS processes, ports, timing, or vehicle motion.</p>
+        </article>
+        <article class="technical-card">
           <h3>Family</h3>
-          <p>A family is a group of related harnesses, such as <code>waypoint_behavior</code> or <code>colregs</code>. Use a family run when you want every active harness in that group.</p>
+          <p>Both lanes support one family or comma-separated family batches: <code>cpp_test_family</code>/<code>cpp_test_families</code> for CTest, and <code>family</code>/<code>families</code> for harnesses.</p>
         </article>
         <article class="technical-card">
-          <h3>Target key</h3>
-          <p>A target key names one exact harness, such as <code>cutrange_h01</code>. Use target keys when you want a narrow run with only selected harnesses.</p>
+          <h3>Exact harnesses</h3>
+          <p>Harnesses can also run exact target keys through <code>targets</code>. CTest runs broad sets, one family, or family batches.</p>
         </article>
         <article class="technical-card">
-          <h3>Actions matrix</h3>
-          <p>The matrix is the group of job rows GitHub shows after a run starts. Each runtime row is one selected harness.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Time warp</h3>
-          <p><code>time_warp</code> controls simulation speed. Keep the default value unless you are deliberately debugging timing behavior.</p>
-        </article>
-        <article class="technical-card">
-          <h3>MOOS-IvP ref</h3>
-          <p><code>moos_ivp_ref</code> is the upstream MOOS-IvP branch, tag, or commit to build against. Use <code>main</code> for the normal run.</p>
+          <h3>Selected workloads</h3>
+          <p>The workflow can run CTest only, harnesses only, or both. It rejects only the empty case where both lanes are set to <code>none</code>.</p>
         </article>
       </div>
     </section>
@@ -1418,8 +1476,8 @@ def render_user_guide() -> str:
     <section class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Normal Flow</p>
-        <h2>Start with a batch family run</h2>
-        <p>For a broad manual check, run several families in one workflow. The workflow builds once, uploads that build as an artifact, then fans out selected runtime harnesses as separate matrix jobs.</p>
+        <h2>Pick one lane, or run both</h2>
+        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. The two lanes use the same selection patterns for broad sets, one family, and family batches; harnesses also support exact target keys.</p>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
@@ -1427,92 +1485,140 @@ def render_user_guide() -> str:
           <p>Use the <strong>Open workflow</strong> button at the top of this page, then click <code>Run workflow</code> in GitHub. Keep the branch on <code>main</code> unless you deliberately want to test another branch.</p>
         </article>
         <article class="technical-card">
-          <h3>2. Choose a mode</h3>
-          <p>Use <code>batch_family_run</code> for several families, <code>family_run</code> for one family, <code>specific_harnesses</code> for exact target keys, and <code>full</code> for the curated correctness gate.</p>
+          <h3>2. Choose CTest coverage</h3>
+          <p>Use <code>cpp_test_mode: all</code> for the default source-level sweep, or narrow it with <code>family_run</code> or <code>batch_family_run</code>.</p>
         </article>
         <article class="technical-card">
-          <h3>3. Read the graph</h3>
-          <p><code>workflow-lint</code> and <code>select-targets</code> should pass quickly. <code>build</code> prepares the binaries. <code>runtime-harnesses</code> contains the actual harness jobs.</p>
+          <h3>3. Choose harness coverage</h3>
+          <p>Use <code>dispatch_mode: none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, <code>specific_harnesses</code>, or <code>full</code>.</p>
         </article>
       </div>
     </section>
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Dispatch Modes</p>
-        <h2>Which input to use</h2>
+        <p class="eyebrow">Selection Modes</p>
+        <h2>The two lanes use matching patterns</h2>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Mode</th>
-              <th>Use when</th>
-              <th>Important input</th>
+              <th>Pattern</th>
+              <th>CTest inputs</th>
+              <th>Harness inputs</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th><code>batch_family_run</code></th>
-              <td>You want one build followed by several family harness jobs.</td>
-              <td><code>families=convoy_behavior,cutrange_behavior,waypoint_behavior</code></td>
+              <th>Skip this lane</th>
+              <td><code>cpp_test_mode: none</code></td>
+              <td><code>dispatch_mode: none</code></td>
             </tr>
             <tr>
-              <th><code>family_run</code></th>
-              <td>You want all active targets for one family from the dropdown.</td>
-              <td><code>family=colregs</code></td>
+              <th>Broad set</th>
+              <td><code>cpp_test_mode: all</code></td>
+              <td><code>dispatch_mode: full</code></td>
             </tr>
             <tr>
-              <th><code>specific_harnesses</code></th>
-              <td>You know the exact target keys and want only those rows.</td>
-              <td><code>targets=cutrange_h01,waypoint_h01</code></td>
+              <th>One family</th>
+              <td><code>cpp_test_mode: family_run</code><br><code>cpp_test_family: geometry</code></td>
+              <td><code>dispatch_mode: family_run</code><br><code>family: waypoint_behavior</code></td>
             </tr>
             <tr>
-              <th><code>full</code></th>
-              <td>You want the curated high-signal correctness set.</td>
-              <td>No family or target input required.</td>
+              <th>Family batch</th>
+              <td><code>cpp_test_mode: batch_family_run</code><br><code>cpp_test_families: geometry,ivpbuild,mbutil</code></td>
+              <td><code>dispatch_mode: batch_family_run</code><br><code>families: convoy_behavior,cutrange_behavior,waypoint_behavior</code></td>
+            </tr>
+            <tr>
+              <th>Exact harnesses</th>
+              <td><span class="muted">Use one family or a family batch.</span></td>
+              <td><code>dispatch_mode: specific_harnesses</code><br><code>targets: cutrange_h01,waypoint_h01</code></td>
             </tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="content-section">
+    <section id="example-values" class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Inputs</p>
-        <h2>Recommended values</h2>
+        <h2>Example values</h2>
+        <p>These examples show the same selection shapes on each side of the workflow form. Leave unused lane-specific fields unchanged; only the mode decides whether that lane runs.</p>
       </div>
       <div class="explain-stack">
         <article>
-          <h3>Broad behavior batch</h3>
+          <h3>CTest broad set</h3>
+          <pre><code>dispatch_mode: none
+cpp_test_mode: all
+moos_ivp_ref: main</code></pre>
+        </article>
+        <article>
+          <h3>CTest family batch</h3>
+          <pre><code>dispatch_mode: none
+cpp_test_mode: batch_family_run
+cpp_test_families: geometry,ivpbuild,mbutil
+moos_ivp_ref: main</code></pre>
+        </article>
+        <article>
+          <h3>Harness family batch</h3>
           <pre><code>dispatch_mode: batch_family_run
-families: convoy_behavior,cutrange_behavior,fixedturn_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion
+families: convoy_behavior,cutrange_behavior,waypoint_behavior
+cpp_test_mode: none
 time_warp: 10
 moos_ivp_ref: main</code></pre>
         </article>
         <article>
-          <h3>One family</h3>
+          <h3>Harness one family</h3>
           <pre><code>dispatch_mode: family_run
 family: waypoint_behavior
+cpp_test_mode: none
 time_warp: 10
 moos_ivp_ref: main</code></pre>
         </article>
         <article>
-          <h3>Exact harnesses</h3>
+          <h3>Combined family run</h3>
+          <pre><code>dispatch_mode: family_run
+family: waypoint_behavior
+cpp_test_mode: family_run
+cpp_test_family: geometry
+time_warp: 10
+moos_ivp_ref: main</code></pre>
+        </article>
+        <article>
+          <h3>Harness targets with CTest family</h3>
           <pre><code>dispatch_mode: specific_harnesses
 targets: cutrange_h01,waypoint_h01
+cpp_test_mode: family_run
+cpp_test_family: geometry
 time_warp: 10
 moos_ivp_ref: main</code></pre>
         </article>
       </div>
-      <p class="guide-note">GitHub's manual workflow form does not support dynamic checkboxes from repository metadata, so exact harness selection uses comma-separated target keys.</p>
+      <p class="guide-note">GitHub's manual workflow form does not support dynamic checkboxes from repository metadata, so batch selection uses comma-separated family names and exact harness selection uses comma-separated target keys.</p>
     </section>
 
     <section id="target-keys" class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Target Keys</p>
-        <h2>Names accepted by <code>specific_harnesses</code></h2>
+        <p class="eyebrow">Selectors</p>
+        <h2>Names accepted by the family and harness-target fields</h2>
+        <p>CTest family names go in <code>cpp_test_family</code> or <code>cpp_test_families</code>. Harness family names go in <code>family</code> or <code>families</code>. Harness target keys go in <code>targets</code>.</p>
       </div>
+      <h3>CTest families</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Family</th>
+              <th>Display area</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cpp_test_family_rows()}
+          </tbody>
+        </table>
+      </div>
+      <h3>Harness target keys</h3>
       <div class="table-wrap">
         <table>
           <thead>
@@ -1536,10 +1642,10 @@ moos_ivp_ref: main</code></pre>
       <div class="guide-figures">
         <figure class="guide-figure">
           <img src="assets/images/workflow-graph-example.png" alt="GitHub Actions workflow graph showing workflow-lint, select-targets, build, and runtime-harnesses jobs">
-          <figcaption>The workflow graph shows the setup jobs, one shared build, and the selected runtime harness matrix.</figcaption>
+          <figcaption>The workflow graph shows setup jobs, one shared build, and whichever CTest or runtime matrices are active for the selected inputs.</figcaption>
         </figure>
         <article class="run-summary-example">
-          <h3>Example run summary</h3>
+          <h3>Example harness summary</h3>
           <ul class="summary-meta">
             <li>Target: <code>obstacle_behavior_h01</code></li>
             <li>Harness: <code>H01-obstacle_behavior_motion</code></li>
@@ -1586,10 +1692,10 @@ moos_ivp_ref: main</code></pre>
         </article>
       </div>
       <ol>
-        <li>Each runtime row downloads the build artifact and runs one harness <code>zlaunch.sh</code>.</li>
-        <li>The workflow uploads that harness's <code>results.txt</code> as an artifact.</li>
-        <li>The summary step derives the expected case count from the harness and fails if the result file is incomplete or contains failed expected outcomes.</li>
-        <li>A green matrix means all selected harnesses completed and their expected case matrix matched.</li>
+        <li><code>select-cpp-targets</code> and <code>select-targets</code> resolve the two lanes into matrix rows.</li>
+        <li>Each <code>cpp / &lt;target&gt;</code> row runs CTest with the selected label or family and uploads JUnit XML.</li>
+        <li>Each <code>runtime / &lt;key&gt; / &lt;harness&gt;</code> row runs one harness <code>zlaunch.sh</code> and uploads <code>results.txt</code>.</li>
+        <li>A green run means every selected CTest row passed and every selected harness completed with its expected case matrix.</li>
       </ol>
       <div class="workflow-actions">
         <a class="text-link" href="technical.html">Read the technical architecture</a>
@@ -1790,8 +1896,8 @@ def render_technical() -> str:
           <dd>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</dd>
         </div>
         <div class="term-item">
-          <dt>CTest label</dt>
-          <dd>A selector attached to CTest cases for buckets, components, apps, behaviors, or cross-cutting concerns.</dd>
+          <dt>CTest family</dt>
+          <dd>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors_marine</code>.</dd>
         </div>
         <div class="term-item">
           <dt>Mission stem</dt>
@@ -1815,7 +1921,7 @@ def render_technical() -> str:
       </article>
       <article class="technical-card">
         <h2>Separate Selectors</h2>
-        <p>CTest labels and harness target keys serve different workflows. CTest labels organize source checks; harness metadata organizes mission runs and case families.</p>
+        <p>CTest families select source-level component groups. Harness families and target keys select live mission workloads.</p>
       </article>
     </section>
 
@@ -1876,8 +1982,8 @@ def render_technical() -> str:
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>CTest labels</h3>
-          <p><code>tests/cpp/</code> target definitions use labels to describe component buckets, target names, app or behavior ownership, and cross-cutting selectors.</p>
+          <h3>CTest registry labels</h3>
+          <p><code>tests/cpp/</code> target definitions use labels for CTest registry metadata and suite-level reporting. The workflow exposes only the top-level family selectors.</p>
         </article>
         <article class="technical-card">
           <h3>CTest invariants</h3>
@@ -1898,7 +2004,7 @@ def render_technical() -> str:
       <div class="technical-grid">
         <article class="technical-card">
           <h3>CTest Coverage</h3>
-          <p>Review the current CTest target and case snapshot, grouped by MOOS-IvP component bucket.</p>
+          <p>Review the current CTest target and case snapshot, grouped by MOOS-IvP component family.</p>
           <a class="text-link" href="ctest-coverage.html">Open CTest coverage</a>
         </article>
         <article class="technical-card">

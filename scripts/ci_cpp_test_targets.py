@@ -85,28 +85,23 @@ def parse_args() -> argparse.Namespace:
 
     select_parser = subparsers.add_parser(
         "select",
-        help="Build a GitHub Actions matrix from all or comma-separated CTest labels.",
+        help="Build a GitHub Actions matrix from CTest family selections.",
     )
     select_parser.add_argument(
         "--mode",
         default="all",
-        choices=("none", "all", "family_run", "batch_family_run", "specific_labels"),
+        choices=("none", "all", "family_run", "batch_family_run"),
         help="C++ unit test selection mode.",
     )
     select_parser.add_argument(
         "--family",
         default="",
-        help="CTest label family for family_run mode.",
+        help="CTest family for family_run mode.",
     )
     select_parser.add_argument(
         "--families",
         default="",
-        help="Comma-separated CTest label families for batch_family_run mode.",
-    )
-    select_parser.add_argument(
-        "--targets",
-        default="all",
-        help="Comma-separated CTest labels for specific_labels mode.",
+        help="Comma-separated CTest families for batch_family_run mode.",
     )
     select_parser.add_argument(
         "--github-output",
@@ -121,13 +116,13 @@ def parse_args() -> argparse.Namespace:
 
     run_parser = subparsers.add_parser(
         "run",
-        help="Run one or more selected CTest labels and summarize JUnit results.",
+        help="Run one or more selected CTest families and summarize JUnit results.",
     )
     run_parser.add_argument("--build-dir", required=True, help="CMake build directory.")
     run_parser.add_argument(
         "--targets",
         default="all",
-        help="all or comma-separated CTest labels to run.",
+        help="all or comma-separated CTest families to run.",
     )
     run_parser.add_argument(
         "--reports-dir",
@@ -155,7 +150,6 @@ def select_targets_for_mode(
     mode: str,
     family: str,
     raw_families: str,
-    raw_targets: str,
 ) -> list[str]:
     if mode == "none":
         return []
@@ -182,11 +176,6 @@ def select_targets_for_mode(
                 + ", ".join(CPP_FAMILIES)
             )
         return families
-    if mode == "specific_labels":
-        targets = comma_list(raw_targets)
-        if not targets:
-            raise ValueError("No C++ test labels were selected.")
-        return targets
     raise ValueError(f"Unknown C++ test selection mode: {mode}")
 
 
@@ -210,9 +199,9 @@ def matrix_for_selected_targets(targets: list[str]) -> dict[str, list[dict[str, 
 
 def build_selection_summary(targets: list[str]) -> str:
     lines = [
-        "### Selected C++ Unit Test Targets",
+        "### Selected CTest Families",
         "",
-        "| target |",
+        "| family |",
         "| --- |",
     ]
     if targets:
@@ -379,7 +368,6 @@ def main() -> int:
             args.mode,
             args.family,
             args.families,
-            args.targets,
         )
         matrix = matrix_for_selected_targets(targets)
         if args.github_output:

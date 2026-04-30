@@ -18,22 +18,22 @@ class CppTestTargetSummaryTests(unittest.TestCase):
     def test_selected_targets_accepts_all_or_comma_list(self) -> None:
         self.assertEqual(ci_cpp_test_targets.selected_targets("all"), ["all"])
         self.assertEqual(
-            ci_cpp_test_targets.selected_targets(" geometry, XYArc ,, pHelmIvP "),
-            ["geometry", "XYArc", "pHelmIvP"],
+            ci_cpp_test_targets.selected_targets(" geometry, ivpbuild ,, mbutil "),
+            ["geometry", "ivpbuild", "mbutil"],
         )
         self.assertEqual(ci_cpp_test_targets.selected_targets(" , "), ["all"])
 
     def test_select_targets_for_mode_matches_workflow_modes(self) -> None:
         self.assertEqual(
-            ci_cpp_test_targets.select_targets_for_mode("none", "", "", ""),
+            ci_cpp_test_targets.select_targets_for_mode("none", "", ""),
             [],
         )
         self.assertEqual(
-            ci_cpp_test_targets.select_targets_for_mode("all", "", "", ""),
+            ci_cpp_test_targets.select_targets_for_mode("all", "", ""),
             ["all"],
         )
         self.assertEqual(
-            ci_cpp_test_targets.select_targets_for_mode("family_run", "geometry", "", ""),
+            ci_cpp_test_targets.select_targets_for_mode("family_run", "geometry", ""),
             ["geometry"],
         )
         self.assertEqual(
@@ -41,23 +41,12 @@ class CppTestTargetSummaryTests(unittest.TestCase):
                 "batch_family_run",
                 "",
                 "geometry,ivpbuild",
-                "",
             ),
             ["geometry", "ivpbuild"],
         )
-        self.assertEqual(
-            ci_cpp_test_targets.select_targets_for_mode(
-                "specific_labels",
-                "",
-                "",
-                "BuildUtils,IPF_Bundle",
-            ),
-            ["BuildUtils", "IPF_Bundle"],
-        )
-
     def test_select_targets_for_mode_rejects_unknown_family(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown C\\+\\+ test family"):
-            ci_cpp_test_targets.select_targets_for_mode("family_run", "missing", "", "")
+            ci_cpp_test_targets.select_targets_for_mode("family_run", "missing", "")
 
     def test_safe_filename_replaces_regex_characters(self) -> None:
         self.assertEqual(ci_cpp_test_targets.safe_filename("^behaviors$"), "behaviors")
@@ -65,16 +54,16 @@ class CppTestTargetSummaryTests(unittest.TestCase):
 
     def test_matrix_for_targets_builds_github_include_matrix(self) -> None:
         self.assertEqual(
-            ci_cpp_test_targets.matrix_for_targets("BuildUtils,IPF_Bundle"),
+            ci_cpp_test_targets.matrix_for_targets("geometry,ivpbuild"),
             {
                 "include": [
                     {
-                        "target": "BuildUtils",
-                        "artifact": "cpp-unit-test-report-BuildUtils",
+                        "target": "geometry",
+                        "artifact": "cpp-unit-test-report-geometry",
                     },
                     {
-                        "target": "IPF_Bundle",
-                        "artifact": "cpp-unit-test-report-IPF_Bundle",
+                        "target": "ivpbuild",
+                        "artifact": "cpp-unit-test-report-ivpbuild",
                     },
                 ]
             },

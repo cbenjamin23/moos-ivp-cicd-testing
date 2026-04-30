@@ -9,14 +9,14 @@ object, math helper, app utility, or other C++ component directly.
 The setup has two parts:
 
 - GoogleTest is what you write in `*Test.cpp`: `TEST(SuiteName, CaseName)`.
-- CTest is what you run from the build tree. CI uses CTest labels to run all
-  tests or focused subsets.
+- CTest is what you run from the build tree. CI uses CTest family selectors to
+  run all tests, one component family, or a batch of component families.
 
 To add tests, put the test file under `tests/cpp/<library>/<area>`, register it
-with `add_moos_cpp_test` in that area's `CMakeLists.txt`, and give it useful
-labels.
+with `add_moos_cpp_test` in that area's `CMakeLists.txt`, and give it the
+right family label.
 
-Run a focused label:
+Run a focused family:
 
 ```bash
 ctest --test-dir build -L geometry --output-on-failure
@@ -33,8 +33,8 @@ suite is designed for targeted regression work. A developer should be able to
 run:
 
 - all C++ tests with `ctest --test-dir build --output-on-failure`
-- one library with a label, such as `ctest --test-dir build -L geometry`
-- one component with a label, such as `ctest --test-dir build -L XYArc`
+- one component family with a label, such as `ctest --test-dir build -L geometry`
+- one executable directly, such as `./bin/test_geometry_arcutils`
 - one GoogleTest suite with an executable filter, such as
   `./bin/test_geometry_arcutils --gtest_filter='ArcUtilsIntersectionTest.*'`
 
@@ -86,8 +86,7 @@ That means:
 
 - use CTest when you want CI-equivalent behavior, labels, or broad subsets
 - use `--gtest_filter` on the executable when iterating on one suite or case
-- use CTest labels when the boundary is a library, component, app impact, or
-  cross-cutting domain
+- use CTest family labels when the boundary is a source-level component group
 
 ## Run Tests
 
@@ -106,13 +105,12 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Run a focused CTest label:
+Run a focused CTest family:
 
 ```bash
 ctest --test-dir build -L geometry --output-on-failure
-ctest --test-dir build -L XYArc --output-on-failure
-ctest --test-dir build -L BHV_Waypoint --output-on-failure
-ctest --test-dir build -L pMarineViewer --output-on-failure
+ctest --test-dir build -L ivpbuild --output-on-failure
+ctest --test-dir build -L mbutil --output-on-failure
 ```
 
 CTest label matching is regex-based. Anchor broad labels when needed:
@@ -218,16 +216,22 @@ build-output paths from test `CMakeLists.txt` files.
 
 ## Labels
 
-Labels are a public interface for developers and CI. Treat them as carefully as
-test names.
+Top-level family labels are the public CTest interface for developers and CI.
+Treat them as carefully as test names.
 
 Use target-wide `LABELS` only when the label truthfully applies to every CTest
-case in the executable. Common target-wide labels are:
+case in the executable. Every target should include exactly one top-level family
+label such as:
 
-- library labels: `geometry`, `mbutil`, `ivpbuild`, `bhvutil`
-- domain labels: `math`, `formats`, `grid`, `populators`, `viewer_plugins`
-- app-impact labels: `pHelmIvP`, `pMarineViewer`, `pMarinePIDV22`
+- `geometry`
+- `mbutil`
+- `ivpbuild`
+- `behaviors_marine`
+- `apputil`
 
+Additional labels may be useful as CTest registry metadata, but they should not
+be treated as workflow selectors. Use `SUITE_LABELS` when one executable contains
+multiple GoogleTest suites that need suite-specific labels for reporting.
 Use `SUITE_LABELS` for concrete component labels in mixed executables:
 
 ```cmake
@@ -410,18 +414,16 @@ dispatch inputs mirror the harness inputs:
   dropdown, such as `geometry`, `ivpbuild`, or `mbutil`
 - `cpp_test_mode=batch_family_run`: run comma-separated families from
   `cpp_test_families`, such as `geometry,ivpbuild,mbutil`
-- `cpp_test_mode=specific_labels`: run comma-separated CTest labels from
-  `cpp_test_labels`, such as `BuildUtils,IPF_Bundle`
 
-At least one harness target or one C++ test target must be selected. Use
+At least one harness target or one CTest family must be selected. Use
 `dispatch_mode=none` for C++-only runs, or `cpp_test_mode=none` for
 harness-only runs.
 
-The workflow runs selected C++ coverage areas as separate `cpp / <target>`
+The workflow runs selected C++ coverage areas as separate `ctest / <family>`
 matrix jobs after the shared build job. Each C++ job writes a unit test table
 to the GitHub Actions step summary. If a target fails, the summary includes the
 failing CTest case names and the per-target JUnit XML report is uploaded as a
-`cpp-unit-test-report-<target>` artifact.
+`cpp-unit-test-report-<family>` artifact.
 
 If a new convention cannot be expressed in this README and enforced or audited
 reasonably, reconsider the convention.

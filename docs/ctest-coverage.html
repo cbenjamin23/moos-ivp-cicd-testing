@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CTest Coverage | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260430-10">
-  <script src="theme.js?v=20260430-10"></script>
+  <link rel="stylesheet" href="styles.css?v=20260430-15">
+  <script src="theme.js?v=20260430-15"></script>
 </head>
 <body>
   <header class="site-header">
@@ -34,7 +34,7 @@
       <h1>Fast source-level coverage for MOOS-IvP components.</h1>
       <p class="lede">These tests use GoogleTest and CTest to check MOOS-IvP component behavior that does not need a mission scenario: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
       <div class="hero-actions">
-        <a class="button primary" href="#buckets">Browse coverage buckets</a>
+        <a class="button primary" href="#buckets">Browse component families</a>
         <a class="button secondary" href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/tests/cpp/README.md">CTest README</a>
       </div>
     </section>
@@ -57,25 +57,25 @@
         </article>
         <article class="stat-card">
           <strong>31</strong>
-          <span>Coverage Buckets</span>
-          <p>Component groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
+          <span>Component Families</span>
+          <p>Groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
         </article>
       </div>
     </section>
 
     <section id="buckets" class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Coverage Buckets</p>
-        <h2>CTest targets by MOOS-IvP component group</h2>
+        <p class="eyebrow">Component Families</p>
+        <h2>CTest coverage by MOOS-IvP component family</h2>
       </div>
       <div class="table-wrap">
         <table class="ctest-table">
           <thead>
             <tr>
-              <th>Component group</th>
+              <th>Component family</th>
               <th>Targets</th>
               <th>Cases</th>
-              <th>Target labels</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
@@ -87,7 +87,7 @@
               </th>
               <td>39</td>
               <td>202</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>BHV_AbortToPoint</code></span><span class="label-chip"><code>BHV_AvoidCollision</code></span><span class="label-chip"><code>BHV_AvoidObstacleV24</code></span><span class="label-chip"><code>BHV_BearingLine</code></span><span class="label-chip label-chip--more">+37 more</span></span></td>
+              <td class="ctest-description">Marine behavior implementations such as waypoint, loiter, station keeping, collision avoidance, and obstacle avoidance.</td>
             </tr>
 
 
@@ -98,7 +98,7 @@
               </th>
               <td>31</td>
               <td>706</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AngleUtils</code></span><span class="label-chip"><code>ArcUtils</code></span><span class="label-chip"><code>ArcUtilsToDo</code></span><span class="label-chip"><code>CPAEngine</code></span><span class="label-chip label-chip--more">+35 more</span></span></td>
+              <td class="ctest-description">Geometry primitives, parsers, CPA utilities, shape lifecycles, grids, paths, and polygon generation.</td>
             </tr>
 
 
@@ -109,7 +109,7 @@
               </th>
               <td>19</td>
               <td>167</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>FColorMap</code></span><span class="label-chip"><code>Figlog</code></span><span class="label-chip"><code>JsonUtils</code></span><span class="label-chip"><code>LatLonFormatUtils</code></span><span class="label-chip label-chip--more">+12 more</span></span></td>
+              <td class="ctest-description">MOOS-IvP utility objects, formatting, timers, macros, hashes, JSON helpers, and node messages.</td>
             </tr>
 
 
@@ -120,7 +120,7 @@
               </th>
               <td>9</td>
               <td>96</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF</code></span><span class="label-chip"><code>BHV_AvoidCollision</code></span><span class="label-chip"><code>BHV_AvoidObstacleV24</code></span><span class="label-chip"><code>BHV_FixedTurn</code></span><span class="label-chip label-chip--more">+10 more</span></span></td>
+              <td class="ctest-description">Behavior utility engines, AOF helpers, refineries, waypoint/loiter helpers, and fixed-turn support.</td>
             </tr>
 
 
@@ -131,7 +131,7 @@
               </th>
               <td>5</td>
               <td>69</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ALogFiles</code></span><span class="label-chip"><code>ALogParsing</code></span><span class="label-chip"><code>LogUtils</code></span><span class="label-chip"><code>logutils</code></span></span></td>
+              <td class="ctest-description">ALog parsing, log files, plot data, app logs, and analysis-plot utilities.</td>
             </tr>
 
 
@@ -142,7 +142,7 @@
               </th>
               <td>5</td>
               <td>45</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>MarineViewShapes</code></span><span class="label-chip"><code>gui</code></span><span class="label-chip"><code>marineview</code></span><span class="label-chip"><code>pMarineViewer</code></span><span class="label-chip label-chip--more">+3 more</span></span></td>
+              <td class="ctest-description">Marine viewer shapes, GUI-adjacent models, image handling, and viewer support classes.</td>
             </tr>
 
 
@@ -153,7 +153,7 @@
               </th>
               <td>4</td>
               <td>32</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>IvPBehavior</code></span><span class="label-chip"><code>IvPContactBehavior</code></span><span class="label-chip"><code>behaviors</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+              <td class="ctest-description">Core IvP behavior state, contact behavior state, and lifecycle records.</td>
             </tr>
 
 
@@ -164,7 +164,7 @@
               </th>
               <td>4</td>
               <td>51</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF</code></span><span class="label-chip"><code>ZAIC</code></span><span class="label-chip"><code>ivpbuild</code></span><span class="label-chip"><code>math</code></span><span class="label-chip label-chip--more">+2 more</span></span></td>
+              <td class="ctest-description">AOFs, ZAICs, PDMaps, reflector internals, and IvP function construction.</td>
             </tr>
 
 
@@ -175,7 +175,7 @@
               </th>
               <td>3</td>
               <td>28</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AppCastFormatting</code></span><span class="label-chip"><code>AppCastSettings</code></span><span class="label-chip"><code>InfoCastSettings</code></span><span class="label-chip"><code>RealmCastSettings</code></span><span class="label-chip label-chip--more">+1 more</span></span></td>
+              <td class="ctest-description">AppCast, InfoCast, and display-formatting helpers used by app-facing utilities.</td>
             </tr>
 
 
@@ -186,7 +186,7 @@
               </th>
               <td>3</td>
               <td>22</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF_CPA</code></span><span class="label-chip"><code>AOF_R13</code></span><span class="label-chip"><code>AOF_R14</code></span><span class="label-chip"><code>AOF_R16</code></span><span class="label-chip label-chip--more">+7 more</span></span></td>
+              <td class="ctest-description">COLREGS behavior support logic, velocity filtering, AOF helpers, and behavior contracts.</td>
             </tr>
 
 
@@ -197,7 +197,7 @@
               </th>
               <td>3</td>
               <td>31</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>logic</code></span></span></td>
+              <td class="ctest-description">Logic conditions, info buffers, conditional ledgers, and related parsing helpers.</td>
             </tr>
 
 
@@ -208,7 +208,7 @@
               </th>
               <td>2</td>
               <td>106</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>NodeReport</code></span><span class="label-chip"><code>contacts</code></span></span></td>
+              <td class="ctest-description">Node record and rider parsing, serialization, and contact-report behavior.</td>
             </tr>
 
 
@@ -219,7 +219,7 @@
               </th>
               <td>2</td>
               <td>77</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>AOF_AvoidObstacle</code></span><span class="label-chip"><code>AOF_AvoidObstacleX</code></span><span class="label-chip"><code>BHV_Attractor</code></span><span class="label-chip"><code>BHV_AvoidObstacle</code></span><span class="label-chip label-chip--more">+8 more</span></span></td>
+              <td class="ctest-description">Deprecated behavior and obstacle-model code kept under regression coverage.</td>
             </tr>
 
 
@@ -230,7 +230,7 @@
               </th>
               <td>2</td>
               <td>23</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>evalutil</code></span><span class="label-chip"><code>pMissionEval</code></span></span></td>
+              <td class="ctest-description">Mission-evaluation helpers, logic-test sequences, and variable-check utilities.</td>
             </tr>
 
 
@@ -241,7 +241,7 @@
               </th>
               <td>2</td>
               <td>20</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>NODE_BROKER</code></span><span class="label-chip"><code>PHI_HOST_INFO</code></span><span class="label-chip"><code>pShare</code></span><span class="label-chip"><code>ufield</code></span></span></td>
+              <td class="ctest-description">Field utilities, host records, pShare-facing records, and field communication helpers.</td>
             </tr>
 
 
@@ -252,7 +252,7 @@
               </th>
               <td>2</td>
               <td>21</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>Threadsafe_pipe</code></span><span class="label-chip"><code>genutil</code></span></span></td>
+              <td class="ctest-description">General-purpose string, file, pipe, and utility helpers.</td>
             </tr>
 
 
@@ -263,7 +263,7 @@
               </th>
               <td>2</td>
               <td>20</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>helmivp</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+              <td class="ctest-description">Helm behavior-loading and core helm state helpers.</td>
             </tr>
 
 
@@ -274,7 +274,7 @@
               </th>
               <td>2</td>
               <td>19</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>LOCFile</code></span><span class="label-chip"><code>ManifestFile</code></span><span class="label-chip"><code>Populator_ManifestSet</code></span><span class="label-chip"><code>manifest</code></span></span></td>
+              <td class="ctest-description">Manifest file parsing, population, and manifest-set behavior.</td>
             </tr>
 
 
@@ -285,7 +285,7 @@
               </th>
               <td>2</td>
               <td>108</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>PIDEngine</code></span><span class="label-chip"><code>marine_pid</code></span><span class="label-chip"><code>pMarinePIDV22</code></span></span></td>
+              <td class="ctest-description">Marine PID engines and pMarinePIDV22 app-level control logic.</td>
             </tr>
 
 
@@ -296,7 +296,7 @@
               </th>
               <td>2</td>
               <td>21</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>gui</code></span><span class="label-chip"><code>requires_fltk</code></span><span class="label-chip"><code>requires_opengl</code></span><span class="label-chip"><code>zaicview</code></span></span></td>
+              <td class="ctest-description">ZAIC viewer models and GUI-adjacent support code.</td>
             </tr>
 
 
@@ -307,7 +307,7 @@
               </th>
               <td>1</td>
               <td>14</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ucommand</code></span></span></td>
+              <td class="ctest-description">Command item, command folio, command summary, and command-routing helpers.</td>
             </tr>
 
 
@@ -318,7 +318,7 @@
               </th>
               <td>1</td>
               <td>8</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>CPAEvent</code></span><span class="label-chip"><code>CPA_EVENT</code></span><span class="label-chip"><code>app_alogeplot</code></span><span class="label-chip"><code>encounters</code></span><span class="label-chip label-chip--more">+2 more</span></span></td>
+              <td class="ctest-description">CPA encounter events and alog-facing encounter records.</td>
             </tr>
 
 
@@ -329,7 +329,7 @@
               </th>
               <td>1</td>
               <td>21</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>NodeReport</code></span><span class="label-chip"><code>geodaid</code></span><span class="label-chip"><code>pContactMgrV20</code></span><span class="label-chip"><code>pHelmIvP</code></span><span class="label-chip label-chip--more">+1 more</span></span></td>
+              <td class="ctest-description">Contact-ledger and geodesy-aid logic used by contact-aware apps.</td>
             </tr>
 
 
@@ -340,7 +340,7 @@
               </th>
               <td>1</td>
               <td>69</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ipfview</code></span></span></td>
+              <td class="ctest-description">IPF viewer parsing and model support.</td>
             </tr>
 
 
@@ -351,7 +351,7 @@
               </th>
               <td>1</td>
               <td>86</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ivpcore</code></span><span class="label-chip"><code>math</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+              <td class="ctest-description">Core IvP objects, domains, boxes, functions, and priority data structures.</td>
             </tr>
 
 
@@ -362,7 +362,7 @@
               </th>
               <td>1</td>
               <td>10</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>ivpsolve</code></span><span class="label-chip"><code>math</code></span><span class="label-chip"><code>pHelmIvP</code></span></span></td>
+              <td class="ctest-description">IvP problem-solving and encoded-function behavior.</td>
             </tr>
 
 
@@ -373,51 +373,51 @@
               </th>
               <td>1</td>
               <td>14</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>obstacles</code></span><span class="label-chip"><code>uFldObstacleMgr</code></span></span></td>
+              <td class="ctest-description">Obstacle parsing, representation, and obstacle-manager support objects.</td>
             </tr>
 
 
             <tr class="ctest-summary-row">
               <th>
                 <span class="component-key"><code>polar</code></span>
-                <span class="component-name">Polar</span>
+                <span class="component-name">Polar Geometry</span>
               </th>
               <td>1</td>
               <td>19</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>polar</code></span><span class="label-chip"><code>uSimMarineV22</code></span><span class="label-chip"><code>uSimMarineV23</code></span></span></td>
+              <td class="ctest-description">Polar plotting and simulator-facing polar helpers.</td>
             </tr>
 
 
             <tr class="ctest-summary-row">
               <th>
                 <span class="component-key"><code>realm</code></span>
-                <span class="component-name">Realm</span>
+                <span class="component-name">Realm Core</span>
               </th>
               <td>1</td>
               <td>11</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>REALMCAST</code></span><span class="label-chip"><code>REALMCAST_CHANNELS</code></span><span class="label-chip"><code>WATCHCAST</code></span><span class="label-chip"><code>pMarineViewer</code></span><span class="label-chip label-chip--more">+1 more</span></span></td>
+              <td class="ctest-description">RealmCast and WatchCast core records and channel logic.</td>
             </tr>
 
 
             <tr class="ctest-summary-row">
               <th>
                 <span class="component-key"><code>survey</code></span>
-                <span class="component-name">Survey</span>
+                <span class="component-name">Survey Utilities</span>
               </th>
               <td>1</td>
               <td>11</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>SURVEY_UPDATES</code></span><span class="label-chip"><code>pMarineViewer</code></span><span class="label-chip"><code>survey</code></span></span></td>
+              <td class="ctest-description">Survey pattern generation and survey-update helpers.</td>
             </tr>
 
 
             <tr class="ctest-summary-row">
               <th>
                 <span class="component-key"><code>turngeo</code></span>
-                <span class="component-name">Turngeo</span>
+                <span class="component-name">Turn Geometry</span>
               </th>
               <td>1</td>
               <td>18</td>
-              <td class="ctest-label-summary"><span class="label-chip-strip"><span class="label-chip"><code>LegRun</code></span><span class="label-chip"><code>turngeo</code></span></span></td>
+              <td class="ctest-description">Turn-generation geometry and leg-run turn helpers.</td>
             </tr>
 
           </tbody>

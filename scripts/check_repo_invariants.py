@@ -31,7 +31,6 @@ EXPECTED_CPP_TEST_MODES = {
     "all",
     "family_run",
     "batch_family_run",
-    "specific_labels",
 }
 
 

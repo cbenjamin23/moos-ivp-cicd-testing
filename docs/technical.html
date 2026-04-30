@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Technical Overview | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260430-10">
-  <script src="theme.js?v=20260430-10"></script>
+  <link rel="stylesheet" href="styles.css?v=20260430-15">
+  <script src="theme.js?v=20260430-15"></script>
 </head>
 <body>
   <header class="site-header">
@@ -46,8 +46,8 @@
           <dd>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</dd>
         </div>
         <div class="term-item">
-          <dt>CTest label</dt>
-          <dd>A selector attached to CTest cases for buckets, components, apps, behaviors, or cross-cutting concerns.</dd>
+          <dt>CTest family</dt>
+          <dd>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors_marine</code>.</dd>
         </div>
         <div class="term-item">
           <dt>Mission stem</dt>
@@ -71,7 +71,7 @@
       </article>
       <article class="technical-card">
         <h2>Separate Selectors</h2>
-        <p>CTest labels and harness target keys serve different workflows. CTest labels organize source checks; harness metadata organizes mission runs and case families.</p>
+        <p>CTest families select source-level component groups. Harness families and target keys select live mission workloads.</p>
       </article>
     </section>
 
@@ -236,8 +236,8 @@
       </div>
       <div class="technical-grid">
         <article class="technical-card">
-          <h3>CTest labels</h3>
-          <p><code>tests/cpp/</code> target definitions use labels to describe component buckets, target names, app or behavior ownership, and cross-cutting selectors.</p>
+          <h3>CTest registry labels</h3>
+          <p><code>tests/cpp/</code> target definitions use labels for CTest registry metadata and suite-level reporting. The workflow exposes only the top-level family selectors.</p>
         </article>
         <article class="technical-card">
           <h3>CTest invariants</h3>
@@ -258,7 +258,7 @@
       <div class="technical-grid">
         <article class="technical-card">
           <h3>CTest Coverage</h3>
-          <p>Review the current CTest target and case snapshot, grouped by MOOS-IvP component bucket.</p>
+          <p>Review the current CTest target and case snapshot, grouped by MOOS-IvP component family.</p>
           <a class="text-link" href="ctest-coverage.html">Open CTest coverage</a>
         </article>
         <article class="technical-card">

@@ -197,7 +197,12 @@ main {
   max-width: 720px;
   color: var(--muted);
   font-size: clamp(1rem, 1.8vw, 1.18rem);
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.page-hero .lede {
+  max-width: 46ch;
 }
 
 .eyebrow,
@@ -439,6 +444,10 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 0.55rem;
   font-weight: 650;
+}
+
+.muted {
+  color: var(--muted);
 }
 
 h2 {
@@ -926,6 +935,14 @@ pre code {
   -webkit-overflow-scrolling: touch;
 }
 
+.content-section > h3 {
+  margin-bottom: 0.85rem;
+}
+
+.content-section > .table-wrap + h3 {
+  margin-top: 2rem;
+}
+
 table {
   width: 100%;
   min-width: 0;
@@ -977,41 +994,10 @@ table {
   font-weight: 650;
 }
 
-.ctest-label-summary {
-  min-width: 0;
-}
-
-.label-chip-strip {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0.38rem;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.label-chip {
-  display: inline-flex;
-  flex: 0 1 auto;
-  min-width: 0;
-  max-width: 13rem;
-  align-items: center;
-  padding: 0.26rem 0.45rem;
-  color: var(--ink);
-  background: var(--soft);
-  border: 1px solid var(--line);
-  border-radius: 0.42rem;
-}
-
-.label-chip code {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.label-chip--more {
-  flex: 0 0 auto;
-  color: var(--blue);
-  font-weight: 900;
+.ctest-description {
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.45;
 }
 
 th,
