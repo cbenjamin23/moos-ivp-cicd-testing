@@ -1590,16 +1590,16 @@ moos_ivp_ref: main</code></pre>
     <section id="target-keys" class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Selectors</p>
-        <h2>Names accepted by the family and harness-target fields</h2>
-        <p>CTest family names go in <code>cpp_test_family</code> or <code>cpp_test_families</code>. Harness family names go in <code>family</code> or <code>families</code>. Harness target keys go in <code>targets</code>.</p>
+        <h2>Selector values</h2>
+        <p>Use these exact values in the GitHub Actions form. CTest values go in <code>cpp_test_family</code> or <code>cpp_test_families</code>. Harness family values go in <code>family</code> or <code>families</code>. Harness target keys go in <code>targets</code>.</p>
       </div>
       <h3>CTest families</h3>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Family</th>
-              <th>Display area</th>
+              <th>Selector value</th>
+              <th>Coverage area</th>
             </tr>
           </thead>
           <tbody>
@@ -1612,8 +1612,8 @@ moos_ivp_ref: main</code></pre>
         <table>
           <thead>
             <tr>
-              <th>Key</th>
-              <th>Family</th>
+              <th>Selector value</th>
+              <th>Harness family</th>
               <th>Harness</th>
             </tr>
           </thead>
