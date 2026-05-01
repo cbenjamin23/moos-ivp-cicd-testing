@@ -27,6 +27,7 @@ VISUAL_NOTES = {
     "cmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship geometry is intentionally simple and the verdict comes from MOOS publications such as contact alerts, reports, and filter messages.",
     "obmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship is stationary and the verdict comes from MOOS publications such as obstacle acceptance, distance reports, hull generation, and filter messages.",
     "pid-unit": "This unit harness uses variable-level PID evidence instead of pMarineViewer captures because it intentionally checks pMarinePIDV22 input/output behavior before adding vehicle dynamics.",
+    "pid-motion": "This motion harness uses PID-focused generated visuals instead of raw pMarineViewer captures because the verdict depends on bridged navigation, actuator output, and closed-loop vehicle response.",
     "colregs-classification": "This classification harness uses alog-backed explanatory GIFs instead of raw pMarineViewer captures because the vehicles do move, but the verdict comes from COLREGS publications such as mode, index, summary, and range reports.",
     "colregs-thresholds": "This threshold harness uses alog-backed overlay GIFs instead of raw pMarineViewer captures because the cases differ by small geometry changes and the verdict comes from boundary-specific COLREGS publications.",
 }
