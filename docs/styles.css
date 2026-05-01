@@ -205,6 +205,10 @@ main {
   max-width: 46ch;
 }
 
+.page-hero--wide-lede .lede {
+  max-width: 68ch;
+}
+
 .eyebrow,
 .section-kicker,
 .family-label {

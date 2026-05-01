@@ -19,7 +19,7 @@ CPP_TEST_DIR = REPO_ROOT / "tests" / "cpp"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
-ASSET_VERSION = "20260430-15"
+ASSET_VERSION = "20260501-1"
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
 CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
@@ -1356,7 +1356,7 @@ def render_ctest_coverage() -> str:
     areas = ctest_area_rows(targets)
     body = f"""
   <main>
-    <section class="page-hero">
+    <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">CTest Coverage</p>
       <h1>Fast source-level coverage for MOOS-IvP components.</h1>

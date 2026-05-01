@@ -1,6 +1,6 @@
 (() => {
   const STORAGE_KEY = "moos-ivp-docs-theme";
-  const ASSET_VERSION = "20260430-15";
+  const ASSET_VERSION = "20260501-1";
   const THEMES = {
     default: null,
     frost: "frost.css",
