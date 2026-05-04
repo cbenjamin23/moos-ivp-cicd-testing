@@ -73,6 +73,13 @@ ctest --test-dir build -L XYArc --output-on-failure
 ctest --test-dir build -L pMarineViewer --output-on-failure
 ```
 
+Prefer GoogleTest discovery for C++ classes and internal logic because each
+`TEST()` becomes its own CTest/JUnit case in CI. For command-line tool behavior,
+use one narrow CTest case per fixture command rather than one broad runner, and
+make the command print the exact fixture failure. That preserves useful GitHub
+Actions summaries while still allowing black-box checks where they are the right
+test shape.
+
 Start here: [tests/cpp/README.md](./tests/cpp/README.md).
 
 ### Mission Harnesses

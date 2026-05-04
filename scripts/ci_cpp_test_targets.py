@@ -36,6 +36,8 @@ CPP_FAMILIES = (
     "marine_pid",
     "marineview",
     "mbutil",
+    "nspatch",
+    "nsplug",
     "obstacles",
     "polar",
     "realm",

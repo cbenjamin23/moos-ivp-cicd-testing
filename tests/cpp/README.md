@@ -87,6 +87,13 @@ That means:
 - use `--gtest_filter` on the executable when iterating on one suite or case
 - use CTest family labels when the boundary is a source-level component group
 
+When a target is best checked as a command-line tool, use explicit CTest cases
+instead of hiding many fixtures behind one broad script. Register one narrow
+case per CLI fixture and label it with the owning family so GitHub Actions can
+show the failing fixture in the CTest/JUnit summary. Prefer GoogleTest discovery
+for directly testable C++ classes, parsers, and helpers because assertion-level
+failures are reported with better detail.
+
 ## Run Tests
 
 Build and run everything:

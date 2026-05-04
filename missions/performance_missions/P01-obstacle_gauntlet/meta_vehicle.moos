@@ -18,10 +18,10 @@ ProcessConfig = ANTLER
   Run = pRealm         @ NewConsole = false
   Run = uProcessWatch  @ NewConsole = false
   Run = pShare         @ NewConsole = false
-  Run = uSimMarine     @ NewConsole = false
+  Run = uSimMarineV22  @ NewConsole = false
   Run = pLogger        @ NewConsole = false
   Run = pNodeReporter  @ NewConsole = false
-  Run = pMarinePID     @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
   Run = pHelmIvP       @ NewConsole = false
   Run = pHostInfo      @ NewConsole = false
   Run = uFldNodeBroker @ NewConsole = false
@@ -77,15 +77,18 @@ ProcessConfig = uFldNodeBroker
 }
 
 //----------------------------------------------------
-ProcessConfig = uSimMarine
+ProcessConfig = uSimMarineV22
 {
   AppTick   = 10
   CommsTick = 10
 
-  start_pos = $(START_POS), 0
+  start_pos = $(START_POS),depth=0
   prefix    = NAV
 
-  deprecated_ok = true
+  max_speed        = $(MAX_SPD)
+  max_deceleration = 0.1
+  turn_rate        = 95
+  turn_spd_loss    = 0.6
 }
 
 //----------------------------------------------------
@@ -100,31 +103,28 @@ ProcessConfig = pNodeReporter
 }
 
 //----------------------------------------------------
-ProcessConfig = pMarinePID
+ProcessConfig = pMarinePIDV22
 {
-  AppTick    = 10
-  CommsTick  = 10
+  AppTick   = 10
+  CommsTick = 10
 
-  VERBOSE       = true
-  DEPTH_CONTROL = false
-  ACTIVE_START  = true
+  verbose       = true
+  depth_control = false
 
-  deprecated_ok = true
+  yaw_pid_kp             = 1.2
+  yaw_pid_kd             = 0.1
+  yaw_pid_ki             = 0.3
+  yaw_pid_integral_limit = 0.07
 
-  YAW_PID_KP             = 0.4
-  YAW_PID_KD             = 0.1
-  YAW_PID_KI             = 0.0
-  YAW_PID_INTEGRAL_LIMIT = 0.07
+  speed_pid_kp             = 1.0
+  speed_pid_kd             = 0.0
+  speed_pid_ki             = 0.0
+  speed_pid_integral_limit = 0.07
 
-  SPEED_PID_KP             = 1.0
-  SPEED_PID_KD             = 0.0
-  SPEED_PID_KI             = 0.0
-  SPEED_PID_INTEGRAL_LIMIT = 0.07
+  maxrudder = 100
+  maxthrust = 100
 
-  MAXRUDDER = 100
-  MAXTHRUST = 100
-
-  SPEED_FACTOR = 20
+  speed_factor = 20
 }
 
 //----------------------------------------------------
