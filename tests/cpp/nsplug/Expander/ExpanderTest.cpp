@@ -54,6 +54,11 @@ bool ExpandText(const TempDir& temp,
 
 }  // namespace
 
+// Source audit note: this suite covers nsplug Expander's stable macro,
+// include, condition-stack, macro-file, output, path, and validation behavior
+// against app_nsplug. CLI parsing and upstream paths that terminate the process
+// instead of returning status are intentionally outside these component tests.
+
 // Covers nsplug macro replacement: command-line style macros replace repeated
 // $(KEY) occurrences while preserving surrounding text.
 TEST(NsplugExpanderMacroTest, ReplacesRepeatedDollarMacros)
@@ -222,6 +227,25 @@ TEST(NsplugExpanderMacroTest, StrictModeExitsOnUnresolvedMacro)
       "");
 }
 
+// Covers strict mode's comment exemption for unresolved macros.
+TEST(NsplugExpanderMacroTest, StrictModeAllowsUnresolvedMacrosInComments)
+{
+  TempDir temp("nsplug_strict_comment_unresolved");
+  std::string output;
+  Expander expander;
+  expander.setStrict(true);
+
+  ASSERT_TRUE(ExpandText(temp,
+                         "// comment $(MISSING)\n"
+                         "value=ok\n",
+                         output,
+                         &expander));
+
+  EXPECT_EQ(output,
+            "// comment $(MISSING)\n"
+            "value=ok\n");
+}
+
 // Covers nsplug macro-file loading: comments are skipped, quotes are stripped,
 // and values can reference macros already known to the expander.
 TEST(NsplugExpanderMacroFileTest, MacroFileLoadsQuotedAndDerivedValues)
@@ -275,6 +299,19 @@ TEST(NsplugExpanderMacroFileTest, MissingMacroFileIsRejected)
   Expander expander;
 
   EXPECT_FALSE(expander.addMacroFile(temp.filePath("missing.txt")));
+}
+
+// Covers nsplug macro-file validation for empty readable files.
+TEST(NsplugExpanderMacroFileTest, EmptyMacroFileIsAcceptedAsNoOp)
+{
+  TempDir temp("nsplug_empty_macro_file");
+  const std::string macros_path = temp.writeFile("macros.txt", "");
+  std::string output;
+  Expander expander;
+
+  EXPECT_TRUE(expander.addMacroFile(macros_path));
+  ASSERT_TRUE(ExpandText(temp, "color=$(COLOR:=blue)\n", output, &expander));
+  EXPECT_EQ(output, "color=blue\n");
 }
 
 // Covers nsplug #ifdef value matching and #else selection.
@@ -459,6 +496,23 @@ TEST(NsplugExpanderConditionalTest, NestedConditionalsRespectOuterSkippedBranch)
                          &expander));
 
   EXPECT_EQ(output, "outer-fallback\n");
+}
+
+// Covers skipped preprocessor branches: #define lines in skipped branches do
+// not mutate later macro state.
+TEST(NsplugExpanderConditionalTest, SkippedDefineDoesNotCreateMacro)
+{
+  TempDir temp("nsplug_skipped_define");
+  std::string output;
+
+  ASSERT_TRUE(ExpandText(temp,
+                         "#ifdef ENABLED\n"
+                         "#define COLOR red\n"
+                         "#endif\n"
+                         "color=$(COLOR:=blue)\n",
+                         output));
+
+  EXPECT_EQ(output, "color=blue\n");
 }
 
 // Covers nsplug conditional syntax errors: dangling #else fails expansion.

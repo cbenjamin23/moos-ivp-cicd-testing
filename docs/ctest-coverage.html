@@ -46,17 +46,17 @@
       </div>
       <div class="stats-grid stats-grid--three">
         <article class="stat-card">
-          <strong>2145</strong>
+          <strong>2534</strong>
           <span>Test Cases</span>
           <p>Individual GoogleTest checks covering expected and edge-case behavior.</p>
         </article>
         <article class="stat-card">
-          <strong>154</strong>
+          <strong>183</strong>
           <span>CTest Targets</span>
           <p>Focused executables that group related component checks.</p>
         </article>
         <article class="stat-card">
-          <strong>31</strong>
+          <strong>60</strong>
           <span>Component Families</span>
           <p>Groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
         </article>
@@ -302,6 +302,237 @@
 
             <tr class="ctest-summary-row">
               <th>
+                <span class="component-key"><code>alogavg</code></span>
+                <span class="component-name">ALog Average</span>
+              </th>
+              <td>1</td>
+              <td>11</td>
+              <td class="ctest-description">ALog averaging handlers, time-window parsing, numeric aggregation, and malformed log-input edges.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogbin</code></span>
+                <span class="component-name">ALog Bin</span>
+              </th>
+              <td>1</td>
+              <td>9</td>
+              <td class="ctest-description">ALog binning handlers, variable bucketing, interval boundaries, and report formatting.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogcat</code></span>
+                <span class="component-name">ALog Cat</span>
+              </th>
+              <td>1</td>
+              <td>9</td>
+              <td class="ctest-description">ALog concatenation handlers, file ordering, header handling, and timestamp normalization.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogcheck</code></span>
+                <span class="component-name">ALog Check</span>
+              </th>
+              <td>1</td>
+              <td>24</td>
+              <td class="ctest-description">ALog check condition parsing, log evaluation, pass/fail reporting, and malformed specification handling.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogclip</code></span>
+                <span class="component-name">ALog Clip</span>
+              </th>
+              <td>1</td>
+              <td>21</td>
+              <td class="ctest-description">ALog clipping handlers, inclusive time windows, header preservation, preserved variables, and CLI-facing prechecks.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogcd</code></span>
+                <span class="component-name">ALog Collision Detect</span>
+              </th>
+              <td>1</td>
+              <td>4</td>
+              <td class="ctest-description">ALog collision-detection reporting over contact and CPA-related log records.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogeplot</code></span>
+                <span class="component-name">ALog EPlot</span>
+              </th>
+              <td>1</td>
+              <td>7</td>
+              <td class="ctest-description">ALog expression plotting helpers, variable extraction, source filtering, and expression/report behavior.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogeval</code></span>
+                <span class="component-name">ALog Eval</span>
+              </th>
+              <td>1</td>
+              <td>7</td>
+              <td class="ctest-description">ALog evaluation helpers for expression parsing, time windows, condition handling, and result summaries.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>aloggrep</code></span>
+                <span class="component-name">ALog Grep</span>
+              </th>
+              <td>1</td>
+              <td>28</td>
+              <td class="ctest-description">ALog grep handlers, variable/source filters, time gates, format options, and malformed selector handling.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>aloghelm</code></span>
+                <span class="component-name">ALog Helm</span>
+              </th>
+              <td>1</td>
+              <td>5</td>
+              <td class="ctest-description">ALog helm report extraction, helm summary parsing, iteration handling, and report formatting.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogiter</code></span>
+                <span class="component-name">ALog Iter</span>
+              </th>
+              <td>1</td>
+              <td>3</td>
+              <td class="ctest-description">ALog iteration handlers, timestamp bucketing, iteration boundaries, and summary output.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogload</code></span>
+                <span class="component-name">ALog Load</span>
+              </th>
+              <td>1</td>
+              <td>4</td>
+              <td class="ctest-description">ALog load-report helpers, per-app load parsing, threshold handling, and output summaries.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogmhash</code></span>
+                <span class="component-name">ALog Mission Hash</span>
+              </th>
+              <td>1</td>
+              <td>5</td>
+              <td class="ctest-description">ALog mission-hash reporting, hash extraction, missing-field behavior, and report formatting.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogpare</code></span>
+                <span class="component-name">ALog Pare</span>
+              </th>
+              <td>1</td>
+              <td>6</td>
+              <td class="ctest-description">ALog pare engine behavior for variable/source filtering, retained records, and file output.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogpick</code></span>
+                <span class="component-name">ALog Pick</span>
+              </th>
+              <td>1</td>
+              <td>8</td>
+              <td class="ctest-description">ALog pick handlers for field selection, output formatting, and malformed selector behavior.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogrm</code></span>
+                <span class="component-name">ALog Remove</span>
+              </th>
+              <td>1</td>
+              <td>12</td>
+              <td class="ctest-description">ALog removal filters, variable/source exclusion, retained headers, and filter edge cases.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogscan</code></span>
+                <span class="component-name">ALog Scan</span>
+              </th>
+              <td>1</td>
+              <td>11</td>
+              <td class="ctest-description">ALog scan handlers, variable discovery, source summaries, and scan-output formatting.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogsort</code></span>
+                <span class="component-name">ALog Sort</span>
+              </th>
+              <td>1</td>
+              <td>16</td>
+              <td class="ctest-description">ALog sort handlers, timestamp ordering, stable header behavior, and malformed-line handling.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogsplit</code></span>
+                <span class="component-name">ALog Split</span>
+              </th>
+              <td>1</td>
+              <td>5</td>
+              <td class="ctest-description">ALog split handlers, split-key parsing, output naming, batch behavior, and file prechecks.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogtest</code></span>
+                <span class="component-name">ALog Test</span>
+              </th>
+              <td>1</td>
+              <td>8</td>
+              <td class="ctest-description">ALog test condition parsing, truth evaluation, time-window checks, and result reporting.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>alogtm</code></span>
+                <span class="component-name">ALog Time Mark</span>
+              </th>
+              <td>1</td>
+              <td>7</td>
+              <td class="ctest-description">ALog time-mark grep handlers, mark selection, time extraction, and malformed marker handling.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
                 <span class="component-key"><code>ucommand</code></span>
                 <span class="component-name">Command Utilities</span>
               </th>
@@ -368,6 +599,39 @@
 
             <tr class="ctest-summary-row">
               <th>
+                <span class="component-key"><code>gen_moos_app</code></span>
+                <span class="component-name">MOOS App Generator</span>
+              </th>
+              <td>1</td>
+              <td>2</td>
+              <td class="ctest-description">MOOS app generator source transformations, file planning, naming rules, and generated text checks.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>nspatch</code></span>
+                <span class="component-name">NSPatch</span>
+              </th>
+              <td>1</td>
+              <td>45</td>
+              <td class="ctest-description">NSPatch patch-file parsing, named-block replacement, line patch behavior, and conflict/edge semantics.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>nsplug</code></span>
+                <span class="component-name">NSPlug</span>
+              </th>
+              <td>1</td>
+              <td>39</td>
+              <td class="ctest-description">NSPlug expansion helpers, macro handling, conditional expansion, and template-processing behavior.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
                 <span class="component-key"><code>obstacles</code></span>
                 <span class="component-name">Obstacles</span>
               </th>
@@ -379,12 +643,45 @@
 
             <tr class="ctest-summary-row">
               <th>
+                <span class="component-key"><code>pickpos</code></span>
+                <span class="component-name">Pick Position</span>
+              </th>
+              <td>1</td>
+              <td>13</td>
+              <td class="ctest-description">Pick-position parsing, geometry selection, output formatting, and invalid-input handling.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>pluck</code></span>
+                <span class="component-name">Pluck</span>
+              </th>
+              <td>1</td>
+              <td>12</td>
+              <td class="ctest-description">Pluck handlers for extracting selected fields, formatting output, and rejecting malformed requests.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
                 <span class="component-key"><code>polar</code></span>
                 <span class="component-name">Polar Geometry</span>
               </th>
               <td>1</td>
               <td>19</td>
               <td class="ctest-description">Polar plotting and simulator-facing polar helpers.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>projfield</code></span>
+                <span class="component-name">Project Field</span>
+              </th>
+              <td>1</td>
+              <td>6</td>
+              <td class="ctest-description">Field projection helpers, input parsing, projection geometry, and output formatting.</td>
             </tr>
 
 
@@ -412,12 +709,34 @@
 
             <tr class="ctest-summary-row">
               <th>
+                <span class="component-key"><code>tagrep</code></span>
+                <span class="component-name">Tag Replace</span>
+              </th>
+              <td>1</td>
+              <td>9</td>
+              <td class="ctest-description">Tag replacement handlers, tag parsing, replacement rules, and malformed template behavior.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
                 <span class="component-key"><code>turngeo</code></span>
                 <span class="component-name">Turn Geometry</span>
               </th>
               <td>1</td>
               <td>18</td>
               <td class="ctest-description">Turn-generation geometry and leg-run turn helpers.</td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>utimerscript</code></span>
+                <span class="component-name">uTimerScript</span>
+              </th>
+              <td>1</td>
+              <td>53</td>
+              <td class="ctest-description">uTimerScript random variables, random pairs, event parsing, scheduling helpers, math macro expansion, and block-app handling.</td>
             </tr>
 
           </tbody>

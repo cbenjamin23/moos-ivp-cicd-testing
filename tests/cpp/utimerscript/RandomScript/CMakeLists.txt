@@ -1,0 +1,42 @@
+set(UTIMERSCRIPT_SRC ${MOOSIVP_SOURCE_TREE_BASE}/ivp/src/uTimerScript)
+
+add_moos_cpp_test(test_utimerscript_random_script
+  SOURCES
+    EnumVariableTest.cpp
+    RandomPairSetTest.cpp
+    RandomPairTest.cpp
+    RandomVariableSetTest.cpp
+    RandomVariableTest.cpp
+    TS_MOOSAppTest.cpp
+    ${UTIMERSCRIPT_SRC}/EnumVariable.cpp
+    ${UTIMERSCRIPT_SRC}/RandPairPoly.cpp
+    ${UTIMERSCRIPT_SRC}/RandVarGaussian.cpp
+    ${UTIMERSCRIPT_SRC}/RandVarUniform.cpp
+    ${UTIMERSCRIPT_SRC}/RandomPair.cpp
+    ${UTIMERSCRIPT_SRC}/RandomPairSet.cpp
+    ${UTIMERSCRIPT_SRC}/RandomVariable.cpp
+    ${UTIMERSCRIPT_SRC}/RandomVariableSet.cpp
+    ${UTIMERSCRIPT_SRC}/TS_MOOSApp.cpp
+  LIBS
+    apputil
+    geometry
+    logic
+    mbutil
+    ${MOOS_LIBRARIES}
+  INCLUDES
+    ${UTIMERSCRIPT_SRC}
+  LABELS
+    utimerscript
+    RandomScript
+  SUITE_LABELS
+    EnumVariableTest=EnumVariable
+    RandPairPolyTest=RandPairPoly
+    RandomPairSetTest=RandomPairSet
+    RandomPairTest=RandomPair
+    RandomVariableSetTest=RandomVariableSet
+    RandVarGaussianTest=RandVarGaussian
+    RandVarUniformTest=RandVarUniform
+    TS_MOOSAppEventTest=TS_MOOSApp
+    TS_MOOSAppMathTest=TS_MOOSApp
+    TS_MOOSAppUtilityTest=TS_MOOSApp
+)

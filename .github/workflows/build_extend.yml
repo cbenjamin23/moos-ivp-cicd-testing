@@ -57,6 +57,27 @@ on:
         type: choice
         default: geometry
         options:
+          - alogcheck
+          - alogavg
+          - alogbin
+          - alogcat
+          - alogcd
+          - alogclip
+          - alogeplot
+          - alogeval
+          - aloggrep
+          - aloghelm
+          - alogiter
+          - alogload
+          - alogmhash
+          - alogpare
+          - alogpick
+          - alogrm
+          - alogscan
+          - alogsplit
+          - alogsort
+          - alogtest
+          - alogtm
           - apputil
           - behaviors
           - behaviors_colregs
@@ -66,6 +87,7 @@ on:
           - dep_behaviors
           - encounters
           - evalutil
+          - gen_moos_app
           - genutil
           - geodaid
           - geometry
@@ -83,12 +105,17 @@ on:
           - nspatch
           - nsplug
           - obstacles
+          - pickpos
+          - pluck
           - polar
+          - projfield
           - realm
           - survey
+          - tagrep
           - turngeo
           - ucommand
           - ufield
+          - utimerscript
           - zaicview
       cpp_test_families:
         description: "[CTest] comma-separated C++ families for batch_family_run mode"

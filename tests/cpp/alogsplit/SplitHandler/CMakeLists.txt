@@ -1,0 +1,12 @@
+add_moos_cpp_test(test_alogsplit_split_handler
+  SOURCES
+    SplitHandlerTest.cpp
+  LIBS
+    logutils
+    contacts
+    geometry
+    mbutil
+  LABELS
+    alogsplit
+    SplitHandler
+)

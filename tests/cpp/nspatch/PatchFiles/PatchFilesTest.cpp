@@ -62,6 +62,11 @@ BHVFile ReadBhvFile(const std::string& path)
 
 }  // namespace
 
+// Source audit note: this suite covers nspatch's deterministic MOOS/BHV file
+// parsing, patch application, block replacement, append/canonicalization, and
+// applicator validation paths against app_nspatch. CLI usage/help handling is
+// intentionally outside these direct component tests.
+
 // Covers nspatch MOOS line patches: patch lines replace existing parameters
 // while preserving indentation and append new parameters to the target block.
 TEST(NspatchMoosFileTest, PatchLinesReplaceAndAppendProcessConfigValues)
@@ -115,6 +120,19 @@ TEST(NspatchMoosFileTest, GlobalPatchLinesReplaceAndAppendRootValues)
   EXPECT_TRUE(HasLine(lines, "ServerPort = 9100"));
   EXPECT_TRUE(HasLine(lines, "Community = shoreside"));
   EXPECT_FALSE(HasLine(lines, "ServerPort = 9000"));
+}
+
+// Covers nspatch MOOS output canonicalization for legacy global wording.
+TEST(NspatchMoosFileTest, GlobalConfigWordingIsCanonicalized)
+{
+  MOOSFile moos_file;
+  moos_file.addLine("global", "// old configuration block");
+  moos_file.addLine("global", "configuration = enabled");
+
+  const std::vector<std::string> lines = moos_file.getLines();
+
+  EXPECT_TRUE(HasLine(lines, "// old Config Block"));
+  EXPECT_TRUE(HasLine(lines, "Config = enabled"));
 }
 
 // Covers nspatch MOOS repeated-key behavior: line patches replace every line
@@ -322,6 +340,27 @@ TEST(NspatchMoosFileTest, AntlerRunPatchMatchesAppNameBeforeConsoleOptions)
   EXPECT_FALSE(HasLine(lines, "  Run = pFoo @ NewConsole = false"));
 }
 
+// Covers nspatch MOOS ANTLER patches for apps absent from the original block.
+TEST(NspatchMoosFileTest, AntlerRunPatchAppendsMissingApp)
+{
+  TempDir temp("nspatch_moos_antler_append");
+  const std::string stem_path = temp.writeFile(
+      "stem.moos",
+      "ProcessConfig = ANTLER\n"
+      "{\n"
+      "  Run = pFoo @ NewConsole = false\n"
+      "}\n");
+  const std::string patch_path = temp.writeFile(
+      "patch.xmoos",
+      "ANTLER::Run = pBar @ NewConsole = true\n");
+
+  MOOSFile target = ReadMoosFile(patch_path).applyToStemFile(ReadMoosFile(stem_path));
+  const std::vector<std::string> lines = target.getLines();
+
+  EXPECT_TRUE(HasLine(lines, "  Run = pFoo @ NewConsole = false"));
+  EXPECT_TRUE(HasLine(lines, "Run = pBar @ NewConsole = true"));
+}
+
 // Covers nspatch MOOS full-block patches: a ProcessConfig block in the patch
 // replaces the matching stem block instead of merging individual keys.
 TEST(NspatchMoosFileTest, ProcessConfigBlockPatchReplacesWholeBlock)
@@ -443,6 +482,21 @@ TEST(NspatchBhvFileTest, NamedBehaviorPatchReplacesOnlyTargetBehavior)
   EXPECT_TRUE(HasLine(lines, "  name = loiter"));
   EXPECT_TRUE(HasLine(lines, "  speed = 1.0"));
   EXPECT_FALSE(HasLine(lines, "  speed = 2.0"));
+}
+
+// Covers nspatch BHV output canonicalization for legacy global wording.
+TEST(NspatchBhvFileTest, GlobalConfigurationWordingIsCanonicalized)
+{
+  BHVFile bhv_file;
+  bhv_file.addLine("global", "// old Configuration");
+  bhv_file.addLine("global", "initialize-posting-trigger");
+  bhv_file.addLine("global", "mode-posting-trigger");
+  bhv_file.addLine("global", "Configuration = active");
+
+  const std::vector<std::string> lines = bhv_file.getLines();
+
+  EXPECT_TRUE(HasLine(lines, "// old Config"));
+  EXPECT_TRUE(HasLine(lines, "Config = active"));
 }
 
 // Covers nspatch BHV key selection: an unqualified behavior-type patch does not
