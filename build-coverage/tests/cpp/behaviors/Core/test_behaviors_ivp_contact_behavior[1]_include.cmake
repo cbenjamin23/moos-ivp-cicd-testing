@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/behaviors/Core/test_behaviors_ivp_contact_behavior[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/behaviors/Core/test_behaviors_ivp_contact_behavior[1]_tests.cmake")
+else()
+  add_test(test_behaviors_ivp_contact_behavior_NOT_BUILT test_behaviors_ivp_contact_behavior_NOT_BUILT)
+endif()

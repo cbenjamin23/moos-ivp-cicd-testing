@@ -1,0 +1,67 @@
+{
+  "tests": 11,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ALogEvaluatorTest",
+      "tests": 11,
+      "testsuite": [
+        {
+          "name": "ValidatesAlogAndTestFileInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 38
+        },
+        {
+          "name": "RejectsEmptyAndUnhandledTestFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 57
+        },
+        {
+          "name": "RejectsInvalidLogicConfiguration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 79
+        },
+        {
+          "name": "RejectsIncompleteVCheckConfiguration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 96
+        },
+        {
+          "name": "RejectsInvalidVCheckOptions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "HandlePassesWhenLogicSequenceIsSatisfied",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 158
+        },
+        {
+          "name": "HandleFailsWhenFailConditionIsObserved",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 183
+        },
+        {
+          "name": "HandleReturnsTrueButDoesNotPassWithoutLeadCondition",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 207
+        },
+        {
+          "name": "VerboseAlogHandlingReportsRelevantRowsOnce",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 228
+        },
+        {
+          "name": "HandleProcessesVChecksWithRelativeStartTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 257
+        },
+        {
+          "name": "RejectsMissingAlogAndCanPrintSequenceWhenVerbose",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogeval\/ALogEvaluator\/ALogEvaluatorTest.cpp",
+          "line": 281
+        }
+      ]
+    }
+  ]
+}

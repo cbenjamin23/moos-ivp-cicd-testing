@@ -1,0 +1,53 @@
+{
+  "tests": 7,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ZAICViewerTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "DefaultsMatchInteractiveZaicToolGrid",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/zaicview\/Core\/ZAICViewCoreTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "ViewParametersClampAndToggleWithoutDrawingContext",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/zaicview\/Core\/ZAICViewCoreTest.cpp",
+          "line": 148
+        },
+        {
+          "name": "OwnsAndReplacesModelsUsedByInteractiveTools",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/zaicview\/Core\/ZAICViewCoreTest.cpp",
+          "line": 201
+        }
+      ]
+    },
+    {
+      "name": "ZAICGUITest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "BaseMenuExposesSharedZaicEditingActions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/zaicview\/Core\/ZAICViewCoreTest.cpp",
+          "line": 217
+        },
+        {
+          "name": "AppSpecificGuisExposeExpectedMissionEditingMenus",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/zaicview\/Core\/ZAICViewCoreTest.cpp",
+          "line": 231
+        },
+        {
+          "name": "HLEQOutputFieldsTrackSharedThresholdModelState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/zaicview\/Core\/ZAICViewCoreTest.cpp",
+          "line": 271
+        },
+        {
+          "name": "UpdateOutputHighlightsTheActiveEditableField",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/zaicview\/Core\/ZAICViewCoreTest.cpp",
+          "line": 301
+        }
+      ]
+    }
+  ]
+}

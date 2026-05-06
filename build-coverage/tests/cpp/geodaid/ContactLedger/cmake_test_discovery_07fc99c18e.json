@@ -1,0 +1,123 @@
+{
+  "tests": 21,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ColoredPointTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "TracksValidityForViewerTrailPoints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 38
+        }
+      ]
+    },
+    {
+      "name": "ContactLedgerTest",
+      "tests": 20,
+      "testsuite": [
+        {
+          "name": "ProcessesNodeReportsAndAppliesTypeDefaults",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 54
+        },
+        {
+          "name": "RejectsMalformedNodeReportsWithReasons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 87
+        },
+        {
+          "name": "RejectsUnderwaterVehicleRecordsWithoutDepth",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 107
+        },
+        {
+          "name": "MaintainsHistoryAndLimitsToConfiguredSize",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 129
+        },
+        {
+          "name": "FiltersByGroupsAndFindsClosestVehicle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 150
+        },
+        {
+          "name": "TracksStaleContactsAndClearsWithKeepList",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 175
+        },
+        {
+          "name": "ExtrapolatesByHeadingAndCourseOverGround",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 204
+        },
+        {
+          "name": "ManagesActiveVehicleAndClearOperations",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 228
+        },
+        {
+          "name": "BuildsSummaryAndReportSkewStatistics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 256
+        },
+        {
+          "name": "AppliesMoosVehicleTypeAliasesAndDefaultLengths",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 272
+        },
+        {
+          "name": "PreservesPositiveReportedLengthInsteadOfApplyingTypeDefault",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 315
+        },
+        {
+          "name": "DistinguishesReportTimestampAgeFromReceiveTimestampAge",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 333
+        },
+        {
+          "name": "StaleChecksAreInclusiveAtThresholdAndCanBeDisabled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 356
+        },
+        {
+          "name": "ClearStaleNodesUsesKeepListFactorAndResetsPerNodeStats",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 374
+        },
+        {
+          "name": "DefaultNegativeStaleThresholdStillClearsVeryOldNodes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 396
+        },
+        {
+          "name": "ExtrapPolicyParserAppliesValidPartsAndReportsPartialFailure",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 410
+        },
+        {
+          "name": "ExtrapPolicySupportsDecayWindowAndDecimalThresholdTruncation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 431
+        },
+        {
+          "name": "GetXAndGetYIgnoreExtrapFlagWhileGetRecordHonorsIt",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 447
+        },
+        {
+          "name": "ProcessNodeReportFillsMissingCoordinatesWhenGeodesyIsSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 463
+        },
+        {
+          "name": "MissingContactsReturnEmptyDefaultsAndMissingGroupsCanMatch",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geodaid\/ContactLedger\/ContactLedgerTest.cpp",
+          "line": 491
+        }
+      ]
+    }
+  ]
+}

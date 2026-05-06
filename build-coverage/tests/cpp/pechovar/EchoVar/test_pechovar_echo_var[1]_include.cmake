@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/pechovar/EchoVar/test_pechovar_echo_var[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/pechovar/EchoVar/test_pechovar_echo_var[1]_tests.cmake")
+else()
+  add_test(test_pechovar_echo_var_NOT_BUILT test_pechovar_echo_var_NOT_BUILT)
+endif()

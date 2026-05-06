@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logutils/FileProcessing/test_logutils_file_processing[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logutils/FileProcessing/test_logutils_file_processing[1]_tests.cmake")
+else()
+  add_test(test_logutils_file_processing_NOT_BUILT test_logutils_file_processing_NOT_BUILT)
+endif()

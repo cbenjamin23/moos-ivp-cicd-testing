@@ -1,0 +1,158 @@
+{
+  "tests": 22,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ArcUtilsAngleTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "TreatsArcAnglesAsClockwiseHeadingIntervals",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 20
+        },
+        {
+          "name": "NormalizesAnglesBeforeArcMembershipChecks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 34
+        }
+      ]
+    },
+    {
+      "name": "ArcUtilsPointMembershipTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "ClassifiesPointsByBearingFromArcCenter",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 44
+        }
+      ]
+    },
+    {
+      "name": "ArcUtilsDistanceTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ComputesClosestDistanceToTurnArcInteriorAndEndpoints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 52
+        },
+        {
+          "name": "ProjectsCenterPointToLeftArcEndpoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 66
+        },
+        {
+          "name": "ComputesSegmentAndSeglistDistancesToArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "ComputesDistanceAlongArcFromEitherOrigin",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 90
+        },
+        {
+          "name": "ComputesDistanceBetweenTwoPointsOnArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 101
+        }
+      ]
+    },
+    {
+      "name": "ArcUtilsTurnGeometryTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ComputesStarboardAndPortFixedTurnEndpoints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 108
+        },
+        {
+          "name": "LeavesPositionUnchangedForDegenerateTurnInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 123
+        },
+        {
+          "name": "ArcturnCurrentlyIgnoresInputHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 138
+        }
+      ]
+    },
+    {
+      "name": "ArcUtilsIntersectionTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "FindsSegmentAndSeglistIntersectionsWithArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 162
+        },
+        {
+          "name": "FindsTurnPreviewChordEndpointsForLegRunStyleTurn",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 181
+        },
+        {
+          "name": "ReportsTwoCrossingPointsWhenBothCircleHitsAreInArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 222
+        },
+        {
+          "name": "ReportsSeglistCrossingPointsAndClearsOutputVectors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 238
+        }
+      ]
+    },
+    {
+      "name": "ArcUtilsCpaTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ReportsRayCpaForSurveyLaneCrossingProjectedRay",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 259
+        },
+        {
+          "name": "ReportsArcCpaForLaneNearTurnArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 275
+        }
+      ]
+    },
+    {
+      "name": "ArcUtilsToDoDistancePointsTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ReportsBothIntersectionPointsForFullArcPerimeterCrossing",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 290
+        },
+        {
+          "name": "ReportsSingleIntersectionForTransitLegEnteringTurnArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 311
+        },
+        {
+          "name": "ReportsClosestProjectionForParallelSurveyLaneOutsideArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 329
+        },
+        {
+          "name": "SuppressesClosestPointsWhenMinimumDistanceExceedsThreshold",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 347
+        },
+        {
+          "name": "PinsDuplicateLeftEndpointReportWhenSegmentIsInsideCircle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ArcUtils\/ArcUtilsTest.cpp",
+          "line": 362
+        }
+      ]
+    }
+  ]
+}

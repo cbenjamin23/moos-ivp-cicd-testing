@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVConvoyTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "QueuesContactMarksAndBuildsWaypointObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConvoyTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "RangeSafetyEstopCommandsZeroSpeedWhenTailgatingContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConvoyTest.cpp",
+          "line": 48
+        },
+        {
+          "name": "RunToIdleErasesQueuedContactMarks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConvoyTest.cpp",
+          "line": 78
+        },
+        {
+          "name": "SafetyRangesAndCruiseSpeedAreAutoAdjustedAtConfigComplete",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConvoyTest.cpp",
+          "line": 119
+        },
+        {
+          "name": "LaggingRangeUsesRecentContactSpeedAverageAndFasterMultiplier",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConvoyTest.cpp",
+          "line": 147
+        },
+        {
+          "name": "MarkQueueDropsOldestWhenTotalLengthExceedsMaxRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConvoyTest.cpp",
+          "line": 179
+        }
+      ]
+    }
+  ]
+}

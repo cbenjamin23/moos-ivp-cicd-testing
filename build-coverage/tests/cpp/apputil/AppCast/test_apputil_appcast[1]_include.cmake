@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/apputil/AppCast/test_apputil_appcast[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/apputil/AppCast/test_apputil_appcast[1]_tests.cmake")
+else()
+  add_test(test_apputil_appcast_NOT_BUILT test_apputil_appcast_NOT_BUILT)
+endif()

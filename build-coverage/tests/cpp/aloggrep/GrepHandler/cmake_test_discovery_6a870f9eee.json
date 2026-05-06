@@ -1,0 +1,152 @@
+{
+  "tests": 28,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "GrepHandlerTest",
+      "tests": 28,
+      "testsuite": [
+        {
+          "name": "DefaultRetainsCommentsAndExactVariableMatches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 61
+        },
+        {
+          "name": "NoKeysRetainsOnlyComments",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 78
+        },
+        {
+          "name": "RetentionTogglesControlSpecialLineClasses",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "ExplicitSpecialVariableKeysStillNeedRetentionToggles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 113
+        },
+        {
+          "name": "DbVarSummaryKeyRetainsContinuationBadLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 127
+        },
+        {
+          "name": "MatchesSourceNameWithoutAuxSuffix",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 141
+        },
+        {
+          "name": "PrefixMatchesSourceNames",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 155
+        },
+        {
+          "name": "DuplicateKeyCanBeUpgradedToPrefixMatch",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 170
+        },
+        {
+          "name": "ValueFormatSuppressesCommentsAndDuplicateTimestamps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 185
+        },
+        {
+          "name": "TimeVarValueFormatUsesConfiguredColumnSeparator",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 201
+        },
+        {
+          "name": "InvalidColumnSeparatorIsIgnored",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 217
+        },
+        {
+          "name": "SourceFormatOutputsFullSourceField",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 234
+        },
+        {
+          "name": "FormattedOutputSuppressesRepeatedTimestampsAcrossVariables",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 248
+        },
+        {
+          "name": "SubpatternsExtractRequestedValueComponents",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 264
+        },
+        {
+          "name": "FirstOnlyOutputsOnlyFirstMatch",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 291
+        },
+        {
+          "name": "FinalOnlyOutputsOnlyLastRetainedLine",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 306
+        },
+        {
+          "name": "FinalOnlyWithoutDataMatchesCanReturnComment",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 322
+        },
+        {
+          "name": "SortEntriesOutputsRetainedLinesByTimestamp",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 336
+        },
+        {
+          "name": "SortWithRemoveDupsDropsExactDuplicateEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 353
+        },
+        {
+          "name": "WritesFilteredOutputFileWhenOutputPathIsProvided",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 373
+        },
+        {
+          "name": "OutputPathCanSubstituteVNameFromDbTimeSource",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 394
+        },
+        {
+          "name": "OutputPathKeepsVNameTokenWhenNoDbTimeSourceExists",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 420
+        },
+        {
+          "name": "RejectsMissingInputSameOutputAndUnwritableOutputPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 443
+        },
+        {
+          "name": "HandleFailsWithoutInputFile",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 465
+        },
+        {
+          "name": "RejectsEmptyAndUnknownFormats",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 478
+        },
+        {
+          "name": "PrintReportSummarizesRetainedAndRemovedLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 488
+        },
+        {
+          "name": "MakeReportFalseSuppressesSummary",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 517
+        },
+        {
+          "name": "PrintReportDoesNotCountDoublePercentHeaders",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/aloggrep\/GrepHandler\/GrepHandlerTest.cpp",
+          "line": 539
+        }
+      ]
+    }
+  ]
+}

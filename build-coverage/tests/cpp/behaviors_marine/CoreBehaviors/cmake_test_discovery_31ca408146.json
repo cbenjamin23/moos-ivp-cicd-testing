@@ -1,0 +1,32 @@
+{
+  "tests": 4,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVCutRangeTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "PursuesContactInsideGiveupRangeAndBuildsCPAObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/CutRangeTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "GiveupRangeDropsObjectiveAfterPursuitWasActive",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/CutRangeTest.cpp",
+          "line": 39
+        },
+        {
+          "name": "RelevanceScalesPriorityWeightBetweenInnerAndOuterRanges",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/CutRangeTest.cpp",
+          "line": 79
+        },
+        {
+          "name": "SpawnableTemplatePostsContactManagerAlertRequest",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/CutRangeTest.cpp",
+          "line": 102
+        }
+      ]
+    }
+  ]
+}

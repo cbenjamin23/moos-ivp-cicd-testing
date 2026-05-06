@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/helmivp/CoreState/test_helmivp_core_state[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/helmivp/CoreState/test_helmivp_core_state[1]_tests.cmake")
+else()
+  add_test(test_helmivp_core_state_NOT_BUILT test_helmivp_core_state_NOT_BUILT)
+endif()

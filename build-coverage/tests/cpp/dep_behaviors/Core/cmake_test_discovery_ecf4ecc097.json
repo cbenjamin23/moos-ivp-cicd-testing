@@ -1,0 +1,142 @@
+{
+  "tests": 26,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ObstacleModelAndAOFTest",
+      "tests": 26,
+      "testsuite": [
+        {
+          "name": "ObShipModelTracksRangeBuffersAndPriorityRelevance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 43
+        },
+        {
+          "name": "ObShipModelRangeRelevanceClampsAtInnerAndOuterDistances",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "ObShipModelDefaultsAndZeroWidthPriorityBandAreExplicit",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 96
+        },
+        {
+          "name": "ObShipModelValidityRequiresEachPoseAndBufferInput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 121
+        },
+        {
+          "name": "ObShipModelClassifiesPassingSideAndAftObstaclesFromOwnshipHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 159
+        },
+        {
+          "name": "ObShipModelClassifiesMajorAndMinorBasinBoundaries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 182
+        },
+        {
+          "name": "ObShipModelRejectsInvalidOrderingAndOwnshipInsideObstacle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 207
+        },
+        {
+          "name": "ObShipModelSetterOrderingAutoAdjustsUntilConflictingExplicitValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 231
+        },
+        {
+          "name": "ObShipModelSetterAutoAdjustsImplicitDistanceAndCPACompanions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 255
+        },
+        {
+          "name": "ObShipModelReportsEveryExplicitDistanceOrderingConflict",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 278
+        },
+        {
+          "name": "ObShipModelPoseSettersUpdateDerivedRangeAndHeadingState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 309
+        },
+        {
+          "name": "ObShipModelPoseSpeedSemanticsDistinguishOptionalAndDirectUpdates",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 334
+        },
+        {
+          "name": "ObShipModelFlexibleCPABuffersShrinkNearObstacle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 348
+        },
+        {
+          "name": "AOFAvoidObstaclePenalizesUnsafeTimeToCollisionAndSideCrossing",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 362
+        },
+        {
+          "name": "AOFAvoidObstacleAllowsSlowCollisionBeyondTTCWindow",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 389
+        },
+        {
+          "name": "AOFAvoidObstacleTreatsExactTTCBoundaryAsUnsafe",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 411
+        },
+        {
+          "name": "AOFAvoidObstacleInitializationRequiresCourseAndSpeedDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 433
+        },
+        {
+          "name": "AOFAvoidObstacleInitializationGuardsRequiredInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 447
+        },
+        {
+          "name": "AOFAvoidObstacleInitializationRejectsMalformedObstaclesAndMissingTTC",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 476
+        },
+        {
+          "name": "AOFAvoidObstacleXInitializationRequiresCourseAndSpeedDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 512
+        },
+        {
+          "name": "AOFAvoidObstacleXUsesObShipModelBasinAndPlateauSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 530
+        },
+        {
+          "name": "AOFAvoidObstacleXInitializationRequiresConfiguredModel",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 573
+        },
+        {
+          "name": "RefineryObAvoidBuildsNonOverlappingPlateauAndBasinRegions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 647
+        },
+        {
+          "name": "RefineryObAvoidCoversPortVerboseAndSnappingEdgeCases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 671
+        },
+        {
+          "name": "RefineryObAvoidSkipsMinorRegionsWhenTTCIsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 691
+        },
+        {
+          "name": "RefineryObAvoidIgnoresDomainsMissingCourseOrSpeed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/ObstacleModelAndAOFTest.cpp",
+          "line": 705
+        }
+      ]
+    }
+  ]
+}

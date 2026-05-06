@@ -1,0 +1,114 @@
+{
+  "tests": 18,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "PathUtilsGreedyPathTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "ReordersWaypointLaneByNearestNeighborProgression",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 45
+        },
+        {
+          "name": "UsesCurrentChosenVertexAsNextSearchOrigin",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 61
+        },
+        {
+          "name": "PreservesDuplicateWaypointsAsDistinctVisits",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "ReordersBhvWaypointMissionPtsFromCurrentOwnshipPosition",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 93
+        },
+        {
+          "name": "KeepsAlreadyOrderedColregsTransitRouteFromStartPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 111
+        },
+        {
+          "name": "BreaksEqualDistanceTiesByOriginalVertexOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "HandlesEmptyAndSingleVertexRoutes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 142
+        },
+        {
+          "name": "CurrentBehaviorDropsRouteMetadataAndVertexZValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 158
+        }
+      ]
+    },
+    {
+      "name": "EdgeTagTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "DefaultTagIsInvalidUntilAdjacentIndicesAndTagAreSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 177
+        },
+        {
+          "name": "ConstructsSerializesAndMatchesUndirectedAdjacentEdges",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 194
+        },
+        {
+          "name": "RejectsNonAdjacentIndexUpdatesWithoutChangingValidTag",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 211
+        },
+        {
+          "name": "ParsesTrimmedSpecsAndRejectsMalformedInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 223
+        },
+        {
+          "name": "CurrentParserIgnoresFieldsAfterTheThirdColonToken",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 241
+        }
+      ]
+    },
+    {
+      "name": "EdgeTagSetTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "AddsOnlyValidTagsAndSerializesInInsertionOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 252
+        },
+        {
+          "name": "ParsesAllSupportedSpecWrappersWhileReturningFalseOnSuccess",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 273
+        },
+        {
+          "name": "MalformedBatchDoesNotPartiallyMergeEarlierValidTags",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 294
+        },
+        {
+          "name": "AppendsParsedTagsInsteadOfReplacingExistingTags",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 307
+        },
+        {
+          "name": "RoundTripsThroughXYSegListSpecsForTaggedRegionBoundaries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/PathUtils\/PathUtilsTest.cpp",
+          "line": 319
+        }
+      ]
+    }
+  ]
+}

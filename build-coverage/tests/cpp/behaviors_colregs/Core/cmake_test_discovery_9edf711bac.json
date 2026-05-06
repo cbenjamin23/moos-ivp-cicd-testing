@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AvdColregsBehaviorTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "VersionsAcceptExpectedConfigurationAndRejectBadValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/AvdColregsBehaviorTest.cpp",
+          "line": 13
+        },
+        {
+          "name": "HelmStartPostsContactManagerAlertForSpawnableTemplate",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/AvdColregsBehaviorTest.cpp",
+          "line": 37
+        },
+        {
+          "name": "NoAlertRequestSuppressesSpawnableTemplateAlert",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/AvdColregsBehaviorTest.cpp",
+          "line": 54
+        },
+        {
+          "name": "V22RunsAgainstLedgerContactAndPostsRelevance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/AvdColregsBehaviorTest.cpp",
+          "line": 68
+        },
+        {
+          "name": "V22HeadonOnlyFallsBackToCpaForCrossingEncounter",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/AvdColregsBehaviorTest.cpp",
+          "line": 114
+        },
+        {
+          "name": "V22FilterExitCompletesWhenContactTypeNoLongerMatches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/AvdColregsBehaviorTest.cpp",
+          "line": 143
+        }
+      ]
+    }
+  ]
+}

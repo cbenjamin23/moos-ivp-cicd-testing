@@ -1,0 +1,175 @@
+{
+  "tests": 29,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "XYGridTest",
+      "tests": 13,
+      "testsuite": [
+        {
+          "name": "InitializesFromMoosPolySpecWithColumnMajorCellsAndInitialValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "InitializesMultiRowSearchGridColumnMajorFromNegativeOrigin",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 60
+        },
+        {
+          "name": "RetainsPartialCellsThatIntersectPolygonOutsideBoundingSquare",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 79
+        },
+        {
+          "name": "RejectsMalformedInitializationAndClearsPreviousGrid",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 98
+        },
+        {
+          "name": "DistinguishesCellContainmentFromBoundingBoxAndSegmentBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 116
+        },
+        {
+          "name": "HandleSegmentStoresPerCellIntersectionLengths",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 133
+        },
+        {
+          "name": "TracksMinMaxValuesEverSeenAndResetFromMinimum",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 151
+        },
+        {
+          "name": "UtilityRangeClipsExistingUtilitiesAndRejectsInvertedRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 168
+        },
+        {
+          "name": "ProcessDeltaAppliesValueAndUtilityUpdatesWithLegacyFiveFieldFormat",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 188
+        },
+        {
+          "name": "InvalidDeltaIsNotAtomicAfterEarlierCellsAreApplied",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 208
+        },
+        {
+          "name": "ProcessDeltaTrimsCellsAndUsesAtofForNonNumericPayloadValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 221
+        },
+        {
+          "name": "UtilitySetterClipsToRangeButUpdatesValueExtremaFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 234
+        },
+        {
+          "name": "EncoderPayloadDocumentsLegacyDecoderCompatibility",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 253
+        }
+      ]
+    },
+    {
+      "name": "XYHexagonTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "InitializesFromNumbersWithExpectedVerticesAndContainment",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 281
+        },
+        {
+          "name": "InitializesFromTrimmedStringAndRejectsBadTokens",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 306
+        },
+        {
+          "name": "InvalidStringInitializationLeavesExistingHexUntouched",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 320
+        },
+        {
+          "name": "InvalidNumericInitializationClearsVerticesButLeavesOldCenterFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 331
+        },
+        {
+          "name": "AddNeighborCreatesSixAdjacentHexesWithExpectedCenters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 342
+        },
+        {
+          "name": "PolygonMutatorsAreDisabledForHexagons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 360
+        }
+      ]
+    },
+    {
+      "name": "XYHexGridTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "InitializeAcceptsLabeledPolyButCurrentImplementationCreatesNoElements",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 373
+        },
+        {
+          "name": "AcceptsInitialValueFieldButStillCreatesNoElements",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 388
+        },
+        {
+          "name": "RejectsInvalidSpecsButClearIsCurrentlyNoOp",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 401
+        }
+      ]
+    },
+    {
+      "name": "XYGridUpdateTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "ProgrammaticUpdatesRequireNameAndAtLeastOneCell",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 416
+        },
+        {
+          "name": "ParsesSearchGridPayloadsAndNormalizesExplicitDelta",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 443
+        },
+        {
+          "name": "ProgrammaticDefaultVarAndExplicitDeltaNormalizeToSameSpec",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 462
+        },
+        {
+          "name": "ParsesReplaceAverageAndDefaultVariablePayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 476
+        },
+        {
+          "name": "RejectsMissingGridBadTypeAndMalformedTuples",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 496
+        },
+        {
+          "name": "ParserCurrentlyAcceptsNonNumericAndNegativeIndicesViaAtoi",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 505
+        },
+        {
+          "name": "EmptyVariableNameRoundTripsAsDefaultVariable",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYGridFamily\/XYGridFamilyTest.cpp",
+          "line": 523
+        }
+      ]
+    }
+  ]
+}

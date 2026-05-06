@@ -1,0 +1,57 @@
+{
+  "tests": 9,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "LogBinHandlerTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "ValidatesDeltaAndMinimumParameters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "RejectsMissingInputFile",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 45
+        },
+        {
+          "name": "EmptyInputProducesNoBins",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 57
+        },
+        {
+          "name": "CommentOnlyInputProducesNoBins",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "BinsNumericRowsAndReportsBadLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 86
+        },
+        {
+          "name": "AppliesMinimumAndDeltaInBinFormula",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 106
+        },
+        {
+          "name": "ExactBoundaryValuesMoveToUpperHalfBin",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "BinsNegativeValuesTowardZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 145
+        },
+        {
+          "name": "VerboseModePrintsValueToBinMapping",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogbin\/LogBinHandler\/LogBinHandlerTest.cpp",
+          "line": 163
+        }
+      ]
+    }
+  ]
+}

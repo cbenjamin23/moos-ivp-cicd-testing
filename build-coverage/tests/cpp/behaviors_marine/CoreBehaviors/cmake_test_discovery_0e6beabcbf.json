@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVMaxSpeedTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "BuildsConstraintAndReportsSpeedSlack",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxSpeedTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "ClipsNegativeMaxSpeedAndToleranceFromMissionConfig",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxSpeedTest.cpp",
+          "line": 36
+        },
+        {
+          "name": "WarnsOnMissingNavSpeedButStillBuildsConstraint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxSpeedTest.cpp",
+          "line": 60
+        },
+        {
+          "name": "FailsWithoutSpeedDimensionInHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxSpeedTest.cpp",
+          "line": 79
+        },
+        {
+          "name": "MissionStylePursuitMaxSpeedConfigAppliesPriority",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxSpeedTest.cpp",
+          "line": 93
+        }
+      ]
+    }
+  ]
+}

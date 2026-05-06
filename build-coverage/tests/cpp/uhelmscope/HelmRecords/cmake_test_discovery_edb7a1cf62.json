@@ -1,0 +1,98 @@
+{
+  "tests": 16,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BehaviorRecordTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "DefaultsSummarizeAsAlways",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/BehaviorRecordTest.cpp",
+          "line": 20
+        },
+        {
+          "name": "SettersRoundTripStoredFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/BehaviorRecordTest.cpp",
+          "line": 28
+        },
+        {
+          "name": "ZeroTimestampSummarizesAsAlways",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/BehaviorRecordTest.cpp",
+          "line": 48
+        },
+        {
+          "name": "PositiveTimestampUsesElapsedWhenUtcIsLater",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/BehaviorRecordTest.cpp",
+          "line": 57
+        },
+        {
+          "name": "PositiveTimestampUsesTimestampWhenUtcIsEarlier",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/BehaviorRecordTest.cpp",
+          "line": 66
+        },
+        {
+          "name": "SummaryIncludesOnlyConfiguredMetrics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/BehaviorRecordTest.cpp",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "name": "IterBlockHelmTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "DefaultsAreZeroAndNotHalted",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "ScalarSettersRoundTrip",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 47
+        },
+        {
+          "name": "ParsesActiveBehaviorsWithMetrics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 69
+        },
+        {
+          "name": "SetBehaviorListsClearPreviousValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 97
+        },
+        {
+          "name": "ParsesRunningIdleAndCompletedBehaviorLists",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 109
+        },
+        {
+          "name": "EmptyBehaviorStringClearsList",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 132
+        },
+        {
+          "name": "DecisionVariablesTrackNewAndChangedValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 143
+        },
+        {
+          "name": "InitializeCopiesStateButClearsDecisionChangeFlags",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 163
+        },
+        {
+          "name": "InitializeDoesNotCopyIterationOrUtcTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 191
+        },
+        {
+          "name": "ModeStringFormatsSingleAndMultipleModes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uhelmscope\/HelmRecords\/IterBlockHelmTest.cpp",
+          "line": 204
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/WaypointEngineX/test_bhvutil_waypoint_enginex[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/WaypointEngineX/test_bhvutil_waypoint_enginex[1]_tests.cmake")
+else()
+  add_test(test_bhvutil_waypoint_enginex_NOT_BUILT test_bhvutil_waypoint_enginex_NOT_BUILT)
+endif()

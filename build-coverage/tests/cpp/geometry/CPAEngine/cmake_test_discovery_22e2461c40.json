@@ -1,0 +1,93 @@
+{
+  "tests": 15,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "CPAEngineEncounterTest",
+      "tests": 14,
+      "testsuite": [
+        {
+          "name": "ComputesHeadOnClosingContactCpa",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "ClipsCpaDistanceToOwnshipTimeOnLeg",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 20
+        },
+        {
+          "name": "PinsZeroAndNegativeTimeOnLegLiteralBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 31
+        },
+        {
+          "name": "ComputesCrossingGeometryUsedByContactAvoidance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 43
+        },
+        {
+          "name": "MirrorsIvPContactBehaviorForwardAndReciprocalState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 69
+        },
+        {
+          "name": "ReportsOpeningRangeForParallelSameDirectionContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 123
+        },
+        {
+          "name": "ClassifiesPortSidePassWithDistanceFromContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 133
+        },
+        {
+          "name": "ClassifiesStarboardSidePassWithDistanceFromContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 156
+        },
+        {
+          "name": "ReportsSternCrossingDistanceForBeamTransit",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 179
+        },
+        {
+          "name": "ExposesBeamTransitGammaAndEpsilonComponents",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 194
+        },
+        {
+          "name": "PublicInitNonCacheClearsCachedGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 214
+        },
+        {
+          "name": "HandlesStationaryContactIntercept",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 231
+        },
+        {
+          "name": "ResetsGeometryAndCachedClassification",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 246
+        },
+        {
+          "name": "SamplesMinAndMaxRateOfClosureByHeadingGrid",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 280
+        }
+      ]
+    },
+    {
+      "name": "CPAEngineTurnTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "TurnDirectionPinsWrapAndOneEightyTieBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAEngine\/CPAEngineTest.cpp",
+          "line": 265
+        }
+      ]
+    }
+  ]
+}

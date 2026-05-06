@@ -1,0 +1,100 @@
+{
+  "tests": 14,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "CommandItemTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "StoresStringAndDoubleCommandPosts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 29
+        },
+        {
+          "name": "RejectsWhitespaceInMoosVarsAndReceivers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 50
+        },
+        {
+          "name": "LimitsReceiversToKnownVehiclesAndBroadcastTokens",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 69
+        },
+        {
+          "name": "PinsReceiverDuplicatesAndEmptyTokens",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 84
+        }
+      ]
+    },
+    {
+      "name": "CommandFolioTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "StoresCommandsAndIndexesReceiversLabelsAndColors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 108
+        },
+        {
+          "name": "CopiesItemsAndReturnsCopiesToGuiCallers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 135
+        },
+        {
+          "name": "AppliesVehicleLimitsAcrossExistingCommands",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 153
+        },
+        {
+          "name": "PinsEmptyLimitsNoOpAndColorLastMatchWins",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 171
+        }
+      ]
+    },
+    {
+      "name": "CommandPostTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "WrapsPendingCommandMetadataFromGuiSelection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandItemAndFolioTest.cpp",
+          "line": 191
+        }
+      ]
+    },
+    {
+      "name": "CommandSummaryTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ReportsNewestCommandPostsFirstAndClearsPendingFlag",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandSummaryTest.cpp",
+          "line": 38
+        },
+        {
+          "name": "TestPostsAreShownOnceAndThenRemovedFromHistory",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandSummaryTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "ConsecutiveTestPostsAreRemovedFromFrontOnly",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandSummaryTest.cpp",
+          "line": 82
+        },
+        {
+          "name": "EmptyReportContainsOnlyTableHeaderAndClearsPending",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandSummaryTest.cpp",
+          "line": 112
+        },
+        {
+          "name": "TruncatesCommandHistoryToTwentyPosts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ucommand\/CommandFolio\/CommandSummaryTest.cpp",
+          "line": 125
+        }
+      ]
+    }
+  ]
+}

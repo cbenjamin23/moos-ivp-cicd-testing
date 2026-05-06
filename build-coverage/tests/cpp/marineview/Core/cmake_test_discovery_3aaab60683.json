@@ -1,0 +1,135 @@
+{
+  "tests": 21,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BearingLineTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "DefaultsToInvalidOrangeAbsoluteVector",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 146
+        },
+        {
+          "name": "StoresBearingLineMetadataUsedByViewerOverlays",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 162
+        }
+      ]
+    },
+    {
+      "name": "LMVUtilsTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ReadsMissionEntriesMatchingColonSeparatedAliases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 193
+        },
+        {
+          "name": "MissingFilesAndUnmatchedParametersReturnEmptyVectors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 218
+        },
+        {
+          "name": "PreservesPayloadsWithEmbeddedEqualsAndRequiresExactAliases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 226
+        }
+      ]
+    },
+    {
+      "name": "OpAreaSpecTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "StartsWithVisibleDefaultsAndOutOfRangeFallbacks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 836
+        },
+        {
+          "name": "AddsLocalXYVerticesWithViewerStyleMetadata",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 860
+        },
+        {
+          "name": "RejectsMalformedVerticesWithoutChangingStoredGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 894
+        },
+        {
+          "name": "ConvertsLatLonVerticesUsingConfiguredGeodesy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 912
+        },
+        {
+          "name": "ViewTogglesAndShadeModsClampForViewerControls",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 931
+        },
+        {
+          "name": "PinsBooleanCaseSensitivityAndColorFallbacks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 969
+        }
+      ]
+    },
+    {
+      "name": "VehicleSetTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "PinsControlParamWhitespaceAndNumericCaseFallback",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 993
+        },
+        {
+          "name": "RejectsIncompleteOrUnsafeNodeReports",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1014
+        },
+        {
+          "name": "StoresNodeReportsNormalizesTypesAndDefaultsLengths",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1035
+        },
+        {
+          "name": "PinsViewerBodyDefaultsForAdditionalMoosVehicleTypes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1078
+        },
+        {
+          "name": "TracksActiveCenterAgeAndExtrapolatedViewerPositions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1108
+        },
+        {
+          "name": "SupportsLegacyActiveAliasesAndClearAllSentinel",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1145
+        },
+        {
+          "name": "MaintainsTrackHistoryAndSupportsTargetedClears",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1174
+        },
+        {
+          "name": "ConvertsLatLonOnlyReportsUsingConfiguredGeodesy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1207
+        },
+        {
+          "name": "AcceptsJsonReportsAndPinsCaseLookupDifferences",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1228
+        },
+        {
+          "name": "NormalizesGliderAliasesAndUsesReportTimeWhenLocalTimeIsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 1250
+        }
+      ]
+    }
+  ]
+}

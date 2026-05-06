@@ -1,0 +1,62 @@
+{
+  "tests": 10,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "WaypointEngineTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "AdvancesThroughWaypointListAndReportsCompletion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 25
+        },
+        {
+          "name": "ReversesTraversalAndPreservesRawPointListForToggle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 50
+        },
+        {
+          "name": "VectorSetterAddWaypointAndReverseTogglePreserveRawRoute",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 68
+        },
+        {
+          "name": "SlipRadiusAllowsNonMonotonicWaypointCapture",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 95
+        },
+        {
+          "name": "CaptureLineRecordsVisualizationArtifactsWhenCrossed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 112
+        },
+        {
+          "name": "PerpetualRepeatsCycleUntilAllowedRepeatsAreConsumed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 128
+        },
+        {
+          "name": "ComputesRemainingDistanceForCycleAndFinalTraversal",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 149
+        },
+        {
+          "name": "IgnoresInvalidRadiusAndIndexUpdates",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 165
+        },
+        {
+          "name": "ResetsCentersAndEndlessRepeatsForReusableBehaviorRuns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 185
+        },
+        {
+          "name": "ResetStateClearsRouteProgressAndCounters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/WaypointEngine\/WaypointEngineTest.cpp",
+          "line": 209
+        }
+      ]
+    }
+  ]
+}

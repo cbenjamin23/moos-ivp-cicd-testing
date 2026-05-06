@@ -1,0 +1,63 @@
+{
+  "tests": 9,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ManifestTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "StoresMoosModuleMetadataAndCommaSeparatedLists",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 31
+        },
+        {
+          "name": "ValidatesYYMMDDBornDatesWithCurrentPermissiveBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "ReportsMissingMandatoryAndOptionalFieldsByModuleType",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 87
+        },
+        {
+          "name": "SearchesAuthorsDependenciesOrganizationsAndGroups",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 113
+        },
+        {
+          "name": "PinsCaseWhitespaceAndDedupSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 133
+        },
+        {
+          "name": "PrintFormatsManifestRecordsForManifestTools",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 163
+        }
+      ]
+    },
+    {
+      "name": "ManifestSetTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "FiltersAndAggregatesManifestCollections",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 188
+        },
+        {
+          "name": "PinsSortingTypeFilteringAndGroupLastMatchBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 246
+        },
+        {
+          "name": "AssociatesLibraryDependersAndLinesOfCodeTotals",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Core\/ManifestCoreTest.cpp",
+          "line": 285
+        }
+      ]
+    }
+  ]
+}

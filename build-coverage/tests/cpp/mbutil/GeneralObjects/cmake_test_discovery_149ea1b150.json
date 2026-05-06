@@ -1,0 +1,79 @@
+{
+  "tests": 11,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BundleOutTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "PrintsVectorLinesInOriginalOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 13
+        },
+        {
+          "name": "PrintsEmptyVectorAsNoOutput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 21
+        },
+        {
+          "name": "PrintsBlankLinesAndDoesNotTrimPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 29
+        },
+        {
+          "name": "PrintsListLinesInOriginalOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 38
+        },
+        {
+          "name": "PrintsSetLinesInSortedOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 46
+        },
+        {
+          "name": "PreservesMoosStylePayloadsAndEmbeddedNewlines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 54
+        }
+      ]
+    },
+    {
+      "name": "ReleaseInfoTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "PrintsStandardMoosIvPReleaseBanner",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 68
+        },
+        {
+          "name": "HandlesLongAppNamesWithoutPaddingAssumptions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 88
+        },
+        {
+          "name": "PinsLicenseFlagCaseSensitivity",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 101
+        },
+        {
+          "name": "ExitsAfterPrintingStandardBanner",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 113
+        }
+      ]
+    },
+    {
+      "name": "OpenURLTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "IgnoresNonHttpUrlsAndExitsForDocumentedOpenUrlXPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/BundleOutTest.cpp",
+          "line": 120
+        }
+      ]
+    }
+  ]
+}

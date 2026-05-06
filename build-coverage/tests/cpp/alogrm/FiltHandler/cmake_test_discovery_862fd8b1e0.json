@@ -1,0 +1,72 @@
+{
+  "tests": 12,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "FiltHandlerTest",
+      "tests": 12,
+      "testsuite": [
+        {
+          "name": "SetsSupportedParametersAndRejectsUnknowns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 56
+        },
+        {
+          "name": "RemovesExactVariableAndSourceMatches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 70
+        },
+        {
+          "name": "RemovesWildcardVariableMatches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 84
+        },
+        {
+          "name": "RemovesWildcardSourceMatches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 96
+        },
+        {
+          "name": "NoKeysRetainsCommentsBadLinesAndData",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 108
+        },
+        {
+          "name": "CleanAndDbVarSummaryRemoveBadLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 125
+        },
+        {
+          "name": "RemovesStringOrNumericDataByMode",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 146
+        },
+        {
+          "name": "TypeRemovalAlsoRemovesLaterRowsForSameVariable",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 171
+        },
+        {
+          "name": "OutputFileRequiresForceBeforeOverwrite",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 189
+        },
+        {
+          "name": "OutputOpenFailureFallsBackToStdout",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 210
+        },
+        {
+          "name": "RejectsMissingInputAndSameOutputPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 224
+        },
+        {
+          "name": "PrintReportSummarizesRetainedAndDeletedLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogrm\/FiltHandler\/FiltHandlerTest.cpp",
+          "line": 238
+        }
+      ]
+    }
+  ]
+}

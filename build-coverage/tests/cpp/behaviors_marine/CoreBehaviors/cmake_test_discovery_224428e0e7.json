@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVMaxDepthTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "BuildsConstraintAndReportsDepthSlack",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxDepthTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "ClipsNegativeMaxDepthAndToleranceFromMissionConfig",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxDepthTest.cpp",
+          "line": 36
+        },
+        {
+          "name": "WarnsOnMissingNavDepthButStillBuildsConstraint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxDepthTest.cpp",
+          "line": 60
+        },
+        {
+          "name": "FailsWithoutDepthDimensionInHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxDepthTest.cpp",
+          "line": 79
+        },
+        {
+          "name": "MissionStyleDeltaMaxDepthPinsUnsupportedAscentFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MaxDepthTest.cpp",
+          "line": 93
+        }
+      ]
+    }
+  ]
+}

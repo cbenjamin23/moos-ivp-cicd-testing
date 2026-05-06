@@ -1,0 +1,74 @@
+{
+  "tests": 10,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AppCastSetTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "IndexesMoosProcessesWithStableSpecialIds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 42
+        },
+        {
+          "name": "IgnoresEmptyAppCastsAsLatestProcContent",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 67
+        },
+        {
+          "name": "SumsWarningsFromLatestAppCastPerProcess",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 82
+        },
+        {
+          "name": "AssignsGeneratedIdsWhileSkippingReservedHotkeys",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "name": "AppCastTreeTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "TracksNodesProcessesCountsAndWarnings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 125
+        },
+        {
+          "name": "RemovesNodesAndTheirIdsWithoutDisturbingOthers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 155
+        },
+        {
+          "name": "AssignsNodeIdsWithShoresideAndReservedHotkeySkips",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 173
+        }
+      ]
+    },
+    {
+      "name": "AppCastRepoTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "MaintainsCurrentNodeProcAndSortedMoosUiLists",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 193
+        },
+        {
+          "name": "UpdatesRefreshModeAndRemovesNodes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 227
+        },
+        {
+          "name": "ParsesMoosAppCastStringsAndStripsTerminalColors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/AppCast\/AppCastRepoTest.cpp",
+          "line": 250
+        }
+      ]
+    }
+  ]
+}

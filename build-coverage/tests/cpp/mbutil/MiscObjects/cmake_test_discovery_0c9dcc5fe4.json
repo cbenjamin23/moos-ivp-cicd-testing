@@ -1,0 +1,101 @@
+{
+  "tests": 13,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AckMessageTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "BuildsAndParsesAckMessageSpecs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 17
+        },
+        {
+          "name": "RejectsWhitespaceAndSelfAddressingThroughSetters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 34
+        }
+      ]
+    },
+    {
+      "name": "MailFlagSetTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ExpandsMailCountAndUtcMacrosForMatchingKeys",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "TracksPerKeyCountsAnyFallbackAndKeyOrdering",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "LeavesUnsupportedMacrosAndAutoParsesNumericFlags",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 114
+        }
+      ]
+    },
+    {
+      "name": "TStampTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ParsesAndFormatsCompactTimeStrings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 134
+        },
+        {
+          "name": "PinsSetTimeValidationBoundary",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 150
+        },
+        {
+          "name": "ParsesPartialSecondsAndPreservesPriorValueOnFailure",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 164
+        }
+      ]
+    },
+    {
+      "name": "OdometerTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "AccumulatesDistanceExtentElapsedTimeAndPauseState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 186
+        },
+        {
+          "name": "ResetsOriginDistanceAndElapsedTimeForMissionLegs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 218
+        }
+      ]
+    },
+    {
+      "name": "FileBufferTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ReadsLinesListsLimitsAndSlashContinuations",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 250
+        },
+        {
+          "name": "PinsMissingEmptyAndLimitBoundaryBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 284
+        },
+        {
+          "name": "JoinsMissionStyleBackslashContinuations",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MiscObjects\/AckMailTimeFileTest.cpp",
+          "line": 314
+        }
+      ]
+    }
+  ]
+}

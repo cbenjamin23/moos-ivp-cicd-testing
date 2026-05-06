@@ -1,0 +1,32 @@
+{
+  "tests": 4,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVTrailTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "ComputesTrailPointAndPursuitStateForLedgerContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TrailTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "OuterDistanceSuppressesPursuitAndIdleCanPostTrailDistance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TrailTest.cpp",
+          "line": 46
+        },
+        {
+          "name": "OwnshipAtTrailPointUsesInsideRadiusRegion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TrailTest.cpp",
+          "line": 93
+        },
+        {
+          "name": "SpawnableTemplateCanRequestContactManagerAlerts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TrailTest.cpp",
+          "line": 127
+        }
+      ]
+    }
+  ]
+}

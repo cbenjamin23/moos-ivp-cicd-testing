@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/polar/PolarPlot/test_polar_plot[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/polar/PolarPlot/test_polar_plot[1]_tests.cmake")
+else()
+  add_test(test_polar_plot_NOT_BUILT test_polar_plot_NOT_BUILT)
+endif()

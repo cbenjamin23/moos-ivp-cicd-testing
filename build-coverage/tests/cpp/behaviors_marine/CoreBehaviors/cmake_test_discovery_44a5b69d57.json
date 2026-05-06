@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVHSLineTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ProjectsDesiredHeadingSpeedLineForOneLegTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/HSLineTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "ScalesProjectionByMaximumDesiredSpeedObserved",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/HSLineTest.cpp",
+          "line": 38
+        },
+        {
+          "name": "IdleAfterRunPostsInactiveViewerSegment",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/HSLineTest.cpp",
+          "line": 73
+        },
+        {
+          "name": "MissingHelmOutputsPostWarningsButStillEmitDegenerateSegment",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/HSLineTest.cpp",
+          "line": 99
+        },
+        {
+          "name": "NegativeDesiredSpeedExtendsProjectionBehindDesiredHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/HSLineTest.cpp",
+          "line": 132
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "tests": 2,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MarineViewLegacyShapeCatalogTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "LegacyLongShipHeaderKeepsOriginalHull",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/ShapeLegacyCatalogTest.cpp",
+          "line": 54
+        },
+        {
+          "name": "Wamv2PontoonAndTopRemainClosedDrawablePolygons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/ShapeLegacyCatalogTest.cpp",
+          "line": 64
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVFullStopTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "HoldsStemHeadingAndCommandsZeroSpeedUntilStopped",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FullStopTest.cpp",
+          "line": 29
+        },
+        {
+          "name": "DelayCompleteKeepsObjectiveUntilDelayExpires",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FullStopTest.cpp",
+          "line": 75
+        },
+        {
+          "name": "MissingNavigationMailPreventsBeginAndRun",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FullStopTest.cpp",
+          "line": 114
+        },
+        {
+          "name": "MovingBackTowardBeginPointCompletesEvenBeforeSpeedThreshold",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FullStopTest.cpp",
+          "line": 137
+        },
+        {
+          "name": "MarkFlagsExpandStopDistanceAndElapsedTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FullStopTest.cpp",
+          "line": 168
+        },
+        {
+          "name": "StaleNavigationMailPostsDedicatedError",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FullStopTest.cpp",
+          "line": 202
+        }
+      ]
+    }
+  ]
+}

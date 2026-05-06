@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVMinAltitudeXTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "ConvertsAltitudeClearanceIntoMaximumAllowedDepth",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MinAltitudeXTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "ClipsAllowedDepthAtSurfaceWhenBottomIsTooShallow",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MinAltitudeXTest.cpp",
+          "line": 31
+        },
+        {
+          "name": "MissingDepthOrAltitudePostsStatusAndSuppressesObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MinAltitudeXTest.cpp",
+          "line": 50
+        },
+        {
+          "name": "ZeroAltitudeProducesNoConstraintObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MinAltitudeXTest.cpp",
+          "line": 87
+        },
+        {
+          "name": "ZeroMinimumAltitudeAllowsDepthToBottomEstimate",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MinAltitudeXTest.cpp",
+          "line": 104
+        },
+        {
+          "name": "MissingAltitudeCriticalFlagDoesNotChangeCurrentErrorPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/MinAltitudeXTest.cpp",
+          "line": 125
+        }
+      ]
+    }
+  ]
+}

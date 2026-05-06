@@ -1,0 +1,98 @@
+{
+  "tests": 16,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "LogicConditionTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "EvaluatesBehaviorStyleNumericAndStringConditions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "EvaluatesIvPBehaviorConditionExamples",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 28
+        },
+        {
+          "name": "RequiresParensAroundAndOrOperands",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 53
+        },
+        {
+          "name": "SupportsFieldMatchDoubleEqualsAndModeEntryRestriction",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 66
+        },
+        {
+          "name": "ComparesNumbersStringsAndRightSideVariables",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 84
+        },
+        {
+          "name": "PinsTypeOverwriteAndClearSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 103
+        },
+        {
+          "name": "EvaluatesAlogTestAndCollisionDetectorStyleConditions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "CopiesConditionsWithoutSharingNodeState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 151
+        },
+        {
+          "name": "ExpandsMacrosInParsedConditions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicConditionTest.cpp",
+          "line": 166
+        }
+      ]
+    },
+    {
+      "name": "LogicUtilsTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "ClassifiesParenthesesAndPrunesGlobalParens",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicUtilsTest.cpp",
+          "line": 23
+        },
+        {
+          "name": "ParsesBehaviorConditionRelationsAtTopLevelOnly",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicUtilsTest.cpp",
+          "line": 40
+        },
+        {
+          "name": "ValidatesVariablesLiteralsAndRightSideVariables",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicUtilsTest.cpp",
+          "line": 53
+        },
+        {
+          "name": "ValidatesQuotedLiteralsAndConditionalParamStrings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicUtilsTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "MatchesColonSeparatedModeFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicUtilsTest.cpp",
+          "line": 87
+        },
+        {
+          "name": "MatchesModePathsOnWholeColonDelimitedFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicUtilsTest.cpp",
+          "line": 97
+        },
+        {
+          "name": "BuildsConditionVectorsAndExtractsUniqueVariables",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/LogicCondition\/LogicUtilsTest.cpp",
+          "line": 108
+        }
+      ]
+    }
+  ]
+}

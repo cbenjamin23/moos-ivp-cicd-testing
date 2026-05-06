@@ -1,0 +1,47 @@
+{
+  "tests": 7,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "IvPContactBehaviorTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "UpdatesContactGeometryFromLedgerAndExpandsMacros",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/IvPContactBehaviorTest.cpp",
+          "line": 44
+        },
+        {
+          "name": "PostsContactFlagsForRangeConditionsWithMacros",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/IvPContactBehaviorTest.cpp",
+          "line": 78
+        },
+        {
+          "name": "PostsContactFlagsOnRangeEnterAndExitTransitions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/IvPContactBehaviorTest.cpp",
+          "line": 106
+        },
+        {
+          "name": "ContactConditionsExpandConfiguredContactMacro",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/IvPContactBehaviorTest.cpp",
+          "line": 148
+        },
+        {
+          "name": "AbleFilterDisablesEnablesAndExpungesMatchingContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/IvPContactBehaviorTest.cpp",
+          "line": 162
+        },
+        {
+          "name": "MissingContactWarningRetractsAfterLedgerUpdate",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/IvPContactBehaviorTest.cpp",
+          "line": 197
+        },
+        {
+          "name": "ExitFiltersEvaluateLedgerType",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/IvPContactBehaviorTest.cpp",
+          "line": 236
+        }
+      ]
+    }
+  ]
+}

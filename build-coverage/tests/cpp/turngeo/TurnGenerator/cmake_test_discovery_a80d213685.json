@@ -1,0 +1,114 @@
+{
+  "tests": 18,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "TurnGeneratorTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ValidatesRequiredStartRadiusAndPointGapInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 27
+        },
+        {
+          "name": "ReportsPointCoordinatesAndPathLength",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 49
+        },
+        {
+          "name": "MergesInteriorClosestPointsAndPreservesEnds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 67
+        },
+        {
+          "name": "InteriorClosestPairIsIgnoredUnlessLeadingPairQualifies",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 84
+        },
+        {
+          "name": "MergeReturnsOneEvenWhenNoPairFallsUnderThreshold",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 100
+        }
+      ]
+    },
+    {
+      "name": "TurnGen180Test",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "BuildsStarboardHalfTurnFromNorthboundOwnship",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 113
+        },
+        {
+          "name": "BuildsPortHalfTurnFromNorthboundOwnship",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 129
+        },
+        {
+          "name": "EastboundTurnsFollowMarineHeadingConvention",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 146
+        },
+        {
+          "name": "PointGapThatDoesNotDivideHalfCircleStopsBeforeOppositePoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 171
+        },
+        {
+          "name": "InvalidInputsLeaveGeneratedTurnEmpty",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 186
+        }
+      ]
+    },
+    {
+      "name": "TurnGenWilliamsonTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "ClampsLaneGapBiasAndDesiredExtentInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 203
+        },
+        {
+          "name": "BiasIsReclampedWhenLaneGapOrRadiusChanges",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 224
+        },
+        {
+          "name": "IgnoresExplicitEndHeadingAndSetsOppositeHeadingFromEndPosition",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 243
+        },
+        {
+          "name": "GeneratesLegRunStyleCloseLaneSwitch",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 257
+        },
+        {
+          "name": "GeneratesWideLaneSwitchAndAppendsAftEndPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 280
+        },
+        {
+          "name": "GeneratesWideLaneSwitchWithoutAppendingForeEndPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 299
+        },
+        {
+          "name": "AutoTurnDirectionCanSelectPortOrStarboardForOffsetEnd",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 319
+        },
+        {
+          "name": "AutoTurnDirectionThresholdLeavesSmallOffsetAtDefaultStarboard",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/turngeo\/TurnGenerator\/TurnGeneratorTest.cpp",
+          "line": 341
+        }
+      ]
+    }
+  ]
+}

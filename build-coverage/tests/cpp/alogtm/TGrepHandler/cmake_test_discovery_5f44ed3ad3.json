@@ -1,0 +1,47 @@
+{
+  "tests": 7,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "TGrepHandlerTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "ValidatesInputFileAndRequiredMark",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogtm\/TGrepHandler\/TGrepHandlerTest.cpp",
+          "line": 31
+        },
+        {
+          "name": "ValidatesNumericConfiguration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogtm\/TGrepHandler\/TGrepHandlerTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "RejectsDuplicateKeys",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogtm\/TGrepHandler\/TGrepHandlerTest.cpp",
+          "line": 75
+        },
+        {
+          "name": "EmitsRequestedVariablesAfterMarkWithRelativeTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogtm\/TGrepHandler\/TGrepHandlerTest.cpp",
+          "line": 86
+        },
+        {
+          "name": "SuppressesDuplicateShiftedPosts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogtm\/TGrepHandler\/TGrepHandlerTest.cpp",
+          "line": 118
+        },
+        {
+          "name": "MinGapSuppressesTooFrequentReportsPerVariable",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogtm\/TGrepHandler\/TGrepHandlerTest.cpp",
+          "line": 142
+        },
+        {
+          "name": "TestFormatEmitsVCheckRowsWithConfiguredDeltas",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogtm\/TGrepHandler\/TGrepHandlerTest.cpp",
+          "line": 172
+        }
+      ]
+    }
+  ]
+}

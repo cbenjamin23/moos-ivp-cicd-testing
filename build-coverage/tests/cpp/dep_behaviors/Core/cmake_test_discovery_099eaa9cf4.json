@@ -1,0 +1,267 @@
+{
+  "tests": 51,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "DepBehaviorConfigTest",
+      "tests": 51,
+      "testsuite": [
+        {
+          "name": "FixTurnAcceptsLegacyTurnScheduleAndRunsAgainstNavState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 85
+        },
+        {
+          "name": "FixTurnHandlesTerseAutoScheduleClearAndStateResetHooks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 115
+        },
+        {
+          "name": "FixTurnCompletesAfterHeadingDeltaAndPostsTurnReport",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 151
+        },
+        {
+          "name": "FixTurnAdvancesAndRepeatsScheduledTurns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 185
+        },
+        {
+          "name": "FixTurnRejectsMissingOrStaleNavigationInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 229
+        },
+        {
+          "name": "FixTurnPinsLegacyMissingNavXAcceptance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 259
+        },
+        {
+          "name": "FixTurnRejectsInvalidConfigValuesAndAcceptsScheduleModes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 277
+        },
+        {
+          "name": "FixTurnCoversDirectScheduleParsingAndVisualHintBranches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 291
+        },
+        {
+          "name": "FixTurnWarnsForDirectNavigationChecksAndRejectsBadState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 319
+        },
+        {
+          "name": "FixTurnTracksOppositeHeadingDeltasAndClearsRadialVisuals",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 340
+        },
+        {
+          "name": "RubberBandPostsStationTelemetryAndPullsTowardConfiguredPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 416
+        },
+        {
+          "name": "RubberBandRejectsMalformedStationAndInvalidNumericConfig",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 453
+        },
+        {
+          "name": "RubberBandCourseUtilityPrefersHeadingTowardStation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 469
+        },
+        {
+          "name": "RubberBandUsesInterpolatedSpeedInsideOuterBand",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 491
+        },
+        {
+          "name": "RubberBandReportsMissingNavAndPostsInactiveTrailOnIdleTransition",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 510
+        },
+        {
+          "name": "RubberBandHandlesPresentPositionActivationAndMissingStation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 534
+        },
+        {
+          "name": "AttractorBuildsObjectiveForDistantAndNearForwardContacts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 569
+        },
+        {
+          "name": "AttractorIdleStatePostsInactiveTrailPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 607
+        },
+        {
+          "name": "AttractorUsesContactLedgerAndRangeScaledRelevance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 616
+        },
+        {
+          "name": "AttractorReportsConfigurationAndContactDataFailures",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 653
+        },
+        {
+          "name": "AttractorRejectsMalformedIntervalsAndOutOfRangeTuning",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 675
+        },
+        {
+          "name": "AttractorRelevanceFollowsConfiguredDistanceCurve",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 700
+        },
+        {
+          "name": "AttractorReturnsNoObjectiveBeyondGiveupRangeOrWithMissingNav",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 713
+        },
+        {
+          "name": "AttractorRunToIdlePostsInactiveTrailPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 747
+        },
+        {
+          "name": "AvoidObstacleRunsClassicBufferedPolygonBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 758
+        },
+        {
+          "name": "AvoidObstaclePostsSpawnAlertsAndCompletesWhenResolved",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 791
+        },
+        {
+          "name": "AvoidObstacleReturnsNoObjectiveForAftFarAndUnbufferedCases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 824
+        },
+        {
+          "name": "AvoidObstacleRejectsConflictingRangeConfiguration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 865
+        },
+        {
+          "name": "AvoidObstacleRejectsInvalidLegacyParameterForms",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 884
+        },
+        {
+          "name": "AvoidObstacleAppliesRemainingVisualHintColors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 902
+        },
+        {
+          "name": "AvoidObstacleAppliesMultipleVisualHintsAndPinsVertexOverride",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 935
+        },
+        {
+          "name": "AvoidObstacleDirectRelevanceCoversRangeAndAftBoundaries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 971
+        },
+        {
+          "name": "AvoidObstaclePriorityGradeCurvesTransformMidRangeRelevance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 993
+        },
+        {
+          "name": "AvoidObstacleReportsMissingNavAndOwnshipInsideObstacleWithoutObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1010
+        },
+        {
+          "name": "AvoidObstacleLifecyclePostsSpawnAndInactivePolygonVisuals",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1044
+        },
+        {
+          "name": "AvoidObstacleShrinksBufferWhenOwnshipIsNearObstacle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1082
+        },
+        {
+          "name": "AvoidObstacleXAndV21UseObShipModelConfigurationAndResolutionHooks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1102
+        },
+        {
+          "name": "AvoidObstacleV21RangeFlagsRespectConfiguredThresholds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1168
+        },
+        {
+          "name": "AvoidObstacleXCompletesFarContactsAndIgnoresAftObstacles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1196
+        },
+        {
+          "name": "AvoidObstacleXAndV21PinDeprecatedNumericParsing",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1233
+        },
+        {
+          "name": "AvoidObstacleXAndV21PinVisualHintParsingQuirks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1254
+        },
+        {
+          "name": "AvoidObstacleXAndV21AcceptEverySingleVisualHint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1317
+        },
+        {
+          "name": "AvoidObstacleXAndV21DoubleInfoReflectsConfigAndPoseUpdates",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1350
+        },
+        {
+          "name": "AvoidObstacleXAndV21RefineryAndPriorityGradesRun",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1407
+        },
+        {
+          "name": "AvoidObstacleXAndV21DirectAndRangeCompletionPaths",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1456
+        },
+        {
+          "name": "AvoidObstacleXAndV21RejectInvalidGeometryAndMissingPlatformInfo",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1495
+        },
+        {
+          "name": "AvoidObstacleXAndV21LifecycleHooksPostPolygonVisuals",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1527
+        },
+        {
+          "name": "AvoidObstacleXAndV21SpawnableTemplatesPostObstacleManagerAlerts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1569
+        },
+        {
+          "name": "AvoidObstacleV21PostsCPAFlagsWhenClosingRangeOpens",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1591
+        },
+        {
+          "name": "AvoidObstacleV21PostsUnthresholdedRangeFlagsAndExpandsMacros",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1623
+        },
+        {
+          "name": "AvoidObstacleXAndV21HonorObstacleManagerResolvedLists",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/dep_behaviors\/Core\/DepBehaviorConfigTest.cpp",
+          "line": 1655
+        }
+      ]
+    }
+  ]
+}

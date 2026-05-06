@@ -1,0 +1,207 @@
+{
+  "tests": 27,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BNGEngineTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "DefaultEngineReturnsZeroForBearingAndRate",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 34
+        },
+        {
+          "name": "ConfiguredEngineCurrentlyIgnoresEncounterGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 45
+        }
+      ]
+    },
+    {
+      "name": "CPAUtilsEvalCPATest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "ComputesHeadOnCollisionAndClipsToTimeOnLeg",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 58
+        },
+        {
+          "name": "MinusOneTimeOnLegIsUnlimitedSentinel",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 70
+        },
+        {
+          "name": "HandlesParallelAndOpeningEncounters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 81
+        },
+        {
+          "name": "HandlesCrossingContactAvoidanceGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 90
+        }
+      ]
+    },
+    {
+      "name": "CPAUtilsCrossesBowTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "DetectsOwnshipArrivingAtIntersectionFirst",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 99
+        },
+        {
+          "name": "RejectsParallelOrDivergingTracks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 107
+        },
+        {
+          "name": "PinsZeroContactSpeedDivisionBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 114
+        }
+      ]
+    },
+    {
+      "name": "CPAUtilsClosingSpeedTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ComputesClosingRateAgainstStationaryPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 121
+        },
+        {
+          "name": "ComputesRelativeClosingRateForMovingContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 130
+        }
+      ]
+    },
+    {
+      "name": "CPAUtilsVelocityVectorSumTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "SumsOrthogonalAndOpposingVelocityVectors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 145
+        },
+        {
+          "name": "HandlesUnequalOpposingVectors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 163
+        }
+      ]
+    },
+    {
+      "name": "CPAUtilsRelAngRateTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ComputesSignedBearingRateWithWraparound",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 178
+        },
+        {
+          "name": "PinsZeroTimeAndOneEightyDegreeTieBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 194
+        }
+      ]
+    },
+    {
+      "name": "PlatModelPoseTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "DefaultModelIsInvalidUntilAllPoseFieldsAreSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 204
+        },
+        {
+          "name": "PoseConstructorNormalizesHeadingAndClampsSpeed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 238
+        }
+      ]
+    },
+    {
+      "name": "PlatModelParseTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ParsesCompactMoosIvPStylePoseSpec",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 251
+        },
+        {
+          "name": "RejectsUnknownOrNonNumericParameters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 264
+        },
+        {
+          "name": "DuplicatePoseFieldsAreAcceptedWithLastValueWinning",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 273
+        }
+      ]
+    },
+    {
+      "name": "PlatModelSpokeTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "StoresPortAndStarboardSpokePointsWithStableLabels",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 285
+        }
+      ]
+    },
+    {
+      "name": "PlatModelTurnSeglrTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "FallsBackToSingleRayWithoutValidSpokeCache",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 311
+        },
+        {
+          "name": "SelectsCachedPortOrStarboardTurnByHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 327
+        },
+        {
+          "name": "ClampsTurnCacheIndexAtLargestAvailableSpoke",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 354
+        }
+      ]
+    },
+    {
+      "name": "PlatModelCacheTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ExposesCachedCpaDistanceStemDistanceAndPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 375
+        },
+        {
+          "name": "OutOfRangePortCacheUpdateFallsThroughToStarboard",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 405
+        },
+        {
+          "name": "OutOfRangePortPointAndStemUpdatesFallThroughToStarboard",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CPAPlatform\/CPAPlatformTest.cpp",
+          "line": 424
+        }
+      ]
+    }
+  ]
+}

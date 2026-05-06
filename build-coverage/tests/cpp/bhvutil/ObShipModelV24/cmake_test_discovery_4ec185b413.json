@@ -1,0 +1,57 @@
+{
+  "tests": 9,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ObShipModelV24Test",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "StoresPoseUtilityAndDistanceConfigurationWithClamps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 20
+        },
+        {
+          "name": "ReportsConfigurationConflictsAndAdjustsDependentDistances",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 47
+        },
+        {
+          "name": "RejectsNegativeDistanceAndCpaLimitsWithoutChangingState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 68
+        },
+        {
+          "name": "RejectsNonConvexObstacleAndCachesDerivedObstacleGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 92
+        },
+        {
+          "name": "ComputesRangeRelevanceAndAftClassification",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 119
+        },
+        {
+          "name": "ClassifiesOwnshipContainmentForGutAndAdjustedBufferPolygons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 141
+        },
+        {
+          "name": "EvaluatesHeadingsAgainstObstacleCpaBands",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 161
+        },
+        {
+          "name": "ComputesBearingExtremesUsedByObstacleRefineries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 185
+        },
+        {
+          "name": "TurnCacheCanBeDisabledWithoutChangingEvaluationResults",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/ObShipModelV24\/ObShipModelV24Test.cpp",
+          "line": 211
+        }
+      ]
+    }
+  ]
+}

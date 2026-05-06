@@ -1,0 +1,88 @@
+{
+  "tests": 14,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ObstacleTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "TracksDefaultStateRangeMinimumAndTimeToLive",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "StoresRecentObstaclePointsNewestFirstAndPrunesByAge",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleTest.cpp",
+          "line": 59
+        },
+        {
+          "name": "AcceptsGivenConvexViewPolygonAndSkipsRoundedNoopUpdates",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleTest.cpp",
+          "line": 99
+        },
+        {
+          "name": "RejectsNonConvexGivenPolygons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleTest.cpp",
+          "line": 125
+        },
+        {
+          "name": "PrunesGivenObstaclesOnlyWhenDurationExpires",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleTest.cpp",
+          "line": 143
+        },
+        {
+          "name": "PinsPointObstacleMaxZeroAndFutureTimestampBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleTest.cpp",
+          "line": 157
+        },
+        {
+          "name": "GivenPolygonUpdatedAfterPointsRemainsPointBased",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleTest.cpp",
+          "line": 180
+        }
+      ]
+    },
+    {
+      "name": "ObstacleFieldGeneratorTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "ValidatesConfigurationSetters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleFieldGeneratorTest.cpp",
+          "line": 36
+        },
+        {
+          "name": "AdjustsMinAndMaxObstacleSizeBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleFieldGeneratorTest.cpp",
+          "line": 58
+        },
+        {
+          "name": "PinsCurrentStringPolyVerticesQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleFieldGeneratorTest.cpp",
+          "line": 75
+        },
+        {
+          "name": "GeneratesContainedLabeledObstaclePolygons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleFieldGeneratorTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "FailsGenerationWithoutConvexRegion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleFieldGeneratorTest.cpp",
+          "line": 120
+        },
+        {
+          "name": "PinsDirectSettersAndZeroAmountGeneration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleFieldGeneratorTest.cpp",
+          "line": 138
+        },
+        {
+          "name": "ParsesPolygonSpecsAndFailsWhenTooConstrained",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/obstacles\/Obstacle\/ObstacleFieldGeneratorTest.cpp",
+          "line": 161
+        }
+      ]
+    }
+  ]
+}

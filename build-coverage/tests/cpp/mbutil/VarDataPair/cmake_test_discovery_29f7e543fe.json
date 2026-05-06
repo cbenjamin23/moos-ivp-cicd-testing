@@ -1,0 +1,73 @@
+{
+  "tests": 11,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "VarDataPairTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ConstructsNumericAndStringPostings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "PinsSetterOverwriteAndZeroValueBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 35
+        },
+        {
+          "name": "ExtractsMacrosFromBehaviorFlagStrings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 60
+        },
+        {
+          "name": "RoundTripsStructuredVarDataPairSpecs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 185
+        },
+        {
+          "name": "PinsStructuredSpecEdgeCases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 199
+        }
+      ]
+    },
+    {
+      "name": "VarDataPairUtilsTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "ParsesRangeAndDestinationTaggedPostings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 82
+        },
+        {
+          "name": "ParsesContactBehaviorRangeAndBroadcastTags",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 101
+        },
+        {
+          "name": "ParsesQuotedStringValuesAndRejectsMalformedInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 124
+        },
+        {
+          "name": "AutoParsesNumbersBooleansAndStringifiedNumbers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 140
+        },
+        {
+          "name": "AddsPairsAndSupportsClearAll",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 161
+        },
+        {
+          "name": "LongestFieldIgnoresNumericDataFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/VarDataPair\/VarDataPairTest.cpp",
+          "line": 174
+        }
+      ]
+    }
+  ]
+}

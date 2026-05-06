@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/CPAVariants/test_geometry_cpavariants[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/CPAVariants/test_geometry_cpavariants[1]_tests.cmake")
+else()
+  add_test(test_geometry_cpavariants_NOT_BUILT test_geometry_cpavariants_NOT_BUILT)
+endif()

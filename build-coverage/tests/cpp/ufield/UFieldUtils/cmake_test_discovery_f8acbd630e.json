@@ -1,0 +1,84 @@
+{
+  "tests": 12,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "UFieldUtilsTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ValidatesLiteralPShareRoutes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "PinsPShareRouteCaseWhitespaceAndNumericPermissiveness",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 25
+        },
+        {
+          "name": "ResolvesHostnameRoutesInMutableOverload",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "ResolvesDomainNamesAndReportsFailures",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 61
+        },
+        {
+          "name": "MutableRouteValidationPreservesMulticastAndFailureInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 74
+        }
+      ]
+    },
+    {
+      "name": "CommsEntryTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "SerializesAndParsesCommsCatalogEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 95
+        },
+        {
+          "name": "SettersFeedStableCommsEntrySpec",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 108
+        },
+        {
+          "name": "ParsesOutOfOrderDuplicatesAndDecimalIds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 124
+        },
+        {
+          "name": "RejectsMalformedSpecsByReturningDefaultEntry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 143
+        },
+        {
+          "name": "PinsCaseAndWhitespaceSensitiveParsing",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 161
+        },
+        {
+          "name": "ParsesNegativeIdThroughUnsignedAtoiQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 172
+        }
+      ]
+    },
+    {
+      "name": "CommsCatalogTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "CanAcceptEntriesWithoutObservableState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ufield\/UFieldUtils\/UFieldUtilsTest.cpp",
+          "line": 183
+        }
+      ]
+    }
+  ]
+}

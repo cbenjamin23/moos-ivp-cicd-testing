@@ -1,0 +1,136 @@
+{
+  "tests": 14,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BuildUtilsTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "RoundTripsMissionDomainAndParsesCourseSpeedBoxes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 70
+        },
+        {
+          "name": "BuildsHeadingSpeedBoxesForHelmWraparoundRegions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 128
+        },
+        {
+          "name": "SubtractsAndDistributesBoxesForReflectorRefinement",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 166
+        }
+      ]
+    },
+    {
+      "name": "BuildUtilsBetaTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "BuildsNativeOneAndTwoDimensionalBoxesForHelmDomains",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 193
+        }
+      ]
+    },
+    {
+      "name": "DemuxUnitTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "ReassemblesFragmentsInPacketOrderAndRejectsDuplicates",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 228
+        }
+      ]
+    },
+    {
+      "name": "DemuxerTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ReassemblesFunctionEncoderPacketsOutOfOrderLikeUFunctionVis",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 249
+        },
+        {
+          "name": "RetainsRecentPartialUnitsAcrossStaleSweeps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 276
+        }
+      ]
+    },
+    {
+      "name": "FunctionEncoderMKTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "RoundTripsAndPacketizesHelmIpfsLikeLegacyUFunctionVis",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 291
+        }
+      ]
+    },
+    {
+      "name": "IOUtilitiesTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "SavesAndReadsIvPFunctionsInLegacyProblemFileFormat",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 329
+        }
+      ]
+    },
+    {
+      "name": "PQueueTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "PrioritizesMaxAndMinQueuesAndHandlesNullQueue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 375
+        }
+      ]
+    },
+    {
+      "name": "RegressorTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "FitsLinearAOFWeightsAndTracksEvaluationCounters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 403
+        }
+      ]
+    },
+    {
+      "name": "ReflectorToolsTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "UniformEvaluatorAndSmartRefinerBuildMissionAOFMaps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 426
+        },
+        {
+          "name": "DirectedUniformXAndAutoPeakRefineProblemRegions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 455
+        }
+      ]
+    },
+    {
+      "name": "OFReflectorTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "CreatesSmartDirectedAutoPeakFunctionFromHelmStyleParams",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpbuild\/ReflectorInternals\/ReflectorInternalsTest.cpp",
+          "line": 496
+        }
+      ]
+    }
+  ]
+}

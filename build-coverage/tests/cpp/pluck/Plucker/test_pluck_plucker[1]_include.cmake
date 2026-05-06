@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/pluck/Plucker/test_pluck_plucker[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/pluck/Plucker/test_pluck_plucker[1]_tests.cmake")
+else()
+  add_test(test_pluck_plucker_NOT_BUILT test_pluck_plucker_NOT_BUILT)
+endif()

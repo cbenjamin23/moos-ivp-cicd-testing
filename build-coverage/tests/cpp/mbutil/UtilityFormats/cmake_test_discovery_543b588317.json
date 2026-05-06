@@ -1,0 +1,47 @@
+{
+  "tests": 7,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "StringTreeTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "BuildsPrintableModeTreeFromHelmModeSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/StringTreeTest.cpp",
+          "line": 22
+        },
+        {
+          "name": "BuildsTreeFromHelmScopeModeSetMessage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/StringTreeTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "PinsWaitingChildBehaviorForOutOfOrderModeSets",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/StringTreeTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "CanDeferWaiterProcessingForBatchConstruction",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/StringTreeTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "BuildsMultiLevelOutOfOrderHelmModeTree",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/StringTreeTest.cpp",
+          "line": 111
+        },
+        {
+          "name": "PinsDuplicateRootsAndUnresolvedParents",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/StringTreeTest.cpp",
+          "line": 130
+        },
+        {
+          "name": "EmitsGraphvizWithSanitizedModeNames",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/StringTreeTest.cpp",
+          "line": 146
+        }
+      ]
+    }
+  ]
+}

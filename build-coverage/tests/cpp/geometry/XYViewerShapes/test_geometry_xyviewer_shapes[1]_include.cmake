@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYViewerShapes/test_geometry_xyviewer_shapes[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYViewerShapes/test_geometry_xyviewer_shapes[1]_tests.cmake")
+else()
+  add_test(test_geometry_xyviewer_shapes_NOT_BUILT test_geometry_xyviewer_shapes_NOT_BUILT)
+endif()

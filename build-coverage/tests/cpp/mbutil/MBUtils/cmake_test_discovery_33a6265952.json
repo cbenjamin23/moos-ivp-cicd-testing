@@ -1,0 +1,54 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MBUtilsValidationTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ClassifiesNumbersBooleansAndDelimitedWrappers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MBUtils\/MBUtilsNumericAndValidationTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "ValidatesIpAddressesAndTurns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MBUtils\/MBUtilsNumericAndValidationTest.cpp",
+          "line": 34
+        }
+      ]
+    },
+    {
+      "name": "MBUtilsSetterTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "SetsBooleanAndTurnValuesFromStrings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MBUtils\/MBUtilsNumericAndValidationTest.cpp",
+          "line": 49
+        },
+        {
+          "name": "SetsNumbersWithStrictPositiveAndRangeSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MBUtils\/MBUtilsNumericAndValidationTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "SetsIntegerAndVariableValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MBUtils\/MBUtilsNumericAndValidationTest.cpp",
+          "line": 105
+        }
+      ]
+    },
+    {
+      "name": "MBUtilsMathAndFormattingTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "ClipsSnapsAndFormatsValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MBUtils\/MBUtilsNumericAndValidationTest.cpp",
+          "line": 131
+        }
+      ]
+    }
+  ]
+}

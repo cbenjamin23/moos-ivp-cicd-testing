@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "LatLonFormatUtilsTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "ConvertsDecimalDegreesToNmeaStyleFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/LatLonFormatUtilsTest.cpp",
+          "line": 6
+        },
+        {
+          "name": "HandlesBoundaryCoordinatesUsedInGpsReports",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/LatLonFormatUtilsTest.cpp",
+          "line": 18
+        },
+        {
+          "name": "RejectsOutOfRangeAndParsesNmeaStyleFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/LatLonFormatUtilsTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "PinsLooseParsingForMalformedNmeaFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/LatLonFormatUtilsTest.cpp",
+          "line": 46
+        },
+        {
+          "name": "RoundTripsGpsLikeFieldsWithoutHemisphereDesignators",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/LatLonFormatUtilsTest.cpp",
+          "line": 60
+        },
+        {
+          "name": "PinsCallerOwnedHemisphereAndLooseStringSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/LatLonFormatUtilsTest.cpp",
+          "line": 75
+        }
+      ]
+    }
+  ]
+}

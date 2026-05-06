@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ivpbuild/ReflectorInternals/test_ivpbuild_reflector_internals[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ivpbuild/ReflectorInternals/test_ivpbuild_reflector_internals[1]_tests.cmake")
+else()
+  add_test(test_ivpbuild_reflector_internals_NOT_BUILT test_ivpbuild_reflector_internals_NOT_BUILT)
+endif()

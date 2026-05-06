@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVLoiterTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "AcquiresConvexLoiterPolygonAndPostsStatus",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LoiterTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "StableInsidePolygonUsesAlternateSpeedAndCustomHints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LoiterTest.cpp",
+          "line": 53
+        },
+        {
+          "name": "IdleAndCompleteEraseViewerObjectsAndPostCompletion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LoiterTest.cpp",
+          "line": 97
+        },
+        {
+          "name": "CenterAssignRepositionsPolygonAndConfigStatus",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LoiterTest.cpp",
+          "line": 138
+        },
+        {
+          "name": "EmptyLoiterSpecificationWarnsAndSuppressesObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LoiterTest.cpp",
+          "line": 172
+        }
+      ]
+    }
+  ]
+}

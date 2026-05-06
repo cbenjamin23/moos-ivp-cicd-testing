@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/aloggrep/GrepHandler/test_aloggrep_grep_handler[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/aloggrep/GrepHandler/test_aloggrep_grep_handler[1]_tests.cmake")
+else()
+  add_test(test_aloggrep_grep_handler_NOT_BUILT test_aloggrep_grep_handler_NOT_BUILT)
+endif()

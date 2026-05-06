@@ -1,0 +1,233 @@
+{
+  "tests": 43,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "NodeRiderTest",
+      "tests": 12,
+      "testsuite": [
+        {
+          "name": "ValidatesReservedVarsPoliciesPrecisionAndSpecs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 20
+        },
+        {
+          "name": "RejectsAllReservedNodeReportFieldsAsMoosVars",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 45
+        },
+        {
+          "name": "RejectedReservedVarDoesNotReplacePriorVarButEmptyVarDoes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "DirectSetVarAcceptsWhitespaceButSetParserRejectsIt",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 80
+        },
+        {
+          "name": "PolicyConfigRejectsMalformedValuesAndKeepsPriorConfig",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 93
+        },
+        {
+          "name": "PolicyTransitionsUseLatestAcceptedPolicy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 114
+        },
+        {
+          "name": "PolicyConfigAcceptsPositiveSignsAndCompactsSpecFormatting",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 136
+        },
+        {
+          "name": "AlwaysPolicyDoesNotResetPriorFrequencyValue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 153
+        },
+        {
+          "name": "ProtectedPolicyAndFrequencyHelpersValidateDirectInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 171
+        },
+        {
+          "name": "UpdatedZeroPolicyHasNoFrequencyFallback",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 192
+        },
+        {
+          "name": "RiderFieldMustBeAlphanumericAndPrecisionClampsHighOnly",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 203
+        },
+        {
+          "name": "UpdateValueMarksFreshAndTracksTimestamp",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 220
+        }
+      ]
+    },
+    {
+      "name": "NodeRiderSetTest",
+      "tests": 31,
+      "testsuite": [
+        {
+          "name": "ParsesNodeReporterRiderConfigAndReportsAlwaysValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 240
+        },
+        {
+          "name": "ParsesConfigFieldsInAnyOrderAndFormatsPrecision",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 265
+        },
+        {
+          "name": "ConfigParserTrimsWhitespaceButIsCaseSensitive",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 282
+        },
+        {
+          "name": "DuplicateConfigTokensUseLastValueAndLoosePrecisionUsesAtoi",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 296
+        },
+        {
+          "name": "DuplicateAlwaysPolicyKeepsEarlierFrequencyOnStoredRider",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 323
+        },
+        {
+          "name": "VarOnlyConfigUsesDefaultAlwaysPolicy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 341
+        },
+        {
+          "name": "PolicyOnlyConfigStoresInvalidEmptyVarRider",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 355
+        },
+        {
+          "name": "DuplicateEmptyVarRidersAreRejected",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 369
+        },
+        {
+          "name": "RejectsMalformedNodeReporterRiderConfig",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 378
+        },
+        {
+          "name": "RejectedStringConfigsDoNotMutateSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 395
+        },
+        {
+          "name": "DegenerateStringConfigsEitherRejectOrStoreInvalidEmptyVarRiders",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 415
+        },
+        {
+          "name": "DuplicateRejectedEvenWhenFirstRiderWasAddedAsObject",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 454
+        },
+        {
+          "name": "InvalidObjectRidersCanBeStoredAndUpdatedByEmptyVar",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 468
+        },
+        {
+          "name": "OutOfRangeLookupReturnsInvalidEmptyRider",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 481
+        },
+        {
+          "name": "GetNodeRiderReturnsCopyNotMutableReference",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 496
+        },
+        {
+          "name": "CopyAndAssignmentPreserveIndependentRiderState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 512
+        },
+        {
+          "name": "ReportsUpdatedPolicyOnlyWhenFresh",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 535
+        },
+        {
+          "name": "EmptyUpdatedValuesAreAcceptedButNotReported",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 551
+        },
+        {
+          "name": "UpdatedPolicyReplacesPriorValueAndRefreshesTimestamp",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 565
+        },
+        {
+          "name": "UpdatedZeroReportsOnlyFreshUpdates",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 581
+        },
+        {
+          "name": "ReportsUpdatedPlusFrequencyFallbackWithMoosVarField",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 593
+        },
+        {
+          "name": "ReportsFrequencyPolicyOnlyAfterElapsedInterval",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 605
+        },
+        {
+          "name": "FrequencyPolicyReplacesValueBeforeNextInterval",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 618
+        },
+        {
+          "name": "DoubleUpdateUsesNonEmptyStringValueInsteadOfFormattingDouble",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 634
+        },
+        {
+          "name": "FrequencyZeroReportsEveryTimeAfterFirstValue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 647
+        },
+        {
+          "name": "UpdateUnknownVarReturnsFalseAndLeavesReportsUnchanged",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 661
+        },
+        {
+          "name": "StringValuesWithCommasAreBraceWrappedButNumericStringsAreNot",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 675
+        },
+        {
+          "name": "ExistingBracedCommaValuesAreWrappedAgain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 687
+        },
+        {
+          "name": "MissingRiderFieldFallsBackToMoosVarForAllPolicies",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 697
+        },
+        {
+          "name": "MixedPoliciesReportInConfiguredOrderWithEmptySlots",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 713
+        },
+        {
+          "name": "BackwardsTimeSuppressesFrequencyButNotAlwaysReports",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/contacts\/NodeRider\/NodeRiderTest.cpp",
+          "line": 730
+        }
+      ]
+    }
+  ]
+}

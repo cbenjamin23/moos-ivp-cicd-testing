@@ -1,0 +1,119 @@
+{
+  "tests": 19,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "PolarPlotTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "ParsesUSimMarinePolarPlotConfiguration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 26
+        },
+        {
+          "name": "RejectsMalformedAndDuplicateSetPointsAtomically",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "DirectSetPointInsertionAllowsValuesStringParserRejects",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 57
+        },
+        {
+          "name": "BatchDuplicateHeadingsReturnSuccessButOnlyFirstValuePersists",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 74
+        },
+        {
+          "name": "InterpolatesSymmetricHeadingsAndClipsPercentAtOne",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 86
+        },
+        {
+          "name": "RoundsHeadingQueriesAndWrapsOnlyBeforeIntegerConversion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 102
+        },
+        {
+          "name": "RotatesSetAndInterpolatedHeadingsWithWindAngle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 117
+        },
+        {
+          "name": "ModifiesAndRemovesNearestSetPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 132
+        },
+        {
+          "name": "EmptyPlotModificationAddsOrNoOpsAroundHeadingZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 146
+        },
+        {
+          "name": "WindAngleChangesInvalidateCachedInterpolatedValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 160
+        }
+      ]
+    },
+    {
+      "name": "WindModelTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "ParsesAndSerializesUniformWindConditions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 174
+        },
+        {
+          "name": "RejectsBadConditionSpecsAndClipsSpeedMods",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 193
+        },
+        {
+          "name": "FailedConditionParseMayLeavePartialState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 219
+        },
+        {
+          "name": "ComputesMaxSailingSpeedFromPolarPlot",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 236
+        },
+        {
+          "name": "AppliesTemporaryArrowParametersAndFallsBackOnInvalidOnes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 247
+        },
+        {
+          "name": "StringConversionIgnoresUnknownMalformedAndNegativeSpeedFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 259
+        }
+      ]
+    },
+    {
+      "name": "PopulatorPolarPlotTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ReadsFileBackedPolarPlots",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 271
+        },
+        {
+          "name": "RejectsBadFilesButMayKeepPriorGoodPlot",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 289
+        },
+        {
+          "name": "AcceptsLooseFileHeadingRangeButPolarPlotKeepsValidSubset",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/polar\/PolarPlot\/PolarPlotTest.cpp",
+          "line": 303
+        }
+      ]
+    }
+  ]
+}

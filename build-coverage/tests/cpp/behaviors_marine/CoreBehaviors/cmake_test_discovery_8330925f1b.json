@@ -1,0 +1,47 @@
+{
+  "tests": 7,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVFixedTurnTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "StartsTurnWithConfiguredDirectionHeadingAndSpeed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FixedTurnTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "PortTurnWrapsHeadingAndAutoSpeedUsesStemSpeed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FixedTurnTest.cpp",
+          "line": 40
+        },
+        {
+          "name": "TurnDelayHoldsStemHeadingBeforeBeginningTurn",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FixedTurnTest.cpp",
+          "line": 68
+        },
+        {
+          "name": "HeadingDeltaCompletesTurnAndPostsReport",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FixedTurnTest.cpp",
+          "line": 101
+        },
+        {
+          "name": "ScheduledTurnSpecOverridesDefaultsAndPostsCompletionFlag",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FixedTurnTest.cpp",
+          "line": 143
+        },
+        {
+          "name": "TimeoutCompletesEvenWithoutRequiredHeadingChange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FixedTurnTest.cpp",
+          "line": 193
+        },
+        {
+          "name": "PerpetualScheduledTurnsRepeatAfterCompletion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/FixedTurnTest.cpp",
+          "line": 235
+        }
+      ]
+    }
+  ]
+}

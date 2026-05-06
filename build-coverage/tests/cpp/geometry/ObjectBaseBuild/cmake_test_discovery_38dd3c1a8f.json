@@ -1,0 +1,113 @@
+{
+  "tests": 19,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "XYObjectTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "DefaultsAreActiveValidAndUnsetForViewerMetadata",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 23
+        },
+        {
+          "name": "SerializesMarineViewerMetadataAndRenderHintsInStableOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 39
+        },
+        {
+          "name": "ActiveOverrideParameterControlsExplicitLifecycleSerialization",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 69
+        },
+        {
+          "name": "SetParamAcceptsViewerMetadataAliasesAndRenderHints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 83
+        },
+        {
+          "name": "SetParamRejectsUnknownActiveButReportsInvalidColorAsHandled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 123
+        },
+        {
+          "name": "NumericHintSettersClampOrIgnoreCurrentBoundaryCases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 139
+        },
+        {
+          "name": "LabelVisibilityCanBeRepresentedWithInvisibleColorTokens",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 167
+        },
+        {
+          "name": "LegacyVertexColorHelpersAndColorPackGetterRemainUsable",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 184
+        },
+        {
+          "name": "ExpirationRequiresTimeDurationAndPositiveStartTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 204
+        },
+        {
+          "name": "ClearResetsLifecycleAndDrawingStateButLeavesSourceTypeFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 223
+        }
+      ]
+    },
+    {
+      "name": "XYBuildUtilsTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "StringToPointWrapperPreservesViewerMetadataAndHints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 257
+        },
+        {
+          "name": "StringToPointWrapperPinsPermissiveNumericParsingAndClamps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 289
+        },
+        {
+          "name": "StringToPointWrapperSupportsAbbreviatedMetadataForm",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 313
+        },
+        {
+          "name": "StringToSegListWrapperParsesRouteMetadataAndRenderHints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 334
+        },
+        {
+          "name": "StringToSegListWrapperAcceptsInactiveLabelOnlyDeletion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 364
+        },
+        {
+          "name": "StringToPolyWrapperParsesAreaMetadataAndFillHints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 389
+        },
+        {
+          "name": "StringToPolyWrapperPinsInactiveLabelOnlyDeletion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 421
+        },
+        {
+          "name": "StringToPolyWrapperRejectsMalformedPtsBeforeMetadataCanRescue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 433
+        },
+        {
+          "name": "WrapperRoundTripsViewerStyleSpecsWithBaseObjectFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/ObjectBaseBuild\/ObjectBaseBuildTest.cpp",
+          "line": 446
+        }
+      ]
+    }
+  ]
+}

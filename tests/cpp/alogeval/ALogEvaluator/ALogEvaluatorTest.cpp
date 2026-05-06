@@ -91,6 +91,67 @@ TEST(ALogEvaluatorTest, RejectsInvalidLogicConfiguration)
                        "Problem with lcheck_config"));
 }
 
+// Covers vcheck configuration validation for missing starts and missing
+// checks, which are separate upstream error branches.
+TEST(ALogEvaluatorTest, RejectsIncompleteVCheckConfiguration)
+{
+  TempDir temp("alogeval_bad_vcheck");
+  const std::string no_start = temp.writeFile(
+      "no_start.txt",
+      WithNewlines({"lead_condition=DEPLOY=true",
+                    "pass_condition=MISSION_DONE=true",
+                    "vcheck=var=ARRIVED,sval=true,time=2,max_tdelta=0.5"}));
+  const std::string no_check = temp.writeFile(
+      "no_check.txt",
+      WithNewlines({"lead_condition=DEPLOY=true",
+                    "pass_condition=MISSION_DONE=true",
+                    "vcheck_start=DEPLOY=true"}));
+
+  TestableALogEvaluator missing_start;
+  ASSERT_TRUE(missing_start.setTestFile(no_start));
+  testing::internal::CaptureStdout();
+  EXPECT_FALSE(missing_start.handleTestFile());
+  EXPECT_TRUE(Contains(testing::internal::GetCapturedStdout(),
+                       "A valid vcheck_start is missing"));
+
+  TestableALogEvaluator missing_check;
+  ASSERT_TRUE(missing_check.setTestFile(no_check));
+  testing::internal::CaptureStdout();
+  EXPECT_FALSE(missing_check.handleTestFile());
+  EXPECT_TRUE(Contains(testing::internal::GetCapturedStdout(),
+                       "A valid vcheck is missing"));
+}
+
+// Covers invalid vcheck option lines handled through the evaluator parser.
+TEST(ALogEvaluatorTest, RejectsInvalidVCheckOptions)
+{
+  TempDir temp("alogeval_bad_vcheck_options");
+  const std::string bad_bool = temp.writeFile(
+      "bad_bool.txt",
+      WithNewlines({"lead_condition=DEPLOY=true",
+                    "pass_condition=MISSION_DONE=true",
+                    "fail_on_first=maybe"}));
+  const std::string bad_report_size = temp.writeFile(
+      "bad_report_size.txt",
+      WithNewlines({"lead_condition=DEPLOY=true",
+                    "pass_condition=MISSION_DONE=true",
+                    "vcheck_max_report=-1"}));
+
+  TestableALogEvaluator bool_eval;
+  ASSERT_TRUE(bool_eval.setTestFile(bad_bool));
+  testing::internal::CaptureStdout();
+  EXPECT_FALSE(bool_eval.handleTestFile());
+  EXPECT_TRUE(Contains(testing::internal::GetCapturedStdout(),
+                       "Unhandled test file line"));
+
+  TestableALogEvaluator size_eval;
+  ASSERT_TRUE(size_eval.setTestFile(bad_report_size));
+  testing::internal::CaptureStdout();
+  EXPECT_FALSE(size_eval.handleTestFile());
+  EXPECT_TRUE(Contains(testing::internal::GetCapturedStdout(),
+                       "Unhandled test file line"));
+}
+
 // Covers a passing logic sequence over comments, malformed rows, strings, and
 // numeric alog entries. ALogEvaluator evaluates immediately when the lead
 // condition is met, so pass/fail state must already be in the InfoBuffer.
@@ -139,6 +200,56 @@ TEST(ALogEvaluatorTest, HandleFailsWhenFailConditionIsObserved)
 
   EXPECT_TRUE(evaluator.handle());
   EXPECT_FALSE(evaluator.passed());
+}
+
+// Covers the path where the alog scan reaches EOF before the logic sequence is
+// evaluated.
+TEST(ALogEvaluatorTest, HandleReturnsTrueButDoesNotPassWithoutLeadCondition)
+{
+  TempDir temp("alogeval_no_lead");
+  const std::string test = temp.writeFile(
+      "checks.txt",
+      WithNewlines({"lead_condition=DEPLOY=true",
+                    "pass_condition=NAV_X >= 10"}));
+  const std::string alog = temp.writeFile(
+      "input.alog",
+      WithNewlines({"1.000 NAV_X pNodeReporter 10",
+                    "2.000 MODE pHelmIvP DRIVE"}));
+
+  ALogEvaluator evaluator;
+  ASSERT_TRUE(evaluator.setTestFile(test));
+  ASSERT_TRUE(evaluator.setALogFile(alog));
+
+  EXPECT_TRUE(evaluator.handle());
+  EXPECT_FALSE(evaluator.passed());
+}
+
+// Covers verbose alog-scan output and duplicate-row suppression.
+TEST(ALogEvaluatorTest, VerboseAlogHandlingReportsRelevantRowsOnce)
+{
+  TempDir temp("alogeval_verbose_scan");
+  const std::string test = temp.writeFile(
+      "checks.txt",
+      WithNewlines({"lead_condition=DEPLOY=true",
+                    "pass_condition=NAV_X >= 10"}));
+  const std::string alog = temp.writeFile(
+      "input.alog",
+      WithNewlines({"1.000 NAV_X pNodeReporter 10",
+                    "1.000 NAV_X pNodeReporter 10",
+                    "2.000 DEPLOY pAutoPoke true"}));
+
+  ALogEvaluator evaluator;
+  evaluator.setVerbose();
+  ASSERT_TRUE(evaluator.setTestFile(test));
+  ASSERT_TRUE(evaluator.setALogFile(alog));
+
+  testing::internal::CaptureStdout();
+  EXPECT_TRUE(evaluator.handle());
+  const std::string output = testing::internal::GetCapturedStdout();
+
+  EXPECT_TRUE(Contains(output, "BEGIN ALogEvaluator: Handling ALog File"));
+  EXPECT_TRUE(Contains(output, "EVALUATION COMPLETE"));
+  EXPECT_TRUE(Contains(output, "Result: pass=true"));
 }
 
 // Covers vcheck parsing and alog mail integration alongside the required logic

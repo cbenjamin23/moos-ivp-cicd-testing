@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ufield/HostRecord/test_ufield_hostrecord[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ufield/HostRecord/test_ufield_hostrecord[1]_tests.cmake")
+else()
+  add_test(test_ufield_hostrecord_NOT_BUILT test_ufield_hostrecord_NOT_BUILT)
+endif()

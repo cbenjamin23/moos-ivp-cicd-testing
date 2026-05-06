@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogscan/ScanHandler/test_alogscan_scan_handler[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogscan/ScanHandler/test_alogscan_scan_handler[1]_tests.cmake")
+else()
+  add_test(test_alogscan_scan_handler_NOT_BUILT test_alogscan_scan_handler_NOT_BUILT)
+endif()

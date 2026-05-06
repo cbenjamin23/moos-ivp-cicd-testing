@@ -114,6 +114,86 @@ TEST(MHashReporterTest, IndividualReportModesUseParsedState)
   EXPECT_EQ(testing::internal::GetCapturedStdout(), "10.25");
 }
 
+// Covers terse and non-terse report modes that expose odometry, duration, and
+// selected mission hash without the verbose wrapper.
+TEST(MHashReporterTest, ScalarReportModesUseParsedOdometryAndDuration)
+{
+  TempDir temp("alogmhash_scalar_modes");
+  const std::string alog = temp.writeFile(
+      "input.alog",
+      WithNewlines({"%% LOGSTART 20.000",
+                    "0.000 DB_UPTIME MOOSDB_abe 0",
+                    "0.000 MISSION_HASH pLogger mhash=H1,utc=20.000",
+                    "0.000 NAV_X pNodeReporter 0",
+                    "0.000 NAV_Y pNodeReporter 0",
+                    "1.000 NAV_X pNodeReporter 3",
+                    "2.000 NAV_Y pNodeReporter 4"}));
+
+  MHashReporter odist;
+  odist.setReportODist();
+  ASSERT_TRUE(odist.setALogFile(alog));
+  testing::internal::CaptureStdout();
+  ASSERT_TRUE(odist.handle());
+  EXPECT_EQ(testing::internal::GetCapturedStdout(), "7\n");
+
+  MHashReporter duration;
+  duration.setReportDuration();
+  duration.setTerse();
+  ASSERT_TRUE(duration.setALogFile(alog));
+  testing::internal::CaptureStdout();
+  ASSERT_TRUE(duration.handle());
+  EXPECT_EQ(testing::internal::GetCapturedStdout(), "2");
+
+  MHashReporter mhash;
+  mhash.setReportMHash();
+  ASSERT_TRUE(mhash.setALogFile(alog));
+  testing::internal::CaptureStdout();
+  ASSERT_TRUE(mhash.handle());
+  EXPECT_EQ(testing::internal::GetCapturedStdout(), "H1\n");
+}
+
+// Covers default verbose reporting and the branch that lists all observed
+// mission hashes with their odometry contributions.
+TEST(MHashReporterTest, DefaultVerboseReportListsHashSummary)
+{
+  TempDir temp("alogmhash_verbose");
+  const std::string alog = temp.writeFile(
+      "input.alog",
+      WithNewlines({"%% LOGSTART 30.000",
+                    "0.000 DB_UPTIME MOOSDB_ben 0",
+                    "0.000 MISSION_HASH pLogger mhash=H1,utc=30.000",
+                    "0.000 NAV_X pNodeReporter 0",
+                    "0.000 NAV_Y pNodeReporter 0",
+                    "1.000 NAV_X pNodeReporter 1",
+                    "2.000 MISSION_HASH pLogger mhash=H2,utc=31.000",
+                    "3.000 NAV_X pNodeReporter 3"}));
+
+  MHashReporter reporter;
+  ASSERT_TRUE(reporter.setALogFile(alog));
+
+  testing::internal::CaptureStdout();
+  ASSERT_TRUE(reporter.handle());
+  const std::string output = testing::internal::GetCapturedStdout();
+
+  EXPECT_TRUE(Contains(output, "MHash:"));
+  EXPECT_TRUE(Contains(output, "Odometry:"));
+  EXPECT_TRUE(Contains(output, "[H1]:"));
+  EXPECT_TRUE(Contains(output, "[H2]:"));
+}
+
+// Covers the direct mhash-input path, which bypasses alog parsing and reports
+// an xhash from the already-populated reporter state.
+TEST(MHashReporterTest, MHashInputPathBypassesAlogParsing)
+{
+  TestableMHashReporter reporter;
+  reporter.setMHashIn("mhash=IGNORED");
+  reporter.setStateForXHash("cal", 9.4, 12.2);
+
+  testing::internal::CaptureStdout();
+  EXPECT_TRUE(reporter.handle());
+  EXPECT_EQ(testing::internal::GetCapturedStdout(), "CAL-009S-012M\n");
+}
+
 // Covers direct xhash formatting from reporter state.
 TEST(MHashReporterTest, DirectXHashFormattingUsesReporterState)
 {

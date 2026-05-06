@@ -130,6 +130,75 @@ TEST(LogTestTest, FailConditionTransitionsToTerminalFailedState)
   EXPECT_EQ(test.getState(), "failed");
 }
 
+// Covers the partial-match fail-condition behavior: any satisfied fail
+// condition is terminal, even when other fail conditions remain unsatisfied.
+TEST(LogTestTest, PartialFailConditionMatchIsTerminalFailure)
+{
+  TestableLogTest test;
+  ASSERT_TRUE(test.setStartTime("1"));
+  ASSERT_TRUE(test.addPassCondition("NAV_X >= 10"));
+  ASSERT_TRUE(test.addFailCondition("COLLISION = true"));
+  ASSERT_TRUE(test.addFailCondition("BATTERY_LOW = true"));
+
+  EXPECT_TRUE(test.updateState(NumericEntry(1.0, "NAV_X", 0.0)));
+  EXPECT_EQ(test.getState(), "pending");
+  EXPECT_TRUE(test.updateState(StringEntry(2.0, "COLLISION", "true")));
+  EXPECT_EQ(test.getState(), "failed");
+  EXPECT_EQ(test.getFailReason(), "met fail condition");
+}
+
+// Covers pending-to-failed EOF behavior when pass conditions never become true.
+TEST(LogTestTest, PendingStateFailsAtEofWhenPassConditionsRemainUnmet)
+{
+  TestableLogTest test;
+  ASSERT_TRUE(test.setStartTime("1"));
+  ASSERT_TRUE(test.addPassCondition("NAV_X >= 10"));
+
+  EXPECT_TRUE(test.updateState(NumericEntry(1.0, "NAV_X", 5.0)));
+  EXPECT_EQ(test.getState(), "pending");
+  EXPECT_TRUE(test.updateState(EofEntry()));
+  EXPECT_EQ(test.getState(), "failed");
+  EXPECT_EQ(test.getFailReason(), "unmet pass conditions");
+}
+
+// Covers end-condition completion before end_time or EOF.
+TEST(LogTestTest, EndConditionCompletesPassingState)
+{
+  TestableLogTest test;
+  ASSERT_TRUE(test.setStartTime("1"));
+  ASSERT_TRUE(test.addPassCondition("NAV_X >= 10"));
+  ASSERT_TRUE(test.addEndCondition("DONE = true"));
+
+  EXPECT_TRUE(test.updateState(StringEntry(1.0, "DEPLOY", "true")));
+  EXPECT_EQ(test.getState(), "pending");
+  EXPECT_TRUE(test.updateState(NumericEntry(2.0, "NAV_X", 10.0)));
+  EXPECT_EQ(test.getState(), "passing");
+  EXPECT_TRUE(test.updateState(StringEntry(3.0, "DONE", "true")));
+  EXPECT_EQ(test.getState(), "passed");
+}
+
+// Covers print() output for unnamed tests and every condition bucket.
+TEST(LogTestTest, PrintReportsUnnamedTestConfiguration)
+{
+  TestableLogTest test;
+  ASSERT_TRUE(test.setStartTime("1"));
+  ASSERT_TRUE(test.setEndTime("2"));
+  ASSERT_TRUE(test.addStartCondition("DEPLOY = true"));
+  ASSERT_TRUE(test.addEndCondition("DONE = true"));
+  ASSERT_TRUE(test.addPassCondition("NAV_X >= 10"));
+  ASSERT_TRUE(test.addFailCondition("COLLISION = true"));
+
+  testing::internal::CaptureStdout();
+  test.print();
+  const std::string output = testing::internal::GetCapturedStdout();
+
+  EXPECT_TRUE(Contains(output, "Test Name: no_name"));
+  EXPECT_TRUE(Contains(output, "Start Conds: [1]"));
+  EXPECT_TRUE(Contains(output, "End Conds: [1]"));
+  EXPECT_TRUE(Contains(output, "Pass Conds: [1]"));
+  EXPECT_TRUE(Contains(output, "Fail Conds: [1]"));
+}
+
 // Covers start/end time gates. When the start-time transition itself sets the
 // changed flag, the current entry is not pushed into the InfoBuffer due to the
 // upstream short-circuit expression, so prior buffered values can satisfy pass.
@@ -188,6 +257,20 @@ TEST(LogTesterTest, ParseTestFileRejectsInvalidLines)
                        "Problem with line"));
 }
 
+// Covers blank test files. fileBuffer() presents the empty file as a blank
+// line, so the upstream parser accepts it as a no-op configuration.
+TEST(LogTesterTest, ParseTestFileAcceptsBlankNoOpFiles)
+{
+  TempDir temp("alogtest_empty_file");
+  const std::string test_file = temp.writeFile("checks.txt", "");
+
+  TestableLogTester* tester = new TestableLogTester();
+  testing::internal::CaptureStdout();
+  EXPECT_TRUE(tester->parseTestFile(test_file));
+  EXPECT_TRUE(Contains(testing::internal::GetCapturedStdout(),
+                       "Beginning to parse test file"));
+}
+
 // Covers LogTester file validation and end-to-end pass reporting.
 TEST(LogTesterTest, EndToEndTestReportsPassingResult)
 {
@@ -217,6 +300,58 @@ TEST(LogTesterTest, EndToEndTestReportsPassingResult)
 
   EXPECT_TRUE(Contains(output, "final_result = true"));
   EXPECT_TRUE(Contains(output, "result for test mission:true=passed="));
+}
+
+// Covers end-to-end failed reporting for tests that never pass.
+TEST(LogTesterTest, EndToEndTestReportsUnmetPassConditionFailure)
+{
+  TempDir temp("alogtest_end_to_end_fail");
+  const std::string test_file = temp.writeFile(
+      "checks.txt",
+      WithNewlines({"test_name=mission",
+                    "start_time=1",
+                    "end_time=2",
+                    "pass_condition=NAV_X >= 10"}));
+  const std::string alog = temp.writeFile("input.alog", "1.500 NAV_X src 5\n");
+
+  LogTester* tester = new LogTester();
+  ASSERT_TRUE(tester->addTestFile(test_file));
+  ASSERT_TRUE(tester->setALogFile(alog));
+
+  testing::internal::CaptureStdout();
+  EXPECT_FALSE(tester->test());
+  const std::string output = testing::internal::GetCapturedStdout();
+
+  EXPECT_TRUE(Contains(output, "final_result = false"));
+  EXPECT_TRUE(Contains(output, "mission:false=failed=(unmet pass conditions)"));
+}
+
+// Covers verbose parse printing during test().
+TEST(LogTesterTest, VerboseTestPrintsParsedConfiguration)
+{
+  TempDir temp("alogtest_verbose");
+  const std::string test_file = temp.writeFile(
+      "checks.txt",
+      WithNewlines({"test_name=mission",
+                    "start_time=1",
+                    "end_time=3",
+                    "pass_condition=NAV_X >= 10"}));
+  const std::string alog = temp.writeFile(
+      "input.alog",
+      WithNewlines({"1.000 DEPLOY src true", "2.000 NAV_X src 10"}));
+
+  LogTester* tester = new LogTester();
+  tester->setVerbose(true);
+  ASSERT_TRUE(tester->addTestFile(test_file));
+  ASSERT_TRUE(tester->setALogFile(alog));
+
+  testing::internal::CaptureStdout();
+  const bool ok = tester->test();
+  const std::string output = testing::internal::GetCapturedStdout();
+
+  EXPECT_TRUE(ok);
+  EXPECT_TRUE(Contains(output, "All Test files properly parsed"));
+  EXPECT_TRUE(Contains(output, "Number of LogTests: 1"));
 }
 
 // Covers mark-file write validation and overwrite behavior.

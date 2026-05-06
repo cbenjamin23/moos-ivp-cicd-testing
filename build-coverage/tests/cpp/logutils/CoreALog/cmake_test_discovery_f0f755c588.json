@@ -1,0 +1,102 @@
+{
+  "tests": 12,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ALogEntryTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "StoresNumericAndStringPostsWithSourceAuxAndSkew",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 35
+        },
+        {
+          "name": "ComparesAllFieldsAndReportsNullStatus",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 65
+        },
+        {
+          "name": "ExtractsTokenFieldsFromCommaSeparatedNodeReportStylePayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 86
+        }
+      ]
+    },
+    {
+      "name": "LogUtilsFieldParsingTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "SplitsCanonicalAlogLineWithWhitespaceAndSourceAux",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 104
+        },
+        {
+          "name": "PreservesComplexDataPayloadsAndReplacesOnlyDataField",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 126
+        }
+      ]
+    },
+    {
+      "name": "LogUtilsTimeTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ShiftsTimestampsRelativeToLogStartAndStripsTrailingZeros",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 145
+        },
+        {
+          "name": "ConvertsEpochLikeDateFieldsUsedInALogHeaders",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 169
+        }
+      ]
+    },
+    {
+      "name": "LogUtilsIndexTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "FindsLastEntryAtOrBeforeRequestedTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 185
+        }
+      ]
+    },
+    {
+      "name": "LogUtilsVectorKeyTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "AddsExactAndPrefixMatchKeysWithoutDuplicateRows",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 199
+        }
+      ]
+    },
+    {
+      "name": "LogUtilsFileParsingTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ReadsRawLinesAndReportsEofSentinel",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 217
+        },
+        {
+          "name": "ReadsRawAlogEntriesWithNumericStringAuxAndInvalidLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 236
+        },
+        {
+          "name": "FindsLogStartAndDataTimeBoundsInSyntheticMissionLog",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/CoreALog\/CoreALogTest.cpp",
+          "line": 282
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/ObShipModelV24/test_bhvutil_obshipmodel_v24[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/ObShipModelV24/test_bhvutil_obshipmodel_v24[1]_tests.cmake")
+else()
+  add_test(test_bhvutil_obshipmodel_v24_NOT_BUILT test_bhvutil_obshipmodel_v24_NOT_BUILT)
+endif()

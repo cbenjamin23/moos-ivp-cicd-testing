@@ -1,0 +1,52 @@
+{
+  "tests": 8,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ColregsAOFTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "CPAUtilityIncreasesWithSaferInitialSeparation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 33
+        },
+        {
+          "name": "RuleAOFsRequireRuleSpecificParameters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 49
+        },
+        {
+          "name": "Rule17HoldModeRewardsOriginalCourseAndSpeed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "Rule14AndRule16BuildEvaluableUtilities",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 95
+        },
+        {
+          "name": "Rule13OvertakingPassingSideIsAcceptedAndStoppedCourseIsNeutral",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 113
+        },
+        {
+          "name": "Rule16SternPassingConservativeModeDisallowsPortTurns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 139
+        },
+        {
+          "name": "Rule16BowPassingCanRequireMinimumBowCrossDistance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 164
+        },
+        {
+          "name": "Rule17InExtremisRejectsPortTurnForContactOnPortSide",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_colregs\/Core\/ColregsAOFTest.cpp",
+          "line": 182
+        }
+      ]
+    }
+  ]
+}

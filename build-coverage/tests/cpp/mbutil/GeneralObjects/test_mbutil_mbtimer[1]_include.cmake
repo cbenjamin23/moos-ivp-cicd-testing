@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/mbutil/GeneralObjects/test_mbutil_mbtimer[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/mbutil/GeneralObjects/test_mbutil_mbtimer[1]_tests.cmake")
+else()
+  add_test(test_mbutil_mbtimer_NOT_BUILT test_mbutil_mbtimer_NOT_BUILT)
+endif()

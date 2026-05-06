@@ -1,0 +1,52 @@
+{
+  "tests": 8,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "FiglogTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "StoresAndAugmentsMessagesWarningsAndErrors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "PinsGetErrorIndexingCurrentBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "AugmentsOnlyMostRecentEntryPerChannel",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "ReturnsCopiesAndEmptyStringsForOutOfRangeIndexes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "ClearsSelectedChannelsAndAllChannels",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 86
+        },
+        {
+          "name": "IndividualClearsLeaveOtherChannelsAndLabelUntouched",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 107
+        },
+        {
+          "name": "ClearLeavesLabelForReusableComponentLogs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 129
+        },
+        {
+          "name": "PrintShowsSummaryAndPinsCurrentErrorCountLabelQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/GeneralObjects\/FiglogTest.cpp",
+          "line": 148
+        }
+      ]
+    }
+  ]
+}

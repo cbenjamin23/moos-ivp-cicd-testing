@@ -1,0 +1,27 @@
+{
+  "tests": 3,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "IterHandlerTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "RejectsMissingInput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogiter\/IterHandler\/IterHandlerTest.cpp",
+          "line": 31
+        },
+        {
+          "name": "AggregatesGapAndLengthRowsByAppName",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogiter\/IterHandler\/IterHandlerTest.cpp",
+          "line": 44
+        },
+        {
+          "name": "ReportsThresholdPercentages",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogiter\/IterHandler\/IterHandlerTest.cpp",
+          "line": 74
+        }
+      ]
+    }
+  ]
+}

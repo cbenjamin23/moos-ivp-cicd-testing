@@ -1,0 +1,59 @@
+{
+  "tests": 7,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ColorParseTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ParsesNamedHexAndDecimalColors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/ColorAndFormatting\/ColorPackAndParseTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "ParsesViewerColorFormsAndRejectsMalformedRgb",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/ColorAndFormatting\/ColorPackAndParseTest.cpp",
+          "line": 31
+        },
+        {
+          "name": "ValidatesColorsAndConvertsBackToStrings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/ColorAndFormatting\/ColorPackAndParseTest.cpp",
+          "line": 60
+        }
+      ]
+    },
+    {
+      "name": "ColorPackTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "StoresVisibilityNamedColorsAndVectorColors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/ColorAndFormatting\/ColorPackAndParseTest.cpp",
+          "line": 80
+        },
+        {
+          "name": "HandlesViewerInvisibleClearAndInvalidUpdates",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/ColorAndFormatting\/ColorPackAndParseTest.cpp",
+          "line": 105
+        },
+        {
+          "name": "ShadesAndGraysColorsWithClipping",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/ColorAndFormatting\/ColorPackAndParseTest.cpp",
+          "line": 135
+        }
+      ]
+    },
+    {
+      "name": "TermColorTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "RemovesTerminalColorCodes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/ColorAndFormatting\/ColorPackAndParseTest.cpp",
+          "line": 156
+        }
+      ]
+    }
+  ]
+}

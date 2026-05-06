@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/realm/RealmCore/test_realm_core[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/realm/RealmCore/test_realm_core[1]_tests.cmake")
+else()
+  add_test(test_realm_core_NOT_BUILT test_realm_core_NOT_BUILT)
+endif()

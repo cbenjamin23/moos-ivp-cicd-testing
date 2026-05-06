@@ -1,0 +1,146 @@
+{
+  "tests": 22,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MarinePIDV22MailTest",
+      "tests": 13,
+      "testsuite": [
+        {
+          "name": "ManualOverrideSupportsBothSpellings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 156
+        },
+        {
+          "name": "NumericManualOverrideMailIsIgnored",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 250
+        },
+        {
+          "name": "VerboseMailAcceptsBooleansAndIgnoresInvalidValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 263
+        },
+        {
+          "name": "SpeedFactorMailOverridesConfiguredEngineFactor",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 282
+        },
+        {
+          "name": "SurfaceMailFeedsHeadingSpeedAndNavigationState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 305
+        },
+        {
+          "name": "LatestHeadingMailWinsBetweenNavHeadingAndNavYaw",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 327
+        },
+        {
+          "name": "NavYawMailUsesRadiansAndMarineHeadingConvention",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 361
+        },
+        {
+          "name": "IgnoreNavYawLeavesNavHeadingAsAuthoritative",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 382
+        },
+        {
+          "name": "DepthMailFeedsElevatorPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 406
+        },
+        {
+          "name": "SkewedMailIsIgnored",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 431
+        },
+        {
+          "name": "SkewFilterAcceptsRecentMailAndRejectsOldMail",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 455
+        },
+        {
+          "name": "ThrustCapMailClipsToConfiguredRuntimeRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 487
+        },
+        {
+          "name": "NumericThrustCapMailIsIgnored",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 506
+        }
+      ]
+    },
+    {
+      "name": "MarinePIDV22StartupTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "StartupAppliesMissionConfigAndV22AppOptions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 171
+        },
+        {
+          "name": "StartupRejectsMalformedDepthControl",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 219
+        }
+      ]
+    },
+    {
+      "name": "MarinePIDV22PostTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "PenginePostingsAreClearedAfterPublicationAttempt",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 519
+        },
+        {
+          "name": "AllStopLatchSetsAndClearsAcrossControlTransitions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 531
+        },
+        {
+          "name": "CharStatusHonorsVerboseFlag",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 560
+        }
+      ]
+    },
+    {
+      "name": "MarinePIDV22IterateTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "IterateComputesOutputsFromFreshMail",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 575
+        },
+        {
+          "name": "IterateWithOverridePublishesAllStopStateOnce",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 601
+        }
+      ]
+    },
+    {
+      "name": "MarinePIDV22ReportTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "BuildReportIncludesV22EngineAndThrustCapState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 620
+        },
+        {
+          "name": "BuildReportOmitsDepthSectionsWhenDepthControlIsDisabled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/MarinePIDV22Test.cpp",
+          "line": 639
+        }
+      ]
+    }
+  ]
+}

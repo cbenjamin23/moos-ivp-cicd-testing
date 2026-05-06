@@ -1,0 +1,399 @@
+{
+  "tests": 69,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "IPFEntryTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "DecodesHelmPostedIpfStringsAndBuildsViewerQuadSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 210
+        },
+        {
+          "name": "EmptyFunctionStringKeepsDefaultsAndEmptyQuadSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 235
+        },
+        {
+          "name": "MalformedFunctionStringIsRetainedButNeverBuildsState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 247
+        },
+        {
+          "name": "FirstQuadSetRequestCachesDenseOrSparseChoice",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 258
+        },
+        {
+          "name": "IvPFunctionDecodeReturnsFreshFunctionsAndLeavesDomainLazy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 278
+        },
+        {
+          "name": "OneDimensionalEntryPopulatesMetadataButNoTwoDQuadSet",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 303
+        }
+      ]
+    },
+    {
+      "name": "IPFBundleTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "KeepsOneFunctionPerBehaviorSourceWithinHelmIteration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 315
+        },
+        {
+          "name": "SeparatesCollectiveHeadingSpeedSurfaceFromDepthOnlySource",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 350
+        },
+        {
+          "name": "DefaultCollectiveQuadSetMeansHeadingSpeed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 374
+        },
+        {
+          "name": "IndexAndStringAccessorsHandleMissingEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 393
+        },
+        {
+          "name": "EntryMetadataPopulatesLazilyAfterQuadSetDecode",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 415
+        },
+        {
+          "name": "IndexQuadSetAccessPopulatesMetadataLikeSourceAccess",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 435
+        },
+        {
+          "name": "FirstQuadSetRequestCachesSubsequentDenseOrSparseRequests",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 454
+        },
+        {
+          "name": "ContextWithoutColonBecomesIterationZeroEmptySource",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 470
+        },
+        {
+          "name": "ContextParsingKeepsTextAfterFirstColonAsSource",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 496
+        }
+      ]
+    },
+    {
+      "name": "IPFBundleSeriesTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "IndexesBundlesByIterationAndTrimsFrontAndBack",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 525
+        },
+        {
+          "name": "DelegatesCollectiveQuadSetsAndClearsSources",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 565
+        },
+        {
+          "name": "EmptyCollectiveTypeDiffersFromExplicitHeadingSpeed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 591
+        },
+        {
+          "name": "PopNoopsAndOversizedPopsPreserveWindowRules",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 607
+        },
+        {
+          "name": "PopFrontAndBackTraverseMissingIterationGaps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 639
+        },
+        {
+          "name": "MissingIterationAccessorsInsertEmptyBundles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 669
+        },
+        {
+          "name": "TracksUniqueSourcesInFirstSeenOrderAcrossIterations",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 692
+        },
+        {
+          "name": "WholeIterationDomainIsEagerButSourceDomainIsLazy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 709
+        }
+      ]
+    },
+    {
+      "name": "IPFViewUtilsTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ExpandsOneDimensionalHeadingSpeedFunctionsAndPreservesPriority",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 732
+        },
+        {
+          "name": "ExpandLeavesNullTwoDimensionalAndUnexpandableFunctions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 758
+        },
+        {
+          "name": "OneDimensionalExpansionRequiresComplementaryDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 775
+        }
+      ]
+    },
+    {
+      "name": "IPFUtilsTest",
+      "tests": 12,
+      "testsuite": [
+        {
+          "name": "BuildQuadsFromCacheCoversPatchAndCourseWrapBridge",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 795
+        },
+        {
+          "name": "BuildQuadsFromCacheClampsOversizedPatchCorners",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 824
+        },
+        {
+          "name": "BuildQuadsFromCacheHonorsPatchStrideAcrossInteriorAndBridge",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 848
+        },
+        {
+          "name": "SparseAndDenseIPFBuildersPreserveViewerSurfaceValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 880
+        },
+        {
+          "name": "SparseBuilderUsesRawPieceValuesWhileDenseBuilderAppliesPriority",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 906
+        },
+        {
+          "name": "SparseBuilderPreservesMultiplePartialPieces",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 924
+        },
+        {
+          "name": "BuilderGuardsRejectNullWrongDimensionAndNonLinearPieces",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 971
+        },
+        {
+          "name": "PublicBuilderDispatchesSparseDenseAndOneDimensionalPaths",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 996
+        },
+        {
+          "name": "DenseAOFBuilderSamplesDomainValuesAndHonorsPatchSize",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1018
+        },
+        {
+          "name": "DenseAOFBuilderClampsOversizedPatchLikeCacheBuilder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1036
+        },
+        {
+          "name": "DenseBuildersHandleNonHeadingSpeedTwoDimensionalDomains",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1054
+        },
+        {
+          "name": "CacheBuilderHandlesDegenerateRowsAndColumns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1079
+        }
+      ]
+    },
+    {
+      "name": "QuadSetTest",
+      "tests": 15,
+      "testsuite": [
+        {
+          "name": "EmptySetAndOutOfRangeAccessUseConservativeDefaults",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1100
+        },
+        {
+          "name": "ResetMinMaxTracksEveryCornerAndKeepsFirstTie",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1112
+        },
+        {
+          "name": "MaxPointReturnsZeroWhenPeakIndexExceedsDomainBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1143
+        },
+        {
+          "name": "TracksMinMaxNormalizesAndSumsMatchingSurfaces",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1163
+        },
+        {
+          "name": "AddingEmptySetDoesNotChangeExistingSurface",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1193
+        },
+        {
+          "name": "SameSizedDifferentDomainAggregationStillAddsByIndex",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1208
+        },
+        {
+          "name": "DegenerateNormalizationAndColorRangesLeaveStableValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1230
+        },
+        {
+          "name": "NonPositiveTargetRangeNormalizationLeavesSurfaceUnchanged",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1263
+        },
+        {
+          "name": "ExplicitColorMapRangeOverridesCachedMinMax",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1280
+        },
+        {
+          "name": "ColorMapBaseAndTransformDelegationReachStoredQuads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1297
+        },
+        {
+          "name": "DirectScaleAndBaseDoNotRefreshCachedExtremaUntilReset",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1322
+        },
+        {
+          "name": "AutomaticTranslationOnlyAppliesToTwoDimensionalDomains",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1346
+        },
+        {
+          "name": "InvalidPolarArgumentsAndWrongDimensionLeaveQuadsUnchanged",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1362
+        },
+        {
+          "name": "PolarProjectionDelegatesThroughDomainPointCounts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1379
+        },
+        {
+          "name": "PolarProjectionDimTwoUsesSecondDomainPointCount",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1416
+        }
+      ]
+    },
+    {
+      "name": "Quad3DTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "InterpolatesInteriorSamplesAndReturnsZeroOutOfRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1448
+        },
+        {
+          "name": "DefaultsAllGeometryHeightAndColorChannelsToZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1473
+        },
+        {
+          "name": "ReinterpolateReplacesSamplesAndDirectHeightAddsAffectAverage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1494
+        },
+        {
+          "name": "LargePositiveInterpolationDeltaClearsInteriorSamples",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1517
+        },
+        {
+          "name": "InterpolatedSamplesFollowScaleBaseAndColorIntensity",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1530
+        },
+        {
+          "name": "InvalidPolarArgumentsLeaveGeometryAndInterpolantsUnchanged",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1551
+        },
+        {
+          "name": "ValidPolarDimTwoProjectsUsingYAsAngleAndXAsRadius",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1568
+        },
+        {
+          "name": "PolarDimTwoDoesNotTransformInterpolatedInteriorSamples",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1592
+        },
+        {
+          "name": "AppliesViewerTransformsAndPinsTranslationQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1610
+        },
+        {
+          "name": "ExpandClampsNegativeAndPositiveDeltas",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1653
+        }
+      ]
+    },
+    {
+      "name": "QuadSet1DTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "BuildsOneDimensionalViewerSeriesFromHelmIpf",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1676
+        },
+        {
+          "name": "PiecewiseFunctionsExposeWeightedEdgesAndMaxIndex",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1704
+        },
+        {
+          "name": "NegativeUtilitiesStillTrackMaximumAtLeastNegativePoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1736
+        },
+        {
+          "name": "ApplyIPFResetsPriorSeriesAndAggregationKeepsInitialCopy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1759
+        },
+        {
+          "name": "SetDomainDoesNotMakeEmptySeriesNonEmpty",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1792
+        },
+        {
+          "name": "RejectsInvalidInputsAndBoundsGetterIndexes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ipfview\/Core\/IPFViewCoreTest.cpp",
+          "line": 1805
+        }
+      ]
+    }
+  ]
+}

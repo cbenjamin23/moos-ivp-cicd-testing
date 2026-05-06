@@ -21,12 +21,23 @@ bool Contains(const std::string& haystack, const std::string& needle)
   return haystack.find(needle) != std::string::npos;
 }
 
+int CountOccurrences(const std::string& haystack, const std::string& needle)
+{
+  int count = 0;
+  std::string::size_type pos = 0;
+  while((pos = haystack.find(needle, pos)) != std::string::npos) {
+    ++count;
+    pos += needle.size();
+  }
+  return count;
+}
+
 }  // namespace
 
 // Source audit note: this suite covers HelmReporter's deterministic alog
 // validation, watch-variable output, mode change reporting, life-event capture,
-// and report surfaces against app_aloghelm. HelmReport parsing itself is
-// covered in the helmivp library family.
+// behavior-summary change reporting, and report surfaces against app_aloghelm.
+// HelmReport parsing itself is covered in the helmivp library family.
 
 // Covers input validation for empty and missing alog paths.
 TEST(HelmReporterTest, RejectsEmptyAndMissingAlogPaths)
@@ -144,4 +155,39 @@ TEST(HelmReporterTest, CollectsLifeEventsAndPrintsReport)
   EXPECT_TRUE(Contains(output, "waypt"));
   EXPECT_TRUE(Contains(output, "BHV_Waypoint"));
   EXPECT_TRUE(Contains(output, "helm startup"));
+}
+
+// Covers behavior-summary reporting, including the first report, unchanged
+// summaries being suppressed, and watch-behavior change highlighting.
+TEST(HelmReporterTest, ReportsOnlyChangedBehaviorSummaries)
+{
+  TempDir temp("aloghelm_behavior_changes");
+  const std::string first =
+      "iter=1,active_bhvs=waypt$1$100$4$0$n/a$1,"
+      "running_bhvs=loiter$1$n/a,idle_bhvs=return$1$n/a,"
+      "disabled_bhvs=avoid$1$n/a,completed_bhvs=survey$1$n/a";
+  const std::string changed =
+      "iter=3,active_bhvs=station$3$100$4$0$n/a$1,"
+      "running_bhvs=loiter$1$n/a,idle_bhvs=return$1$n/a,"
+      "disabled_bhvs=avoid$1$n/a,completed_bhvs=waypt$3$n/a";
+  const std::string alog = temp.writeFile(
+      "input.alog",
+      WithNewlines({"1.000 IVPHELM_SUMMARY pHelmIvP " + first,
+                    "2.000 IVPHELM_SUMMARY pHelmIvP " + first,
+                    "3.000 IVPHELM_SUMMARY pHelmIvP " + changed}));
+
+  HelmReporter reporter;
+  reporter.setUseColor(false);
+  reporter.reportBehaviorChanges(true);
+  reporter.setWatchBehavior("station");
+
+  testing::internal::CaptureStdout();
+  EXPECT_TRUE(reporter.handle(alog));
+  const std::string output = testing::internal::GetCapturedStdout();
+
+  EXPECT_TRUE(Contains(output, "1.000    (1) Active:    waypt"));
+  EXPECT_TRUE(Contains(output, "3.000    (3) Active:    station"));
+  EXPECT_TRUE(Contains(output, "3.000    (3) Completed: waypt"));
+  EXPECT_EQ(CountOccurrences(output, "Active:"), 2);
+  EXPECT_TRUE(Contains(output, "CHANGE"));
 }

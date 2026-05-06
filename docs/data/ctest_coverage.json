@@ -1,0 +1,618 @@
+{
+  "families": {
+    "alogavg": {
+      "covered_lines": 129,
+      "line_percent": 97.73,
+      "source_dirs": [
+        "app_alogavg"
+      ],
+      "source_files": 2,
+      "total_lines": 132
+    },
+    "alogbin": {
+      "covered_lines": 48,
+      "line_percent": 96.0,
+      "source_dirs": [
+        "app_alogbin"
+      ],
+      "source_files": 1,
+      "total_lines": 50
+    },
+    "alogcat": {
+      "covered_lines": 176,
+      "line_percent": 84.21,
+      "source_dirs": [
+        "app_alogcat"
+      ],
+      "source_files": 1,
+      "total_lines": 209
+    },
+    "alogcd": {
+      "covered_lines": 111,
+      "line_percent": 97.37,
+      "source_dirs": [
+        "app_alogcd"
+      ],
+      "source_files": 1,
+      "total_lines": 114
+    },
+    "alogcheck": {
+      "covered_lines": 165,
+      "line_percent": 98.21,
+      "source_dirs": [
+        "app_alogcheck"
+      ],
+      "source_files": 1,
+      "total_lines": 168
+    },
+    "alogclip": {
+      "covered_lines": 216,
+      "line_percent": 87.1,
+      "source_dirs": [
+        "app_alogclip"
+      ],
+      "source_files": 2,
+      "total_lines": 248
+    },
+    "alogeplot": {
+      "covered_lines": 295,
+      "line_percent": 91.33,
+      "source_dirs": [
+        "app_alogeplot"
+      ],
+      "source_files": 1,
+      "total_lines": 323
+    },
+    "alogeval": {
+      "covered_lines": 155,
+      "line_percent": 96.88,
+      "source_dirs": [
+        "app_alogeval"
+      ],
+      "source_files": 1,
+      "total_lines": 160
+    },
+    "aloggrep": {
+      "covered_lines": 285,
+      "line_percent": 93.44,
+      "source_dirs": [
+        "app_aloggrep"
+      ],
+      "source_files": 1,
+      "total_lines": 305
+    },
+    "aloghelm": {
+      "covered_lines": 146,
+      "line_percent": 87.95,
+      "source_dirs": [
+        "app_aloghelm"
+      ],
+      "source_files": 1,
+      "total_lines": 166
+    },
+    "alogiter": {
+      "covered_lines": 182,
+      "line_percent": 98.91,
+      "source_dirs": [
+        "app_alogiter"
+      ],
+      "source_files": 1,
+      "total_lines": 184
+    },
+    "alogload": {
+      "covered_lines": 70,
+      "line_percent": 95.89,
+      "source_dirs": [
+        "app_alogload"
+      ],
+      "source_files": 1,
+      "total_lines": 73
+    },
+    "alogmhash": {
+      "covered_lines": 211,
+      "line_percent": 96.79,
+      "source_dirs": [
+        "app_alogmhash"
+      ],
+      "source_files": 1,
+      "total_lines": 218
+    },
+    "alogpare": {
+      "covered_lines": 215,
+      "line_percent": 89.96,
+      "source_dirs": [
+        "app_alogpare"
+      ],
+      "source_files": 1,
+      "total_lines": 239
+    },
+    "alogpick": {
+      "covered_lines": 69,
+      "line_percent": 97.18,
+      "source_dirs": [
+        "app_alogpick"
+      ],
+      "source_files": 1,
+      "total_lines": 71
+    },
+    "alogrm": {
+      "covered_lines": 131,
+      "line_percent": 99.24,
+      "source_dirs": [
+        "app_alogrm"
+      ],
+      "source_files": 1,
+      "total_lines": 132
+    },
+    "alogscan": {
+      "covered_lines": 163,
+      "line_percent": 90.56,
+      "source_dirs": [
+        "app_alogscan"
+      ],
+      "source_files": 1,
+      "total_lines": 180
+    },
+    "alogsort": {
+      "covered_lines": 103,
+      "line_percent": 89.57,
+      "source_dirs": [
+        "app_alogsort"
+      ],
+      "source_files": 1,
+      "total_lines": 115
+    },
+    "alogsplit": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "app_alogsplit"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "alogtest": {
+      "covered_lines": 408,
+      "line_percent": 90.67,
+      "source_dirs": [
+        "app_alogtest"
+      ],
+      "source_files": 2,
+      "total_lines": 450
+    },
+    "alogtm": {
+      "covered_lines": 137,
+      "line_percent": 95.14,
+      "source_dirs": [
+        "app_alogtm"
+      ],
+      "source_files": 1,
+      "total_lines": 144
+    },
+    "apputil": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_apputil"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "behaviors": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_behaviors"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "behaviors_colregs": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_behaviors-colregs"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "behaviors_marine": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_behaviors-marine"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "bhvutil": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_bhvutil"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "contacts": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_contacts"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "dep_behaviors": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_dep_behaviors"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "encounters": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_encounters"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "evalutil": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_evalutil"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "gen_moos_app": {
+      "covered_lines": 6,
+      "line_percent": 100.0,
+      "source_dirs": [
+        "app_gen_moos_app"
+      ],
+      "source_files": 1,
+      "total_lines": 6
+    },
+    "genutil": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_genutil"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "geodaid": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_geodaid"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "geometry": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_geometry"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "helmivp": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_helmivp"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "ipfview": {
+      "covered_lines": 969,
+      "line_percent": 93.44,
+      "source_dirs": [
+        "lib_ipfview"
+      ],
+      "source_files": 8,
+      "total_lines": 1037
+    },
+    "isay": {
+      "covered_lines": 223,
+      "line_percent": 49.56,
+      "source_dirs": [
+        "iSay"
+      ],
+      "source_files": 4,
+      "total_lines": 450
+    },
+    "ivpbuild": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_ivpbuild"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "ivpcore": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_ivpcore"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "ivpsolve": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_ivpsolve"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "logic": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_logic"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "logutils": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_logutils"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "manifest": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_manifest"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "marine_pid": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_marine_pid"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "marineview": {
+      "covered_lines": 473,
+      "line_percent": 54.56,
+      "source_dirs": [
+        "lib_marineview"
+      ],
+      "source_files": 4,
+      "total_lines": 867
+    },
+    "mbutil": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_mbutil"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "nspatch": {
+      "covered_lines": 470,
+      "line_percent": 82.89,
+      "source_dirs": [
+        "app_nspatch"
+      ],
+      "source_files": 5,
+      "total_lines": 567
+    },
+    "nsplug": {
+      "covered_lines": 419,
+      "line_percent": 82.48,
+      "source_dirs": [
+        "app_nsplug"
+      ],
+      "source_files": 1,
+      "total_lines": 508
+    },
+    "obstacles": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_obstacles"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "pechovar": {
+      "covered_lines": 235,
+      "line_percent": 50.65,
+      "source_dirs": [
+        "pEchoVar"
+      ],
+      "source_files": 2,
+      "total_lines": 464
+    },
+    "pickpos": {
+      "covered_lines": 564,
+      "line_percent": 87.04,
+      "source_dirs": [
+        "app_pickpos"
+      ],
+      "source_files": 1,
+      "total_lines": 648
+    },
+    "pluck": {
+      "covered_lines": 69,
+      "line_percent": 97.18,
+      "source_dirs": [
+        "app_pluck"
+      ],
+      "source_files": 1,
+      "total_lines": 71
+    },
+    "polar": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_polar"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "prealm": {
+      "covered_lines": 105,
+      "line_percent": 89.74,
+      "source_dirs": [
+        "pRealm"
+      ],
+      "source_files": 1,
+      "total_lines": 117
+    },
+    "projfield": {
+      "covered_lines": 54,
+      "line_percent": 100.0,
+      "source_dirs": [
+        "app_projfield"
+      ],
+      "source_files": 1,
+      "total_lines": 54
+    },
+    "realm": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_realm"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "survey": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_survey"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "tagrep": {
+      "covered_lines": 75,
+      "line_percent": 92.59,
+      "source_dirs": [
+        "app_tagrep"
+      ],
+      "source_files": 1,
+      "total_lines": 81
+    },
+    "turngeo": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_turngeo"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "ucommand": {
+      "covered_lines": 166,
+      "line_percent": 89.73,
+      "source_dirs": [
+        "lib_ucommand"
+      ],
+      "source_files": 3,
+      "total_lines": 185
+    },
+    "ufield": {
+      "covered_lines": 0,
+      "line_percent": null,
+      "source_dirs": [
+        "lib_ufield"
+      ],
+      "source_files": 0,
+      "total_lines": 0
+    },
+    "ufldbeaconrangesensor": {
+      "covered_lines": 143,
+      "line_percent": 100.0,
+      "source_dirs": [
+        "uFldBeaconRangeSensor"
+      ],
+      "source_files": 1,
+      "total_lines": 143
+    },
+    "ufldcollisiondetect": {
+      "covered_lines": 231,
+      "line_percent": 89.88,
+      "source_dirs": [
+        "uFldCollisionDetect"
+      ],
+      "source_files": 1,
+      "total_lines": 257
+    },
+    "uflddelve": {
+      "covered_lines": 64,
+      "line_percent": 100.0,
+      "source_dirs": [
+        "uFldDelve"
+      ],
+      "source_files": 1,
+      "total_lines": 64
+    },
+    "uhelmscope": {
+      "covered_lines": 220,
+      "line_percent": 88.35,
+      "source_dirs": [
+        "uHelmScope"
+      ],
+      "source_files": 2,
+      "total_lines": 249
+    },
+    "uplotviewer": {
+      "covered_lines": 45,
+      "line_percent": 73.77,
+      "source_dirs": [
+        "uPlotViewer"
+      ],
+      "source_files": 1,
+      "total_lines": 61
+    },
+    "utimerscript": {
+      "covered_lines": 861,
+      "line_percent": 56.91,
+      "source_dirs": [
+        "uTimerScript"
+      ],
+      "source_files": 9,
+      "total_lines": 1513
+    },
+    "zaicview": {
+      "covered_lines": 136,
+      "line_percent": 38.42,
+      "source_dirs": [
+        "lib_zaicview"
+      ],
+      "source_files": 3,
+      "total_lines": 354
+    }
+  },
+  "schema_version": 1,
+  "scope": "direct-compiled"
+}

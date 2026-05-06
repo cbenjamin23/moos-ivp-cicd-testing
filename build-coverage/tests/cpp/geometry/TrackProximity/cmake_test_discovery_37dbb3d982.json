@@ -1,0 +1,211 @@
+{
+  "tests": 29,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "LinearExtrapolatorStateTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "FailsBeforeOwnshipOrContactPositionIsKnown",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 59
+        }
+      ]
+    },
+    {
+      "name": "LinearExtrapolatorMotionTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ProjectsNominalContactMotionUsingMoosHeadingConvention",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 73
+        },
+        {
+          "name": "HandlesCardinalHeadingsAndHeadingNormalization",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 89
+        },
+        {
+          "name": "AllowsNegativeSpeedAsReverseMotionQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 113
+        }
+      ]
+    },
+    {
+      "name": "LinearExtrapolatorTimeTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "RejectsClearlyNegativeDeltaTimeAndReportsClockSkew",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 127
+        },
+        {
+          "name": "AllowsTinyNegativeDeltaTimeAsBackwardProjectionQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 143
+        },
+        {
+          "name": "ReturnsCurrentPositionAtExactTimestamp",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 158
+        }
+      ]
+    },
+    {
+      "name": "LinearExtrapolatorDecayTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "AppliesPiecewiseLinearDecayWindow",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 172
+        },
+        {
+          "name": "UsesEqualBeginAndEndDecayAsHardClip",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 203
+        },
+        {
+          "name": "RejectsInvalidDecaySettingsWithoutReplacingLastValidPolicy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 224
+        },
+        {
+          "name": "CanDisableDecayAfterUsingAClippingPolicy",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 242
+        },
+        {
+          "name": "ExactTimestampDoesNotClearPriorDecayMaxedFlagQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 259
+        }
+      ]
+    },
+    {
+      "name": "LinearExtrapolatorMoosUseTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "NodeRecordUtilsStyleMaxDeltaClipsStaleNodeReport",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 278
+        },
+        {
+          "name": "ContactManagersComputeActualAndExtrapolatedContactRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 301
+        }
+      ]
+    },
+    {
+      "name": "WrapDetectorStateTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "StartsEmptyAndStoresFirstPositionWithoutLeg",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 327
+        },
+        {
+          "name": "IgnoresLegsBelowMinimumDistanceAndKeepsPreviousAnchor",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 343
+        },
+        {
+          "name": "AcceptsZeroMinimumLegIncludingRepeatedPositionSegments",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 367
+        },
+        {
+          "name": "ClearAndResetRemoveWrapCountAndLegHistory",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 482
+        }
+      ]
+    },
+    {
+      "name": "WrapDetectorWrapTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "CountsLegRunStyleSelfIntersectionAndClearsHistory",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 382
+        },
+        {
+          "name": "DoesNotCountIntersectionWithImmediatePreviousLeg",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 397
+        },
+        {
+          "name": "CountsFreshWrapsAfterWrapResetFromNextReportedPosition",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 413
+        }
+      ]
+    },
+    {
+      "name": "WrapDetectorHistoryTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "PrunesOldLegsAtMaxLegLimit",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 428
+        },
+        {
+          "name": "ZeroMaxLegsKeepsCurrentAnchorButNoHistory",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 446
+        },
+        {
+          "name": "PrunedHistoryNoLongerContributesToWrapDetection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 463
+        }
+      ]
+    },
+    {
+      "name": "ProxPointStateTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "DefaultsCpaAndDistanceToZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 513
+        },
+        {
+          "name": "StoresWallCacheMetadataWithoutValidation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 522
+        }
+      ]
+    },
+    {
+      "name": "ProxPointOrderingTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "SortsByDistanceToCpaForWallProximityCaches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 535
+        },
+        {
+          "name": "OrderingIgnoresCpaValueAndTypeForEqualDistances",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 553
+        },
+        {
+          "name": "StrictLessThanHandlesNegativeDistances",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/TrackProximity\/TrackProximityTest.cpp",
+          "line": 563
+        }
+      ]
+    }
+  ]
+}

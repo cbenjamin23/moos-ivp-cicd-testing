@@ -1,0 +1,57 @@
+{
+  "tests": 9,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "InfoCastSettingsTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "StartsWithAppCastDefaultsUsedByViewerTools",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 6
+        },
+        {
+          "name": "ParsesBooleansWithMoosConfigStyleSynonyms",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "TogglesContentRefreshAndLayoutModes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 61
+        },
+        {
+          "name": "PinsModeCaseWhitespaceAndRealmDefaultQuirks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 89
+        },
+        {
+          "name": "ClipsAndSnapsInfoCastPanelDimensions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 111
+        },
+        {
+          "name": "PinsPanelDimensionBoundaryAndParsingRules",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 142
+        },
+        {
+          "name": "CyclesFontSizesAndStopsAtEdgesForBiggerSmaller",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 167
+        },
+        {
+          "name": "PinsIndependentFontCyclesForNodesProcsAndContent",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 190
+        },
+        {
+          "name": "AcceptsAndCyclesKnownColorSchemes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/apputil\/InfoCast\/InfoCastSettingsTest.cpp",
+          "line": 210
+        }
+      ]
+    }
+  ]
+}

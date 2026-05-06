@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/utimerscript/RandomScript/test_utimerscript_random_script[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/utimerscript/RandomScript/test_utimerscript_random_script[1]_tests.cmake")
+else()
+  add_test(test_utimerscript_random_script_NOT_BUILT test_utimerscript_random_script_NOT_BUILT)
+endif()

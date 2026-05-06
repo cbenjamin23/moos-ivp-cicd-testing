@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <cstdio>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -13,9 +14,11 @@ namespace {
 class TestablePickPos : public PickPos {
  public:
   using PickPos::pickColors;
+  using PickPos::pickFileLines;
   using PickPos::pickGroupNames;
   using PickPos::pickHeadingVals;
   using PickPos::pickIndices;
+  using PickPos::pickPosByFile;
   using PickPos::pickPosByCircle;
   using PickPos::pickSpeedVals;
   using PickPos::pickVehicleNames;
@@ -214,6 +217,34 @@ TEST(PickPosTest, PicksNamesAndIndicesFromConfiguredStartOffset)
   EXPECT_FALSE(picker.setVNameStartIX("bad"));
 }
 
+// Covers default-name cache variants, wraparound, and reverse-name indexing.
+TEST(PickPosTest, PicksVehicleNamesFromAllBuiltInCaches)
+{
+  TestablePickPos one;
+  ASSERT_TRUE(one.setPickAmt("2"));
+  one.pickVehicleNames();
+  ASSERT_EQ(one.pickVNames().size(), 2u);
+  EXPECT_EQ(one.pickVNames()[0], "abe");
+  EXPECT_EQ(one.pickVNames()[1], "ben");
+
+  TestablePickPos four;
+  ASSERT_TRUE(four.setVNameCacheFour());
+  ASSERT_TRUE(four.setPickAmt("2"));
+  ASSERT_TRUE(four.setVNameStartIX("51"));
+  four.pickVehicleNames();
+  ASSERT_EQ(four.pickVNames().size(), 2u);
+  EXPECT_EQ(four.pickVNames()[0], "zeke");
+  EXPECT_EQ(four.pickVNames()[1], "art");
+
+  TestablePickPos reversed;
+  ASSERT_TRUE(reversed.setPickAmt("2"));
+  ASSERT_TRUE(reversed.setReverseNames());
+  reversed.pickVehicleNames();
+  ASSERT_EQ(reversed.pickVNames().size(), 2u);
+  EXPECT_EQ(reversed.pickVNames()[0], "zahl");
+  EXPECT_EQ(reversed.pickVNames()[1], "york");
+}
+
 // Covers deterministic pick helpers for fixed heading/speed/color values.
 TEST(PickPosTest, PicksFixedHeadingSpeedAndConfiguredColors)
 {
@@ -236,6 +267,48 @@ TEST(PickPosTest, PicksFixedHeadingSpeedAndConfiguredColors)
   ASSERT_EQ(picker.pickColorsOut().size(), 2u);
   EXPECT_EQ(picker.pickColorsOut()[0], "red");
   EXPECT_EQ(picker.pickColorsOut()[1], "blue");
+}
+
+// Covers random heading and speed ranges without relying on a specific random
+// draw.
+TEST(PickPosTest, PicksRandomHeadingAndSpeedValuesWithinConfiguredRanges)
+{
+  TestablePickPos picker;
+  ASSERT_TRUE(picker.setPickAmt("20"));
+  ASSERT_TRUE(picker.setHdgConfig("-10:10"));
+  ASSERT_TRUE(picker.setSpdConfig("1.25:1.75"));
+
+  picker.pickHeadingVals();
+  picker.pickSpeedVals();
+
+  ASSERT_EQ(picker.pickHeadings().size(), 20u);
+  ASSERT_EQ(picker.pickSpeeds().size(), 20u);
+  for(double heading : picker.pickHeadings()) {
+    EXPECT_GE(heading, -10);
+    EXPECT_LT(heading, 10);
+  }
+  for(double speed : picker.pickSpeeds()) {
+    EXPECT_GE(speed, 1.25);
+    EXPECT_LT(speed, 1.75);
+  }
+}
+
+// Covers relative-bearing heading generation from already-picked positions.
+TEST(PickPosTest, PicksRelativeBearingHeadingsFromPositionFile)
+{
+  TempDir temp("pickpos_rbng");
+  const std::string pos_file = temp.writeFile("positions.txt", "x=10,y=0\n");
+
+  TestablePickPos picker;
+  ASSERT_TRUE(picker.setPickAmt("1"));
+  ASSERT_TRUE(picker.addPosFile(pos_file));
+  picker.pickPosByFile();
+  ASSERT_TRUE(picker.setHdgConfig("0,0,0"));
+
+  picker.pickHeadingVals();
+
+  ASSERT_EQ(picker.pickHeadings().size(), 1u);
+  EXPECT_DOUBLE_EQ(picker.pickHeadings()[0], -90);
 }
 
 // Covers position and line file loaders while avoiding the fatal over-pick
@@ -301,6 +374,31 @@ TEST(PickPosTest, PicksFromLineFileWithinAvailableChoices)
   EXPECT_EQ(picker.pickLines().size(), 2u);
 }
 
+// Covers fatal over-pick validation for position-file and line-file sources.
+TEST(PickPosDeathTest, ExitsWhenPickAmountExceedsFileChoices)
+{
+  TempDir temp("pickpos_file_death");
+  const std::string pos_file = temp.writeFile("positions.txt", "x=1,y=2\n");
+
+  TestablePickPos picker;
+  ASSERT_TRUE(picker.setPickAmt("2"));
+  ASSERT_TRUE(picker.addPosFile(pos_file));
+
+  EXPECT_EXIT(picker.pickPosByFile(), ::testing::ExitedWithCode(1), ".*");
+}
+
+TEST(PickPosDeathTest, ExitsWhenPickAmountExceedsLineChoices)
+{
+  TempDir temp("pickpos_line_death");
+  const std::string line_file = temp.writeFile("lines.txt", "alpha\n");
+
+  TestablePickPos picker;
+  ASSERT_TRUE(picker.setPickAmt("2"));
+  ASSERT_TRUE(picker.addLineFile(line_file));
+
+  EXPECT_EXIT(picker.pickFileLines(), ::testing::ExitedWithCode(1), ".*");
+}
+
 // Covers a small polygon-backed pick without invoking fatal failure paths.
 TEST(PickPosTest, PicksFromConfiguredPolygon)
 {
@@ -349,4 +447,60 @@ TEST(PickPosTest, CirclePickerPositiveMinSepAddsNoPositions)
 
   EXPECT_TRUE(picker.pickPosByCircle(10));
   EXPECT_TRUE(picker.pickPositions().empty());
+}
+
+// Covers result-file reuse and the early return in printChoices().
+TEST(PickPosTest, ReusesExistingResultFileWithoutPrintingNewChoices)
+{
+  TempDir temp("pickpos_reuse");
+  const std::string result_file = temp.writeFile("result.txt", "stale\n");
+
+  TestablePickPos picker;
+  ASSERT_TRUE(picker.setPickAmt("1"));
+  ASSERT_TRUE(picker.setIndices());
+  ASSERT_TRUE(picker.setResultFile(result_file));
+  ASSERT_TRUE(picker.setReuse());
+
+  testing::internal::CaptureStdout();
+  EXPECT_TRUE(picker.pick());
+  EXPECT_EQ(testing::internal::GetCapturedStdout(), "");
+  std::fflush(nullptr);
+
+  std::ifstream input(result_file);
+  std::string contents((std::istreambuf_iterator<char>(input)),
+                       std::istreambuf_iterator<char>());
+  EXPECT_EQ(contents, "stale\n");
+}
+
+// Covers composite output formatting to a result file, including terse removal
+// of field labels.
+TEST(PickPosTest, WritesTerseCompositeChoicesToResultFile)
+{
+  TempDir temp("pickpos_result_file");
+  const std::string result_file = temp.filePath("result.txt");
+
+  TestablePickPos picker;
+  ASSERT_TRUE(picker.setPickAmt("1"));
+  ASSERT_TRUE(picker.setCircle("x=1,y=2,rad=3"));
+  ASSERT_TRUE(picker.setHdgConfig("45"));
+  ASSERT_TRUE(picker.setSpdConfig("2"));
+  ASSERT_TRUE(picker.setVNames("abe"));
+  ASSERT_TRUE(picker.setColors("red"));
+  ASSERT_TRUE(picker.setGroups("alpha"));
+  ASSERT_TRUE(picker.setOutputType("terse"));
+  ASSERT_TRUE(picker.setResultFile(result_file));
+
+  testing::internal::CaptureStdout();
+  EXPECT_TRUE(picker.pick());
+  EXPECT_EQ(testing::internal::GetCapturedStdout(), "");
+
+  std::ifstream input(result_file);
+  std::string line;
+  ASSERT_TRUE(std::getline(input, line));
+  EXPECT_EQ(line.find("x="), std::string::npos);
+  EXPECT_EQ(line.find("heading="), std::string::npos);
+  EXPECT_NE(line.find("45"), std::string::npos);
+  EXPECT_NE(line.find("abe"), std::string::npos);
+  EXPECT_NE(line.find("red"), std::string::npos);
+  EXPECT_NE(line.find("alpha"), std::string::npos);
 }

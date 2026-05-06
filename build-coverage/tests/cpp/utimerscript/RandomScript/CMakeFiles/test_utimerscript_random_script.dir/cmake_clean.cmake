@@ -1,0 +1,40 @@
+file(REMOVE_RECURSE
+  "/Users/charlesbenjamin/moos-ivp-cicd-testing/bin/test_utimerscript_random_script"
+  "/Users/charlesbenjamin/moos-ivp-cicd-testing/bin/test_utimerscript_random_script.pdb"
+  "CMakeFiles/test_utimerscript_random_script.dir/EnumVariableTest.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/EnumVariableTest.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomPairSetTest.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomPairSetTest.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomPairTest.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomPairTest.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomVariableSetTest.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomVariableSetTest.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomVariableTest.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/RandomVariableTest.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/TS_MOOSAppTest.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/TS_MOOSAppTest.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/EnumVariable.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/EnumVariable.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandPairPoly.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandPairPoly.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandVarGaussian.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandVarGaussian.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandVarUniform.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandVarUniform.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomPair.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomPair.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomPairSet.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomPairSet.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomVariable.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomVariable.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomVariableSet.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/RandomVariableSet.cpp.o.d"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/TS_MOOSApp.cpp.o"
+  "CMakeFiles/test_utimerscript_random_script.dir/Users/charlesbenjamin/moos-ivp/ivp/src/uTimerScript/TS_MOOSApp.cpp.o.d"
+  "test_utimerscript_random_script[1]_tests.cmake"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/test_utimerscript_random_script.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

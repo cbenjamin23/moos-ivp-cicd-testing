@@ -1,0 +1,97 @@
+{
+  "tests": 11,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "RealmCastTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "SerializesAndParsesPMarineViewerRealmCastPayload",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 56
+        },
+        {
+          "name": "EmptyOrMissingFieldsParseAsUnknownButRemainCounted",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "name": "RealmSummaryTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "DeduplicatesChannelsAndFormatsRealmcastChannels",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 92
+        },
+        {
+          "name": "ParsesRealmcastChannelsAndRejectsUnknownSections",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 112
+        }
+      ]
+    },
+    {
+      "name": "WatchCastTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "SerializesStringAndDoubleWatchcastPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 127
+        },
+        {
+          "name": "RejectsIncompleteOrAmbiguousPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 157
+        }
+      ]
+    },
+    {
+      "name": "RealmCastSetTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "UsesKnownProcIdsAndOnstartProcSelection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 171
+        },
+        {
+          "name": "CountsLatestRealmcastsPerProcess",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 188
+        }
+      ]
+    },
+    {
+      "name": "RealmCastTreeTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "TracksNodesProcsIdsAndSelection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 202
+        }
+      ]
+    },
+    {
+      "name": "RealmRepoTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "AddsRealmSummariesAndReportsNodeProcChanges",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 230
+        },
+        {
+          "name": "RoutesWatchcastsIntoConfiguredClusters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/realm\/RealmCore\/RealmCoreTest.cpp",
+          "line": 257
+        }
+      ]
+    }
+  ]
+}

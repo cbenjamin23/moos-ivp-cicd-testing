@@ -1,0 +1,478 @@
+{
+  "tests": 86,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ScalarPIDTest",
+      "tests": 19,
+      "testsuite": [
+        {
+          "name": "DefaultAndConfiguredControllersExposeGainsAndLimits",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 42
+        },
+        {
+          "name": "FirstRunUsesProportionalOnlyAndStoresOutput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 67
+        },
+        {
+          "name": "RejectsNegativeTimeStepWithoutReplacingLastOutput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 82
+        },
+        {
+          "name": "AveragesDerivativeHistoryAcrossPositiveTimeSteps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 95
+        },
+        {
+          "name": "KeepsNineDerivativeSamplesInCurrentHistoryWindow",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 114
+        },
+        {
+          "name": "IntegratesAndClipsPositiveAndNegativeAccumulatedError",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 129
+        },
+        {
+          "name": "DisablesIntegralMemoryWhenKiIsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 145
+        },
+        {
+          "name": "NegativeKiAlsoClearsIntegralMemory",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 160
+        },
+        {
+          "name": "SaturatesPositiveNegativeAndExactLimitOutputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 175
+        },
+        {
+          "name": "ZeroTimeAfterSaturationReturnsPriorOutputButClearsSatFlag",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 198
+        },
+        {
+          "name": "UpdatedLimitsApplyToSubsequentRuns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 214
+        },
+        {
+          "name": "NegativeAndZeroOutputLimitsSaturateByAbsoluteMagnitude",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 230
+        },
+        {
+          "name": "DebugStringTracksInputsTimingDerivativeAndOutput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 245
+        },
+        {
+          "name": "CopyAndAssignmentPreserveTuningButResetRuntimeState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 265
+        },
+        {
+          "name": "LoggingWritesNamedPidFileWithGoalAndActualColumns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 295
+        },
+        {
+          "name": "LoggingCanBeDisabledAfterPathEnablesIt",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 326
+        },
+        {
+          "name": "EmptyLogPathDisablesPreviouslyEnabledLogging",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 343
+        },
+        {
+          "name": "InvalidLogPathDisablesLoggingWithoutFailingRun",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 361
+        },
+        {
+          "name": "SelfAssignmentPreservesTuningAndContinuesFromResetState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/ScalarPIDTest.cpp",
+          "line": 376
+        }
+      ]
+    },
+    {
+      "name": "PIDEngineConfigTest",
+      "tests": 19,
+      "testsuite": [
+        {
+          "name": "DefaultsStartInOverrideAndStaleWithoutControl",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 132
+        },
+        {
+          "name": "SortsKnownAndUnhandledMissionParameters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 151
+        },
+        {
+          "name": "DetectsOnlyYawSettingsInPidHeuristic",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 165
+        },
+        {
+          "name": "PidHeuristicRecognizesEveryYawSettingAlias",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 182
+        },
+        {
+          "name": "AppliesSurfaceTuningAndReportsSummaries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 202
+        },
+        {
+          "name": "LaterMissionLinesOverrideEarlierDuplicateSettings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 222
+        },
+        {
+          "name": "RepeatedConfigLoadsKeepEarlierEffectiveSettings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 244
+        },
+        {
+          "name": "AcceptsCaseInsensitiveNamesAndWhitespace",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 273
+        },
+        {
+          "name": "LegacyYawKiLimitAliasConfiguresIntegralLimit",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 304
+        },
+        {
+          "name": "MalformedNumericSettingsFallBackToZeroGainBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 322
+        },
+        {
+          "name": "MalformedSimulationValueStillUsesStalenessChecks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 359
+        },
+        {
+          "name": "NegativeSpeedFactorPreservesPreviousConfiguredFactor",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 379
+        },
+        {
+          "name": "MissingPidSettingsKeepDefaultZeroGains",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 393
+        },
+        {
+          "name": "DepthDisabledSkipsMissingDepthAndPitchSettings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 418
+        },
+        {
+          "name": "RejectsMalformedDepthControlValue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 430
+        },
+        {
+          "name": "ConvertsMaxPitchConfigFromDegreesToRadians",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 441
+        },
+        {
+          "name": "UnknownSummaryTypeReturnsEmptyVector",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 452
+        },
+        {
+          "name": "MissingDepthControllerSettingsLeaveZeroGainsAndDefaultLimits",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 461
+        },
+        {
+          "name": "DepthConfigSummariesExposePitchAndDepthControllers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 486
+        }
+      ]
+    },
+    {
+      "name": "PIDEngineOverrideTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "StringOverrideTransitionsPublishControlState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 514
+        },
+        {
+          "name": "OverrideFlagDoesNotByItselfGateEngineComputation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 540
+        },
+        {
+          "name": "StringOverrideAcceptsMixedCaseBooleanMail",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 556
+        },
+        {
+          "name": "BooleanOverrideSetterChangesControlWithoutPosting",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 574
+        },
+        {
+          "name": "ReleasingOverrideResetsInputTimestampsUntilFreshMailArrives",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 588
+        }
+      ]
+    },
+    {
+      "name": "PIDEngineOutputTest",
+      "tests": 25,
+      "testsuite": [
+        {
+          "name": "RuntimeSpeedFactorSetterOverridesConfiguredFactor",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 611
+        },
+        {
+          "name": "InputsStampedAtZeroAreStillTreatedAsMissing",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 627
+        },
+        {
+          "name": "WaitsForEachInitialSurfaceInput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 648
+        },
+        {
+          "name": "WaitsForInitialRequiredSurfaceInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 681
+        },
+        {
+          "name": "WaitsForInitialDepthInputsWhenDepthControlIsEnabled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 699
+        },
+        {
+          "name": "WaitsForEachInitialDepthInputWhenDepthControlIsEnabled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 717
+        },
+        {
+          "name": "ComputesMissionStyleRudderAndSpeedFactorThrust",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 748
+        },
+        {
+          "name": "WrapsDesiredHeadingBeforeComputingRudder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 765
+        },
+        {
+          "name": "NormalizesDesiredAndCurrentHeadingAcrossWrap",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 779
+        },
+        {
+          "name": "ClipsRudderToConfiguredMaxWithoutDebugEnabled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 795
+        },
+        {
+          "name": "RudderBiasAppliesSimInstabilitySawtooth",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 812
+        },
+        {
+          "name": "RudderBiasDoesNotFlipAtExactDurationBoundary",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 837
+        },
+        {
+          "name": "RudderBiasClipsNegativeAndOverlargeInstabilityConfig",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 856
+        },
+        {
+          "name": "GatesRudderAndElevatorWhenDesiredThrustIsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 882
+        },
+        {
+          "name": "CapsSpeedFactorThrustAndClipsNegativeSpeedsToZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 899
+        },
+        {
+          "name": "TinyPositiveThrustBelowCutoffGatesSteering",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 915
+        },
+        {
+          "name": "RuntimeNegativeSpeedFactorSuppressesThrustAndSteering",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 929
+        },
+        {
+          "name": "SpeedPidModeDoesNotPublishReverseThrust",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 945
+        },
+        {
+          "name": "SpeedPidModeCanBackOffAccumulatedThrustToZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 959
+        },
+        {
+          "name": "SpeedPidModeAccumulatesDeltaThrustAcrossIterations",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 976
+        },
+        {
+          "name": "DepthControlProducesElevatorFromDepthAndPitchError",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 992
+        },
+        {
+          "name": "DepthControlCommandsPositiveElevatorWhenTooShallow",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1008
+        },
+        {
+          "name": "CurrentPitchContributesDirectlyToElevatorCommand",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1024
+        },
+        {
+          "name": "DepthControlDisabledIgnoresDepthMailAndNeverPublishesElevator",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1039
+        },
+        {
+          "name": "RuntimeDepthControlSetterBypassesDepthRequirements",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1055
+        }
+      ]
+    },
+    {
+      "name": "PIDEngineStalenessTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "ReportsStaleSurfaceInputsAndSuppressesOutputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1073
+        },
+        {
+          "name": "IsolatesHelmAndNavStalenessWithDifferentThresholds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1099
+        },
+        {
+          "name": "DirectStalenessCheckOnlyPostsDiagnosticsAndControlFlag",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1147
+        },
+        {
+          "name": "RepeatedStalenessChecksAppendDiagnosticsUntilCleared",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1168
+        },
+        {
+          "name": "ThresholdBoundaryIsFreshUntilDeltaExceedsLimit",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1188
+        },
+        {
+          "name": "NegativeThresholdsClipToZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1209
+        },
+        {
+          "name": "BackwardTimeDeltasClearPriorStaleState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1228
+        },
+        {
+          "name": "ReportsDepthSpecificStalenessWhenDepthControlIsEnabled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1251
+        },
+        {
+          "name": "SimulationModeBypassesStalenessChecks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1272
+        },
+        {
+          "name": "FreshInputsRecoverFromPriorStaleState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1314
+        }
+      ]
+    },
+    {
+      "name": "PIDEnginePostingsTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "AddsNumericAndStringPostingsAndCanClearThem",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1295
+        }
+      ]
+    },
+    {
+      "name": "PIDEngineDiagnosticsTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "ComputesFrequencyFromSetDesiredValuesCalls",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1338
+        },
+        {
+          "name": "FrequencyCountsCallsThatReturnBeforeInputsArrive",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1350
+        },
+        {
+          "name": "FrequencyIsZeroUntilPositiveElapsedTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1364
+        },
+        {
+          "name": "HeadingDebugPublishesSummaryAndSaturationEvidence",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1378
+        },
+        {
+          "name": "DebugModesPublishSummariesWithoutMaxSatWhenInsideLimits",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1399
+        },
+        {
+          "name": "SpeedDebugPublishesFactorAndPidModeReports",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1423
+        },
+        {
+          "name": "DepthDebugPublishesSummaryAndSaturationEvidence",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marine_pid\/PIDEngine\/PIDEngineTest.cpp",
+          "line": 1450
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVConstantHeadingTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ComputesWrappedHeadingMismatchAndCompletesInsideThreshold",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantHeadingTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "NormalizesMissionHeadingAndKeepsWrappedUtilityPeak",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantHeadingTest.cpp",
+          "line": 47
+        },
+        {
+          "name": "WarnsOnMissingNavHeadingButStillBuildsDefaultObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantHeadingTest.cpp",
+          "line": 72
+        },
+        {
+          "name": "FailsWithoutCourseDimensionInHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantHeadingTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "MissionStyleBravoTurnHeadingCompletesAtThreshold",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantHeadingTest.cpp",
+          "line": 105
+        }
+      ]
+    }
+  ]
+}

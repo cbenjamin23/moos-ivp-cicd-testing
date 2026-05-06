@@ -1,0 +1,108 @@
+{
+  "tests": 18,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "XYFormatUtilsCircleTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ParsesViewCircleStyleSpecUsedByViewerApps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 14
+        },
+        {
+          "name": "ParsesContactManagerAlertRadiiPayload",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 47
+        },
+        {
+          "name": "ParsesQuotedViewerMessagePayloadsWithCommas",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 67
+        },
+        {
+          "name": "RequiresCoordinateAndRadiusFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 88
+        },
+        {
+          "name": "PreservesParserTreatmentOfUnknownAndLooseFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 98
+        }
+      ]
+    },
+    {
+      "name": "XYCircleTest",
+      "tests": 13,
+      "testsuite": [
+        {
+          "name": "InitializesSimpleIoGeomUtilsCircleFormat",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 122
+        },
+        {
+          "name": "SettersClampOrRejectNegativeRadiusByEntryPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 138
+        },
+        {
+          "name": "ComputesBoundsContainmentAndPerimeterDistance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 167
+        },
+        {
+          "name": "DistinguishesContainedSegmentsFromStrictPerimeterCrossings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 187
+        },
+        {
+          "name": "HandlesTangentAndDiagonalPerimeterIntersections",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 205
+        },
+        {
+          "name": "TreatsZeroRadiusAsPointCircleForContainmentAndSegmentChecks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 231
+        },
+        {
+          "name": "ReportsHorizontalAndVerticalSegmentIntersectionPoints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 255
+        },
+        {
+          "name": "ComputesLengthOfSegmentInsideCircle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 281
+        },
+        {
+          "name": "SerializesViewerCircleSpecsWithDigitsAndMetadata",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 293
+        },
+        {
+          "name": "RoundTripsCollisionDetectorEncounterRingPayload",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 320
+        },
+        {
+          "name": "RoundTripsContactManagerWarningAndAlertRadiiPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 341
+        },
+        {
+          "name": "ClampsSerializationDigitsToSupportedRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 388
+        },
+        {
+          "name": "BuildsPointCacheUsingMoosHeadingConvention",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsCircle\/XYFormatUtilsCircleTest.cpp",
+          "line": 410
+        }
+      ]
+    }
+  ]
+}

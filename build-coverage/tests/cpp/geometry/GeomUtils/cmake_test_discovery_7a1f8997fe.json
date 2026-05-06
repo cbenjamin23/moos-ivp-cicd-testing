@@ -1,0 +1,156 @@
+{
+  "tests": 18,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "GeomUtilsProjectionTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ProjectsPointsUsingMoosHeadingConvention",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 12
+        },
+        {
+          "name": "CombinesHeadingMagnitudeVectors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 34
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsDistanceTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ComputesPointSegmentAndLineDistancesWithClosestPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 45
+        },
+        {
+          "name": "ProjectsPerpendicularsToLinesAndSegments",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 66
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsIntersectionTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "FindsLineAndSegmentCrossings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 81
+        },
+        {
+          "name": "ComputesDistancesBetweenSegments",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 123
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsRayTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ComputesRayCrossingsAndClosestApproach",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 138
+        },
+        {
+          "name": "ComputesSeglistAndPolygonRayCpaForObstacleLookahead",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 158
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsSegListTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "ComputesDistancesToSeglistAndPolygon",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 184
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsSegmentModifierTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "AdjustsSegmentLengthAngleAndLocation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 210
+        },
+        {
+          "name": "RejectsZeroLengthSegments",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 391
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsCircleTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ComputesLineCircleIntersectionCases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 241
+        },
+        {
+          "name": "FiltersCircleIntersectionsToSegmentExtent",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 267
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsPolygonMeasureTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ComputesRotatedWidthHeightAndAspectRatio",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 290
+        },
+        {
+          "name": "ComputesBearingConeAndSamplesPointsForObstacleViews",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 309
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsMutatorTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ShiftsVertexVectorsAndLeavesInvalidInputUnchanged",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 343
+        },
+        {
+          "name": "ParsesPointAndSeglistIntoExistingObjectsAtomically",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 366
+        }
+      ]
+    },
+    {
+      "name": "GeomUtilsDeprecatedAliasTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "KeepsLegacyDistanceWrappersEquivalent",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/GeomUtils\/GeomUtilsTest.cpp",
+          "line": 384
+        }
+      ]
+    }
+  ]
+}

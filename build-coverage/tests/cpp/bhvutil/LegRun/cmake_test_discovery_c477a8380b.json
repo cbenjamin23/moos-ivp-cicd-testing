@@ -1,0 +1,78 @@
+{
+  "tests": 12,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "LegRunTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "ParsesPointAndTurnParametersUsedBySurveyLegRunPatterns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 15
+        },
+        {
+          "name": "BuildsLegFromCenterAngleAndLengthAndSupportsGeometryMutation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "AcceptsKeywordCenterFormatAndDeprecatedVertexAliases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 65
+        },
+        {
+          "name": "ClipsTurnRadiusAndBiasAndRejectsInvalidInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 86
+        },
+        {
+          "name": "AppliesIncrementalModifiersAndInvalidatesCachedTurnGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 110
+        },
+        {
+          "name": "GeneratesTurnSeglistsAndDistancePointsAroundClosedLegRun",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 137
+        },
+        {
+          "name": "SerializesConfiguredLegRunForMissionFileReuse",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 171
+        },
+        {
+          "name": "StringToLegRunReturnsInvalidObjectWhenAnyTokenFails",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 192
+        }
+      ]
+    },
+    {
+      "name": "LegRunSetTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "StoresAndUpdatesLegRunsById",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 202
+        },
+        {
+          "name": "PinsCurrentVNameFallbackAndInnerParseFailureBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 225
+        },
+        {
+          "name": "ReadsLegRunFilesWithCommentsAndReportsBadLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 239
+        },
+        {
+          "name": "LoadingAdditionalFilesUpdatesExistingIdsWithoutClearingOthers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/bhvutil\/LegRun\/LegRunTest.cpp",
+          "line": 264
+        }
+      ]
+    }
+  ]
+}

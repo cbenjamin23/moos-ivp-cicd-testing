@@ -1,0 +1,67 @@
+{
+  "tests": 11,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AvgHandlerTest",
+      "tests": 11,
+      "testsuite": [
+        {
+          "name": "ExpEntryComputesAverageRangeAndStdDev",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 34
+        },
+        {
+          "name": "ExpEntryRecomputesAfterAdditionalValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "EmptyExpEntryReturnsZeroStatistics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "AcceptsOnlyOneReadableLogFile",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "HandleRejectsMissingInputFile",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 92
+        },
+        {
+          "name": "EmptyInputProducesNoRows",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 100
+        },
+        {
+          "name": "AveragesRowsGroupedByXValue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 114
+        },
+        {
+          "name": "NegPosModeReportsAverageDeltas",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 137
+        },
+        {
+          "name": "NegPosModeHandlesNegativeValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 156
+        },
+        {
+          "name": "VerboseModeReportsBadLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 175
+        },
+        {
+          "name": "AlignedOutputContainsComputedValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogavg\/AvgHandler\/AvgHandlerTest.cpp",
+          "line": 195
+        }
+      ]
+    }
+  ]
+}

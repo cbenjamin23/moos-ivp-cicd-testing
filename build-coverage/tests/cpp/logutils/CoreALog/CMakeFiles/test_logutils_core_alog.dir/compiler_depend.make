@@ -1,0 +1,2 @@
+# Empty compiler generated dependencies file for test_logutils_core_alog.
+# This may be replaced when dependencies are built.

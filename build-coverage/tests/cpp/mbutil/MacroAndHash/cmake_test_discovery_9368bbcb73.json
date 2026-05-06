@@ -1,0 +1,68 @@
+{
+  "tests": 10,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MacroUtilsTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "ExpandsScalarMacrosInBothSupportedForms",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "PinsMissionMacroExamplesAndNumericDigitClamps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 24
+        },
+        {
+          "name": "FindsAndReducesMacrosWithDefaults",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 46
+        },
+        {
+          "name": "FindsCustomMacroFormsAndPinsReductionNoOps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 73
+        },
+        {
+          "name": "DetectsCounterMacrosAndGeneratesRequestedHashLengths",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 97
+        },
+        {
+          "name": "PinsCounterAndHashMacroEdgeCases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 112
+        }
+      ]
+    },
+    {
+      "name": "HashUtilsTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "GeneratesRandomHashesWithExpectedCharacterClasses",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 132
+        },
+        {
+          "name": "ExtractsMissionAndZHashShortForms",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 149
+        },
+        {
+          "name": "PinsMissionHashFormatsUsedByMissionHashApps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 163
+        },
+        {
+          "name": "ProvidesStableWordPoolsForMissionHashes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/MacroAndHash\/MacroAndHashTest.cpp",
+          "line": 183
+        }
+      ]
+    }
+  ]
+}

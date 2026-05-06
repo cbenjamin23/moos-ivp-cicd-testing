@@ -1,0 +1,62 @@
+{
+  "tests": 10,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "PopulatorManifestSetTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "PopulatesMultiModuleMoosManifestFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 23
+        },
+        {
+          "name": "AppliesLocFilesIncludingAppPrefixAliases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 73
+        },
+        {
+          "name": "SupportsCommentsContinuationAndOptionalFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 122
+        },
+        {
+          "name": "RejectsPluralAliasesBeforeSecondPassHandling",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 165
+        },
+        {
+          "name": "RejectsInvalidLineKeysAndMissingFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 182
+        },
+        {
+          "name": "AllowsDuplicateModulesAndCommentOnlyLocFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 219
+        },
+        {
+          "name": "PopulatesAcrossMultipleManifestFilesAndLocAliases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 263
+        },
+        {
+          "name": "PinsLineKeyCaseSensitivityAndContinuationRules",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 301
+        },
+        {
+          "name": "PinsLocParserPartialAndMissingModuleBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 333
+        },
+        {
+          "name": "InvalidBornDateExitsEvenWhenExitOnFailureDisabled",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/manifest\/Populator\/ManifestPopulatorTest.cpp",
+          "line": 358
+        }
+      ]
+    }
+  ]
+}

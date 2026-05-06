@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVZigZagTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "StartsConfiguredStarboardZigAndBuildsHeadingSpeedObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ZigZagTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "ActiveDerivedStemAndSpeedUseCurrentNavigation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ZigZagTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "CompletesAfterConfiguredStemOdometryAndErasesOnIdle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ZigZagTest.cpp",
+          "line": 99
+        },
+        {
+          "name": "MissionStyleFierceZiggingUsesCurrentHeadingAndLegFlags",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ZigZagTest.cpp",
+          "line": 144
+        },
+        {
+          "name": "VisualHintsCanDisableBothViewerLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ZigZagTest.cpp",
+          "line": 213
+        },
+        {
+          "name": "MissingOrStaleNavigationSuppressesObjectiveWithErrors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ZigZagTest.cpp",
+          "line": 242
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "tests": 19,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "XYSeglrTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "DefaultsAndConstructorsExposeRaySpecificState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 40
+        },
+        {
+          "name": "EditsVerticesAndReportsStemOnlyExtents",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 74
+        },
+        {
+          "name": "TranslatesFromFirstStemVertexAndReflectsRayAngle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 104
+        },
+        {
+          "name": "ClampsVisualSizingAndCacheValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 129
+        },
+        {
+          "name": "SerializesRayFieldsDrawingHintsAndOptionalCpa",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 160
+        }
+      ]
+    },
+    {
+      "name": "XYFormatUtilsSeglrTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ParsesStandardSeglrWithObjectDrawingFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 194
+        },
+        {
+          "name": "ParsesMarineViewerDubinsStyleViewSeglrPayload",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 222
+        },
+        {
+          "name": "ParsesMinimalAndOutOfOrderPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 241
+        },
+        {
+          "name": "PreservesCurrentParserQuirksForNumericRayFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 262
+        },
+        {
+          "name": "RejectsMalformedPointPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 291
+        }
+      ]
+    },
+    {
+      "name": "SeglrTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "MaintainsRayStemGeometryAndFormatsCompactString",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 303
+        },
+        {
+          "name": "CrossesLineCanPreferRayOrStemIntersection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 331
+        },
+        {
+          "name": "CrossesLineHandlesRayOnlyAndStemOnlyBoundaryCases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 352
+        },
+        {
+          "name": "TranslatesReflectsAndRotatesAroundFirstStemVertex",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 377
+        }
+      ]
+    },
+    {
+      "name": "XYSeglrGeomUtilsTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "UsesCachedStemCpaWhenValidAndRayIsFarther",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 404
+        },
+        {
+          "name": "IgnoresIncompleteCacheAndComputesStemCpa",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 423
+        },
+        {
+          "name": "RayCpaBeatsCachedStemCpaAndExtendsStemDistance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 441
+        },
+        {
+          "name": "DistToPointUsesRayProjectionForSingleVertexSeglr",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 460
+        },
+        {
+          "name": "DistToPointFallsBackToRayBaseForPointBehindRay",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsSeglr\/XYFormatUtilsSeglrTest.cpp",
+          "line": 476
+        }
+      ]
+    }
+  ]
+}

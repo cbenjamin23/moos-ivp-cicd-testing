@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVPModelViewTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "AcceptsViewerStylingAndReturnsNoObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/PModelViewTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "DrawsAndErasesTurnPathWhenDesiredSpeedIsNonZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/PModelViewTest.cpp",
+          "line": 36
+        },
+        {
+          "name": "MissingPlatformMailPostsBehaviorErrors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/PModelViewTest.cpp",
+          "line": 72
+        },
+        {
+          "name": "MissingDesiredSpeedSuppressesTurnPathWithoutPlatformError",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/PModelViewTest.cpp",
+          "line": 92
+        },
+        {
+          "name": "AcceptedStyleParamsDoNotOverrideFixedTurnPathStyling",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/PModelViewTest.cpp",
+          "line": 112
+        }
+      ]
+    }
+  ]
+}

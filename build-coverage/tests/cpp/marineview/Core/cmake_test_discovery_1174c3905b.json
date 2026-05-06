@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BackImgTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "StartsEmptyAndConvertsPixelsToFractionsAfterInfoLoad",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 251
+        },
+        {
+          "name": "DatumOverridesShiftLocalImageCenterWithinBoundaryMap",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 280
+        },
+        {
+          "name": "CopiesDerivedGeometryAndCanLocateMatchingTiffInfoPair",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 299
+        },
+        {
+          "name": "ReadsTinyTiffAndOldStyleInfoPairForViewerBackdrop",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 334
+        },
+        {
+          "name": "ReadsOldStyleInfoWithSlashCommentsAndRejectsIncompleteInfo",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 367
+        },
+        {
+          "name": "ReadsNewStyleInfoRejectsMalformedFilesAndUsesEnvLookup",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/MarineViewCoreTest.cpp",
+          "line": 402
+        }
+      ]
+    }
+  ]
+}

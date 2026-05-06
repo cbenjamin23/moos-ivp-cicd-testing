@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsVector/test_geometry_xyformatutils_vector[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsVector/test_geometry_xyformatutils_vector[1]_tests.cmake")
+else()
+  add_test(test_geometry_xyformatutils_vector_NOT_BUILT test_geometry_xyformatutils_vector_NOT_BUILT)
+endif()

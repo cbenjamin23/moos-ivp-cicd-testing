@@ -1,0 +1,98 @@
+{
+  "tests": 16,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "VCheckTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "ParsesNumericAndStringMissionEvalChecks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "GenericValSetsStringAndNumericWhenValueIsNumeric",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 33
+        },
+        {
+          "name": "PinsMissionEvalCaseAndNegativeNumericToleranceSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 50
+        },
+        {
+          "name": "PinsDuplicateAndMixedValueFieldsAsLastParsedState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 64
+        },
+        {
+          "name": "SettersRecordEvaluationResultAndActualObservationFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 80
+        },
+        {
+          "name": "RejectsMalformedChecksAndRequiresValueTimeAndDelta",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 112
+        },
+        {
+          "name": "PinsFailedParseCanLeaveEarlierParsedFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "PinsTrailingCommaAsIgnoredEmptyField",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 139
+        },
+        {
+          "name": "SortsEarlierTargetTimesBeforeLaterTimesInEvalSequences",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckTest.cpp",
+          "line": 150
+        }
+      ]
+    },
+    {
+      "name": "VCheckSetTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "ValidatesMissionEvalVcheckConfiguration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckSetTest.cpp",
+          "line": 27
+        },
+        {
+          "name": "PassesStringAndNumericChecksAfterStartTrigger",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckSetTest.cpp",
+          "line": 48
+        },
+        {
+          "name": "FailsValueDeltaChecksAndRecordsCompactFailureReport",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckSetTest.cpp",
+          "line": 84
+        },
+        {
+          "name": "TimesOutMissingExactPostsAndSupportsFailOnFirst",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckSetTest.cpp",
+          "line": 103
+        },
+        {
+          "name": "SupportsNumericStartTriggersAndIgnoresPreStartMail",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckSetTest.cpp",
+          "line": 125
+        },
+        {
+          "name": "PinsStrictTimeWindowBoundary",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckSetTest.cpp",
+          "line": 147
+        },
+        {
+          "name": "LimitsReportsByHidingPassedChecksFirst",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/evalutil\/VCheck\/VCheckSetTest.cpp",
+          "line": 165
+        }
+      ]
+    }
+  ]
+}

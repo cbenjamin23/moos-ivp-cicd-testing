@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/encounters/CPAEvent/test_encounters_cpaevent[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/encounters/CPAEvent/test_encounters_cpaevent[1]_tests.cmake")
+else()
+  add_test(test_encounters_cpaevent_NOT_BUILT test_encounters_cpaevent_NOT_BUILT)
+endif()

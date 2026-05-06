@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVLegRunTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "InitializesFixedLegAndBuildsWaypointObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LegRunTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "CloseTurnInitializationChoosesNearestLegEndpoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LegRunTest.cpp",
+          "line": 46
+        },
+        {
+          "name": "MissingNavigationOrInvalidLegSuppressesObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LegRunTest.cpp",
+          "line": 86
+        },
+        {
+          "name": "MissionStyleDeprecatedVxConfigPostsPreviewAndSettings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LegRunTest.cpp",
+          "line": 125
+        },
+        {
+          "name": "LegSpeedScheduleRejectsBadEntriesAndCanBeCleared",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/LegRunTest.cpp",
+          "line": 195
+        }
+      ]
+    }
+  ]
+}

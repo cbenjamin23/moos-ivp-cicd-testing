@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ivpbuild/AOF/test_ivpbuild_aof[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ivpbuild/AOF/test_ivpbuild_aof[1]_tests.cmake")
+else()
+  add_test(test_ivpbuild_aof_NOT_BUILT test_ivpbuild_aof_NOT_BUILT)
+endif()

@@ -1,0 +1,73 @@
+{
+  "tests": 11,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ContactStateTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "DefaultsToNoContactGeometryOrEvents",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "StoresRelativeGeometryAndMacroExpandsContactFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateTest.cpp",
+          "line": 25
+        },
+        {
+          "name": "ExpandsAllRelativePositionMacrosUsedByContactBehaviors",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "StoresPredictedPassingCrossingAndCpaQuantities",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateTest.cpp",
+          "line": 102
+        }
+      ]
+    },
+    {
+      "name": "ContactStateSetTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "ArchivesCurrentContactStateAndClampsHistoryLookup",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateSetTest.cpp",
+          "line": 8
+        },
+        {
+          "name": "RetainsFiveHistoricalContactSnapshotsNewestFirst",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateSetTest.cpp",
+          "line": 38
+        },
+        {
+          "name": "ExposesContactBehaviorKinematicsAndMacroExpansion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateSetTest.cpp",
+          "line": 65
+        },
+        {
+          "name": "DetectsRangeTransitionsAndClosestPointOfApproach",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateSetTest.cpp",
+          "line": 103
+        },
+        {
+          "name": "ReportsPassingAndCrossingSideSpecificEvents",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateSetTest.cpp",
+          "line": 140
+        },
+        {
+          "name": "ReportsBowSpecificCrossingEventsAndAliases",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateSetTest.cpp",
+          "line": 170
+        },
+        {
+          "name": "DoesNotReportPassingOrCrossingWithoutSideTransition",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors\/Core\/ContactStateSetTest.cpp",
+          "line": 198
+        }
+      ]
+    }
+  ]
+}

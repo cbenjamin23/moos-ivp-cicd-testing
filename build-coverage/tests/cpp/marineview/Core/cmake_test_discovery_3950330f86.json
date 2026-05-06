@@ -1,0 +1,32 @@
+{
+  "tests": 4,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MarineViewShapeCatalogTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "CoreVehicleBodiesHaveConsistentPointCounts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/ShapeCatalogTest.cpp",
+          "line": 89
+        },
+        {
+          "name": "MultipartVehicleComponentsRemainDrawablePolygons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/ShapeCatalogTest.cpp",
+          "line": 113
+        },
+        {
+          "name": "SymbolicViewerShapesHaveStableClosedOutlines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/ShapeCatalogTest.cpp",
+          "line": 149
+        },
+        {
+          "name": "NominalLengthsCentersAndWidthsStayPositive",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/marineview\/Core\/ShapeCatalogTest.cpp",
+          "line": 171
+        }
+      ]
+    }
+  ]
+}

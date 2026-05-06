@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVRStationKeepTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "SeeksStationPointRelativeToContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/RStationKeepTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "ReturnsNoObjectiveInsideInnerRadiusButKeepsViewerPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/RStationKeepTest.cpp",
+          "line": 48
+        },
+        {
+          "name": "MissingContactMailSuppressesObjectiveAndWarns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/RStationKeepTest.cpp",
+          "line": 82
+        },
+        {
+          "name": "ContactHeadingRotatesRelativeStationOffsetAcrossNorth",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/RStationKeepTest.cpp",
+          "line": 109
+        },
+        {
+          "name": "CenterActivateCapturesCurrentOwnshipOffsetWhenIdle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/RStationKeepTest.cpp",
+          "line": 149
+        },
+        {
+          "name": "IdleErasesStationCircleAndViewerPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/RStationKeepTest.cpp",
+          "line": 192
+        }
+      ]
+    }
+  ]
+}

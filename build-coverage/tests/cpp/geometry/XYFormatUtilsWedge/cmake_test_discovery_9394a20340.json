@@ -1,0 +1,93 @@
+{
+  "tests": 15,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "XYFormatUtilsWedgeTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "ParsesCanonicalViewWedgePayloadUsedByMarineViewer",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "IgnoresUnsupportedObjectMetadataInParser",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "ClampsLooseDrawingHintsAndTreatsAnyNonTrueActiveAsFalse",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 90
+        },
+        {
+          "name": "ParserNormalizesAnglesAndRadiiInEncounterSectorPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 107
+        },
+        {
+          "name": "RequiresAllSixGeometryFieldsOnlyThroughIsValid",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 134
+        },
+        {
+          "name": "RejectsMalformedNumbersAndNegativeRadiiByLeavingWedgeInvalid",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 155
+        }
+      ]
+    },
+    {
+      "name": "XYWedgeTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "SettersNormalizeAnglesAndMaintainRadiusOrdering",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 168
+        },
+        {
+          "name": "InitializesBoundsAndPointCacheUsingMoosHeadingConvention",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 196
+        },
+        {
+          "name": "BoundsExpandAcrossCardinalAxesInsideArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 223
+        },
+        {
+          "name": "SettersInvalidateCacheAndReinitializeShiftedSectorBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 237
+        },
+        {
+          "name": "CoarseDrawResolutionStillIncludesRadialEdgesAndEndcaps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 264
+        },
+        {
+          "name": "WraparoundArcComputesBoundsButCurrentCacheOmitsArcSamples",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 282
+        },
+        {
+          "name": "FullCircleLikeEqualAnglesDegeneratesToTwoRadialEdges",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 305
+        },
+        {
+          "name": "SerializesSpecAndRoundTripsSupportedFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 326
+        },
+        {
+          "name": "IsValidCurrentlyEmitsDebugDiagnostics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYFormatUtilsWedge\/XYFormatUtilsWedgeTest.cpp",
+          "line": 389
+        }
+      ]
+    }
+  ]
+}

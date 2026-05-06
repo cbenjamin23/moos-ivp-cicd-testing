@@ -1,0 +1,32 @@
+{
+  "tests": 4,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVOpRegionRecoverTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "PostsStatusWhenOwnshipIsInsideRecoveryPolygon",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionRecoverTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "OutsideRecoveryPolygonBuildsObjectiveAndPostsTurnTelemetry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionRecoverTest.cpp",
+          "line": 42
+        },
+        {
+          "name": "DynamicRegionVarReplacesMissionPolygonAtRunTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionRecoverTest.cpp",
+          "line": 85
+        },
+        {
+          "name": "IdleErasesBufferedRecoveryPolygon",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionRecoverTest.cpp",
+          "line": 121
+        }
+      ]
+    }
+  ]
+}

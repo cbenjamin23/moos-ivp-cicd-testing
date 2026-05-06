@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logic/InfoBuffer/test_logic_infobuffer[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logic/InfoBuffer/test_logic_infobuffer[1]_tests.cmake")
+else()
+  add_test(test_logic_infobuffer_NOT_BUILT test_logic_infobuffer_NOT_BUILT)
+endif()

@@ -1,0 +1,58 @@
+{
+  "tests": 8,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ConditionalParamTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "ParsesCombinedParamValueAndConditionSyntax",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "ParsesSplitParamAndValueConditionSyntax",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 23
+        },
+        {
+          "name": "RejectsMalformedConditionalParamStrings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 42
+        },
+        {
+          "name": "SupportsCustomCommentsAndPinsStickyOkState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "name": "LedgerSnapTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "StoresContactLedgerFieldsUsedByBehaviorPopulation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 67
+        },
+        {
+          "name": "SerializesNodeSpecAndReportsMissingFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 98
+        },
+        {
+          "name": "PinsClearLeavingVSourceMapInCurrentImplementation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 125
+        },
+        {
+          "name": "TracksOptionalUtcAgeFieldsAndMissingSpecInsertion",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logic\/ConditionalLedger\/ConditionalParamAndLedgerSnapTest.cpp",
+          "line": 140
+        }
+      ]
+    }
+  ]
+}

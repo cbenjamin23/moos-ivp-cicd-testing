@@ -1,0 +1,52 @@
+{
+  "tests": 8,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MHashReporterTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "RejectsMissingAndUnsetAlogFile",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 44
+        },
+        {
+          "name": "ReportAllUsesMHashWithGreatestOdometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 59
+        },
+        {
+          "name": "IndividualReportModesUseParsedState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "ScalarReportModesUseParsedOdometryAndDuration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 119
+        },
+        {
+          "name": "DefaultVerboseReportListsHashSummary",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 157
+        },
+        {
+          "name": "MHashInputPathBypassesAlogParsing",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 186
+        },
+        {
+          "name": "DirectXHashFormattingUsesReporterState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 198
+        },
+        {
+          "name": "XHashPadsValuesAndPinsDurationClampQuirk",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogmhash\/MHashReporter\/MHashReporterTest.cpp",
+          "line": 208
+        }
+      ]
+    }
+  ]
+}

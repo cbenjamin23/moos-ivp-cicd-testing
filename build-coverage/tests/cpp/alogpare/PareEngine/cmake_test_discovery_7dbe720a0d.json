@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "PareEngineTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "ValidatesOutputPathAndAcceptsStdoutMode",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpare\/PareEngine\/PareEngineTest.cpp",
+          "line": 50
+        },
+        {
+          "name": "MatchesVariableListsWithAllWildcardForms",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpare\/PareEngine\/PareEngineTest.cpp",
+          "line": 61
+        },
+        {
+          "name": "DefaultListsMatchDocumentedHighVolumeVariables",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpare\/PareEngine\/PareEngineTest.cpp",
+          "line": 88
+        },
+        {
+          "name": "PassOneCollectsMarkTimestampsAndCommunityName",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpare\/PareEngine\/PareEngineTest.cpp",
+          "line": 111
+        },
+        {
+          "name": "PareTheFileKeepsOnlyRelevantWindowedLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpare\/PareEngine\/PareEngineTest.cpp",
+          "line": 140
+        },
+        {
+          "name": "EmptyOutputPathWritesParedLogToStdout",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpare\/PareEngine\/PareEngineTest.cpp",
+          "line": 178
+        }
+      ]
+    }
+  ]
+}

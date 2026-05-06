@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/FixedTurn/test_bhvutil_fixedturn[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/FixedTurn/test_bhvutil_fixedturn[1]_tests.cmake")
+else()
+  add_test(test_bhvutil_fixedturn_NOT_BUILT test_bhvutil_fixedturn_NOT_BUILT)
+endif()

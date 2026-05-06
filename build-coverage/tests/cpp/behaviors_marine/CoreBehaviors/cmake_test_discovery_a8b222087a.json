@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVTimerTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "PostsIdleAndRunningDurationCountersWithConfiguredSuffix",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TimerTest.cpp",
+          "line": 16
+        },
+        {
+          "name": "UsesDefaultTimerVarsAndAcceptsPreUnderscoredSuffix",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TimerTest.cpp",
+          "line": 43
+        },
+        {
+          "name": "RejectsWhitespaceStatusVariablesWithoutReplacingPreviousValue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TimerTest.cpp",
+          "line": 59
+        },
+        {
+          "name": "PostsAccumulatedIdleAndRunningDurationsFromBehaviorStateTracker",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TimerTest.cpp",
+          "line": 80
+        },
+        {
+          "name": "EmptySuffixIsRejectedWithoutClearingExistingSuffix",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TimerTest.cpp",
+          "line": 110
+        }
+      ]
+    }
+  ]
+}

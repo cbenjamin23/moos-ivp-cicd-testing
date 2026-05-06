@@ -1,0 +1,123 @@
+{
+  "tests": 21,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ALogClipperTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "ClipsWindowPreservingHeadersAndHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 72
+        },
+        {
+          "name": "PreservesHeadersWithoutCountingThem",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 108
+        },
+        {
+          "name": "PreservesHeaderOnlyFilesWithZeroDataCounters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 137
+        },
+        {
+          "name": "PreservesHelmDomainBeforeAndAfterWindow",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 157
+        },
+        {
+          "name": "InclusiveBoundsAndAtOfTimestampFallback",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 184
+        },
+        {
+          "name": "ClipWithoutOutputFileWritesToStdout",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 207
+        },
+        {
+          "name": "ClipWithoutInputReturnsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 228
+        },
+        {
+          "name": "AccumulatesDetailsAcrossSequentialClips",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 240
+        },
+        {
+          "name": "RejectsMissingInputAndUnwritableOutputPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 266
+        }
+      ]
+    },
+    {
+      "name": "ALogClipHandlerTest",
+      "tests": 12,
+      "testsuite": [
+        {
+          "name": "ValidatesOrderedTimestamps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 277
+        },
+        {
+          "name": "NormalizesBatchSuffix",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 293
+        },
+        {
+          "name": "EmptyBatchSuffixUsesBareUnderscore",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 308
+        },
+        {
+          "name": "RejectsWhitespaceBatchSuffix",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 318
+        },
+        {
+          "name": "NonBatchAcceptsOnlyAlogInputAndOptionalOutput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 331
+        },
+        {
+          "name": "IgnoresFilesContainingLiteralMSuffixMarker",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 344
+        },
+        {
+          "name": "PreCheckRejectsIncompleteSingleFileJobs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 358
+        },
+        {
+          "name": "PreCheckRejectsIncompleteBatchJobs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 378
+        },
+        {
+          "name": "ProcessesSingleFileToExplicitOutput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 398
+        },
+        {
+          "name": "SingleInputWithoutOutputWritesToStdout",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 421
+        },
+        {
+          "name": "ProcessesBatchFilesToSuffixedOutputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 443
+        },
+        {
+          "name": "BatchProcessRejectsMissingFileBeforeWritingOutputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogclip\/ALogClip\/ALogClipTest.cpp",
+          "line": 472
+        }
+      ]
+    }
+  ]
+}

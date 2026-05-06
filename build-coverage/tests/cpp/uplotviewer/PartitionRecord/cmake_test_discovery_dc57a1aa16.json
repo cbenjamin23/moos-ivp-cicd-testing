@@ -1,0 +1,62 @@
+{
+  "tests": 10,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "PartitionRecordTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "DefaultsUseSinglePartitionAndLightBlueColor",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "InitRejectsInvalidRangeAndZeroPartitions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 25
+        },
+        {
+          "name": "InitClearsEntriesAndResetsPartitionsButKeepsAverage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 40
+        },
+        {
+          "name": "AddsValuesAndUpdatesRunningAverage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 56
+        },
+        {
+          "name": "OutOfRangeValuesDoNotAffectEntriesOrAverage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 72
+        },
+        {
+          "name": "PartitionsValuesByDeltaForZeroBasedRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 85
+        },
+        {
+          "name": "HighBoundaryIsStoredButNotCountedInAnyPartition",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 100
+        },
+        {
+          "name": "NonZeroLowRangeUsesRawValueForPartitionIndex",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 113
+        },
+        {
+          "name": "InvalidIndexAccessReturnsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "SettersUpdateVarNameAndColor",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/uplotviewer\/PartitionRecord\/PartitionRecordTest.cpp",
+          "line": 136
+        }
+      ]
+    }
+  ]
+}

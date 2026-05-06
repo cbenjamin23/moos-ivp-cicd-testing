@@ -1,0 +1,87 @@
+{
+  "tests": 15,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "XYArcTest",
+      "tests": 15,
+      "testsuite": [
+        {
+          "name": "InitializesIoGeomUtilsArcFormat",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 18
+        },
+        {
+          "name": "RejectsMalformedAndNegativeRadiusInitialization",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 38
+        },
+        {
+          "name": "NormalizesConstructorAndAngleSetterInputs",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 55
+        },
+        {
+          "name": "ContainsAnglesAcrossNormalAndWrappedRanges",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 74
+        },
+        {
+          "name": "ContainsAngleUsesStoredRangeWithoutNormalizingQuery",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "ContainsPointsUsingMoosHeadingConvention",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 104
+        },
+        {
+          "name": "ComputesPointDistanceToArcOrNearestEndpoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 116
+        },
+        {
+          "name": "ReportsOnlySegmentIntersectionPointsOnTheArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 127
+        },
+        {
+          "name": "StrictSegmentIntersectionRequiresCrossingArcPerimeter",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 147
+        },
+        {
+          "name": "ReportsEndpointTangentAsStrictIntersection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 158
+        },
+        {
+          "name": "SerializesCurrentArcStringFormat",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 175
+        },
+        {
+          "name": "SetOverloadsExposeCachedEndpointDifference",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 188
+        },
+        {
+          "name": "ArcFlightBuildsStarboardAndPortTurnGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 211
+        },
+        {
+          "name": "ArcFlightPreviewArcContainsOnlySweptTurnSector",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 239
+        },
+        {
+          "name": "ArcFlightRejectsNegativeInputsWithDefaultZeroArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/XYArc\/XYArcTest.cpp",
+          "line": 257
+        }
+      ]
+    }
+  ]
+}

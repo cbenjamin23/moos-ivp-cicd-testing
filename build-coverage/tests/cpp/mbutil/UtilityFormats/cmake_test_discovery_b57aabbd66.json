@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "VQualsTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ProvidesDeterministicNamesUsedByPickPos",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/VQualsTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "ProvidesStableColorCycleUsedForGeneratedContacts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/VQualsTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "PinsNameListBoundariesForGeneratedVehicleFixtures",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/VQualsTest.cpp",
+          "line": 47
+        },
+        {
+          "name": "PinsCompletePickPosVehicleNameCaches",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/VQualsTest.cpp",
+          "line": 60
+        },
+        {
+          "name": "FallsBackAfterPickPosCacheRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/mbutil\/UtilityFormats\/VQualsTest.cpp",
+          "line": 109
+        }
+      ]
+    }
+  ]
+}

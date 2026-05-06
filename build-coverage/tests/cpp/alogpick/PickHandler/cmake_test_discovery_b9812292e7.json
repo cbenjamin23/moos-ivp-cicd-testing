@@ -1,0 +1,52 @@
+{
+  "tests": 8,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "PickHandlerTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "AddsOnlyWhitespaceFreeFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "AcceptsOnlyOneReadableLogFile",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 42
+        },
+        {
+          "name": "HandleRejectsMissingFileOrFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 57
+        },
+        {
+          "name": "PicksFieldsFromAlogRowsUnaligned",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 76
+        },
+        {
+          "name": "SkipsCommentLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 99
+        },
+        {
+          "name": "StripsWhitespaceAroundTokenNamesAndValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 118
+        },
+        {
+          "name": "DuplicateFieldsProduceDuplicateColumns",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 137
+        },
+        {
+          "name": "AlignedOutputContainsPickedValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogpick\/PickHandler\/PickHandlerTest.cpp",
+          "line": 155
+        }
+      ]
+    }
+  ]
+}

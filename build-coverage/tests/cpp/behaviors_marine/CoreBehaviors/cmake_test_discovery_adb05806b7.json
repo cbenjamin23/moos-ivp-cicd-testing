@@ -1,0 +1,32 @@
+{
+  "tests": 4,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVShadowTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "MirrorsContactCourseAndSpeedFromLedgerContact",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ShadowTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "SuppressesObjectiveOutsideRelevanceRangeButPostsContactTelemetry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ShadowTest.cpp",
+          "line": 39
+        },
+        {
+          "name": "PriorityWeightIsAppliedWhenShadowingIsRelevant",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ShadowTest.cpp",
+          "line": 73
+        },
+        {
+          "name": "MissingOwnshipMailSuppressesObjectiveAndPostsWarning",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ShadowTest.cpp",
+          "line": 98
+        }
+      ]
+    }
+  ]
+}

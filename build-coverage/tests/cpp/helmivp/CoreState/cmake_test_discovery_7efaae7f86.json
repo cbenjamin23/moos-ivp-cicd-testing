@@ -1,0 +1,86 @@
+{
+  "tests": 10,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ModeEntryTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "ParsesModeHeadConditionsElseValuesAndModePrefixes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 45
+        }
+      ]
+    },
+    {
+      "name": "ModeSetTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "EvaluatesModeHierarchyFromInfoBufferAndPostsResultsBack",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 81
+        },
+        {
+          "name": "PostsElseValueWhenEntryConditionsFail",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 119
+        }
+      ]
+    },
+    {
+      "name": "BehaviorReportTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ManagesKeysPrioritySerializationAndNanDetection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 141
+        },
+        {
+          "name": "TreatsSingleEmptyKeyAsUniqueAndNamesItFromDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 177
+        }
+      ]
+    },
+    {
+      "name": "BehaviorSpecTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ParsesTemplateConfigAndFiltersSpawnUpdatesFromInfoBuffer",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 191
+        },
+        {
+          "name": "DisallowedTemplatingSuppressesSpawnUpdatesAndClearResetsState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 232
+        }
+      ]
+    },
+    {
+      "name": "HelmReportTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "TracksDecisionsBehaviorStatesAndClearSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 266
+        },
+        {
+          "name": "CapsCompletedBehaviorHistoryAtTwentyEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 305
+        },
+        {
+          "name": "SerializesDomainTemplatingMessagesAndTimingForAppCasts",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/helmivp\/CoreState\/CoreStateTest.cpp",
+          "line": 319
+        }
+      ]
+    }
+  ]
+}

@@ -93,6 +93,8 @@ on:
           - geometry
           - helmivp
           - ipfview
+          - isay
+          - uhelmscope
           - ivpbuild
           - ivpcore
           - ivpsolve
@@ -105,9 +107,11 @@ on:
           - nspatch
           - nsplug
           - obstacles
+          - pechovar
           - pickpos
           - pluck
           - polar
+          - prealm
           - projfield
           - realm
           - survey
@@ -115,6 +119,10 @@ on:
           - turngeo
           - ucommand
           - ufield
+          - ufldbeaconrangesensor
+          - ufldcollisiondetect
+          - uflddelve
+          - uplotviewer
           - utimerscript
           - zaicview
       cpp_test_families:

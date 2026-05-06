@@ -1,0 +1,92 @@
+{
+  "tests": 16,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "SortHandlerTest",
+      "tests": 16,
+      "testsuite": [
+        {
+          "name": "ExposesAndUpdatesCacheSize",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 48
+        },
+        {
+          "name": "SortsEntriesToStdoutPreservingHeaders",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 58
+        },
+        {
+          "name": "SortsEmptyInputToEmptyStdout",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "EmitsCommentsBeforeSortedDataEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 80
+        },
+        {
+          "name": "SortsEntriesToOutputFileWithForceOverwrite",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 92
+        },
+        {
+          "name": "RejectsMissingInputAndSameOutputPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 109
+        },
+        {
+          "name": "OutputOpenFailureFallsBackToStdout",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 124
+        },
+        {
+          "name": "MalformedTimestampSortsAsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 139
+        },
+        {
+          "name": "SortDropsExactDuplicatesOnly",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 152
+        },
+        {
+          "name": "ZeroCacheStreamsEntriesInInputOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 165
+        },
+        {
+          "name": "CheckOrderedLogIgnoresComments",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 184
+        },
+        {
+          "name": "CheckEmptyLogSucceedsSilently",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 200
+        },
+        {
+          "name": "CheckOutOfOrderLogReportsPairButReturnsTrue",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 213
+        },
+        {
+          "name": "CheckMalformedTimestampAsZeroCanReportOutOfOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 232
+        },
+        {
+          "name": "CheckRejectsMissingInput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 250
+        },
+        {
+          "name": "PrintReportIncludesCurrentCounters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogsort\/SortHandler\/SortHandlerTest.cpp",
+          "line": 263
+        }
+      ]
+    }
+  ]
+}

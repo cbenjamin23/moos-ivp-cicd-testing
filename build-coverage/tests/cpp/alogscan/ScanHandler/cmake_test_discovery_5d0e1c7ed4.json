@@ -1,0 +1,67 @@
+{
+  "tests": 11,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ScanHandlerTest",
+      "tests": 11,
+      "testsuite": [
+        {
+          "name": "SetsParametersAndRejectsInvalidValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 46
+        },
+        {
+          "name": "AssignsProcessColorsThroughFallback",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 58
+        },
+        {
+          "name": "HandleRejectsMissingAndEmptyLogFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 74
+        },
+        {
+          "name": "RateOnlyAcceptsEmptyLogFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 93
+        },
+        {
+          "name": "VarStatReportListsVariablesSourcesAndTimeRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 108
+        },
+        {
+          "name": "VarStatReportSortsByVariableName",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 134
+        },
+        {
+          "name": "VarStatReportSortsBySourceName",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 154
+        },
+        {
+          "name": "VarStatReportIgnoresCommentsAndMalformedEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 174
+        },
+        {
+          "name": "VarStatReportCanUseSourceWithoutAuxSuffix",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 195
+        },
+        {
+          "name": "AppStatAndLogListReportsSummarizeScan",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 215
+        },
+        {
+          "name": "RateOnlyScanReportsDataRate",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/alogscan\/ScanHandler\/ScanHandlerTest.cpp",
+          "line": 237
+        }
+      ]
+    }
+  ]
+}

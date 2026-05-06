@@ -1,0 +1,212 @@
+{
+  "tests": 34,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "SeglrUtilsTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "SerializesEmptyAndPopulatedSeglrWithFixedLegacyPrecision",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 86
+        },
+        {
+          "name": "RotatesStemAroundFirstVertexAndNormalizesRayAngle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 99
+        },
+        {
+          "name": "RotatingEmptySeglrPreservesUnnormalizedRayAngle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 119
+        }
+      ]
+    },
+    {
+      "name": "WallEngineTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "RejectsMissingEmptyAndSelfCrossingWalls",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 131
+        },
+        {
+          "name": "InitializesCachesAndReportsMinimumRangeToNearestWall",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 150
+        },
+        {
+          "name": "NonPositiveSpeedUsesLegacyPointOneFallback",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 168
+        },
+        {
+          "name": "ParsesAvoidWallsMissionPayloadsAndCachesNearestWallRange",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 185
+        },
+        {
+          "name": "TimeToCollisionPenaltyIncreasesDistantWallCpa",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 210
+        },
+        {
+          "name": "ReturnsNegativeCpaWhenHeadingHasNoWallIntercept",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 228
+        }
+      ]
+    },
+    {
+      "name": "XYEncodersTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "SerializesSquareBoundsInLowHighLowHighOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 243
+        },
+        {
+          "name": "DecodesLegacyGridPayloadAndRestoresValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 251
+        },
+        {
+          "name": "CurrentGridEncoderPayloadDoesNotRoundTripThroughLegacyDecoder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 265
+        },
+        {
+          "name": "RejectsMalformedLegacyGridPayloads",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 282
+        }
+      ]
+    },
+    {
+      "name": "XYFormatUtilsConvexGridTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "ParsesMoosViewGridWithLimitsAndUnknownStyle",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 297
+        },
+        {
+          "name": "InitValAppliesWhenCellVarsAreOmitted",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 314
+        },
+        {
+          "name": "RejectsMalformedGeometryCellSizeAndCellVars",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 326
+        },
+        {
+          "name": "IgnoresUnknownCellVarsAndAtoiParsesBadCellIndexAsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 335
+        }
+      ]
+    },
+    {
+      "name": "XYArtifactGridTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "InitializesLabeledMoosPolygonIntoColumnMajorCells",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 347
+        },
+        {
+          "name": "RejectsMalformedConfigsAndRequiresLabeledConvexPolygon",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 364
+        },
+        {
+          "name": "ClampsClearanceAndIgnoresOutOfRangeSetters",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 379
+        },
+        {
+          "name": "TracksArtifactVectorsAndDetectedArtifactCount",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 397
+        },
+        {
+          "name": "PointAndSegmentIntersectionUseCellsAndBoundingSquare",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 415
+        },
+        {
+          "name": "ProcessDeltaUsesLabelClampsNewValuesAndIgnoresOldValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 429
+        },
+        {
+          "name": "InvalidDeltaIsNotAtomicAfterEarlierCellsAreApplied",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 444
+        }
+      ]
+    },
+    {
+      "name": "XYFieldGeneratorTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "AcceptsConvexPolygonsFromObjectAndSpec",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 456
+        },
+        {
+          "name": "RejectsNonConvexPolygonsAndInvalidSnap",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 469
+        },
+        {
+          "name": "AcceptsPickPosAbbreviatedPolygonRegions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 487
+        },
+        {
+          "name": "ManualPointsRespectRegionAndBufferRules",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 501
+        },
+        {
+          "name": "PickPosStyleGenerationHonorsMultipleRegionsAndSnap",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 521
+        },
+        {
+          "name": "NearestDistanceCacheUpdatesAndCanBeForced",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 547
+        },
+        {
+          "name": "GeneratePointFallsBackToFirstPolygonCenterWhenMaxTriesIsZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 567
+        },
+        {
+          "name": "GeneratePointWithoutPolygonsReturnsInvalidOriginPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 583
+        },
+        {
+          "name": "GeneratePointsHonorsTargetAmountAndOptionalFlexibleBuffer",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 601
+        },
+        {
+          "name": "ClearRemovesPointsButKeepsConfiguredPolygons",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/MiscGeometryTools\/MiscGeometryToolsTest.cpp",
+          "line": 623
+        }
+      ]
+    }
+  ]
+}

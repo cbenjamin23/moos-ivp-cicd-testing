@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVConstantSpeedTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "BuildsSpeedObjectiveAndPostsMismatchTelemetry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantSpeedTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "ClipsNegativeMissionSpeedAndStillBuildsObjective",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantSpeedTest.cpp",
+          "line": 38
+        },
+        {
+          "name": "WarnsOnMissingNavSpeedButKeepsObjectiveAvailable",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantSpeedTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "FailsWithoutSpeedDimensionInHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantSpeedTest.cpp",
+          "line": 82
+        },
+        {
+          "name": "MissionStyleAlphaConstantSpeedConfigAppliesPriority",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/ConstantSpeedTest.cpp",
+          "line": 96
+        }
+      ]
+    }
+  ]
+}

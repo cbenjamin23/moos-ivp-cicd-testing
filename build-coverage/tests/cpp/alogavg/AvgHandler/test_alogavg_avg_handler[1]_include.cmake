@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogavg/AvgHandler/test_alogavg_avg_handler[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogavg/AvgHandler/test_alogavg_avg_handler[1]_tests.cmake")
+else()
+  add_test(test_alogavg_avg_handler_NOT_BUILT test_alogavg_avg_handler_NOT_BUILT)
+endif()

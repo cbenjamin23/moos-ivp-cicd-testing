@@ -1,0 +1,87 @@
+{
+  "tests": 15,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "CircularUtilsTest",
+      "tests": 15,
+      "testsuite": [
+        {
+          "name": "ComputesStarboardQuarterTurnFromNorthHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 27
+        },
+        {
+          "name": "ComputesPortQuarterTurnFromNorthHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 33
+        },
+        {
+          "name": "ComputesStarboardQuarterTurnFromEastHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 39
+        },
+        {
+          "name": "ComputesPortQuarterTurnFromEastHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 45
+        },
+        {
+          "name": "ComputesFixedTurnPreviewFromOffsetOwnshipPose",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "LeavesPositionAndHeadingUnchangedForZeroDistance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 62
+        },
+        {
+          "name": "NormalizesFullCircleDistanceToStartingState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 69
+        },
+        {
+          "name": "NormalizesMoreThanFullCircleDistance",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 76
+        },
+        {
+          "name": "HandlesUnnormalizedHeadingsWithSingleWrapAdjustment",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 83
+        },
+        {
+          "name": "ArcOverloadBuildsStarboardTurnPreviewArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "ArcOverloadBuildsPortTurnPreviewArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 107
+        },
+        {
+          "name": "ArcOverloadMatchesFixedTurnPreviewGeometry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 123
+        },
+        {
+          "name": "ArcOverloadStoresPartiallyNormalizedGeometryForUnnormalizedHeading",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 153
+        },
+        {
+          "name": "ArcOverloadRejectsNegativeInputsWithDefaultArc",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 169
+        },
+        {
+          "name": "RejectsNegativeDistanceOrRadius",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/geometry\/CircularUtils\/CircularUtilsTest.cpp",
+          "line": 187
+        }
+      ]
+    }
+  ]
+}

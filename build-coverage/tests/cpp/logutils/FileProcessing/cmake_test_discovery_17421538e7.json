@@ -1,0 +1,90 @@
+{
+  "tests": 12,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "ScanReportTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "AggregatesCountsCharsSourcesAndTimeBoundsByVariable",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 75
+        },
+        {
+          "name": "SupportsRateOnlyAggregationWithoutVariableRows",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 108
+        },
+        {
+          "name": "SortsRowsByEachColumnUsedByAlogscanOutput",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 123
+        },
+        {
+          "name": "FillsApplicationStatisticsFromVariableSources",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 154
+        }
+      ]
+    },
+    {
+      "name": "ALogScannerTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ScansAlogFileWithHelmAuxBehaviorSources",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 175
+        },
+        {
+          "name": "ScansRateOnlyAndRejectsMissingFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 205
+        }
+      ]
+    },
+    {
+      "name": "ALogSorterTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "SortsOutOfOrderEntriesAndCountsFrontInsertionWarnings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 224
+        },
+        {
+          "name": "RemovesDuplicateEntriesAtSameTimestampByDefault",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 242
+        },
+        {
+          "name": "CanKeepDuplicatesAndForceContinuationOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 259
+        }
+      ]
+    },
+    {
+      "name": "SplitHandlerTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ValidatesAlogSuffixWhitespaceAndReadableFile",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 274
+        },
+        {
+          "name": "SplitsMissionAlogIntoKlogFilesSummaryVisualsAndDetachedFields",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 294
+        },
+        {
+          "name": "CanDisableNodeReportViewVesselGeneration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/FileProcessing\/FileProcessingTest.cpp",
+          "line": 365
+        }
+      ]
+    }
+  ]
+}

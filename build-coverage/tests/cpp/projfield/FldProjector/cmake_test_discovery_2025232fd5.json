@@ -1,0 +1,42 @@
+{
+  "tests": 6,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "FldProjectorTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "PrintBeforeBuildEmitsOnlyHeader",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/projfield\/FldProjector\/FldProjectorTest.cpp",
+          "line": 35
+        },
+        {
+          "name": "BuildsExpectedCardinalProjection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/projfield\/FldProjector\/FldProjectorTest.cpp",
+          "line": 54
+        },
+        {
+          "name": "BuildsExpectedRotatedProjection",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/projfield\/FldProjector\/FldProjectorTest.cpp",
+          "line": 74
+        },
+        {
+          "name": "PrintsFullAndTerseRowsForEachCell",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/projfield\/FldProjector\/FldProjectorTest.cpp",
+          "line": 94
+        },
+        {
+          "name": "RepeatedBuildsKeepOneProjectionPerCell",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/projfield\/FldProjector\/FldProjectorTest.cpp",
+          "line": 119
+        },
+        {
+          "name": "SettersOverrideConstructorValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/projfield\/FldProjector\/FldProjectorTest.cpp",
+          "line": 136
+        }
+      ]
+    }
+  ]
+}

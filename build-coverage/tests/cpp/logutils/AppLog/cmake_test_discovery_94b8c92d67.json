@@ -1,0 +1,109 @@
+{
+  "tests": 17,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AppLogEntryTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "ParsesCanonicalAppLogPayloadFromHelmAndApps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 26
+        },
+        {
+          "name": "KeepsCommaRichLogTextAfterLogField",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 46
+        },
+        {
+          "name": "TreatsEverythingAfterLogAsApplicationText",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 59
+        },
+        {
+          "name": "PinsIterParsingCaseWhitespaceAndDuplicateSemantics",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 78
+        },
+        {
+          "name": "RejectsBadParametersAndNegativeIterationsAsEmptyNullEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 104
+        },
+        {
+          "name": "RemovesTerminalColorsFromMoosAppLogLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 116
+        },
+        {
+          "name": "TruncatesAndWrapsLongApplicationLogLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 129
+        },
+        {
+          "name": "PinsTruncateAndWrapBoundaryLengths",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 151
+        }
+      ]
+    },
+    {
+      "name": "AppLogPlotTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "StoresAndRetrievesEntriesByIndexAndTime",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 175
+        },
+        {
+          "name": "WindowsEntriesAroundCurrentTimeWithFiftyEntryLimit",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 201
+        },
+        {
+          "name": "PinsInclusiveTimeBoundsAndDuplicateTimestampLookup",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 227
+        },
+        {
+          "name": "PinsViewerWindowLimitsAtEarlyMiddleAndLateTimes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 252
+        }
+      ]
+    },
+    {
+      "name": "PopulatorAppLogPlotTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "PopulatesFromAlogEntriesForSingleApplicationSource",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 278
+        },
+        {
+          "name": "PopulatesFromSplitKlogStyleAppLogEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 305
+        },
+        {
+          "name": "KeepsMalformedAppLogPayloadsAsEmptyEntries",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 332
+        },
+        {
+          "name": "SucceedsWithOnlyNonAppLogEntriesButLeavesEmptyPlot",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 355
+        },
+        {
+          "name": "RejectsEmptyInputAndMismatchedApplicationSources",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/logutils\/AppLog\/AppLogTest.cpp",
+          "line": 371
+        }
+      ]
+    }
+  ]
+}

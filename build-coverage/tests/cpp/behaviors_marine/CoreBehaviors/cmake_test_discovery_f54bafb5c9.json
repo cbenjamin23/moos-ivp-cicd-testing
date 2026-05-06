@@ -1,0 +1,22 @@
+{
+  "tests": 2,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVTestFailureTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ParsesFailureModeWithoutTriggeringCrashPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TestFailureTest.cpp",
+          "line": 19
+        },
+        {
+          "name": "BurnAliasesAndMalformedValuesKeepCurrentBurnDuration",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/TestFailureTest.cpp",
+          "line": 37
+        }
+      ]
+    }
+  ]
+}

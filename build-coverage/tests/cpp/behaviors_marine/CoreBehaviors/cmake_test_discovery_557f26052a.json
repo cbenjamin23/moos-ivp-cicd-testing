@@ -1,0 +1,32 @@
+{
+  "tests": 4,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BHVOpRegionTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "VerifiesInsidePolygonAndPostsPerimeterTelemetry",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionTest.cpp",
+          "line": 11
+        },
+        {
+          "name": "SoftPolygonBreachPostsManualOverrideWarningAndBreachFlag",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionTest.cpp",
+          "line": 52
+        },
+        {
+          "name": "DepthAltitudeAndTimeoutBreachesPostDedicatedFlags",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionTest.cpp",
+          "line": 94
+        },
+        {
+          "name": "IdleErasesViewerPolygonAndPostsLastComputedTimeRemaining",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/behaviors_marine\/CoreBehaviors\/OpRegionTest.cpp",
+          "line": 151
+        }
+      ]
+    }
+  ]
+}

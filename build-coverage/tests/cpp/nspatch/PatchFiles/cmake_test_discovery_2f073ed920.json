@@ -1,0 +1,255 @@
+{
+  "tests": 45,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "NspatchMoosFileTest",
+      "tests": 16,
+      "testsuite": [
+        {
+          "name": "PatchLinesReplaceAndAppendProcessConfigValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 72
+        },
+        {
+          "name": "GlobalPatchLinesReplaceAndAppendRootValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 104
+        },
+        {
+          "name": "GlobalConfigWordingIsCanonicalized",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "LinePatchReplacesEveryRepeatedProcessConfigKey",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 141
+        },
+        {
+          "name": "LinePatchForMissingProcessConfigDoesNotCreateBlock",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 165
+        },
+        {
+          "name": "FullBlockPatchPreservesRepeatedProcessConfigKeys",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 184
+        },
+        {
+          "name": "LinePatchWinsOverFullBlockRegardlessInputOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 211
+        },
+        {
+          "name": "MixedCaseProcessConfigKeywordIsParsed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 240
+        },
+        {
+          "name": "WhitespaceBeforePatchQualifierDoesNotMatchBlock",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 258
+        },
+        {
+          "name": "PatchQualifierAppNameIsCaseSensitive",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 281
+        },
+        {
+          "name": "UnterminatedProcessConfigBlockIsEmittedWithClosingBrace",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 303
+        },
+        {
+          "name": "AntlerRunPatchMatchesAppNameBeforeConsoleOptions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 321
+        },
+        {
+          "name": "AntlerRunPatchAppendsMissingApp",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 344
+        },
+        {
+          "name": "ProcessConfigBlockPatchReplacesWholeBlock",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 366
+        },
+        {
+          "name": "ProcessConfigPatchAddsMissingBlock",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 395
+        },
+        {
+          "name": "ProcessConfigBlockPatchPreservesCommentsAndBlankLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 421
+        }
+      ]
+    },
+    {
+      "name": "NspatchBhvFileTest",
+      "tests": 19,
+      "testsuite": [
+        {
+          "name": "NamedBehaviorPatchReplacesOnlyTargetBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 450
+        },
+        {
+          "name": "GlobalConfigurationWordingIsCanonicalized",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 488
+        },
+        {
+          "name": "UnqualifiedBehaviorPatchDoesNotTargetNamedBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 504
+        },
+        {
+          "name": "UnqualifiedBehaviorPatchTargetsNamelessBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 531
+        },
+        {
+          "name": "LinePatchReplacesEveryRepeatedBehaviorKey",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 556
+        },
+        {
+          "name": "FullBlockPatchPreservesRepeatedBehaviorKeys",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 584
+        },
+        {
+          "name": "LinePatchWinsOverFullBlockRegardlessInputOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 616
+        },
+        {
+          "name": "DuplicateBehaviorNamesCollapseToLastParsedBlock",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 649
+        },
+        {
+          "name": "NamedPatchDoesNotTargetNamelessBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 677
+        },
+        {
+          "name": "BehaviorNameKeyIsLowercasedFromConfig",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 702
+        },
+        {
+          "name": "MixedCaseBehaviorPatchQualifierDoesNotMatchLowercaseKey",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 729
+        },
+        {
+          "name": "MixedCaseBehaviorKeywordIsParsed",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 756
+        },
+        {
+          "name": "UnterminatedBehaviorBlockIsEmittedWithClosingBrace",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 779
+        },
+        {
+          "name": "BehaviorBlockPatchAddsMissingNamedBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 801
+        },
+        {
+          "name": "BehaviorBlockPatchPreservesCommentsAndBlankLines",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 825
+        },
+        {
+          "name": "InitializePatchReplacesExistingAndAddsMissingVariables",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 858
+        },
+        {
+          "name": "ModePatchReplacesWholeModeBlock",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 889
+        },
+        {
+          "name": "ModePatchReplacesMultipleStemModeBlocks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 922
+        },
+        {
+          "name": "NamedBehaviorBlockPatchReplacesWholeTargetBlock",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 958
+        }
+      ]
+    },
+    {
+      "name": "NspatchPopulatorTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "EmptyFilesPopulateAsEmptyPatchObjects",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1002
+        },
+        {
+          "name": "SetFileMoosClearsPreviouslyQueuedFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1023
+        },
+        {
+          "name": "SetFileBhvClearsPreviouslyQueuedFiles",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1045
+        }
+      ]
+    },
+    {
+      "name": "NspatchPatchApplicatorTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "AppliesMultipleMoosPatchFilesInCallerOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1067
+        },
+        {
+          "name": "AppliesMoosPatchAndWritesMoosxTarget",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1101
+        },
+        {
+          "name": "AppliesBhvPatchAndWritesBhvxTarget",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1130
+        },
+        {
+          "name": "AppliesMultipleBhvPatchFilesInCallerOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1163
+        },
+        {
+          "name": "AppliesMoosAndBhvJobsInSingleCall",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1201
+        },
+        {
+          "name": "RejectsMissingInputsAndUnwritableTargetPath",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1248
+        },
+        {
+          "name": "ApplyPatchFailsWithoutCompletePatchJob",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/nspatch\/PatchFiles\/PatchFilesTest.cpp",
+          "line": 1264
+        }
+      ]
+    }
+  ]
+}

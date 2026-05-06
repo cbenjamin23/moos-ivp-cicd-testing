@@ -1,0 +1,5 @@
+if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogiter/IterHandler/test_alogiter_iter_handler[1]_tests.cmake")
+  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogiter/IterHandler/test_alogiter_iter_handler[1]_tests.cmake")
+else()
+  add_test(test_alogiter_iter_handler_NOT_BUILT test_alogiter_iter_handler_NOT_BUILT)
+endif()

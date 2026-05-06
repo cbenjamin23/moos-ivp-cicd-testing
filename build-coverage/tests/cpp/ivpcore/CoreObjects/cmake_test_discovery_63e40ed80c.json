@@ -1,0 +1,478 @@
+{
+  "tests": 86,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "IvPDomainTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "BuildsCourseSpeedDomainWithExpectedDiscreteValues",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 133
+        },
+        {
+          "name": "SnapsAndStepsValuesForHelmDecisionDomains",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 159
+        },
+        {
+          "name": "HandlesSinglePointDomainsAndInvalidSnapRequests",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 180
+        },
+        {
+          "name": "ReportsBoundsAndEmptyDomainFallbacks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 212
+        },
+        {
+          "name": "HandlesEqOrStepValuesAroundInteriorAndEdges",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 241
+        },
+        {
+          "name": "SnapsSignedErrorDomainsAroundZero",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 261
+        },
+        {
+          "name": "PinsSnapHelperTieBreaksAndMissingDomainQuirks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 279
+        },
+        {
+          "name": "CopiesNamedVariablesAndComparesOrderedDomains",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 296
+        },
+        {
+          "name": "HasOnlyDomainRequiresDistinctRequestedVariables",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 316
+        }
+      ]
+    },
+    {
+      "name": "IvPBoxTest",
+      "tests": 17,
+      "testsuite": [
+        {
+          "name": "EvaluatesLinearPiecesAndFindsExtrema",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 328
+        },
+        {
+          "name": "MaxPtLeavesWrongDimensionOutputUnchanged",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 355
+        },
+        {
+          "name": "HandlesConstantPiecesAndSetWTInterceptReset",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 374
+        },
+        {
+          "name": "SetWTResetsLinearSlopeComponents",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 398
+        },
+        {
+          "name": "NegativeScalingSwapsLinearExtrema",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 421
+        },
+        {
+          "name": "SetWTResetsQuadraticCoefficientsToConstantUtility",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 440
+        },
+        {
+          "name": "EvaluatesQuadraticPiecesUsedBySecondDegreeApproximations",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 464
+        },
+        {
+          "name": "PinsSizeAsLegacySumOfUpperBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 483
+        },
+        {
+          "name": "HandlesPointBoxesAndBoundaryIntersections",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 493
+        },
+        {
+          "name": "NonIntersectingBoxesLeaveOutputUnallocated",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 537
+        },
+        {
+          "name": "IntersectedBoxesCombineOpenBoundsAndInteriorWeights",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 551
+        },
+        {
+          "name": "IntersectCanReuseCallerAllocatedResultBox",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 578
+        },
+        {
+          "name": "CopiesAssignsAndTranslatesDomains",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 607
+        },
+        {
+          "name": "DirectCopyPreservesMetadataBoundaryFlagsAndWeights",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 641
+        },
+        {
+          "name": "AssignmentHandlesDegreeChangesAndSelfAssignment",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 680
+        },
+        {
+          "name": "AssignsNullBoxesAndExpandsDirectDomainMappings",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 716
+        },
+        {
+          "name": "ExpandsConstantBoxesWithoutChangingUtility",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 741
+        }
+      ]
+    },
+    {
+      "name": "BoxSetTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "AddsRemovesAndMergesWithoutOwningBoxesByDefault",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 764
+        },
+        {
+          "name": "MergeCopyKeepsSourceAndRemoveDupsDropsRepeatedPointers",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 795
+        },
+        {
+          "name": "MergeCopyNodesSurviveAfterSourceIsEmptied",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 817
+        },
+        {
+          "name": "RemovesSpecificMiddleNodeAndCanEmptyWithoutDeletingBoxes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 837
+        },
+        {
+          "name": "MakeEmptyAndDeleteBoxesOwnsHeapBoxesWhenRequested",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 864
+        },
+        {
+          "name": "EmptyRemovalAndMergingEmptySetsAreNoOps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 878
+        },
+        {
+          "name": "AddBSNAcceptsCallerCreatedNodeAndOwnsNode",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 905
+        },
+        {
+          "name": "RemoveDupsClearsPreexistingMarksThenMarksRetainedBoxes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 923
+        }
+      ]
+    },
+    {
+      "name": "IvPGridTest",
+      "tests": 11,
+      "testsuite": [
+        {
+          "name": "IndexesBoxesBoundsAndThresholdQueriesForSolverSearch",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 945
+        },
+        {
+          "name": "SeparatesBoxStorageFromUpperBoundStorage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 994
+        },
+        {
+          "name": "GlobalCheapBoundSkipsFirstGridLegacyBehavior",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1024
+        },
+        {
+          "name": "RemovingBoxesDoesNotRefreshCachedBoundsOrMaxPoint",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1041
+        },
+        {
+          "name": "RemovingUnknownBoxLeavesStoredBoxesAndBoundsUntouched",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1068
+        },
+        {
+          "name": "RepeatedSingleCellInsertionReturnsDuplicateHits",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1090
+        },
+        {
+          "name": "SupportsUpperBoundOnlyModeUsedDuringSearch",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1110
+        },
+        {
+          "name": "CanReturnCandidateBoxesWithoutIntersectionFiltering",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1133
+        },
+        {
+          "name": "DeduplicatesAndRemovesBoxesSpanningMultipleGridCells",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1157
+        },
+        {
+          "name": "ClampsGelSizesAtDomainExtremes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1190
+        },
+        {
+          "name": "EmptyInitializedGridReportsSentinelBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1212
+        }
+      ]
+    },
+    {
+      "name": "CompactorNullTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "DelegatesMaxValWithoutChangingBoxes",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1228
+        },
+        {
+          "name": "DispatchesThroughBaseCompactorInterface",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1242
+        }
+      ]
+    },
+    {
+      "name": "PDMapTest",
+      "tests": 31,
+      "testsuite": [
+        {
+          "name": "EvaluatesPiecesWithAndWithoutGridForZaicStyleMaps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1259
+        },
+        {
+          "name": "NonPointQueriesEvaluateAsUncovered",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1283
+        },
+        {
+          "name": "DirectBoxSetQueriesWorkBeforeGridConstruction",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1300
+        },
+        {
+          "name": "EvaluatesTwoDimensionalCourseSpeedUtilityMaps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1315
+        },
+        {
+          "name": "TwoDimensionalQueriesAndGridLookupMirrorHelmCourseSpeedUse",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1344
+        },
+        {
+          "name": "ExhaustiveTinyDomainOracleMatchesDirectAndGridEvaluation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1375
+        },
+        {
+          "name": "HandlesZeroBoxAndFlatUtilityMapsConservatively",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1425
+        },
+        {
+          "name": "FlatGridBackedNormalizeIsNoOpForConstantUtilities",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1450
+        },
+        {
+          "name": "GridDetectsAmbiguousOverlappingCoverageAsUncovered",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1472
+        },
+        {
+          "name": "AppliesWeightScalarNormalizeAndValidityChecks",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1490
+        },
+        {
+          "name": "NormalizesNegativeUtilitiesWithLegacyScalarThenWeightOrder",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1512
+        },
+        {
+          "name": "DefaultGelBoxStaysInsideDomainForGridBuilding",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1528
+        },
+        {
+          "name": "DefaultGelBoxScalesForTwoDimensionalHelmMaps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1545
+        },
+        {
+          "name": "GridBoundsTrackWeightAndScalarAdjustments",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1570
+        },
+        {
+          "name": "NegativeWeightsPropagateToExistingGridBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1592
+        },
+        {
+          "name": "BoxOnlyGridEvaluatesWithoutUpperBoundStorage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1615
+        },
+        {
+          "name": "RebuildGridCanSwitchStorageModesWithoutChangingUtilities",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1634
+        },
+        {
+          "name": "UpperBoundOnlyGridSupportsSolverBoundsWithoutBoxStorage",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1661
+        },
+        {
+          "name": "NormalizeUpdatesExistingGridBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1684
+        },
+        {
+          "name": "ZeroWeightFlattensUtilitiesAndExistingGridBounds",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1707
+        },
+        {
+          "name": "DetectsGapsInDomainCoverageBeforeHelmSolving",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1728
+        },
+        {
+          "name": "ValidRejectsOpenBoundaryGapsBetweenAdjacentPieces",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1743
+        },
+        {
+          "name": "ExhaustiveCoverageOracleMatchesValidityForTinyMaps",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1760
+        },
+        {
+          "name": "GrowsBoxArrayForIncrementalBuilderStylePopulation",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1783
+        },
+        {
+          "name": "CopiesDeeplyAndDetectsNanWeightsBeforeSolverUse",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1804
+        },
+        {
+          "name": "ManagesGelBoxUniverseAndNullRemoval",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1827
+        },
+        {
+          "name": "RemoveNullsRebuildsExistingGridAndDropsUncoveredPoints",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1862
+        },
+        {
+          "name": "RemoveNullsIsNoOpWhenMapIsAlreadyDense",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1889
+        },
+        {
+          "name": "TranslatesDomainOrderAndExpandsNewDimensions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1902
+        },
+        {
+          "name": "TranslatesConstantUtilityMapAcrossExpandedHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1940
+        },
+        {
+          "name": "TranslatesGridBackedMapAndRebuildsGridForExpandedHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1970
+        }
+      ]
+    },
+    {
+      "name": "IvPFunctionTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "WeightsCopiesAndTranslatesDomainForHelmObjectiveFunctions",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 1998
+        },
+        {
+          "name": "FailedTransDomainLeavesFunctionUnchanged",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 2029
+        },
+        {
+          "name": "ReportsGridConfigAndUtilityRangeThroughFunctionWrapper",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 2046
+        },
+        {
+          "name": "WrapsEmptyMapsWithConservativeDefaults",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 2066
+        },
+        {
+          "name": "CopyAfterGridUpdatePreservesGridAndIndependence",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 2082
+        },
+        {
+          "name": "CopyContextAndPriorityRemainIndependent",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 2105
+        },
+        {
+          "name": "TransDomainRebuildsExistingGridForExpandedHelmDomain",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 2127
+        },
+        {
+          "name": "FreeOfNanReflectsUnderlyingMapState",
+          "file": "\/Users\/charlesbenjamin\/moos-ivp-cicd-testing\/tests\/cpp\/ivpcore\/CoreObjects\/CoreObjectsTest.cpp",
+          "line": 2152
+        }
+      ]
+    }
+  ]
+}
