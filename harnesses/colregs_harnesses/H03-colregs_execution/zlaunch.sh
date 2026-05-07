@@ -14,6 +14,7 @@ TIME_WARP="10"
 VERBOSE=""
 JUST_MAKE=""
 MAX_TIME="120"
+NOGUI="--nogui"
 CASE=""
 JOBS="1"
 PORT_BASE="10080"
@@ -47,6 +48,8 @@ for ARGI; do
         echo "  --verbose, -v      Verbose, confirm launch"
         echo "  --just_make, -j    Only create targ files"
         echo "  --max_time=<secs>  Max time passed to xlaunch"
+        echo "  --gui              Launch with pMarineViewer"
+        echo "  --nogui, -ng       Headless launch, no gui"
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
         echo "  --port_base=<n>    Base port for per-case wave blocks"
@@ -84,6 +87,10 @@ for ARGI; do
         JUST_MAKE="yes"
     elif [ "${ARGI:0:11}" = "--max_time=" ]; then
         MAX_TIME="${ARGI#--max_time=*}"
+    elif [ "${ARGI}" = "--gui" ]; then
+        NOGUI=""
+    elif [ "${ARGI}" = "--nogui" ] || [ "${ARGI}" = "-ng" ]; then
+        NOGUI="--nogui"
     elif [ "${ARGI:0:7}" = "--case=" ]; then
         CASE="${ARGI#--case=*}"
     elif [ "${ARGI:0:7}" = "--jobs=" ]; then
@@ -279,7 +286,7 @@ run_case() {
     clear_xfiles
     nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
     : > results.txt
-    xargs="--max_time=$MAX_TIME --mmod=$MMOD --nogui"
+    xargs="--max_time=$MAX_TIME --mmod=$MMOD"
     if [ "$PORT_BASE_SET" = "yes" ]; then
         case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
         shore_mport=$((case_base + 0))
@@ -288,7 +295,7 @@ run_case() {
         veh_pshare=$((case_base + 11))
         xargs="$xargs --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
-    xlaunch.sh $xargs ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+    xlaunch.sh $xargs $NOGUI ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
 
     if [ "$JUST_MAKE" = "yes" ]; then
         clear_xfiles
@@ -362,7 +369,7 @@ run_case_isolated() {
     (
         cd "$case_dir"
         : > results.txt
-        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare $NOGUI ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
         launch_rc=$?
         echo "$launch_rc" > launch_rc.txt
     )

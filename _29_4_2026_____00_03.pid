@@ -1,5 +1,0 @@
-%% Kp = 2
-%% Kd = 5
-%% Ki = 1
-%T                  Kp               Kd               Ki               DT               Output           InputError       Kp*e             Kd*de/dt         Ki*int(e)        Desired          Actual           
-20                   2                 5                 1                 0                 24                12                24                0                 0                 0                 -12               

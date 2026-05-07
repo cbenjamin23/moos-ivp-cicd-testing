@@ -14,6 +14,7 @@ TIME_WARP="10"
 VERBOSE=""
 JUST_MAKE=""
 MAX_TIME="160"
+NOGUI="--nogui"
 CASE=""
 GROUP=""
 JOBS="1"
@@ -59,6 +60,8 @@ for ARGI; do
         echo "  --verbose, -v      Verbose, confirm launch"
         echo "  --just_make, -j    Only create targ files"
         echo "  --max_time=<secs>  Max time passed to xlaunch"
+        echo "  --gui              Launch with pMarineViewer"
+        echo "  --nogui, -ng       Headless launch, no gui"
         echo "  --case=<name>      Run one named case"
         echo "  --group=<name>     Run one named case group"
         echo "  --jobs=<n>         Run up to n cases per wave"
@@ -140,6 +143,10 @@ for ARGI; do
         JUST_MAKE="yes"
     elif [ "${ARGI:0:11}" = "--max_time=" ]; then
         MAX_TIME="${ARGI#--max_time=*}"
+    elif [ "${ARGI}" = "--gui" ]; then
+        NOGUI=""
+    elif [ "${ARGI}" = "--nogui" ] || [ "${ARGI}" = "-ng" ]; then
+        NOGUI="--nogui"
     elif [ "${ARGI:0:7}" = "--case=" ]; then
         CASE="${ARGI#--case=*}"
     elif [ "${ARGI:0:8}" = "--group=" ]; then
@@ -562,7 +569,7 @@ run_case() {
     clear_xfiles
     nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
     : > results.txt
-    xargs="--max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --nogui"
+    xargs="--max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA}"
     if [ "$PORT_BASE_SET" = "yes" ]; then
         case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
         shore_mport=$((case_base + 0))
@@ -573,7 +580,7 @@ run_case() {
         third_pshare=$((case_base + 12))
         xargs="$xargs --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
     fi
-    xlaunch.sh $xargs ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+    xlaunch.sh $xargs $NOGUI ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
     launch_rc=$?
 
     if [ "$JUST_MAKE" = "yes" ]; then
@@ -648,7 +655,7 @@ run_case_isolated() {
     (
         cd "$case_dir"
         : > results.txt
-        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare --nogui ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
+        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD ${MIN_UTIL_CPA:+--min_util_cpa=$MIN_UTIL_CPA} ${MAX_UTIL_CPA:+--max_util_cpa=$MAX_UTIL_CPA} --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare $NOGUI ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
     ) &
     runtime_pid=$!
 
