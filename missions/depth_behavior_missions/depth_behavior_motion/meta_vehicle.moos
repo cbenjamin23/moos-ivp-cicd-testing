@@ -84,7 +84,7 @@ ProcessConfig = pNodeReporter
 
   platform_type  = UUV
   platform_color = $(COLOR)
-  terse_reports  = true
+  terse_reports  = false
 }
 
 //----------------------------------------------------
