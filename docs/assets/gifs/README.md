@@ -82,11 +82,17 @@ Typical capture launch: `./zlaunch.sh --case=baseline_transit_pass --gui 10`
 Capture from: `harnesses/depth_behavior_harnesses/H01-constant_depth_motion`
 Typical capture launch: `./zlaunch.sh --case=constant_depth_hold_pass --gui 10`
 
+- `constant-depth-hold.gif` - Held Depth; representative case `constant_depth_hold_pass`
+- `constant-depth-update.gif` - Runtime Update; representative case `constant_depth_update_pass`
+
 
 ## H02 GoToDepth Motion
 
 Capture from: `harnesses/depth_behavior_harnesses/H02-goto_depth_motion`
 Typical capture launch: `./zlaunch.sh --case=goto_depth_sequence_pass --gui 10`
+
+- `goto-depth-sequence.gif` - Depth Sequence; representative case `goto_depth_sequence_pass`
+- `goto-depth-crossing.gif` - Crossing Arrivals; representative case `goto_depth_crossing_pass`
 
 
 ## H03 Periodic Surface Motion
@@ -94,17 +100,26 @@ Typical capture launch: `./zlaunch.sh --case=goto_depth_sequence_pass --gui 10`
 Capture from: `harnesses/depth_behavior_harnesses/H03-periodic_surface_motion`
 Typical capture launch: `./zlaunch.sh --case=periodic_surface_pass --gui 10`
 
+- `periodic-surface-cycle.gif` - Surfacing Cycle; representative case `periodic_surface_pass`
+- `periodic-surface-wait-window.gif` - Wait Window; representative case `periodic_surface_wait_window_pass`
+
 
 ## H04 Max Depth Motion
 
 Capture from: `harnesses/depth_behavior_harnesses/H04-max_depth_motion`
 Typical capture launch: `./zlaunch.sh --case=max_depth_guard_pass --gui 10`
 
+- `max-depth-guard.gif` - Max Depth Guard; representative case `max_depth_guard_pass`
+- `max-depth-unconstrained.gif` - Unconstrained Shallow; representative case `max_depth_unconstrained_shallow_pass`
+
 
 ## H05 Min Altitude Motion
 
 Capture from: `harnesses/depth_behavior_harnesses/H05-min_altitude_motion`
 Typical capture launch: `./zlaunch.sh --case=min_altitude_guard_pass --gui 10`
+
+- `min-altitude-guard.gif` - Min Altitude Guard; representative case `min_altitude_guard_pass`
+- `min-altitude-unconstrained.gif` - Deep Bottom; representative case `min_altitude_unconstrained_deep_bottom_pass`
 
 
 ## H01 COLREGS Classification

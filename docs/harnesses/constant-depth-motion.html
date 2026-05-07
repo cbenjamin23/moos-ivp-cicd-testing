@@ -46,6 +46,39 @@
 
 
 
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">This depth harness benefits from generated depth telemetry overlays because the top-down pMarineViewer track alone does not show held-depth behavior clearly. The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="constant-depth-hold.gif">
+          <img src="../assets/gifs/constant-depth-hold.gif" alt="Held Depth GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Held Depth</h3>
+          <p>Description: Baseline hold at the stock target depth with bounded mismatch and clean behavior state.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="constant-depth-update.gif">
+          <img src="../assets/gifs/constant-depth-update.gif" alt="Runtime Update GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Update</h3>
+          <p>Description: Posts a runtime DEPTH_VALUE update and requires the behavior to settle near the updated target.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
 
     <section class="content-section">
       <div class="section-heading">

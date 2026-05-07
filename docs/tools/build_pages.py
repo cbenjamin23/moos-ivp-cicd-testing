@@ -29,6 +29,11 @@ VISUAL_NOTES = {
     "obmgr-unit": "This unit harness uses map-style explanatory GIFs instead of pMarineViewer captures because the ownship is stationary and the verdict comes from MOOS publications such as obstacle acceptance, distance reports, hull generation, and filter messages.",
     "pid-unit": "This unit harness uses variable-level PID evidence instead of pMarineViewer captures because it intentionally checks pMarinePIDV22 input/output behavior before adding vehicle dynamics.",
     "pid-motion": "This motion harness uses PID-focused generated visuals instead of raw pMarineViewer captures because the verdict depends on bridged navigation, actuator output, and closed-loop vehicle response.",
+    "constant-depth-motion": "This depth harness benefits from generated depth telemetry overlays because the top-down pMarineViewer track alone does not show held-depth behavior clearly.",
+    "goto-depth-motion": "This depth harness benefits from generated depth telemetry overlays because the top-down pMarineViewer track alone does not show commanded depth sequence progress clearly.",
+    "periodic-surface-motion": "This depth harness benefits from generated depth telemetry overlays because the top-down pMarineViewer track alone does not show surfacing cycles and wait windows clearly.",
+    "max-depth-motion": "This depth harness benefits from generated depth telemetry overlays because the top-down pMarineViewer track alone does not show max-depth guard pressure clearly.",
+    "min-altitude-motion": "This depth harness benefits from generated depth telemetry overlays because the top-down pMarineViewer track alone does not show bottom-clearance evidence clearly.",
     "colregs-classification": "This classification harness uses alog-backed explanatory GIFs instead of raw pMarineViewer captures because the vehicles do move, but the verdict comes from COLREGS publications such as mode, index, summary, and range reports.",
     "colregs-thresholds": "This threshold harness uses alog-backed overlay GIFs instead of raw pMarineViewer captures because the cases differ by small geometry changes and the verdict comes from boundary-specific COLREGS publications.",
 }
@@ -188,7 +193,10 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/depth_behavior_missions/depth_behavior_motion",
         summary="BHV_ConstantDepth motion matrix covering held depth, surfacing, negative-depth clipping, shape parameters, runtime updates, malformed update preservation, finite-duration completion, malformed config, missing depth mail/domain, and actuator authority failures.",
         proof="Checks bridged NAV_DEPTH, DEPTH_MISMATCH, behavior error evidence, and elevator/depth-control signals from pHelmIvP driving pMarinePIDV22 and uSimMarineV22.",
-        gifs=(),
+        gifs=(
+            ("Held Depth", "constant_depth_hold_pass", "constant-depth-hold.gif"),
+            ("Runtime Update", "constant_depth_update_pass", "constant-depth-update.gif"),
+        ),
         run="./zlaunch.sh --case=constant_depth_hold_pass --gui 10",
         notes=(
             "This harness keeps the horizontal waypoint leg as background motion so BHV_ConstantDepth owns the vertical-control verdict.",
@@ -203,7 +211,10 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/depth_behavior_missions/depth_behavior_motion",
         summary="BHV_GoToDepth motion matrix covering multi-level sequences, repeat behavior and exhaustion, vertical target crossings, zero-delta arrivals, single-level targets, malformed update preservation, unsupported perpetual config, invalid sequences, negative depths, malformed repeat values, missing depth mail, and missing depth domain.",
         proof="Checks bridged NAV_DEPTH, behavior-owned arrival counters, depth-band evidence, and configuration/error evidence from the simulated UUV stack.",
-        gifs=(),
+        gifs=(
+            ("Depth Sequence", "goto_depth_sequence_pass", "goto-depth-sequence.gif"),
+            ("Crossing Arrivals", "goto_depth_crossing_pass", "goto-depth-crossing.gif"),
+        ),
         run="./zlaunch.sh --case=goto_depth_sequence_pass --gui 10",
         notes=(
             "Finite sequence cases grade arrival and depth evidence instead of treating post-completion behavior quieting as the primary signal.",
@@ -218,7 +229,10 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/depth_behavior_missions/depth_behavior_motion",
         summary="BHV_PeriodicSurface motion matrix covering surfacing cycles, status variables, wait windows, timeout reset behavior, mark-variable resets, acomms extensions, ascent-grade branches, current-speed mode, invalid period/ascent/status/acomms settings, missing nav mail, and missing depth domain.",
         proof="Checks surfaced-depth evidence, timeout/reset evidence, behavior status variables, vertical actuator evidence, and mission-owned error outcomes.",
-        gifs=(),
+        gifs=(
+            ("Surfacing Cycle", "periodic_surface_pass", "periodic-surface-cycle.gif"),
+            ("Wait Window", "periodic_surface_wait_window_pass", "periodic-surface-wait-window.gif"),
+        ),
         run="./zlaunch.sh --case=periodic_surface_pass --gui 10",
         notes=(
             "Vehicle-side overlays own the behavior timing inputs, including acomms extension, so the evaluated app receives the same mail as it would in a live vehicle community.",
@@ -233,7 +247,10 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/depth_behavior_missions/depth_behavior_motion",
         summary="BHV_MaxDepth motion matrix covering max-depth guarding, zero-depth clamps, negative command clipping, tight and zero tolerance, unconstrained shallow commands, malformed max-depth/tolerance settings, unsupported ascent-field config, missing depth mail, and missing depth domain.",
         proof="Checks bridged NAV_DEPTH limits, slack/mismatch telemetry, behavior error evidence, and elevator response under commanded over-depth pressure.",
-        gifs=(),
+        gifs=(
+            ("Max Depth Guard", "max_depth_guard_pass", "max-depth-guard.gif"),
+            ("Unconstrained Shallow", "max_depth_unconstrained_shallow_pass", "max-depth-unconstrained.gif"),
+        ),
         run="./zlaunch.sh --case=max_depth_guard_pass --gui 10",
         notes=(
             "This harness grades the guard behavior while another behavior creates pressure to go deeper than the configured limit.",
@@ -248,7 +265,10 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/depth_behavior_missions/depth_behavior_motion",
         summary="BHV_MinAltitude motion matrix covering bottom-clearance guarding, shallow-bottom response, unconstrained deep-bottom behavior, clearance boundary behavior, zero-minimum behavior, zero altitude failures, invalid configuration, missing nav inputs, and noncritical missing-altitude handling.",
         proof="Checks bridged NAV_DEPTH and NAV_ALTITUDE, min-altitude clearance bands, behavior error evidence, and elevator response under simulated bottom-clearance pressure.",
-        gifs=(),
+        gifs=(
+            ("Min Altitude Guard", "min_altitude_guard_pass", "min-altitude-guard.gif"),
+            ("Deep Bottom", "min_altitude_unconstrained_deep_bottom_pass", "min-altitude-unconstrained.gif"),
+        ),
         run="./zlaunch.sh --case=min_altitude_guard_pass --gui 10",
         notes=(
             "This harness isolates bottom-clearance behavior from the other depth behaviors while reusing the same simulated UUV stack.",
