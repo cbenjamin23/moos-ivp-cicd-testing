@@ -1,0 +1,37 @@
+Behavior = BHV_LegRun
+{
+  name      = legrun
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = LEG_UPDATE
+
+  endflag       = LR_DONE = true
+  leg1_endflag  = LR_LEG1_DONE = true
+  leg2_endflag  = LR_LEG2_DONE = true
+  turn1_endflag = LR_TURN1_DONE = true
+  turn2_endflag = LR_TURN2_DONE = true
+  midlegflag    = LR_MID_LEG = true
+  midturnflag   = LR_MID_TURN = true
+
+  perpetual = true
+  speed     = $(STOCK_SPD)
+
+  leg = x=7,y=-57,len=60,ang=64.64
+
+  capture_line   = true
+  capture_radius = 5
+  slip_radius    = 15
+  lead           = 5
+  lead_damper    = 1
+  patience       = 90
+
+  turn1_bias = 100
+  turn2_bias = 100
+  turn1_dir  = port
+  turn2_dir  = star
+  turn_rad   = 0
+  turn_ext   = 4
+
+  mid_leg_pct  = 30
+  mid_turn_pct = 30
+}

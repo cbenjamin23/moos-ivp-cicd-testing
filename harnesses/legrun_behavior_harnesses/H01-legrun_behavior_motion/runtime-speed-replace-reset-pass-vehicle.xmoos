@@ -1,0 +1,12 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=LEG_UPDATE, val="leg_spds=replace,2:1.1,1.5", time=3
+  event = var=LEG_UPDATE, val="leg_spds=reset", time=5
+  event = var=LEG_UPDATE, val="leg_spds=clear", time=7
+  event = var=LEG_UPDATE, val="leg_spds=replace,1.2", time=9
+}

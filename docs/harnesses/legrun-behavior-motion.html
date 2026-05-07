@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 LegRun Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260501-1">
+  <script src="../theme.js?v=20260501-1"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 LegRun Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_LegRun. These cases verify leg geometry forms, initialization modes, capture handling, turn shaping, leg and turn progression, behavior completion, scheduled speeds, runtime updates, flag aliases, and invalid parameter handling.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one simulated vehicle on a compact two-leg LegRun pattern. Case overlays vary geometry input form, initialization mode, capture and turn controls, scheduled speeds, runtime updates, event flags, and malformed behavior parameters.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="legrun-baseline-cycle.gif">
+          <img src="../assets/gifs/legrun-baseline-cycle.gif" alt="Baseline Cycle GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Cycle</h3>
+          <p>Description: Exercises the stock leg-run pattern and requires the first leg, first turn, second leg, behavior completion, mid-leg, and mid-turn flags without behavior errors.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="legrun-far-turn-init.gif">
+          <img src="../assets/gifs/legrun-far-turn-init.gif" alt="Far Turn Init GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Far Turn Init</h3>
+          <p>Description: Starts from the far-turn initialization mode and verifies the behavior selects the far leg path and completes cleanly.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="legrun-individual-turn-params.gif">
+          <img src="../assets/gifs/legrun-individual-turn-params.gif" alt="Individual Turn Params GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Individual Turn Params</h3>
+          <p>Description: Uses separate turn-one and turn-two radius, bias, direction, and extension settings and verifies the asymmetric turn geometry remains usable.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_cycle_pass</code>
+          <p>Exercises the stock leg-run pattern and requires the first leg, first turn, second leg, behavior completion, mid-leg, and mid-turn flags without behavior errors.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>finite_complete_pass</code>
+          <p>Runs the same pattern with perpetual=false and requires the behavior completion end flag after one traversal.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>colon_leg_format_pass</code>
+          <p>Supplies the leg geometry in x:y:ang:len form and verifies it produces the same clean cycle as the keyword form.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>vertex_points_pass</code>
+          <p>Supplies explicit p1 and p2 vertices instead of a center/angle/length leg and verifies clean completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>init_close_turn_pass</code>
+          <p>Starts from the closest-turn initialization mode and requires a clean full cycle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>init_far_turn_pass</code>
+          <p>Starts from the far-turn initialization mode and verifies the behavior selects the far leg path and completes cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_rad_alias_pass</code>
+          <p>Uses the shared turn_rad, turn_bias, and turn_dir aliases and verifies both turn generators remain usable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_bias_ext_gap_pass</code>
+          <p>Exercises shared turn bias, extension, and turn-point-gap shaping while preserving clean progression.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>individual_turn_params_pass</code>
+          <p>Uses separate turn-one and turn-two radius, bias, direction, and extension settings and verifies the asymmetric turn geometry remains usable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_rad_min_clip_pass</code>
+          <p>Sets turn_rad_min before a too-small turn_rad and verifies the behavior clips into a valid maneuver.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>capture_radius_alias_pass</code>
+          <p>Uses the radius alias for waypoint capture radius and verifies arrival and turn progression remain clean.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>capture_line_absolute_pass</code>
+          <p>Enables absolute capture-line semantics and verifies the vehicle still progresses through the cycle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_capture_line_pass</code>
+          <p>Disables capture-line use with radius-based capture and verifies the behavior still completes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>leg_speed_schedule_pass</code>
+          <p>Adds a finite leg_spds schedule and verifies the behavior still completes leg and turn progression cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>leg_speed_onturn_pass</code>
+          <p>Enables scheduled speeds during turns with repeat enabled and verifies clean progression.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>leg_speed_count_repeat_pass</code>
+          <p>Uses count-expanded speed schedule syntax with repeat enabled and verifies clean progression.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_length_angle_update_pass</code>
+          <p>Posts runtime leg length and angle updates through LEG_UPDATE and verifies the behavior keeps cycling cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_turn_radius_update_pass</code>
+          <p>Posts runtime turn radius and extension updates through LEG_UPDATE on a compact leg and verifies turn progression remains clean.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_speed_replace_reset_pass</code>
+          <p>Posts replace, reset, and clear speed-schedule updates through LEG_UPDATE on a compact leg and verifies the behavior continues cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_shift_point_pass</code>
+          <p>Posts a runtime shift_pt update and verifies the leg-run center can move without breaking completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_turn_bias_gap_update_pass</code>
+          <p>Posts runtime turn-bias, turn-extension, and turn-point-gap updates and verifies clean turn progression.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flag_aliases_pass</code>
+          <p>Uses the underscore flag aliases for leg, turn, mid-leg, and mid-turn events and requires those alias flags to reach shoreside.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mid_pct_late_pass</code>
+          <p>Moves mid-leg and mid-turn flag thresholds later in each segment and verifies those events still fire before completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>patience_clip_pass</code>
+          <p>Supplies an above-range patience value and verifies the clipped objective weighting still completes the leg-run cycle cleanly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_leg_config_fail</code>
+          <p>Supplies a malformed leg geometry and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_schedule_fail</code>
+          <p>Supplies a malformed speed schedule and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_init_mode_fail</code>
+          <p>Supplies an invalid init_leg_mode and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_mid_pct_fail</code>
+          <p>Supplies an out-of-range mid-leg percentage and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_turn_radius_fail</code>
+          <p>Supplies a zero turn radius and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_turn_ext_fail</code>
+          <p>Supplies a negative turn extension and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_turn_dir_fail</code>
+          <p>Supplies an invalid shared turn direction and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_high_fail</code>
+          <p>Supplies a cruise speed above the helm domain maximum and expects the mission grade to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_count_fail</code>
+          <p>Supplies a zero-count speed schedule entry and expects the mission grade to fail.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/legrun_behavior_missions/legrun_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

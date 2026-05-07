@@ -1,0 +1,46 @@
+Behavior = BHV_LegRun
+{
+  name      = legrun
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = LEG_UPDATE
+
+  endflag       = LR_DONE = true
+  leg1_endflag  = LR_LEG1_DONE = true
+  leg2_endflag  = LR_LEG2_DONE = true
+  turn1_endflag = LR_TURN1_DONE = true
+  turn2_endflag = LR_TURN2_DONE = true
+  midlegflag    = LR_MID_LEG = true
+  midturnflag   = LR_MID_TURN = true
+
+  perpetual = true
+  speed     = $(STOCK_SPD)
+
+  leg = x=7,y=-57,len=60,ang=64.64
+
+  capture_line   = absolute
+  capture_radius = 5
+  slip_radius    = 15
+  lead           = 5
+  lead_damper    = 1
+  patience       = 90
+
+  turn1_bias = 100
+  turn2_bias = 100
+  turn1_dir  = port
+  turn2_dir  = star
+  turn1_rad  = 8
+  turn2_rad  = 8
+  turn_ext   = 4
+
+  mid_leg_pct  = 30
+  mid_turn_pct = 30
+
+  visual_hints = nextpt_color=yellow
+  visual_hints = nextpt_vertex_size=8
+  visual_hints = nextpt_lcolor=gray70
+  visual_hints = vertex_color=dodger_blue, edge_color=white
+  visual_hints = vertex_size=6, edge_size=1
+  visual_hints = turn_edge_color=gray80
+  visual_hints = turn_vertex_color=green
+}

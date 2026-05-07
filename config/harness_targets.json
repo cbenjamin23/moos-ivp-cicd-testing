@@ -133,6 +133,13 @@
     "families": ["fixedturn_behavior"]
   },
   {
+    "key": "legrun_h01",
+    "path": "harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion",
+    "harness": "H01-legrun_behavior_motion",
+    "artifact": "manual-legrun-h01-results",
+    "families": ["legrun_behavior"]
+  },
+  {
     "key": "loiter_h01",
     "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
     "harness": "H01-loiter_behavior_motion",

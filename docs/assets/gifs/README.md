@@ -245,6 +245,15 @@ Typical capture launch: `./zlaunch.sh --case=starboard_90_pass --gui 10`
 - `fixedturn-behavior-port-360.gif` - Port 360; representative case `port_360_pass`
 - `fixedturn-behavior-turn-spec-sequence.gif` - Turn Spec Sequence; representative case `turn_spec_sequence_pass`
 
+## H01 LegRun Behavior
+
+Capture from: `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=baseline_cycle_pass --gui --port_base=4000 2`
+
+- `legrun-baseline-cycle.gif` - Baseline Cycle; representative case `baseline_cycle_pass`
+- `legrun-far-turn-init.gif` - Far Turn Init; representative case `init_far_turn_pass`
+- `legrun-individual-turn-params.gif` - Individual Turn Params; representative case `individual_turn_params_pass`
+
 ## H01 Shadow Behavior
 
 Capture from: `harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion`

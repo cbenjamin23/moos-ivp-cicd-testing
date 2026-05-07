@@ -1,0 +1,37 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (LR_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_DONE = true
+  pass_condition = LR_LEG1_DONE = true
+  pass_condition = LR_LEG2_DONE = true
+  pass_condition = LR_TURN1_DONE = true
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = legrun_behavior_tests
+  mission_mod  = $(MMOD:=finite_complete_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[LR_DONE]
+  report_column = lr_mode=$[LR_MODE]
+  report_column = leg1=$[LR_LEG1_DONE]
+  report_column = leg2=$[LR_LEG2_DONE]
+  report_column = turn1=$[LR_TURN1_DONE]
+  report_column = turn2=$[LR_TURN2_DONE]
+  report_column = done=$[LR_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = settings=$[BHV_SETTINGS]
+  report_column = mhash=$[MHASH_SHORT]
+}

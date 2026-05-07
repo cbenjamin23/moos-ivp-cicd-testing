@@ -1,0 +1,16 @@
+Behavior = BHV_LegRun
+{
+  name      = legrun
+  pwt       = 100
+  condition = MODE == ACTIVE
+  updates   = LEG_UPDATE
+
+  perpetual = true
+  speed     = $(STOCK_SPD)
+  leg_spds  = 1.0,fast
+
+  leg = x=7,y=-57,len=60,ang=64.64
+
+  turn1_rad = 8
+  turn2_rad = 8
+}
