@@ -1,0 +1,40 @@
+//-------------------------------------------------
+// FILE: constant-depth-low-elevator-authority-fail-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pMarinePIDV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  verbose       = false
+  depth_control = true
+
+  yaw_pid_kp             = 1.2
+  yaw_pid_kd             = 0.1
+  yaw_pid_ki             = 0.3
+  yaw_pid_integral_limit = 0.07
+
+  speed_pid_kp             = 20.0
+  speed_pid_kd             = 0.0
+  speed_pid_ki             = 0.0
+  speed_pid_integral_limit = 0.07
+
+  z_to_pitch_pid_kp             = 0.2
+  z_to_pitch_pid_kd             = 0
+  z_to_pitch_pid_ki             = 0.004
+  z_to_pitch_pid_integral_limit = 0.05
+  maxpitch                      = 15
+
+  pitch_pid_kp             = 1.5
+  pitch_pid_kd             = 1.0
+  pitch_pid_ki             = 0
+  pitch_pid_integral_limit = 0
+  maxelevator              = 0.25
+
+  maxrudder = 100
+  maxthrust = 100
+
+  speed_factor = 20
+}

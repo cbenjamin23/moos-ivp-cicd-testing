@@ -77,6 +77,36 @@ Typical capture launch: `./zlaunch.sh --case=baseline_transit_pass --gui 10`
 - `pid-motion-hard-turn-recover.gif` - Hard Turn Recovery; representative case `hard_turn_recover_pass`
 - `pid-motion-depth-step.gif` - Depth Step Response; representative case `depth_step_pass`
 
+## H01 Constant Depth Motion
+
+Capture from: `harnesses/depth_behavior_harnesses/H01-constant_depth_motion`
+Typical capture launch: `./zlaunch.sh --case=constant_depth_hold_pass --gui 10`
+
+
+## H02 GoToDepth Motion
+
+Capture from: `harnesses/depth_behavior_harnesses/H02-goto_depth_motion`
+Typical capture launch: `./zlaunch.sh --case=goto_depth_sequence_pass --gui 10`
+
+
+## H03 Periodic Surface Motion
+
+Capture from: `harnesses/depth_behavior_harnesses/H03-periodic_surface_motion`
+Typical capture launch: `./zlaunch.sh --case=periodic_surface_pass --gui 10`
+
+
+## H04 Max Depth Motion
+
+Capture from: `harnesses/depth_behavior_harnesses/H04-max_depth_motion`
+Typical capture launch: `./zlaunch.sh --case=max_depth_guard_pass --gui 10`
+
+
+## H05 Min Altitude Motion
+
+Capture from: `harnesses/depth_behavior_harnesses/H05-min_altitude_motion`
+Typical capture launch: `./zlaunch.sh --case=min_altitude_guard_pass --gui 10`
+
+
 ## H01 COLREGS Classification
 
 Capture from: `harnesses/colregs_harnesses/H01-colregs_classification`

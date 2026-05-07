@@ -113,6 +113,7 @@ The active harness families cover:
 | `cmgr` | `pContactMgrV20` app-level contact alerting and contact-driven motion. |
 | `obmgr` | `uFldObstacleMgr` app-level obstacle ingestion, alerts, and motion outcomes. |
 | `pid` | `pMarinePIDV22` controller configuration, mail handling, and closed-loop motion. |
+| `depth_behavior` | UUV/depth behavior motion split by behavior: constant-depth holds, depth sequences, periodic surfacing, max-depth guards, and min-altitude clearance. |
 | `colregs` | `BHV_AvdColregsV22` classification, thresholds, execution, and parameter regressions. |
 | behavior families | Moving correctness layers for waypoint, loiter, station-keep, trail, convoy, shadow, fixed-turn, cut-range, avoid-collision, avoid-obstacle, and OpRegion. |
 | `performance` | Longer deterministic scenario tests for obstacle and COLREGS performance behavior. |
@@ -140,7 +141,8 @@ can run:
 - one harness family
 - several harness families
 - specific harness keys from `config/harness_targets.json`
-- all C++ tests or one CTest label through `cpp_test_filter`
+- one CTest family or a comma-separated CTest family batch through
+  `cpp_test_mode`, `cpp_test_family`, and `cpp_test_families`
 
 The workflow builds MOOS-IvP, builds this repo, runs invariant checks, runs the
 selected C++ tests, and executes selected harnesses.

@@ -1,0 +1,45 @@
+//-------------------------------------------------
+// FILE: min-altitude-guard-pass-vehicle.xbhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+Behavior = BHV_Waypoint
+{
+  name      = transit
+  pwt       = 80
+  condition = MODE == TRANSITING
+  endflag   = ARRIVED = true
+
+  perpetual = false
+  speed     = $(STOCK_SPD)
+
+  capture_line   = true
+  capture_radius = 4.0
+  slip_radius    = 12.0
+  points         = $(DEST_POS)
+  repeat         = 0
+}
+
+Behavior = BHV_ConstantDepth
+{
+  name      = const_depth
+  pwt       = 120
+  condition = MODE == TRANSITING
+  duration  = no-time-limit
+
+  depth              = 30
+  peakwidth          = 4
+  basewidth          = 10
+  summitdelta        = 15
+  depth_mismatch_var = DEPTH_MISMATCH
+}
+
+Behavior = BHV_MinAltitudeX
+{
+  name      = min_altitude
+  pwt       = 300
+  condition = MODE == TRANSITING
+
+  min_altitude              = 8
+  missing_altitude_critical = true
+}

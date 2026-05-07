@@ -1,0 +1,52 @@
+//-------------------------------------------------
+// FILE: periodic-surface-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=BHV_ERROR_SEEN, val=false, time=0
+  event = var=SURFACE_TIMEOUT_SEEN, val=false, time=0
+  event = var=TEST_EVAL_READY, val=true, time=48
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @PERIODIC_ASCEND#PERIODIC_ASCEND_SEEN=true
+  mailflag = @PSF_AT_SURFACE_TIMEOUT#SURFACE_TIMEOUT_SEEN=true
+  mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PERIODIC_ASCEND_SEEN = true
+  pass_condition = SURFACE_TIMEOUT_SEEN = true
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = depth_behavior_motion
+  mission_mod  = periodic_surface_pass
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = depth=$[ABE_NAV_DEPTH]
+  report_column = periodic=$[PERIODIC_ASCEND]
+  report_column = surface_seen=$[PERIODIC_ASCEND_SEEN]
+  report_column = timeout_seen=$[SURFACE_TIMEOUT_SEEN]
+  report_column = surface_time=$[TIME_AT_SURFACE]
+  report_column = pending=$[PENDING_SURFACE]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

@@ -17,6 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS_DIR = REPO_ROOT / "harnesses"
 CPP_TEST_DIR = REPO_ROOT / "tests" / "cpp"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
+CTEST_COVERAGE_DATA = ROOT / "data" / "ctest_coverage.json"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
 ASSET_VERSION = "20260501-1"
@@ -63,6 +64,7 @@ class CTestArea:
     source_count: int
     case_count: int
     description: str
+    coverage_note: str
     labels: tuple[str, ...]
     path: str
 
@@ -176,6 +178,81 @@ HARNESSES: tuple[Harness, ...] = (
         notes=(
             "This harness adds pHelmIvP and uSimMarineV22 so PID output is judged as vehicle motion instead of only as actuator publications.",
             "Expected-fail cases intentionally hold manual override or cap thrust too low to prove the motion gate catches lost authority.",
+        ),
+    ),
+    Harness(
+        slug="constant-depth-motion",
+        title="H01 Constant Depth Motion",
+        family="Depth Behavior",
+        path="harnesses/depth_behavior_harnesses/H01-constant_depth_motion",
+        mission="missions/depth_behavior_missions/depth_behavior_motion",
+        summary="BHV_ConstantDepth motion matrix covering held depth, surfacing, negative-depth clipping, shape parameters, runtime updates, malformed update preservation, finite-duration completion, malformed config, missing depth mail/domain, and actuator authority failures.",
+        proof="Checks bridged NAV_DEPTH, DEPTH_MISMATCH, behavior error evidence, and elevator/depth-control signals from pHelmIvP driving pMarinePIDV22 and uSimMarineV22.",
+        gifs=(),
+        run="./zlaunch.sh --case=constant_depth_hold_pass --gui 10",
+        notes=(
+            "This harness keeps the horizontal waypoint leg as background motion so BHV_ConstantDepth owns the vertical-control verdict.",
+            "Expected-fail cases prove the evaluator catches invalid configuration, missing depth inputs, missing depth domain, and disabled vertical-control authority.",
+        ),
+    ),
+    Harness(
+        slug="goto-depth-motion",
+        title="H02 GoToDepth Motion",
+        family="Depth Behavior",
+        path="harnesses/depth_behavior_harnesses/H02-goto_depth_motion",
+        mission="missions/depth_behavior_missions/depth_behavior_motion",
+        summary="BHV_GoToDepth motion matrix covering multi-level sequences, repeat behavior and exhaustion, vertical target crossings, zero-delta arrivals, single-level targets, malformed update preservation, unsupported perpetual config, invalid sequences, negative depths, malformed repeat values, missing depth mail, and missing depth domain.",
+        proof="Checks bridged NAV_DEPTH, behavior-owned arrival counters, depth-band evidence, and configuration/error evidence from the simulated UUV stack.",
+        gifs=(),
+        run="./zlaunch.sh --case=goto_depth_sequence_pass --gui 10",
+        notes=(
+            "Finite sequence cases grade arrival and depth evidence instead of treating post-completion behavior quieting as the primary signal.",
+            "Expected-fail cases isolate invalid sequence inputs and missing vertical-state conditions.",
+        ),
+    ),
+    Harness(
+        slug="periodic-surface-motion",
+        title="H03 Periodic Surface Motion",
+        family="Depth Behavior",
+        path="harnesses/depth_behavior_harnesses/H03-periodic_surface_motion",
+        mission="missions/depth_behavior_missions/depth_behavior_motion",
+        summary="BHV_PeriodicSurface motion matrix covering surfacing cycles, status variables, wait windows, timeout reset behavior, mark-variable resets, acomms extensions, ascent-grade branches, current-speed mode, invalid period/ascent/status/acomms settings, missing nav mail, and missing depth domain.",
+        proof="Checks surfaced-depth evidence, timeout/reset evidence, behavior status variables, vertical actuator evidence, and mission-owned error outcomes.",
+        gifs=(),
+        run="./zlaunch.sh --case=periodic_surface_pass --gui 10",
+        notes=(
+            "Vehicle-side overlays own the behavior timing inputs, including acomms extension, so the evaluated app receives the same mail as it would in a live vehicle community.",
+            "Expected-fail cases distinguish malformed behavior parameters from missing navigation or domain support.",
+        ),
+    ),
+    Harness(
+        slug="max-depth-motion",
+        title="H04 Max Depth Motion",
+        family="Depth Behavior",
+        path="harnesses/depth_behavior_harnesses/H04-max_depth_motion",
+        mission="missions/depth_behavior_missions/depth_behavior_motion",
+        summary="BHV_MaxDepth motion matrix covering max-depth guarding, zero-depth clamps, negative command clipping, tight and zero tolerance, unconstrained shallow commands, malformed max-depth/tolerance settings, unsupported ascent-field config, missing depth mail, and missing depth domain.",
+        proof="Checks bridged NAV_DEPTH limits, slack/mismatch telemetry, behavior error evidence, and elevator response under commanded over-depth pressure.",
+        gifs=(),
+        run="./zlaunch.sh --case=max_depth_guard_pass --gui 10",
+        notes=(
+            "This harness grades the guard behavior while another behavior creates pressure to go deeper than the configured limit.",
+            "Expected-fail cases prove both bad configuration and missing vertical state are caught by the mission evaluator.",
+        ),
+    ),
+    Harness(
+        slug="min-altitude-motion",
+        title="H05 Min Altitude Motion",
+        family="Depth Behavior",
+        path="harnesses/depth_behavior_harnesses/H05-min_altitude_motion",
+        mission="missions/depth_behavior_missions/depth_behavior_motion",
+        summary="BHV_MinAltitude motion matrix covering bottom-clearance guarding, shallow-bottom response, unconstrained deep-bottom behavior, clearance boundary behavior, zero-minimum behavior, zero altitude failures, invalid configuration, missing nav inputs, and noncritical missing-altitude handling.",
+        proof="Checks bridged NAV_DEPTH and NAV_ALTITUDE, min-altitude clearance bands, behavior error evidence, and elevator response under simulated bottom-clearance pressure.",
+        gifs=(),
+        run="./zlaunch.sh --case=min_altitude_guard_pass --gui 10",
+        notes=(
+            "This harness isolates bottom-clearance behavior from the other depth behaviors while reusing the same simulated UUV stack.",
+            "The noncritical missing-altitude case documents the configured warning-only mode separately from critical guard failures.",
         ),
     ),
     Harness(
@@ -539,6 +616,18 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("pid-unit", "pid-motion"),
     ),
     Family(
+        name="BHV_ConstantDepth / BHV_GoToDepth / BHV_PeriodicSurface / BHV_MaxDepth / BHV_MinAltitude",
+        label="Depth Behavior",
+        summary="Checks vertical-control behaviors for held depths, commanded depth sequences, periodic surfacing, max-depth constraints, and minimum bottom clearance.",
+        slugs=(
+            "constant-depth-motion",
+            "goto-depth-motion",
+            "periodic-surface-motion",
+            "max-depth-motion",
+            "min-altitude-motion",
+        ),
+    ),
+    Family(
         name="BHV_AvdColregsV22",
         label="COLREGS Behavior",
         summary="Exercises COLREGS classification, threshold edges, execution quality, parameter sensitivity, and multi-vehicle stress cases.",
@@ -630,6 +719,11 @@ TEST_STYLE: dict[str, str] = {
     "obmgr-motion": "Moving correctness tests for obstacle-manager alert output. These cases check whether obstacle alerts are actionable enough to support clean obstacle-avoidance transit, and whether intentionally bad setups fail for the expected reason.",
     "pid-unit": "Simple correctness tests for pMarinePIDV22 output behavior. These cases keep the mission to one MOOS community and verify rudder, thrust, elevator, override, stale-input, yaw-source, and debug publication paths.",
     "pid-motion": "Moving correctness tests for pMarinePIDV22 closed-loop behavior. These cases add pHelmIvP and uSimMarineV22 and verify that PID output drives arrival, turn recovery, speed-PID transit, depth response, and expected authority failures.",
+    "constant-depth-motion": "Moving correctness tests for BHV_ConstantDepth. These cases verify held depths, surfacing, negative-depth clipping, shape parameters, runtime updates, malformed update preservation, finite-duration completion, malformed config, missing inputs/domain, and disabled depth-control authority.",
+    "goto-depth-motion": "Moving correctness tests for BHV_GoToDepth. These cases verify multi-level sequences, repeated cycles and exhaustion, vertical target crossings, zero-delta arrivals, single-level targets, malformed update preservation, unsupported perpetual config, invalid sequences, malformed repeat values, missing inputs, and missing domain support.",
+    "periodic-surface-motion": "Moving correctness tests for BHV_PeriodicSurface. These cases verify periodic surfacing, status variables, wait windows, timeout reset behavior, mark-variable resets, acomms extension, ascent profiles, current-speed mode, malformed status/ascent parameters, and missing inputs/domain.",
+    "max-depth-motion": "Moving correctness tests for BHV_MaxDepth. These cases verify max-depth guarding, zero-depth clamps, negative command clipping, tight and zero tolerances, unconstrained shallow commands, invalid configuration, unsupported ascent-field config, missing depth inputs, and missing depth domain support.",
+    "min-altitude-motion": "Moving correctness tests for BHV_MinAltitude. These cases verify bottom-clearance guarding, shallow-bottom response, unconstrained deep-bottom behavior, clearance boundary behavior, zero-minimum behavior, zero altitude failures, invalid configuration, missing nav inputs, and noncritical warning mode.",
     "colregs-classification": "Classification correctness tests for BHV_AvdColregsV22. These cases verify that canonical two-vessel geometries enter the expected COLREGS mode before execution quality is evaluated elsewhere.",
     "colregs-thresholds": "Boundary correctness tests for COLREGS classification. These cases probe below, edge, above, and mirrored geometries to catch regressions near rule-transition thresholds.",
     "colregs-execution": "Execution correctness tests for BHV_AvdColregsV22 after classification is known. These cases run encounters through completion and grade the realized maneuver using CPA, side outcome, timing, and collision evidence.",
@@ -658,6 +752,11 @@ STEM_CONTEXT: dict[str, str] = {
     "obmgr-motion": "The stem mission sends one ownship through a short corridor with obstacle layouts that vary by case. The harness grades whether obstacle-manager alerts support arrival without collisions, near misses, or unresolved encounters.",
     "pid-unit": "The stem mission runs one shoreside MOOS community with scripted desired/nav mail and pMarinePIDV22 using suffixed outputs. It deliberately avoids a simulated vehicle so the cases can grade the PID app's direct actuator contract.",
     "pid-motion": "The stem mission runs one simulated vehicle and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the shoreside evaluator grades bridged nav and actuator evidence.",
+    "constant-depth-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_ConstantDepth owns the vertical-control verdict.",
+    "goto-depth-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_GoToDepth owns the depth-sequence verdict.",
+    "periodic-surface-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_PeriodicSurface owns the surfacing-cycle verdict.",
+    "max-depth-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_MaxDepth owns the over-depth guard verdict.",
+    "min-altitude-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_MinAltitude owns the bottom-clearance verdict.",
     "colregs-classification": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Case overlays vary the encounter geometry for head-on, crossing, overtaking, and overtaken situations.",
     "colregs-thresholds": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Threshold cases reuse the same stem while moving the geometry just below, at, or above classification boundaries.",
     "colregs-execution": "The shared COLREGS stem mission uses two vessels, `ben` and `abe`; `ben` is the evaluated ownship. Execution cases reuse trusted classification geometry and then judge the maneuver that actually unfolds.",
@@ -689,6 +788,28 @@ def ctest_targets():
     import check_cpp_tests
 
     return check_cpp_tests.all_targets()
+
+
+def ctest_coverage_data() -> dict[str, object]:
+    if not CTEST_COVERAGE_DATA.exists():
+        return {}
+    with CTEST_COVERAGE_DATA.open(encoding="utf-8") as handle:
+        data = json.load(handle)
+    families = data.get("families", {})
+    if not isinstance(families, dict):
+        return {}
+    return families
+
+
+def ctest_coverage_note(area: str, coverage_data: dict[str, object]) -> str:
+    raw = coverage_data.get(area)
+    if not isinstance(raw, dict):
+        return "Coverage: not measured."
+    line_percent = raw.get("line_percent")
+    source_files = raw.get("source_files")
+    if line_percent is None or not source_files:
+        return "Coverage: not measured."
+    return f"Coverage: {line_percent:.2f}% line direct-compiled."
 
 
 def count_gtest_cases(path: Path) -> int:
@@ -851,6 +972,7 @@ def ctest_area_description(area: str) -> str:
 
 def ctest_area_rows(targets=None) -> list[CTestArea]:
     targets = list(ctest_targets() if targets is None else targets)
+    coverage_data = ctest_coverage_data()
     area_targets: dict[str, list[object]] = {}
     for target in targets:
         area = target.file.relative_to(CPP_TEST_DIR).parts[0]
@@ -870,6 +992,7 @@ def ctest_area_rows(targets=None) -> list[CTestArea]:
                 source_count=sum(1 for _ in area_path.rglob("*Test.cpp")),
                 case_count=count_gtest_cases(area_path),
                 description=ctest_area_description(area),
+                coverage_note=ctest_coverage_note(area, coverage_data),
                 labels=tuple(sorted(label for label in labels if label)),
                 path=f"tests/cpp/{area}",
             )
@@ -1419,7 +1542,7 @@ def ctest_area_table_rows(areas: list[CTestArea]) -> str:
               </th>
               <td>{area.target_count}</td>
               <td>{area.case_count}</td>
-              <td class="ctest-description">{escape(area.description)}</td>
+              <td class="ctest-description">{escape(area.description)} <span class="coverage-note">{escape(area.coverage_note)}</span></td>
             </tr>
 """
         )
@@ -1478,7 +1601,7 @@ def render_ctest_coverage() -> str:
               <th>Component family</th>
               <th>Targets</th>
               <th>Cases</th>
-              <th>Description</th>
+              <th>Description + Coverage %</th>
             </tr>
           </thead>
           <tbody>

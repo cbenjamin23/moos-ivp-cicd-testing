@@ -1,0 +1,33 @@
+//-------------------------------------------------
+// FILE: goto-depth-crossing-pass-vehicle.xbhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+Behavior = BHV_Waypoint
+{
+  name      = transit
+  pwt       = 80
+  condition = MODE == TRANSITING
+  endflag   = ARRIVED = true
+
+  perpetual = false
+  speed     = $(STOCK_SPD)
+
+  capture_line   = true
+  capture_radius = 4.0
+  slip_radius    = 12.0
+  points         = $(DEST_POS)
+  repeat         = 0
+}
+
+Behavior = BHV_GoToDepth
+{
+  name      = goto_depth
+  pwt       = 140
+  condition = MODE == TRANSITING
+
+  depth         = 12,0:4,0:12,999
+  arrival_delta = 1.0
+  arrival_flag  = LEVEL_HIT
+  repeat        = 0
+}

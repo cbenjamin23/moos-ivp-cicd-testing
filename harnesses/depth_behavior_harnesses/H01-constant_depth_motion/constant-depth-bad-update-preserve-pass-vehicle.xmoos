@@ -1,0 +1,16 @@
+//-------------------------------------------------
+// FILE: constant-depth-bad-update-preserve-pass-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  paused    = false
+  condition = DEPLOY = true
+
+  event = var=DEPTH_VALUE, val="depth=18", time=10
+  event = var=DEPTH_VALUE, val="depth=bad", time=22
+}

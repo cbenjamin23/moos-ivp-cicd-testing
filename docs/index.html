@@ -67,14 +67,14 @@
 
 
       <article class="stat-card">
-        <strong>646</strong>
+        <strong>735</strong>
         <span>Harness Cases</span>
         <p>Mission-run cases with expected outcomes and generated result summaries.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>15</strong>
+        <strong>16</strong>
         <span>Apps &amp; Behaviors</span>
         <p>MOOS apps and IvP behaviors covered by mission harness cases.</p>
       </article>
@@ -187,6 +187,53 @@
         <span class="eyebrow">Marine PID</span>
         <h3>H02 Marine PID Motion</h3>
         <p>Closed-loop pMarinePIDV22 motion matrix covering transit, turn recovery, speed-PID mode, depth response, and authority failures.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Depth Behavior</span>
+          <span class="family-name">BHV_ConstantDepth / BHV_GoToDepth / BHV_PeriodicSurface / BHV_MaxDepth / BHV_MinAltitude</span>
+          <span class="family-summary">Checks vertical-control behaviors for held depths, commanded depth sequences, periodic surfacing, max-depth constraints, and minimum bottom clearance.</span>
+          <span class="family-count">5 harnesses</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/constant-depth-motion.html">
+        <span class="eyebrow">Depth Behavior</span>
+        <h3>H01 Constant Depth Motion</h3>
+        <p>BHV_ConstantDepth motion matrix covering held depth, surfacing, negative-depth clipping, shape parameters, runtime updates, malformed update preservation, finite-duration completion, malformed config, missing depth mail/domain, and actuator authority failures.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/goto-depth-motion.html">
+        <span class="eyebrow">Depth Behavior</span>
+        <h3>H02 GoToDepth Motion</h3>
+        <p>BHV_GoToDepth motion matrix covering multi-level sequences, repeat behavior and exhaustion, vertical target crossings, zero-delta arrivals, single-level targets, malformed update preservation, unsupported perpetual config, invalid sequences, negative depths, malformed repeat values, missing depth mail, and missing depth domain.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/periodic-surface-motion.html">
+        <span class="eyebrow">Depth Behavior</span>
+        <h3>H03 Periodic Surface Motion</h3>
+        <p>BHV_PeriodicSurface motion matrix covering surfacing cycles, status variables, wait windows, timeout reset behavior, mark-variable resets, acomms extensions, ascent-grade branches, current-speed mode, invalid period/ascent/status/acomms settings, missing nav mail, and missing depth domain.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/max-depth-motion.html">
+        <span class="eyebrow">Depth Behavior</span>
+        <h3>H04 Max Depth Motion</h3>
+        <p>BHV_MaxDepth motion matrix covering max-depth guarding, zero-depth clamps, negative command clipping, tight and zero tolerance, unconstrained shallow commands, malformed max-depth/tolerance settings, unsupported ascent-field config, missing depth mail, and missing depth domain.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/min-altitude-motion.html">
+        <span class="eyebrow">Depth Behavior</span>
+        <h3>H05 Min Altitude Motion</h3>
+        <p>BHV_MinAltitude motion matrix covering bottom-clearance guarding, shallow-bottom response, unconstrained deep-bottom behavior, clearance boundary behavior, zero-minimum behavior, zero altitude failures, invalid configuration, missing nav inputs, and noncritical missing-altitude handling.</p>
       </a>
 
         </div>

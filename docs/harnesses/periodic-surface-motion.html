@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H03 Periodic Surface Motion | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260501-1">
+  <script src="../theme.js?v=20260501-1"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Depth Behavior</p>
+      <h1>H03 Periodic Surface Motion</h1>
+      <p class="lede">Moving correctness tests for BHV_PeriodicSurface. These cases verify periodic surfacing, status variables, wait windows, timeout reset behavior, mark-variable resets, acomms extension, ascent profiles, current-speed mode, malformed status/ascent parameters, and missing inputs/domain.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_PeriodicSurface owns the surfacing-cycle verdict.</p>
+      </article>
+    </section>
+
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>periodic_surface_pass</code>
+          <p>Requires ascent and at-surface timeout evidence while a lower-priority constant-depth behavior keeps the UUV submerged between surfacing cycles.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_status_vars_pass</code>
+          <p>Uses custom pending and at-surface status variables and verifies they bridge to shoreside.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_status_variable_alias_pass</code>
+          <p>Uses the long-form status-variable parameter names and verifies they bridge to shoreside.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_wait_window_pass</code>
+          <p>Uses a long surface period and verifies the behavior remains in its pending wait window before ascent.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_acomms_extend_pass</code>
+          <p>Posts the acoustic-comms mark variable and verifies the pending surface window is extended.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_mark_variable_reset_pass</code>
+          <p>Posts a custom mark variable update and verifies it resets the pending surface timer before ascent.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_quadratic_ascent_pass</code>
+          <p>Uses the quadratic ascent grade and requires surfacing evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_fullspeed_ascent_pass</code>
+          <p>Uses explicit fullspeed ascent and requires surfacing and at-surface timeout evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_timeout_reset_pass</code>
+          <p>Verifies the behavior posts an at-surface timeout and resets surface dwell time before continuing the next cycle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_current_speed_pass</code>
+          <p>Uses ascent_speed=current with a non-default grade and requires surfacing evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_speed_alias_pass</code>
+          <p>Uses the speed_to_surface alias with linear ascent and requires surfacing evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_period_fail</code>
+          <p>Supplies an invalid surface period and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_ascent_grade_fail</code>
+          <p>Supplies an invalid ascent grade and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_ascent_speed_fail</code>
+          <p>Supplies an invalid ascent-speed value and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_zero_speed_depth_fail</code>
+          <p>Supplies a negative zero-speed depth and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_max_time_fail</code>
+          <p>Supplies a negative max-at-surface time and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_acomms_mark_fail</code>
+          <p>Supplies an invalid acoustic-comms mark tuple and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_acomms_interval_fail</code>
+          <p>Supplies a zero acoustic-comms extension interval and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_acomms_max_fail</code>
+          <p>Supplies an acoustic-comms max extension shorter than the interval and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_mark_variable_fail</code>
+          <p>Supplies an empty mark variable and expects helm configuration failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_pending_status_var_fail</code>
+          <p>Supplies an empty pending-status variable and expects helm configuration failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_bad_atsurface_status_var_fail</code>
+          <p>Supplies an empty at-surface status variable and expects helm configuration failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_missing_nav_fail</code>
+          <p>Removes usable ownship depth/speed mail and expects the surfacing verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>periodic_surface_domain_missing_fail</code>
+          <p>Removes the helm depth domain and expects the surfacing verdict to fail.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/depth_behavior_harnesses/H03-periodic_surface_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/depth_behavior_missions/depth_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

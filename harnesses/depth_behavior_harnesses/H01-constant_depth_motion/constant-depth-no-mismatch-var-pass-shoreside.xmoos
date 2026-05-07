@@ -1,0 +1,50 @@
+//-------------------------------------------------
+// FILE: constant-depth-no-mismatch-var-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=BHV_ERROR_SEEN, val=false, time=0
+  event = var=TEST_EVAL_READY, val=true, time=45
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ABE_NAV_X >= 45
+  pass_condition = ABE_NAV_Y >= -75
+  pass_condition = ABE_NAV_Y <= -45
+  pass_condition = ABE_NAV_DEPTH >= 10
+  pass_condition = ABE_NAV_DEPTH <= 14
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = depth_behavior_motion
+  mission_mod  = constant_depth_no_mismatch_var_pass
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = x=$[ABE_NAV_X]
+  report_column = y=$[ABE_NAV_Y]
+  report_column = depth=$[ABE_NAV_DEPTH]
+  report_column = elevator=$[ABE_DESIRED_ELEVATOR]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

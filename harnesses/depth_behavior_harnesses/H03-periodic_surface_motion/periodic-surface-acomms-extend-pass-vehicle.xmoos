@@ -1,0 +1,14 @@
+//-------------------------------------------------
+// FILE: periodic-surface-acomms-extend-pass-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  paused = false
+
+  event = var=ACOMMS_UPDATE, val=ping, time=8
+}

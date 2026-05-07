@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H05 Min Altitude Motion | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260501-1">
+  <script src="../theme.js?v=20260501-1"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Depth Behavior</p>
+      <h1>H05 Min Altitude Motion</h1>
+      <p class="lede">Moving correctness tests for BHV_MinAltitude. These cases verify bottom-clearance guarding, shallow-bottom response, unconstrained deep-bottom behavior, clearance boundary behavior, zero-minimum behavior, zero altitude failures, invalid configuration, missing nav inputs, and noncritical warning mode.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_MinAltitude owns the bottom-clearance verdict.</p>
+      </article>
+    </section>
+
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>min_altitude_guard_pass</code>
+          <p>Sets a shallow simulated bottom and requires the behavior to preserve bottom clearance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_shallow_bottom_pass</code>
+          <p>Sets clearance tighter than water depth and verifies the behavior clamps the allowed depth near the surface.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_zero_min_pass</code>
+          <p>Sets zero minimum altitude and verifies the behavior allows the deeper target down to the bottom estimate.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_low_threshold_pass</code>
+          <p>Sets a low positive clearance and verifies the behavior allows a near-bottom but nonzero altitude.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_noncritical_available_pass</code>
+          <p>Sets missing_altitude_critical=false with valid altitude mail and verifies normal clearance guarding still works.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_unconstrained_deep_bottom_pass</code>
+          <p>Uses ample simulated water depth and verifies the clearance guard does not interfere with a normal deep target.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_clearance_boundary_pass</code>
+          <p>Commands past the bottom-clearance limit and verifies the vehicle settles near the computed clearance boundary.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_zero_altitude_fail</code>
+          <p>Sets zero simulated altitude while commanding a dive and expects the normal clearance verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_bad_config_fail</code>
+          <p>Supplies malformed minimum-altitude config and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_negative_min_fail</code>
+          <p>Supplies a negative minimum altitude and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_bad_critical_bool_fail</code>
+          <p>Supplies an invalid missing_altitude_critical value and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_missing_nav_fail</code>
+          <p>Removes usable ownship depth/altitude mail and expects the clearance verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_altitude_noncritical_missing_altitude_fail</code>
+          <p>Sets missing_altitude_critical=false while depth/altitude mail is unavailable and verifies the current failure path remains caught.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/depth_behavior_harnesses/H05-min_altitude_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/depth_behavior_missions/depth_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,15 @@
+//-------------------------------------------------
+// FILE: goto-depth-bad-update-preserve-pass-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  paused    = false
+  condition = DEPLOY = true
+
+  event = var=GTD_UPDATE, val="depth=bad", time=12
+}

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Constant Depth Motion | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260501-1">
+  <script src="../theme.js?v=20260501-1"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Depth Behavior</p>
+      <h1>H01 Constant Depth Motion</h1>
+      <p class="lede">Moving correctness tests for BHV_ConstantDepth. These cases verify held depths, surfacing, negative-depth clipping, shape parameters, runtime updates, malformed update preservation, finite-duration completion, malformed config, missing inputs/domain, and disabled depth-control authority.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_ConstantDepth owns the vertical-control verdict.</p>
+      </article>
+    </section>
+
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>constant_depth_hold_pass</code>
+          <p>Baseline hold at the stock target depth with bounded mismatch and clean behavior state.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_surface_pass</code>
+          <p>Holds the lower depth boundary at the surface and verifies zero-depth mismatch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_negative_clip_pass</code>
+          <p>Supplies a negative configured depth and verifies mission-time clipping to the surface.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_shape_params_pass</code>
+          <p>Uses tight ZAIC shaping parameters and verifies the vehicle still settles inside the intended depth band.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_summitdelta_clip_pass</code>
+          <p>Supplies an over-range summit delta and verifies the behavior clips it while still holding depth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_no_mismatch_var_pass</code>
+          <p>Omits the optional mismatch telemetry variable and verifies the behavior still controls depth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_update_pass</code>
+          <p>Posts a runtime DEPTH_VALUE update and requires the behavior to settle near the updated target.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_bad_update_preserve_pass</code>
+          <p>Posts a valid runtime update followed by malformed update mail and verifies the valid target remains in force.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_duration_complete_pass</code>
+          <p>Gives the behavior a finite duration and verifies its completion flag is posted in the moving mission.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_bad_depth_fail</code>
+          <p>Supplies malformed depth config and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_bad_peakwidth_fail</code>
+          <p>Supplies malformed ZAIC width config and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_bad_basewidth_fail</code>
+          <p>Supplies malformed ZAIC basewidth config and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_bad_summitdelta_fail</code>
+          <p>Supplies malformed summit-delta config and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_bad_mismatch_var_fail</code>
+          <p>Supplies a whitespace-bearing mismatch variable name and expects the normal good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_missing_duration_fail</code>
+          <p>Omits the required duration override and expects the behavior to time out before holding depth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_missing_nav_depth_fail</code>
+          <p>Removes usable ownship depth mail and expects the constant-depth good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_domain_missing_fail</code>
+          <p>Removes the helm depth domain and expects the constant-depth good-case verdict to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_low_elevator_authority_fail</code>
+          <p>Limits PID elevator authority while commanding a deep target; the good-case depth band should not be reached.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>constant_depth_control_disabled_fail</code>
+          <p>Disables PID depth control while commanding a dive; the good-case depth band should not be reached.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/depth_behavior_harnesses/H01-constant_depth_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/depth_behavior_missions/depth_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

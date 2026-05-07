@@ -1,0 +1,31 @@
+//-------------------------------------------------
+// FILE: min-altitude-bad-critical-bool-fail-vehicle.xbhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+Behavior = BHV_Waypoint
+{
+  name      = transit
+  pwt       = 80
+  condition = MODE == TRANSITING
+  endflag   = ARRIVED = true
+
+  perpetual = false
+  speed     = $(STOCK_SPD)
+
+  capture_line   = true
+  capture_radius = 4.0
+  slip_radius    = 12.0
+  points         = $(DEST_POS)
+  repeat         = 0
+}
+
+Behavior = BHV_MinAltitudeX
+{
+  name      = min_altitude
+  pwt       = 300
+  condition = MODE == TRANSITING
+
+  min_altitude              = 8
+  missing_altitude_critical = maybe
+}

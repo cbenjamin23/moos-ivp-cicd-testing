@@ -1,0 +1,208 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = uProcessWatch   @ NewConsole = false
+  Run = pShare          @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+  Run = uTimerScript    @ NewConsole = false
+  Run = pMissionEval    @ NewConsole = false
+  Run = pAutoPoke       @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer   @ NewConsole = false
+#else
+  Run = pMissionHash    @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=BHV_ERROR_SEEN, val=false, time=0
+  event = var=TEST_EVAL_READY, val=true, time=45
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ABE_NAV_X >= 45
+  pass_condition = ABE_NAV_Y >= -75
+  pass_condition = ABE_NAV_Y <= -45
+  pass_condition = ABE_NAV_HEADING >= 80
+  pass_condition = ABE_NAV_HEADING <= 100
+  pass_condition = ABE_NAV_DEPTH >= 10
+  pass_condition = ABE_NAV_DEPTH <= 14
+  pass_condition = DEPTH_MISMATCH <= 4
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = depth_behavior_motion
+  mission_mod  = $(MMOD:=constant_depth_hold_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = arrived=$[ARRIVED]
+  report_column = x=$[ABE_NAV_X]
+  report_column = y=$[ABE_NAV_Y]
+  report_column = speed=$[ABE_NAV_SPEED]
+  report_column = heading=$[ABE_NAV_HEADING]
+  report_column = depth=$[ABE_NAV_DEPTH]
+  report_column = altitude=$[ABE_NAV_ALTITUDE]
+  report_column = mismatch=$[DEPTH_MISMATCH]
+  report_column = slack=$[DEPTH_SLACK]
+  report_column = level=$[LEVEL_DEPTH]
+  report_column = gtd_hit=$[GTD_LEVEL_HIT]
+  report_column = periodic=$[PERIODIC_ASCEND]
+  report_column = surface_time=$[TIME_AT_SURFACE]
+  report_column = elevator=$[ABE_DESIRED_ELEVATOR]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge = DEPLOY, MOOS_MANUAL_OVERRIDE, NODE_REPORT
+  qbridge = ARRIVED
+  qbridge = ABE_NAV_X, ABE_NAV_Y, ABE_NAV_SPEED, ABE_NAV_HEADING, ABE_NAV_DEPTH, ABE_NAV_ALTITUDE
+  qbridge = ABE_DESIRED_THRUST, ABE_DESIRED_RUDDER, ABE_DESIRED_ELEVATOR
+  qbridge = DEPTH_MISMATCH, DEPTH_SLACK, LEVEL_DEPTH, GTD_LEVEL_HIT
+  qbridge = PERIODIC_ASCEND, PENDING_SURFACE, TIME_AT_SURFACE, PSF_AT_SURFACE_TIMEOUT
+  qbridge = CD_DONE
+  qbridge = ABE_BHV_ERROR, ABE_BHV_WARNING
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 0
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//----------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = 0
+  set_pan_y            = -300
+  zoom                 = 1.0
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode         = appcast
+  appcast_color_scheme = indigo
+
+  scope = ARRIVED
+  scope = TEST_EVAL_READY
+  scope = MISSION_EVALUATED
+  scope = ABE_NAV_X
+  scope = ABE_NAV_Y
+  scope = ABE_NAV_SPEED
+  scope = ABE_NAV_HEADING
+  scope = ABE_NAV_DEPTH
+  scope = ABE_NAV_ALTITUDE
+  scope = DEPTH_MISMATCH
+  scope = DEPTH_SLACK
+  scope = LEVEL_DEPTH
+  scope = GTD_LEVEL_HIT
+  scope = PERIODIC_ASCEND
+  scope = TIME_AT_SURFACE
+
+  button_one = DEPLOY # DEPLOY_ALL=true
+  button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false
+}

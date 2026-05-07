@@ -1,0 +1,36 @@
+//-------------------------------------------------
+// FILE: constant-depth-duration-complete-pass-vehicle.xbhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+Behavior = BHV_Waypoint
+{
+  name      = transit
+  pwt       = 80
+  condition = MODE == TRANSITING
+  endflag   = ARRIVED = true
+
+  perpetual = false
+  speed     = $(STOCK_SPD)
+
+  capture_line   = true
+  capture_radius = 4.0
+  slip_radius    = 12.0
+  points         = $(DEST_POS)
+  repeat         = 0
+}
+
+Behavior = BHV_ConstantDepth
+{
+  name      = const_depth
+  pwt       = 120
+  condition = MODE == TRANSITING
+  duration  = 8
+  endflag   = CD_DONE = true
+
+  depth              = 12
+  peakwidth          = 4
+  basewidth          = 10
+  summitdelta        = 15
+  depth_mismatch_var = DEPTH_MISMATCH
+}

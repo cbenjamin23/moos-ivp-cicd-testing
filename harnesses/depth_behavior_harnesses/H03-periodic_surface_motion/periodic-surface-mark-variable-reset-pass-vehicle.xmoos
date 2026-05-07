@@ -1,0 +1,16 @@
+//-------------------------------------------------
+// FILE: periodic-surface-mark-variable-reset-pass-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  paused    = false
+  condition = DEPLOY = true
+
+  event = var=SURFACE_RESET_MARK, val=initial, time=0
+  event = var=SURFACE_RESET_MARK, val=reset1, time=8
+}

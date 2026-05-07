@@ -25,6 +25,7 @@ on:
           - collision_behavior
           - convoy_behavior
           - cutrange_behavior
+          - depth_behavior
           - fixedturn_behavior
           - loiter_behavior
           - obstacle_behavior

@@ -42,6 +42,41 @@
     "families": ["pid"]
   },
   {
+    "key": "depth_constant_h01",
+    "path": "harnesses/depth_behavior_harnesses/H01-constant_depth_motion",
+    "harness": "H01-constant_depth_motion",
+    "artifact": "manual-depth-constant-h01-results",
+    "families": ["depth_behavior"]
+  },
+  {
+    "key": "depth_goto_h02",
+    "path": "harnesses/depth_behavior_harnesses/H02-goto_depth_motion",
+    "harness": "H02-goto_depth_motion",
+    "artifact": "manual-depth-goto-h02-results",
+    "families": ["depth_behavior"]
+  },
+  {
+    "key": "depth_periodic_surface_h03",
+    "path": "harnesses/depth_behavior_harnesses/H03-periodic_surface_motion",
+    "harness": "H03-periodic_surface_motion",
+    "artifact": "manual-depth-periodic-surface-h03-results",
+    "families": ["depth_behavior"]
+  },
+  {
+    "key": "depth_max_h04",
+    "path": "harnesses/depth_behavior_harnesses/H04-max_depth_motion",
+    "harness": "H04-max_depth_motion",
+    "artifact": "manual-depth-max-h04-results",
+    "families": ["depth_behavior"]
+  },
+  {
+    "key": "depth_min_altitude_h05",
+    "path": "harnesses/depth_behavior_harnesses/H05-min_altitude_motion",
+    "harness": "H05-min_altitude_motion",
+    "artifact": "manual-depth-min-altitude-h05-results",
+    "families": ["depth_behavior"]
+  },
+  {
     "key": "colregs_h01",
     "path": "harnesses/colregs_harnesses/H01-colregs_classification",
     "harness": "H01-colregs_classification",
