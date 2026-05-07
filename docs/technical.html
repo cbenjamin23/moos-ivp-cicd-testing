@@ -142,9 +142,37 @@
 
 
           <tr>
-            <th>BHV_ConstantDepth / BHV_GoToDepth / BHV_PeriodicSurface / BHV_MaxDepth / BHV_MinAltitude</th>
-            <td>Checks vertical-control behaviors for held depths, commanded depth sequences, periodic surfacing, max-depth constraints, and minimum bottom clearance.</td>
-            <td>5</td>
+            <th>BHV_ConstantDepth</th>
+            <td>H01 in the shared depth behavior harness group; checks held depth, surfacing, runtime updates, malformed config, missing depth inputs, and actuator authority.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_GoToDepth</th>
+            <td>H02, not H01, because it is part of the shared depth behavior harness group; checks commanded depth sequences, repeats, arrivals, crossings, invalid inputs, and missing depth state.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_PeriodicSurface</th>
+            <td>H03, not H01, because it is part of the shared depth behavior harness group; checks surfacing cycles, wait windows, status variables, acomms extensions, ascent modes, and malformed timing inputs.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_MaxDepth</th>
+            <td>H04, not H01, because it is part of the shared depth behavior harness group; checks max-depth guarding, clamps, tolerances, slack telemetry, malformed config, and missing depth state.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_MinAltitude</th>
+            <td>H05, not H01, because it is part of the shared depth behavior harness group; checks bottom-clearance guarding, shallow-bottom response, boundary behavior, invalid config, and missing altitude inputs.</td>
+            <td>1</td>
           </tr>
 
 

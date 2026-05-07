@@ -616,16 +616,34 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("pid-unit", "pid-motion"),
     ),
     Family(
-        name="BHV_ConstantDepth / BHV_GoToDepth / BHV_PeriodicSurface / BHV_MaxDepth / BHV_MinAltitude",
+        name="BHV_ConstantDepth",
         label="Depth Behavior",
-        summary="Checks vertical-control behaviors for held depths, commanded depth sequences, periodic surfacing, max-depth constraints, and minimum bottom clearance.",
-        slugs=(
-            "constant-depth-motion",
-            "goto-depth-motion",
-            "periodic-surface-motion",
-            "max-depth-motion",
-            "min-altitude-motion",
-        ),
+        summary="H01 in the shared depth behavior harness group; checks held depth, surfacing, runtime updates, malformed config, missing depth inputs, and actuator authority.",
+        slugs=("constant-depth-motion",),
+    ),
+    Family(
+        name="BHV_GoToDepth",
+        label="Depth Behavior",
+        summary="H02, not H01, because it is part of the shared depth behavior harness group; checks commanded depth sequences, repeats, arrivals, crossings, invalid inputs, and missing depth state.",
+        slugs=("goto-depth-motion",),
+    ),
+    Family(
+        name="BHV_PeriodicSurface",
+        label="Depth Behavior",
+        summary="H03, not H01, because it is part of the shared depth behavior harness group; checks surfacing cycles, wait windows, status variables, acomms extensions, ascent modes, and malformed timing inputs.",
+        slugs=("periodic-surface-motion",),
+    ),
+    Family(
+        name="BHV_MaxDepth",
+        label="Depth Behavior",
+        summary="H04, not H01, because it is part of the shared depth behavior harness group; checks max-depth guarding, clamps, tolerances, slack telemetry, malformed config, and missing depth state.",
+        slugs=("max-depth-motion",),
+    ),
+    Family(
+        name="BHV_MinAltitude",
+        label="Depth Behavior",
+        summary="H05, not H01, because it is part of the shared depth behavior harness group; checks bottom-clearance guarding, shallow-bottom response, boundary behavior, invalid config, and missing altitude inputs.",
+        slugs=("min-altitude-motion",),
     ),
     Family(
         name="BHV_AvdColregsV22",
