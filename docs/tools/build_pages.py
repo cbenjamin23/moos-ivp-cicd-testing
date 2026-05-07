@@ -618,31 +618,31 @@ FAMILIES: tuple[Family, ...] = (
     Family(
         name="BHV_ConstantDepth",
         label="Depth Behavior",
-        summary="H01 in the shared depth behavior harness group; checks held depth, surfacing, runtime updates, malformed config, missing depth inputs, and actuator authority.",
+        summary="Checks held depth, surfacing, runtime updates, bad config, missing depth mail, and actuator authority. H01 in shared depth behavior group.",
         slugs=("constant-depth-motion",),
     ),
     Family(
         name="BHV_GoToDepth",
         label="Depth Behavior",
-        summary="H02, not H01, because it is part of the shared depth behavior harness group; checks commanded depth sequences, repeats, arrivals, crossings, invalid inputs, and missing depth state.",
+        summary="Checks depth sequences, repeats, arrivals, crossings, invalid inputs, and missing depth state. H02, not H01, in shared depth behavior group.",
         slugs=("goto-depth-motion",),
     ),
     Family(
         name="BHV_PeriodicSurface",
         label="Depth Behavior",
-        summary="H03, not H01, because it is part of the shared depth behavior harness group; checks surfacing cycles, wait windows, status variables, acomms extensions, ascent modes, and malformed timing inputs.",
+        summary="Checks surfacing cycles, waits, status variables, acomms extensions, ascent modes, and bad timing inputs. H03, not H01, in shared depth behavior group.",
         slugs=("periodic-surface-motion",),
     ),
     Family(
         name="BHV_MaxDepth",
         label="Depth Behavior",
-        summary="H04, not H01, because it is part of the shared depth behavior harness group; checks max-depth guarding, clamps, tolerances, slack telemetry, malformed config, and missing depth state.",
+        summary="Checks max-depth guarding, clamps, tolerances, slack telemetry, bad config, and missing depth state. H04, not H01, in shared depth behavior group.",
         slugs=("max-depth-motion",),
     ),
     Family(
         name="BHV_MinAltitude",
         label="Depth Behavior",
-        summary="H05, not H01, because it is part of the shared depth behavior harness group; checks bottom-clearance guarding, shallow-bottom response, boundary behavior, invalid config, and missing altitude inputs.",
+        summary="Checks bottom-clearance guarding, shallow-bottom response, boundary behavior, bad config, and missing altitude inputs. H05, not H01, in shared depth behavior group.",
         slugs=("min-altitude-motion",),
     ),
     Family(
