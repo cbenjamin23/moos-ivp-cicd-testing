@@ -551,7 +551,7 @@ HARNESSES: tuple[Harness, ...] = (
             ("Far Turn Init", "init_far_turn_pass", "legrun-far-turn-init.gif"),
             ("Individual Turn Params", "individual_turn_params_pass", "legrun-individual-turn-params.gif"),
         ),
-        run="./zlaunch.sh --case=baseline_cycle_pass --gui --port_base=4000 2",
+        run="./zlaunch.sh --case=baseline_cycle_pass --gui --port_base=4000 10",
         notes=(
             "This harness keeps one simulated vehicle on a compact two-leg pattern so LegRun owns the evaluated motion contract.",
             "The far-turn initialization case is graded separately because it intentionally starts on the far leg path instead of the default first leg.",
