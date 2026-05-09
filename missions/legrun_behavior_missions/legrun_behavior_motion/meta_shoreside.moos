@@ -44,8 +44,10 @@ ProcessConfig = pAutoPoke
   AppTick   = 2
   CommsTick = 2
 
+#ifdef LAUNCH_GUI no
   flag = DEPLOY_ALL=true
   flag = MOOS_MANUAL_OVERRIDE_ALL=false
+#endif
   flag = LR_LEG1_DONE=false
   flag = LR_LEG2_DONE=false
   flag = LR_TURN1_DONE=false
@@ -77,8 +79,8 @@ ProcessConfig = uTimerScript
   event = var=LR_DONE, val=false, time=1
   event = var=MISSION_TIMEOUT, val=false, time=1
   event = var=BHV_ERROR_SEEN, val=false, time=1
-  event = var=DEPLOY_ALL, val=true, time=5
-  event = var=MOOS_MANUAL_OVERRIDE_ALL, val=false, time=5
+  event = var=DEPLOY_ALL, val=true, time=20
+  event = var=MOOS_MANUAL_OVERRIDE_ALL, val=false, time=20
 #else
   condition = DEPLOY_ALL = true
 #endif
