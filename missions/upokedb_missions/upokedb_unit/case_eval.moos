@@ -1,0 +1,29 @@
+//-------------------------------------------------
+// FILE: case_eval.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = POKE_NUM = 42.5
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = upokedb_unit
+  mission_mod  = $(MMOD:=numeric_direct_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = poke_num=$[POKE_NUM]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}
+

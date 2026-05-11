@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pSearchGrid Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">pSearchGrid</p>
+      <h1>H01 pSearchGrid Unit</h1>
+      <p class="lede">Utility app correctness tests for pSearchGrid. These cases verify initial grid output, local/global node-report deltas, repeated and multi-cell delta behavior, reset clearing semantics, full-grid publication, custom grid variables, single and list filter blocking, malformed reports, and outside-grid absence.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with pSearchGrid and case-generated NODE_REPORT mail. The harness uses pMissionEval for readiness and alog payload checks for grid and delta publications.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="psearchgrid-grid-delta.gif">
+          <img src="../assets/gifs/psearchgrid-grid-delta.gif?v=20260511-5" alt="Grid Delta GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Grid Delta</h3>
+          <p>Description: Verifies a NODE_REPORT_LOCAL inside the grid produces a delta update.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="psearchgrid-full-grid-report.gif">
+          <img src="../assets/gifs/psearchgrid-full-grid-report.gif?v=20260511-5" alt="Full Grid Report GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Full Grid Report</h3>
+          <p>Description: Verifies report_deltas=false publishes full grid state after a report.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>initial_grid_publish_pass</code>
+          <p>Verifies the configured convex grid is published on the configured base grid variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_local_delta_pass</code>
+          <p>Verifies a NODE_REPORT_LOCAL inside the grid produces a delta update.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_global_delta_pass</code>
+          <p>Verifies a global NODE_REPORT inside the grid produces a delta update.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>boundary_origin_delta_pass</code>
+          <p>Verifies a report exactly on the grid origin boundary still intersects the grid.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outside_grid_no_delta_pass</code>
+          <p>Verifies a report outside the grid does not produce a delta update.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>negative_outside_no_delta_pass</code>
+          <p>Verifies a report just outside the negative side of the grid does not produce a delta update.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>full_grid_report_pass</code>
+          <p>Verifies report_deltas=false publishes full grid state after a report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_var_label_pass</code>
+          <p>Verifies custom grid variable and label settings affect the output channel and delta payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lowercase_var_name_pass</code>
+          <p>Verifies a lowercase configured grid variable is normalized to uppercase output mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_full_grid_var_pass</code>
+          <p>Verifies custom grid variable settings also apply to full-grid publication mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_report_deltas_default_delta_pass</code>
+          <p>Verifies an invalid report_deltas value leaves the app in its default delta-reporting mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_grid_clears_pass</code>
+          <p>Verifies PSG_RESET_GRID clears a previously incremented full-grid cell value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_false_payload_clears_pass</code>
+          <p>Verifies PSG_RESET_GRID clears the grid based on mail presence regardless of payload value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>two_cell_delta_pass</code>
+          <p>Verifies two simultaneous reports in different cells produce delta publication evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>repeated_cell_delta_pass</code>
+          <p>Verifies repeated reports in one cell accumulate into a larger delta value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sequential_delta_cleared_pass</code>
+          <p>Verifies separated reports in one cell produce separate one-count deltas instead of retaining stale delta state.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>match_community_allows_pass</code>
+          <p>Verifies a matching community filter permits incoming reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>match_list_allows_pass</code>
+          <p>Verifies brace/comma-list match filters permit a listed community.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>match_community_blocks_pass</code>
+          <p>Verifies a nonmatching community filter blocks incoming reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ignore_other_allows_pass</code>
+          <p>Verifies an ignore filter for another community still permits incoming reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ignore_community_blocks_pass</code>
+          <p>Verifies an ignored community filter blocks incoming reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ignore_list_blocks_pass</code>
+          <p>Verifies brace/comma-list ignore filters block a listed community.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>malformed_report_absent_pass</code>
+          <p>Verifies malformed node reports do not produce delta updates.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/psearchgrid_harnesses/H01-psearchgrid_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/psearchgrid_missions/psearchgrid_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

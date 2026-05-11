@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uPokeDB Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uPokeDB</p>
+      <h1>H01 uPokeDB Unit</h1>
+      <p class="lede">Utility app correctness tests for uPokeDB. These cases verify that command-line, mission-file, and cached pokes publish the intended numeric, string, boolean-looking, overwritten, repeated, alias-driven, and time-macro values to a live MOOSDB.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with MOOSDB, pLogger, pMissionEval, and pMissionHash. The harness runs uPokeDB externally against that live DB, then pMissionEval grades the exact variables that should have been posted.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="upokedb-direct-numeric.gif">
+          <img src="../assets/gifs/upokedb-direct-numeric.gif?v=20260511-5" alt="Direct Numeric Poke GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Direct Numeric Poke</h3>
+          <p>Description: Posts one numeric value through explicit --host/--port arguments and expects the DB value to match exactly.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="upokedb-cached-pokes.gif">
+          <img src="../assets/gifs/upokedb-cached-pokes.gif?v=20260511-5" alt="Cached Pokes GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Cached Pokes</h3>
+          <p>Description: Uses cached numeric and string pokes together to exercise cache parsing for both value forms.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>numeric_direct_pass</code>
+          <p>Posts one numeric value through explicit --host/--port arguments and expects the DB value to match exactly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>string_forced_pass</code>
+          <p>Posts a numeric-looking value with := and expects it to remain available as the exact string payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multiple_mixed_pass</code>
+          <p>Posts numeric and string variables in one uPokeDB invocation and expects both to be present.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>overwrite_existing_pass</code>
+          <p>Posts the same variable twice and expects the later value to replace the earlier one.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cache_config_pass</code>
+          <p>Uses --cache with a generated mission-file ProcessConfig = uPokeDB block and expects cached pokes to publish.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mission_file_connection_pass</code>
+          <p>Connects from targ_shoreside.moos instead of explicit host/port and expects the poke to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>quiet_mode_pass</code>
+          <p>Uses --quiet and expects the poke to succeed without relying on terminal output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>negative_double_pass</code>
+          <p>Posts a negative floating-point value and expects the sign and magnitude to survive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>boolean_true_pass</code>
+          <p>Posts a boolean-looking value and expects mission evaluation to treat it as true.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>repeated_batch_pass</code>
+          <p>Sends two sequential uPokeDB commands and expects the second command to own the final value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mixed_numeric_string_batch_pass</code>
+          <p>Posts a numeric and a forced string value together, checking both forms in one run.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cache_string_numeric_pass</code>
+          <p>Uses cached numeric and string pokes together to exercise cache parsing for both value forms.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>host_alias_args_pass</code>
+          <p>Uses host= and port= aliases instead of --host= and --port= and expects the poke to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>server_alias_args_pass</code>
+          <p>Uses serverhost= and serverport= aliases and expects the poke to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>server_underscore_args_pass</code>
+          <p>Uses server_host= and server_port= aliases and expects the poke to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>quiet_short_alias_pass</code>
+          <p>Uses the short -q quiet option and expects the poke to succeed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cache_short_alias_pass</code>
+          <p>Uses the short -c cache option and expects configured cached pokes to publish.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_double_pass</code>
+          <p>Posts numeric zero and expects the value to be treated as an intentional double rather than missing data.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>scientific_literal_pass</code>
+          <p>Posts a scientific-notation numeric literal and expects the DB value to match.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>large_double_pass</code>
+          <p>Posts a large floating-point value and expects the magnitude to survive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cache_forced_string_pass</code>
+          <p>Uses cached := syntax for a numeric-looking string and expects leading zeroes to survive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cache_boolean_pass</code>
+          <p>Uses cached boolean-looking data and expects mission evaluation to see a true value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>utc_macro_pass</code>
+          <p>Posts @UTC and expects uPokeDB to replace it with a positive MOOS time value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>moostime_macro_pass</code>
+          <p>Posts @MOOSTIME and expects uPokeDB to replace it with a positive MOOS time value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>forced_utc_string_pass</code>
+          <p>Posts @UTC with forced-string syntax and expects the macro text to remain literal.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duplicate_same_invocation_pass</code>
+          <p>Posts the same variable twice in one command and expects the later value to win.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cache_duplicate_first_wins_pass</code>
+          <p>Defines the same cached poke twice and captures the current first-value result.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cache_cli_mixed_pass</code>
+          <p>Combines cached pokes with a command-line poke and expects both sources to publish.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/upokedb_harnesses/H01-upokedb_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/upokedb_missions/upokedb_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

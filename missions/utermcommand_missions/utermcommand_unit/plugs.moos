@@ -1,0 +1,34 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File     = LOG_$(MMOD)
+  PATH     = ./
+  AsyncLog = true
+
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = TERM_NUM @ 0 nosync
+  Log = TERM_STR @ 0 nosync
+  Log = TERM_PARTIAL @ 0 nosync
+  Log = TERM_DUP @ 0 nosync
+  Log = TERM_A @ 0 nosync
+  Log = TERM_B @ 0 nosync
+  Log = TERM_TAB @ 0 nosync
+  Log = TERM_BAD @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+}

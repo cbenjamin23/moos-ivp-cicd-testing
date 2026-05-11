@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pSpoofNode Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">pSpoofNode</p>
+      <h1>H01 pSpoofNode Unit</h1>
+      <p class="lede">Utility app correctness tests for pSpoofNode. These cases verify structured NODE_REPORT output for config and runtime spoof requests, generated names, moving contacts, name/group/contact cancellation, expiration, defaults and startup ordering, runtime normalization, color/type edge behavior, and malformed requests.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with pSpoofNode and case-generated spoof/cancel mail. The harness uses pMissionEval for readiness and alog checks for structured NODE_REPORT payload fields.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pspoofnode-static-spoof.gif">
+          <img src="../assets/gifs/pspoofnode-static-spoof.gif?v=20260511-5" alt="Static Spoof GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Static Spoof</h3>
+          <p>Description: Verifies a config-time spoof produces a named report with explicit type, group, color, source, and heading fields.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pspoofnode-cancel-by-name.gif">
+          <img src="../assets/gifs/pspoofnode-cancel-by-name.gif?v=20260511-5" alt="Cancel By Name GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Cancel By Name</h3>
+          <p>Description: Verifies SPOOF_CANCEL by contact name removes one contact while another continues.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>config_static_report_pass</code>
+          <p>Verifies a config-time spoof produces a named report with explicit type, group, color, source, and heading fields.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mail_spoof_report_pass</code>
+          <p>Verifies a runtime SPOOF mail request produces a contact report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mail_group_vsource_pass</code>
+          <p>Verifies runtime SPOOF mail preserves explicit group and source fields.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_fields_pass</code>
+          <p>Verifies configured default type, color, heading, speed, and length are applied when omitted from the request.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>generated_name_pass</code>
+          <p>Verifies unnamed spoof requests receive an auto-generated contact name.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>moving_contact_advances_pass</code>
+          <p>Verifies a moving spoofed contact produces multiple reports with advancing position.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duration_expires_pass</code>
+          <p>Verifies a finite-duration contact stops reporting after expiration.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>explicit_zero_duration_persists_pass</code>
+          <p>Verifies an explicit zero-duration runtime spoof keeps reporting instead of expiring.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duplicate_name_update_pass</code>
+          <p>Verifies a second spoof request with the same name replaces the contact position.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cancel_vname_pass</code>
+          <p>Verifies SPOOF_CANCEL by contact name removes one contact while another continues.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cancel_group_pass</code>
+          <p>Verifies SPOOF_CANCEL by group removes grouped contacts while other groups continue.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cancel_contact_alias_pass</code>
+          <p>Verifies the contact= cancel alias removes only the named contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_defaults_pass</code>
+          <p>Verifies runtime SPOOF mail inherits configured default type, color, heading, speed, and length.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_after_spoof_order_pass</code>
+          <p>Verifies config defaults apply to config-time spoof requests even when the spoof line appears before the defaults.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_length_ignored_pass</code>
+          <p>Verifies an explicit runtime len field does not override the configured default length.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_group_vsource_not_inherited_pass</code>
+          <p>Verifies configured default group/source fields are not inherited by spoof requests that omit those fields.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_duration_expires_pass</code>
+          <p>Verifies default_duration expires a config-time spoof when no per-request duration is supplied.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_default_vtype_fallback_pass</code>
+          <p>Verifies an invalid configured default vehicle type is ignored and the built-in kayak default remains active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_default_color_fallback_pass</code>
+          <p>Verifies an invalid configured default color is ignored and the built-in purple default remains active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mixed_case_request_normalized_pass</code>
+          <p>Verifies runtime spoof requests are normalized to lowercase before field validation and reporting.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_color_unvalidated_pass</code>
+          <p>Verifies runtime color tokens are passed through even when they are not recognized color names.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>unknown_alnum_type_preserved_pass</code>
+          <p>Verifies an alphanumeric runtime type token is preserved even when it is not a known vehicle type.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>negative_speed_accepted_pass</code>
+          <p>Verifies numeric negative runtime speeds are accepted and reflected in node reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_request_absent_pass</code>
+          <p>Verifies malformed spoof requests do not create a node report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_x_absent_pass</code>
+          <p>Verifies nonnumeric X coordinates are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_name_absent_pass</code>
+          <p>Verifies non-alphanumeric spoof names are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_group_absent_pass</code>
+          <p>Verifies non-alphanumeric spoof groups are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_type_absent_pass</code>
+          <p>Verifies non-alphanumeric spoof type tokens are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_vsource_absent_pass</code>
+          <p>Verifies non-alphanumeric spoof source tokens are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_heading_absent_pass</code>
+          <p>Verifies nonnumeric headings are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_speed_absent_pass</code>
+          <p>Verifies nonnumeric spoof speeds are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_length_absent_pass</code>
+          <p>Verifies nonnumeric spoof lengths are rejected without creating reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_duration_absent_pass</code>
+          <p>Verifies nonnumeric duration requests are rejected without creating reports.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pspoofnode_harnesses/H01-pspoofnode_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pspoofnode_missions/pspoofnode_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

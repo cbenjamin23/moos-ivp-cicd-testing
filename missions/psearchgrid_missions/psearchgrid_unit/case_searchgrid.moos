@@ -1,0 +1,17 @@
+//-------------------------------------------------
+// FILE: case_searchgrid.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pSearchGrid
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  report_deltas = true
+  grid_label    = psg
+  grid_var_name = VIEW_GRID
+  grid_config   = pts={0,0:20,0:20,20:0,20}
+  grid_config   = cell_size=10
+  grid_config   = cell_vars=x:0
+}

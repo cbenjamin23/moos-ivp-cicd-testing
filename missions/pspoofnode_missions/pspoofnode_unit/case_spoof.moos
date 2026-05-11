@@ -1,0 +1,13 @@
+//-------------------------------------------------
+// FILE: case_spoof.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pSpoofNode
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  refresh_interval = 0.2
+  spoof = x=10,y=20,name=alpha,type=heron,group=red,color=green,vsource=ais,hdg=90,spd=0
+}

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pDeadManPost Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">pDeadManPost</p>
+      <h1>H01 pDeadManPost Unit</h1>
+      <p class="lede">Utility app correctness tests for pDeadManPost. These cases verify deadflag posting and suppression across active-at-start, inactive-until-first-heartbeat, stale heartbeat, custom heartbeat variables, once/repeat/reset post policies, invalid policy fallback, and typed deadflag configurations.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with pDeadManPost and a case-generated heartbeat schedule. The harness grades exact deadflag variables and absence conditions through pMissionEval, then uses alog counts for policy cases where posting multiplicity matters.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pdeadmanpost-deadman-trip.gif">
+          <img src="../assets/gifs/pdeadmanpost-deadman-trip.gif?v=20260511-5" alt="Deadman Trip GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Deadman Trip</h3>
+          <p>Description: Active-at-start watchdog posts after stale startup.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pdeadmanpost-heartbeat-suppression.gif">
+          <img src="../assets/gifs/pdeadmanpost-heartbeat-suppression.gif?v=20260511-5" alt="Heartbeat Suppression GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Heartbeat Suppression</h3>
+          <p>Description: Regular heartbeat mail suppresses a deadflag.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>active_start_once_posts_pass</code>
+          <p>Active-at-start watchdog posts after stale startup.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>active_start_false_no_initial_post_pass</code>
+          <p>Inactive-at-start watchdog does not post before the first heartbeat.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>heartbeat_before_dead_suppresses_pass</code>
+          <p>Regular heartbeat mail suppresses a deadflag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stop_heartbeat_posts_pass</code>
+          <p>Deadflag posts after heartbeat mail stops.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>active_false_after_first_heartbeat_posts_pass</code>
+          <p>Inactive-at-start watchdog arms after first heartbeat, then posts when stale.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>numeric_deadflag_pass</code>
+          <p>Numeric deadflag payload is posted and graded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>string_deadflag_pass</code>
+          <p>String deadflag payload is posted and graded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multiple_deadflags_pass</code>
+          <p>Multiple deadflags post from one deadman trip.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>once_policy_single_post_pass</code>
+          <p>post_policy=once posts exactly once by alog count.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>repeat_policy_reposts_pass</code>
+          <p>post_policy=repeat reposts while active-at-start stale.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_policy_reposts_after_heartbeat_pass</code>
+          <p>post_policy=reset reposts after a later heartbeat resets the posting latch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>repeat_policy_inactive_reposts_pass</code>
+          <p>post_policy=repeat reposts after inactive startup is armed by a heartbeat.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_policy_no_repost_without_heartbeat_pass</code>
+          <p>post_policy=reset remains single-shot without a later heartbeat.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>active_start_keepalive_suppresses_pass</code>
+          <p>Active-at-start watchdog stays quiet when heartbeat mail remains fresh.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_heartbeat_var_pass</code>
+          <p>Custom heartbeat_var wiring arms and trips correctly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>negative_deadflag_pass</code>
+          <p>Negative numeric deadflag payload is posted and graded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_max_noheart_posts_pass</code>
+          <p>Zero max_noheart trips promptly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>false_deadflag_pass</code>
+          <p>Boolean-looking false deadflag payload is posted and graded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_post_policy_falls_back_once_pass</code>
+          <p>Invalid post_policy is ignored and the default once policy remains in effect.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_policy_multiple_reposts_pass</code>
+          <p>post_policy=reset reposts exactly once after each of two later heartbeats.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pdeadmanpost_missions/pdeadmanpost_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

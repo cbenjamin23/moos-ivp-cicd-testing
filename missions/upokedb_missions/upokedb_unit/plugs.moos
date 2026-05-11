@@ -1,0 +1,57 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File     = LOG_$(MMOD)
+  PATH     = ./
+  AsyncLog = true
+
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = POKE_NUM @ 0 nosync
+  Log = POKE_STR @ 0 nosync
+  Log = POKE_A @ 0 nosync
+  Log = POKE_B @ 0 nosync
+  Log = POKE_OVER @ 0 nosync
+  Log = POKE_CACHE_NUM @ 0 nosync
+  Log = POKE_CACHE_STR @ 0 nosync
+  Log = POKE_FILE @ 0 nosync
+  Log = POKE_QUIET @ 0 nosync
+  Log = POKE_NEG @ 0 nosync
+  Log = POKE_BOOL @ 0 nosync
+  Log = POKE_REPEAT @ 0 nosync
+  Log = POKE_MIXED_STR @ 0 nosync
+  Log = POKE_MIXED_NUM @ 0 nosync
+  Log = POKE_ALIAS @ 0 nosync
+  Log = POKE_SERVER_ALIAS @ 0 nosync
+  Log = POKE_SERVER_UNDERSCORE @ 0 nosync
+  Log = POKE_QSHORT @ 0 nosync
+  Log = POKE_CACHE_SHORT @ 0 nosync
+  Log = POKE_ZERO @ 0 nosync
+  Log = POKE_SCI @ 0 nosync
+  Log = POKE_BIG @ 0 nosync
+  Log = POKE_CACHE_FORCED @ 0 nosync
+  Log = POKE_CACHE_BOOL @ 0 nosync
+  Log = POKE_UTC @ 0 nosync
+  Log = POKE_MOOSTIME @ 0 nosync
+  Log = POKE_UTC_STRING @ 0 nosync
+  Log = POKE_DUP @ 0 nosync
+  Log = POKE_CACHE_DUP @ 0 nosync
+  Log = POKE_CACHE_MIX @ 0 nosync
+  Log = POKE_CLI_MIX @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+}

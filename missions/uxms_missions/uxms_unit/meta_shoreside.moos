@@ -1,0 +1,86 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// uXMS Config Block
+
+ProcessConfig = uXMS
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  var = XMS_ALPHA
+  var = XMS_SECONDARY
+  display_source = true
+  term_report_interval = 0.2
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=XMS_ALPHA, val=alpha, time=0.5
+  event = var=XMS_NUM, val=42, time=0.5
+  event = var=XMS_LONG, val=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, time=0.5
+  event = var=XMS_NOISE, val=noise, time=0.5
+  event = var=XMS_SECONDARY, val=secondary, time=0.7
+  event = var=XMS_HIST, val=first, time=0.5
+  event = var=XMS_HIST, val=second, time=1.0
+  event = var=XMS_HIST, val=third, time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=2.0
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = XMS_ALPHA = alpha
+  pass_condition = XMS_NUM = 42
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = uxms_unit
+  mission_mod  = $(MMOD:=scoped_var_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = xms_alpha=$[XMS_ALPHA]
+  report_column    = xms_num=$[XMS_NUM]
+  report_column    = xms_hist=$[XMS_HIST]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}
+

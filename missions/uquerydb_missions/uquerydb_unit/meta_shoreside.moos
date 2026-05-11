@@ -1,0 +1,91 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// uQueryDB Config Block
+
+ProcessConfig = uQueryDB
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  wait = 3
+  pass_condition = QUERY_NUM = 42
+  check_var = QUERY_NUM
+  check_var_format = esv
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=QUERY_NUM, val=42, time=0.5
+  event = var=QUERY_NEG, val=-7.5, time=0.5
+  event = var=QUERY_STR, val=ready, time=0.5
+  event = var=QUERY_BOOL, val=true, time=0.5
+  event = var=QUERY_FAIL, val=false, time=0.5
+  event = var=QUERY_OTHER, val=bravo, time=0.7
+  event = var=QUERY_NUM, val=42, time=1.0
+  event = var=QUERY_NEG, val=-7.5, time=1.0
+  event = var=QUERY_STR, val=ready, time=1.0
+  event = var=QUERY_BOOL, val=true, time=1.0
+  event = var=QUERY_FAIL, val=false, time=1.0
+  event = var=QUERY_OTHER, val=bravo, time=1.2
+  event = var=QUERY_LATE, val=arrived, time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=2.0
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = QUERY_NUM = 42
+  pass_condition = QUERY_STR = ready
+  pass_condition = QUERY_LATE = arrived
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = uquerydb_unit
+  mission_mod  = $(MMOD:=cli_numeric_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = query_num=$[QUERY_NUM]
+  report_column    = query_str=$[QUERY_STR]
+  report_column    = query_late=$[QUERY_LATE]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

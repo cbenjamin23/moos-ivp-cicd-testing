@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uXMS Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uXMS</p>
+      <h1>H01 uXMS Unit</h1>
+      <p class="lede">Utility app correctness tests for uXMS. These cases verify terminal scoping output for named variables, all/alll display, source/time/community columns, history, truncation, config-file variables, clean CLI overrides, filters, source selection, novirgins, connection aliases, refresh modes, shortcuts, and color mapping.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with uTimerScript publishing controlled mail and pMissionEval proving publisher readiness. The harness runs bounded uXMS terminal captures and grades required and forbidden display tokens.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="uxms-scoped-variable.gif">
+          <img src="../assets/gifs/uxms-scoped-variable.gif?v=20260511-5" alt="Scoped Variable GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Scoped Variable</h3>
+          <p>Description: Scopes one named variable and expects both the variable name and posted value to appear.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="uxms-history-view.gif">
+          <img src="../assets/gifs/uxms-history-view.gif?v=20260511-5" alt="History View GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>History View</h3>
+          <p>Description: Uses --history=XMS_HIST and expects the latest scripted history value to be visible.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>scoped_var_pass</code>
+          <p>Scopes one named variable and expects both the variable name and posted value to appear.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>scoped_excludes_noise_pass</code>
+          <p>Scopes XMS_ALPHA and expects unrelated XMS_NOISE mail to remain absent from the display.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>all_mode_pass</code>
+          <p>Uses --all and expects broad DB content, including DB_UPTIME and the scripted variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>all_shortcut_pass</code>
+          <p>Uses the -a shortcut and expects broad DB content, including DB_UPTIME and the scripted variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>show_source_pass</code>
+          <p>Enables the source column and expects uTimerScript to be visible as the publisher.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>show_time_only_pass</code>
+          <p>Enables only the time column and expects the time header plus the scoped variable to render.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>show_community_only_pass</code>
+          <p>Enables only the community column and expects the local shoreside community to be shown.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>show_time_community_pass</code>
+          <p>Enables time and community columns and expects the local shoreside community to be shown.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>show_source_community_pass</code>
+          <p>Enables source and community columns and expects both uTimerScript and shoreside evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>history_var_pass</code>
+          <p>Uses --history=XMS_HIST and expects the latest scripted history value to be visible.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trunc_long_payload_pass</code>
+          <p>Uses --trunc=25 and expects the long payload to be clipped rather than printed in full.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>clean_cli_scope_pass</code>
+          <p>Uses --clean with a mission file and expects CLI scope variables to override configured var= entries.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>config_var_pass</code>
+          <p>Uses the mission-file ProcessConfig = uXMS block and expects configured variables to scope without CLI var names.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>filter_prefix_pass</code>
+          <p>Uses --filter=XMS_ --all and expects XMS variables while suppressing unrelated DB variables.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>src_timer_pass</code>
+          <p>Uses --src=uTimerScript and expects variables posted by that source to appear.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>novirgins_pass</code>
+          <p>Uses --novirgins and expects an unposted scoped variable to stay hidden while posted mail remains visible.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>novirgins_shortcut_pass</code>
+          <p>Uses the -g shortcut and expects an unposted scoped variable to stay hidden.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shortcut_source_pass</code>
+          <p>Uses the -s shortcut and expects source information to appear.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shortcut_source_time_pass</code>
+          <p>Uses the -st shortcut and expects source and time-oriented display to remain usable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>filter_specific_pass</code>
+          <p>Filters all DB output to XMS_A and expects XMS_ALPHA while suppressing other XMS variables.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>filter_no_match_absent_pass</code>
+          <p>Uses a filter prefix that matches no DB variables and expects ordinary variables to stay hidden.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>colorany_pass</code>
+          <p>Exercises --colorany while still expecting the scoped variable and value to render.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>events_mode_pass</code>
+          <p>Uses event-driven refresh mode and expects a changed scoped variable to trigger output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>paused_shortcut_pass</code>
+          <p>Uses the -p shortcut and expects paused-mode startup output to include the scoped variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shortcut_trunc_pass</code>
+          <p>Uses the -t truncation shortcut and expects the long payload to be clipped.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>alll_mode_pass</code>
+          <p>Uses --alll and expects broad DB content to remain visible.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>server_underscore_args_pass</code>
+          <p>Connects with --server_host and --server_port aliases and expects scoped output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>moos_alias_args_pass</code>
+          <p>Connects with --mooshost and --moosport aliases and expects scoped output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>moos_underscore_args_pass</code>
+          <p>Connects with --moos_host and --moos_port aliases and expects scoped output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>alias_proc_name_pass</code>
+          <p>Runs uXMS with a custom process alias while still scoping the requested variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>colormap_pair_pass</code>
+          <p>Parses a specific --colormap pair while still rendering the scoped variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>clean_shortcut_scope_pass</code>
+          <p>Uses the short -c clean option and expects CLI scope variables to override mission-file variables.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/uxms_harnesses/H01-uxms_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/uxms_missions/uxms_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

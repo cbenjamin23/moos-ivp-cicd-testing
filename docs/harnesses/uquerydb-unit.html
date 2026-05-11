@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uQueryDB Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uQueryDB</p>
+      <h1>H01 uQueryDB Unit</h1>
+      <p class="lede">Utility app correctness tests for uQueryDB. These cases verify query return codes, CLI and ProcessConfig pass/fail conditions, fail-only queries, missing-variable timeouts, halt_max_time, numeric comparisons, compound logic, unique client names, and check-variable file formats.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with uTimerScript publishing controlled query variables and pMissionEval proving publisher readiness. The harness runs bounded uQueryDB invocations and grades return codes plus .checkvars content.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="uquerydb-numeric-condition.gif">
+          <img src="../assets/gifs/uquerydb-numeric-condition.gif?v=20260511-5" alt="Numeric Condition GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Numeric Condition</h3>
+          <p>Description: CLI numeric equality condition.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="uquerydb-checkvar-formats.gif">
+          <img src="../assets/gifs/uquerydb-checkvar-formats.gif?v=20260511-5" alt="Checkvar Formats GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Checkvar Formats</h3>
+          <p>Description: CSV .checkvars output.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>cli_numeric_pass</code>
+          <p>CLI numeric equality condition.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cli_string_pass</code>
+          <p>CLI string equality condition.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cli_boolean_pass</code>
+          <p>CLI boolean-looking equality condition.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cli_negative_numeric_pass</code>
+          <p>CLI negative numeric equality condition.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multiple_pass_conditions_pass</code>
+          <p>Multiple CLI pass conditions must all become true.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fail_condition_false_pass</code>
+          <p>False CLI fail condition does not block success.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fail_condition_true_fail</code>
+          <p>True CLI fail condition returns non-zero as expected.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_var_timeout_fail</code>
+          <p>Missing variable times out and returns non-zero.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>late_var_wait_pass</code>
+          <p>Delayed variable succeeds within the wait window.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mission_file_config_pass</code>
+          <p>Mission-file ProcessConfig pass condition and check variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>checkvar_esv_pass</code>
+          <p>ESV .checkvars output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>checkvar_csv_pass</code>
+          <p>CSV .checkvars output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>checkvar_wsv_pass</code>
+          <p>WSV .checkvars output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>checkvar_value_only_pass</code>
+          <p>Config-driven value-only .checkvars output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>unique_name_pass</code>
+          <p>CLI --unique app naming still queries successfully.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>compound_or_pass</code>
+          <p>Compound OR expression succeeds through the true branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pass_condition_alias_pass</code>
+          <p>CLI --pass_condition alias behaves like --condition.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>compound_and_pass</code>
+          <p>Compound AND expression requires both terms.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>compound_or_fail</code>
+          <p>Compound OR expression returns non-zero when both terms remain false.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>config_halt_max_time_timeout_fail</code>
+          <p>Config halt_max_time bounds a missing-variable timeout.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>config_fail_condition_false_pass</code>
+          <p>Generated config with false fail condition succeeds.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>config_fail_condition_true_fail</code>
+          <p>Generated config with true fail condition returns non-zero.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>checkvar_multi_csv_pass</code>
+          <p>CSV .checkvars output includes multiple requested variables.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>checkvar_timeout_esv_pass</code>
+          <p>Timeout path still writes requested ESV check variables.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>case_config_checkvar_csv_pass</code>
+          <p>Generated config writes CSV .checkvars output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fail_only_false_pass</code>
+          <p>Fail-only query succeeds when the fail condition stays false.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fail_only_true_fail</code>
+          <p>Fail-only query returns non-zero when the fail condition is true.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>numeric_greater_than_pass</code>
+          <p>Numeric greater-than comparison succeeds.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>numeric_less_than_fail</code>
+          <p>Numeric less-than comparison returns non-zero when false.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>config_condition_alias_pass</code>
+          <p>Generated config condition alias behaves like pass_condition.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/uquerydb_harnesses/H01-uquerydb_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/uquerydb_missions/uquerydb_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,12 @@
+//-------------------------------------------------
+// FILE: case_timer.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  event = var=TEST_EVAL_READY, val=true, time=1.5
+}

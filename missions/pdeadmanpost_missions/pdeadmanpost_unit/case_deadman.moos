@@ -1,0 +1,16 @@
+//-------------------------------------------------
+// FILE: case_deadman.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pDeadManPost
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  heartbeat_var   = HEARTBEAT
+  max_noheart     = 0.5
+  active_at_start = true
+  post_policy     = once
+  deadflag        = DEAD_ONCE=true
+}
