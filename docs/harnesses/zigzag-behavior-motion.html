@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 ZigZag Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260510-2">
+  <script src="../theme.js?v=20260510-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 ZigZag Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_ZigZag. These cases verify first-side selection and aliases, zig-angle boundaries, leg-limit and stem-odometry completion, active-time heading and speed capture, runtime speed updates, visual hints, and invalid parameter handling.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one simulated vehicle through a short approach leg before activating BHV_ZigZag. Case overlays vary first-side selection, angle limits, completion settings, active-time capture settings, runtime speed updates, and malformed behavior parameters.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="zigzag-behavior-baseline-port.gif">
+          <img src="../assets/gifs/zigzag-behavior-baseline-port.gif?v=20260510-2" alt="Baseline Port First GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Port First</h3>
+          <p>Description: Baseline port-first zigzag. Requires approach completion, behavior completion, at least four zig legs, at least two zags, both side-entry flags, both side-exit flags, and no behavior error.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="zigzag-behavior-wide-angle.gif">
+          <img src="../assets/gifs/zigzag-behavior-wide-angle.gif?v=20260510-2" alt="Wide Angle GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Wide Angle</h3>
+          <p>Description: Exercises the upper accepted zig_angle=75 boundary with a shorter completion gate so the case tests angle acceptance rather than duration.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="zigzag-behavior-fierce-zigging.gif">
+          <img src="../assets/gifs/zigzag-behavior-fierce-zigging.gif?v=20260510-2" alt="Fierce Zigging GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Fierce Zigging</h3>
+          <p>Description: Enables fierce zigging with a separate fierce heading delta.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_port_first_pass</code>
+          <p>Baseline port-first zigzag. Requires approach completion, behavior completion, at least four zig legs, at least two zags, both side-entry flags, both side-exit flags, and no behavior error.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>star_first_pass</code>
+          <p>Mirrors the baseline with zig_first=star.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zig_first_right_alias_pass</code>
+          <p>Verifies the right alias for starboard-first selection.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zig_first_starboard_alias_pass</code>
+          <p>Verifies the full starboard alias for starboard-first selection.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stem_hdg_wrap_pass</code>
+          <p>Sets stem_hdg=405 and requires the behavior macro to report the wrapped heading near 45.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stem_hdg_negative_wrap_pass</code>
+          <p>Sets stem_hdg=-315 and requires the same wrapped heading near 45.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hdg_thresh_loose_pass</code>
+          <p>Uses a loose hdg_thresh=40 while still requiring normal completion and side-transition evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>small_angle_pass</code>
+          <p>Exercises the lower accepted zig_angle=1 boundary with a tight heading threshold.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wide_angle_pass</code>
+          <p>Exercises the upper accepted zig_angle=75 boundary with a shorter completion gate so the case tests angle acceptance rather than duration.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_zig_zags_pass</code>
+          <p>Uses max_zig_zags=2 and checks the derived leg-limit path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>single_leg_complete_pass</code>
+          <p>Uses a one-leg limit and grades early behavior completion with side flags.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_leg_limit_pass</code>
+          <p>Uses max_zig_legs=0, verifying the valid zero-limit edge completes after the first leg.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stem_odo_complete_pass</code>
+          <p>Uses a high leg limit and max_stem_odo=22, proving odometry-based completion can end the behavior before leg exhaustion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_stem_odo_complete_pass</code>
+          <p>Uses max_stem_odo=2, proving near-immediate odometry completion occurs before the first full zig leg is required.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stem_on_active_pass</code>
+          <p>Starts with a mismatched configured stem heading and requires stem_on_active=true to capture the live vehicle heading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>speed_on_active_pass</code>
+          <p>Starts with a low configured behavior speed and requires speed_on_active=true to capture the live vehicle speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mod_speed_increase_pass</code>
+          <p>Posts a runtime ZIG_UPDATE with mod_speed=0.8 and requires the vehicle to finish with higher speed evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mod_speed_reset_pass</code>
+          <p>Posts mod_speed=0.8 followed by mod_speed=reset, requiring the final speed evidence to return to the baseline branch.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mod_speed_clip_high_pass</code>
+          <p>Posts a very large positive speed modifier and requires high-speed evidence, exercising the domain-clipping path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mod_speed_clip_low_pass</code>
+          <p>Posts a very large negative speed modifier and requires near-zero speed evidence, exercising the low-clipping path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_runtime_update_recover_pass</code>
+          <p>Posts an invalid runtime zig_angle=0 update, then a valid speed modifier, proving a rejected update does not poison later valid updates.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fierce_zigging_pass</code>
+          <p>Enables fierce zigging with a separate fierce heading delta.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>delta_heading_alias_pass</code>
+          <p>Uses the delta_heading alias for the fierce heading delta.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>visual_hints_off_pass</code>
+          <p>Verifies valid visual-hint disabling does not break behavior execution.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>visual_hints_custom_pass</code>
+          <p>Verifies valid custom set_hdg_color and req_hdg_color visual hints are accepted while the behavior still completes normally.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_zig_angle_low_fail</code>
+          <p>Expected fail for zig_angle=0.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_zig_angle_high_fail</code>
+          <p>Expected fail for zig_angle=76.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_zig_first_fail</code>
+          <p>Expected fail for an unsupported first-side value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_max_zig_zags_fail</code>
+          <p>Expected fail for max_zig_zags=0.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_max_stem_odo_fail</code>
+          <p>Expected fail for max_stem_odo=0.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_speed_fail</code>
+          <p>Expected fail for negative speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_delta_heading_fail</code>
+          <p>Expected fail for delta_heading=0.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_stale_nav_thresh_fail</code>
+          <p>Expected fail documenting that stale_nav_thresh is not accepted as a BHV_ZigZag configuration parameter even though the behavior has an internal stale-nav threshold.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_hdg_thresh_fail</code>
+          <p>Expected fail for negative hdg_thresh.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_visual_hint_fail</code>
+          <p>Expected fail for malformed visual-hint boolean input.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/zigzag_behavior_missions/zigzag_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

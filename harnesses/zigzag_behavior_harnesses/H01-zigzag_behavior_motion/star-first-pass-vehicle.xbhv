@@ -1,0 +1,37 @@
+Behavior = BHV_ZigZag
+{
+  name      = zigzag
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = ZIGZAG = true
+  updates   = ZIG_UPDATE
+  endflag   = ZZ_DONE = true
+  endflag   = ZZ_FINAL_STEM_ODO = $[STEM_ODO]
+  endflag   = ZZ_FINAL_STEM_DIST = $[STEM_DIST]
+  endflag   = DESIRED_SPEED = 0
+
+  perpetual     = false
+  speed         = 1.4
+  stem_hdg      = 45
+  zig_angle     = 25
+  zig_first     = star
+  max_zig_legs  = 3
+  hdg_thresh    = 8
+
+  zigflag   = ZIG_COUNT=$[ZIGS]
+  zagflag   = ZAG_COUNT=$[ZAGS]
+  zigflag   = ZZ_LAST_SIDE=$[ZIG_SIDE]
+  zigflag   = ZZ_STEM_ODO=$[STEM_ODO]
+  zigflag   = ZZ_STEM_DIST=$[STEM_DIST]
+  zigflag   = ZZ_STEM_HDG=$[STEM_HDG]
+  zigflag   = ZZ_STEM_SPEED=$[STEM_SPD]
+  zigflag   = ZZ_ZIG_MIN_SPEED=$[ZIG_MIN_SPD]
+  zigflag   = ZZ_ZIG_SPEED_DELTA=$[ZIG_SPD_DELTA]
+  portflag  = ZZ_PORT_SEEN=true
+  starflag  = ZZ_STAR_SEEN=true
+  portflagx = ZZ_PORT_EXIT_SEEN=true
+  starflagx = ZZ_STAR_EXIT_SEEN=true
+
+  visual_hints = draw_set_hdg=true, draw_req_hdg=true
+  visual_hints = set_hdg_color=white, req_hdg_color=yellow
+}

@@ -1,0 +1,33 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (ZZ_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = ZZ_DONE = true
+  pass_condition = NAV_SPEED > 2.35
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = zigzag_behavior_tests
+  mission_mod  = $(MMOD:=mod_speed_clip_high_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[ZZ_DONE]
+  report_column = zz_done=$[ZZ_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = heading=$[NAV_HEADING]
+  report_column = nav_speed=$[NAV_SPEED]
+  report_column = zigs=$[ZIG_COUNT]
+  report_column = zags=$[ZAG_COUNT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

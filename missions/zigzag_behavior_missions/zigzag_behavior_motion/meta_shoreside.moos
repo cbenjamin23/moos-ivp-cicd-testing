@@ -1,0 +1,239 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = ZIGZAG=false
+  flag = ZZ_DONE=false
+  flag = TRANSIT_DONE=false
+  flag = ZZ_PORT_SEEN=false
+  flag = ZZ_STAR_SEEN=false
+  flag = ZZ_PORT_EXIT_SEEN=false
+  flag = ZZ_STAR_EXIT_SEEN=false
+  flag = ZIG_COUNT=0
+  flag = ZAG_COUNT=0
+  flag = ZZ_FINAL_STEM_ODO=0
+  flag = ZZ_FINAL_STEM_DIST=0
+  flag = MISSION_TIMEOUT=false
+  flag = BHV_ERROR_SEEN=false
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_SEGLIST, val="pts={-24,-124:-4,-104},label=zigzag_approach_leg,edge_color=white,vertex_color=dodger_blue,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=VIEW_POINT, val="x=-4,y=-104,label=zigzag_start,vertex_color=orange,vertex_size=9,duration=9999", time=0.5
+  event = var=MISSION_TIMEOUT, val=true, time=70
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (ZZ_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = ZZ_DONE = true
+  pass_condition = TRANSIT_DONE = true
+  pass_condition = ZIG_COUNT >= 4
+  pass_condition = ZAG_COUNT >= 2
+  pass_condition = ZZ_PORT_SEEN = true
+  pass_condition = ZZ_STAR_SEEN = true
+  pass_condition = ZZ_PORT_EXIT_SEEN = true
+  pass_condition = ZZ_STAR_EXIT_SEEN = true
+  pass_condition = ZZ_LAST_SIDE = star
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = zigzag_behavior_tests
+  mission_mod  = $(MMOD:=baseline_port_first_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[ZZ_DONE]
+  report_column = zz_done=$[ZZ_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = transit=$[TRANSIT_DONE]
+  report_column = heading=$[NAV_HEADING]
+  report_column = nav_speed=$[NAV_SPEED]
+  report_column = zigs=$[ZIG_COUNT]
+  report_column = zags=$[ZAG_COUNT]
+  report_column = port_seen=$[ZZ_PORT_SEEN]
+  report_column = star_seen=$[ZZ_STAR_SEEN]
+  report_column = port_exit=$[ZZ_PORT_EXIT_SEEN]
+  report_column = star_exit=$[ZZ_STAR_EXIT_SEEN]
+  report_column = last_side=$[ZZ_LAST_SIDE]
+  report_column = stem_odo=$[ZZ_STEM_ODO]
+  report_column = stem_dist=$[ZZ_STEM_DIST]
+  report_column = final_stem_odo=$[ZZ_FINAL_STEM_ODO]
+  report_column = final_stem_dist=$[ZZ_FINAL_STEM_DIST]
+  report_column = stem_hdg=$[ZZ_STEM_HDG]
+  report_column = stem_speed=$[ZZ_STEM_SPEED]
+  report_column = zig_min_speed=$[ZZ_ZIG_MIN_SPEED]
+  report_column = zig_speed_delta=$[ZZ_ZIG_SPEED_DELTA]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = ZZ_DONE, ZIGZAG, TRANSIT_DONE
+  qbridge  = ZIG_COUNT, ZAG_COUNT
+  qbridge  = ZZ_PORT_SEEN, ZZ_STAR_SEEN, ZZ_PORT_EXIT_SEEN, ZZ_STAR_EXIT_SEEN
+  qbridge  = ZZ_LAST_SIDE, ZZ_STEM_ODO, ZZ_STEM_DIST, ZZ_STEM_HDG, ZZ_STEM_SPEED
+  qbridge  = ZZ_ZIG_MIN_SPEED, ZZ_ZIG_SPEED_DELTA
+  qbridge  = ZZ_FINAL_STEM_ODO, ZZ_FINAL_STEM_DIST
+  qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  Log = VIEW_SEGLIST @ 0 nosync
+  Log = VIEW_POINT @ 0 nosync
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//----------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = 40
+  set_pan_y            = -105
+  zoom                 = 1.5
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode         = appcast
+  appcast_color_scheme = indigo
+  nodes_font_size      = large
+  procs_font_size      = large
+  appcast_font_size    = large
+  point_viewable_labels = false
+
+  scope = ZZ_DONE
+  scope = ZIGZAG
+  scope = ZIG_COUNT
+  scope = ZAG_COUNT
+  scope = ZZ_PORT_SEEN
+  scope = ZZ_STAR_SEEN
+  scope = ZZ_PORT_EXIT_SEEN
+  scope = ZZ_STAR_EXIT_SEEN
+  scope = ZZ_STEM_ODO
+  scope = ZZ_STEM_DIST
+  scope = ZZ_STEM_HDG
+  scope = ZZ_STEM_SPEED
+  scope = TRANSIT_DONE
+  scope = MISSION_EVALUATED
+  scope = MISSION_TIMEOUT
+  scope = NAV_HEADING
+  scope = BHV_ERROR_SEEN
+
+  button_one = DEPLOY # DEPLOY_ALL=true
+  button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false
+}

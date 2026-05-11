@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=ZIG_UPDATE, val="mod_speed=0.8", time=3
+  event = var=ZIG_UPDATE, val="mod_speed=reset", time=8
+}

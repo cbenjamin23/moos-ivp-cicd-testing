@@ -1,0 +1,43 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (ZZ_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = ZZ_DONE = true
+  pass_condition = TRANSIT_DONE = true
+  pass_condition = ZIG_COUNT >= 3
+  pass_condition = ZAG_COUNT >= 1
+  pass_condition = ZZ_PORT_SEEN = true
+  pass_condition = ZZ_STAR_SEEN = true
+  pass_condition = ZZ_FINAL_STEM_DIST > 8
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = zigzag_behavior_tests
+  mission_mod  = $(MMOD:=wide_angle_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[ZZ_DONE]
+  report_column = zz_done=$[ZZ_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = transit=$[TRANSIT_DONE]
+  report_column = heading=$[NAV_HEADING]
+  report_column = nav_speed=$[NAV_SPEED]
+  report_column = zigs=$[ZIG_COUNT]
+  report_column = zags=$[ZAG_COUNT]
+  report_column = port_seen=$[ZZ_PORT_SEEN]
+  report_column = star_seen=$[ZZ_STAR_SEEN]
+  report_column = final_stem_odo=$[ZZ_FINAL_STEM_ODO]
+  report_column = final_stem_dist=$[ZZ_FINAL_STEM_DIST]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

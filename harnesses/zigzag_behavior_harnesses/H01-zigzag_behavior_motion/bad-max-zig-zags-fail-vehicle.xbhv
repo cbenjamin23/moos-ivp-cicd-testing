@@ -1,0 +1,13 @@
+Behavior = BHV_ZigZag
+{
+  name      = zigzag
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = ZIGZAG = true
+  updates   = ZIG_UPDATE
+  endflag   = ZZ_DONE = true
+  speed        = 1.4
+  stem_hdg     = 45
+  zig_angle    = 25
+  max_zig_zags = 0
+}

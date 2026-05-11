@@ -1,0 +1,115 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize  DEPLOY              = false
+initialize  RETURN              = false
+initialize  ZIGZAG              = false
+initialize  ZZ_DONE             = false
+initialize  TRANSIT_DONE        = false
+initialize  ZZ_PORT_SEEN        = false
+initialize  ZZ_STAR_SEEN        = false
+initialize  ZZ_PORT_EXIT_SEEN   = false
+initialize  ZZ_STAR_EXIT_SEEN   = false
+initialize  ZIG_COUNT           = 0
+initialize  ZAG_COUNT           = 0
+initialize  ZZ_FINAL_STEM_ODO   = 0
+initialize  ZZ_FINAL_STEM_DIST  = 0
+initialize  BHV_ERROR_SEEN      = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+}
+
+//----------------------------------------------------
+Behavior = BHV_Waypoint
+{
+  name      = approach
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = ZIGZAG = false
+  updates   = WPT_UPDATES
+  endflag   = TRANSIT_DONE = true
+  endflag   = DESIRED_SPEED = $(STOCK_SPD)
+  wptflag   = ZIGZAG = true
+
+  perpetual = false
+  speed     = $(STOCK_SPD)
+
+  capture_line   = true
+  capture_radius = 4.0
+  slip_radius    = 12.0
+  lead           = 8
+  lead_damper    = 1
+  points         = $(DEST_POS)
+  repeat         = 0
+
+  visual_hints = nextpt_color=yellow
+  visual_hints = nextpt_vertex_size=8
+  visual_hints = nextpt_lcolor=gray70
+  visual_hints = vertex_color=dodger_blue, edge_color=white
+  visual_hints = vertex_size=5, edge_size=1
+}
+
+//----------------------------------------------------
+Behavior = BHV_ZigZag
+{
+  name      = zigzag
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = ZIGZAG = true
+  updates   = ZIG_UPDATE
+  endflag   = ZZ_DONE = true
+  endflag   = ZZ_FINAL_STEM_ODO = $[STEM_ODO]
+  endflag   = ZZ_FINAL_STEM_DIST = $[STEM_DIST]
+  endflag   = DESIRED_SPEED = 0
+
+  perpetual     = false
+  speed         = 1.4
+  stem_hdg      = 45
+  zig_angle     = 25
+  zig_first     = port
+  max_zig_legs  = 3
+  hdg_thresh    = 8
+
+  zigflag   = ZIG_COUNT=$[ZIGS]
+  zagflag   = ZAG_COUNT=$[ZAGS]
+  zigflag   = ZZ_LAST_SIDE=$[ZIG_SIDE]
+  zigflag   = ZZ_STEM_ODO=$[STEM_ODO]
+  zigflag   = ZZ_STEM_DIST=$[STEM_DIST]
+  zigflag   = ZZ_STEM_HDG=$[STEM_HDG]
+  zigflag   = ZZ_STEM_SPEED=$[STEM_SPD]
+  zigflag   = ZZ_ZIG_MIN_SPEED=$[ZIG_MIN_SPD]
+  zigflag   = ZZ_ZIG_SPEED_DELTA=$[ZIG_SPD_DELTA]
+  portflag  = ZZ_PORT_SEEN=true
+  starflag  = ZZ_STAR_SEEN=true
+  portflagx = ZZ_PORT_EXIT_SEEN=true
+  starflagx = ZZ_STAR_EXIT_SEEN=true
+
+  visual_hints = draw_set_hdg=true, draw_req_hdg=true
+  visual_hints = set_hdg_color=white, req_hdg_color=yellow
+}
+
+//----------------------------------------------------
+Behavior = BHV_StationKeep
+{
+  name      = station_keep
+  pwt       = 100
+  condition = ZZ_DONE = true
+
+  center_activate = true
+  inner_radius    = 5
+  outer_radius    = 7.5
+  outer_speed     = 0.6
+  transit_speed   = 0.9
+  swing_time      = 7
+
+  visual_hints = vertex_size=0, edge_color=gray40
+  visual_hints = label_color=gray50
+}
