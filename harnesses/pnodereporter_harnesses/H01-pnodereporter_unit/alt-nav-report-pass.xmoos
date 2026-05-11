@@ -1,0 +1,64 @@
+//-------------------------------------------------
+// FILE: alt-nav-report-pass.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  platform_type   = kayak
+  platform_color  = red
+  platform_length = 4.2
+  alt_nav_prefix  = NAV_GT
+  alt_nav_name    = _GT
+  alt_nav_group   = truth
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=NAV_X, val=10, time=0.5
+  event = var=NAV_Y, val=-5, time=0.5
+  event = var=NAV_SPEED, val=2.5, time=0.5
+  event = var=NAV_HEADING, val=123, time=0.5
+  event = var=NAV_GT_X, val=20, time=1.0
+  event = var=NAV_GT_Y, val=-15, time=1.0
+  event = var=NAV_GT_SPEED, val=3.1, time=1.0
+  event = var=NAV_GT_HEADING, val=210, time=1.0
+  event = var=NAV_GT_X, val=20, time=4.0
+  event = var=NAV_GT_Y, val=-15, time=4.0
+  event = var=NAV_GT_SPEED, val=3.1, time=4.0
+  event = var=NAV_GT_HEADING, val=210, time=4.0
+  event = var=IVPHELM_STATE, val=DRIVE, time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @NODE_REPORT_LOCAL#NODE_REPORT_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = NODE_REPORT_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pnodereporter_unit
+  mission_mod  = alt_nav_report_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = node_seen=$[NODE_REPORT_SEEN]
+  report_column    = node_report=$[NODE_REPORT_LOCAL]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

@@ -1,0 +1,21 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  time_warp   = $(WARP)
+  script_name = shoreside_runtime_pulse_disabled
+  reset_max   = 0
+  verbose     = false
+
+  event = var=DIRECT_MSG_DELIVERED, val=false, time=0.5
+  event = var=ACK_DELIVERED, val=false, time=0.5
+  event = var=REPORT_ABE_TO_BEN, val=false, time=0.5
+  event = var=REPORT_BEN_TO_ABE, val=false, time=0.5
+  event = var=VIEW_COMMS_PULSE_SEEN, val=false, time=0.5
+  event = var=SHARED_REPORT_SEEN, val=false, time=0.5
+  event = var=MISSION_TIMEOUT, val=false, time=0.5
+  event = var=UNC_VIEW_NODE_RPT_PULSES, val=false, time=1300
+  event = var=MISSION_TIMEOUT, val=true, time=3200
+  event = var=MISSION_DONE, val=true, time=2600
+}

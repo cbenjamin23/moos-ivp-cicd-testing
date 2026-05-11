@@ -1,0 +1,47 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=DESIRED_THRUST, val=50, time=0.5
+  event = var=DESIRED_RUDDER, val=0, time=0.5
+  event = var=USM_SIM_PAUSED, val=true, time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=7.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = NAV_X >= 0
+  pass_condition = NAV_X <= 5
+  pass_condition = NAV_SPEED >= 2.2
+  pass_condition = NAV_SPEED <= 2.8
+  pass_condition = NAV_HEADING >= 88
+  pass_condition = NAV_HEADING <= 92
+
+  result_flag  = MISSION_EVALUATED = true
+  pass_flag    = SAY_MOOS = pass
+  fail_flag    = SAY_MOOS = fail
+  mission_form = usim_marine_motion
+  mission_mod  = $(MMOD:=sim_pause_holds_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = x=$[NAV_X]
+  report_column    = y=$[NAV_Y]
+  report_column    = speed=$[NAV_SPEED]
+  report_column    = heading=$[NAV_HEADING]
+  report_column    = depth=$[NAV_DEPTH]
+  report_column    = reset_count=$[USM_RESET_COUNT]
+  report_column    = drift=$[USM_DRIFT_SUMMARY]
+  report_column    = nav_summary=$[USM_NAVPOS_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

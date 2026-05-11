@@ -1,0 +1,64 @@
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = x=0,y=0,heading=90,speed=0,depth=0
+  prefix    = NAV
+
+  max_speed        = 5
+  max_acceleration = 0
+  max_deceleration = 0.5
+  turn_rate        = 70
+  turn_spd_loss    = 0.6
+  thrust_factor    = 20
+
+  buoyancy_rate         = 0
+  max_depth_rate        = 2
+  max_depth_rate_speed  = 2
+  default_water_depth   = 100
+  post_navpos_summary   = true
+
+  depth_control = true
+  max_trim_delay = 6
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TRIM_CONTROL, val=true, time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=6.5
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TRIM_REPORT = "status=2,error=0,completed,trim_pitch=0,trim_roll=0.0"
+  pass_condition = NAV_PITCH >= -0.1
+  pass_condition = NAV_PITCH <= 0.1
+
+  result_flag  = MISSION_EVALUATED = true
+  pass_flag    = SAY_MOOS = pass
+  fail_flag    = SAY_MOOS = fail
+  mission_form = usim_marine_motion
+  mission_mod  = $(MMOD:=trim_control_report_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = pitch=$[NAV_PITCH]
+  report_column    = trim_report=$[TRIM_REPORT]
+  report_column    = reset_count=$[USM_RESET_COUNT]
+  report_column    = drift=$[USM_DRIFT_SUMMARY]
+  report_column    = nav_summary=$[USM_NAVPOS_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

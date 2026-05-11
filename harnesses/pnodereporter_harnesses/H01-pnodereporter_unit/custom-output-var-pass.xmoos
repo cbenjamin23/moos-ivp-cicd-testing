@@ -1,0 +1,44 @@
+//-------------------------------------------------
+// FILE: custom-output-var-pass.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  platform_type       = kayak
+  platform_color      = red
+  platform_length     = 4.2
+  node_report_output  = MY_NODE_REPORT
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @MY_NODE_REPORT#MY_REPORT_SEEN=true
+  mailflag = @MY_NODE_REPORT_FIRST#MY_REPORT_FIRST_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = MY_REPORT_SEEN = true
+  pass_condition = MY_REPORT_FIRST_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pnodereporter_unit
+  mission_mod  = custom_output_var_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = my_seen=$[MY_REPORT_SEEN]
+  report_column    = my_first_seen=$[MY_REPORT_FIRST_SEEN]
+  report_column    = node_report=$[NODE_REPORT_LOCAL]
+  report_column    = my_report=$[MY_NODE_REPORT]
+  report_column    = my_first=$[MY_NODE_REPORT_FIRST]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

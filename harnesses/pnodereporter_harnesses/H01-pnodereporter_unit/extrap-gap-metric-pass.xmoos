@@ -1,0 +1,63 @@
+//-------------------------------------------------
+// FILE: extrap-gap-metric-pass.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  platform_type      = kayak
+  platform_color     = red
+  platform_length    = 4.2
+  extrap_enabled     = true
+  extrap_pos_thresh  = 0
+  extrap_hdg_thresh  = 0
+  extrap_max_gap     = 5
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=NAV_X, val=0, time=0.5
+  event = var=NAV_Y, val=0, time=0.5
+  event = var=NAV_SPEED, val=1.0, time=0.5
+  event = var=NAV_HEADING, val=90, time=0.5
+  event = var=IVPHELM_STATE, val=DRIVE, time=0.5
+  event = var=NAV_X, val=3, time=2.0
+  event = var=NAV_Y, val=0, time=2.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @NODE_REPORT_LOCAL#NODE_REPORT_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = NODE_REPORT_SEEN = true
+  pass_condition = PNR_EXTRAP_POS_GAP >= 0
+  pass_condition = PNR_EXTRAP_HDG_GAP >= 0
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pnodereporter_unit
+  mission_mod  = extrap_gap_metric_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = node_seen=$[NODE_REPORT_SEEN]
+  report_column    = node_report=$[NODE_REPORT_LOCAL]
+  report_column    = extrap_pos=$[PNR_EXTRAP_POS_GAP]
+  report_column    = extrap_hdg=$[PNR_EXTRAP_HDG_GAP]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

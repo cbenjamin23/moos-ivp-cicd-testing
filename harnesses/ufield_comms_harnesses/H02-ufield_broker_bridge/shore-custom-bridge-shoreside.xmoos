@@ -1,0 +1,8 @@
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
+  bridge  = src=DEPLOY_$V, alias=DEPLOY
+}

@@ -1,0 +1,102 @@
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = x=0,y=0,heading=90,speed=0,depth=0
+  prefix    = NAV
+
+  max_speed        = 5
+  max_acceleration = 0
+  max_deceleration = 0.5
+  turn_rate        = 70
+  turn_spd_loss    = 0.6
+  thrust_factor    = 20
+
+  buoyancy_rate         = 0
+  max_depth_rate        = 2
+  max_depth_rate_speed  = 2
+  default_water_depth   = 100
+  post_navpos_summary   = true
+
+  simulation = true
+  depth_control = true
+
+  yaw_pid_kp             = 1.0
+  yaw_pid_kd             = 0.0
+  yaw_pid_ki             = 0.0
+  yaw_pid_integral_limit = 100
+
+  speed_pid_kp             = 1.0
+  speed_pid_kd             = 0.0
+  speed_pid_ki             = 0.0
+  speed_pid_integral_limit = 100
+
+  z_to_pitch_pid_kp             = 0.5
+  z_to_pitch_pid_kd             = 0.0
+  z_to_pitch_pid_ki             = 0.0
+  z_to_pitch_pid_integral_limit = 100
+
+  pitch_pid_kp             = 1.0
+  pitch_pid_kd             = 0.0
+  pitch_pid_ki             = 0.0
+  pitch_pid_integral_limit = 100
+
+  maxrudder = 100
+  maxthrust = 100
+  maxelevator = 40
+  speed_factor = 20
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=DESIRED_SPEED, val=2.0, time=0.5
+  event = var=DESIRED_HEADING, val=90, time=0.5
+  event = var=DESIRED_DEPTH, val=5.0, time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=7.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = SIMULATION_MODE = TRUE
+  pass_condition = NAV_SPEED >= 1.7
+  pass_condition = NAV_SPEED <= 2.3
+  pass_condition = NAV_DEPTH >= 1.0
+  pass_condition = NAV_DEPTH <= 5.5
+  pass_condition = NAV_Z <= -1.0
+  pass_condition = NAV_HEADING >= 88
+  pass_condition = NAV_HEADING <= 92
+
+  result_flag  = MISSION_EVALUATED = true
+  pass_flag    = SAY_MOOS = pass
+  fail_flag    = SAY_MOOS = fail
+  mission_form = usim_marine_motion
+  mission_mod  = $(MMOD:=embedded_pid_depth_control_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = x=$[NAV_X]
+  report_column    = y=$[NAV_Y]
+  report_column    = speed=$[NAV_SPEED]
+  report_column    = heading=$[NAV_HEADING]
+  report_column    = depth=$[NAV_DEPTH]
+  report_column    = z=$[NAV_Z]
+  report_column    = pitch=$[NAV_PITCH]
+  report_column    = sim=$[SIMULATION_MODE]
+  report_column    = reset_count=$[USM_RESET_COUNT]
+  report_column    = drift=$[USM_DRIFT_SUMMARY]
+  report_column    = nav_summary=$[USM_NAVPOS_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

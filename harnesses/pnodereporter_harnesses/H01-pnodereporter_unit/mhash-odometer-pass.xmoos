@@ -1,0 +1,49 @@
+//-------------------------------------------------
+// FILE: mhash-odometer-pass.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=NAV_X, val=0, time=0.5
+  event = var=NAV_Y, val=0, time=0.5
+  event = var=NAV_SPEED, val=1.0, time=0.5
+  event = var=NAV_HEADING, val=90, time=0.5
+  event = var=IVPHELM_STATE, val=DRIVE, time=0.5
+  event = var=NAV_X, val=8, time=2.0
+  event = var=NAV_X, val=20, time=3.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @NODE_REPORT_LOCAL#NODE_REPORT_SEEN=true
+  mailflag = @PNR_MHASH#PNR_MHASH_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = NODE_REPORT_SEEN = true
+  pass_condition = PNR_MHASH_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pnodereporter_unit
+  mission_mod  = mhash_odometer_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = node_seen=$[NODE_REPORT_SEEN]
+  report_column    = pnr_mhash_seen=$[PNR_MHASH_SEEN]
+  report_column    = node_report=$[NODE_REPORT_LOCAL]
+  report_column    = pnr_mhash=$[PNR_MHASH]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

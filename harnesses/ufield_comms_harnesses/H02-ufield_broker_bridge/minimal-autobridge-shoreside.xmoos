@@ -1,0 +1,16 @@
+//-------------------------------------------------
+// FILE: minimal-autobridge-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  auto_bridge_realmcast = false
+  auto_bridge_appcast   = false
+  auto_bridge_mhash     = false
+
+  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
+}

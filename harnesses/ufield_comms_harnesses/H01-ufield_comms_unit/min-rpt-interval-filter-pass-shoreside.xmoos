@@ -1,0 +1,23 @@
+//-------------------------------------------------
+// FILE: min-rpt-interval-filter-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  comms_range      = 200
+  critical_range   = 10
+  stale_time       = 120
+  min_msg_interval = 0
+  min_rpt_interval = 1000
+  max_msg_length   = 1000
+  groups           = false
+  msg_groups       = false
+  shared_node_reports = false
+  view_node_rpt_pulses = true
+  pulse_duration   = 5
+  drop_percentage  = 0
+}

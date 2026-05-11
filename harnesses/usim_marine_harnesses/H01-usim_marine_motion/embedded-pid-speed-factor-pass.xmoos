@@ -1,0 +1,92 @@
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = x=0,y=0,heading=90,speed=0,depth=0
+  prefix    = NAV
+
+  max_speed        = 5
+  max_acceleration = 0
+  max_deceleration = 0.5
+  turn_rate        = 70
+  turn_spd_loss    = 0.6
+  thrust_factor    = 20
+
+  buoyancy_rate         = 0.025
+  max_depth_rate        = 2
+  max_depth_rate_speed  = 2
+  default_water_depth   = 100
+  post_navpos_summary   = true
+
+  post_des_thrust = USM_PID_THRUST
+  post_des_rudder = USM_PID_RUDDER
+
+  simulation = true
+  depth_control = false
+
+  yaw_pid_kp             = 1.0
+  yaw_pid_kd             = 0.0
+  yaw_pid_ki             = 0.0
+  yaw_pid_integral_limit = 100
+
+  speed_pid_kp             = 1.0
+  speed_pid_kd             = 0.0
+  speed_pid_ki             = 0.0
+  speed_pid_integral_limit = 100
+
+  maxrudder = 100
+  maxthrust = 100
+  speed_factor = 20
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=DESIRED_SPEED, val=1.5, time=0.5
+  event = var=DESIRED_HEADING, val=90, time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = USM_PID_THRUST >= 28
+  pass_condition = USM_PID_THRUST <= 32
+  pass_condition = USM_PID_RUDDER >= -2
+  pass_condition = USM_PID_RUDDER <= 2
+  pass_condition = NAV_SPEED >= 1.3
+  pass_condition = NAV_SPEED <= 1.7
+  pass_condition = NAV_HEADING >= 88
+  pass_condition = NAV_HEADING <= 92
+
+  result_flag  = MISSION_EVALUATED = true
+  pass_flag    = SAY_MOOS = pass
+  fail_flag    = SAY_MOOS = fail
+  mission_form = usim_marine_motion
+  mission_mod  = $(MMOD:=embedded_pid_speed_factor_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = x=$[NAV_X]
+  report_column    = y=$[NAV_Y]
+  report_column    = speed=$[NAV_SPEED]
+  report_column    = heading=$[NAV_HEADING]
+  report_column    = pid_thrust=$[USM_PID_THRUST]
+  report_column    = pid_rudder=$[USM_PID_RUDDER]
+  report_column    = depth=$[NAV_DEPTH]
+  report_column    = reset_count=$[USM_RESET_COUNT]
+  report_column    = drift=$[USM_DRIFT_SUMMARY]
+  report_column    = nav_summary=$[USM_NAVPOS_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

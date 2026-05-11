@@ -1,0 +1,62 @@
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = x=0,y=0,heading=90,speed=0,depth=0
+  prefix    = NAV
+
+  max_speed        = 2
+  max_acceleration = 0
+  max_deceleration = 0.5
+  turn_rate        = 70
+  turn_spd_loss    = 0.6
+  thrust_factor    = 20
+  default_water_depth = 100
+  post_navpos_summary = true
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=DESIRED_THRUST, val=100, time=0.5
+  event = var=DESIRED_RUDDER, val=0, time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=7.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = NAV_X >= 20
+  pass_condition = NAV_X <= 35
+  pass_condition = NAV_SPEED >= 1.8
+  pass_condition = NAV_SPEED <= 2.1
+
+  result_flag  = MISSION_EVALUATED = true
+  pass_flag    = SAY_MOOS = pass
+  fail_flag    = SAY_MOOS = fail
+  mission_form = usim_marine_motion
+  mission_mod  = $(MMOD:=max_speed_clamp_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = x=$[NAV_X]
+  report_column    = y=$[NAV_Y]
+  report_column    = speed=$[NAV_SPEED]
+  report_column    = heading=$[NAV_HEADING]
+  report_column    = depth=$[NAV_DEPTH]
+  report_column    = reset_count=$[USM_RESET_COUNT]
+  report_column    = drift=$[USM_DRIFT_SUMMARY]
+  report_column    = nav_summary=$[USM_NAVPOS_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

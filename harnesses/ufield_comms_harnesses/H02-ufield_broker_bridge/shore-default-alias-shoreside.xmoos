@@ -1,0 +1,13 @@
+//-------------------------------------------------
+// FILE: shore-default-alias-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
+  bridge  = src=FLEET_ALERT
+}

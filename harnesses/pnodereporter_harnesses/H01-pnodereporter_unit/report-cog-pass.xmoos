@@ -1,0 +1,56 @@
+//-------------------------------------------------
+// FILE: report-cog-pass.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  platform_type   = kayak
+  platform_color  = red
+  platform_length = 4.2
+  report_cog      = true
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY_ALL = true
+
+  event = var=NAV_X, val=0, time=0.5
+  event = var=NAV_Y, val=0, time=0.5
+  event = var=NAV_SPEED, val=1.0, time=0.5
+  event = var=NAV_HEADING, val=90, time=0.5
+  event = var=IVPHELM_STATE, val=DRIVE, time=0.5
+  event = var=NAV_X, val=8, time=2.0
+  event = var=NAV_Y, val=0, time=2.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @NODE_REPORT_LOCAL#NODE_REPORT_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = NODE_REPORT_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pnodereporter_unit
+  mission_mod  = report_cog_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = node_seen=$[NODE_REPORT_SEEN]
+  report_column    = node_report=$[NODE_REPORT_LOCAL]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

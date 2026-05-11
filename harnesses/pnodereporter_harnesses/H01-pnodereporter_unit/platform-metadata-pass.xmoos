@@ -1,0 +1,46 @@
+//-------------------------------------------------
+// FILE: platform-metadata-pass.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pNodeReporter
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  platform_type   = uuv
+  platform_color  = blue
+  platform_length = 9.5
+  platform_beam   = 2.1
+  platform_group  = survey
+  platform_aspect = PAYLOAD=ctd
+  platform_aspect = ROLE=lead
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @NODE_REPORT_LOCAL#NODE_REPORT_SEEN=true
+  mailflag = @NODE_REPORT_LOCAL_FIRST#NODE_REPORT_FIRST_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = NODE_REPORT_SEEN = true
+  pass_condition = NODE_REPORT_FIRST_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pnodereporter_unit
+  mission_mod  = platform_metadata_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = node_seen=$[NODE_REPORT_SEEN]
+  report_column    = first_seen=$[NODE_REPORT_FIRST_SEEN]
+  report_column    = node_report=$[NODE_REPORT_LOCAL]
+  report_column    = first_report=$[NODE_REPORT_LOCAL_FIRST]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

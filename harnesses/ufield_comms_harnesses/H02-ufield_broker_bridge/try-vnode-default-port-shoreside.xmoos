@@ -1,0 +1,13 @@
+//-------------------------------------------------
+// FILE: try-vnode-default-port-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  qbridge   = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
+  try_vnode = route=127.0.0.1
+}

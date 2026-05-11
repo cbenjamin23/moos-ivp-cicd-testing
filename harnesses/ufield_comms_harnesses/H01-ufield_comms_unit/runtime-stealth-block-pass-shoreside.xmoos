@@ -1,0 +1,39 @@
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  comms_range      = 100
+  critical_range   = 5
+  stale_time       = 120
+  min_msg_interval = 0
+  max_msg_length   = 1000
+  groups           = false
+  msg_groups       = false
+  shared_node_reports = false
+  view_node_rpt_pulses = true
+  pulse_duration   = 5
+  drop_percentage  = 0
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  time_warp   = $(WARP)
+  script_name = shoreside_runtime_stealth
+  reset_max   = 0
+  verbose     = false
+
+  event = var=DIRECT_MSG_DELIVERED, val=false, time=0.5
+  event = var=ACK_DELIVERED, val=false, time=0.5
+  event = var=REPORT_ABE_TO_BEN, val=false, time=0.5
+  event = var=REPORT_BEN_TO_ABE, val=false, time=0.5
+  event = var=VIEW_COMMS_PULSE_SEEN, val=false, time=0.5
+  event = var=SHARED_REPORT_SEEN, val=false, time=0.5
+  event = var=MISSION_TIMEOUT, val=false, time=0.5
+  event = var=UNC_STEALTH, val="vname=abe,stealth=0.4", time=1300
+  event = var=MISSION_TIMEOUT, val=true, time=3200
+  event = var=MISSION_DONE, val=true, time=2600
+}
