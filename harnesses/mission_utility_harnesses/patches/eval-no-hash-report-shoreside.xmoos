@@ -1,0 +1,30 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uProcessWatch @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PASS_INPUT = true
+
+  result_flag = MISSION_EVALUATED = true
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=eval_no_hash_report_pass)
+
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = case_value=$[CASE_VALUE]
+  report_file   = results.txt
+}

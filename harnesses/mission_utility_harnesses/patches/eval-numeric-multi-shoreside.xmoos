@@ -1,0 +1,26 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  lead_condition = CASE_PHASE = ready
+  pass_condition = PASS_INPUT = true
+  pass_condition = NUM_SCORE > 40
+
+  result_flag = MISSION_EVALUATED = true
+  result_flag = EVAL_SCORE_FLAG = score:$[NUM_SCORE]
+  pass_flag   = EVAL_PASS_FLAG = pass:$[CASE_VALUE]
+  fail_flag   = EVAL_FAIL_FLAG = fail:$[CASE_VALUE]
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=eval_numeric_multi_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = phase=$[CASE_PHASE]
+  report_column    = score=$[NUM_SCORE]
+  report_file      = results.txt
+}

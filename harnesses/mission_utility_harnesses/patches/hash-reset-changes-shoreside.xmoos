@@ -1,0 +1,31 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=RESET_MHASH, val=true, time=5
+  event = var=TEST_EVAL_READY, val=true, time=45
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PASS_INPUT = true
+
+  result_flag = MISSION_EVALUATED = true
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=hash_reset_changes_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  prereport_column = prehash=$[MHASH_SHORT]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = reset_hash=$[MHASH_SHORT]
+  report_file      = results.txt
+}
+

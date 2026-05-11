@@ -1,0 +1,31 @@
+ProcessConfig = pMissionHash
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mission_hash_var = CUSTOM_MISSION_HASH
+  mhash_short_var  = CUSTOM_MHASH_SHORT
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PASS_INPUT = true
+
+  result_flag = MISSION_EVALUATED = true
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=hash_custom_vars_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = custom_hash=$[CUSTOM_MISSION_HASH]
+  report_column    = custom_short=$[CUSTOM_MHASH_SHORT]
+  report_file      = results.txt
+}
+

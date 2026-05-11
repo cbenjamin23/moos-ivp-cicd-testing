@@ -1,0 +1,26 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=TEST_EVAL_READY, val=false, time=2
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = NEVER_READY = true
+  pass_condition = PASS_INPUT = true
+
+  result_flag = MISSION_EVALUATED = true
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=mayfinish_timeout_fail)
+
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_file   = results.txt
+}
+

@@ -1,0 +1,47 @@
+//-------------------------------------------------
+// FILE: loadwatch-no-breach-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=UTILITY_ITER_GAP, val=1.5, time=1.0
+  event = var=UTILITY_ITER_LEN, val=0.2, time=1.2
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = uLoadWatch
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  thresh = app=ANY, gapthresh=100
+  near_breach_thresh = 0.5
+  breach_trigger = 0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ULW_BREACH_COUNT = 0
+  pass_condition = ULW_NEAR_BREACH_COUNT = 0
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = loadwatch_unit
+  mission_mod  = loadwatch_no_breach_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = load_breaches=$[ULW_BREACH_COUNT]
+  report_column    = near_breaches=$[ULW_NEAR_BREACH_COUNT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

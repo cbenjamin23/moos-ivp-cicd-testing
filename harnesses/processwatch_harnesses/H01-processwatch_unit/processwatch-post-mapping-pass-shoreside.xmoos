@@ -1,0 +1,41 @@
+//-------------------------------------------------
+// FILE: processwatch-post-mapping-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  allow_retractions = true
+  watch_all = false
+  watch = pHostInfo,pMissionEval,uLoadWatch
+  post_mapping = PROC_WATCH_SUMMARY,UTIL_PROC_SUMMARY
+  summary_wait = 1
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PROC_WATCH_ALL_OK = true
+  pass_condition = UTIL_PROC_SUMMARY != ""
+  pass_condition = PROC_WATCH_FULL_SUMMARY != ""
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = processwatch_unit
+  mission_mod  = processwatch_post_mapping_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
+  report_column    = mapped_summary=$[UTIL_PROC_SUMMARY]
+  report_column    = proc_full=$[PROC_WATCH_FULL_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

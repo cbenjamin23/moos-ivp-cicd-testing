@@ -1,0 +1,40 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PASS_INPUT, val=true, time=1
+  event = var=FORCE_FAIL, val=true, time=1
+  event = var=CASE_VALUE, val=failcondition, time=1
+  event = var=CASE_MAIL, val=failcondition, time=1
+  event = var=TEST_EVAL_READY, val=true, time=2
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PASS_INPUT = true
+  fail_condition = FORCE_FAIL = true
+
+  result_flag = MISSION_EVALUATED = true
+  result_flag = EVAL_RESULT_FLAG = result:$[CASE_VALUE]
+  pass_flag   = EVAL_PASS_FLAG = pass:$[CASE_VALUE]
+  fail_flag   = EVAL_FAIL_FLAG = fail:$[CASE_VALUE]
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=eval_fail_condition_fail)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  prereport_column = prehash=$[MHASH_SHORT]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = pass_input=$[PASS_INPUT]
+  report_column    = force_fail=$[FORCE_FAIL]
+  report_column    = case_value=$[CASE_VALUE]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

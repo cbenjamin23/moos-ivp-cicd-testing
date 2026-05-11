@@ -1,0 +1,21 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  fail_condition = FORCE_FAIL = true
+
+  result_flag = MISSION_EVALUATED = true
+  fail_flag   = EVAL_FAIL_FLAG = fail_only
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=eval_fail_only_condition_fail)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = force_fail=$[FORCE_FAIL]
+  report_file      = results.txt
+}

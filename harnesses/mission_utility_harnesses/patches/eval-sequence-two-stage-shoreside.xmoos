@@ -1,0 +1,23 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = STAGE1_READY = true
+  pass_condition = STAGE1_PASS = true
+
+  lead_condition = STAGE2_READY = true
+  pass_condition = STAGE2_PASS = true
+
+  result_flag = MISSION_EVALUATED = true
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=eval_sequence_two_stage_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = stage1=$[STAGE1_PASS]
+  report_column    = stage2=$[STAGE2_PASS]
+  report_file      = results.txt
+}

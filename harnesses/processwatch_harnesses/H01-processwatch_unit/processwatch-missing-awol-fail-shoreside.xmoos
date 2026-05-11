@@ -1,0 +1,48 @@
+//-------------------------------------------------
+// FILE: processwatch-missing-awol-fail-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  allow_retractions = true
+  watch_all = false
+  watch = pGhost:GHOST_PRESENT
+  summary_wait = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=TEST_EVAL_READY, val=true, time=125.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PROC_WATCH_ALL_OK = true
+  pass_condition = GHOST_PRESENT = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = processwatch_unit
+  mission_mod  = processwatch_missing_awol_fail
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
+  report_column    = ghost_present=$[GHOST_PRESENT]
+  report_column    = proc_summary=$[PROC_WATCH_SUMMARY]
+  report_column    = proc_full=$[PROC_WATCH_FULL_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

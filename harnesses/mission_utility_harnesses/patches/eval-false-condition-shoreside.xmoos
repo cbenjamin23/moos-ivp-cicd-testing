@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PASS_INPUT, val=false, time=1
+  event = var=CASE_VALUE, val=falsecase, time=1
+  event = var=CASE_MAIL, val=falsecase, time=1
+  event = var=TEST_EVAL_READY, val=true, time=2
+}

@@ -1,0 +1,37 @@
+//-------------------------------------------------
+// FILE: hostinfo-pshare-mixed-routes-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PSHARE_INPUT_SUMMARY, val="127.0.0.1:11111:udp,not_a_route", time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PHI_HOST_IP = 127.0.0.7
+  pass_condition = PHI_HOST_PORT_DB = $(MOOS_PORT)
+  pass_condition = PHI_HOST_INFO = "community=shoreside,hostip=127.0.0.7,port_db=$(MOOS_PORT),port_udp=11111,pshare_iroutes=127.0.0.1:11111,hostip_alts=,timewarp=10"
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = hostinfo_unit
+  mission_mod  = hostinfo_pshare_mixed_routes_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = host_ip=$[PHI_HOST_IP]
+  report_column    = host_info=$[PHI_HOST_INFO]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

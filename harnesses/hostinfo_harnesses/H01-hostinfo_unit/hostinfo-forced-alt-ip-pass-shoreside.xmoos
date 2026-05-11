@@ -1,0 +1,35 @@
+//-------------------------------------------------
+// FILE: hostinfo-forced-alt-ip-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pHostInfo
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  default_hostip_force = 10.1.2.3
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PHI_HOST_IP = 10.1.2.3
+  pass_condition = PHI_HOST_PORT_DB = $(MOOS_PORT)
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = hostinfo_unit
+  mission_mod  = hostinfo_forced_alt_ip_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = host_ip=$[PHI_HOST_IP]
+  report_column    = db_port=$[PHI_HOST_PORT_DB]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

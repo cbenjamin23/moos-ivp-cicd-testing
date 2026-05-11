@@ -1,0 +1,84 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+
+  Log = PHI_HOST_IP @ 0 nosync
+  Log = PHI_HOST_PORT_DB @ 0 nosync
+  Log = PHI_HOST_INFO @ 0 nosync
+  Log = PROC_WATCH_ALL_OK @ 0 nosync
+  Log = PROC_WATCH_SUMMARY @ 0 nosync
+  Log = PROC_WATCH_FULL_SUMMARY @ 0 nosync
+  Log = PROC_WATCH_EVENT @ 0 nosync
+  Log = UTIL_PROC_SUMMARY @ 0 nosync
+  Log = HOSTINFO_PRESENT @ 0 nosync
+  Log = ULW_BREACH @ 0 nosync
+  Log = ULW_BREACH_COUNT @ 0 nosync
+  Log = ULW_NEAR_BREACH @ 0 nosync
+  Log = ULW_NEAR_BREACH_COUNT @ 0 nosync
+  Log = ULW_BREACH_LIST @ 0 nosync
+  Log = ULW_NEAR_BREACH_LIST @ 0 nosync
+  Log = LOAD_WARNING @ 0 nosync
+}
+
+<tag><pHostInfo>
+//----------------------------------------------------
+// pHostInfo Config Block
+
+ProcessConfig = pHostInfo
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  default_hostip_force = $(IP_ADDR=127.0.0.7)
+}
+
+<tag><uProcessWatch>
+//----------------------------------------------------
+// uProcessWatch Config Block
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  allow_retractions = true
+  watch_all = true
+  nowatch = uMAC*
+  nowatch = uXMS*
+  nowatch = uPokeDB*
+  nowatch = uQueryDB*
+  summary_wait = 1
+}
+
+<tag><uLoadWatch>
+//----------------------------------------------------
+// uLoadWatch Config Block
+
+ProcessConfig = uLoadWatch
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  thresh = app=ANY, gapthresh=100
+  near_breach_thresh = 0.5
+  breach_trigger = 0
+}

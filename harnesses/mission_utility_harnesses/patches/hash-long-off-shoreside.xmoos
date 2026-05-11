@@ -1,0 +1,26 @@
+ProcessConfig = pMissionHash
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mission_hash_var = off
+  mhash_short_var  = MHASH
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PASS_INPUT = true
+
+  result_flag = MISSION_EVALUATED = true
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=hash_long_off_pass)
+
+  report_column = grade=$[GRADE]
+  report_column = case_value=$[CASE_VALUE]
+  report_file   = results.txt
+}

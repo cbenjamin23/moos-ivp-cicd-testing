@@ -1,0 +1,25 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PASS_INPUT = true
+
+  result_flag = MISSION_EVALUATED = true
+
+  mission_form = mission_utility_unit
+  mission_mod  = $(MMOD:=eval_clock_macros_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = month=$[MONTH]
+  report_column    = day=$[DAY]
+  report_column    = hour=$[HOUR]
+  report_column    = min=$[MIN]
+  report_column    = sec=$[SEC]
+  report_column    = date=$[DATE]
+  report_column    = time=$[TIME]
+  report_file      = results.txt
+}
