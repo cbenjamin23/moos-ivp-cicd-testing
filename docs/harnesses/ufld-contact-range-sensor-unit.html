@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uFldContactRangeSensor Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uFldContactRangeSensor</p>
+      <h1>H01 uFldContactRangeSensor Unit</h1>
+      <p class="lede">App-level correctness tests for uFldContactRangeSensor. These cases verify report variable modes, ground-truth output, echo-type filtering, sensor arcs, ping wait, pulse suppression, local reports, unknown requesters, and unlimited range overrides.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness scripts static contact geometry and range requests, then checks range-report, ground-truth, and pulse outputs from the alog.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-contact-range-sensor-baseline.gif">
+          <img src="../assets/gifs/ufld-contact-range-sensor-baseline.gif?v=20260511-5" alt="Baseline Range GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Range</h3>
+          <p>Description: Verifies a near contact produces a short CRS_RANGE_REPORT and visual pulse.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-contact-range-sensor-arc-block.gif">
+          <img src="../assets/gifs/ufld-contact-range-sensor-arc-block.gif?v=20260511-5" alt="Arc Block GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Arc Block</h3>
+          <p>Description: Verifies a contact behind the requester is blocked by a forward-only arc.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_short_report_pass</code>
+          <p>Verifies a near contact produces a short CRS_RANGE_REPORT and visual pulse.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>report_vars_short_no_long_pass</code>
+          <p>Verifies report_vars=short does not also post the per-requester long variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>report_vars_long_pass</code>
+          <p>Verifies report_vars=long posts only the per-requester long report variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>report_vars_both_pass</code>
+          <p>Verifies report_vars=both posts both short and long report forms.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ground_truth_uniform_zero_pass</code>
+          <p>Verifies zero-noise uniform reporting posts matching reported and ground-truth ranges.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ground_truth_gaussian_unsupported_no_gt_pass</code>
+          <p>Verifies unsupported Gaussian rn_algorithm configuration does not activate ground-truth output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ground_truth_long_only_pass</code>
+          <p>Verifies long-only ground-truth mode posts only per-requester long variables.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ground_truth_no_algorithm_absent_pass</code>
+          <p>Verifies ground_truth=true alone does not post ground-truth mail without a range-noise algorithm.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>allow_echo_type_block_pass</code>
+          <p>Verifies allow_echo_types suppresses reports for a disallowed contact type.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>allow_echo_type_accept_pass</code>
+          <p>Verifies allow_echo_types still permits a matching contact type.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>allow_echo_type_multi_accept_ship_pass</code>
+          <p>Verifies a multi-type echo allow-list can admit a ship contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_arc_forward_accept_pass</code>
+          <p>Verifies a forward contact inside the configured arc is reported.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_arc_wrap_accept_pass</code>
+          <p>Verifies a wraparound sensor arc can report the same forward contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_arc_multi_segment_aft_accept_pass</code>
+          <p>Verifies a multi-segment sensor arc can report an aft contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_arc_aft_block_pass</code>
+          <p>Verifies a contact behind the requester is blocked by a forward-only arc.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_arc_full_accept_pass</code>
+          <p>Verifies a full 360-degree arc reports a forward contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ping_wait_blocks_second_pass</code>
+          <p>Verifies the default ping wait suppresses an immediate second request.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>named_ping_wait_blocks_second_pass</code>
+          <p>Verifies a named ping-wait override suppresses an immediate second request.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ping_wait_unlimited_allows_second_pass</code>
+          <p>Verifies a zero ping wait permits repeated requests.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>named_ping_wait_unlimited_allows_second_pass</code>
+          <p>Verifies a named unlimited ping-wait override permits repeated requests.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ping_wait_nolimit_alias_allows_second_pass</code>
+          <p>Verifies the nolimit ping-wait alias permits repeated requests.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>display_pulses_false_pass</code>
+          <p>Verifies range reporting continues while VIEW_RANGE_PULSE output is disabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>unknown_request_no_report_pass</code>
+          <p>Verifies an unknown requester produces no range report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_name_request_no_report_pass</code>
+          <p>Verifies range requests without a name field do not produce reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ground_truth_false_no_gt_pass</code>
+          <p>Verifies noisy-report mode can suppress ground-truth publications.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crs_node_report_local_pass</code>
+          <p>Verifies contacts learned through NODE_REPORT_LOCAL can satisfy range requests.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>unlimited_far_range_pass</code>
+          <p>Verifies unlimited push distance allows a far contact report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>push_distance_alias_far_pass</code>
+          <p>Verifies the push_distance alias behaves like push_dist for far reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>named_pull_unlimited_far_pass</code>
+          <p>Verifies a named target pull-distance override can allow a far contact report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pull_distance_alias_far_pass</code>
+          <p>Verifies the pull_distance alias behaves like pull_dist for far reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_short_blocks_far_pass</code>
+          <p>Verifies default push/pull distance limits block a far contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_total_range_far_blocks_pass</code>
+          <p>Verifies a finite push-plus-pull range blocks a distant contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>named_push_short_blocks_far_pass</code>
+          <p>Verifies named push/pull distance limits can block a far contact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reciprocal_request_report_pass</code>
+          <p>Verifies a non-alpha requester can produce a range report back to alpha.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_app_missions/ufield_app_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

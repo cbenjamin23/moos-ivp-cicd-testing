@@ -1,0 +1,50 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+
+  Run = MOOSDB       @ NewConsole = false
+  Run = pRealm       @ NewConsole = false
+  Run = pLogger      @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=TEST_DRIVER_DONE, val=true, time=1
+  event = var=TEST_EVAL_READY, val=true, time=2
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_DRIVER_DONE = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  mission_mod  = $(MMOD:=baseline)
+
+  report_column = grade=$[GRADE]
+  report_column = done=$[TEST_DRIVER_DONE]
+  report_file   = results.txt
+}

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uFldObstacleSim Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uField Obstacle Simulation</p>
+      <h1>H01 uFldObstacleSim Unit</h1>
+      <p class="lede">App-level correctness tests for uFldObstacleSim. These cases verify obstacle-file ingestion, truth and vehicle-facing obstacle publications, visual toggles, point-sensor mode, sensor-range boundaries, runtime point-size mail, refresh intervals, reset gating, and visual style settings.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with uFldObstacleSim, uTimerScript, pMissionHash, pMissionEval, and pLogger. Case overlays change only simulator configuration and scripted refresh/reset/node-report mail while the harness verifies source-side obstacle and point publications.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-obstacle-sim-fixed-field.gif">
+          <img src="../assets/gifs/ufld-obstacle-sim-fixed-field.gif?v=20260511-5" alt="Fixed Field Publish GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Fixed Field Publish</h3>
+          <p>Description: Confirms a fixed obstacle file produces KNOWN_OBSTACLE, GIVEN_OBSTACLE, obstacle visuals, region visuals, and the configured minimum range.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-obstacle-sim-point-sensor.gif">
+          <img src="../assets/gifs/ufld-obstacle-sim-point-sensor.gif?v=20260511-5" alt="Point Sensor Mode GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Point Sensor Mode</h3>
+          <p>Description: Confirms point-sensor mode suppresses GIVEN_OBSTACLE and emits TRACKED_FEATURE_ALPHA and VIEW_POINT for an in-range vehicle.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>fixed_field_publish_pass</code>
+          <p>Confirms a fixed obstacle file produces KNOWN_OBSTACLE, GIVEN_OBSTACLE, obstacle visuals, region visuals, and the configured minimum range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multi_field_labels_pass</code>
+          <p>Confirms a two-obstacle file publishes both configured obstacle labels on the ground-truth and vehicle-facing outputs.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duration_fixed_pass</code>
+          <p>Confirms fixed min_duration and max_duration are propagated into obstacle payloads.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duration_min_only_pass</code>
+          <p>Confirms min_duration alone clamps duration publication to that configured value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duration_min_max_swap_pass</code>
+          <p>Confirms max_duration below an earlier min_duration is normalized to the configured minimum value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duration_disabled_zero_pass</code>
+          <p>Confirms zero duration bounds leave obstacle payloads without duration fields.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pmv_connect_repeated_repost_pass</code>
+          <p>Confirms repeated PMV_CONNECT mail triggers repeated obstacle truth and visual refreshes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pmv_connect_absent_no_publish_pass</code>
+          <p>Confirms the simulator does not publish obstacles before a refresh trigger or refresh interval.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>vehicle_connect_no_refresh_pass</code>
+          <p>Confirms current VEHICLE_CONNECT mail does not trigger obstacle refresh output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_visuals_false_pass</code>
+          <p>Confirms post_visuals=false suppresses VIEW_POLYGON output while still publishing obstacle truth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>draw_region_false_pass</code>
+          <p>Confirms draw_region=false suppresses only the region visual while leaving obstacle visuals enabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_points_inside_pass</code>
+          <p>Confirms point-sensor mode suppresses GIVEN_OBSTACLE and emits TRACKED_FEATURE_ALPHA and VIEW_POINT for an in-range vehicle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_points_multi_field_pass</code>
+          <p>Confirms point-sensor mode can report features from two configured obstacles in the same field.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_points_multi_vehicle_pass</code>
+          <p>Confirms point-sensor mode publishes per-vehicle tracked-feature variables and point labels.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_node_report_no_refresh_pass</code>
+          <p>Confirms malformed NODE_REPORT mail does not create ledger state or trigger an obstacle refresh.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_node_report_no_points_pass</code>
+          <p>Confirms malformed NODE_REPORT mail does not produce tracked features in point-sensor mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_report_mixed_case_vehicle_pass</code>
+          <p>Confirms mixed-case vehicle names map to the upper-case tracked-feature variable while preserving the point label name.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_report_color_point_pass</code>
+          <p>Confirms point visuals use the color supplied by the reporting vehicle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_range_outside_pass</code>
+          <p>Confirms an out-of-range vehicle receives no tracked feature points in point-sensor mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_range_edge_pass</code>
+          <p>Confirms a vehicle exactly at the sensor-range boundary still receives tracked feature points.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_range_zero_suppresses_pass</code>
+          <p>Confirms sensor_range=0 suppresses point output for a vehicle just outside the obstacle boundary.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_bigger_pass</code>
+          <p>Confirms runtime UFOS_POINT_SIZE=bigger changes subsequent point visuals.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_numeric_pass</code>
+          <p>Confirms a runtime numeric-prefixed UFOS_POINT_SIZE string changes subsequent point visuals.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_smaller_pass</code>
+          <p>Confirms runtime UFOS_POINT_SIZE=smaller decrements subsequent point visuals.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_sequence_pass</code>
+          <p>Confirms sequential bigger/smaller point-size mail composes back to the original visual size.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_invalid_ignored_pass</code>
+          <p>Confirms invalid point-size mail leaves subsequent point visuals at the configured size.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_floor_ignored_pass</code>
+          <p>Confirms decrement mail at the minimum configured point size does not reduce point visuals below one.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_uppercase_pass</code>
+          <p>Confirms point-size keyword mail is case-insensitive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_fraction_pass</code>
+          <p>Confirms numeric-prefix point-size mail accepts fractional values.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>point_size_zero_ignored_pass</code>
+          <p>Confirms zero point-size mail is ignored and leaves the configured visual size intact.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rate_points_three_pass</code>
+          <p>Confirms rate_points=3 produces multiple tracked features and matching point visuals per in-range iteration.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rate_points_zero_pass</code>
+          <p>Confirms rate_points=0 suppresses tracked feature and point visual output while still publishing source truth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_points_no_visuals_pass</code>
+          <p>Confirms point-sensor mode can publish tracked features while post_visuals=false suppresses VIEW_POINT.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_report_refresh_pass</code>
+          <p>Confirms a first NODE_REPORT can request an obstacle refresh without PMV_CONNECT.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>refresh_interval_repost_pass</code>
+          <p>Confirms refresh_interval causes repeated obstacle truth publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>refresh_interval_post_points_no_given_pass</code>
+          <p>Confirms refresh intervals still republish KNOWN_OBSTACLE without GIVEN_OBSTACLE in point-sensor mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_request_reposts_pass</code>
+          <p>Confirms UFOS_RESET clears and republishes obstacles when the known vehicle is outside the reset range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_request_inside_blocked_pass</code>
+          <p>Confirms UFOS_RESET is blocked while the known vehicle remains inside the obstacle region.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_reuse_ids_false_pass</code>
+          <p>Confirms reset with reuse_ids=false retires the original obstacle label and republishes a generated replacement label.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_post_points_no_given_pass</code>
+          <p>Confirms reset in point-sensor mode clears and republishes truth without emitting GIVEN_OBSTACLE.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_post_visuals_false_pass</code>
+          <p>Confirms reset with post_visuals=false clears and republishes truth without emitting VIEW_POLYGON.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_range_boundary_blocked_pass</code>
+          <p>Confirms a reset request is blocked when the nearest vehicle is exactly at reset_range.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_interval_exit_pass</code>
+          <p>Confirms reset_interval can reset the field when a tracked vehicle exits the region after the interval has elapsed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_interval_wait_blocked_pass</code>
+          <p>Confirms reset_interval blocks region-exit resets until the configured wait has elapsed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sensor_range_broad_far_pass</code>
+          <p>Confirms a large sensor_range can produce tracked features for a far vehicle.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>obstacle_visual_style_pass</code>
+          <p>Confirms obstacle polygon color, size, and transparency settings are reflected in VIEW_POLYGON.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>region_visual_style_pass</code>
+          <p>Confirms region-specific visual color settings are reflected in the obs_region VIEW_POLYGON.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>poly_visual_zero_sizes_pass</code>
+          <p>Confirms zero-valued polygon visual size and transparency settings are accepted in VIEW_POLYGON.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_obstacle_file_absent_pass</code>
+          <p>Confirms a missing obstacle file produces no minimum-range, obstacle truth, or visual publications.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufld_obstacle_sim_missions/ufld_obstacle_sim_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

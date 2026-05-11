@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uFldPathCheck Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uFldPathCheck</p>
+      <h1>H01 uFldPathCheck Unit</h1>
+      <p class="lede">App-level correctness tests for uFldPathCheck. These cases verify speed and odometry reports, trip-reset behavior, local report handling, invalid-report suppression, stationary tracks, independent multi-node accounting, and history-window speed calculations.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldPathCheck config and scripted node-report mail, then checks path and speed report payloads from the alog.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-pathcheck-baseline-odometry.gif">
+          <img src="../assets/gifs/ufld-pathcheck-baseline-odometry.gif?v=20260511-5" alt="Baseline Odometry GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Odometry</h3>
+          <p>Description: Verifies a three-report track produces five meters of total/trip odometry plus average speed.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-pathcheck-trip-reset.gif">
+          <img src="../assets/gifs/ufld-pathcheck-trip-reset.gif?v=20260511-5" alt="Trip Reset GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Trip Reset</h3>
+          <p>Description: Verifies UPC_TRIP_RESET clears trip distance while preserving accumulated total distance.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>odometry_baseline_pass</code>
+          <p>Verifies a three-report track produces five meters of total/trip odometry plus average speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>two_reports_speed_only_pass</code>
+          <p>Verifies two reports are enough for speed output but not enough for odometry under current app logic.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trip_reset_pass</code>
+          <p>Verifies UPC_TRIP_RESET clears trip distance while preserving accumulated total distance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_report_local_pass</code>
+          <p>Verifies NODE_REPORT_LOCAL is accepted the same way as field NODE_REPORT mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mixed_report_sources_pass</code>
+          <p>Verifies mixed NODE_REPORT and NODE_REPORT_LOCAL mail is tracked as one vehicle path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multi_node_independent_pass</code>
+          <p>Verifies independent odometry accounting for two named contacts.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>variable_speed_average_pass</code>
+          <p>Verifies average speed across uneven legs and continued odometry accumulation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>history_length_three_average_pass</code>
+          <p>Verifies a three-report history window averages only the retained recent legs.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_history_length_default_pass</code>
+          <p>Verifies an invalid too-short history configuration falls back to the default averaging behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reverse_leg_accumulates_pass</code>
+          <p>Verifies a path that reverses direction still accumulates traveled distance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>history_length_two_speed_pass</code>
+          <p>Verifies the configured short history window drives the latest average-speed calculation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_report_rejected_pass</code>
+          <p>Verifies malformed node reports do not generate odometry or speed output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stationary_zero_distance_pass</code>
+          <p>Verifies repeated reports at the same position produce a zero-distance odometry report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>diagonal_chain_distance_pass</code>
+          <p>Verifies chained diagonal legs accumulate distance across multiple reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trip_reset_unknown_ignored_pass</code>
+          <p>Verifies a reset for an unknown vehicle does not corrupt later known-node odometry.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trip_reset_twice_pass</code>
+          <p>Verifies repeated trip resets preserve total distance while resetting trip distance again.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_then_good_recovery_pass</code>
+          <p>Verifies a malformed report does not prevent later valid reports from producing output.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_app_missions/ufield_app_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Fixed field for uFldObstacleSim unit tests.
+region    = pts={0,-30:60,-30:60,30:0,30}
+min_range = 8
+min_size  = 4
+max_size  = 8
+poly = pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a

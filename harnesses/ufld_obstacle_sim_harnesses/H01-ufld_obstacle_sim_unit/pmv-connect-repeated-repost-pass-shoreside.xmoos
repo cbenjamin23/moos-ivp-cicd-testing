@@ -1,0 +1,38 @@
+//-------------------------------------------------
+// FILE: pmv-connect-repeated-repost-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PMV_CONNECT, val=true, time=1.0
+  event = var=PMV_CONNECT, val=true, time=2.0
+  event = var=PMV_CONNECT, val=true, time=3.0
+  event = var=TEST_EVAL_READY, val=true, time=5.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = ufld_obstacle_sim_unit
+  mission_mod  = $(MMOD:=pmv_connect_repeated_repost_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = known=$[KNOWN_OBSTACLE]
+  report_column    = given=$[GIVEN_OBSTACLE]
+  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

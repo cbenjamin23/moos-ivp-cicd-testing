@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uFldMessageHandler Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uFldMessageHandler</p>
+      <h1>H01 uFldMessageHandler Unit</h1>
+      <p class="lede">App-level correctness tests for uFldMessageHandler. These cases verify broad and specific addressing, strict-addressing rejection, invalid-message handling, numeric and string payload forwarding, summary counters, and good/bad flag macro expansion.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldMessageHandler config and scripted NODE_MESSAGE mail, then checks forwarded variables, counters, flags, and expected absence from the alog.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-message-handler-accepted.gif">
+          <img src="../assets/gifs/ufld-message-handler-accepted.gif?v=20260511-5" alt="Accepted Message GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Accepted Message</h3>
+          <p>Description: Verifies a message addressed to the local community is forwarded.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-message-handler-strict-reject.gif">
+          <img src="../assets/gifs/ufld-message-handler-strict-reject.gif?v=20260511-5" alt="Strict Reject GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Strict Reject</h3>
+          <p>Description: Verifies strict addressing rejects broad dest_node=all mail.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>dest_all_string_pass</code>
+          <p>Verifies a broad dest_node=all string message is forwarded when strict addressing is disabled.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_all_uppercase_pass</code>
+          <p>Verifies uppercase dest_node=ALL is normalized and forwarded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_specific_self_pass</code>
+          <p>Verifies a message addressed to the local community is forwarded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_mismatch_reject_pass</code>
+          <p>Verifies a message addressed to another node is counted as rejected and not forwarded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>strict_all_reject_pass</code>
+          <p>Verifies strict addressing rejects broad dest_node=all mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>strict_group_reject_pass</code>
+          <p>Verifies strict addressing rejects group-only mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>strict_specific_accept_pass</code>
+          <p>Verifies strict addressing still accepts mail addressed to the local community.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>numeric_payload_pass</code>
+          <p>Verifies numeric double_val payloads are forwarded as numeric MOOS mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>double_zero_payload_pass</code>
+          <p>Verifies a zero-valued numeric payload is forwarded instead of being treated as unset.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mixed_payload_invalid_pass</code>
+          <p>Verifies messages carrying both string and double payload fields are counted invalid and not forwarded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>quoted_string_unquoted_pass</code>
+          <p>Verifies quoted string payloads are forwarded in the parser-normalized form.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>src_app_forward_pass</code>
+          <p>Verifies messages with src_app metadata still forward the requested payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_payload_reject_pass</code>
+          <p>Verifies structurally invalid node messages are counted invalid and not forwarded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_destination_invalid_pass</code>
+          <p>Verifies a message without dest_node or dest_group is counted invalid and not forwarded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_no_bad_flag_pass</code>
+          <p>Verifies invalid messages do not trigger bad_msg_flag postings reserved for valid rejected mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>msg_flag_macro_pass</code>
+          <p>Verifies msg_flag macro expansion after accepted mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>msg_flag_numeric_pass</code>
+          <p>Verifies numeric msg_flag postings after accepted mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_msg_flag_macro_pass</code>
+          <p>Verifies bad_msg_flag macro expansion after rejected mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_msg_flag_numeric_pass</code>
+          <p>Verifies numeric bad_msg_flag postings after rejected mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multiple_bad_summary_pass</code>
+          <p>Verifies repeated valid rejected messages advance bad counters and summary totals.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>aux_info_node_app_forward_pass</code>
+          <p>Verifies aux_info=node+app configuration still forwards source-app messages correctly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_group_accept_pass</code>
+          <p>Verifies group-addressed mail without a node destination is accepted in non-strict mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_node_overrides_group_reject_pass</code>
+          <p>Verifies an explicit mismatched dest_node rejects mail even when dest_group is present.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_all_mixedcase_reject_pass</code>
+          <p>Verifies mixed-case dest_node=All is not normalized like exact ALL.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multiple_good_summary_pass</code>
+          <p>Verifies summary counters across two accepted messages.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mixed_valid_rejected_summary_pass</code>
+          <p>Verifies summary counters distinguish one accepted and one rejected valid message.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_app_missions/ufield_app_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

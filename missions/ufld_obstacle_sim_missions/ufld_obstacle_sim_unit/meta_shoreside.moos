@@ -1,0 +1,108 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = uTimerScript    @ NewConsole = false
+  Run = uFldObstacleSim @ NewConsole = false
+  Run = pMissionHash    @ NewConsole = false
+  Run = pMissionEval    @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PMV_CONNECT, val=true, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=3.0
+}
+
+//----------------------------------------------------
+// uFldObstacleSim Config Block
+
+ProcessConfig = uFldObstacleSim
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  obstacle_file = obstacles/fixed_field.txt
+
+  draw_region       = true
+  post_visuals      = true
+  poly_fill_color   = white
+  poly_edge_color   = gray80
+  poly_vert_color   = gray80
+  poly_label_color  = invisible
+  poly_vert_size    = 1
+  poly_edge_size    = 1
+  poly_transparency = 0.15
+  region_edge_color = gray50
+  region_vert_color = white
+
+  post_points  = false
+  rate_points  = 2
+  point_size   = 2
+  sensor_range = 50
+
+  reuse_ids = true
+}
+
+//----------------------------------------------------
+// pMissionHash Config Block
+
+ProcessConfig = pMissionHash
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mission_hash_var = MISSION_HASH
+  mhash_short_var  = MHASH
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = KNOWN_OBSTACLE = "pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a"
+  pass_condition = GIVEN_OBSTACLE = "pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a"
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = ufld_obstacle_sim_unit
+  mission_mod  = $(MMOD:=fixed_field_publish_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = known=$[KNOWN_OBSTACLE]
+  report_column    = given=$[GIVEN_OBSTACLE]
+  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

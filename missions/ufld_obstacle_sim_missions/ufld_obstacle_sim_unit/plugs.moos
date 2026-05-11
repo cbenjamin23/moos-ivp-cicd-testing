@@ -1,0 +1,42 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = MISSION_HASH @ 0 nosync
+  Log = MHASH @ 0 nosync
+  Log = NODE_REPORT @ 0 nosync
+  Log = PMV_CONNECT @ 0 nosync
+  Log = VEHICLE_CONNECT @ 0 nosync
+  Log = UFOS_RESET @ 0 nosync
+  Log = UFOS_POINT_SIZE @ 0 nosync
+  Log = UFOS_MIN_RNG @ 0 nosync
+  Log = KNOWN_OBSTACLE @ 0 nosync
+  Log = KNOWN_OBSTACLE_CLEAR @ 0 nosync
+  Log = GIVEN_OBSTACLE @ 0 nosync
+  Log = VIEW_POLYGON @ 0 nosync
+  Log = VIEW_POINT @ 0 nosync
+  Log = TRACKED_FEATURE_ALPHA @ 0 nosync
+  Log = TRACKED_FEATURE_BETA @ 0 nosync
+  Log = APP_LOG @ 0 nosync
+}

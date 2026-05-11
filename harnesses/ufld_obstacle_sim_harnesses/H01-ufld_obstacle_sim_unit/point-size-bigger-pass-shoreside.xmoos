@@ -1,0 +1,53 @@
+//-------------------------------------------------
+// FILE: point-size-bigger-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PMV_CONNECT, val=true, time=1.0
+  event = var=UFOS_POINT_SIZE, val=bigger, time=1.2
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,TIME=$[UTC],X=8,Y=-8,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0,YAW=0,DEPTH=0,LENGTH=4,COLOR=yellow", time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=5.0
+}
+
+ProcessConfig = uFldObstacleSim
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  obstacle_file = obstacles/fixed_field.txt
+  draw_region   = true
+  post_visuals  = true
+  post_points   = true
+  rate_points   = 1
+  point_size    = 2
+  sensor_range  = 50
+  reuse_ids     = true
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = ufld_obstacle_sim_unit
+  mission_mod  = $(MMOD:=point_size_bigger_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = known=$[KNOWN_OBSTACLE]
+  report_column    = given=$[GIVEN_OBSTACLE]
+  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

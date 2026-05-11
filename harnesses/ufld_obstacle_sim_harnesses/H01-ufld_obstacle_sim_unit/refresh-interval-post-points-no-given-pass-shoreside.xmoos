@@ -1,0 +1,51 @@
+//-------------------------------------------------
+// FILE: refresh-interval-post-points-no-given-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PMV_CONNECT, val=true, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = uFldObstacleSim
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  obstacle_file    = obstacles/fixed_field.txt
+  draw_region      = true
+  post_visuals     = true
+  post_points      = true
+  rate_points      = 0
+  sensor_range     = 50
+  refresh_interval = 0.6
+  reuse_ids        = true
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = ufld_obstacle_sim_unit
+  mission_mod  = $(MMOD:=refresh_interval_post_points_no_given_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = known=$[KNOWN_OBSTACLE]
+  report_column    = given=$[GIVEN_OBSTACLE]
+  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}
