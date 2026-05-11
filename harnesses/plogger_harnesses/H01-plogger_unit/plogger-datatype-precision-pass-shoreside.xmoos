@@ -1,0 +1,49 @@
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+  SyncLog  = false
+  MarkDataType = true
+  DoublePrecision = 3
+
+  Log = DTYPE_NUM @ 0 nosync
+  Log = DTYPE_STR @ 0 nosync
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=DTYPE_NUM, val=3.14159265, time=1.0
+  event = var=DTYPE_STR, val=typed, time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = DTYPE_NUM > 3.14
+  pass_condition = DTYPE_NUM < 3.15
+  pass_condition = DTYPE_STR = typed
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = plogger_unit
+  mission_mod  = plogger_datatype_precision_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = num=$[DTYPE_NUM]
+  report_column    = str=$[DTYPE_STR]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

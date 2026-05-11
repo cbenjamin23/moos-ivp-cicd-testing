@@ -1,0 +1,48 @@
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+  SyncLog  = false
+
+  WildcardLogging = true
+  WildcardExclusionLog = true
+  WildCardPattern = XLOG_*
+  WildCardOmitPattern = XLOG_OMIT
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=XLOG_KEEP, val=keep, time=1.0
+  event = var=XLOG_OMIT, val=omit, time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = XLOG_KEEP = keep
+  pass_condition = XLOG_OMIT = omit
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = plogger_unit
+  mission_mod  = plogger_wildcard_xlog_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = keep=$[XLOG_KEEP]
+  report_column    = omit=$[XLOG_OMIT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

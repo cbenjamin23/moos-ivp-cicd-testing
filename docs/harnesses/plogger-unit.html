@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pLogger Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Utility Infrastructure</p>
+      <h1>H01 pLogger Unit</h1>
+      <p class="lede">Utility infrastructure tests for pLogger. These cases verify explicit .alog capture, wildcard logging with omit patterns, dynamic log requests through PLOGGER_CMD, numeric mail capture, datatype marking and precision, synchronous .slog columns, wildcard exclusion .xlog output, copy-file requests, and fixed file naming.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with pLogger, uTimerScript, pMissionEval, and pMissionHash. The harness adds focused .alog/.slog/.xlog/copied-file checks because the logged files are the behavior under test.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="plogger-explicit-log-capture.gif">
+          <img src="../assets/gifs/plogger-explicit-log-capture.gif?v=20260511-5" alt="Explicit Log Capture GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Explicit Log Capture</h3>
+          <p>Description: Logs an explicitly configured variable and expects the .alog to contain the posted value.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="plogger-wildcard-omit.gif">
+          <img src="../assets/gifs/plogger-wildcard-omit.gif?v=20260511-5" alt="Wildcard Omit GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Wildcard Omit</h3>
+          <p>Description: Enables wildcard logging with an omit pattern and expects the kept variable in the .alog while the omitted variable is absent.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>plogger_explicit_log_pass</code>
+          <p>Logs an explicitly configured variable and expects the .alog to contain the posted value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_wildcard_omit_pass</code>
+          <p>Enables wildcard logging with an omit pattern and expects the kept variable in the .alog while the omitted variable is absent.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_dynamic_log_request_pass</code>
+          <p>Sends a PLOGGER_CMD log request at runtime and expects the dynamically requested variable to appear in the .alog.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_double_log_pass</code>
+          <p>Logs a numeric MOOS value and expects both mission-owned numeric bounds and .alog variable evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_sync_log_pass</code>
+          <p>Enables synchronous logging and expects the .slog header to contain the configured synchronous column.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_wildcard_xlog_pass</code>
+          <p>Enables wildcard exclusion logging and expects accepted mail in .alog while omitted mail is written to .xlog.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_filetimestamp_false_pass</code>
+          <p>Disables file timestamping and expects the fixed log directory and fixed .alog name to contain the posted value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_datatype_precision_pass</code>
+          <p>Enables datatype marking and reduced double precision, then expects typed string and rounded numeric entries in .alog.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_dynamic_sync_column_pass</code>
+          <p>Sends a runtime log request with synchronous logging enabled and expects the dynamic column name in .slog.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>plogger_copy_file_request_pass</code>
+          <p>Sends a runtime copy-file request and expects pLogger to copy the requested file into the log directory.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/plogger_harnesses/H01-plogger_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/plogger_missions/plogger_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

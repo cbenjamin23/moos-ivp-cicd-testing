@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pAntler Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Utility Infrastructure</p>
+      <h1>H01 pAntler Unit</h1>
+      <p class="lede">Utility infrastructure tests for pAntler. These cases verify ordinary launch composition, MOOS-name alias launch, multiple aliases of the same binary, launch filtering, explicit system-path process lookup, and extra process parameters.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community whose graded flags come from apps started by pAntler. Case overlays change the ANTLER launch block, matching aliased app config blocks, launcher-supplied filter argument, system path lookup, and extra process parameter forwarding.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pantler-alias-launch.gif">
+          <img src="../assets/gifs/pantler-alias-launch.gif?v=20260511-5" alt="Alias Launch GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Alias Launch</h3>
+          <p>Description: Launches uTimerScript under the uTimerAlias MOOS name and expects the alias-specific config block to run.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pantler-multi-alias-launch.gif">
+          <img src="../assets/gifs/pantler-multi-alias-launch.gif?v=20260511-5" alt="Multi-alias Launch GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Multi-alias Launch</h3>
+          <p>Description: Launches two aliases of the same binary and expects both alias-specific config blocks to run.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>pantler_baseline_launch_pass</code>
+          <p>Launches a normal uTimerScript and expects its flag to reach pMissionEval.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pantler_alias_launch_pass</code>
+          <p>Launches uTimerScript under the uTimerAlias MOOS name and expects the alias-specific config block to run.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pantler_multi_alias_launch_pass</code>
+          <p>Launches two aliases of the same binary and expects both alias-specific config blocks to run.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pantler_filter_launch_pass</code>
+          <p>Starts pAntler with a launch filter and expects the allowed timer to run while the blocked timer never posts.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pantler_system_path_launch_pass</code>
+          <p>Launches an aliased timer with an explicit PATH=SYSTEM option and expects the alias config block to run.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pantler_extra_params_launch_pass</code>
+          <p>Launches an aliased timer with ExtraProcessParams and expects the timer still to run with the added option.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pantler_harnesses/H01-pantler_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pantler_missions/pantler_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

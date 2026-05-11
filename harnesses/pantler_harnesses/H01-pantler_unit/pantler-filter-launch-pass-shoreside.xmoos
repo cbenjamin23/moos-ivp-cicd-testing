@@ -1,0 +1,53 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false ~ uTimerAllowed
+  Run = uTimerScript  @ NewConsole = false ~ uTimerBlocked
+  Run = pMissionEval  @ NewConsole = false
+  Run = pAutoPoke     @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+ProcessConfig = uTimerAllowed
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=ANTLER_FILTER_ALLOWED, val=true, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = uTimerBlocked
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=ANTLER_FILTER_BLOCKED, val=true, time=1.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ANTLER_FILTER_ALLOWED = true
+  fail_condition = ANTLER_FILTER_BLOCKED = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pantler_unit
+  mission_mod  = pantler_filter_launch_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = allowed=$[ANTLER_FILTER_ALLOWED]
+  report_column    = blocked=$[ANTLER_FILTER_BLOCKED]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

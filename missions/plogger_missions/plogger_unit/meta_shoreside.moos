@@ -1,0 +1,87 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = plogger_unit
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+  Run = pAutoPoke     @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+  SyncLog  = false
+
+  Log = PLOGGER_ALPHA @ 0 nosync
+}
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = TEST_EVAL_READY=false
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PLOGGER_ALPHA, val=alpha, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PLOGGER_ALPHA = alpha
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = plogger_unit
+  mission_mod  = $(MMOD:=plogger_explicit_log_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = alpha=$[PLOGGER_ALPHA]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

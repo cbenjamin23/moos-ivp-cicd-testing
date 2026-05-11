@@ -1,0 +1,76 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = pantler_unit
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+  Run = pAutoPoke     @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = TEST_EVAL_READY=false
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=ANTLER_BASE_FLAG, val=true, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ANTLER_BASE_FLAG = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pantler_unit
+  mission_mod  = $(MMOD:=pantler_baseline_launch_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = base=$[ANTLER_BASE_FLAG]
+  report_column    = alias=$[ANTLER_ALIAS_FLAG]
+  report_column    = one=$[ANTLER_ONE_FLAG]
+  report_column    = two=$[ANTLER_TWO_FLAG]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

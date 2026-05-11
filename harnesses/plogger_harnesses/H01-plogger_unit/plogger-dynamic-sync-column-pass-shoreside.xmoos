@@ -1,0 +1,43 @@
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+  SyncLog  = true @ 0.5
+
+  DynamicSyncLogColumns = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PLOGGER_CMD, val="LOG_REQUEST=DYN_SYNC @ 0", time=1.0
+  event = var=DYN_SYNC, val=dynsync, time=2.0
+  event = var=TEST_EVAL_READY, val=true, time=5.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = DYN_SYNC = dynsync
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = plogger_unit
+  mission_mod  = plogger_dynamic_sync_column_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = dyn=$[DYN_SYNC]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

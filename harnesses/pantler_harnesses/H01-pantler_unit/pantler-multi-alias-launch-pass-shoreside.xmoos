@@ -1,0 +1,53 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false ~ uTimerOne
+  Run = uTimerScript  @ NewConsole = false ~ uTimerTwo
+  Run = pMissionEval  @ NewConsole = false
+  Run = pAutoPoke     @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+ProcessConfig = uTimerOne
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=ANTLER_ONE_FLAG, val=true, time=1.0
+}
+
+ProcessConfig = uTimerTwo
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=ANTLER_TWO_FLAG, val=true, time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ANTLER_ONE_FLAG = true
+  pass_condition = ANTLER_TWO_FLAG = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pantler_unit
+  mission_mod  = pantler_multi_alias_launch_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = one=$[ANTLER_ONE_FLAG]
+  report_column    = two=$[ANTLER_TWO_FLAG]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

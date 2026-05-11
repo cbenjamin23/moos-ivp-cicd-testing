@@ -1,0 +1,32 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+
+  Log = ANTLER_BASE_FLAG @ 0 nosync
+  Log = ANTLER_ALIAS_FLAG @ 0 nosync
+  Log = ANTLER_ONE_FLAG @ 0 nosync
+  Log = ANTLER_TWO_FLAG @ 0 nosync
+  Log = ANTLER_FILTER_ALLOWED @ 0 nosync
+  Log = ANTLER_FILTER_BLOCKED @ 0 nosync
+  Log = ANTLER_PATH_FLAG @ 0 nosync
+  Log = ANTLER_EXTRA_FLAG @ 0 nosync
+}
