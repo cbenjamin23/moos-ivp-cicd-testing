@@ -37,7 +37,7 @@ Status:
 - current wrapper support: serial or wave-batched execution with `--jobs=<n>`
 - long-term role: canonical classification suite for `BHV_AvdColregsV22`
 
-## Case Guide
+## Cases
 
 - `head_on_colregs_pass`: Clean symmetric head-on encounter that should classify as true COLREGS head-on.
 - `head_on_cpa_fallback_pass`: Near-head-on geometry intentionally outside the head-on bucket so the app should fall back to CPA mode.

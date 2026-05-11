@@ -39,7 +39,7 @@ Wave mode notes:
 - this mode is intended for CI wall-clock reduction, not for interactive use
   alongside other MOOS missions
 
-Current cases:
+## Cases
 - `baseline_center_pass`: One obstacle blocks the lane and the vehicle is expected to arrive cleanly with zero collisions.
 - `offset_clear_pass`: One obstacle sits well above the transit lane, the vehicle should arrive with zero encounters.
 - `tight_alert_pass`: The alert range is reduced but still large enough for a clean one-obstacle avoidance transit.

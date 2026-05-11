@@ -79,7 +79,7 @@ Wave mode uses isolated temp mission copies and compact per-case port blocks:
 `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
 `case_base + 10`.
 
-## Case Guide
+## Cases
 
 - `min_util_cpa_low_pass`
   Runs fixed stand-on geometry with low `min_util_cpa_dist`; expected

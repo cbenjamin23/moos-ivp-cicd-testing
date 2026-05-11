@@ -56,7 +56,7 @@ of the threshold the geometry is expected to land on.
 - `southwest`: a custom stern-adjacent contact track added after calibration
   showed the older stern probes were a poor fit for the stock source
 
-## Active Case Guide
+## Cases
 
 - `giveway_turngap_edge_pass`
   Probes the calibrated give-way turn-gap edge; expected classification should

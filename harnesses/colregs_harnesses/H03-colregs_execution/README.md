@@ -27,7 +27,7 @@ Primary intent:
   - final `colregs_mode` where the case identity should persist through completion
 - keep only loose completion time in the shell harness, because `WALL_TIME` is available to `pMissionEval` only as a report macro and not as a logic-test variable
 
-## Case Guide
+## Cases
 
 - `head_on_execution_pass`
   Head-on encounter used to check the realized head-on maneuver through
