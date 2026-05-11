@@ -1,0 +1,9 @@
+Behavior = BHV_MemoryTurnLimit
+{
+  name      = memory_turn_limit
+  pwt       = 100
+  condition = MODE == ACTIVE
+
+  memory_time = 8
+  turn_range  = 120
+}

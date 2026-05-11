@@ -1,0 +1,11 @@
+Behavior = BHV_MemoryTurnLimit
+{
+  name         = memory_turn_limit
+  pwt          = 150
+  condition    = DEPLOY = true
+  endflag      = EVAL_TIME = true
+  updates      = MEMORY_TURN_UPDATES
+
+  memory_time  = 8
+  turn_range   = 180
+}

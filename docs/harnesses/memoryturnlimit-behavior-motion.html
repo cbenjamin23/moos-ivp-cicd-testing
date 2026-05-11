@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 MemoryTurnLimit Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260510-2">
+  <script src="../theme.js?v=20260510-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 MemoryTurnLimit Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_MemoryTurnLimit. These cases verify recent-heading average output, tight and relaxed turn-window effects, runtime limiter updates, speed-scaling branches, heading mismatch evidence, and missing limiter configuration.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one simulated vehicle with a constant speed objective, a sustained constant-heading turn demand, and BHV_MemoryTurnLimit as the evaluated limiter. Case overlays vary turn_range, priority weight, and missing limiter configuration while the evaluator grades MEM_HDG_AVG, NAV_HEADING, and heading mismatch.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These MemoryTurnLimit GIFs are generated explanatory views instead of raw pMarineViewer captures because the important evidence is the relationship between recent heading memory, turn range, runtime updates, and graded motion metrics. The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="memoryturnlimit-behavior-tight-window.gif">
+          <img src="../assets/gifs/memoryturnlimit-behavior-tight-window.gif?v=20260510-2" alt="Tight Turn Window GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Tight Turn Window</h3>
+          <p>Description: Narrows turn_range and increases limiter weight, proving the commanded heading change is held near the recent heading memory.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="memoryturnlimit-behavior-runtime-widen.gif">
+          <img src="../assets/gifs/memoryturnlimit-behavior-runtime-widen.gif?v=20260510-2" alt="Runtime Range Widen GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Range Widen</h3>
+          <p>Description: Starts with a narrow turn_range, widens it through MEMORY_TURN_UPDATES, and expects the turn to advance without behavior warnings.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_memory_pass</code>
+          <p>Runs the stock limiter and expects the memory heading average, ownship heading, and heading mismatch to remain in the nominal damped-turn window.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>tight_window_pass</code>
+          <p>Narrows turn_range and increases limiter weight, proving the commanded heading change is held near the recent heading memory.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>relaxed_window_pass</code>
+          <p>Widens turn_range and lowers limiter weight, proving the same turn demand can advance farther when the memory constraint is loose.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_memory_pass</code>
+          <p>Shortens memory_time, proving the recent-heading average advances with the turn while speed and behavior health stay nominal.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>long_memory_pass</code>
+          <p>Lengthens memory_time, proving older headings keep the average and final heading closer to the initial course.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_memory_pass</code>
+          <p>Exercises the memory_time=0 boundary and expects the limiter to track the current heading without warnings or errors.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>weak_priority_pass</code>
+          <p>Lowers limiter priority with the stock window and expects the constant-heading demand to advance farther.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>very_slow_speed_floor_pass</code>
+          <p>Lowers vehicle speed below the limiter&#x27;s minimum speed floor and expects a near-initial heading response at the very slow reported speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>slow_speed_scaled_pass</code>
+          <p>Lowers vehicle speed to exercise the speed-scaled peak-width branch and expects a slower, tighter heading response.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fast_speed_unscaled_pass</code>
+          <p>Raises vehicle speed above the reference speed and expects nominal unscaled limiter behavior at the faster reported speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>moderate_turn_pass</code>
+          <p>Changes the requested heading to a smaller port turn and checks that the memory limiter damps that smaller heading change.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>starboard_turn_pass</code>
+          <p>Requests a starboard turn toward north and checks that the remembered heading average and final heading move in the opposite direction.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_turn_range_pass</code>
+          <p>Exercises the legal turn_range=180 boundary and expects a loose memory constraint with no behavior warnings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_turn_range_pass</code>
+          <p>Exercises the legal turn_range=0 boundary and expects a very tight memory constraint with no behavior warnings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_widen_range_pass</code>
+          <p>Starts with a narrow turn_range, widens it through MEMORY_TURN_UPDATES, and expects the turn to advance without behavior warnings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_tighten_range_pass</code>
+          <p>Starts with a loose turn_range, tightens it through MEMORY_TURN_UPDATES, and expects the final heading to remain in a constrained band.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_memory_time_fail</code>
+          <p>Sets a negative memory_time and expects the mission grade to fail before the limiter publishes a memory average or the vehicle starts moving.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_turn_range_high_fail</code>
+          <p>Sets turn_range above 180 and expects the mission grade to fail before the limiter publishes a memory average or the vehicle starts moving.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_turn_range_text_fail</code>
+          <p>Sets a nonnumeric turn_range and expects the mission grade to fail before the limiter publishes a memory average or the vehicle starts moving.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_memory_time_fail</code>
+          <p>Omits memory_time and expects the mission grade to fail through the behavior warning path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_turn_range_fail</code>
+          <p>Omits turn_range and expects the mission grade to fail through the behavior warning path.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/memoryturnlimit_behavior_missions/memoryturnlimit_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

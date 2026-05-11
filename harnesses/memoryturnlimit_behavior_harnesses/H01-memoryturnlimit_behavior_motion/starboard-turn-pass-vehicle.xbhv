@@ -1,0 +1,23 @@
+Behavior = BHV_ConstantHeading
+{
+  name                 = turn_demand
+  pwt                  = 100
+  condition            = DEPLOY = true
+  endflag              = EVAL_TIME = true
+  heading_mismatch_var = HEADING_MISMATCH
+
+  heading              = 0
+  duration             = 60
+}
+
+Behavior = BHV_MemoryTurnLimit
+{
+  name         = memory_turn_limit
+  pwt          = 150
+  condition    = DEPLOY = true
+  endflag      = EVAL_TIME = true
+  updates      = MEMORY_TURN_UPDATES
+
+  memory_time  = 8
+  turn_range   = 18
+}

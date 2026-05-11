@@ -1,0 +1,205 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = EVAL_TIME=false
+  flag = MISSION_TIMEOUT=false
+  flag = BHV_WARNING_SEEN=false
+  flag = BHV_ERROR_SEEN=false
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_SEGLIST, val="pts={0,-120:0,-80},label=initial_heading,edge_color=white,vertex_color=dodger_blue,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=VIEW_SEGLIST, val="pts={0,-120:-40,-120},label=requested_turn,edge_color=yellow,vertex_color=yellow,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=EVAL_TIME, val=true, time=16
+  event = var=MISSION_TIMEOUT, val=true, time=35
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (EVAL_TIME = true) or (MISSION_TIMEOUT = true)
+  pass_condition = EVAL_TIME = true
+  pass_condition = MEM_HDG_AVG >= 95
+  pass_condition = MEM_HDG_AVG <= 175
+  pass_condition = NAV_HEADING >= 105
+  pass_condition = NAV_HEADING <= 180
+  pass_condition = NAV_SPEED >= 0.7
+  pass_condition = HEADING_MISMATCH <= 75
+  pass_condition = BHV_WARNING_SEEN = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = memoryturnlimit_behavior_tests
+  mission_mod  = $(MMOD:=baseline_memory_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[EVAL_TIME]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = heading=$[NAV_HEADING]
+  report_column = nav_speed=$[NAV_SPEED]
+  report_column = mem_hdg_avg=$[MEM_HDG_AVG]
+  report_column = heading_mismatch=$[HEADING_MISMATCH]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = EVAL_TIME, MISSION_TIMEOUT
+  qbridge  = MEM_HDG_AVG, HEADING_MISMATCH
+  qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  Log = VIEW_SEGLIST @ 0 nosync
+  Log = VIEW_POINT @ 0 nosync
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//----------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = -10
+  set_pan_y            = 5
+  zoom                 = 1.4
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode         = appcast
+  appcast_color_scheme = indigo
+  nodes_font_size      = large
+  procs_font_size      = large
+  appcast_font_size    = large
+  point_viewable_labels = false
+
+  scope = EVAL_TIME
+  scope = MISSION_EVALUATED
+  scope = MISSION_TIMEOUT
+  scope = NAV_HEADING
+  scope = NAV_SPEED
+  scope = MEM_HDG_AVG
+  scope = HEADING_MISMATCH
+  scope = BHV_WARNING_SEEN
+  scope = BHV_ERROR_SEEN
+
+  button_one = DEPLOY # DEPLOY_ALL=true
+  button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false
+}

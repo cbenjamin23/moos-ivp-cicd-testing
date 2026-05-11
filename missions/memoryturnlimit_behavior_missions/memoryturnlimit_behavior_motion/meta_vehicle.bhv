@@ -1,0 +1,54 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize  DEPLOY              = false
+initialize  RETURN              = false
+initialize  EVAL_TIME           = false
+initialize  MISSION_TIMEOUT     = false
+initialize  BHV_WARNING_SEEN    = false
+initialize  BHV_ERROR_SEEN      = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+}
+
+//----------------------------------------------------
+Behavior = BHV_ConstantSpeed
+{
+  name      = steady_speed
+  pwt       = 80
+  condition = MODE == ACTIVE
+  duration  = 60
+
+  speed     = 1.3
+}
+
+//----------------------------------------------------
+Behavior = BHV_ConstantHeading
+{
+  name      = turn_demand
+  pwt       = 100
+  condition = MODE == ACTIVE
+  duration  = 60
+
+  heading              = 180
+  heading_mismatch_var = HEADING_MISMATCH
+}
+
+//----------------------------------------------------
+Behavior = BHV_MemoryTurnLimit
+{
+  name      = memory_turn_limit
+  pwt       = 150
+  condition = MODE == ACTIVE
+
+  memory_time = 8
+  turn_range  = 18
+}
