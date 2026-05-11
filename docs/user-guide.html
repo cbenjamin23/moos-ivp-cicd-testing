@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>User Guide | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260510-2">
-  <script src="theme.js?v=20260510-2"></script>
+  <link rel="stylesheet" href="styles.css?v=20260511-2">
+  <script src="theme.js?v=20260511-2"></script>
 </head>
 <body>
   <header class="site-header">
@@ -78,7 +78,7 @@
       <div class="section-heading">
         <p class="eyebrow">Normal Flow</p>
         <h2>Pick one lane, or run both</h2>
-        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. Both lanes support one family or comma-separated family batches; harnesses also support exact target keys.</p>
+        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. Both lanes support full sweeps, one family, or comma-separated family batches; harnesses also support exact target keys.</p>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
@@ -87,11 +87,11 @@
         </article>
         <article class="technical-card">
           <h3>2. Choose CTest coverage</h3>
-          <p>Use <code>cpp_test_mode: family_run</code> for one component family, or <code>batch_family_run</code> for a comma-separated batch.</p>
+          <p>Use <code>cpp_test_mode: all</code> for the full CTest registry, <code>family_run</code> for one component family, or <code>batch_family_run</code> for a comma-separated batch.</p>
         </article>
         <article class="technical-card">
           <h3>3. Choose harness coverage</h3>
-          <p>Use <code>dispatch_mode: none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, or <code>specific_harnesses</code>.</p>
+          <p>Use <code>dispatch_mode: full</code> for all registered mission harnesses, <code>none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, or <code>specific_harnesses</code>.</p>
         </article>
       </div>
     </section>
@@ -115,6 +115,11 @@
               <th>Skip this lane</th>
               <td><code>cpp_test_mode: none</code></td>
               <td><code>dispatch_mode: none</code></td>
+            </tr>
+            <tr>
+              <th>Full sweep</th>
+              <td><code>cpp_test_mode: all</code></td>
+              <td><code>dispatch_mode: full</code></td>
             </tr>
             <tr>
               <th>One family</th>
@@ -483,6 +488,30 @@ moos_ivp_ref: main</code></pre>
 
 
           <tr>
+            <th><code>pMissionEval</code></th>
+            <td>Pmissioneval</td>
+          </tr>
+
+
+          <tr>
+            <th><code>pMissionHash</code></th>
+            <td>Pmissionhash</td>
+          </tr>
+
+
+          <tr>
+            <th><code>uMayFinish</code></th>
+            <td>Umayfinish</td>
+          </tr>
+
+
+          <tr>
+            <th><code>pnodereporter</code></th>
+            <td>Pnodereporter</td>
+          </tr>
+
+
+          <tr>
             <th><code>marineview</code></th>
             <td>Marine Viewer</td>
           </tr>
@@ -575,6 +604,12 @@ moos_ivp_ref: main</code></pre>
           <tr>
             <th><code>ucommand</code></th>
             <td>Command Utilities</td>
+          </tr>
+
+
+          <tr>
+            <th><code>usim_marine</code></th>
+            <td>Usim Marine</td>
           </tr>
 
 
@@ -673,6 +708,20 @@ moos_ivp_ref: main</code></pre>
             <th><code>pid_h02</code></th>
             <td>pid</td>
             <td>H02-pid_motion</td>
+          </tr>
+
+
+          <tr>
+            <th><code>usim_marine_h01</code></th>
+            <td>usim_marine</td>
+            <td>H01-usim_marine_motion</td>
+          </tr>
+
+
+          <tr>
+            <th><code>pnodereporter_h01</code></th>
+            <td>pnodereporter</td>
+            <td>H01-pnodereporter_unit</td>
           </tr>
 
 
@@ -810,6 +859,48 @@ moos_ivp_ref: main</code></pre>
 
 
           <tr>
+            <th><code>hostinfo_h01</code></th>
+            <td>hostinfo</td>
+            <td>H01-hostinfo_unit</td>
+          </tr>
+
+
+          <tr>
+            <th><code>loadwatch_h01</code></th>
+            <td>loadwatch</td>
+            <td>H01-loadwatch_unit</td>
+          </tr>
+
+
+          <tr>
+            <th><code>processwatch_h01</code></th>
+            <td>processwatch</td>
+            <td>H01-processwatch_unit</td>
+          </tr>
+
+
+          <tr>
+            <th><code>pmissioneval_h01</code></th>
+            <td>pmissioneval</td>
+            <td>H01-pmissioneval_unit</td>
+          </tr>
+
+
+          <tr>
+            <th><code>pmissionhash_h01</code></th>
+            <td>pmissionhash</td>
+            <td>H02-pmissionhash_unit</td>
+          </tr>
+
+
+          <tr>
+            <th><code>umayfinish_h01</code></th>
+            <td>umayfinish</td>
+            <td>H03-umayfinish_unit</td>
+          </tr>
+
+
+          <tr>
             <th><code>loiter_h01</code></th>
             <td>loiter_behavior</td>
             <td>H01-loiter_behavior_motion</td>
@@ -878,10 +969,31 @@ moos_ivp_ref: main</code></pre>
             <td>P03-colregs_traffic_ring</td>
           </tr>
 
+
+          <tr>
+            <th><code>ufield_comms_h01</code></th>
+            <td>ufield_comms</td>
+            <td>H01-ufield_comms_unit</td>
+          </tr>
+
+
+          <tr>
+            <th><code>ufield_comms_h02</code></th>
+            <td>ufield_comms</td>
+            <td>H02-ufield_broker_bridge</td>
+          </tr>
+
+
+          <tr>
+            <th><code>ufield_comms_h03</code></th>
+            <td>ufield_comms</td>
+            <td>H03-ufield_route_resilience</td>
+          </tr>
+
           </tbody>
         </table>
       </div>
-      <p class="guide-note">There is no catch-all harness or CTest mode. Use family batches when you want a broad run, and keep the batch explicit so runtime stays predictable as coverage grows.</p>
+      <p class="guide-note">Use <code>full</code> to run all registered mission harnesses and <code>all</code> to run the full CTest registry. Family batches remain useful when you want broad but bounded coverage.</p>
     </section>
 
     <section class="workflow">

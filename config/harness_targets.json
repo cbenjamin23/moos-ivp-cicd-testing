@@ -42,6 +42,20 @@
     "families": ["pid"]
   },
   {
+    "key": "usim_marine_h01",
+    "path": "harnesses/usim_marine_harnesses/H01-usim_marine_motion",
+    "harness": "H01-usim_marine_motion",
+    "artifact": "manual-usim-marine-h01-results",
+    "families": ["usim_marine"]
+  },
+  {
+    "key": "pnodereporter_h01",
+    "path": "harnesses/pnodereporter_harnesses/H01-pnodereporter_unit",
+    "harness": "H01-pnodereporter_unit",
+    "artifact": "manual-pnodereporter-h01-results",
+    "families": ["pnodereporter"]
+  },
+  {
     "key": "depth_constant_h01",
     "path": "harnesses/depth_behavior_harnesses/H01-constant_depth_motion",
     "harness": "H01-constant_depth_motion",
@@ -175,6 +189,48 @@
     "families": ["testfailure_behavior"]
   },
   {
+    "key": "hostinfo_h01",
+    "path": "harnesses/hostinfo_harnesses/H01-hostinfo_unit",
+    "harness": "H01-hostinfo_unit",
+    "artifact": "manual-hostinfo-h01-results",
+    "families": ["hostinfo"]
+  },
+  {
+    "key": "loadwatch_h01",
+    "path": "harnesses/loadwatch_harnesses/H01-loadwatch_unit",
+    "harness": "H01-loadwatch_unit",
+    "artifact": "manual-loadwatch-h01-results",
+    "families": ["loadwatch"]
+  },
+  {
+    "key": "processwatch_h01",
+    "path": "harnesses/processwatch_harnesses/H01-processwatch_unit",
+    "harness": "H01-processwatch_unit",
+    "artifact": "manual-processwatch-h01-results",
+    "families": ["processwatch"]
+  },
+  {
+    "key": "pmissioneval_h01",
+    "path": "harnesses/mission_utility_harnesses/H01-pmissioneval_unit",
+    "harness": "H01-pmissioneval_unit",
+    "artifact": "manual-pmissioneval-h01-results",
+    "families": ["pmissioneval"]
+  },
+  {
+    "key": "pmissionhash_h01",
+    "path": "harnesses/mission_utility_harnesses/H02-pmissionhash_unit",
+    "harness": "H02-pmissionhash_unit",
+    "artifact": "manual-pmissionhash-h01-results",
+    "families": ["pmissionhash"]
+  },
+  {
+    "key": "umayfinish_h01",
+    "path": "harnesses/mission_utility_harnesses/H03-umayfinish_unit",
+    "harness": "H03-umayfinish_unit",
+    "artifact": "manual-umayfinish-h01-results",
+    "families": ["umayfinish"]
+  },
+  {
     "key": "loiter_h01",
     "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
     "harness": "H01-loiter_behavior_motion",
@@ -245,5 +301,26 @@
     "artifact": "manual-p03-colregs-results",
     "families": ["colregs", "performance"],
     "perf_profile": "ci"
+  },
+  {
+    "key": "ufield_comms_h01",
+    "path": "harnesses/ufield_comms_harnesses/H01-ufield_comms_unit",
+    "harness": "H01-ufield_comms_unit",
+    "artifact": "manual-ufield-comms-h01-results",
+    "families": ["ufield_comms"]
+  },
+  {
+    "key": "ufield_comms_h02",
+    "path": "harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge",
+    "harness": "H02-ufield_broker_bridge",
+    "artifact": "manual-ufield-comms-h02-results",
+    "families": ["ufield_comms"]
+  },
+  {
+    "key": "ufield_comms_h03",
+    "path": "harnesses/ufield_comms_harnesses/H03-ufield_route_resilience",
+    "harness": "H03-ufield_route_resilience",
+    "artifact": "manual-ufield-comms-h03-results",
+    "families": ["ufield_comms"]
   }
 ]

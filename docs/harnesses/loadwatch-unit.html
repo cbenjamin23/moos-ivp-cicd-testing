@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uLoadWatch Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Utility Infrastructure</p>
+      <h1>H01 uLoadWatch Unit</h1>
+      <p class="lede">Utility infrastructure tests for uLoadWatch. These cases verify threshold counters, near and hard threshold boundary behavior, low-threshold ignore behavior, clamped near-threshold behavior, breach-trigger holdoff, app-specific threshold matching, and threshold-name case sensitivity.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with uLoadWatch, uTimerScript, pAutoPoke, and pMissionEval. Case overlays change only load-watch configuration, scripted DB_UPTIME mail, and mission-owned threshold pass/fail conditions.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These uLoadWatch GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is threshold mail and breach counters. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="loadwatch-near-breach-band.gif">
+          <img src="../assets/gifs/loadwatch-near-breach-band.gif?v=20260511-2" alt="Near-Breach Band GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Near-Breach Band</h3>
+          <p>Description: Posts a gap inside the near-breach band and expects a near-breach without a hard breach.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="loadwatch-trigger-holdoff.gif">
+          <img src="../assets/gifs/loadwatch-trigger-holdoff.gif?v=20260511-2" alt="Trigger Holdoff GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Trigger Holdoff</h3>
+          <p>Description: Enables breach-trigger holdoff and expects a later crossing to become a hard breach.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>loadwatch_no_breach_pass</code>
+          <p>Baseline high-threshold case; expects zero near-breach and hard-breach counts.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_near_breach_pass</code>
+          <p>Posts a gap inside the near-breach band and expects a near-breach without a hard breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_near_boundary_no_breach_pass</code>
+          <p>Posts exactly at the near threshold boundary and expects no near-breach or hard-breach count.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_breach_pass</code>
+          <p>Posts a gap above the hard threshold and expects both hard-breach and near-breach evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_trigger_suppresses_first_pass</code>
+          <p>Enables breach-trigger holdoff and expects the first threshold crossing not to become a hard breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_trigger_second_breaches_pass</code>
+          <p>Enables breach-trigger holdoff and expects a later crossing to become a hard breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_lowercase_any_no_breach_pass</code>
+          <p>Uses lowercase any to document case-sensitive threshold matching; expects no breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_specific_app_breach_pass</code>
+          <p>Watches a named app and expects that app&#x27;s gap to produce a hard breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_specific_app_ignores_other_pass</code>
+          <p>Watches one named app while another app crosses the gap; expects no breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_hard_boundary_no_breach_pass</code>
+          <p>Posts exactly at the hard threshold boundary and expects no hard breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_low_threshold_ignored_pass</code>
+          <p>Configures a below-minimum threshold and expects the low threshold to be ignored.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>loadwatch_near_thresh_clamped_high_pass</code>
+          <p>Configures an over-high near threshold and expects clamped behavior with no near breach.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/loadwatch_harnesses/H01-loadwatch_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/loadwatch_missions/loadwatch_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

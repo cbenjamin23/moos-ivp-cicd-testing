@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pNodeReporter Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Simulator Infrastructure</p>
+      <h1>H01 pNodeReporter Unit</h1>
+      <p class="lede">App-level correctness tests for pNodeReporter. These cases directly verify node-report construction, platform metadata, helm-mode fields, JSON modes, alternate nav streams, coordinate cross-fill policies, runtime metadata updates, pause/resume behavior, odometry evidence, and expected blackout-interval failure detection.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single MOOS community with pNodeReporter, uTimerScript, pMissionEval, pAutoPoke, pMissionHash, and logging/watchdog support. Case overlays change only reporter configuration, scripted nav/helm/platform mail, and mission-owned report pass/fail conditions.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These pNodeReporter GIFs are generated report-flow views instead of raw pMarineViewer captures because the harness verdict depends on MOOS mail and NODE_REPORT payload fields rather than visible vehicle motion. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pnodereporter-baseline-report.gif">
+          <img src="../assets/gifs/pnodereporter-baseline-report.gif?v=20260511-2" alt="Baseline Node Report GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Node Report</h3>
+          <p>Description: Baseline CSP node report; expects scripted NAV fields, platform color/type/length, helm mode, and first-report publication.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pnodereporter-alt-nav-report.gif">
+          <img src="../assets/gifs/pnodereporter-alt-nav-report.gif?v=20260511-2" alt="Alternate Nav Report GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Alternate Nav Report</h3>
+          <p>Description: Enables alternate navigation reporting and expects a second _GT node report with the alternate group and NAV_GT values.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>nav_report_baseline_pass</code>
+          <p>Baseline CSP node report; expects scripted NAV fields, platform color/type/length, helm mode, and first-report publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>platform_metadata_pass</code>
+          <p>Overrides platform metadata and expects group, color, type, length, beam, and custom platform aspects to ride in the report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>helm_nohelm_mode_pass</code>
+          <p>Withholds helm state and expects the generated report mode to mark the helm as absent.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>helm_standby_switch_pass</code>
+          <p>Sends standby helm state and expects the standby state to become the visible report mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>helm_stale_threshold_pass</code>
+          <p>Lowers the no-helm threshold and expects a once-valid helm state to age into NOHELM.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>color_change_blocked_pass</code>
+          <p>Posts a runtime color change without enabling it and expects the configured color to remain.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>color_change_allowed_pass</code>
+          <p>Enables runtime color changes and expects NODE_COLOR_CHANGE to update the report color.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>platform_report_pass</code>
+          <p>Configures platform-report inputs and expects aliased telemetry to publish through PLATFORM_REPORT_LOCAL.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>platform_report_gap_pass</code>
+          <p>Adds a platform-report post gap and expects the later telemetry value to be held until the gap expires.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rider_payload_pass</code>
+          <p>Adds rider fields and expects additional mail values to ride along in the node report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_output_var_pass</code>
+          <p>Routes node reports to a custom output variable and expects the default report variable to stay unused.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>json_only_report_pass</code>
+          <p>Enables JSON-only reporting and expects the node report variable to carry JSON instead of CSP.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>json_dual_report_pass</code>
+          <p>Enables dual CSP/JSON output and expects both report variables to publish.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>alt_nav_report_pass</code>
+          <p>Enables alternate navigation reporting and expects a second _GT node report with the alternate group and NAV_GT values.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>alt_nav_named_absolute_pass</code>
+          <p>Uses an absolute alternate-node name and expects depth and altitude from the alternate nav stream.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>coord_policy_global_pass</code>
+          <p>Enables global-coordinate report policy and expects LAT/LON while suppressing X/Y fields.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>heading_error_pass</code>
+          <p>Adds a heading error and expects the report heading to shift without changing the input NAV mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossfill_local_to_global_pass</code>
+          <p>Uses local X/Y as authoritative and expects LAT/LON to be filled from the mission origin.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossfill_global_to_local_pass</code>
+          <p>Uses global LAT/LON as authoritative and expects X/Y to be filled from the mission origin.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossfill_global_terse_pass</code>
+          <p>Uses global-terse cross-fill and expects global coordinates to remain while local X/Y is synthesized from them.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_group_update_pass</code>
+          <p>Posts NODE_GROUP_UPDATE at runtime and expects the node report group to change.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>platform_color_mail_pass</code>
+          <p>Posts PLATFORM_COLOR at runtime and expects the report color to update.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reverse_load_warning_pass</code>
+          <p>Posts reverse-thrust mode and a load warning and expects both fields to ride in the report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>blackout_interval_reset_fail</code>
+          <p>Enables a two-second blackout interval and expects the current implementation to fail the sustained posting-gap threshold.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mhash_odometer_pass</code>
+          <p>Moves the node after mission-hash startup and expects PNR_MHASH odometry evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>report_cog_pass</code>
+          <p>Enables course-over-ground reporting and expects the report to include a computed COG field.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>terse_reports_pass</code>
+          <p>Enables terse reports and expects depth, lat/lon, and yaw details to be omitted while core position remains.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>vsource_aux_allstop_pass</code>
+          <p>Configures a vehicle source and posts aux/all-stop mail, expecting all three report fields.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pause_resume_pass</code>
+          <p>Starts paused, resumes at runtime, and expects the first visible report to carry the post-resume navigation update.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossfill_fill_empty_pass</code>
+          <p>Uses fill-empty with only global coordinates and expects local X/Y to be synthesized.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crossfill_use_latest_local_pass</code>
+          <p>Uses use-latest and expects later local X/Y mail to override older global coordinates.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>extrap_gap_metric_pass</code>
+          <p>Enables extrapolation checks and expects the extrapolation position/heading gap metrics to publish.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>extrap_prune_pass</code>
+          <p>Sets permissive extrapolation thresholds and expects a predictable update to be pruned from node-report output.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pnodereporter_harnesses/H01-pnodereporter_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pnodereporter_missions/pnodereporter_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

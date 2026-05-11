@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uSimMarineV22 Motion | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Simulator Infrastructure</p>
+      <h1>H01 uSimMarineV22 Motion</h1>
+      <p class="lede">App-level correctness tests for uSimMarineV22. These cases directly verify simulator publications under scripted actuator mail, embedded PID coupling, limit parameters, drift/current inputs, water-depth altitude, pause, reset, disabled-nav, and stop-control inputs.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with uSimMarineV22, uTimerScript, pMissionEval, pAutoPoke, and logging/watchdog support. Case overlays change only simulator configuration, scripted input mail, and mission-owned pass/fail conditions.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These uSimMarineV22 GIFs are generated explanatory views instead of raw pMarineViewer captures because the harness is validating actuator inputs, drift/current effects, runtime controls, and NAV output evidence directly. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="usim-marine-forward-thrust.gif">
+          <img src="../assets/gifs/usim-marine-forward-thrust.gif?v=20260511-2" alt="Forward Thrust GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Forward Thrust</h3>
+          <p>Description: Straight positive thrust reaches the expected forward speed and eastward displacement while holding heading.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="usim-marine-runtime-drift.gif">
+          <img src="../assets/gifs/usim-marine-runtime-drift.gif?v=20260511-2" alt="Runtime Drift GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Drift</h3>
+          <p>Description: Positive DRIFT_X moves the vehicle east even without commanded thrust.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>thrust_forward_pass</code>
+          <p>Straight positive thrust reaches the expected forward speed and eastward displacement while holding heading.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rudder_turn_starboard_pass</code>
+          <p>Positive rudder under forward thrust produces a clear starboard heading change while maintaining forward motion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>differential_turn_pass</code>
+          <p>Differential left/right thrust switches the simulator into differential mode and produces a heading change without ordinary rudder mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>start_pos_seed_pass</code>
+          <p>A non-zero start_pos seeds initial x/y, heading, speed, and subsequent motion as expected.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_speed_clamp_pass</code>
+          <p>High thrust with a low max_speed cap keeps published speed bounded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>acceleration_limit_pass</code>
+          <p>A low max_acceleration prevents immediate jump to the requested thrust-derived speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>drift_x_pass</code>
+          <p>Positive DRIFT_X moves the vehicle east even without commanded thrust.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rotate_speed_pass</code>
+          <p>Runtime ROTATE_SPEED changes heading without rudder input.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>sim_pause_holds_pass</code>
+          <p>Runtime USM_SIM_PAUSED=true prevents continued motion under commanded thrust.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_count_pass</code>
+          <p>Runtime USM_RESET increments the simulator reset counter and returns position near the configured start.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>disabled_nav_seed_pass</code>
+          <p>When USM_ENABLED=false, runtime NAV_X, NAV_Y, and NAV_HEADING mail seeds simulator state.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reverse_thrust_pass</code>
+          <p>Negative thrust produces reverse speed and westward displacement from an east-facing start.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>elevator_dive_pass</code>
+          <p>Positive elevator under forward thrust increases published depth while maintaining bounded forward motion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_turn_rate_pass</code>
+          <p>Runtime USM_TURN_RATE lowers rudder turn authority and produces a bounded heading change.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>obstacle_hit_stop_pass</code>
+          <p>Runtime OBSTACLE_HIT=true forces the simulator to publish a stopped vehicle state.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>current_y_alias_pass</code>
+          <p>Runtime CURRENT_Y acts as a drift-y alias and moves the vehicle laterally without commanded thrust.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>drift_vector_mult_pass</code>
+          <p>Runtime DRIFT_VECTOR plus DRIFT_VECTOR_MULT scales an external drift vector before evaluation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>water_depth_altitude_pass</code>
+          <p>A configured water depth and start depth produce the expected published altitude.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>thrust_map_interpolation_pass</code>
+          <p>A custom thrust_map maps midrange thrust to bounded speed without using thrust_factor.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_deceleration_pass</code>
+          <p>A low max_deceleration keeps an initially moving vehicle from stopping abruptly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>embedded_pid_speed_factor_pass</code>
+          <p>Embedded PID mode maps desired speed through speed_factor and publishes custom desired-thrust/rudder evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>drift_vector_add_pass</code>
+          <p>Runtime DRIFT_VECTOR_ADD composes a second drift vector with the existing one and produces two-axis displacement.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_buoyancy_rate_pass</code>
+          <p>Runtime BUOYANCY_RATE changes vertical motion while the vehicle is otherwise stationary.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>rudder_slew_limit_pass</code>
+          <p>max_rudder_degs_per_sec limits how quickly a large rudder command can take effect.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>turn_speed_map_pass</code>
+          <p>A configured turn-speed map shapes turn authority as a function of vehicle speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wind_polar_speed_cap_pass</code>
+          <p>Configured wind and polar-plot data cap high commanded thrust at the wind-relative sailing limit.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dual_state_reset_nav_pass</code>
+          <p>In dual-state mode, runtime USM_RESET_NAV snaps navigation state back to ground truth after drift separates them.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>wormhole_transport_pass</code>
+          <p>A configured wormhole transports the vehicle between convex polygons and updates published navigation position.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_wind_conditions_pass</code>
+          <p>Runtime WIND_CONDITIONS activates an existing polar plot and caps high commanded thrust.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_water_depth_pass</code>
+          <p>Runtime WATER_DEPTH updates published altitude without moving the vehicle vertically.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_thrust_mode_reverse_pass</code>
+          <p>Runtime THRUST_MODE_REVERSE flips the effective thrust/heading mode under positive thrust.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_depth_rate_limit_pass</code>
+          <p>A zero max_depth_rate suppresses elevator-driven diving under forward motion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>positive_buoyancy_surface_pass</code>
+          <p>Positive buoyancy moves a submerged stationary vehicle back to the surface clamp.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>embedded_pid_depth_control_pass</code>
+          <p>Embedded PID depth control publishes simulation-mode depth state while driving toward a desired depth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>buoyancy_control_report_pass</code>
+          <p>BUOYANCY_CONTROL completes through the depth-control report path and posts the expected completion report.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>trim_control_report_pass</code>
+          <p>TRIM_CONTROL completes through the depth-control report path and posts the expected trim report.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/usim_marine_harnesses/H01-usim_marine_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/usim_marine_missions/usim_marine_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

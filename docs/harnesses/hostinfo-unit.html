@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pHostInfo Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Utility Infrastructure</p>
+      <h1>H01 pHostInfo Unit</h1>
+      <p class="lede">Utility infrastructure tests for pHostInfo. These cases verify deterministic host reporting, MOOSDB port publication, and exact pShare route normalization for valid, multi-route, mixed, non-UDP, and invalid route specifications.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with pHostInfo, uTimerScript, pAutoPoke, and pMissionEval. Case overlays change only pHostInfo configuration and mission-owned host-info pass/fail conditions.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These pHostInfo GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is host-info MOOS mail, not map geometry. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="hostinfo-pshare-route-payload.gif">
+          <img src="../assets/gifs/hostinfo-pshare-route-payload.gif?v=20260511-2" alt="pShare Route Payload GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>pShare Route Payload</h3>
+          <p>Description: Adds one UDP pShare route and exact-checks the resulting PHI_HOST_INFO route payload.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="hostinfo-invalid-route-omitted.gif">
+          <img src="../assets/gifs/hostinfo-invalid-route-omitted.gif?v=20260511-2" alt="Invalid Route Omitted GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Invalid Route Omitted</h3>
+          <p>Description: Adds an invalid pShare route and expects it to be omitted from the host-info payload.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>hostinfo_forced_ip_pass</code>
+          <p>Baseline forced host IP case; expects PHI_HOST_IP=127.0.0.7 and the generated MOOSDB port.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hostinfo_forced_alt_ip_pass</code>
+          <p>Overrides the forced host IP and expects the alternate address and MOOSDB port to be reported.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hostinfo_pshare_route_pass</code>
+          <p>Adds one UDP pShare route and exact-checks the resulting PHI_HOST_INFO route payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hostinfo_pshare_multi_route_pass</code>
+          <p>Adds two UDP pShare routes and exact-checks both normalized route entries in PHI_HOST_INFO.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hostinfo_invalid_pshare_route_pass</code>
+          <p>Adds an invalid pShare route and expects it to be omitted from the host-info payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hostinfo_pshare_mixed_routes_pass</code>
+          <p>Mixes valid and invalid route specs and expects only the valid UDP route to survive normalization.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hostinfo_pshare_nonudp_route_pass</code>
+          <p>Adds a non-UDP pShare route token and expects that token to be preserved in the route list.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/hostinfo_harnesses/H01-hostinfo_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/hostinfo_missions/hostinfo_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

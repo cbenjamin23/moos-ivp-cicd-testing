@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H03 uField Route Resilience | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uField Communications</p>
+      <h1>H03 uField Route Resilience</h1>
+      <p class="lede">Integration correctness tests for uFldNodeBroker, uFldShoreBroker, and pShare route lifecycle behavior. These cases verify startup/runtime route parsing, dead-first-route blocking, secondary dead-route tolerance, runtime route timing, duplicate suppression, invalid route rejection, numeric loopback routes, per-node route gaps, and shore-driven vnode discovery.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs the same two static vehicle communities and one shoreside community, but startup and runtime route setup is delayed, invalid, duplicated, partially supplied, or supplied by shore vnode discovery. The mission grade proves communications recovered or intentionally failed, and harness alog checks prove which route path was used.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame gif-frame--pending" data-file="pending">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Route Recovery</h3>
+          <p>Description: Removes startup shore routing and injects a valid runtime TRY_SHORE_HOST; both node brokers must add the route, handshake on key 0, and finish normal communications.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame gif-frame--pending" data-file="pending">
+        </div>
+        <div class="gif-meta">
+          <h3>Shore VNode Discovery</h3>
+          <p>Description: Removes vehicle startup routing and has the shore broker publish TRY_SHORE_HOST to both vehicle pShare listeners via try_vnode; both vehicles must consume the discovery route and complete the mission.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>dead_first_tryhost_blocks_fail</code>
+          <p>Places a dead route in the effective first try_shore_host slot; the case is expected to fail while proving both broker ping routes were emitted and no valid shore ack was received.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>secondary_dead_tryhost_ignored_pass</code>
+          <p>Places a live route in the effective first slot and a dead secondary route; both vehicles must establish key 0 broker acks and complete direct message/report delivery.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>startup_invalid_bad_port_valid_route_pass</code>
+          <p>Adds a startup try_shore_host with a nonnumeric port beside a valid route; the invalid startup route must not create a pShare command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>startup_invalid_bad_param_valid_route_pass</code>
+          <p>Adds a startup try_shore_host with the wrong parameter name beside a valid route; the invalid startup line must not create a pShare command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>startup_ip_route_recover_pass</code>
+          <p>Uses a startup try_shore_host with 127.0.0.1 instead of localhost; both node brokers must recover through the numeric loopback route.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_tryhost_recover_pass</code>
+          <p>Removes startup shore routing and injects a valid runtime TRY_SHORE_HOST; both node brokers must add the route, handshake on key 0, and finish normal communications.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_dead_then_valid_blocks_fail</code>
+          <p>Sends a runtime dead route before a valid route; the case is expected to fail and proves the later valid route does not recover this dead-first ordering.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_valid_then_dead_stays_pass</code>
+          <p>Sends a valid runtime route before a dead runtime route; the original key 0 route must remain sufficient for delivery.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_duplicate_tryhost_ignored_pass</code>
+          <p>Sends the same valid runtime route twice after removing startup routing; duplicate runtime route mail must not create a key 1 pShare route.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>startup_duplicate_runtime_ignored_pass</code>
+          <p>Keeps startup routing and repeats the same route through runtime mail; the duplicate must be ignored while the startup route remains healthy.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>delayed_runtime_tryhost_recover_pass</code>
+          <p>Delays the first valid runtime route until mid-scenario; both vehicles must still recover before the direct message and report checks complete.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>late_runtime_tryhost_blocks_delivery_fail</code>
+          <p>Delays the first valid runtime route until after key traffic has already been missed; broker acks may recover, but direct/report delivery must remain failed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_one_node_missing_route_fail</code>
+          <p>Gives only abe a runtime shore route; the case is expected to fail because ben never receives a valid broker ack.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_staggered_nodes_recover_pass</code>
+          <p>Gives abe and ben valid runtime routes at different times; both must recover before the mission traffic window closes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_runtime_tryhost_recover_pass</code>
+          <p>Sends an invalid runtime TRY_SHORE_HOST before a valid one; the invalid payload must not create a pShare command, and the later valid route must recover the mission.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_runtime_bad_port_recover_pass</code>
+          <p>Sends a runtime route with a nonnumeric port before a valid one; the bad port must not create a pShare command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_runtime_bad_param_recover_pass</code>
+          <p>Sends a runtime route with the wrong parameter name before a valid one; the bad parameter must not create a pShare command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_ip_route_recover_pass</code>
+          <p>Uses 127.0.0.1 instead of localhost in the runtime route; the node brokers must accept the numeric loopback route and recover.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_vnode_discovery_recover_pass</code>
+          <p>Removes vehicle startup routing and has the shore broker publish TRY_SHORE_HOST to both vehicle pShare listeners via try_vnode; both vehicles must consume the discovery route and complete the mission.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_vnode_one_node_only_fail</code>
+          <p>Publishes shore discovery to only one vehicle pShare listener; the case is expected to fail because the other node never recovers.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_vnode_extra_dead_ignored_pass</code>
+          <p>Publishes valid discovery routes plus one dead vnode route; both live vehicles must still recover.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_vnode_default_port_no_listener_fail</code>
+          <p>Uses a no-port vnode route, which defaults to 127.0.0.1:9200; the case is expected to fail because no vehicle listener is present there.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_vnode_invalid_host_ignored_pass</code>
+          <p>Adds a try_vnode route with an invalid host beside valid vnode routes; the invalid host must not create a pShare command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_vnode_bad_port_ignored_pass</code>
+          <p>Adds a try_vnode route with a nonnumeric port beside valid vnode routes; the invalid port must not create a pShare command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_vnode_duplicate_ignored_pass</code>
+          <p>Adds a duplicate valid vnode route beside the two required vehicle routes; the duplicate warning must not prevent both live vehicles from recovering.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufield_comms_harnesses/H03-ufield_route_resilience/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_comms_missions/ufield_comms_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

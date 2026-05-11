@@ -26,6 +26,9 @@ Generated PID motion visuals live in `docs/tools/render_pid_motion_gifs.py`.
 Generated Timer behavior visuals live in `docs/tools/render_timer_behavior_gifs.py`.
 Generated PeriodicSpeed behavior visuals live in `docs/tools/render_periodic_speed_behavior_gifs.py`.
 Generated MemoryTurnLimit behavior visuals live in `docs/tools/render_memoryturnlimit_behavior_gifs.py`.
+Generated utility infrastructure visuals live in `docs/tools/render_utility_watch_gifs.py`.
+Generated simulator infrastructure visuals live in `docs/tools/render_simulator_infrastructure_gifs.py`.
+Generated mission utility visuals live in `docs/tools/render_mission_utility_gifs.py`.
 Headless harness runs remain the source of truth for the case behavior; the
 generated GIFs are documentation views of that same geometry and variable-level
 evidence.
@@ -79,6 +82,46 @@ Typical capture launch: `./zlaunch.sh --case=baseline_transit_pass --gui 10`
 
 - `pid-motion-hard-turn-recover.gif` - Hard Turn Recovery; representative case `hard_turn_recover_pass`
 - `pid-motion-depth-step.gif` - Depth Step Response; representative case `depth_step_pass`
+
+## H01 uSimMarineV22 Motion
+
+Capture from: `harnesses/usim_marine_harnesses/H01-usim_marine_motion`
+Typical capture launch: `./zlaunch.sh --case=thrust_forward_pass --port_base=30000 10`
+
+- `usim-marine-forward-thrust.gif` - Forward Thrust; representative case `thrust_forward_pass`
+- `usim-marine-runtime-drift.gif` - Runtime Drift; representative case `drift_x_pass`
+
+## H01 pNodeReporter Unit
+
+Capture from: `harnesses/pnodereporter_harnesses/H01-pnodereporter_unit`
+Typical capture launch: `./zlaunch.sh --case=nav_report_baseline_pass --port_base=12400 10`
+
+- `pnodereporter-baseline-report.gif` - Baseline Node Report; representative case `nav_report_baseline_pass`
+- `pnodereporter-alt-nav-report.gif` - Alternate Nav Report; representative case `alt_nav_report_pass`
+
+## H01 uField Comms Unit
+
+Capture from: `harnesses/ufield_comms_harnesses/H01-ufield_comms_unit`
+Typical capture launch: `./zlaunch.sh --case=baseline_broker_comms_pass --port_base=4000 10`
+
+- GIF pending - Baseline Broker Comms; representative case `baseline_broker_comms_pass`
+- GIF pending - Runtime Range Extend; representative case `runtime_range_extend_pass`
+
+## H02 uField Broker Bridge
+
+Capture from: `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge`
+Typical capture launch: `./zlaunch.sh --case=broker_handshake_pass --port_base=4000 10`
+
+- GIF pending - Broker Handshake; representative case `broker_handshake_pass`
+- GIF pending - Bridge Tokens; representative case `shore_bridge_tokens_pass`
+
+## H03 uField Route Resilience
+
+Capture from: `harnesses/ufield_comms_harnesses/H03-ufield_route_resilience`
+Typical capture launch: `./zlaunch.sh --case=runtime_tryhost_recover_pass --port_base=4000 10`
+
+- GIF pending - Runtime Route Recovery; representative case `runtime_tryhost_recover_pass`
+- GIF pending - Shore VNode Discovery; representative case `shore_vnode_discovery_recover_pass`
 
 ## H01 Constant Depth Motion
 
@@ -272,6 +315,54 @@ Typical capture launch: `./zlaunch.sh --case=baseline_idle_running_pass --gui --
 Capture from: `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit`
 Typical capture launch: `./zlaunch.sh --case=burn_gap_detected_pass --port_base=15000 10`
 
+
+## H01 pHostInfo Unit
+
+Capture from: `harnesses/hostinfo_harnesses/H01-hostinfo_unit`
+Typical capture launch: `./zlaunch.sh --jobs=3 --port_base=11000 10`
+
+- `hostinfo-pshare-route-payload.gif` - pShare Route Payload; representative case `hostinfo_pshare_route_pass`
+- `hostinfo-invalid-route-omitted.gif` - Invalid Route Omitted; representative case `hostinfo_invalid_pshare_route_pass`
+
+## H01 uLoadWatch Unit
+
+Capture from: `harnesses/loadwatch_harnesses/H01-loadwatch_unit`
+Typical capture launch: `./zlaunch.sh --jobs=3 --port_base=11200 10`
+
+- `loadwatch-near-breach-band.gif` - Near-Breach Band; representative case `loadwatch_near_breach_pass`
+- `loadwatch-trigger-holdoff.gif` - Trigger Holdoff; representative case `loadwatch_trigger_second_breaches_pass`
+
+## H01 uProcessWatch Unit
+
+Capture from: `harnesses/processwatch_harnesses/H01-processwatch_unit`
+Typical capture launch: `./zlaunch.sh --jobs=3 --port_base=11600 10`
+
+- `processwatch-mapped-summary.gif` - Mapped Summary; representative case `processwatch_post_mapping_pass`
+- `processwatch-awol-detection.gif` - AWOL Detection; representative case `processwatch_missing_awol_fail`
+
+## H01 pMissionEval Unit
+
+Capture from: `harnesses/mission_utility_harnesses/H01-pmissioneval_unit`
+Typical capture launch: `./zlaunch.sh --jobs=3 --port_base=7100 10`
+
+- `pmissioneval-baseline-evaluation.gif` - Baseline Evaluation; representative case `eval_baseline_pass`
+- `pmissioneval-two-stage-logic.gif` - Two-stage Logic; representative case `eval_sequence_two_stage_pass`
+
+## H02 pMissionHash Unit
+
+Capture from: `harnesses/mission_utility_harnesses/H02-pmissionhash_unit`
+Typical capture launch: `./zlaunch.sh --jobs=3 --port_base=7300 10`
+
+- `pmissionhash-custom-vars.gif` - Custom Hash Vars; representative case `hash_custom_vars_pass`
+- `pmissionhash-reset.gif` - Hash Reset; representative case `hash_reset_changes_pass`
+
+## H03 uMayFinish Unit
+
+Capture from: `harnesses/mission_utility_harnesses/H03-umayfinish_unit`
+Typical capture launch: `./zlaunch.sh --jobs=3 --port_base=7400 10`
+
+- `umayfinish-default-exit.gif` - Default Finish Exit; representative case `mayfinish_default_exit_pass`
+- `umayfinish-custom-value-timeout.gif` - Custom Value Timeout; representative case `mayfinish_custom_value_timeout_fail`
 
 ## H01 ZigZag Behavior
 

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H03 uMayFinish Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uMayFinish</p>
+      <h1>H03 uMayFinish Unit</h1>
+      <p class="lede">Mission utility tests for uMayFinish. These cases verify default MISSION_EVALUATED exits, custom finish variables, mismatched finish-value timeouts, and missing-finish timeouts.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with pMissionEval, uTimerScript, logging, and process-watch support. The harness starts uMayFinish directly with unique aliases so each case can assert the process exit code.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These uMayFinish GIFs are generated process-flow views instead of raw pMarineViewer captures because the meaningful evidence is finish-variable matching, timeout behavior, and process exit code. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="umayfinish-default-exit.gif">
+          <img src="../assets/gifs/umayfinish-default-exit.gif?v=20260511-2" alt="Default Finish Exit GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Default Finish Exit</h3>
+          <p>Description: Direct default-exit case. The harness requires uMayFinish to exit with code 0 when MISSION_EVALUATED=true arrives.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="umayfinish-custom-value-timeout.gif">
+          <img src="../assets/gifs/umayfinish-custom-value-timeout.gif?v=20260511-2" alt="Custom Value Timeout GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Custom Value Timeout</h3>
+          <p>Description: Custom finish-value mismatch case. CUSTOM_DONE is posted with the wrong value, so the custom uMayFinish instance must ignore the default mission-evaluated flag and time out.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>mayfinish_default_exit_pass</code>
+          <p>Direct default-exit case. The harness requires uMayFinish to exit with code 0 when MISSION_EVALUATED=true arrives.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mayfinish_custom_finish_pass</code>
+          <p>Custom finish-variable case. A uniquely aliased uMayFinish reads a matching config block and exits on CUSTOM_DONE=complete.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mayfinish_custom_value_timeout_fail</code>
+          <p>Custom finish-value mismatch case. CUSTOM_DONE is posted with the wrong value, so the custom uMayFinish instance must ignore the default mission-evaluated flag and time out.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>mayfinish_timeout_fail</code>
+          <p>Direct timeout case. The mission never posts the finish variable, so uMayFinish --max_time must exit with code 1.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/mission_utility_harnesses/H03-umayfinish_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/mission_utility_missions/mission_utility_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

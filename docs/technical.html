@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Technical Overview | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260510-2">
-  <script src="theme.js?v=20260510-2"></script>
+  <link rel="stylesheet" href="styles.css?v=20260511-2">
+  <script src="theme.js?v=20260511-2"></script>
 </head>
 <body>
   <header class="site-header">
@@ -138,6 +138,20 @@
             <th>pMarinePIDV22</th>
             <td>Converts desired heading, speed, and depth mail into direct actuator commands under override, stale-input, and yaw-source constraints.</td>
             <td>2</td>
+          </tr>
+
+
+          <tr>
+            <th>uSimMarineV22 + pNodeReporter</th>
+            <td>Checks simulator motion and node-report publication before higher-level behavior suites depend on their navigation and reporting infrastructure.</td>
+            <td>2</td>
+          </tr>
+
+
+          <tr>
+            <th>uFldNodeComms + uField Brokers</th>
+            <td>Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.</td>
+            <td>3</td>
           </tr>
 
 
@@ -277,6 +291,48 @@
           <tr>
             <th>BHV_TestFailure</th>
             <td>Checks completion-triggered burn, hang, parser edge cases, crash/default-crash process loss, and an armed non-completing baseline.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pHostInfo</th>
+            <td>Checks host IP, MOOSDB port, and exact route-normalized PHI_HOST_INFO payloads.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uLoadWatch</th>
+            <td>Checks near and hard threshold detection, trigger holdoff, threshold boundaries, and app matching.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uProcessWatch</th>
+            <td>Checks process-presence summaries, mapped posts, event mapping, and expected missing-process detection.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pMissionEval</th>
+            <td>Checks mission grading, staged logic, result flags, report formatting, macro expansion, and no-hash report behavior.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pMissionHash</th>
+            <td>Checks mission hashes, custom output variables, disabled outputs, and reset behavior.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uMayFinish</th>
+            <td>Checks default finish exits, custom finish variables, mismatched finish values, and timeout exits.</td>
             <td>1</td>
           </tr>
 

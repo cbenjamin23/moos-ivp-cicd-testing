@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Home | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260510-2">
-  <script src="theme.js?v=20260510-2"></script>
+  <link rel="stylesheet" href="styles.css?v=20260511-2">
+  <script src="theme.js?v=20260511-2"></script>
 </head>
 <body>
   <header class="site-header">
@@ -53,28 +53,28 @@
       <div class="stats-grid">
 
       <article class="stat-card">
-        <strong>2720</strong>
+        <strong>2796</strong>
         <span>CTest Cases</span>
         <p>Source-level checks for component behavior that does not need a mission scenario.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>68</strong>
+        <strong>71</strong>
         <span>Libraries &amp; Components</span>
         <p>Source-level MOOS-IvP areas covered by GoogleTest/CTest.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>875</strong>
+        <strong>1067</strong>
         <span>Harness Cases</span>
         <p>Mission-run cases with expected outcomes and generated result summaries.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>22</strong>
+        <strong>29</strong>
         <span>Apps &amp; Behaviors</span>
         <p>MOOS apps and IvP behaviors covered by mission harness cases.</p>
       </article>
@@ -187,6 +187,65 @@
         <span class="eyebrow">Marine PID</span>
         <h3>H02 Marine PID Motion</h3>
         <p>Closed-loop pMarinePIDV22 motion matrix covering transit, turn recovery, speed-PID mode, depth response, and authority failures.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Simulator Infrastructure</span>
+          <span class="family-name">uSimMarineV22 + pNodeReporter</span>
+          <span class="family-summary">Checks simulator motion and node-report publication before higher-level behavior suites depend on their navigation and reporting infrastructure.</span>
+          <span class="family-count">2 harnesses</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/usim-marine-motion.html">
+        <span class="eyebrow">Simulator Infrastructure</span>
+        <h3>H01 uSimMarineV22 Motion</h3>
+        <p>App-level simulator harness for uSimMarineV22 actuator response, embedded PID coupling, limits, drift/current inputs, water-depth altitude, pause, reset, disabled-state nav seeding, and stop controls.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/pnodereporter-unit.html">
+        <span class="eyebrow">Simulator Infrastructure</span>
+        <h3>H01 pNodeReporter Unit</h3>
+        <p>Headless pNodeReporter matrix for node-report construction, platform metadata, helm mode, JSON output, alternate nav streams, coordinate cross-fill, runtime updates, pause/resume, and odometry metrics.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uField Communications</span>
+          <span class="family-name">uFldNodeComms + uField Brokers</span>
+          <span class="family-summary">Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.</span>
+          <span class="family-count">3 harnesses</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufield-comms-unit.html">
+        <span class="eyebrow">uField Communications</span>
+        <h3>H01 uField Comms Unit</h3>
+        <p>Headless uFldNodeComms matrix covering range gates, critical range, shared reports, pulses, message payload forms, group filters, runtime mail, stale reports, and drop controls.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/ufield-broker-bridge.html">
+        <span class="eyebrow">uField Communications</span>
+        <h3>H02 uField Broker Bridge</h3>
+        <p>Broker-level uFldNodeBroker/uFldShoreBroker matrix covering handshake acks, qbridge expansion, bridge token expansion, mediated node-message selection, vnode discovery, keyword mismatch status, and auto-bridge suppression.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/ufield-route-resilience.html">
+        <span class="eyebrow">uField Communications</span>
+        <h3>H03 uField Route Resilience</h3>
+        <p>Route-lifecycle matrix covering startup/runtime route parsing, dead-first-route blocking, secondary dead-route tolerance, runtime timing, duplicates, malformed route rejection, per-node recovery, numeric loopback routes, and shore-driven vnode discovery.</p>
       </a>
 
         </div>
@@ -609,6 +668,120 @@
         <span class="eyebrow">Behavior Correctness</span>
         <h3>H01 TestFailure Behavior</h3>
         <p>Headless unit harness for BHV_TestFailure completion-triggered crash, burn, hang alias, default burn timing, malformed burn timing, negative/zero burn timing, and unsupported failure-type default behavior.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Host Info Utility</span>
+          <span class="family-name">pHostInfo</span>
+          <span class="family-summary">Checks host IP, MOOSDB port, and exact route-normalized PHI_HOST_INFO payloads.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/hostinfo-unit.html">
+        <span class="eyebrow">Utility Infrastructure</span>
+        <h3>H01 pHostInfo Unit</h3>
+        <p>Headless utility harness for pHostInfo host IP, MOOSDB port, and PHI_HOST_INFO route reporting.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Load Watch Utility</span>
+          <span class="family-name">uLoadWatch</span>
+          <span class="family-summary">Checks near and hard threshold detection, trigger holdoff, threshold boundaries, and app matching.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/loadwatch-unit.html">
+        <span class="eyebrow">Utility Infrastructure</span>
+        <h3>H01 uLoadWatch Unit</h3>
+        <p>Headless utility harness for uLoadWatch threshold detection, near-breach counters, hard-breach counters, and trigger holdoff behavior.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Process Watch Utility</span>
+          <span class="family-name">uProcessWatch</span>
+          <span class="family-summary">Checks process-presence summaries, mapped posts, event mapping, and expected missing-process detection.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/processwatch-unit.html">
+        <span class="eyebrow">Utility Infrastructure</span>
+        <h3>H01 uProcessWatch Unit</h3>
+        <p>Headless utility harness for uProcessWatch process-presence reporting, mapped posts, full summaries, events, and missing-process detection.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">pMissionEval</span>
+          <span class="family-name">pMissionEval</span>
+          <span class="family-summary">Checks mission grading, staged logic, result flags, report formatting, macro expansion, and no-hash report behavior.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/pmissioneval-unit.html">
+        <span class="eyebrow">pMissionEval</span>
+        <h3>H01 pMissionEval Unit</h3>
+        <p>Headless lifecycle harness for pMissionEval grading, staged logic sequences, flags, report formats, and macro expansion.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">pMissionHash</span>
+          <span class="family-name">pMissionHash</span>
+          <span class="family-summary">Checks mission hashes, custom output variables, disabled outputs, and reset behavior.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/pmissionhash-unit.html">
+        <span class="eyebrow">pMissionHash</span>
+        <h3>H02 pMissionHash Unit</h3>
+        <p>Headless lifecycle harness for pMissionHash publication names, disabled outputs, and reset behavior.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uMayFinish</span>
+          <span class="family-name">uMayFinish</span>
+          <span class="family-summary">Checks default finish exits, custom finish variables, mismatched finish values, and timeout exits.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/umayfinish-unit.html">
+        <span class="eyebrow">uMayFinish</span>
+        <h3>H03 uMayFinish Unit</h3>
+        <p>Headless lifecycle harness for uMayFinish default completion, custom finish variables, mismatched finish values, and timeout exits.</p>
       </a>
 
         </div>

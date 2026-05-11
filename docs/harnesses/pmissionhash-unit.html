@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H02 pMissionHash Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">pMissionHash</p>
+      <h1>H02 pMissionHash Unit</h1>
+      <p class="lede">Mission utility tests for pMissionHash. These cases verify custom hash variable names, short-hash disable behavior, long-hash disable behavior, and RESET_MHASH-driven hash changes.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with pMissionHash, pMissionEval, uTimerScript, logging, and process-watch support. Case overlays change pMissionHash settings while pMissionEval consumes the hash mail as the mission-owned grader.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These pMissionHash GIFs are generated mail-flow views instead of raw pMarineViewer captures because the meaningful evidence is hash publication names, disabled outputs, and reset-driven hash changes. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pmissionhash-custom-vars.gif">
+          <img src="../assets/gifs/pmissionhash-custom-vars.gif?v=20260511-2" alt="Custom Hash Vars GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Custom Hash Vars</h3>
+          <p>Description: Custom variable case. pMissionHash publishes non-default long and short hash variables, and the evaluator expands them into the report row.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pmissionhash-reset.gif">
+          <img src="../assets/gifs/pmissionhash-reset.gif?v=20260511-2" alt="Hash Reset GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Hash Reset</h3>
+          <p>Description: Hash reset case. A scripted RESET_MHASH=true must cause more than one distinct mission hash publication during the run.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>hash_custom_vars_pass</code>
+          <p>Custom variable case. pMissionHash publishes non-default long and short hash variables, and the evaluator expands them into the report row.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hash_short_off_pass</code>
+          <p>Short-hash disable case. pMissionHash publishes only MISSION_HASH, while the evaluator still derives the short hash from the full hash payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hash_long_off_pass</code>
+          <p>Long-hash disable case. pMissionHash is configured with mission_hash_var=off, so neither long nor short hash mail should be published.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hash_reset_changes_pass</code>
+          <p>Hash reset case. A scripted RESET_MHASH=true must cause more than one distinct mission hash publication during the run.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/mission_utility_harnesses/H02-pmissionhash_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/mission_utility_missions/mission_utility_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

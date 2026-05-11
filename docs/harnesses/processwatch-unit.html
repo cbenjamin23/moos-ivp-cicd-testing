@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uProcessWatch Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Utility Infrastructure</p>
+      <h1>H01 uProcessWatch Unit</h1>
+      <p class="lede">Utility infrastructure tests for uProcessWatch. These cases verify process summary publications, custom present posts, event and summary post remapping, full summaries, and expected missing-process detection.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with uProcessWatch plus small watched peer apps. Case overlays change only process-watch configuration and mission-owned process-presence pass/fail conditions.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These uProcessWatch GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is process-presence summaries and mapped output variables. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="processwatch-mapped-summary.gif">
+          <img src="../assets/gifs/processwatch-mapped-summary.gif?v=20260511-2" alt="Mapped Summary GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Mapped Summary</h3>
+          <p>Description: Maps the all-ok summary post and expects the mapped summary plus full process counts.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="processwatch-awol-detection.gif">
+          <img src="../assets/gifs/processwatch-awol-detection.gif?v=20260511-2" alt="AWOL Detection GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>AWOL Detection</h3>
+          <p>Description: Watches a nonexistent app long enough to cross the AWOL delay; this case is expected to fail.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>processwatch_all_present_pass</code>
+          <p>Watches the default peer set and expects PROC_WATCH_ALL_OK=true with an All Present summary.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>processwatch_custom_present_post_pass</code>
+          <p>Maps present status to a custom post variable and expects the watched app to be reported present.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>processwatch_multi_present_pass</code>
+          <p>Watches multiple peer apps and expects a complete full-summary payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>processwatch_post_mapping_pass</code>
+          <p>Maps the all-ok summary post and expects the mapped summary plus full process counts.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>processwatch_full_summary_mapping_pass</code>
+          <p>Maps the full-summary post and expects the mapped payload to carry the watched process counts.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>processwatch_event_mapping_present_pass</code>
+          <p>Maps event output and expects a present event for the watched app.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>processwatch_missing_awol_fail</code>
+          <p>Watches a nonexistent app long enough to cross the AWOL delay; this case is expected to fail.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/processwatch_harnesses/H01-processwatch_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/processwatch_missions/processwatch_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

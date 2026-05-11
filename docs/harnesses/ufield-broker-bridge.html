@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H02 uField Broker Bridge | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uField Communications</p>
+      <h1>H02 uField Broker Bridge</h1>
+      <p class="lede">Broker-level correctness tests for uFldNodeBroker and uFldShoreBroker. These cases verify broker handshakes, pShare command generation, qbridge expansion, custom bridge expansion, mediated bridge selection, vnode discovery, keyword mismatch status, and auto-bridge suppression.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs the same two-vehicle uField setup but focuses on broker configuration. Case overlays change shore broker bridges, vnode discovery, keywords, mediated node bridging, and auto-bridge settings while the harness verifies broker pShare command output.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame gif-frame--pending" data-file="pending">
+        </div>
+        <div class="gif-meta">
+          <h3>Broker Handshake</h3>
+          <p>Description: Requires both vehicle brokers to ping shoreside, receive status=ok broker acks, publish NODE_PSHARE_VARS, and register as two shoreside nodes.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame gif-frame--pending" data-file="pending">
+        </div>
+        <div class="gif-meta">
+          <h3>Bridge Tokens</h3>
+          <p>Description: Adds $v and $N shoreside bridge sources and requires lowercase-community and node-index pShare output requests for both vehicles.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>broker_handshake_pass</code>
+          <p>Requires both vehicle brokers to ping shoreside, receive status=ok broker acks, publish NODE_PSHARE_VARS, and register as two shoreside nodes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_qbridge_expansion_pass</code>
+          <p>Requires uFldShoreBroker to expand qbridge variables into per-node pShare output requests for both vehicles.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_custom_bridge_pass</code>
+          <p>Adds a custom bridge = src=DEPLOY_$V, alias=DEPLOY and requires expanded DEPLOY_ABE and DEPLOY_BEN pShare output requests.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_custom_bridge_pass</code>
+          <p>Adds a custom node-side bridge and requires both node brokers to publish the custom pShare command and advertise the alias in NODE_PSHARE_VARS.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>keyword_mismatch_status_pass</code>
+          <p>Requires a shoreside keyword mismatch to appear in broker ack payloads while registration still reaches both nodes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_bridge_tokens_pass</code>
+          <p>Adds $v and $N shoreside bridge sources and requires lowercase-community and node-index pShare output requests for both vehicles.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_mediated_bridge_pass</code>
+          <p>Replaces the unmediated node-message bridge with the mediated bridge and requires mediated pShare commands while suppressing the unmediated command.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_try_vnode_pass</code>
+          <p>Adds a vnode route and requires both the outbound TRY_SHORE_HOST pShare route and the local shore-host advertisement.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_minimal_autobridge_pass</code>
+          <p>Disables optional shoreside auto bridges and requires the core qbridge variables without realmcast, appcast, or mission-hash bridge advertisement.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>node_minimal_autobridge_pass</code>
+          <p>Disables optional node broker auto bridges and requires only the core node aliases without pShare export of NODE_PSHARE_VARS.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_default_alias_pass</code>
+          <p>Adds a shoreside bridge with no explicit alias and requires the source variable to be used as the destination alias.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shore_try_vnode_default_port_pass</code>
+          <p>Adds a vnode route without a port and requires uFldShoreBroker to publish the default 9200 pShare route.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_comms_missions/ufield_comms_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

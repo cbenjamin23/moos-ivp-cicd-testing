@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pMissionEval Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">pMissionEval</p>
+      <h1>H01 pMissionEval Unit</h1>
+      <p class="lede">Mission utility tests for pMissionEval. These cases verify pass/fail grading, built-in finish publication, staged logic sequences, fail-condition precedence, lead-only and fail-only evaluator shapes, flags and mailflags, numeric and mission-hash macros, literal numeric flags, CSP report output, clock macros, and no-hash report output.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs a single shoreside MOOS community with pMissionHash, pMissionEval, uTimerScript, logging, and process-watch support. Case overlays change pMissionEval configuration and scripted MOOS mail while the harness starts uniquely aliased uMayFinish instances so completion remains observable.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These pMissionEval GIFs are generated mail-flow views instead of raw pMarineViewer captures because the meaningful evidence is mission grading mail, report rows, flags, and completion publication. The visuals call out the evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pmissioneval-baseline-evaluation.gif">
+          <img src="../assets/gifs/pmissioneval-baseline-evaluation.gif?v=20260511-2" alt="Baseline Evaluation GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Evaluation</h3>
+          <p>Description: Baseline pMissionEval case. Scripted mail satisfies the lead and pass conditions, writes a pass row, expands ordinary macros, and terminates through the default mission-evaluated flag.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pmissioneval-two-stage-logic.gif">
+          <img src="../assets/gifs/pmissioneval-two-stage-logic.gif?v=20260511-2" alt="Two-stage Logic GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Two-stage Logic</h3>
+          <p>Description: Two-stage sequence case. A second lead condition starts a new LogicAspect, and both stages must pass before the mission is evaluated.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>eval_baseline_pass</code>
+          <p>Baseline pMissionEval case. Scripted mail satisfies the lead and pass conditions, writes a pass row, expands ordinary macros, and terminates through the default mission-evaluated flag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_false_condition_fail</code>
+          <p>Negative pMissionEval case. The lead condition fires while PASS_INPUT=false, so the mission row must grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_builtin_finish_pass</code>
+          <p>Built-in finish publication case. pMissionEval omits an explicit MISSION_EVALUATED result flag, so the default uMayFinish exit proves the app&#x27;s built-in finish publication path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_numeric_multi_pass</code>
+          <p>Multi-condition and numeric macro case. Two lead/pass conditions must be satisfied, and a numeric MOOS value must expand into both a report row and a result flag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_sequence_two_stage_pass</code>
+          <p>Two-stage sequence case. A second lead condition starts a new LogicAspect, and both stages must pass before the mission is evaluated.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_sequence_first_stage_fail</code>
+          <p>Sequence short-circuit case. The first stage fails and the mission must grade fail without waiting for second-stage mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_sequence_second_stage_fail</code>
+          <p>Later-stage sequence failure case. The first stage passes, the second stage fails, and the mission must grade fail after reaching the later LogicAspect.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_numeric_literal_flag_pass</code>
+          <p>Literal numeric flag case. A numeric result_flag must publish through the non-string flag path while the mission grades pass.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_lead_only_pass</code>
+          <p>Lead-only evaluator case. A valid evaluator with no pass or fail conditions must grade pass once the lead condition is met.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_numeric_partial_fail</code>
+          <p>Multi-condition partial failure case. The lead conditions are satisfied but one numeric pass condition is below threshold, so the mission must grade fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_fail_only_condition_fail</code>
+          <p>Fail-only evaluator case. A valid evaluator with no pass conditions must still grade fail when a fail condition is met.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_fail_condition_fail</code>
+          <p>Explicit fail-condition case. A true FORCE_FAIL variable must override an otherwise passing input set and produce a fail row.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_flags_and_mail_pass</code>
+          <p>Flag publication case. The baseline pass must also emit result/pass flags and react to configured mailflag input in the alog.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_csp_report_pass</code>
+          <p>Report-format case. pMissionEval must honor report_line_format=csp by writing comma-separated report columns.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_mhash_macros_pass</code>
+          <p>Mission-hash macro case. pMissionEval must expand short, long-short, UTC, full hash, and mission-hash aliases from MISSION_HASH mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_clock_macros_pass</code>
+          <p>Clock macro case. pMissionEval must expand month, day, hour, minute, second, date, and time macros without leaving raw macro tokens in the report row.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>eval_no_hash_report_pass</code>
+          <p>No-hash evaluator case. The stem omits pMissionHash, and pMissionEval must still evaluate and write a report row.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/mission_utility_harnesses/H01-pmissioneval_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/mission_utility_missions/mission_utility_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

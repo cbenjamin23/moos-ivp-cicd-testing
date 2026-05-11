@@ -20,7 +20,7 @@ SCRIPTS_DIR = REPO_ROOT / "scripts"
 CTEST_COVERAGE_DATA = ROOT / "data" / "ctest_coverage.json"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
-ASSET_VERSION = "20260510-2"
+ASSET_VERSION = "20260511-2"
 PENDING_GIF = "GIF_PENDING"
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
@@ -38,6 +38,14 @@ VISUAL_NOTES = {
     "periodic-speed-behavior-motion": "These PeriodicSpeed GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is the lazy/busy timer state, reset behavior, and posted speed variables.",
     "timer-behavior-motion": "These Timer GIFs are generated explanatory views instead of raw pMarineViewer captures because BHV_Timer returns no IvP function and the meaningful evidence is the changing MOOS counter variables.",
     "memoryturnlimit-behavior-motion": "These MemoryTurnLimit GIFs are generated explanatory views instead of raw pMarineViewer captures because the important evidence is the relationship between recent heading memory, turn range, runtime updates, and graded motion metrics.",
+    "usim-marine-motion": "These uSimMarineV22 GIFs are generated explanatory views instead of raw pMarineViewer captures because the harness is validating actuator inputs, drift/current effects, runtime controls, and NAV output evidence directly.",
+    "pnodereporter-unit": "These pNodeReporter GIFs are generated report-flow views instead of raw pMarineViewer captures because the harness verdict depends on MOOS mail and NODE_REPORT payload fields rather than visible vehicle motion.",
+    "hostinfo-unit": "These pHostInfo GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is host-info MOOS mail, not map geometry.",
+    "loadwatch-unit": "These uLoadWatch GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is threshold mail and breach counters.",
+    "processwatch-unit": "These uProcessWatch GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is process-presence summaries and mapped output variables.",
+    "pmissioneval-unit": "These pMissionEval GIFs are generated mail-flow views instead of raw pMarineViewer captures because the meaningful evidence is mission grading mail, report rows, flags, and completion publication.",
+    "pmissionhash-unit": "These pMissionHash GIFs are generated mail-flow views instead of raw pMarineViewer captures because the meaningful evidence is hash publication names, disabled outputs, and reset-driven hash changes.",
+    "umayfinish-unit": "These uMayFinish GIFs are generated process-flow views instead of raw pMarineViewer captures because the meaningful evidence is finish-variable matching, timeout behavior, and process exit code.",
     "colregs-classification": "This classification harness uses alog-backed explanatory GIFs instead of raw pMarineViewer captures because the vehicles do move, but the verdict comes from COLREGS publications such as mode, index, summary, and range reports.",
     "colregs-thresholds": "This threshold harness uses alog-backed overlay GIFs instead of raw pMarineViewer captures because the cases differ by small geometry changes and the verdict comes from boundary-specific COLREGS publications.",
 }
@@ -187,6 +195,96 @@ HARNESSES: tuple[Harness, ...] = (
         notes=(
             "This harness adds pHelmIvP and uSimMarineV22 so PID output is judged as vehicle motion instead of only as actuator publications.",
             "Expected-fail cases intentionally hold manual override or cap thrust too low to prove the motion gate catches lost authority.",
+        ),
+    ),
+    Harness(
+        slug="usim-marine-motion",
+        title="H01 uSimMarineV22 Motion",
+        family="Simulator Infrastructure",
+        path="harnesses/usim_marine_harnesses/H01-usim_marine_motion",
+        mission="missions/usim_marine_missions/usim_marine_motion",
+        summary="App-level simulator harness for uSimMarineV22 actuator response, embedded PID coupling, limits, drift/current inputs, water-depth altitude, pause, reset, disabled-state nav seeding, and stop controls.",
+        proof="Checks NAV_X, NAV_Y, NAV_SPEED, NAV_HEADING, NAV_DEPTH, USM_RESET_COUNT, drift summary, and nav-position summary under scripted actuator and runtime mail.",
+        gifs=(
+            ("Forward Thrust", "thrust_forward_pass", "usim-marine-forward-thrust.gif"),
+            ("Runtime Drift", "drift_x_pass", "usim-marine-runtime-drift.gif"),
+        ),
+        run="./zlaunch.sh --case=thrust_forward_pass --port_base=30000 10",
+        notes=(
+            "This harness validates uSimMarineV22 directly instead of only using it as a hidden dependency under behavior tests.",
+            "The cases intentionally separate actuator command paths, simulator limits, environmental drift, and runtime state controls.",
+        ),
+    ),
+    Harness(
+        slug="pnodereporter-unit",
+        title="H01 pNodeReporter Unit",
+        family="Simulator Infrastructure",
+        path="harnesses/pnodereporter_harnesses/H01-pnodereporter_unit",
+        mission="missions/pnodereporter_missions/pnodereporter_unit",
+        summary="Headless pNodeReporter matrix for node-report construction, platform metadata, helm mode, JSON output, alternate nav streams, coordinate cross-fill, runtime updates, pause/resume, and odometry metrics.",
+        proof="Checks NODE_REPORT_LOCAL, NODE_REPORT_FIRST, PLATFORM_REPORT_LOCAL, JSON report output, runtime color/group updates, PNR_MHASH odometry, extrapolation gap metrics, and one expected-fail blackout-interval detector.",
+        gifs=(
+            ("Baseline Node Report", "nav_report_baseline_pass", "pnodereporter-baseline-report.gif"),
+            ("Alternate Nav Report", "alt_nav_report_pass", "pnodereporter-alt-nav-report.gif"),
+        ),
+        run="./zlaunch.sh --case=nav_report_baseline_pass --port_base=12400 10",
+        notes=(
+            "This harness makes pNodeReporter explicit instead of treating node reports as incidental support evidence in motion tests.",
+            "The cases intentionally combine mission-owned pMissionEval grades with narrow payload-token checks because node reports include dynamic timing fields.",
+        ),
+    ),
+    Harness(
+        slug="ufield-comms-unit",
+        title="H01 uField Comms Unit",
+        family="uField Communications",
+        path="harnesses/ufield_comms_harnesses/H01-ufield_comms_unit",
+        mission="missions/ufield_comms_missions/ufield_comms_unit",
+        summary="Headless uFldNodeComms matrix covering range gates, critical range, shared reports, pulses, message payload forms, group filters, runtime mail, stale reports, and drop controls.",
+        proof="Checks mission-owned delivery booleans plus targeted alog evidence for delivered, blocked, grouped, shared, pulsed, and runtime-adjusted communications.",
+        gifs=(
+            ("Baseline Broker Comms", "baseline_broker_comms_pass", PENDING_GIF),
+            ("Runtime Range Extend", "runtime_range_extend_pass", PENDING_GIF),
+        ),
+        run="./zlaunch.sh --case=baseline_broker_comms_pass --port_base=4000 10",
+        notes=(
+            "This harness keeps the two-vehicle field static so uFldNodeComms owns the communications verdict rather than vehicle motion.",
+            "The cases combine mission-owned pMissionEval results with focused alog checks for payload fields that are awkward to normalize inside MOOS.",
+        ),
+    ),
+    Harness(
+        slug="ufield-broker-bridge",
+        title="H02 uField Broker Bridge",
+        family="uField Communications",
+        path="harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge",
+        mission="missions/ufield_comms_missions/ufield_comms_unit",
+        summary="Broker-level uFldNodeBroker/uFldShoreBroker matrix covering handshake acks, qbridge expansion, bridge token expansion, mediated node-message selection, vnode discovery, keyword mismatch status, and auto-bridge suppression.",
+        proof="Checks node broker pings and acks, `UFSB_NODE_COUNT`, `NODE_PSHARE_VARS`, and exact pShare command evidence for shoreside and vehicle-side bridge setup.",
+        gifs=(
+            ("Broker Handshake", "broker_handshake_pass", PENDING_GIF),
+            ("Bridge Tokens", "shore_bridge_tokens_pass", PENDING_GIF),
+        ),
+        run="./zlaunch.sh --case=broker_handshake_pass --port_base=4000 10",
+        notes=(
+            "This harness reuses the ufield_comms_unit stem and changes broker configuration only through case overlays or small generated mission edits.",
+            "The cases intentionally supplement the mission grade with pShare command checks because bridge correctness is expressed as structured broker output.",
+        ),
+    ),
+    Harness(
+        slug="ufield-route-resilience",
+        title="H03 uField Route Resilience",
+        family="uField Communications",
+        path="harnesses/ufield_comms_harnesses/H03-ufield_route_resilience",
+        mission="missions/ufield_comms_missions/ufield_comms_unit",
+        summary="Route-lifecycle matrix covering startup/runtime route parsing, dead-first-route blocking, secondary dead-route tolerance, runtime timing, duplicates, malformed route rejection, per-node recovery, numeric loopback routes, and shore-driven vnode discovery.",
+        proof="Requires the mission-owned delivery or expected-fail grade, then checks exact `TRY_SHORE_HOST`, `PSHARE_CMD`, and `NODE_BROKER_ACK` evidence for route recovery, blocked first routes, duplicate suppression, invalid-route suppression, startup parser resilience, and vnode discovery.",
+        gifs=(
+            ("Runtime Route Recovery", "runtime_tryhost_recover_pass", PENDING_GIF),
+            ("Shore VNode Discovery", "shore_vnode_discovery_recover_pass", PENDING_GIF),
+        ),
+        run="./zlaunch.sh --case=runtime_tryhost_recover_pass --port_base=4000 10",
+        notes=(
+            "This harness keeps the same static communication stem as H01/H02 but removes or perturbs route setup so broker retry and discovery behavior owns the outcome.",
+            "The cases are intentionally integration-level because route resilience depends on pShare, `uFldNodeBroker`, and `uFldShoreBroker` interacting across separate MOOS communities.",
         ),
     ),
     Harness(
@@ -612,6 +710,114 @@ HARNESSES: tuple[Harness, ...] = (
         ),
     ),
     Harness(
+        slug="hostinfo-unit",
+        title="H01 pHostInfo Unit",
+        family="Utility Infrastructure",
+        path="harnesses/hostinfo_harnesses/H01-hostinfo_unit",
+        mission="missions/hostinfo_missions/hostinfo_unit",
+        summary="Headless utility harness for pHostInfo host IP, MOOSDB port, and PHI_HOST_INFO route reporting.",
+        proof="Checks forced host IPs and exact valid, multi-route, mixed, non-UDP, and invalid pShare route normalization in the posted PHI_HOST_INFO payload.",
+        gifs=(
+            ("pShare Route Payload", "hostinfo_pshare_route_pass", "hostinfo-pshare-route-payload.gif"),
+            ("Invalid Route Omitted", "hostinfo_invalid_pshare_route_pass", "hostinfo-invalid-route-omitted.gif"),
+        ),
+        run="./zlaunch.sh --jobs=3 --port_base=11000 10",
+        notes=(
+            "This is a shoreside-only infrastructure harness: no vehicle or behavior stack is needed to prove the host-info publications.",
+            "The route cases exact-check the generated payload so malformed route filtering and non-UDP route preservation are visible regressions.",
+        ),
+    ),
+    Harness(
+        slug="loadwatch-unit",
+        title="H01 uLoadWatch Unit",
+        family="Utility Infrastructure",
+        path="harnesses/loadwatch_harnesses/H01-loadwatch_unit",
+        mission="missions/loadwatch_missions/loadwatch_unit",
+        summary="Headless utility harness for uLoadWatch threshold detection, near-breach counters, hard-breach counters, and trigger holdoff behavior.",
+        proof="Checks load near/hard breach counters, near and hard threshold boundaries, low-threshold ignore behavior, clamped near-threshold behavior, breach-trigger holdoff, app-specific threshold matching, and threshold-name case sensitivity.",
+        gifs=(
+            ("Near-Breach Band", "loadwatch_near_breach_pass", "loadwatch-near-breach-band.gif"),
+            ("Trigger Holdoff", "loadwatch_trigger_second_breaches_pass", "loadwatch-trigger-holdoff.gif"),
+        ),
+        run="./zlaunch.sh --jobs=3 --port_base=11200 10",
+        notes=(
+            "This is a shoreside-only infrastructure harness: scripted DB_UPTIME mail feeds uLoadWatch without depending on process-watch or host-info state.",
+            "The cases isolate threshold semantics by changing only uLoadWatch config and timed DB_UPTIME publications.",
+        ),
+    ),
+    Harness(
+        slug="processwatch-unit",
+        title="H01 uProcessWatch Unit",
+        family="Utility Infrastructure",
+        path="harnesses/processwatch_harnesses/H01-processwatch_unit",
+        mission="missions/processwatch_missions/processwatch_unit",
+        summary="Headless utility harness for uProcessWatch process-presence reporting, mapped posts, full summaries, events, and missing-process detection.",
+        proof="Checks process custom posts, multi-process summaries, summary post mapping, full-summary mapping, event mapping, and expected missing-process failure.",
+        gifs=(
+            ("Mapped Summary", "processwatch_post_mapping_pass", "processwatch-mapped-summary.gif"),
+            ("AWOL Detection", "processwatch_missing_awol_fail", "processwatch-awol-detection.gif"),
+        ),
+        run="./zlaunch.sh --jobs=3 --port_base=11600 10",
+        notes=(
+            "This is a shoreside-only infrastructure harness: pHostInfo and uLoadWatch are launched as watched peers, not as graded utilities.",
+            "The missing-process case is expected to fail and waits long enough to cross uProcessWatch's built-in AWOL delay.",
+        ),
+    ),
+    Harness(
+        slug="pmissioneval-unit",
+        title="H01 pMissionEval Unit",
+        family="pMissionEval",
+        path="harnesses/mission_utility_harnesses/H01-pmissioneval_unit",
+        mission="missions/mission_utility_missions/mission_utility_unit",
+        summary="Headless lifecycle harness for pMissionEval grading, staged logic sequences, flags, report formats, and macro expansion.",
+        proof="Checks pass and fail grading, built-in finish publication, staged sequence pass and fail paths, lead-only and fail-only evaluator shapes, explicit fail conditions, flags and mailflags, numeric and mission-hash macro expansion, literal numeric flags, CSP report formatting, clock macros, and no-hash report behavior.",
+        gifs=(
+            ("Baseline Evaluation", "eval_baseline_pass", "pmissioneval-baseline-evaluation.gif"),
+            ("Two-stage Logic", "eval_sequence_two_stage_pass", "pmissioneval-two-stage-logic.gif"),
+        ),
+        run="./zlaunch.sh --jobs=3 --port_base=7100 10",
+        notes=(
+            "This is a shoreside-only lifecycle harness focused on the grading machinery used by other CI missions.",
+            "The harness still launches uMayFinish directly with unique aliases so pMissionEval completion remains observable through process exit behavior.",
+        ),
+    ),
+    Harness(
+        slug="pmissionhash-unit",
+        title="H02 pMissionHash Unit",
+        family="pMissionHash",
+        path="harnesses/mission_utility_harnesses/H02-pmissionhash_unit",
+        mission="missions/mission_utility_missions/mission_utility_unit",
+        summary="Headless lifecycle harness for pMissionHash publication names, disabled outputs, and reset behavior.",
+        proof="Checks custom long and short hash variables, short-hash disable behavior, long-hash disable behavior, and RESET_MHASH-driven hash changes.",
+        gifs=(
+            ("Custom Hash Vars", "hash_custom_vars_pass", "pmissionhash-custom-vars.gif"),
+            ("Hash Reset", "hash_reset_changes_pass", "pmissionhash-reset.gif"),
+        ),
+        run="./zlaunch.sh --jobs=3 --port_base=7300 10",
+        notes=(
+            "This harness uses pMissionEval as the mission-owned grading consumer, but the cases isolate pMissionHash publication behavior.",
+            "The default port block starts at 7300 so it can run alongside the pMissionEval split harness.",
+        ),
+    ),
+    Harness(
+        slug="umayfinish-unit",
+        title="H03 uMayFinish Unit",
+        family="uMayFinish",
+        path="harnesses/mission_utility_harnesses/H03-umayfinish_unit",
+        mission="missions/mission_utility_missions/mission_utility_unit",
+        summary="Headless lifecycle harness for uMayFinish default completion, custom finish variables, mismatched finish values, and timeout exits.",
+        proof="Checks default MISSION_EVALUATED exit, custom finish-variable exit, custom finish-value mismatch timeout, and missing-finish timeout.",
+        gifs=(
+            ("Default Finish Exit", "mayfinish_default_exit_pass", "umayfinish-default-exit.gif"),
+            ("Custom Value Timeout", "mayfinish_custom_value_timeout_fail", "umayfinish-custom-value-timeout.gif"),
+        ),
+        run="./zlaunch.sh --jobs=3 --port_base=7400 10",
+        notes=(
+            "This harness launches uMayFinish directly with unique aliases so exit-code behavior stays visible.",
+            "The default port block starts at 7400 so it can run alongside the other mission utility split harnesses.",
+        ),
+    ),
+    Harness(
         slug="zigzag-behavior-motion",
         title="H01 ZigZag Behavior",
         family="Behavior Correctness",
@@ -747,6 +953,18 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("pid-unit", "pid-motion"),
     ),
     Family(
+        name="uSimMarineV22 + pNodeReporter",
+        label="Simulator Infrastructure",
+        summary="Checks simulator motion and node-report publication before higher-level behavior suites depend on their navigation and reporting infrastructure.",
+        slugs=("usim-marine-motion", "pnodereporter-unit"),
+    ),
+    Family(
+        name="uFldNodeComms + uField Brokers",
+        label="uField Communications",
+        summary="Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.",
+        slugs=("ufield-comms-unit", "ufield-broker-bridge", "ufield-route-resilience"),
+    ),
+    Family(
         name="BHV_ConstantDepth",
         label="Depth Behavior",
         summary="Checks held depth, surfacing, runtime updates, bad config, missing depth mail, and actuator authority. H01 in shared depth behavior group.",
@@ -877,6 +1095,42 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("testfailure-behavior-unit",),
     ),
     Family(
+        name="pHostInfo",
+        label="Host Info Utility",
+        summary="Checks host IP, MOOSDB port, and exact route-normalized PHI_HOST_INFO payloads.",
+        slugs=("hostinfo-unit",),
+    ),
+    Family(
+        name="uLoadWatch",
+        label="Load Watch Utility",
+        summary="Checks near and hard threshold detection, trigger holdoff, threshold boundaries, and app matching.",
+        slugs=("loadwatch-unit",),
+    ),
+    Family(
+        name="uProcessWatch",
+        label="Process Watch Utility",
+        summary="Checks process-presence summaries, mapped posts, event mapping, and expected missing-process detection.",
+        slugs=("processwatch-unit",),
+    ),
+    Family(
+        name="pMissionEval",
+        label="pMissionEval",
+        summary="Checks mission grading, staged logic, result flags, report formatting, macro expansion, and no-hash report behavior.",
+        slugs=("pmissioneval-unit",),
+    ),
+    Family(
+        name="pMissionHash",
+        label="pMissionHash",
+        summary="Checks mission hashes, custom output variables, disabled outputs, and reset behavior.",
+        slugs=("pmissionhash-unit",),
+    ),
+    Family(
+        name="uMayFinish",
+        label="uMayFinish",
+        summary="Checks default finish exits, custom finish variables, mismatched finish values, and timeout exits.",
+        slugs=("umayfinish-unit",),
+    ),
+    Family(
         name="BHV_ZigZag",
         label="ZigZag Behavior",
         summary="Checks first-side selection, zig-angle boundaries, leg and odometry completion, active-time capture, runtime speed updates, visual hints, and invalid inputs.",
@@ -904,6 +1158,11 @@ TEST_STYLE: dict[str, str] = {
     "obmgr-motion": "Moving correctness tests for obstacle-manager alert output. These cases check whether obstacle alerts are actionable enough to support clean obstacle-avoidance transit, and whether intentionally bad setups fail for the expected reason.",
     "pid-unit": "Simple correctness tests for pMarinePIDV22 output behavior. These cases keep the mission to one MOOS community and verify rudder, thrust, elevator, override, stale-input, yaw-source, and debug publication paths.",
     "pid-motion": "Moving correctness tests for pMarinePIDV22 closed-loop behavior. These cases add pHelmIvP and uSimMarineV22 and verify that PID output drives arrival, turn recovery, speed-PID transit, depth response, and expected authority failures.",
+    "usim-marine-motion": "App-level correctness tests for uSimMarineV22. These cases directly verify simulator publications under scripted actuator mail, embedded PID coupling, limit parameters, drift/current inputs, water-depth altitude, pause, reset, disabled-nav, and stop-control inputs.",
+    "pnodereporter-unit": "App-level correctness tests for pNodeReporter. These cases directly verify node-report construction, platform metadata, helm-mode fields, JSON modes, alternate nav streams, coordinate cross-fill policies, runtime metadata updates, pause/resume behavior, odometry evidence, and expected blackout-interval failure detection.",
+    "ufield-comms-unit": "App-level correctness tests for uFldNodeComms. These cases verify report and message delivery under controlled range, group, stale-report, payload, shared-report, pulse, runtime-mail, and drop-policy conditions.",
+    "ufield-broker-bridge": "Broker-level correctness tests for uFldNodeBroker and uFldShoreBroker. These cases verify broker handshakes, pShare command generation, qbridge expansion, custom bridge expansion, mediated bridge selection, vnode discovery, keyword mismatch status, and auto-bridge suppression.",
+    "ufield-route-resilience": "Integration correctness tests for uFldNodeBroker, uFldShoreBroker, and pShare route lifecycle behavior. These cases verify startup/runtime route parsing, dead-first-route blocking, secondary dead-route tolerance, runtime route timing, duplicate suppression, invalid route rejection, numeric loopback routes, per-node route gaps, and shore-driven vnode discovery.",
     "constant-depth-motion": "Moving correctness tests for BHV_ConstantDepth. These cases verify held depths, surfacing, negative-depth clipping, shape parameters, runtime updates, malformed update preservation, finite-duration completion, malformed config, missing inputs/domain, and disabled depth-control authority.",
     "goto-depth-motion": "Moving correctness tests for BHV_GoToDepth. These cases verify multi-level sequences, repeated cycles and exhaustion, vertical target crossings, zero-delta arrivals, single-level targets, malformed update preservation, unsupported perpetual config, invalid sequences, malformed repeat values, missing inputs, and missing domain support.",
     "periodic-surface-motion": "Moving correctness tests for BHV_PeriodicSurface. These cases verify periodic surfacing, status variables, wait windows, timeout reset behavior, mark-variable resets, acomms extension, ascent profiles, current-speed mode, malformed status/ascent parameters, and missing inputs/domain.",
@@ -927,6 +1186,12 @@ TEST_STYLE: dict[str, str] = {
     "memoryturnlimit-behavior-motion": "Behavior correctness tests for BHV_MemoryTurnLimit. These cases verify recent-heading average output, tight and relaxed turn-window effects, runtime limiter updates, speed-scaling branches, heading mismatch evidence, and missing limiter configuration.",
     "timer-behavior-motion": "Behavior correctness tests for BHV_Timer. These cases verify idle and running duration counters, custom and default status variable names, suffix handling, active-at-start timing, and invalid status configuration.",
     "testfailure-behavior-unit": "Behavior correctness tests for BHV_TestFailure. These cases verify completion-triggered burn and hang stalls, default/malformed/negative/zero burn timing, crash/default-crash process loss, and an armed baseline that must not complete.",
+    "hostinfo-unit": "Utility infrastructure tests for pHostInfo. These cases verify deterministic host reporting, MOOSDB port publication, and exact pShare route normalization for valid, multi-route, mixed, non-UDP, and invalid route specifications.",
+    "loadwatch-unit": "Utility infrastructure tests for uLoadWatch. These cases verify threshold counters, near and hard threshold boundary behavior, low-threshold ignore behavior, clamped near-threshold behavior, breach-trigger holdoff, app-specific threshold matching, and threshold-name case sensitivity.",
+    "processwatch-unit": "Utility infrastructure tests for uProcessWatch. These cases verify process summary publications, custom present posts, event and summary post remapping, full summaries, and expected missing-process detection.",
+    "pmissioneval-unit": "Mission utility tests for pMissionEval. These cases verify pass/fail grading, built-in finish publication, staged logic sequences, fail-condition precedence, lead-only and fail-only evaluator shapes, flags and mailflags, numeric and mission-hash macros, literal numeric flags, CSP report output, clock macros, and no-hash report output.",
+    "pmissionhash-unit": "Mission utility tests for pMissionHash. These cases verify custom hash variable names, short-hash disable behavior, long-hash disable behavior, and RESET_MHASH-driven hash changes.",
+    "umayfinish-unit": "Mission utility tests for uMayFinish. These cases verify default MISSION_EVALUATED exits, custom finish variables, mismatched finish-value timeouts, and missing-finish timeouts.",
     "zigzag-behavior-motion": "Behavior correctness tests for BHV_ZigZag. These cases verify first-side selection and aliases, zig-angle boundaries, leg-limit and stem-odometry completion, active-time heading and speed capture, runtime speed updates, visual hints, and invalid parameter handling.",
     "legrun-behavior-motion": "Behavior correctness tests for BHV_LegRun. These cases verify leg geometry forms, initialization modes, capture handling, turn shaping, leg and turn progression, behavior completion, scheduled speeds, runtime updates, flag aliases, and invalid parameter handling.",
     "shadow-behavior-motion": "Behavior correctness tests for BHV_Shadow. These cases verify contact heading and speed following, relevance gating, runtime recovery, warning paths, contact flags, and invalid parameter handling.",
@@ -943,6 +1208,7 @@ STEM_CONTEXT: dict[str, str] = {
     "obmgr-motion": "The stem mission sends one ownship through a short corridor with obstacle layouts that vary by case. The harness grades whether obstacle-manager alerts support arrival without collisions, near misses, or unresolved encounters.",
     "pid-unit": "The stem mission runs one shoreside MOOS community with scripted desired/nav mail and pMarinePIDV22 using suffixed outputs. It deliberately avoids a simulated vehicle so the cases can grade the PID app's direct actuator contract.",
     "pid-motion": "The stem mission runs one simulated vehicle and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the shoreside evaluator grades bridged nav and actuator evidence.",
+    "usim-marine-motion": "The stem mission runs one MOOS community with uSimMarineV22, uTimerScript, pMissionEval, pAutoPoke, and logging/watchdog support. Case overlays change only simulator configuration, scripted input mail, and mission-owned pass/fail conditions.",
     "constant-depth-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_ConstantDepth owns the vertical-control verdict.",
     "goto-depth-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_GoToDepth owns the depth-sequence verdict.",
     "periodic-surface-motion": "The shared depth stem mission runs one simulated UUV and one shoreside evaluation community. The vehicle uses pHelmIvP, pMarinePIDV22, and uSimMarineV22; the horizontal waypoint keeps the vehicle underway while BHV_PeriodicSurface owns the surfacing-cycle verdict.",
@@ -965,6 +1231,16 @@ STEM_CONTEXT: dict[str, str] = {
     "periodic-speed-behavior-motion": "The stem mission runs one simulated vehicle with BHV_ConstantHeading providing course control while BHV_PeriodicSpeed owns the speed objective. Case overlays vary startup mode, lazy/busy periods, reset policy, alias parameters, period speed, and malformed parameter values while the evaluator grades behavior status variables and observed NAV_SPEED.",
     "memoryturnlimit-behavior-motion": "The stem mission runs one simulated vehicle with a constant speed objective, a sustained constant-heading turn demand, and BHV_MemoryTurnLimit as the evaluated limiter. Case overlays vary turn_range, priority weight, and missing limiter configuration while the evaluator grades MEM_HDG_AVG, NAV_HEADING, and heading mismatch.",
     "timer-behavior-motion": "The stem mission runs one simulated vehicle through a short waypoint leg while BHV_Timer is held idle and then activated. Case overlays vary status variable names, suffixes, activation timing, and malformed status configuration while the evaluator grades timer-posted counters.",
+    "hostinfo-unit": "The stem mission runs a single shoreside MOOS community with pHostInfo, uTimerScript, pAutoPoke, and pMissionEval. Case overlays change only pHostInfo configuration and mission-owned host-info pass/fail conditions.",
+    "loadwatch-unit": "The stem mission runs a single shoreside MOOS community with uLoadWatch, uTimerScript, pAutoPoke, and pMissionEval. Case overlays change only load-watch configuration, scripted DB_UPTIME mail, and mission-owned threshold pass/fail conditions.",
+    "processwatch-unit": "The stem mission runs a single shoreside MOOS community with uProcessWatch plus small watched peer apps. Case overlays change only process-watch configuration and mission-owned process-presence pass/fail conditions.",
+    "pnodereporter-unit": "The stem mission runs a single MOOS community with pNodeReporter, uTimerScript, pMissionEval, pAutoPoke, pMissionHash, and logging/watchdog support. Case overlays change only reporter configuration, scripted nav/helm/platform mail, and mission-owned report pass/fail conditions.",
+    "ufield-comms-unit": "The stem mission runs one shoreside community and two static vehicle communities with uFldNodeComms, uFldNodeBroker, uFldShoreBroker, pShare, uTimerScript, and pMissionEval. Case overlays change communication policy and scripted report/message traffic while the harness verifies payload-level effects.",
+    "ufield-broker-bridge": "The stem mission runs the same two-vehicle uField setup but focuses on broker configuration. Case overlays change shore broker bridges, vnode discovery, keywords, mediated node bridging, and auto-bridge settings while the harness verifies broker pShare command output.",
+    "ufield-route-resilience": "The stem mission runs the same two static vehicle communities and one shoreside community, but startup and runtime route setup is delayed, invalid, duplicated, partially supplied, or supplied by shore vnode discovery. The mission grade proves communications recovered or intentionally failed, and harness alog checks prove which route path was used.",
+    "pmissioneval-unit": "The stem mission runs a single shoreside MOOS community with pMissionHash, pMissionEval, uTimerScript, logging, and process-watch support. Case overlays change pMissionEval configuration and scripted MOOS mail while the harness starts uniquely aliased uMayFinish instances so completion remains observable.",
+    "pmissionhash-unit": "The stem mission runs a single shoreside MOOS community with pMissionHash, pMissionEval, uTimerScript, logging, and process-watch support. Case overlays change pMissionHash settings while pMissionEval consumes the hash mail as the mission-owned grader.",
+    "umayfinish-unit": "The stem mission runs a single shoreside MOOS community with pMissionEval, uTimerScript, logging, and process-watch support. The harness starts uMayFinish directly with unique aliases so each case can assert the process exit code.",
     "zigzag-behavior-motion": "The stem mission runs one simulated vehicle through a short approach leg before activating BHV_ZigZag. Case overlays vary first-side selection, angle limits, completion settings, active-time capture settings, runtime speed updates, and malformed behavior parameters.",
     "legrun-behavior-motion": "The stem mission runs one simulated vehicle on a compact two-leg LegRun pattern. Case overlays vary geometry input form, initialization mode, capture and turn controls, scheduled speeds, runtime updates, event flags, and malformed behavior parameters.",
     "shadow-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Shadow while `ben` provides controlled contact headings and speeds. Case overlays vary target motion, relevance distance, runtime updates, and missing-contact behavior.",
@@ -1648,7 +1924,8 @@ def family_panel(family: Family, harness_by_slug: dict[str, Harness]) -> str:
 
 def harness_case_counts() -> dict[str, int]:
     counts: dict[str, int] = {}
-    for zlaunch in sorted(HARNESS_DIR.glob("*/*/zlaunch.sh")):
+    for harness in HARNESSES:
+        zlaunch = ROOT.parent / harness.path / "zlaunch.sh"
         text = zlaunch.read_text()
         all_cases = zlaunch_all_cases(text)
         if not all_cases:
@@ -1663,9 +1940,9 @@ def harness_count() -> int:
 
 def app_behavior_target_count() -> int:
     roots = {
-        zlaunch.parents[1].name
-        for zlaunch in HARNESS_DIR.glob("*/*/zlaunch.sh")
-        if zlaunch.parents[1].name != "performance_harnesses"
+        Path(harness.path).parts[1]
+        for harness in HARNESSES
+        if Path(harness.path).parts[1] != "performance_harnesses"
     }
     return len(roots)
 
@@ -1871,7 +2148,7 @@ def render_user_guide() -> str:
       <div class="section-heading">
         <p class="eyebrow">Normal Flow</p>
         <h2>Pick one lane, or run both</h2>
-        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. Both lanes support one family or comma-separated family batches; harnesses also support exact target keys.</p>
+        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. Both lanes support full sweeps, one family, or comma-separated family batches; harnesses also support exact target keys.</p>
       </div>
       <div class="technical-grid">
         <article class="technical-card">
@@ -1880,11 +2157,11 @@ def render_user_guide() -> str:
         </article>
         <article class="technical-card">
           <h3>2. Choose CTest coverage</h3>
-          <p>Use <code>cpp_test_mode: family_run</code> for one component family, or <code>batch_family_run</code> for a comma-separated batch.</p>
+          <p>Use <code>cpp_test_mode: all</code> for the full CTest registry, <code>family_run</code> for one component family, or <code>batch_family_run</code> for a comma-separated batch.</p>
         </article>
         <article class="technical-card">
           <h3>3. Choose harness coverage</h3>
-          <p>Use <code>dispatch_mode: none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, or <code>specific_harnesses</code>.</p>
+          <p>Use <code>dispatch_mode: full</code> for all registered mission harnesses, <code>none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, or <code>specific_harnesses</code>.</p>
         </article>
       </div>
     </section>
@@ -1908,6 +2185,11 @@ def render_user_guide() -> str:
               <th>Skip this lane</th>
               <td><code>cpp_test_mode: none</code></td>
               <td><code>dispatch_mode: none</code></td>
+            </tr>
+            <tr>
+              <th>Full sweep</th>
+              <td><code>cpp_test_mode: all</code></td>
+              <td><code>dispatch_mode: full</code></td>
             </tr>
             <tr>
               <th>One family</th>
@@ -2023,7 +2305,7 @@ moos_ivp_ref: main</code></pre>
           </tbody>
         </table>
       </div>
-      <p class="guide-note">There is no catch-all harness or CTest mode. Use family batches when you want a broad run, and keep the batch explicit so runtime stays predictable as coverage grows.</p>
+      <p class="guide-note">Use <code>full</code> to run all registered mission harnesses and <code>all</code> to run the full CTest registry. Family batches remain useful when you want broad but bounded coverage.</p>
     </section>
 
     <section class="workflow">
@@ -2202,7 +2484,7 @@ def render_harness(h: Harness) -> str:
     visual_note = ""
     if visual_note_text:
         visual_note = f"""
-      <p class="visual-note">{escape(visual_note_text)} The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+      <p class="visual-note">{escape(visual_note_text)} The visuals call out the evidence that makes each case pass.</p>
 """
     stem_section = ""
     if stem_context:
@@ -2461,6 +2743,9 @@ def render_gif_manifest() -> str:
         "Generated Timer behavior visuals live in `docs/tools/render_timer_behavior_gifs.py`.",
         "Generated PeriodicSpeed behavior visuals live in `docs/tools/render_periodic_speed_behavior_gifs.py`.",
         "Generated MemoryTurnLimit behavior visuals live in `docs/tools/render_memoryturnlimit_behavior_gifs.py`.",
+        "Generated utility infrastructure visuals live in `docs/tools/render_utility_watch_gifs.py`.",
+        "Generated simulator infrastructure visuals live in `docs/tools/render_simulator_infrastructure_gifs.py`.",
+        "Generated mission utility visuals live in `docs/tools/render_mission_utility_gifs.py`.",
         "Headless harness runs remain the source of truth for the case behavior; the",
         "generated GIFs are documentation views of that same geometry and variable-level",
         "evidence.",

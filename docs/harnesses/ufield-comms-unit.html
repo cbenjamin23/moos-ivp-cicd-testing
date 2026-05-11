@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uField Comms Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-2">
+  <script src="../theme.js?v=20260511-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uField Communications</p>
+      <h1>H01 uField Comms Unit</h1>
+      <p class="lede">App-level correctness tests for uFldNodeComms. These cases verify report and message delivery under controlled range, group, stale-report, payload, shared-report, pulse, runtime-mail, and drop-policy conditions.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one shoreside community and two static vehicle communities with uFldNodeComms, uFldNodeBroker, uFldShoreBroker, pShare, uTimerScript, and pMissionEval. Case overlays change communication policy and scripted report/message traffic while the harness verifies payload-level effects.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame gif-frame--pending" data-file="pending">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Broker Comms</h3>
+          <p>Description: Confirms both vehicles register through the node and shore brokers, exchange node reports, and produce a visible comms pulse.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame gif-frame--pending" data-file="pending">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Range Extend</h3>
+          <p>Description: Starts below communication range, posts UNC_COMMS_RANGE=200, and requires delivery to recover at runtime.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_broker_comms_pass</code>
+          <p>Confirms both vehicles register through the node and shore brokers, exchange node reports, and produce a visible comms pulse.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>critical_range_override_pass</code>
+          <p>Sets a small nominal comms range but a critical range large enough to still allow report exchange.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shared_node_reports_pass</code>
+          <p>Enables shared_node_reports and requires NODE_REPORT_UNC in addition to the bidirectional vehicle reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pulse_disabled_pass</code>
+          <p>Disables node-report pulse rendering while preserving report delivery.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>range_block_pass</code>
+          <p>Sets both comms and critical ranges below the vehicle separation and requires report delivery to stay blocked.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_range_block_pass</code>
+          <p>Sets comms_range=0 and critical_range=0, requiring all range-gated reports, direct messages, acks, and pulses to stay blocked.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>drop_all_reports_pass</code>
+          <p>Uses drop_percentage=100 to deterministically block all inter-vehicle report delivery.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>far_range_block_pass</code>
+          <p>Moves the vehicles far apart under finite range and requires report delivery to stay blocked.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>no_limit_far_pass</code>
+          <p>Keeps the far geometry but uses comms_range=nolimit and requires bidirectional report delivery.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_msg_length_block_pass</code>
+          <p>Sets max_msg_length below the scripted payload and requires direct message delivery to be blocked while ack delivery remains available.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_specific_message_pass</code>
+          <p>Sends the direct message with dest_node=ben and requires delivery through the named-destination path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dest_group_message_pass</code>
+          <p>Sends the direct message with dest_group=red and requires delivery through group destination resolution.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ack_requested_mediated_pass</code>
+          <p>Sends a message with ack=true and requires uFldNodeComms to route it as MEDIATED_MESSAGE_BEN.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>double_val_message_pass</code>
+          <p>Sends a direct message with double_val instead of string_val and requires the numeric payload to be preserved.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>unknown_dest_block_pass</code>
+          <p>Sends a valid message to an unknown destination and requires it to be ignored while normal reports and acks still flow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ghost_source_block_pass</code>
+          <p>Sends a valid message from an unknown source node and requires it to be ignored while normal reports and acks still flow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_ack_block_pass</code>
+          <p>Sends an ack missing its required id and requires ACK_MESSAGE_abe to stay absent while direct messages and reports still flow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>msg_group_filter_pass</code>
+          <p>Splits the vehicles into different groups and enables msg_groups, requiring messages to be blocked while reports still flow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>report_group_filter_pass</code>
+          <p>Splits the vehicles into different groups and enables groups, requiring reports to be blocked while messages still flow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stealth_range_block_pass</code>
+          <p>Applies stealth to abe, requiring outbound traffic from abe to be blocked while reverse traffic still flows.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>earange_extend_pass</code>
+          <p>Gives ben extended receive range, requiring abe to reach ben while the reverse direction remains blocked.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stale_message_block_pass</code>
+          <p>Publishes stale node-report timestamps and requires messages and acks to be blocked while report fanout still reflects recently received records.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_msg_interval_filter_pass</code>
+          <p>Sends two fast direct messages with a long min_msg_interval, requiring the first delivery to pass and the follow-up payload to be suppressed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_range_extend_pass</code>
+          <p>Starts below communication range, posts UNC_COMMS_RANGE=200, and requires delivery to recover at runtime.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_stealth_block_pass</code>
+          <p>Starts with deliverable traffic, posts UNC_STEALTH for abe, and requires later outbound traffic from abe to be blocked while reverse acks still flow.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_earange_extend_pass</code>
+          <p>Starts below communication range, posts UNC_EARANGE for ben, and requires later abe to ben traffic to recover asymmetrically.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_drop_all_pass</code>
+          <p>Starts with deliverable traffic, posts UNC_DROP_PCT=100, and requires later direct messages and acks to be dropped.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_pulse_disabled_pass</code>
+          <p>Starts with visible report pulses, posts UNC_VIEW_NODE_RPT_PULSES=false, and requires later report delivery to continue without later pulse output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_shared_reports_pass</code>
+          <p>Starts with shared reports disabled, posts UNC_SHARED_NODE_REPORTS=true, and requires NODE_REPORT_UNC to appear.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shared_node_reports_numeric_pass</code>
+          <p>Enables shared reports with a numeric interval and requires NODE_REPORT_UNC through the interval-based config path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>min_rpt_interval_filter_pass</code>
+          <p>Sets a long min_rpt_interval and requires first report delivery to pass while repeated report posts are rate-limited.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>stale_time_unlimited_pass</code>
+          <p>Publishes old report timestamps with stale_time=-1 and requires reports, direct messages, and acks to remain deliverable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>max_msg_length_unlimited_pass</code>
+          <p>Sets max_msg_length=0 and requires a deliberately long direct message payload to be delivered.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>earrange_alias_extend_pass</code>
+          <p>Uses the accepted earrange spelling alias and requires the same asymmetric enhanced acoustic range outcome as earange.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>critical_group_override_pass</code>
+          <p>Splits vehicle groups while setting a large critical range, requiring report delivery to bypass group filtering while range-gated messages remain blocked.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufield_comms_harnesses/H01-ufield_comms_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_comms_missions/ufield_comms_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>
