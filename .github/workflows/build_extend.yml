@@ -3,12 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       dispatch_mode:
-        description: "[Harness] mode: none, family_run, batch_family_run, or specific_harnesses"
+        description: "[Harness] mode: none, full, family_run, batch_family_run, or specific_harnesses"
         required: true
         type: choice
         default: none
         options:
           - none
+          - full
           - family_run
           - batch_family_run
           - specific_harnesses
@@ -21,6 +22,9 @@ on:
           - cmgr
           - obmgr
           - pid
+          - pnodereporter
+          - ufield_comms
+          - usim_marine
           - colregs
           - collision_behavior
           - convoy_behavior
@@ -39,6 +43,12 @@ on:
           - testfailure_behavior
           - timer_behavior
           - trail_behavior
+          - pmissioneval
+          - pmissionhash
+          - umayfinish
+          - hostinfo
+          - loadwatch
+          - processwatch
           - waypoint_behavior
           - zigzag_behavior
       targets:
@@ -48,14 +58,15 @@ on:
       families:
         description: "[Harness] comma-separated families for batch_family_run mode"
         required: false
-        default: "convoy_behavior,cutrange_behavior,fixedturn_behavior,legrun_behavior,loiter_behavior,memoryturnlimit_behavior,periodic_speed_behavior,shadow_behavior,stationkeep_behavior,testfailure_behavior,timer_behavior,trail_behavior,waypoint_behavior,zigzag_behavior,collision_behavior,obstacle_behavior,opregion"
+        default: "convoy_behavior,cutrange_behavior,fixedturn_behavior,legrun_behavior,loiter_behavior,memoryturnlimit_behavior,periodic_speed_behavior,shadow_behavior,stationkeep_behavior,testfailure_behavior,timer_behavior,trail_behavior,waypoint_behavior,zigzag_behavior,collision_behavior,obstacle_behavior,opregion,pmissioneval,pmissionhash,umayfinish,hostinfo,loadwatch,processwatch"
       cpp_test_mode:
-        description: "[CTest] C++ test mode: none, family_run, or batch_family_run"
+        description: "[CTest] C++ test mode: none, all, family_run, or batch_family_run"
         required: true
         type: choice
-        default: family_run
+        default: all
         options:
           - none
+          - all
           - family_run
           - batch_family_run
       cpp_test_family:
@@ -109,6 +120,10 @@ on:
           - logutils
           - manifest
           - marine_pid
+          - pMissionEval
+          - pMissionHash
+          - uMayFinish
+          - pnodereporter
           - marineview
           - mbutil
           - nspatch
@@ -125,6 +140,7 @@ on:
           - tagrep
           - turngeo
           - ucommand
+          - usim_marine
           - ufield
           - ufldbeaconrangesensor
           - ufldcollisiondetect
@@ -146,7 +162,7 @@ on:
         default: "main"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.targets || 'none' }}-${{ inputs.cpp_test_mode }}-${{ inputs.cpp_test_mode == 'family_run' && inputs.cpp_test_family || inputs.cpp_test_mode == 'batch_family_run' && inputs.cpp_test_families || 'none' }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.dispatch_mode }}-${{ inputs.dispatch_mode == 'family_run' && inputs.family || inputs.dispatch_mode == 'batch_family_run' && inputs.families || inputs.dispatch_mode == 'specific_harnesses' && inputs.targets || inputs.dispatch_mode == 'full' && 'full' || 'none' }}-${{ inputs.cpp_test_mode }}-${{ inputs.cpp_test_mode == 'family_run' && inputs.cpp_test_family || inputs.cpp_test_mode == 'batch_family_run' && inputs.cpp_test_families || inputs.cpp_test_mode == 'all' && 'all' || 'none' }}
   cancel-in-progress: true
 
 jobs:
@@ -435,11 +451,12 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: build/cpp-unit-test-reports/*.xml
+          retention-days: 7
           if-no-files-found: warn
 
   runtime-harnesses:
     name: runtime / ${{ matrix.key }} / ${{ matrix.harness }}
-    if: ${{ inputs.dispatch_mode == 'specific_harnesses' || inputs.dispatch_mode == 'family_run' || inputs.dispatch_mode == 'batch_family_run' }}
+    if: ${{ inputs.dispatch_mode == 'full' || inputs.dispatch_mode == 'specific_harnesses' || inputs.dispatch_mode == 'family_run' || inputs.dispatch_mode == 'batch_family_run' }}
     needs:
       - prepare
       - build
@@ -506,6 +523,7 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.path }}/results.txt
+          retention-days: 7
           if-no-files-found: warn
 
       - name: Summarize selected runtime results

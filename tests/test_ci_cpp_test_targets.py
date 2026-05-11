@@ -22,14 +22,17 @@ class CppTestTargetSummaryTests(unittest.TestCase):
             ["geometry", "ivpbuild", "mbutil"],
         )
 
-    def test_selected_targets_rejects_empty_selection(self) -> None:
-        with self.assertRaisesRegex(ValueError, "No CTest families"):
-            ci_cpp_test_targets.selected_targets(" , ")
+    def test_selected_targets_defaults_empty_selection_to_all(self) -> None:
+        self.assertEqual(ci_cpp_test_targets.selected_targets(" , "), ["all"])
 
     def test_select_targets_for_mode_matches_workflow_modes(self) -> None:
         self.assertEqual(
             ci_cpp_test_targets.select_targets_for_mode("none", "", ""),
             [],
+        )
+        self.assertEqual(
+            ci_cpp_test_targets.select_targets_for_mode("all", "", ""),
+            ["all"],
         )
         self.assertEqual(
             ci_cpp_test_targets.select_targets_for_mode("family_run", "geometry", ""),
@@ -43,6 +46,7 @@ class CppTestTargetSummaryTests(unittest.TestCase):
             ),
             ["geometry", "ivpbuild"],
         )
+
     def test_select_targets_for_mode_rejects_unknown_family(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown C\\+\\+ test family"):
             ci_cpp_test_targets.select_targets_for_mode("family_run", "missing", "")
@@ -73,6 +77,15 @@ class CppTestTargetSummaryTests(unittest.TestCase):
             ci_cpp_test_targets.matrix_for_selected_targets([]),
             {"include": []},
         )
+
+    def test_all_ctest_target_runs_without_label_filter(self) -> None:
+        command = ci_cpp_test_targets.ctest_command(
+            Path("build"),
+            "all",
+            Path("reports/all.xml"),
+        )
+
+        self.assertNotIn("-L", command)
 
     def test_parse_junit_report_counts_failures_errors_and_skips(self) -> None:
         report = self.write_report(

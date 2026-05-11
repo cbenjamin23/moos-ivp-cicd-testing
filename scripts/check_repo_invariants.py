@@ -21,12 +21,14 @@ WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "build_extend.yml"
 DOCS_BUILD_PATH = REPO_ROOT / "docs" / "tools" / "build_pages.py"
 EXPECTED_DISPATCH_MODES = {
     "none",
+    "full",
     "family_run",
     "batch_family_run",
     "specific_harnesses",
 }
 EXPECTED_CPP_TEST_MODES = {
     "none",
+    "all",
     "family_run",
     "batch_family_run",
 }
@@ -189,6 +191,24 @@ def check_workflow_inputs(targets: list[dict[str, object]]) -> list[CheckFailure
                 + ", ".join(sorted(EXPECTED_DISPATCH_MODES))
                 + "; found "
                 + ", ".join(sorted(dispatch_modes)),
+            )
+        )
+    runtime_condition = next(
+        (
+            line.strip()
+            for line in workflow_text.splitlines()
+            if line.strip().startswith("if: ${{")
+            and "inputs.dispatch_mode" in line
+            and "specific_harnesses" in line
+            and "batch_family_run" in line
+        ),
+        "",
+    )
+    if "inputs.dispatch_mode == 'full'" not in runtime_condition:
+        failures.append(
+            CheckFailure(
+                "workflow runtime dispatch condition",
+                "runtime-harnesses job must allow dispatch_mode full",
             )
         )
 

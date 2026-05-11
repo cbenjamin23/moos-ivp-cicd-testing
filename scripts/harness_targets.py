@@ -73,6 +73,9 @@ def select_targets(
     if dispatch_mode == "none":
         return []
 
+    if dispatch_mode == "full":
+        return targets
+
     if dispatch_mode == "correctness_subset":
         dispatch_mode = "specific_harnesses"
 
@@ -204,6 +207,7 @@ def parse_args() -> argparse.Namespace:
         required=True,
         choices=(
             "none",
+            "full",
             "family_run",
             "batch_family_run",
             "specific_harnesses",
@@ -238,6 +242,9 @@ def main() -> int:
             if args.mode == "none":
                 selected = []
                 runtime = []
+            elif args.mode == "full":
+                selected = targets
+                runtime = selected
             else:
                 selected = select_targets(
                     targets,

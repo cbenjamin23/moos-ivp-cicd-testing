@@ -43,6 +43,20 @@ class HarnessTargetTests(unittest.TestCase):
 
         self.assertEqual(selected, [])
 
+    def test_full_selects_all_harness_targets(self) -> None:
+        selected = harness_targets.select_targets(
+            self.targets,
+            dispatch_mode="full",
+            family="",
+            raw_families="",
+            raw_targets="",
+        )
+
+        self.assertEqual(
+            [target["key"] for target in selected],
+            [target["key"] for target in self.targets],
+        )
+
     def test_specific_harnesses_preserves_requested_order(self) -> None:
         selected = harness_targets.select_targets(
             self.targets,
