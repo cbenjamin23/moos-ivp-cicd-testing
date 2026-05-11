@@ -1,0 +1,16 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=LIMITED_SRC,dest_name=LIMITED_RX,route=127.0.0.1:$(SHORE_PSHARE),max_shares=1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=LIMITED_SRC, val=first, time=2.0
+  event = var=LIMITED_SRC, val=second, time=6.0
+}

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H02 pShare Topology | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Utility Infrastructure</p>
+      <h1>H02 pShare Topology</h1>
+      <p class="lede">Utility infrastructure tests for pShare topology behavior. These cases verify two-sender fan-in, competing updates to the same destination, one receiver listening on multiple UDP input ports, input route-list parsing, multicast delivery to more than one listener, custom multicast base/address mapping, relay proof of receipt, dynamic unicast and multicast receiver input-route insertion, unicast branching to a relay, route-list branching across communities, alias-specific command routing, and runtime output-route insertion through PSHARE_CMD.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs four local MOOS communities: a shoreside evaluator, two sender peers, and one relay/listener peer. Case overlays keep the topology fixed while changing pShare routes, scripted sender mail, and the evaluator conditions needed to prove multi-peer delivery.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pshare-topology-fanin.gif">
+          <img src="../assets/gifs/pshare-topology-fanin.gif?v=20260511-5" alt="Fan-in GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Fan-in</h3>
+          <p>Description: Routes independent mail from two senders into one receiver and expects both values at the evaluator.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pshare-topology-multicast-relay-proof.gif">
+          <img src="../assets/gifs/pshare-topology-multicast-relay-proof.gif?v=20260511-5" alt="Multicast Relay Proof GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Multicast Relay Proof</h3>
+          <p>Description: Sends one multicast route to both the evaluator and relay, then expects the relay to forward proof of receipt back to the evaluator.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>pshare_topology_fanin_pass</code>
+          <p>Routes independent mail from two senders into one receiver and expects both values at the evaluator.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_competing_update_pass</code>
+          <p>Routes two senders into the same destination variable and expects the later sender update to win.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_multi_input_port_pass</code>
+          <p>Sends one update to the shore primary input and another to a second shore input port, proving one community can listen on multiple pShare ports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_input_route_list_pass</code>
+          <p>Configures two receiver ports in one input route list and expects mail sent to both ports to arrive at the evaluator.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_multicast_multi_listener_pass</code>
+          <p>Sends one multicast route to both the evaluator and relay, then expects the relay to forward proof of receipt back to the evaluator.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_dynamic_input_route_pass</code>
+          <p>Adds a receiver input port through PSHARE_CMD at runtime and expects later mail sent to that new port to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_dynamic_multicast_input_pass</code>
+          <p>Adds a multicast receiver route through PSHARE_CMD at runtime and expects later multicast mail to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_custom_multicast_base_pass</code>
+          <p>Sends multicast mail over a non-default multicast base port and address, proving both sender and receiver honor the custom channel mapping.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_unicast_relay_branch_pass</code>
+          <p>Sends one source update over two unicast routes, proving both direct shore delivery and relay receipt through a relay proof flag.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_route_list_branch_pass</code>
+          <p>Sends one source update through a single route-list output that targets both shore and relay, proving route-list branching across communities.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_alias_cmd_route_pass</code>
+          <p>Launches alpha pShare under an Antler alias and installs a route through the alias-specific command variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_topology_runtime_route_pass</code>
+          <p>Installs a route through PSHARE_CMD at runtime and expects later mail to arrive through the new route.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pshare_harnesses/H02-pshare_topology/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pshare_missions/pshare_topology/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

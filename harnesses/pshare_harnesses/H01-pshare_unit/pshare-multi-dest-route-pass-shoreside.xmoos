@@ -1,0 +1,23 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = MULTI_A = fanout
+  pass_condition = MULTI_B = fanout
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pshare_unit
+  mission_mod  = pshare_multi_dest_route_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = multi_a=$[MULTI_A]
+  report_column    = multi_b=$[MULTI_B]
+  report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

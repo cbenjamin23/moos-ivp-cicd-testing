@@ -1,0 +1,15 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = SHORT_SRC->SHORT_RX:127.0.0.1:$(SHORE_PSHARE)
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=SHORT_SRC, val=short, time=2.0
+}

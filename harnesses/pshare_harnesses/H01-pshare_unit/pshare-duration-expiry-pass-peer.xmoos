@@ -1,0 +1,16 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=DURATION_SRC,dest_name=DURATION_RX,route=127.0.0.1:$(SHORE_PSHARE),duration=3
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=DURATION_SRC, val=first, time=2.0
+  event = var=DURATION_SRC, val=second, time=8.0
+}

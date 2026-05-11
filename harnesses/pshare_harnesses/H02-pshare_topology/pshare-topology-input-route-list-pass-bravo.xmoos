@@ -1,0 +1,15 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=INPUT_LIST_BRAVO_SRC,dest_name=INPUT_LIST_BRAVO,route=127.0.0.1:$(RELAY_PSHARE)
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=INPUT_LIST_BRAVO_SRC, val=input_bravo, time=20.0
+}

@@ -1,0 +1,16 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=DUAL_SRC,dest_name=DUAL_SHORE,route=127.0.0.1:$(SHORE_PSHARE)
+  Output = src_name=DUAL_SRC,dest_name=DUAL_RELAY,route=127.0.0.1:$(RELAY_PSHARE)
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=DUAL_SRC, val=branch, time=20.0
+}

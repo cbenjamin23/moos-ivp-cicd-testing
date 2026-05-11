@@ -1,0 +1,25 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pShare        @ NewConsole = false ~ ShareAlpha
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+}
+
+ProcessConfig = ShareAlpha
+{
+  AppTick   = 10
+  CommsTick = 10
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=SHAREALPHA_CMD, val="cmd=output,src_name=ALIAS_SRC,dest_name=ALIAS_RX,route=127.0.0.1:$(SHORE_PSHARE)", time=18.0
+  event = var=ALIAS_SRC, val=alias, time=22.0
+}

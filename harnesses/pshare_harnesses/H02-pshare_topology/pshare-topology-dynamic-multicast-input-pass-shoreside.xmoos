@@ -1,0 +1,38 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Input = route=127.0.0.1:$(PSHARE_PORT)
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PSHARE_CMD, val="cmd=input,route=multicast_44", time=18.0
+  event = var=TEST_EVAL_READY, val=true, time=45.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = DYN_MCAST_RX = dynamic_mcast
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pshare_topology
+  mission_mod  = pshare_topology_dynamic_multicast_input_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = dyn_mcast=$[DYN_MCAST_RX]
+  report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

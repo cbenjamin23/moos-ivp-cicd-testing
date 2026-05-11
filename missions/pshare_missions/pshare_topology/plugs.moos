@@ -1,0 +1,48 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)_$(LOG_STEM)
+  PATH   = ./
+  AsyncLog = true
+
+  Log = FANIN_ALPHA @ 0 nosync
+  Log = FANIN_BRAVO @ 0 nosync
+  Log = COMPETE_RX @ 0 nosync
+  Log = WL_ALLOW @ 0 nosync
+  Log = WL_BLOCK @ 0 nosync
+  Log = MCAST_TO_SHORE @ 0 nosync
+  Log = RELAY_OK @ 0 nosync
+  Log = RELAY_SEEN @ 0 nosync
+  Log = DYN_INPUT_RX @ 0 nosync
+  Log = DYN_MCAST_RX @ 0 nosync
+  Log = CUSTOM_MCAST_RX @ 0 nosync
+  Log = INPUT_LIST_ALPHA @ 0 nosync
+  Log = INPUT_LIST_BRAVO @ 0 nosync
+  Log = DUAL_SHORE @ 0 nosync
+  Log = DUAL_RELAY @ 0 nosync
+  Log = UNICAST_RELAY_OK @ 0 nosync
+  Log = UNICAST_RELAY_SEEN @ 0 nosync
+  Log = LIST_BRANCH @ 0 nosync
+  Log = LIST_RELAY_OK @ 0 nosync
+  Log = LIST_RELAY_SEEN @ 0 nosync
+  Log = ALIAS_RX @ 0 nosync
+  Log = RUNTIME_RX @ 0 nosync
+  Log = PSHARE_OUTPUT_SUMMARY @ 0 nosync
+  Log = PSHARE_INPUT_SUMMARY @ 0 nosync
+}

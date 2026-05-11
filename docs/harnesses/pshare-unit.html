@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pShare Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Utility Infrastructure</p>
+      <h1>H01 pShare Unit</h1>
+      <p class="lede">Utility infrastructure tests for pShare. These cases verify direct route delivery, destination renaming, max-share limiting, wildcard source matching, source-app-qualified wildcards, multicast aliases, wildcard prefix renaming, caret wildcard renaming, duration expiry, shorthand route syntax, multi-destination fanout, command-line -o route configuration, and frequency throttling.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs two local MOOS communities connected by pShare. Case overlays change only pShare route configuration, scripted sender mail, and receiver-side mission-owned pass/fail conditions.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pshare-direct-route.gif">
+          <img src="../assets/gifs/pshare-direct-route.gif?v=20260511-5" alt="Direct Route GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Direct Route</h3>
+          <p>Description: Shares one variable directly and expects the receiver to grade the routed value.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pshare-wildcard-route.gif">
+          <img src="../assets/gifs/pshare-wildcard-route.gif?v=20260511-5" alt="Wildcard Route GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Wildcard Route</h3>
+          <p>Description: Routes a wildcard source pattern and expects the matching sender mail to arrive under its original variable name.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>pshare_direct_route_pass</code>
+          <p>Shares one variable directly and expects the receiver to grade the routed value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_rename_route_pass</code>
+          <p>Shares one variable under a different destination name and expects only the renamed destination to be graded.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_max_shares_one_pass</code>
+          <p>Configures max_shares=1, publishes two values, and expects the receiver to retain the first routed value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_wildcard_route_pass</code>
+          <p>Routes a wildcard source pattern and expects the matching sender mail to arrive under its original variable name.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_duration_expiry_pass</code>
+          <p>Configures a short route duration and expects mail after expiry not to replace the first routed value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_shorthand_route_pass</code>
+          <p>Uses pShare shorthand output syntax and expects the renamed destination mail to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_multi_dest_route_pass</code>
+          <p>Fans one source variable out to two destination names and expects both receiver variables to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_frequency_throttle_pass</code>
+          <p>Configures a low share frequency, publishes two quick updates, and expects the receiver to retain the first value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_cli_output_route_pass</code>
+          <p>Starts pShare with a command-line -o route and expects the routed destination mail to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_wildcard_source_app_pass</code>
+          <p>Routes a wildcard variable pattern qualified by source app and expects the matching timer-script mail to arrive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_multicast_alias_pass</code>
+          <p>Routes mail through a multicast_N channel alias and expects the receiver to grade the multicast delivery.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_wildcard_prefix_rename_pass</code>
+          <p>Routes a wildcard source pattern with a destination prefix and expects the original variable name appended to that prefix.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pshare_wildcard_caret_rename_pass</code>
+          <p>Routes a single-star wildcard source pattern with dest_name=^ and expects only the wildcard-matched substring as the receiver variable.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pshare_harnesses/H01-pshare_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pshare_missions/pshare_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

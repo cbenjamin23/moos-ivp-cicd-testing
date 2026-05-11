@@ -1,0 +1,23 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = DUAL_SHORE = branch
+  pass_condition = UNICAST_RELAY_SEEN = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pshare_topology
+  mission_mod  = pshare_topology_unicast_relay_branch_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = shore=$[DUAL_SHORE]
+  report_column    = relay=$[UNICAST_RELAY_SEEN]
+  report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

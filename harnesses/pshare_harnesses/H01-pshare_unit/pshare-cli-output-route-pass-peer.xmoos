@@ -1,0 +1,26 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  pshare_args = -o=CLI_SRC->CLI_RX:127.0.0.1:$(SHORE_PSHARE)
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pShare        @ NewConsole = false, ExtraProcessParams=pshare_args
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+}
+
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=CLI_SRC, val=cli_route, time=2.0
+}

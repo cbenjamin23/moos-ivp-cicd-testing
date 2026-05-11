@@ -1,0 +1,15 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=MCAST_SRC,dest_name=MCAST_RX,route=multicast_17
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=MCAST_SRC, val=multicast, time=2.0
+}

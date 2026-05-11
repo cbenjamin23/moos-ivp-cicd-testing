@@ -1,0 +1,46 @@
+//-------------------------------------------------
+// FILE: meta_alpha.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = pshare_topology_alpha
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pShare        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// pShare Config Block
+
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=ALPHA_SRC,dest_name=FANIN_ALPHA,route=127.0.0.1:$(SHORE_PSHARE)
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=ALPHA_SRC, val=alpha, time=20.0
+}

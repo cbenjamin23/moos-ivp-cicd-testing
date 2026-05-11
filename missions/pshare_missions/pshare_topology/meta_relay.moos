@@ -1,0 +1,32 @@
+//-------------------------------------------------
+// FILE: meta_relay.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = pshare_topology_relay
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pShare        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// pShare Config Block
+
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+}

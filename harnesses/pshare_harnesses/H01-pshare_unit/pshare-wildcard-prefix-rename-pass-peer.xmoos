@@ -1,0 +1,15 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=PFX_*,dest_name=RENAMED_,route=127.0.0.1:$(SHORE_PSHARE)
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=PFX_ONE, val=prefixed, time=2.0
+}

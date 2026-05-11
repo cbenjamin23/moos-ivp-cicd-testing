@@ -1,0 +1,21 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ROUTE_RENAMED = bravo
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pshare_unit
+  mission_mod  = pshare_rename_route_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = renamed=$[ROUTE_RENAMED]
+  report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

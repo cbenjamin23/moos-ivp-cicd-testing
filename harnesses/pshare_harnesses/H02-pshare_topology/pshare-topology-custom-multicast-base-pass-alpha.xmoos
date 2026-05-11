@@ -1,0 +1,18 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  multicast_base_port = $(RELAY_PSHARE)
+  multicast_address   = 224.1.1.12
+
+  Output = src_name=CUSTOM_MCAST_SRC,dest_name=CUSTOM_MCAST_RX,route=multicast_7
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=CUSTOM_MCAST_SRC, val=custom_mcast, time=20.0
+}

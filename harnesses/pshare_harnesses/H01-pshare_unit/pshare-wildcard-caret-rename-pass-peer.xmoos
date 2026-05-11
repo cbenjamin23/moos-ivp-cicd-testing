@@ -1,0 +1,15 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=CARET_*,dest_name=^,route=127.0.0.1:$(SHORE_PSHARE)
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=CARET_DELTA, val=caret, time=2.0
+}

@@ -1,0 +1,88 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = pshare_shore
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pShare        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+  Run = pAutoPoke     @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// pShare Config Block
+
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Input = route=127.0.0.1:$(PSHARE_PORT)
+}
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = TEST_EVAL_READY=false
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=TEST_EVAL_READY, val=true, time=8.0
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ROUTE_TEST_RX = alpha
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pshare_unit
+  mission_mod  = $(MMOD:=pshare_direct_route_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = route_rx=$[ROUTE_TEST_RX]
+  report_column    = renamed=$[ROUTE_RENAMED]
+  report_column    = limited=$[LIMITED_RX]
+  report_column    = wild=$[WILD_SRC]
+  report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

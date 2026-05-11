@@ -1,0 +1,31 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Input = route=127.0.0.1:$(PSHARE_PORT)&127.0.0.1:$(RELAY_PSHARE)
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = INPUT_LIST_ALPHA = input_alpha
+  pass_condition = INPUT_LIST_BRAVO = input_bravo
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pshare_topology
+  mission_mod  = pshare_topology_input_route_list_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = alpha=$[INPUT_LIST_ALPHA]
+  report_column    = bravo=$[INPUT_LIST_BRAVO]
+  report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

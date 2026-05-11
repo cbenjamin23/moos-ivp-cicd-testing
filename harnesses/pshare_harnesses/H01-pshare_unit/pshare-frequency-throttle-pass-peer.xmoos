@@ -1,0 +1,16 @@
+ProcessConfig = pShare
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Output = src_name=FREQ_SRC,dest_name=FREQ_RX,route=127.0.0.1:$(SHORE_PSHARE),frequency=0.25
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  event = var=FREQ_SRC, val=first, time=2.0
+  event = var=FREQ_SRC, val=second, time=3.0
+}

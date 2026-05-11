@@ -1,0 +1,43 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File   = LOG_$(MMOD)
+  PATH   = ./
+  AsyncLog = true
+
+  Log = ROUTE_TEST @ 0 nosync
+  Log = ROUTE_TEST_RX @ 0 nosync
+  Log = ROUTE_RENAMED @ 0 nosync
+  Log = LIMITED_RX @ 0 nosync
+  Log = WILD_SRC @ 0 nosync
+  Log = ALLOW_RX @ 0 nosync
+  Log = BLOCK_RX @ 0 nosync
+  Log = DURATION_RX @ 0 nosync
+  Log = SHORT_RX @ 0 nosync
+  Log = MULTI_A @ 0 nosync
+  Log = MULTI_B @ 0 nosync
+  Log = FREQ_RX @ 0 nosync
+  Log = CLI_RX @ 0 nosync
+  Log = APPWILD_SRC @ 0 nosync
+  Log = MCAST_RX @ 0 nosync
+  Log = RENAMED_PFX_ONE @ 0 nosync
+  Log = DELTA @ 0 nosync
+  Log = PSHARE_OUTPUT_SUMMARY @ 0 nosync
+  Log = PSHARE_INPUT_SUMMARY @ 0 nosync
+}
