@@ -1,0 +1,34 @@
+//-------------------------------------------------
+// FILE: burn-malformed-time-default-gap-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_FAILURE_DONE = true
+  lead_condition = PHELMIVP_ITER_GAP > 1.5
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = PROC_WATCH_ALL_OK = true
+  pass_condition = PHELMIVP_ITER_GAP > 1.5
+  pass_condition = TEST_FAILURE_DONE = true
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = testfailure_behavior_unit
+  mission_mod  = burn_malformed_time_default_gap_pass
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
+  report_column    = helm_present=$[HELM_PRESENT]
+  report_column    = done=$[TEST_FAILURE_DONE]
+  report_column    = helm_gap=$[PHELMIVP_ITER_GAP]
+  report_column    = load_breaches=$[ULW_BREACH_COUNT]
+  report_column    = near_breaches=$[ULW_NEAR_BREACH_COUNT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

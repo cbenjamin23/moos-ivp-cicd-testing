@@ -1,0 +1,9 @@
+Behavior = BHV_Timer
+{
+  name      = timer
+  condition = MODE == ACTIVE
+  condition = TIMER_ACTIVE = true
+
+  var_status_idle    = IDLE_RAW
+  var_status_running = RUN_RAW
+}

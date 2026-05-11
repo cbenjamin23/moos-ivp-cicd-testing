@@ -1,0 +1,13 @@
+Behavior = BHV_Timer
+{
+  name      = timer
+  condition = MODE == ACTIVE
+  condition = TIMER_ACTIVE = true
+
+  var_status_idle    = UNUSED_IDLE
+  var_status_idle    = TIMER_IDLE_SECONDS
+  var_status_running = UNUSED_RUN
+  var_status_running = TIMER_RUNNING_SECONDS
+  status_suffix      = unused
+  status_suffix      = base
+}

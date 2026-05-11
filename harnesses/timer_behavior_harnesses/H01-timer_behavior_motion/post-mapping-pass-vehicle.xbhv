@@ -1,0 +1,13 @@
+Behavior = BHV_Timer
+{
+  name      = timer
+  condition = MODE == ACTIVE
+  condition = TIMER_ACTIVE = true
+
+  var_status_idle    = TIMER_IDLE_SECONDS
+  var_status_running = TIMER_RUNNING_SECONDS
+  status_suffix      = base
+
+  post_mapping = TIMER_IDLE_SECONDS_base,TIMER_IDLE_MAPPED
+  post_mapping = TIMER_RUNNING_SECONDS_base,TIMER_RUNNING_MAPPED
+}

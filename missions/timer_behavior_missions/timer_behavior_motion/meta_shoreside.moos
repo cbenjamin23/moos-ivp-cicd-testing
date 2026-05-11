@@ -1,0 +1,249 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB           @ NewConsole = false
+  Run = pRealm           @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldShoreBroker  @ NewConsole = false
+  Run = uFldNodeComms    @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer    @ NewConsole = false
+#else
+  Run = pMissionHash     @ NewConsole = false
+#endif
+}
+
+#include plugs.moos <pHostInfo>
+#include plugs.moos <pShare>
+#include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = TIMER_ACTIVE=false
+  flag = TEST_EVAL_READY=false
+  flag = MISSION_TIMEOUT=false
+  flag = BHV_ERROR_SEEN=false
+
+  required_nodes = 1
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_SEGLIST, val="pts={-24,-124:-4,-104},label=timer_transit_leg,edge_color=white,vertex_color=dodger_blue,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=VIEW_POINT, val="x=-4,y=-104,label=timer_eval_area,vertex_color=orange,vertex_size=9,duration=9999", time=0.5
+  event = var=TIMER_ACTIVE, val=true, time=4
+  event = var=TEST_EVAL_READY, val=true, time=10
+  event = var=MISSION_TIMEOUT, val=true, time=20
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (TEST_EVAL_READY = true) or (MISSION_TIMEOUT = true)
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = TIMER_IDLE_SECONDS_base > 2
+  pass_condition = TIMER_RUNNING_SECONDS_base > 2
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = timer_behavior_tests
+  mission_mod  = $(MMOD:=baseline_idle_running_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = active=$[TIMER_ACTIVE]
+  report_column = idle=$[TIMER_IDLE_SECONDS_base]
+  report_column = running=$[TIMER_RUNNING_SECONDS_base]
+  report_column = custom_idle=$[IDLE_SECONDS_custom]
+  report_column = custom_running=$[RUN_SECONDS_custom]
+  report_column = raw_idle=$[IDLE_RAW]
+  report_column = raw_running=$[RUN_RAW]
+  report_column = stock_idle=$[TIMER_IDLE]
+  report_column = stock_running=$[TIMER_RUNNING]
+  report_column = default_idle=$[TIMER_IDLE_survey]
+  report_column = default_running=$[TIMER_RUNNING_survey]
+  report_column = mapped_idle=$[TIMER_IDLE_MAPPED]
+  report_column = mapped_running=$[TIMER_RUNNING_MAPPED]
+  report_column = updated_idle=$[TIMER_IDLE_UPDATED_late]
+  report_column = updated_running=$[TIMER_RUNNING_UPDATED_late]
+  report_column = timer_done=$[TIMER_DONE]
+  report_column = timer_remaining=$[TIMER_REMAINING]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+//----------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = TIMER_ACTIVE, TEST_EVAL_READY, MISSION_TIMEOUT
+  qbridge  = TIMER_IDLE_SECONDS_base, TIMER_RUNNING_SECONDS_base
+  qbridge  = IDLE_SECONDS_custom, RUN_SECONDS_custom
+  qbridge  = IDLE_RAW, RUN_RAW
+  qbridge  = TIMER_IDLE, TIMER_RUNNING
+  qbridge  = TIMER_IDLE_survey, TIMER_RUNNING_survey
+  qbridge  = TIMER_IDLE_MAPPED, TIMER_RUNNING_MAPPED
+  qbridge  = TIMER_IDLE_UPDATED_late, TIMER_RUNNING_UPDATED_late
+  qbridge  = TIMER_DONE, TIMER_REMAINING
+  qbridge  = TRANSIT_DONE, NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+}
+
+//----------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = true
+}
+
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  Log = VIEW_SEGLIST @ 0 nosync
+  Log = VIEW_POINT @ 0 nosync
+  Log = TIMER_ACTIVE @ 0 nosync
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = TIMER_IDLE_SECONDS_base @ 0 nosync
+  Log = TIMER_RUNNING_SECONDS_base @ 0 nosync
+  Log = IDLE_SECONDS_custom @ 0 nosync
+  Log = RUN_SECONDS_custom @ 0 nosync
+  Log = IDLE_RAW @ 0 nosync
+  Log = RUN_RAW @ 0 nosync
+  Log = TIMER_IDLE @ 0 nosync
+  Log = TIMER_RUNNING @ 0 nosync
+  Log = TIMER_IDLE_survey @ 0 nosync
+  Log = TIMER_RUNNING_survey @ 0 nosync
+  Log = TIMER_IDLE_MAPPED @ 0 nosync
+  Log = TIMER_RUNNING_MAPPED @ 0 nosync
+  Log = TIMER_IDLE_UPDATED_late @ 0 nosync
+  Log = TIMER_RUNNING_UPDATED_late @ 0 nosync
+  Log = TIMER_DONE @ 0 nosync
+  Log = TIMER_REMAINING @ 0 nosync
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+}
+
+//----------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  tiff_file            = MIT_SP.tif
+  set_pan_x            = -10
+  set_pan_y            = -105
+  zoom                 = 1.7
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  content_mode         = appcast
+  appcast_color_scheme = indigo
+  nodes_font_size      = large
+  procs_font_size      = large
+  appcast_font_size    = large
+  point_viewable_labels = false
+
+  scope = TIMER_ACTIVE
+  scope = TEST_EVAL_READY
+  scope = MISSION_EVALUATED
+  scope = MISSION_TIMEOUT
+  scope = TIMER_IDLE_SECONDS_base
+  scope = TIMER_RUNNING_SECONDS_base
+  scope = IDLE_SECONDS_custom
+  scope = RUN_SECONDS_custom
+  scope = IDLE_RAW
+  scope = RUN_RAW
+  scope = TIMER_IDLE
+  scope = TIMER_RUNNING
+  scope = TIMER_IDLE_survey
+  scope = TIMER_RUNNING_survey
+  scope = TIMER_IDLE_MAPPED
+  scope = TIMER_RUNNING_MAPPED
+  scope = TIMER_IDLE_UPDATED_late
+  scope = TIMER_RUNNING_UPDATED_late
+  scope = TIMER_DONE
+  scope = TIMER_REMAINING
+  scope = BHV_ERROR_SEEN
+
+  button_one = DEPLOY # DEPLOY_ALL=true
+  button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false
+}

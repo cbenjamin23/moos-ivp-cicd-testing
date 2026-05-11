@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=TIMER_ACTIVE, val=true, time=4
+  event = var=TIMER_UPDATES, val="var_status_idle=TIMER_IDLE_UPDATED#var_status_running=TIMER_RUNNING_UPDATED#status_suffix=late", time=6
+}

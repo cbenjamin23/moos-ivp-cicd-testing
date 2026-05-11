@@ -1,0 +1,8 @@
+Behavior = BHV_Timer
+{
+  name      = timer
+  condition = MODE == ACTIVE
+  condition = TIMER_ACTIVE = true
+
+  status_suffix = _survey
+}

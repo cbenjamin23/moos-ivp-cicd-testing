@@ -1,0 +1,24 @@
+//-------------------------------------------------
+// FILE: meta_behavior.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize  DEPLOY = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+//----------------------------------------------------
+Behavior = BHV_TestFailure
+{
+  name      = test_failure
+  pwt       = 100
+  condition = DEPLOY=true
+  endflag   = TEST_FAILURE_DONE = true
+
+  duration = 50
+  duration_idle_decay = false
+
+  failure_type = burn,0
+}

@@ -1,0 +1,79 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300
+LongOrigin = -70.330400
+
+<tag><uProcessWatch>
+//----------------------------------------------------
+// uProcessWatch Config Block
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  allow_retractions = true
+  watch_all = true
+  watch = pHelmIvP:HELM_PRESENT
+  nowatch = uMAC*
+  nowatch = uXMS*
+  nowatch = uPokeDB*
+  nowatch = uQueryDB*
+  nowatch = uMayFinish*
+  summary_wait = 1
+}
+
+<tag><uLoadWatch>
+//----------------------------------------------------
+// uLoadWatch Config Block
+
+ProcessConfig = uLoadWatch
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  thresh = app=pHelmIvP, gapthresh=1.5
+  thresh = app=any,      gapthresh=4.0
+
+  near_breach_thresh = 0.8
+  breach_trigger     = 0
+}
+
+<tag><pLogger>
+//----------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = XLOG_TESTFAILURE_UNIT
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = IVPHELM_COMPLETED_COUNT @ 0 nosync
+  Log = IVPHELM_COMPLETED_PENDING @ 0 nosync
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+  Log = HELM_PRESENT @ 0 nosync
+  Log = PROC_WATCH_ALL_OK @ 0 nosync
+  Log = PROC_WATCH_EVENT @ 0 nosync
+  Log = PROC_WATCH_SUMMARY @ 0 nosync
+  Log = LOAD_WARNING @ 0 nosync
+  Log = ULW_BREACH_COUNT @ 0 nosync
+  Log = ULW_NEAR_BREACH_COUNT @ 0 nosync
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = TEST_FAILURE_DONE @ 0 nosync
+
+  LogAuxSrc = true
+  WildCardLogging = true
+  WildCardOmitPattern = APPCAST
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+}

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 Timer Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260510-2">
+  <script src="../theme.js?v=20260510-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 Timer Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_Timer. These cases verify idle and running duration counters, custom and default status variable names, suffix handling, active-at-start timing, and invalid status configuration.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one simulated vehicle through a short waypoint leg while BHV_Timer is held idle and then activated. Case overlays vary status variable names, suffixes, activation timing, and malformed status configuration while the evaluator grades timer-posted counters.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These Timer GIFs are generated explanatory views instead of raw pMarineViewer captures because BHV_Timer returns no IvP function and the meaningful evidence is the changing MOOS counter variables. The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="timer-behavior-pause-resume.gif">
+          <img src="../assets/gifs/timer-behavior-pause-resume.gif?v=20260510-2" alt="Pause/Resume Counters GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Pause/Resume Counters</h3>
+          <p>Description: Pause/resume case. TIMER_ACTIVE is toggled true, false, then true again, and the final counters must show accumulated idle and running time across both intervals.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="timer-behavior-runtime-update.gif">
+          <img src="../assets/gifs/timer-behavior-runtime-update.gif?v=20260510-2" alt="Runtime Status Update GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Runtime Status Update</h3>
+          <p>Description: Runtime update case. The timer starts with stock suffixed counters, then receives TIMER_UPDATES that change both status variable names and suffix; both pre-update and post-update counters must be present.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_idle_running_pass</code>
+          <p>Baseline case. The timer starts idle, then activates and must post both stock suffixed duration counters with sane elapsed values.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_status_vars_pass</code>
+          <p>Custom variable case. The timer uses custom idle and running variable names plus a suffix, and those custom counters must be populated.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_suffix_pass</code>
+          <p>Default variable case. The timer keeps the stock TIMER_IDLE and TIMER_RUNNING names while using a pre-underscored suffix.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_no_suffix_pass</code>
+          <p>Unsuffixed custom-variable case. The timer uses custom idle and running variable names with no suffix, and the raw custom counters must be populated.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_no_suffix_pass</code>
+          <p>Unsuffixed default-variable case. The timer uses the stock TIMER_IDLE and TIMER_RUNNING outputs with no suffix.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>active_at_start_pass</code>
+          <p>Active-at-start timing case. TIMER_ACTIVE is asserted almost immediately after deploy, so the running counter should dominate by evaluation time.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>delayed_activation_pass</code>
+          <p>Delayed activation case. The timer is held idle longer than the baseline before activation, so the idle counter must dominate while still proving nonzero running time.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pause_resume_pass</code>
+          <p>Pause/resume case. TIMER_ACTIVE is toggled true, false, then true again, and the final counters must show accumulated idle and running time across both intervals.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>repeated_status_param_pass</code>
+          <p>Repeated-parameter case. Earlier status variable and suffix settings are replaced by later valid settings, and the final stock suffixed counters must be populated.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_mapping_pass</code>
+          <p>Post-mapping case. The timer posts stock suffixed counter names, inherited post_mapping remaps them, and evaluation requires the remapped counters.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duration_complete_pass</code>
+          <p>Duration-complete case. The timer uses inherited duration support, posts an end flag, and stops with a bounded running counter and zero remaining time.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>runtime_update_pass</code>
+          <p>Runtime update case. The timer starts with stock suffixed counters, then receives TIMER_UPDATES that change both status variable names and suffix; both pre-update and post-update counters must be present.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>never_active_fail</code>
+          <p>Never-active case. The timer remains idle through evaluation, so the normal running-counter requirement is expected to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_idle_var_fail</code>
+          <p>Invalid idle-variable case. The timer is configured with a whitespace-bearing idle status variable and is expected to fail normal evaluation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_running_var_fail</code>
+          <p>Invalid running-variable case. The timer is configured with a whitespace-bearing running status variable and is expected to fail normal evaluation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_suffix_fail</code>
+          <p>Invalid suffix case. The timer is configured with a whitespace-bearing suffix and is expected to fail normal evaluation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>post_mapping_silent_fail</code>
+          <p>Silent post-mapping case. The running counter is remapped to silent, so the normal baseline running-counter requirement is expected to fail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>unknown_param_fail</code>
+          <p>Unknown-parameter case. The timer receives an unsupported behavior parameter and is expected to fail normal evaluation.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/timer_behavior_harnesses/H01-timer_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/timer_behavior_missions/timer_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

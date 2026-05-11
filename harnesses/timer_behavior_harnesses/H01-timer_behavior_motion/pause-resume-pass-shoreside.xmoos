@@ -1,0 +1,53 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_SEGLIST, val="pts={-24,-124:-4,-104},label=timer_transit_leg,edge_color=white,vertex_color=dodger_blue,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=VIEW_POINT, val="x=-4,y=-104,label=timer_eval_area,vertex_color=orange,vertex_size=9,duration=9999", time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=13
+  event = var=MISSION_TIMEOUT, val=true, time=23
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (TEST_EVAL_READY = true) or (MISSION_TIMEOUT = true)
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = TIMER_IDLE_SECONDS_base > 3
+  pass_condition = TIMER_RUNNING_SECONDS_base > 5
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = timer_behavior_tests
+  mission_mod  = $(MMOD:=pause_resume_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = active=$[TIMER_ACTIVE]
+  report_column = idle=$[TIMER_IDLE_SECONDS_base]
+  report_column = running=$[TIMER_RUNNING_SECONDS_base]
+  report_column = custom_idle=$[IDLE_SECONDS_custom]
+  report_column = custom_running=$[RUN_SECONDS_custom]
+  report_column = raw_idle=$[IDLE_RAW]
+  report_column = raw_running=$[RUN_RAW]
+  report_column = stock_idle=$[TIMER_IDLE]
+  report_column = stock_running=$[TIMER_RUNNING]
+  report_column = default_idle=$[TIMER_IDLE_survey]
+  report_column = default_running=$[TIMER_RUNNING_survey]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

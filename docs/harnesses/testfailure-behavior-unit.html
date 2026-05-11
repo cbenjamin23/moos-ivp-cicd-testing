@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 TestFailure Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260510-2">
+  <script src="../theme.js?v=20260510-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 TestFailure Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_TestFailure. These cases verify completion-triggered burn and hang stalls, default/malformed/negative/zero burn timing, crash/default-crash process loss, and an armed baseline that must not complete.</p>
+    </section>
+
+
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_armed_no_trigger_pass</code>
+          <p>Baseline case. The behavior is armed but has a long duration, so the mission must evaluate before any failure is triggered.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>burn_gap_detected_pass</code>
+          <p>Busy-wait case. failure_type=burn,2.0 must create a measurable helm iteration gap while leaving pHelmIvP alive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>hang_alias_gap_detected_pass</code>
+          <p>Alias busy-wait case. failure_type=hang,2.0 must behave like burn and create a measurable helm iteration gap.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>burn_default_time_gap_pass</code>
+          <p>Default-duration burn case. failure_type=burn must use the default burn time and create a measurable helm iteration gap.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>burn_malformed_time_default_gap_pass</code>
+          <p>Malformed-duration burn case. failure_type=burn,not_a_number must preserve the default burn time and create a measurable helm iteration gap.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>burn_negative_time_complete_pass</code>
+          <p>Negative-duration burn case. failure_type=burn,-1 must complete without process loss or load breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>burn_zero_complete_pass</code>
+          <p>Immediate-completion case. failure_type=burn,0 must complete without process loss or load breach.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>crash_on_complete_fail</code>
+          <p>Crash case. failure_type=crash must make pHelmIvP disappear and therefore produce the expected mission failure.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>unknown_type_default_crash_fail</code>
+          <p>Default-crash case. An unsupported failure_type leaves the behavior&#x27;s default crash mode in force and must fail by process loss.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/testfailure_behavior_missions/testfailure_behavior_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (TEST_EVAL_READY = true) or (MISSION_TIMEOUT = true)
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = IDLE_RAW > 2
+  pass_condition = RUN_RAW > 2
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = timer_behavior_tests
+  mission_mod  = $(MMOD:=custom_no_suffix_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = active=$[TIMER_ACTIVE]
+  report_column = idle=$[TIMER_IDLE_SECONDS_base]
+  report_column = running=$[TIMER_RUNNING_SECONDS_base]
+  report_column = custom_idle=$[IDLE_SECONDS_custom]
+  report_column = custom_running=$[RUN_SECONDS_custom]
+  report_column = raw_idle=$[IDLE_RAW]
+  report_column = raw_running=$[RUN_RAW]
+  report_column = stock_idle=$[TIMER_IDLE]
+  report_column = stock_running=$[TIMER_RUNNING]
+  report_column = default_idle=$[TIMER_IDLE_survey]
+  report_column = default_running=$[TIMER_RUNNING_survey]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

@@ -1,0 +1,110 @@
+//-------------------------------------------------
+// FILE: meta_shoreside.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ServerHost = localhost
+ServerPort = $(MOOS_PORT)
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+
+//----------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = uProcessWatch @ NewConsole = false
+  Run = uLoadWatch    @ NewConsole = false
+  Run = pHelmIvP      @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+  Run = pAutoPoke     @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+#include plugs.moos <uProcessWatch>
+#include plugs.moos <uLoadWatch>
+#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// pAutoPoke Config Block
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY=true
+  flag = MOOS_MANUAL_OVERRIDE=false
+  flag = NAV_X=0
+  flag = NAV_Y=0
+  flag = NAV_HEADING=0
+  flag = NAV_SPEED=0
+  flag = TEST_EVAL_READY=false
+  flag = TEST_FAILURE_DONE=false
+}
+
+//----------------------------------------------------
+// uTimerScript Config Block
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  condition = DEPLOY = true
+
+  event = var=TEST_EVAL_READY, val=true, time=8.0
+}
+
+//----------------------------------------------------
+// pHelmIvP Config Block
+
+ProcessConfig = pHelmIvP
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  term_report_interval = 0
+  bhv_dir_not_found_ok = true
+
+  behaviors = targ_testfailure.bhv
+  verbose   = false
+  domain    = course:0:359:360
+  domain    = speed:0:3:31
+}
+
+//----------------------------------------------------
+// pMissionEval Config Block
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = PROC_WATCH_ALL_OK = true
+  pass_condition = ULW_BREACH_COUNT = 0
+  pass_condition = TEST_FAILURE_DONE = false
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = testfailure_behavior_unit
+  mission_mod  = $(MMOD:=baseline_armed_no_trigger_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
+  report_column    = helm_present=$[HELM_PRESENT]
+  report_column    = done=$[TEST_FAILURE_DONE]
+  report_column    = load_breaches=$[ULW_BREACH_COUNT]
+  report_column    = near_breaches=$[ULW_NEAR_BREACH_COUNT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}
