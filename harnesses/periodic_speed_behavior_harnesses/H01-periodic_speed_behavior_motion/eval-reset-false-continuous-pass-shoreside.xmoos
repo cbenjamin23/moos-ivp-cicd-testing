@@ -1,0 +1,77 @@
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = RUN_PS_ALL=true
+  flag = PERIODIC_SPEED=false
+  flag = PS_BUSY_COUNT=0
+  flag = PS_PENDING_ACTIVE=0
+  flag = PS_PENDING_INACTIVE=0
+  flag = MISSION_DONE=false
+  flag = MISSION_TIMEOUT=false
+  flag = BHV_ERROR_SEEN=false
+
+  required_nodes = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_SEGLIST, val="pts={-24,-124:14,-86},label=periodic_speed_reset_false,edge_color=gray60,vertex_color=dodger_blue,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=RUN_PS_ALL, val=false, time=3.0
+  event = var=RUN_PS_ALL, val=true, time=12.0
+  event = var=MISSION_DONE, val=true, time=15.0
+  event = var=MISSION_TIMEOUT, val=true, time=30
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = (MISSION_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = PS_BUSY_COUNT >= 1
+  pass_condition = NAV_SPEED > 0.4
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = periodic_speed_behavior_tests
+  mission_mod  = $(MMOD:=reset_false_continuous_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = done=$[MISSION_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = run_ps_all=$[RUN_PS_ALL]
+  report_column = periodic=$[PERIODIC_SPEED]
+  report_column = busy_count=$[PS_BUSY_COUNT]
+  report_column = pending_active=$[PS_PENDING_ACTIVE]
+  report_column = pending_inactive=$[PS_PENDING_INACTIVE]
+  report_column = nav_speed=$[NAV_SPEED]
+  report_column = heading=$[NAV_HEADING]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = RUN_PS
+  qbridge  = PERIODIC_SPEED, PS_BUSY_COUNT, PS_PENDING_ACTIVE, PS_PENDING_INACTIVE
+  qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+}

@@ -1,0 +1,14 @@
+Behavior = BHV_PeriodicSpeed
+{
+  name      = periodic_speed
+  pwt       = 100
+  condition = MODE == ACTIVE
+  condition = RUN_PS = true
+
+  period_lazy        = 14
+  period_busy        = 16
+  period_speed       = 1.4
+  basewidth          = 0.2
+  peakwidth          = 0
+  reset_upon_running = false
+}

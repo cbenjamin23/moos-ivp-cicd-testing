@@ -1,0 +1,49 @@
+//-------------------------------------------------
+// FILE: meta_vehicle.bhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+initialize  DEPLOY           = false
+initialize  RETURN           = false
+initialize  PERIODIC_SPEED   = false
+initialize  PS_BUSY_COUNT    = 0
+initialize  PS_PENDING_ACTIVE = 0
+initialize  PS_PENDING_INACTIVE = 0
+initialize  BHV_ERROR_SEEN   = false
+
+set MODE = ACTIVE {
+  DEPLOY = true
+} INACTIVE
+
+set MODE = RETURNING {
+  MODE = ACTIVE
+  RETURN = true
+}
+
+//----------------------------------------------------
+Behavior = BHV_ConstantHeading
+{
+  name      = hold_heading
+  pwt       = 50
+  condition = MODE == ACTIVE
+
+  heading     = 45
+  duration    = no-time-limit
+  peakwidth   = 10
+  basewidth   = 170
+  summitdelta = 25
+}
+
+//----------------------------------------------------
+Behavior = BHV_PeriodicSpeed
+{
+  name      = periodic_speed
+  pwt       = 100
+  condition = MODE == ACTIVE
+
+  period_lazy  = 4
+  period_busy  = 4
+  period_speed = 1.4
+  basewidth    = 0.2
+  peakwidth    = 0
+}

@@ -1,0 +1,13 @@
+Behavior = BHV_PeriodicSpeed
+{
+  name      = periodic_speed
+  pwt       = 100
+  condition = MODE == ACTIVE
+
+  period_lazy    = 5
+  period_busy    = 5
+  period_speed   = 0
+  basewidth      = 0
+  peakwidth      = 0
+  initially_busy = true
+}

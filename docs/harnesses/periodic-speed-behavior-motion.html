@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 PeriodicSpeed Behavior | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260510-2">
+  <script src="../theme.js?v=20260510-2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">Behavior Correctness</p>
+      <h1>H01 PeriodicSpeed Behavior</h1>
+      <p class="lede">Behavior correctness tests for BHV_PeriodicSpeed. These cases verify lazy/busy speed cycling, initially-busy startup, reset behavior, alias parameters, accepted zero-speed windows, status variable outputs, and invalid parameter configuration.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one simulated vehicle with BHV_ConstantHeading providing course control while BHV_PeriodicSpeed owns the speed objective. Case overlays vary startup mode, lazy/busy periods, reset policy, alias parameters, period speed, and malformed parameter values while the evaluator grades behavior status variables and observed NAV_SPEED.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <p class="visual-note">These PeriodicSpeed GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is the lazy/busy timer state, reset behavior, and posted speed variables. The visuals keep a pMarineViewer-like map frame while calling out the variable-level evidence that makes each case pass.</p>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="periodic-speed-baseline-cycle.gif">
+          <img src="../assets/gifs/periodic-speed-baseline-cycle.gif?v=20260510-2" alt="Baseline Lazy/Busy Cycle GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Baseline Lazy/Busy Cycle</h3>
+          <p>Description: Baseline lazy/busy cycle. Requires two busy transitions and positive vehicle speed during the second busy window.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="periodic-speed-reset-false-reenable.gif">
+          <img src="../assets/gifs/periodic-speed-reset-false-reenable.gif?v=20260510-2" alt="Reset False Re-Enable GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Reset False Re-Enable</h3>
+          <p>Description: Covers reset false visual expected pass.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>baseline_cycle_pass</code>
+          <p>Baseline lazy/busy cycle. Requires two busy transitions and positive vehicle speed during the second busy window.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>lazy_wait_pass</code>
+          <p>Samples the initial lazy window. Requires no busy transition, positive pending-active time, zero pending-inactive time, and near-zero speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>first_busy_pass</code>
+          <p>Samples the first busy window. Requires one busy transition, positive pending-inactive time, and positive vehicle speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>busy_to_lazy_pass</code>
+          <p>Starts busy and samples after the initial busy window returns to lazy. Requires pending-active evidence without depending on vehicle deceleration dynamics.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>deprecated_zaic_aliases_pass</code>
+          <p>Uses deprecated ZAIC alias parameters and requires the behavior to enter busy mode with positive vehicle speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>short_cycle_three_count_pass</code>
+          <p>Uses short lazy/busy periods and requires at least three busy transitions plus speed evidence in the third busy window.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>explicit_initially_lazy_pass</code>
+          <p>Sets initially_busy=false explicitly and verifies the behavior starts in the lazy window with pending-active evidence and near-zero speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zaic_base_period_peak_aliases_pass</code>
+          <p>Uses the zaic_basewidth and period_peakwidth aliases and requires the behavior to enter busy mode with positive vehicle speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_on_reactivation_pass</code>
+          <p>Temporarily disables the behavior condition and verifies the default reset_upon_running=true policy restarts the lazy timer on reactivation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_false_continuous_pass</code>
+          <p>Temporarily disables the behavior condition with reset_upon_running=false and verifies idle time continues to advance the periodic state.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>initially_busy_pass</code>
+          <p>Starts the behavior in the busy state and requires immediate speed evidence while the busy counter remains at zero.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>zero_speed_pass</code>
+          <p>Starts busy with period_speed=0, proving zero is accepted and the vehicle remains effectively stopped while the behavior is active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_period_lazy_fail</code>
+          <p>Expected fail for period_lazy=0.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_period_lazy_nonnumeric_fail</code>
+          <p>Expected fail for a nonnumeric period_lazy value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_period_busy_fail</code>
+          <p>Expected fail for period_busy=0.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_period_speed_fail</code>
+          <p>Expected fail for negative period_speed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_initially_busy_fail</code>
+          <p>Expected fail for a non-boolean initially_busy value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_reset_upon_running_fail</code>
+          <p>Expected fail for a non-boolean reset_upon_running value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_basewidth_fail</code>
+          <p>Expected fail for negative basewidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_zaic_basewidth_fail</code>
+          <p>Expected fail for negative zaic_basewidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_peakwidth_fail</code>
+          <p>Expected fail for negative peakwidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_period_peakwidth_fail</code>
+          <p>Expected fail for negative period_peakwidth.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_summit_delta_fail</code>
+          <p>Expected fail for negative summit_delta.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bad_zaic_summit_delta_fail</code>
+          <p>Expected fail for negative zaic_summit_delta.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/periodic_speed_behavior_missions/periodic_speed_behavior_motion/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>
