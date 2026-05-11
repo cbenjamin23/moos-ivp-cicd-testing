@@ -115,7 +115,7 @@ The active harness families cover:
 | `pid` | `pMarinePIDV22` controller configuration, mail handling, and closed-loop motion. |
 | `depth_behavior` | UUV/depth behavior motion split by behavior: constant-depth holds, depth sequences, periodic surfacing, max-depth guards, and min-altitude clearance. |
 | `colregs` | `BHV_AvdColregsV22` classification, thresholds, execution, and parameter regressions. |
-| behavior families | Moving correctness layers for waypoint, loiter, station-keep, trail, convoy, shadow, fixed-turn, cut-range, avoid-collision, avoid-obstacle, and OpRegion. |
+| behavior families | Moving correctness layers for waypoint, loiter, station-keep, trail, convoy, shadow, fixed-turn, memory-turn limiting, timer, cut-range, avoid-collision, avoid-obstacle, and OpRegion. |
 | `performance` | Longer deterministic scenario tests for obstacle and COLREGS performance behavior. |
 
 List configured CI harness targets:

@@ -133,11 +133,46 @@
     "families": ["fixedturn_behavior"]
   },
   {
+    "key": "periodic_speed_h01",
+    "path": "harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion",
+    "harness": "H01-periodic_speed_behavior_motion",
+    "artifact": "manual-periodic-speed-h01-results",
+    "families": ["periodic_speed_behavior"]
+  },
+  {
+    "key": "zigzag_h01",
+    "path": "harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion",
+    "harness": "H01-zigzag_behavior_motion",
+    "artifact": "manual-zigzag-h01-results",
+    "families": ["zigzag_behavior"]
+  },
+  {
     "key": "legrun_h01",
     "path": "harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion",
     "harness": "H01-legrun_behavior_motion",
     "artifact": "manual-legrun-h01-results",
     "families": ["legrun_behavior"]
+  },
+  {
+    "key": "memoryturnlimit_h01",
+    "path": "harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion",
+    "harness": "H01-memoryturnlimit_behavior_motion",
+    "artifact": "manual-memoryturnlimit-h01-results",
+    "families": ["memoryturnlimit_behavior"]
+  },
+  {
+    "key": "timer_h01",
+    "path": "harnesses/timer_behavior_harnesses/H01-timer_behavior_motion",
+    "harness": "H01-timer_behavior_motion",
+    "artifact": "manual-timer-h01-results",
+    "families": ["timer_behavior"]
+  },
+  {
+    "key": "testfailure_h01",
+    "path": "harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit",
+    "harness": "H01-testfailure_behavior_unit",
+    "artifact": "manual-testfailure-h01-results",
+    "families": ["testfailure_behavior"]
   },
   {
     "key": "loiter_h01",

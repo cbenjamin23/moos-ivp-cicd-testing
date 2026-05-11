@@ -29,13 +29,18 @@ on:
           - fixedturn_behavior
           - legrun_behavior
           - loiter_behavior
+          - memoryturnlimit_behavior
           - obstacle_behavior
           - opregion
           - performance
+          - periodic_speed_behavior
           - shadow_behavior
           - stationkeep_behavior
+          - testfailure_behavior
+          - timer_behavior
           - trail_behavior
           - waypoint_behavior
+          - zigzag_behavior
       targets:
         description: "[Harness] comma-separated target keys for specific_harnesses mode"
         required: false
@@ -43,7 +48,7 @@ on:
       families:
         description: "[Harness] comma-separated families for batch_family_run mode"
         required: false
-        default: "convoy_behavior,cutrange_behavior,fixedturn_behavior,legrun_behavior,loiter_behavior,shadow_behavior,stationkeep_behavior,trail_behavior,waypoint_behavior,collision_behavior,obstacle_behavior,opregion"
+        default: "convoy_behavior,cutrange_behavior,fixedturn_behavior,legrun_behavior,loiter_behavior,memoryturnlimit_behavior,periodic_speed_behavior,shadow_behavior,stationkeep_behavior,testfailure_behavior,timer_behavior,trail_behavior,waypoint_behavior,zigzag_behavior,collision_behavior,obstacle_behavior,opregion"
       cpp_test_mode:
         description: "[CTest] C++ test mode: none, family_run, or batch_family_run"
         required: true
@@ -368,6 +373,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: workspace-build
+          retention-days: 1
           path: |
             moos-ivp/build/MOOS/MOOSCore/lib
             moos-ivp/build/MOOS/MOOSGeodesy/lib

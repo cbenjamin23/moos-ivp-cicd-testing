@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Home | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260501-1">
-  <script src="theme.js?v=20260501-1"></script>
+  <link rel="stylesheet" href="styles.css?v=20260510-2">
+  <script src="theme.js?v=20260510-2"></script>
 </head>
 <body>
   <header class="site-header">
@@ -67,14 +67,14 @@
 
 
       <article class="stat-card">
-        <strong>800</strong>
+        <strong>875</strong>
         <span>Harness Cases</span>
         <p>Mission-run cases with expected outcomes and generated result summaries.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>18</strong>
+        <strong>22</strong>
         <span>Apps &amp; Behaviors</span>
         <p>MOOS apps and IvP behaviors covered by mission harness cases.</p>
       </article>
@@ -282,6 +282,25 @@
         <span class="eyebrow">Depth Behavior</span>
         <h3>H05 Min Altitude Motion</h3>
         <p>BHV_MinAltitude motion matrix covering bottom-clearance guarding, shallow-bottom response, unconstrained deep-bottom behavior, clearance boundary behavior, zero-minimum behavior, zero altitude failures, invalid configuration, missing nav inputs, and noncritical missing-altitude handling.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Behavior Correctness</span>
+          <span class="family-name">BHV_MemoryTurnLimit</span>
+          <span class="family-summary">Checks recent-heading averaging, tight versus relaxed limiter windows, and missing memory limiter configuration.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/memoryturnlimit-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 MemoryTurnLimit Behavior</h3>
+        <p>Moving correctness harness for BHV_MemoryTurnLimit recent-heading averaging, turn-window damping, runtime limiter updates, speed scaling, and malformed configuration.</p>
       </a>
 
         </div>
@@ -539,6 +558,80 @@
       </details>
 
 
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Periodic Speed Behavior</span>
+          <span class="family-name">BHV_PeriodicSpeed</span>
+          <span class="family-summary">Checks lazy/busy speed windows, initially-busy startup, reset behavior, alias acceptance, zero-speed handling, status outputs, and invalid parameter configuration.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/periodic-speed-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 PeriodicSpeed Behavior</h3>
+        <p>Moving correctness harness for BHV_PeriodicSpeed lazy/busy cycling, reset behavior, alias parameters, zero-speed windows, and invalid configuration.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Timer Behavior</span>
+          <span class="family-name">BHV_Timer</span>
+          <span class="family-summary">Checks idle and running duration counters, custom/default status variables, suffix handling, and invalid timer status configuration.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/timer-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 Timer Behavior</h3>
+        <p>Moving correctness harness for BHV_Timer idle/running duration counters, custom status variable names, suffix handling, and invalid timer status configuration.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">TestFailure Behavior</span>
+          <span class="family-name">BHV_TestFailure</span>
+          <span class="family-summary">Checks completion-triggered burn, hang, parser edge cases, crash/default-crash process loss, and an armed non-completing baseline.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/testfailure-behavior-unit.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 TestFailure Behavior</h3>
+        <p>Headless unit harness for BHV_TestFailure completion-triggered crash, burn, hang alias, default burn timing, malformed burn timing, negative/zero burn timing, and unsupported failure-type default behavior.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">ZigZag Behavior</span>
+          <span class="family-name">BHV_ZigZag</span>
+          <span class="family-summary">Checks first-side selection, zig-angle boundaries, leg and odometry completion, active-time capture, runtime speed updates, visual hints, and invalid inputs.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/zigzag-behavior-motion.html">
+        <span class="eyebrow">Behavior Correctness</span>
+        <h3>H01 ZigZag Behavior</h3>
+        <p>Moving correctness harness for BHV_ZigZag side selection, angle boundaries, completion limits, active-time capture, runtime speed updates, visual hints, and invalid inputs.</p>
+      </a>
+
+        </div>
+      </details>
 
 
       <details class="family-panel">

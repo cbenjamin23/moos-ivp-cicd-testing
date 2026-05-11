@@ -20,7 +20,8 @@ SCRIPTS_DIR = REPO_ROOT / "scripts"
 CTEST_COVERAGE_DATA = ROOT / "data" / "ctest_coverage.json"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
-ASSET_VERSION = "20260501-1"
+ASSET_VERSION = "20260510-2"
+PENDING_GIF = "GIF_PENDING"
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
 CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
@@ -34,6 +35,9 @@ VISUAL_NOTES = {
     "periodic-surface-motion": "These depth GIFs are generated from real run alogs, not raw pMarineViewer screen captures, because the top-down track alone does not show surfacing cycles and wait windows clearly.",
     "max-depth-motion": "These depth GIFs are generated from real run alogs, not raw pMarineViewer screen captures, because the top-down track alone does not show max-depth guard pressure clearly.",
     "min-altitude-motion": "These depth GIFs are generated from real run alogs, not raw pMarineViewer screen captures, because the top-down track alone does not show bottom-clearance evidence clearly.",
+    "periodic-speed-behavior-motion": "These PeriodicSpeed GIFs are generated explanatory views instead of raw pMarineViewer captures because the meaningful evidence is the lazy/busy timer state, reset behavior, and posted speed variables.",
+    "timer-behavior-motion": "These Timer GIFs are generated explanatory views instead of raw pMarineViewer captures because BHV_Timer returns no IvP function and the meaningful evidence is the changing MOOS counter variables.",
+    "memoryturnlimit-behavior-motion": "These MemoryTurnLimit GIFs are generated explanatory views instead of raw pMarineViewer captures because the important evidence is the relationship between recent heading memory, turn range, runtime updates, and graded motion metrics.",
     "colregs-classification": "This classification harness uses alog-backed explanatory GIFs instead of raw pMarineViewer captures because the vehicles do move, but the verdict comes from COLREGS publications such as mode, index, summary, and range reports.",
     "colregs-thresholds": "This threshold harness uses alog-backed overlay GIFs instead of raw pMarineViewer captures because the cases differ by small geometry changes and the verdict comes from boundary-specific COLREGS publications.",
 }
@@ -539,6 +543,94 @@ HARNESSES: tuple[Harness, ...] = (
         ),
     ),
     Harness(
+        slug="periodic-speed-behavior-motion",
+        title="H01 PeriodicSpeed Behavior",
+        family="Behavior Correctness",
+        path="harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion",
+        mission="missions/periodic_speed_behavior_missions/periodic_speed_behavior_motion",
+        summary="Moving correctness harness for BHV_PeriodicSpeed lazy/busy cycling, reset behavior, alias parameters, zero-speed windows, and invalid configuration.",
+        proof="Checks periodic speed timer outputs, busy-count transitions, observed NAV_SPEED response, reset-on-reactivation behavior, alias acceptance, and expected malformed-configuration failures.",
+        gifs=(
+            ("Baseline Lazy/Busy Cycle", "baseline_cycle_pass", "periodic-speed-baseline-cycle.gif"),
+            ("Reset False Re-Enable", "reset_false_visual_pass", "periodic-speed-reset-false-reenable.gif"),
+        ),
+        run="./zlaunch.sh --case=baseline_cycle_pass --gui --port_base=15000 10",
+        notes=(
+            "This harness keeps heading control separate so BHV_PeriodicSpeed owns the evaluated speed contract.",
+            "The first case matrix focuses on deterministic status variables before adding more timing-sensitive speed-profile assertions.",
+        ),
+    ),
+    Harness(
+        slug="memoryturnlimit-behavior-motion",
+        title="H01 MemoryTurnLimit Behavior",
+        family="Behavior Correctness",
+        path="harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion",
+        mission="missions/memoryturnlimit_behavior_missions/memoryturnlimit_behavior_motion",
+        summary="Moving correctness harness for BHV_MemoryTurnLimit recent-heading averaging, turn-window damping, runtime limiter updates, speed scaling, and malformed configuration.",
+        proof="Checks memory-heading averages, ownship heading response, heading mismatch, speed evidence, runtime update acceptance, and expected malformed-configuration failures.",
+        gifs=(
+            ("Tight Turn Window", "tight_window_pass", "memoryturnlimit-behavior-tight-window.gif"),
+            ("Runtime Range Widen", "runtime_widen_range_pass", "memoryturnlimit-behavior-runtime-widen.gif"),
+        ),
+        run="./zlaunch.sh --case=baseline_memory_pass --gui --port_base=15000 10",
+        notes=(
+            "This harness applies a sustained constant-heading turn demand so the memory limiter owns the evaluated course damping effect.",
+            "The tight, relaxed, runtime-update, and speed-scaled cases prove that limiter settings produce distinct, mission-visible heading outcomes.",
+        ),
+    ),
+    Harness(
+        slug="timer-behavior-motion",
+        title="H01 Timer Behavior",
+        family="Behavior Correctness",
+        path="harnesses/timer_behavior_harnesses/H01-timer_behavior_motion",
+        mission="missions/timer_behavior_missions/timer_behavior_motion",
+        summary="Moving correctness harness for BHV_Timer idle/running duration counters, custom status variable names, suffix handling, and invalid timer status configuration.",
+        proof="Checks timer-posted idle and running counters, custom/default status outputs, active-at-start timing, and expected malformed-configuration failures.",
+        gifs=(
+            ("Pause/Resume Counters", "pause_resume_pass", "timer-behavior-pause-resume.gif"),
+            ("Runtime Status Update", "runtime_update_pass", "timer-behavior-runtime-update.gif"),
+        ),
+        run="./zlaunch.sh --case=baseline_idle_running_pass --gui --port_base=15000 10",
+        notes=(
+            "This harness keeps vehicle motion simple while BHV_Timer owns the evaluated idle/running duration contract.",
+            "The cases focus on status publication names and timing transitions because BHV_Timer intentionally returns no IvP function.",
+        ),
+    ),
+    Harness(
+        slug="testfailure-behavior-unit",
+        title="H01 TestFailure Behavior",
+        family="Behavior Correctness",
+        path="harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit",
+        mission="missions/testfailure_behavior_missions/testfailure_behavior_unit",
+        summary="Headless unit harness for BHV_TestFailure completion-triggered crash, burn, hang alias, default burn timing, malformed burn timing, negative/zero burn timing, and unsupported failure-type default behavior.",
+        proof="Checks completion endflags, pHelmIvP iteration-gap evidence for wall-clock burn/hang stalls, immediate-completion burn variants, process-watch evidence for crash/default-crash outcomes, and a non-completing armed baseline.",
+        gifs=(),
+        run="./zlaunch.sh --case=burn_gap_detected_pass --port_base=15000 10",
+        notes=(
+            "This harness seeds only the minimum helm navigation state required for behavior evaluation; it does not simulate vehicle motion.",
+            "Crash cases grade on pHelmIvP process loss, while burn and hang cases grade on direct PHELMIVP_ITER_GAP evidence because uLoadWatch does not classify this completion stall as a breach.",
+        ),
+    ),
+    Harness(
+        slug="zigzag-behavior-motion",
+        title="H01 ZigZag Behavior",
+        family="Behavior Correctness",
+        path="harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion",
+        mission="missions/zigzag_behavior_missions/zigzag_behavior_motion",
+        summary="Moving correctness harness for BHV_ZigZag side selection, angle boundaries, completion limits, active-time capture, runtime speed updates, visual hints, and invalid inputs.",
+        proof="Checks zig/zag counts, side-entry and side-exit flags, stem odometry, active stem heading/speed macros, runtime update effects, and expected malformed-configuration failures.",
+        gifs=(
+            ("Baseline Port First", "baseline_port_first_pass", "zigzag-behavior-baseline-port.gif"),
+            ("Wide Angle", "wide_angle_pass", "zigzag-behavior-wide-angle.gif"),
+            ("Fierce Zigging", "fierce_zigging_pass", "zigzag-behavior-fierce-zigging.gif"),
+        ),
+        run="./zlaunch.sh --case=baseline_port_first_pass --gui --port_base=15000 10",
+        notes=(
+            "This harness starts with a short approach leg so ZigZag activates with live navigation state and then owns the evaluated motion contract.",
+            "Expected-fail cases document invalid parameter boundaries and the unsupported stale-nav-threshold configuration path.",
+        ),
+    ),
+    Harness(
         slug="legrun-behavior-motion",
         title="H01 LegRun Behavior",
         family="Behavior Correctness",
@@ -547,9 +639,9 @@ HARNESSES: tuple[Harness, ...] = (
         summary="Moving correctness harness for BHV_LegRun leg selection, geometry forms, capture handling, turn shaping, speed schedules, runtime updates, flags, and invalid configuration.",
         proof="Checks LegRun-owned leg, turn, mid-leg, mid-turn, completion, geometry parsing, capture-line modes, turn parameter aliases, runtime update, speed schedule, initialization mode, flag alias, and expected parameter-failure signals.",
         gifs=(
-            ("Baseline Cycle", "baseline_cycle_pass", "legrun-baseline-cycle.gif"),
-            ("Far Turn Init", "init_far_turn_pass", "legrun-far-turn-init.gif"),
-            ("Individual Turn Params", "individual_turn_params_pass", "legrun-individual-turn-params.gif"),
+            ("Baseline Cycle", "baseline_cycle_pass", PENDING_GIF),
+            ("Far Turn Init", "init_far_turn_pass", PENDING_GIF),
+            ("Individual Turn Params", "individual_turn_params_pass", PENDING_GIF),
         ),
         run="./zlaunch.sh --case=baseline_cycle_pass --gui --port_base=4000 10",
         notes=(
@@ -685,6 +777,12 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("min-altitude-motion",),
     ),
     Family(
+        name="BHV_MemoryTurnLimit",
+        label="Behavior Correctness",
+        summary="Checks recent-heading averaging, tight versus relaxed limiter windows, and missing memory limiter configuration.",
+        slugs=("memoryturnlimit-behavior-motion",),
+    ),
+    Family(
         name="BHV_AvdColregsV22",
         label="COLREGS Behavior",
         summary="Exercises COLREGS classification, threshold edges, execution quality, parameter sensitivity, and multi-vehicle stress cases.",
@@ -761,6 +859,30 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("fixedturn-behavior-motion",),
     ),
     Family(
+        name="BHV_PeriodicSpeed",
+        label="Periodic Speed Behavior",
+        summary="Checks lazy/busy speed windows, initially-busy startup, reset behavior, alias acceptance, zero-speed handling, status outputs, and invalid parameter configuration.",
+        slugs=("periodic-speed-behavior-motion",),
+    ),
+    Family(
+        name="BHV_Timer",
+        label="Timer Behavior",
+        summary="Checks idle and running duration counters, custom/default status variables, suffix handling, and invalid timer status configuration.",
+        slugs=("timer-behavior-motion",),
+    ),
+    Family(
+        name="BHV_TestFailure",
+        label="TestFailure Behavior",
+        summary="Checks completion-triggered burn, hang, parser edge cases, crash/default-crash process loss, and an armed non-completing baseline.",
+        slugs=("testfailure-behavior-unit",),
+    ),
+    Family(
+        name="BHV_ZigZag",
+        label="ZigZag Behavior",
+        summary="Checks first-side selection, zig-angle boundaries, leg and odometry completion, active-time capture, runtime speed updates, visual hints, and invalid inputs.",
+        slugs=("zigzag-behavior-motion",),
+    ),
+    Family(
         name="BHV_LegRun",
         label="LegRun Behavior",
         summary="Checks leg selection, leg and turn progression, completion, speed schedules, runtime updates, and invalid leg-run inputs.",
@@ -801,6 +923,11 @@ TEST_STYLE: dict[str, str] = {
     "convoy-behavior-motion": "Behavior correctness tests for BHV_Convoy. These cases verify convoy mark queues, following geometry, speed-control branches, runtime updates, warning paths, geometry recovery, and invalid parameter handling.",
     "cutrange-behavior-motion": "Behavior correctness tests for BHV_CutRange. These cases verify range closure, target geometry variants, pursuit and give-up flags, relevance gates, runtime updates, warning recovery, and invalid parameter handling.",
     "fixedturn-behavior-motion": "Behavior correctness tests for BHV_FixedTurn. These cases verify fixed-turn direction, scheduled turn specifications, inherited and fixed speed branches, timeout completion, runtime updates, and invalid turn configuration.",
+    "periodic-speed-behavior-motion": "Behavior correctness tests for BHV_PeriodicSpeed. These cases verify lazy/busy speed cycling, initially-busy startup, reset behavior, alias parameters, accepted zero-speed windows, status variable outputs, and invalid parameter configuration.",
+    "memoryturnlimit-behavior-motion": "Behavior correctness tests for BHV_MemoryTurnLimit. These cases verify recent-heading average output, tight and relaxed turn-window effects, runtime limiter updates, speed-scaling branches, heading mismatch evidence, and missing limiter configuration.",
+    "timer-behavior-motion": "Behavior correctness tests for BHV_Timer. These cases verify idle and running duration counters, custom and default status variable names, suffix handling, active-at-start timing, and invalid status configuration.",
+    "testfailure-behavior-unit": "Behavior correctness tests for BHV_TestFailure. These cases verify completion-triggered burn and hang stalls, default/malformed/negative/zero burn timing, crash/default-crash process loss, and an armed baseline that must not complete.",
+    "zigzag-behavior-motion": "Behavior correctness tests for BHV_ZigZag. These cases verify first-side selection and aliases, zig-angle boundaries, leg-limit and stem-odometry completion, active-time heading and speed capture, runtime speed updates, visual hints, and invalid parameter handling.",
     "legrun-behavior-motion": "Behavior correctness tests for BHV_LegRun. These cases verify leg geometry forms, initialization modes, capture handling, turn shaping, leg and turn progression, behavior completion, scheduled speeds, runtime updates, flag aliases, and invalid parameter handling.",
     "shadow-behavior-motion": "Behavior correctness tests for BHV_Shadow. These cases verify contact heading and speed following, relevance gating, runtime recovery, warning paths, contact flags, and invalid parameter handling.",
     "performance-obstacle-gauntlet": "Performance and endurance tests for obstacle avoidance. These cases exercise repeated obstacle-field traversal and grade completion, collision safety, warning cleanliness, and wall-time behavior.",
@@ -835,6 +962,10 @@ STEM_CONTEXT: dict[str, str] = {
     "convoy-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Convoy while `ben` creates the breadcrumb trail. Case overlays vary mark queues, following geometry, speed branches, and runtime updates.",
     "cutrange-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_CutRange and tries to reduce range to `ben`. Case overlays vary target route geometry, relevance distances, give-up conditions, runtime updates, and warning/error paths.",
     "fixedturn-behavior-motion": "The stem mission runs one simulated vehicle through a short approach leg before activating BHV_FixedTurn. Case overlays vary turn direction, fixed-turn magnitude, scheduled turn specifications, speed selection, and timeout behavior.",
+    "periodic-speed-behavior-motion": "The stem mission runs one simulated vehicle with BHV_ConstantHeading providing course control while BHV_PeriodicSpeed owns the speed objective. Case overlays vary startup mode, lazy/busy periods, reset policy, alias parameters, period speed, and malformed parameter values while the evaluator grades behavior status variables and observed NAV_SPEED.",
+    "memoryturnlimit-behavior-motion": "The stem mission runs one simulated vehicle with a constant speed objective, a sustained constant-heading turn demand, and BHV_MemoryTurnLimit as the evaluated limiter. Case overlays vary turn_range, priority weight, and missing limiter configuration while the evaluator grades MEM_HDG_AVG, NAV_HEADING, and heading mismatch.",
+    "timer-behavior-motion": "The stem mission runs one simulated vehicle through a short waypoint leg while BHV_Timer is held idle and then activated. Case overlays vary status variable names, suffixes, activation timing, and malformed status configuration while the evaluator grades timer-posted counters.",
+    "zigzag-behavior-motion": "The stem mission runs one simulated vehicle through a short approach leg before activating BHV_ZigZag. Case overlays vary first-side selection, angle limits, completion settings, active-time capture settings, runtime speed updates, and malformed behavior parameters.",
     "legrun-behavior-motion": "The stem mission runs one simulated vehicle on a compact two-leg LegRun pattern. Case overlays vary geometry input form, initialization mode, capture and turn controls, scheduled speeds, runtime updates, event flags, and malformed behavior parameters.",
     "shadow-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Shadow while `ben` provides controlled contact headings and speeds. Case overlays vary target motion, relevance distance, runtime updates, and missing-contact behavior.",
     "performance-obstacle-gauntlet": "The stem mission is a repeatable obstacle-field loop. Individual cases change field density or duration so the same avoidance stack can be tested under baseline, dense, and longer-running pressure.",
@@ -1464,12 +1595,19 @@ def case_rows(h: Harness) -> str:
 
 def gif_card(gif: tuple[str, str, str], descriptions: dict[str, str], prefix: str) -> str:
     title, case_name, filename = gif
-    asset = f"{prefix}assets/gifs/{filename}"
     description = descriptions.get(case_name, describe_case("", case_name))
+    if filename == PENDING_GIF:
+        data_file = "pending"
+        frame_class = "gif-frame gif-frame--pending"
+        media = ""
+    else:
+        asset = f"{prefix}assets/gifs/{filename}?v={ASSET_VERSION}"
+        data_file = filename
+        frame_class = "gif-frame"
+        media = f'\n          <img src="{asset}" alt="{escape(title)} GIF" onerror="this.style.display=\'none\'">'
     return f"""
       <article class="gif-card">
-        <div class="gif-frame" data-file="{escape(filename)}">
-          <img src="{asset}" alt="{escape(title)} GIF" onerror="this.style.display='none'">
+        <div class="{frame_class}" data-file="{escape(data_file)}">{media}
         </div>
         <div class="gif-meta">
           <h3>{escape(title)}</h3>
@@ -2320,6 +2458,9 @@ def render_gif_manifest() -> str:
         "Generated COLREGS parameter comparison visuals live in",
         "`docs/tools/render_colregs_parameter_gifs.py`.",
         "Generated PID motion visuals live in `docs/tools/render_pid_motion_gifs.py`.",
+        "Generated Timer behavior visuals live in `docs/tools/render_timer_behavior_gifs.py`.",
+        "Generated PeriodicSpeed behavior visuals live in `docs/tools/render_periodic_speed_behavior_gifs.py`.",
+        "Generated MemoryTurnLimit behavior visuals live in `docs/tools/render_memoryturnlimit_behavior_gifs.py`.",
         "Headless harness runs remain the source of truth for the case behavior; the",
         "generated GIFs are documentation views of that same geometry and variable-level",
         "evidence.",
@@ -2336,7 +2477,10 @@ def render_gif_manifest() -> str:
             ]
         )
         for title, case_name, filename in harness.gifs:
-            lines.append(f"- `{filename}` - {title}; representative case `{case_name}`")
+            if filename == PENDING_GIF:
+                lines.append(f"- GIF pending - {title}; representative case `{case_name}`")
+            else:
+                lines.append(f"- `{filename}` - {title}; representative case `{case_name}`")
         lines.append("")
     return "\n".join(lines)
 

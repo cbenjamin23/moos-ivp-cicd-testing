@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Technical Overview | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260501-1">
-  <script src="theme.js?v=20260501-1"></script>
+  <link rel="stylesheet" href="styles.css?v=20260510-2">
+  <script src="theme.js?v=20260510-2"></script>
 </head>
 <body>
   <header class="site-header">
@@ -177,6 +177,13 @@
 
 
           <tr>
+            <th>BHV_MemoryTurnLimit</th>
+            <td>Checks recent-heading averaging, tight versus relaxed limiter windows, and missing memory limiter configuration.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
             <th>BHV_AvdColregsV22</th>
             <td>Exercises COLREGS classification, threshold edges, execution quality, parameter sensitivity, and multi-vehicle stress cases.</td>
             <td>6</td>
@@ -249,6 +256,34 @@
           <tr>
             <th>BHV_FixedTurn</th>
             <td>Checks fixed-turn direction, scheduled turn specifications, runtime updates, timeout completion, and invalid turn configuration.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_PeriodicSpeed</th>
+            <td>Checks lazy/busy speed windows, initially-busy startup, reset behavior, alias acceptance, zero-speed handling, status outputs, and invalid parameter configuration.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_Timer</th>
+            <td>Checks idle and running duration counters, custom/default status variables, suffix handling, and invalid timer status configuration.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_TestFailure</th>
+            <td>Checks completion-triggered burn, hang, parser edge cases, crash/default-crash process loss, and an armed non-completing baseline.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>BHV_ZigZag</th>
+            <td>Checks first-side selection, zig-angle boundaries, leg and odometry completion, active-time capture, runtime speed updates, visual hints, and invalid inputs.</td>
             <td>1</td>
           </tr>
 

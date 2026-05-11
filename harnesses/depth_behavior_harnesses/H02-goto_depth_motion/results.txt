@@ -1,1 +1,1 @@
-case=goto_depth_crossing_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=depth_behavior_motion  mmod=goto_depth_crossing_pass  eval=true  x=119.328  depth=12.25  level=12  gtd_hit=3  elevator=0  bhv_error=true  mhash=[POOR-CARE]
+case=goto_depth_crossing_pass  case_result=success  expected=pass  actual=pass    grade=pass  form=depth_behavior_motion  mmod=goto_depth_crossing_pass  eval=true  x=118.753  depth=13.124  level=12  gtd_hit=3  elevator=0  bhv_error=true  mhash=[BUSY-FONT]

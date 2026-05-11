@@ -23,6 +23,9 @@ Generated COLREGS threshold overlay visuals live in
 Generated COLREGS parameter comparison visuals live in
 `docs/tools/render_colregs_parameter_gifs.py`.
 Generated PID motion visuals live in `docs/tools/render_pid_motion_gifs.py`.
+Generated Timer behavior visuals live in `docs/tools/render_timer_behavior_gifs.py`.
+Generated PeriodicSpeed behavior visuals live in `docs/tools/render_periodic_speed_behavior_gifs.py`.
+Generated MemoryTurnLimit behavior visuals live in `docs/tools/render_memoryturnlimit_behavior_gifs.py`.
 Headless harness runs remain the source of truth for the case behavior; the
 generated GIFs are documentation views of that same geometry and variable-level
 evidence.
@@ -85,7 +88,6 @@ Typical capture launch: `./zlaunch.sh --case=constant_depth_hold_pass --gui 10`
 - `constant-depth-hold.gif` - Held Depth; representative case `constant_depth_hold_pass`
 - `constant-depth-update.gif` - Runtime Update; representative case `constant_depth_update_pass`
 
-
 ## H02 GoToDepth Motion
 
 Capture from: `harnesses/depth_behavior_harnesses/H02-goto_depth_motion`
@@ -93,7 +95,6 @@ Typical capture launch: `./zlaunch.sh --case=goto_depth_sequence_pass --gui 10`
 
 - `goto-depth-sequence.gif` - Depth Sequence; representative case `goto_depth_sequence_pass`
 - `goto-depth-crossing.gif` - Crossing Arrivals; representative case `goto_depth_crossing_pass`
-
 
 ## H03 Periodic Surface Motion
 
@@ -103,7 +104,6 @@ Typical capture launch: `./zlaunch.sh --case=periodic_surface_pass --gui 10`
 - `periodic-surface-cycle.gif` - Surfacing Cycle; representative case `periodic_surface_pass`
 - `periodic-surface-wait-window.gif` - Wait Window; representative case `periodic_surface_wait_window_pass`
 
-
 ## H04 Max Depth Motion
 
 Capture from: `harnesses/depth_behavior_harnesses/H04-max_depth_motion`
@@ -112,7 +112,6 @@ Typical capture launch: `./zlaunch.sh --case=max_depth_guard_pass --gui 10`
 - `max-depth-guard.gif` - Max Depth Guard; representative case `max_depth_guard_pass`
 - `max-depth-unconstrained.gif` - Unconstrained Shallow; representative case `max_depth_unconstrained_shallow_pass`
 
-
 ## H05 Min Altitude Motion
 
 Capture from: `harnesses/depth_behavior_harnesses/H05-min_altitude_motion`
@@ -120,7 +119,6 @@ Typical capture launch: `./zlaunch.sh --case=min_altitude_guard_pass --gui 10`
 
 - `min-altitude-guard.gif` - Min Altitude Guard; representative case `min_altitude_guard_pass`
 - `min-altitude-unconstrained.gif` - Deep Bottom; representative case `min_altitude_unconstrained_deep_bottom_pass`
-
 
 ## H01 COLREGS Classification
 
@@ -245,14 +243,53 @@ Typical capture launch: `./zlaunch.sh --case=starboard_90_pass --gui 10`
 - `fixedturn-behavior-port-360.gif` - Port 360; representative case `port_360_pass`
 - `fixedturn-behavior-turn-spec-sequence.gif` - Turn Spec Sequence; representative case `turn_spec_sequence_pass`
 
+## H01 PeriodicSpeed Behavior
+
+Capture from: `harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=baseline_cycle_pass --gui --port_base=15000 10`
+
+- `periodic-speed-baseline-cycle.gif` - Baseline Lazy/Busy Cycle; representative case `baseline_cycle_pass`
+- `periodic-speed-reset-false-reenable.gif` - Reset False Re-Enable; representative case `reset_false_visual_pass`
+
+## H01 MemoryTurnLimit Behavior
+
+Capture from: `harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=baseline_memory_pass --gui --port_base=15000 10`
+
+- `memoryturnlimit-behavior-tight-window.gif` - Tight Turn Window; representative case `tight_window_pass`
+- `memoryturnlimit-behavior-runtime-widen.gif` - Runtime Range Widen; representative case `runtime_widen_range_pass`
+
+## H01 Timer Behavior
+
+Capture from: `harnesses/timer_behavior_harnesses/H01-timer_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=baseline_idle_running_pass --gui --port_base=15000 10`
+
+- `timer-behavior-pause-resume.gif` - Pause/Resume Counters; representative case `pause_resume_pass`
+- `timer-behavior-runtime-update.gif` - Runtime Status Update; representative case `runtime_update_pass`
+
+## H01 TestFailure Behavior
+
+Capture from: `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit`
+Typical capture launch: `./zlaunch.sh --case=burn_gap_detected_pass --port_base=15000 10`
+
+
+## H01 ZigZag Behavior
+
+Capture from: `harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion`
+Typical capture launch: `./zlaunch.sh --case=baseline_port_first_pass --gui --port_base=15000 10`
+
+- `zigzag-behavior-baseline-port.gif` - Baseline Port First; representative case `baseline_port_first_pass`
+- `zigzag-behavior-wide-angle.gif` - Wide Angle; representative case `wide_angle_pass`
+- `zigzag-behavior-fierce-zigging.gif` - Fierce Zigging; representative case `fierce_zigging_pass`
+
 ## H01 LegRun Behavior
 
 Capture from: `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion`
 Typical capture launch: `./zlaunch.sh --case=baseline_cycle_pass --gui --port_base=4000 10`
 
-- `legrun-baseline-cycle.gif` - Baseline Cycle; representative case `baseline_cycle_pass`
-- `legrun-far-turn-init.gif` - Far Turn Init; representative case `init_far_turn_pass`
-- `legrun-individual-turn-params.gif` - Individual Turn Params; representative case `individual_turn_params_pass`
+- GIF pending - Baseline Cycle; representative case `baseline_cycle_pass`
+- GIF pending - Far Turn Init; representative case `init_far_turn_pass`
+- GIF pending - Individual Turn Params; representative case `individual_turn_params_pass`
 
 ## H01 Shadow Behavior
 
