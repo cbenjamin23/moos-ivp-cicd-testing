@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>H01 TestFailure Behavior | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="../styles.css?v=20260511-2">
-  <script src="../theme.js?v=20260511-2"></script>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
 </head>
 <body>
   <header class="site-header">
@@ -37,6 +37,37 @@
 
 
 
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="testfailure-burn-gap.gif">
+          <img src="../assets/gifs/testfailure-burn-gap.gif?v=20260511-5" alt="Burn Gap Detection GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Burn Gap Detection</h3>
+          <p>Description: Busy-wait case. failure_type=burn,2.0 must create a measurable helm iteration gap while leaving pHelmIvP alive.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="testfailure-crash-process-loss.gif">
+          <img src="../assets/gifs/testfailure-crash-process-loss.gif?v=20260511-5" alt="Crash Process Loss GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Crash Process Loss</h3>
+          <p>Description: Crash case. failure_type=crash must make pHelmIvP disappear and therefore produce the expected mission failure.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
 
 
     <section class="content-section">
