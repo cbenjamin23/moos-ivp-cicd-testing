@@ -29,6 +29,8 @@ Generated MemoryTurnLimit behavior visuals live in `docs/tools/render_memoryturn
 Generated utility infrastructure visuals live in `docs/tools/render_utility_watch_gifs.py`.
 Generated simulator infrastructure visuals live in `docs/tools/render_simulator_infrastructure_gifs.py`.
 Generated mission utility visuals live in `docs/tools/render_mission_utility_gifs.py`.
+Generated uFldObstacleSim visuals live in `docs/tools/render_ufld_obstacle_sim_gifs.py`.
+Generated uField app visuals live in `docs/tools/render_ufield_app_gifs.py`.
 Headless harness runs remain the source of truth for the case behavior; the
 generated GIFs are documentation views of that same geometry and variable-level
 evidence.
@@ -99,29 +101,117 @@ Typical capture launch: `./zlaunch.sh --case=nav_report_baseline_pass --port_bas
 - `pnodereporter-baseline-report.gif` - Baseline Node Report; representative case `nav_report_baseline_pass`
 - `pnodereporter-alt-nav-report.gif` - Alternate Nav Report; representative case `alt_nav_report_pass`
 
+## H01 uPokeDB Unit
+
+Capture from: `harnesses/upokedb_harnesses/H01-upokedb_unit`
+Typical capture launch: `./zlaunch.sh --case=numeric_direct_pass --port_base=15000 10`
+
+- `upokedb-direct-numeric.gif` - Direct Numeric Poke; representative case `numeric_direct_pass`
+- `upokedb-cached-pokes.gif` - Cached Pokes; representative case `cache_string_numeric_pass`
+
+## H01 uXMS Unit
+
+Capture from: `harnesses/uxms_harnesses/H01-uxms_unit`
+Typical capture launch: `./zlaunch.sh --case=scoped_var_pass --port_base=15200 10`
+
+- `uxms-scoped-variable.gif` - Scoped Variable; representative case `scoped_var_pass`
+- `uxms-history-view.gif` - History View; representative case `history_var_pass`
+
+## H01 uQueryDB Unit
+
+Capture from: `harnesses/uquerydb_harnesses/H01-uquerydb_unit`
+Typical capture launch: `./zlaunch.sh --case=cli_numeric_pass --port_base=15600 10`
+
+- `uquerydb-numeric-condition.gif` - Numeric Condition; representative case `cli_numeric_pass`
+- `uquerydb-checkvar-formats.gif` - Checkvar Formats; representative case `checkvar_csv_pass`
+
+## H01 pDeadManPost Unit
+
+Capture from: `harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit`
+Typical capture launch: `./zlaunch.sh --case=active_start_once_posts_pass --port_base=15800 10`
+
+- `pdeadmanpost-deadman-trip.gif` - Deadman Trip; representative case `active_start_once_posts_pass`
+- `pdeadmanpost-heartbeat-suppression.gif` - Heartbeat Suppression; representative case `heartbeat_before_dead_suppresses_pass`
+
+## H01 pSpoofNode Unit
+
+Capture from: `harnesses/pspoofnode_harnesses/H01-pspoofnode_unit`
+Typical capture launch: `./zlaunch.sh --case=config_static_report_pass --port_base=16000 10`
+
+- `pspoofnode-static-spoof.gif` - Static Spoof; representative case `config_static_report_pass`
+- `pspoofnode-cancel-by-name.gif` - Cancel By Name; representative case `cancel_vname_pass`
+
+## H01 uTermCommand Unit
+
+Capture from: `harnesses/utermcommand_harnesses/H01-utermcommand_unit`
+Typical capture launch: `./zlaunch.sh --case=numeric_command_pass --port_base=16200 10`
+
+- `utermcommand-numeric-command.gif` - Numeric Command; representative case `numeric_command_pass`
+- `utermcommand-arrow-syntax.gif` - Arrow Syntax; representative case `arrow_syntax_command_pass`
+
+## H01 pSearchGrid Unit
+
+Capture from: `harnesses/psearchgrid_harnesses/H01-psearchgrid_unit`
+Typical capture launch: `./zlaunch.sh --case=node_local_delta_pass --port_base=16400 10`
+
+- `psearchgrid-grid-delta.gif` - Grid Delta; representative case `node_local_delta_pass`
+- `psearchgrid-full-grid-report.gif` - Full Grid Report; representative case `full_grid_report_pass`
+
 ## H01 uField Comms Unit
 
 Capture from: `harnesses/ufield_comms_harnesses/H01-ufield_comms_unit`
 Typical capture launch: `./zlaunch.sh --case=baseline_broker_comms_pass --port_base=4000 10`
 
-- GIF pending - Baseline Broker Comms; representative case `baseline_broker_comms_pass`
-- GIF pending - Runtime Range Extend; representative case `runtime_range_extend_pass`
+- `ufield-comms-baseline-broker.gif` - Baseline Broker Comms; representative case `baseline_broker_comms_pass`
+- `ufield-comms-runtime-range.gif` - Runtime Range Extend; representative case `runtime_range_extend_pass`
 
 ## H02 uField Broker Bridge
 
 Capture from: `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge`
 Typical capture launch: `./zlaunch.sh --case=broker_handshake_pass --port_base=4000 10`
 
-- GIF pending - Broker Handshake; representative case `broker_handshake_pass`
-- GIF pending - Bridge Tokens; representative case `shore_bridge_tokens_pass`
+- `ufield-broker-handshake.gif` - Broker Handshake; representative case `broker_handshake_pass`
+- `ufield-broker-bridge-tokens.gif` - Bridge Tokens; representative case `shore_bridge_tokens_pass`
 
 ## H03 uField Route Resilience
 
 Capture from: `harnesses/ufield_comms_harnesses/H03-ufield_route_resilience`
 Typical capture launch: `./zlaunch.sh --case=runtime_tryhost_recover_pass --port_base=4000 10`
 
-- GIF pending - Runtime Route Recovery; representative case `runtime_tryhost_recover_pass`
-- GIF pending - Shore VNode Discovery; representative case `shore_vnode_discovery_recover_pass`
+- `ufield-route-runtime-recovery.gif` - Runtime Route Recovery; representative case `runtime_tryhost_recover_pass`
+- `ufield-route-vnode-discovery.gif` - Shore VNode Discovery; representative case `shore_vnode_discovery_recover_pass`
+
+## H01 uFldObstacleSim Unit
+
+Capture from: `harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit`
+Typical capture launch: `./zlaunch.sh --case=fixed_field_publish_pass --port_base=7600 10`
+
+- `ufld-obstacle-sim-fixed-field.gif` - Fixed Field Publish; representative case `fixed_field_publish_pass`
+- `ufld-obstacle-sim-point-sensor.gif` - Point Sensor Mode; representative case `post_points_inside_pass`
+
+## H01 uFldPathCheck Unit
+
+Capture from: `harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit`
+Typical capture launch: `./zlaunch.sh --case=odometry_baseline_pass --port_base=4300 10`
+
+- `ufld-pathcheck-baseline-odometry.gif` - Baseline Odometry; representative case `odometry_baseline_pass`
+- `ufld-pathcheck-trip-reset.gif` - Trip Reset; representative case `trip_reset_pass`
+
+## H01 uFldMessageHandler Unit
+
+Capture from: `harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit`
+Typical capture launch: `./zlaunch.sh --case=dest_specific_self_pass --port_base=4400 10`
+
+- `ufld-message-handler-accepted.gif` - Accepted Message; representative case `dest_specific_self_pass`
+- `ufld-message-handler-strict-reject.gif` - Strict Reject; representative case `strict_all_reject_pass`
+
+## H01 uFldContactRangeSensor Unit
+
+Capture from: `harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit`
+Typical capture launch: `./zlaunch.sh --case=baseline_short_report_pass --port_base=4500 10`
+
+- `ufld-contact-range-sensor-baseline.gif` - Baseline Range; representative case `baseline_short_report_pass`
+- `ufld-contact-range-sensor-arc-block.gif` - Arc Block; representative case `sensor_arc_aft_block_pass`
 
 ## H01 Constant Depth Motion
 
@@ -315,6 +405,8 @@ Typical capture launch: `./zlaunch.sh --case=baseline_idle_running_pass --gui --
 Capture from: `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit`
 Typical capture launch: `./zlaunch.sh --case=burn_gap_detected_pass --port_base=15000 10`
 
+- `testfailure-burn-gap.gif` - Burn Gap Detection; representative case `burn_gap_detected_pass`
+- `testfailure-crash-process-loss.gif` - Crash Process Loss; representative case `crash_on_complete_fail`
 
 ## H01 pHostInfo Unit
 
@@ -339,6 +431,38 @@ Typical capture launch: `./zlaunch.sh --jobs=3 --port_base=11600 10`
 
 - `processwatch-mapped-summary.gif` - Mapped Summary; representative case `processwatch_post_mapping_pass`
 - `processwatch-awol-detection.gif` - AWOL Detection; representative case `processwatch_missing_awol_fail`
+
+## H01 pShare Unit
+
+Capture from: `harnesses/pshare_harnesses/H01-pshare_unit`
+Typical capture launch: `./zlaunch.sh --jobs=2 --port_base=11000 10`
+
+- `pshare-direct-route.gif` - Direct Route; representative case `pshare_direct_route_pass`
+- `pshare-wildcard-route.gif` - Wildcard Route; representative case `pshare_wildcard_route_pass`
+
+## H02 pShare Topology
+
+Capture from: `harnesses/pshare_harnesses/H02-pshare_topology`
+Typical capture launch: `./zlaunch.sh --jobs=2 --port_base=11000 --max_time=65 10`
+
+- `pshare-topology-fanin.gif` - Fan-in; representative case `pshare_topology_fanin_pass`
+- `pshare-topology-multicast-relay-proof.gif` - Multicast Relay Proof; representative case `pshare_topology_multicast_multi_listener_pass`
+
+## H01 pLogger Unit
+
+Capture from: `harnesses/plogger_harnesses/H01-plogger_unit`
+Typical capture launch: `./zlaunch.sh --jobs=2 --port_base=12000 10`
+
+- `plogger-explicit-log-capture.gif` - Explicit Log Capture; representative case `plogger_explicit_log_pass`
+- `plogger-wildcard-omit.gif` - Wildcard Omit; representative case `plogger_wildcard_omit_pass`
+
+## H01 pAntler Unit
+
+Capture from: `harnesses/pantler_harnesses/H01-pantler_unit`
+Typical capture launch: `./zlaunch.sh --jobs=2 --port_base=12200 10`
+
+- `pantler-alias-launch.gif` - Alias Launch; representative case `pantler_alias_launch_pass`
+- `pantler-multi-alias-launch.gif` - Multi-alias Launch; representative case `pantler_multi_alias_launch_pass`
 
 ## H01 pMissionEval Unit
 

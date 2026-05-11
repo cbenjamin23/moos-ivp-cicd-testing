@@ -129,7 +129,7 @@ a:hover {
   box-shadow: none;
 }
 
-.gif-frame::before {
+.gif-frame--pending::before {
   color: rgba(52, 64, 84, 0.2);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   letter-spacing: 0;

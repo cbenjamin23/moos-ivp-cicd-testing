@@ -91,7 +91,7 @@ h2,
 h3,
 .family-name,
 .stat-card strong,
-.gif-frame::before {
+.gif-frame--pending::before {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   letter-spacing: 0;
 }
@@ -279,7 +279,7 @@ pre {
   background: linear-gradient(180deg, #edf4fb, #dce8f2);
 }
 
-.gif-frame::before {
+.gif-frame--pending::before {
   color: rgba(16, 24, 40, 0.28);
 }
 

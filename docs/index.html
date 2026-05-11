@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Home | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260511-2">
-  <script src="theme.js?v=20260511-2"></script>
+  <link rel="stylesheet" href="styles.css?v=20260511-5">
+  <script src="theme.js?v=20260511-5"></script>
 </head>
 <body>
   <header class="site-header">
@@ -67,14 +67,14 @@
 
 
       <article class="stat-card">
-        <strong>1067</strong>
+        <strong>1415</strong>
         <span>Harness Cases</span>
         <p>Mission-run cases with expected outcomes and generated result summaries.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>29</strong>
+        <strong>43</strong>
         <span>Apps &amp; Behaviors</span>
         <p>MOOS apps and IvP behaviors covered by mission harness cases.</p>
       </article>
@@ -221,6 +221,139 @@
 
       <details class="family-panel">
         <summary>
+          <span class="family-label">uPokeDB</span>
+          <span class="family-name">uPokeDB</span>
+          <span class="family-summary">Checks command-line MOOSDB pokes across connection modes, value forms, cache parsing, short aliases, overwrites, quiet operation, and time macros.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/upokedb-unit.html">
+        <span class="eyebrow">uPokeDB</span>
+        <h3>H01 uPokeDB Unit</h3>
+        <p>Headless uPokeDB matrix covering explicit host/port pokes, mission-file connection, quiet/cache aliases, numeric and string value forms, overwrites, repeated commands, and time macros.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uXMS</span>
+          <span class="family-name">uXMS</span>
+          <span class="family-summary">Checks terminal MOOSDB scoping output across variable scopes, display columns, history, filters, source selection, config, aliases, refresh modes, and truncation.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/uxms-unit.html">
+        <span class="eyebrow">uXMS</span>
+        <h3>H01 uXMS Unit</h3>
+        <p>Captured-output uXMS matrix covering named scopes, all/alll display, source/time/community columns, history view, truncation, clean CLI override, mission-file config, filters, source selection, aliases, refresh modes, shortcuts, and color mapping.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uQueryDB</span>
+          <span class="family-name">uQueryDB</span>
+          <span class="family-summary">Checks command-line MOOSDB query pass/fail logic, timeout behavior, mission-file configuration, compound conditions, and check-variable output formats.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/uquerydb-unit.html">
+        <span class="eyebrow">uQueryDB</span>
+        <h3>H01 uQueryDB Unit</h3>
+        <p>Headless uQueryDB matrix covering CLI/config pass/fail conditions, fail-only queries, missing-variable timeout failure, halt_max_time, numeric comparisons, compound logic, unique names, and check-variable output formats.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">pDeadManPost</span>
+          <span class="family-name">pDeadManPost</span>
+          <span class="family-summary">Checks watchdog deadflag posting across active-at-start behavior, heartbeat suppression, stale heartbeat detection, and numeric/string/multiple deadflags.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/pdeadmanpost-unit.html">
+        <span class="eyebrow">pDeadManPost</span>
+        <h3>H01 pDeadManPost Unit</h3>
+        <p>Headless pDeadManPost watchdog matrix covering active-at-start posting, inactive-until-first-heartbeat behavior, stale heartbeat posting, live heartbeat suppression, custom heartbeat variables, post policies, invalid policy fallback, and typed deadflags.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">pSpoofNode</span>
+          <span class="family-name">pSpoofNode</span>
+          <span class="family-summary">Checks spoofed NODE_REPORT generation, defaults, runtime requests, motion advancement, duration expiry, cancellation, and malformed request rejection.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/pspoofnode-unit.html">
+        <span class="eyebrow">pSpoofNode</span>
+        <h3>H01 pSpoofNode Unit</h3>
+        <p>Headless pSpoofNode matrix covering config-time and runtime spoof requests, default fields and startup ordering, generated names, moving contacts, duration expiry, name/group/contact cancellation, runtime normalization, color/type edge behavior, and malformed request rejection.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uTermCommand</span>
+          <span class="family-name">uTermCommand</span>
+          <span class="family-summary">Checks terminal command mapping, typed posts, partial matching, duplicate precedence, tab expansion, and unknown command absence.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/utermcommand-unit.html">
+        <span class="eyebrow">uTermCommand</span>
+        <h3>H01 uTermCommand Unit</h3>
+        <p>Headless uTermCommand matrix covering numeric and string commands, arrow syntax, unique and ambiguous partial selection, duplicate key precedence, exact prefix wins, editing, config parsing, and unknown-command absence.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">pSearchGrid</span>
+          <span class="family-name">pSearchGrid</span>
+          <span class="family-summary">Checks grid construction, full and delta publication, node-report ingestion, custom output variables, community filters, and invalid/outside-grid absence.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/psearchgrid-unit.html">
+        <span class="eyebrow">pSearchGrid</span>
+        <h3>H01 pSearchGrid Unit</h3>
+        <p>Headless pSearchGrid matrix covering initial grid publication, local/global node-report deltas, repeated and multi-cell deltas, reset clearing semantics, outside-grid absence, full-grid reporting, custom output variables, single and list community filters, and malformed report rejection.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
           <span class="family-label">uField Communications</span>
           <span class="family-name">uFldNodeComms + uField Brokers</span>
           <span class="family-summary">Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.</span>
@@ -246,6 +379,63 @@
         <span class="eyebrow">uField Communications</span>
         <h3>H03 uField Route Resilience</h3>
         <p>Route-lifecycle matrix covering startup/runtime route parsing, dead-first-route blocking, secondary dead-route tolerance, runtime timing, duplicates, malformed route rejection, per-node recovery, numeric loopback routes, and shore-driven vnode discovery.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldPathCheck</span>
+          <span class="family-name">uFldPathCheck</span>
+          <span class="family-summary">Checks path-history, odometry, trip-reset, and speed-report contracts from controlled node-report mail.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-pathcheck-unit.html">
+        <span class="eyebrow">uFldPathCheck</span>
+        <h3>H01 uFldPathCheck Unit</h3>
+        <p>Headless uFldPathCheck matrix covering odometry, speed reports, trip resets, local reports, invalid reports, stationary tracks, multi-node accounting, and history-length speed windows.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldMessageHandler</span>
+          <span class="family-name">uFldMessageHandler</span>
+          <span class="family-summary">Checks NODE_MESSAGE routing, addressing, payload forwarding, summary counters, and configured flag outputs.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-message-handler-unit.html">
+        <span class="eyebrow">uFldMessageHandler</span>
+        <h3>H01 uFldMessageHandler Unit</h3>
+        <p>Headless uFldMessageHandler matrix covering destination routing, strict addressing, invalid messages, numeric and string payload forwarding, summary counters, and good/bad flag macro expansion.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldContactRangeSensor</span>
+          <span class="family-name">uFldContactRangeSensor</span>
+          <span class="family-summary">Checks contact-ledger range requests, report variable modes, sensor arcs, echo filters, ping waits, and range limits.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-contact-range-sensor-unit.html">
+        <span class="eyebrow">uFldContactRangeSensor</span>
+        <h3>H01 uFldContactRangeSensor Unit</h3>
+        <p>Headless uFldContactRangeSensor matrix covering short/long report forms, ground-truth reporting, echo-type filters, sensor arcs, ping wait, pulse suppression, local reports, unknown requesters, and unlimited range overrides.</p>
       </a>
 
         </div>
@@ -733,6 +923,70 @@
 
       <details class="family-panel">
         <summary>
+          <span class="family-label">pShare</span>
+          <span class="family-name">pShare</span>
+          <span class="family-summary">Checks direct and renamed routed mail, max-share limiting, wildcard matching, source-qualified wildcards, multicast aliases, wildcard renaming, duration expiry, shorthand routes, fanout, command-line output routes, frequency throttling, multi-sender topology, multi-port input, input route-list parsing, multicast listeners, custom multicast channels, relay proof, and runtime route insertion.</span>
+          <span class="family-count">2 harnesses</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/pshare-unit.html">
+        <span class="eyebrow">Utility Infrastructure</span>
+        <h3>H01 pShare Unit</h3>
+        <p>Headless two-community harness for pShare direct, renamed, wildcard, source-qualified wildcard, multicast, duration-limited, shorthand, fanout, command-line, and frequency-throttled routes.</p>
+      </a>
+
+
+      <a class="harness-card" href="harnesses/pshare-topology.html">
+        <span class="eyebrow">Utility Infrastructure</span>
+        <h3>H02 pShare Topology</h3>
+        <p>Headless four-community harness for pShare route behavior that needs multiple senders, multiple input ports, input route-list parsing, multicast listeners, custom multicast channels, relay proof, route-list branching, app aliases, runtime input-route insertion, or runtime output-route insertion.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">pLogger</span>
+          <span class="family-name">pLogger</span>
+          <span class="family-summary">Checks explicit log capture, wildcard omit and exclusion logs, dynamic log requests, sync logs, numeric and typed values, copy-file requests, and fixed artifact names.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/plogger-unit.html">
+        <span class="eyebrow">Utility Infrastructure</span>
+        <h3>H01 pLogger Unit</h3>
+        <p>Headless artifact harness for pLogger explicit logs, wildcard omit and exclusion logs, dynamic log requests, datatype marking, sync logs, copy-file requests, and fixed artifact naming.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">pAntler</span>
+          <span class="family-name">pAntler</span>
+          <span class="family-summary">Checks baseline process launch, MOOS-name aliases, multiple aliases, launch filters, explicit system-path lookup, and extra process parameters.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/pantler-unit.html">
+        <span class="eyebrow">Utility Infrastructure</span>
+        <h3>H01 pAntler Unit</h3>
+        <p>Headless launch-composition harness for pAntler baseline launches, aliases, launch filters, explicit system-path launches, and extra process parameters.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
           <span class="family-label">pMissionEval</span>
           <span class="family-name">pMissionEval</span>
           <span class="family-summary">Checks mission grading, staged logic, result flags, report formatting, macro expansion, and no-hash report behavior.</span>
@@ -782,6 +1036,82 @@
         <span class="eyebrow">uMayFinish</span>
         <h3>H03 uMayFinish Unit</h3>
         <p>Headless lifecycle harness for uMayFinish default completion, custom finish variables, mismatched finish values, and timeout exits.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldPathCheck</span>
+          <span class="family-name">uFldPathCheck</span>
+          <span class="family-summary">Checks path-history, odometry, trip-reset, and speed-report contracts from controlled node-report mail.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-pathcheck-unit.html">
+        <span class="eyebrow">uFldPathCheck</span>
+        <h3>H01 uFldPathCheck Unit</h3>
+        <p>Headless uFldPathCheck matrix covering odometry, speed reports, trip resets, local reports, invalid reports, stationary tracks, multi-node accounting, and history-length speed windows.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldMessageHandler</span>
+          <span class="family-name">uFldMessageHandler</span>
+          <span class="family-summary">Checks NODE_MESSAGE routing, addressing, payload forwarding, summary counters, and configured flag outputs.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-message-handler-unit.html">
+        <span class="eyebrow">uFldMessageHandler</span>
+        <h3>H01 uFldMessageHandler Unit</h3>
+        <p>Headless uFldMessageHandler matrix covering destination routing, strict addressing, invalid messages, numeric and string payload forwarding, summary counters, and good/bad flag macro expansion.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldContactRangeSensor</span>
+          <span class="family-name">uFldContactRangeSensor</span>
+          <span class="family-summary">Checks contact-ledger range requests, report variable modes, sensor arcs, echo filters, ping waits, and range limits.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-contact-range-sensor-unit.html">
+        <span class="eyebrow">uFldContactRangeSensor</span>
+        <h3>H01 uFldContactRangeSensor Unit</h3>
+        <p>Headless uFldContactRangeSensor matrix covering short/long report forms, ground-truth reporting, echo-type filters, sensor arcs, ping wait, pulse suppression, local reports, unknown requesters, and unlimited range overrides.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldObstacleSim</span>
+          <span class="family-name">uField Obstacle Simulation</span>
+          <span class="family-summary">Checks obstacle-field source publication, simulated point sensing, refresh, reset, visual, and range-gating behavior.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-obstacle-sim-unit.html">
+        <span class="eyebrow">uField Obstacle Simulation</span>
+        <h3>H01 uFldObstacleSim Unit</h3>
+        <p>Headless uFldObstacleSim source-side matrix covering obstacle files, truth publications, visual output, point-sensor mode, refreshes, resets, range boundaries, and style parameters.</p>
       </a>
 
         </div>

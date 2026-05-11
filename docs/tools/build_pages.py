@@ -20,7 +20,7 @@ SCRIPTS_DIR = REPO_ROOT / "scripts"
 CTEST_COVERAGE_DATA = ROOT / "data" / "ctest_coverage.json"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
-ASSET_VERSION = "20260511-2"
+ASSET_VERSION = "20260511-5"
 PENDING_GIF = "GIF_PENDING"
 CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
@@ -234,6 +234,132 @@ HARNESSES: tuple[Harness, ...] = (
         ),
     ),
     Harness(
+        slug="upokedb-unit",
+        title="H01 uPokeDB Unit",
+        family="uPokeDB",
+        path="harnesses/upokedb_harnesses/H01-upokedb_unit",
+        mission="missions/upokedb_missions/upokedb_unit",
+        summary="Headless uPokeDB matrix covering explicit host/port pokes, mission-file connection, quiet/cache aliases, numeric and string value forms, overwrites, repeated commands, and time macros.",
+        proof="Checks mission-owned pMissionEval grades on the exact MOOS variables posted by uPokeDB, with harness-side token checks for final values, overwritten-value absence, and positive macro-expanded times.",
+        gifs=(
+            ("Direct Numeric Poke", "numeric_direct_pass", "upokedb-direct-numeric.gif"),
+            ("Cached Pokes", "cache_string_numeric_pass", "upokedb-cached-pokes.gif"),
+        ),
+        run="./zlaunch.sh --case=numeric_direct_pass --port_base=15000 10",
+        notes=(
+            "This harness tests uPokeDB as the app-under-test rather than using it only as a helper for other harnesses.",
+            "Most verdicts are mission-owned because the important behavior is whether the live MOOSDB receives the intended variable/value pair.",
+        ),
+    ),
+    Harness(
+        slug="uxms-unit",
+        title="H01 uXMS Unit",
+        family="uXMS",
+        path="harnesses/uxms_harnesses/H01-uxms_unit",
+        mission="missions/uxms_missions/uxms_unit",
+        summary="Captured-output uXMS matrix covering named scopes, all/alll display, source/time/community columns, history view, truncation, clean CLI override, mission-file config, filters, source selection, aliases, refresh modes, shortcuts, and color mapping.",
+        proof="Checks mission readiness with pMissionEval, then grades bounded uXMS terminal captures for required and forbidden display tokens.",
+        gifs=(
+            ("Scoped Variable", "scoped_var_pass", "uxms-scoped-variable.gif"),
+            ("History View", "history_var_pass", "uxms-history-view.gif"),
+        ),
+        run="./zlaunch.sh --case=scoped_var_pass --port_base=15200 10",
+        notes=(
+            "This harness grades uXMS at the terminal-output boundary because uXMS is primarily an observer rather than a MOOS variable publisher.",
+            "Each case combines a mission readiness grade with explicit required/absent token checks in the captured output.",
+        ),
+    ),
+    Harness(
+        slug="uquerydb-unit",
+        title="H01 uQueryDB Unit",
+        family="uQueryDB",
+        path="harnesses/uquerydb_harnesses/H01-uquerydb_unit",
+        mission="missions/uquerydb_missions/uquerydb_unit",
+        summary="Headless uQueryDB matrix covering CLI/config pass/fail conditions, fail-only queries, missing-variable timeout failure, halt_max_time, numeric comparisons, compound logic, unique names, and check-variable output formats.",
+        proof="Checks uQueryDB process return codes, mission readiness with pMissionEval, and .checkvars tokens for ESV, CSV, WSV, config-driven value-only, multi-variable, and timeout-path output.",
+        gifs=(
+            ("Numeric Condition", "cli_numeric_pass", "uquerydb-numeric-condition.gif"),
+            ("Checkvar Formats", "checkvar_csv_pass", "uquerydb-checkvar-formats.gif"),
+        ),
+        run="./zlaunch.sh --case=cli_numeric_pass --port_base=15600 10",
+        notes=(
+            "Most cases use a minimal connection .moos file so CLI conditions are isolated from mission-file ProcessConfig defaults.",
+            "Expected-fail cases are first-class pass cases when uQueryDB returns non-zero for a satisfied fail condition or missing-variable timeout.",
+        ),
+    ),
+    Harness(
+        slug="pdeadmanpost-unit",
+        title="H01 pDeadManPost Unit",
+        family="pDeadManPost",
+        path="harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit",
+        mission="missions/pdeadmanpost_missions/pdeadmanpost_unit",
+        summary="Headless pDeadManPost watchdog matrix covering active-at-start posting, inactive-until-first-heartbeat behavior, stale heartbeat posting, live heartbeat suppression, custom heartbeat variables, post policies, invalid policy fallback, and typed deadflags.",
+        proof="Checks mission-owned pMissionEval grades on exact deadflag variables, absent-post fail conditions, and alog posting counts for once/repeat/reset policy cases.",
+        gifs=(
+            ("Deadman Trip", "active_start_once_posts_pass", "pdeadmanpost-deadman-trip.gif"),
+            ("Heartbeat Suppression", "heartbeat_before_dead_suppresses_pass", "pdeadmanpost-heartbeat-suppression.gif"),
+        ),
+        run="./zlaunch.sh --case=active_start_once_posts_pass --port_base=15800 10",
+        notes=(
+            "The harness writes case-specific pDeadManPost, uTimerScript, and pMissionEval blocks before each isolated launch.",
+            "Suppression cases use fail conditions for deadflags, so absence is part of the mission-owned grade rather than only a harness-side string check.",
+        ),
+    ),
+    Harness(
+        slug="pspoofnode-unit",
+        title="H01 pSpoofNode Unit",
+        family="pSpoofNode",
+        path="harnesses/pspoofnode_harnesses/H01-pspoofnode_unit",
+        mission="missions/pspoofnode_missions/pspoofnode_unit",
+        summary="Headless pSpoofNode matrix covering config-time and runtime spoof requests, default fields and startup ordering, generated names, moving contacts, duration expiry, name/group/contact cancellation, runtime normalization, color/type edge behavior, and malformed request rejection.",
+        proof="Checks mission readiness with pMissionEval, then validates structured NODE_REPORT payload tokens and post-cancel/post-expiration absence from the generated alog.",
+        gifs=(
+            ("Static Spoof", "config_static_report_pass", "pspoofnode-static-spoof.gif"),
+            ("Cancel By Name", "cancel_vname_pass", "pspoofnode-cancel-by-name.gif"),
+        ),
+        run="./zlaunch.sh --case=config_static_report_pass --port_base=16000 10",
+        notes=(
+            "NODE_REPORT contains dynamic time and position fields, so the harness uses narrow alog payload checks as a supplement to the mission-owned readiness grade.",
+            "Cancellation and expiration cases use event-relative timestamps rather than absolute alog times, which keeps them stable across launch latency.",
+        ),
+    ),
+    Harness(
+        slug="utermcommand-unit",
+        title="H01 uTermCommand Unit",
+        family="uTermCommand",
+        path="harnesses/utermcommand_harnesses/H01-utermcommand_unit",
+        mission="missions/utermcommand_missions/utermcommand_unit",
+        summary="Headless uTermCommand matrix covering numeric and string commands, arrow syntax, unique and ambiguous partial selection, duplicate key precedence, exact prefix wins, editing, config parsing, and unknown-command absence.",
+        proof="Runs uTermCommand externally with deterministic stdin, then checks mission-owned pMissionEval grades for the exact variables that should or should not be posted.",
+        gifs=(
+            ("Numeric Command", "numeric_command_pass", "utermcommand-numeric-command.gif"),
+            ("Arrow Syntax", "arrow_syntax_command_pass", "utermcommand-arrow-syntax.gif"),
+        ),
+        run="./zlaunch.sh --case=numeric_command_pass --port_base=16200 10",
+        notes=(
+            "The app is interactive, so the harness drives keystrokes through stdin and gives MOOS delivery time before sending q.",
+            "The multi-command case uses separate deterministic sessions against one config because back-to-back piped commands can collapse into one terminal buffer.",
+        ),
+    ),
+    Harness(
+        slug="psearchgrid-unit",
+        title="H01 pSearchGrid Unit",
+        family="pSearchGrid",
+        path="harnesses/psearchgrid_harnesses/H01-psearchgrid_unit",
+        mission="missions/psearchgrid_missions/psearchgrid_unit",
+        summary="Headless pSearchGrid matrix covering initial grid publication, local/global node-report deltas, repeated and multi-cell deltas, reset clearing semantics, outside-grid absence, full-grid reporting, custom output variables, single and list community filters, and malformed report rejection.",
+        proof="Checks mission readiness with pMissionEval, then validates VIEW_GRID / VIEW_GRID_DELTA payload tokens, event-relative reset absence, and absent output from the generated alog.",
+        gifs=(
+            ("Grid Delta", "node_local_delta_pass", "psearchgrid-grid-delta.gif"),
+            ("Full Grid Report", "full_grid_report_pass", "psearchgrid-full-grid-report.gif"),
+        ),
+        run="./zlaunch.sh --case=node_local_delta_pass --port_base=16400 10",
+        notes=(
+            "The harness keeps grid-payload checks narrow: it validates channel, label, cell var, and increment behavior without reimplementing the full convex-grid parser.",
+            "Filter cases reflect the current source behavior, where match/ignore filters are applied to the MOOS message community.",
+        ),
+    ),
+    Harness(
         slug="ufield-comms-unit",
         title="H01 uField Comms Unit",
         family="uField Communications",
@@ -242,8 +368,8 @@ HARNESSES: tuple[Harness, ...] = (
         summary="Headless uFldNodeComms matrix covering range gates, critical range, shared reports, pulses, message payload forms, group filters, runtime mail, stale reports, and drop controls.",
         proof="Checks mission-owned delivery booleans plus targeted alog evidence for delivered, blocked, grouped, shared, pulsed, and runtime-adjusted communications.",
         gifs=(
-            ("Baseline Broker Comms", "baseline_broker_comms_pass", PENDING_GIF),
-            ("Runtime Range Extend", "runtime_range_extend_pass", PENDING_GIF),
+            ("Baseline Broker Comms", "baseline_broker_comms_pass", "ufield-comms-baseline-broker.gif"),
+            ("Runtime Range Extend", "runtime_range_extend_pass", "ufield-comms-runtime-range.gif"),
         ),
         run="./zlaunch.sh --case=baseline_broker_comms_pass --port_base=4000 10",
         notes=(
@@ -260,8 +386,8 @@ HARNESSES: tuple[Harness, ...] = (
         summary="Broker-level uFldNodeBroker/uFldShoreBroker matrix covering handshake acks, qbridge expansion, bridge token expansion, mediated node-message selection, vnode discovery, keyword mismatch status, and auto-bridge suppression.",
         proof="Checks node broker pings and acks, `UFSB_NODE_COUNT`, `NODE_PSHARE_VARS`, and exact pShare command evidence for shoreside and vehicle-side bridge setup.",
         gifs=(
-            ("Broker Handshake", "broker_handshake_pass", PENDING_GIF),
-            ("Bridge Tokens", "shore_bridge_tokens_pass", PENDING_GIF),
+            ("Broker Handshake", "broker_handshake_pass", "ufield-broker-handshake.gif"),
+            ("Bridge Tokens", "shore_bridge_tokens_pass", "ufield-broker-bridge-tokens.gif"),
         ),
         run="./zlaunch.sh --case=broker_handshake_pass --port_base=4000 10",
         notes=(
@@ -278,13 +404,85 @@ HARNESSES: tuple[Harness, ...] = (
         summary="Route-lifecycle matrix covering startup/runtime route parsing, dead-first-route blocking, secondary dead-route tolerance, runtime timing, duplicates, malformed route rejection, per-node recovery, numeric loopback routes, and shore-driven vnode discovery.",
         proof="Requires the mission-owned delivery or expected-fail grade, then checks exact `TRY_SHORE_HOST`, `PSHARE_CMD`, and `NODE_BROKER_ACK` evidence for route recovery, blocked first routes, duplicate suppression, invalid-route suppression, startup parser resilience, and vnode discovery.",
         gifs=(
-            ("Runtime Route Recovery", "runtime_tryhost_recover_pass", PENDING_GIF),
-            ("Shore VNode Discovery", "shore_vnode_discovery_recover_pass", PENDING_GIF),
+            ("Runtime Route Recovery", "runtime_tryhost_recover_pass", "ufield-route-runtime-recovery.gif"),
+            ("Shore VNode Discovery", "shore_vnode_discovery_recover_pass", "ufield-route-vnode-discovery.gif"),
         ),
         run="./zlaunch.sh --case=runtime_tryhost_recover_pass --port_base=4000 10",
         notes=(
             "This harness keeps the same static communication stem as H01/H02 but removes or perturbs route setup so broker retry and discovery behavior owns the outcome.",
             "The cases are intentionally integration-level because route resilience depends on pShare, `uFldNodeBroker`, and `uFldShoreBroker` interacting across separate MOOS communities.",
+        ),
+    ),
+    Harness(
+        slug="ufld-obstacle-sim-unit",
+        title="H01 uFldObstacleSim Unit",
+        family="uField Obstacle Simulation",
+        path="harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit",
+        mission="missions/ufld_obstacle_sim_missions/ufld_obstacle_sim_unit",
+        summary="Headless uFldObstacleSim source-side matrix covering obstacle files, truth publications, visual output, point-sensor mode, refreshes, resets, range boundaries, and style parameters.",
+        proof="Requires mission-owned completion, then checks exact alog evidence for `KNOWN_OBSTACLE`, `GIVEN_OBSTACLE`, `TRACKED_FEATURE_ALPHA`, `VIEW_POLYGON`, `VIEW_POINT`, `UFOS_MIN_RNG`, and reset/point-size mail.",
+        gifs=(
+            ("Fixed Field Publish", "fixed_field_publish_pass", "ufld-obstacle-sim-fixed-field.gif"),
+            ("Point Sensor Mode", "post_points_inside_pass", "ufld-obstacle-sim-point-sensor.gif"),
+        ),
+        run="./zlaunch.sh --case=fixed_field_publish_pass --port_base=7600 10",
+        notes=(
+            "This harness tests the obstacle source/simulator side before obstacle consumers such as pObstacleMgr or BHV_AvoidObstacleV24 see the data.",
+            "The cases intentionally supplement pMissionEval with alog checks because simulator correctness often appears as structured payload history rather than one stable current value.",
+        ),
+    ),
+    Harness(
+        slug="ufld-pathcheck-unit",
+        title="H01 uFldPathCheck Unit",
+        family="uFldPathCheck",
+        path="harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit",
+        mission="missions/ufield_app_missions/ufield_app_unit",
+        summary="Headless uFldPathCheck matrix covering odometry, speed reports, trip resets, local reports, invalid reports, stationary tracks, multi-node accounting, and history-length speed windows.",
+        proof="Checks mission-owned completion plus targeted alog evidence for `UPC_ODOMETRY_REPORT` and `UPC_SPEED_REPORT` values, including expected absence when reports are insufficient or invalid.",
+        gifs=(
+            ("Baseline Odometry", "odometry_baseline_pass", "ufld-pathcheck-baseline-odometry.gif"),
+            ("Trip Reset", "trip_reset_pass", "ufld-pathcheck-trip-reset.gif"),
+        ),
+        run="./zlaunch.sh --case=odometry_baseline_pass --port_base=4300 10",
+        notes=(
+            "This harness keeps vehicle motion synthetic so uFldPathCheck owns the verdict rather than a simulator or behavior.",
+            "The cases intentionally supplement the pMissionEval grade with exact alog checks because distance and speed are structured report payload fields.",
+        ),
+    ),
+    Harness(
+        slug="ufld-message-handler-unit",
+        title="H01 uFldMessageHandler Unit",
+        family="uFldMessageHandler",
+        path="harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit",
+        mission="missions/ufield_app_missions/ufield_app_unit",
+        summary="Headless uFldMessageHandler matrix covering destination routing, strict addressing, invalid messages, numeric and string payload forwarding, summary counters, and good/bad flag macro expansion.",
+        proof="Checks forwarded MOOS variables, rejected/invalid-message absence, `UMH_SUMMARY_MSGS` counters, and configured `msg_flag` / `bad_msg_flag` outputs from the mission alog.",
+        gifs=(
+            ("Accepted Message", "dest_specific_self_pass", "ufld-message-handler-accepted.gif"),
+            ("Strict Reject", "strict_all_reject_pass", "ufld-message-handler-strict-reject.gif"),
+        ),
+        run="./zlaunch.sh --case=dest_specific_self_pass --port_base=4400 10",
+        notes=(
+            "This harness tests uFldMessageHandler directly instead of reaching it through broker-mediated field traffic.",
+            "The cases keep routing inputs narrow so accepted, rejected, and invalid messages have distinct observable counters and forwarded-mail evidence.",
+        ),
+    ),
+    Harness(
+        slug="ufld-contact-range-sensor-unit",
+        title="H01 uFldContactRangeSensor Unit",
+        family="uFldContactRangeSensor",
+        path="harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit",
+        mission="missions/ufield_app_missions/ufield_app_unit",
+        summary="Headless uFldContactRangeSensor matrix covering short/long report forms, ground-truth reporting, echo-type filters, sensor arcs, ping wait, pulse suppression, local reports, unknown requesters, and unlimited range overrides.",
+        proof="Checks `CRS_RANGE_REPORT`, `CRS_RANGE_REPORT_<VNAME>`, `CRS_RANGE_REPORT_GT`, and `VIEW_RANGE_PULSE` presence, absence, count, and payload range values in the mission alog.",
+        gifs=(
+            ("Baseline Range", "baseline_short_report_pass", "ufld-contact-range-sensor-baseline.gif"),
+            ("Arc Block", "sensor_arc_aft_block_pass", "ufld-contact-range-sensor-arc-block.gif"),
+        ),
+        run="./zlaunch.sh --case=baseline_short_report_pass --port_base=4500 10",
+        notes=(
+            "This harness scripts static contact geometry so uFldContactRangeSensor owns the range-report verdict.",
+            "The cases avoid probabilistic range-boundary assertions and use deterministic filters, arcs, ping waits, and unlimited-distance overrides.",
         ),
     ),
     Harness(
@@ -702,7 +900,10 @@ HARNESSES: tuple[Harness, ...] = (
         mission="missions/testfailure_behavior_missions/testfailure_behavior_unit",
         summary="Headless unit harness for BHV_TestFailure completion-triggered crash, burn, hang alias, default burn timing, malformed burn timing, negative/zero burn timing, and unsupported failure-type default behavior.",
         proof="Checks completion endflags, pHelmIvP iteration-gap evidence for wall-clock burn/hang stalls, immediate-completion burn variants, process-watch evidence for crash/default-crash outcomes, and a non-completing armed baseline.",
-        gifs=(),
+        gifs=(
+            ("Burn Gap Detection", "burn_gap_detected_pass", "testfailure-burn-gap.gif"),
+            ("Crash Process Loss", "crash_on_complete_fail", "testfailure-crash-process-loss.gif"),
+        ),
         run="./zlaunch.sh --case=burn_gap_detected_pass --port_base=15000 10",
         notes=(
             "This harness seeds only the minimum helm navigation state required for behavior evaluation; it does not simulate vehicle motion.",
@@ -761,6 +962,78 @@ HARNESSES: tuple[Harness, ...] = (
         notes=(
             "This is a shoreside-only infrastructure harness: pHostInfo and uLoadWatch are launched as watched peers, not as graded utilities.",
             "The missing-process case is expected to fail and waits long enough to cross uProcessWatch's built-in AWOL delay.",
+        ),
+    ),
+    Harness(
+        slug="pshare-unit",
+        title="H01 pShare Unit",
+        family="Utility Infrastructure",
+        path="harnesses/pshare_harnesses/H01-pshare_unit",
+        mission="missions/pshare_missions/pshare_unit",
+        summary="Headless two-community harness for pShare direct, renamed, wildcard, source-qualified wildcard, multicast, duration-limited, shorthand, fanout, command-line, and frequency-throttled routes.",
+        proof="Checks routed mail arriving in the receiver MOOSDB under direct and renamed destinations, max_shares limiting, wildcard source matching, wildcard source-app qualifiers, multicast aliases, wildcard destination-prefix renaming, caret wildcard renaming, route duration expiry, shorthand route syntax, multi-destination fanout, command-line -o route configuration, and share-frequency throttling.",
+        gifs=(
+            ("Direct Route", "pshare_direct_route_pass", "pshare-direct-route.gif"),
+            ("Wildcard Route", "pshare_wildcard_route_pass", "pshare-wildcard-route.gif"),
+        ),
+        run="./zlaunch.sh --jobs=2 --port_base=11000 10",
+        notes=(
+            "This harness uses two local MOOS communities so pShare is tested through real UDP route delivery rather than synthetic summary mail.",
+            "The mission owns the pass/fail grade by evaluating the receiver-side variables after routed mail should have arrived.",
+        ),
+    ),
+    Harness(
+        slug="pshare-topology",
+        title="H02 pShare Topology",
+        family="Utility Infrastructure",
+        path="harnesses/pshare_harnesses/H02-pshare_topology",
+        mission="missions/pshare_missions/pshare_topology",
+        summary="Headless four-community harness for pShare route behavior that needs multiple senders, multiple input ports, input route-list parsing, multicast listeners, custom multicast channels, relay proof, route-list branching, app aliases, runtime input-route insertion, or runtime output-route insertion.",
+        proof="Checks two-sender fan-in, competing sender updates, one receiver listening on multiple pShare input ports, one receiver input line expanding multiple route-list ports, multicast delivery to both evaluator and relay, relay proof routed back to the evaluator, dynamic unicast and multicast input-route insertion through PSHARE_CMD, custom multicast base/address mapping, unicast branching to a relay, route-list branching across communities, alias-specific command routing, and dynamic output-route insertion through PSHARE_CMD.",
+        gifs=(
+            ("Fan-in", "pshare_topology_fanin_pass", "pshare-topology-fanin.gif"),
+            ("Multicast Relay Proof", "pshare_topology_multicast_multi_listener_pass", "pshare-topology-multicast-relay-proof.gif"),
+        ),
+        run="./zlaunch.sh --jobs=2 --port_base=11000 --max_time=65 10",
+        notes=(
+            "The stem mission runs four local MOOS communities: a shoreside evaluator, two sender peers, and one relay/listener peer.",
+            "The shoreside community owns the final pMissionEval grade; relay-local pMissionEval flags are used only as proof that the relay received the relevant multicast or unicast branch.",
+        ),
+    ),
+    Harness(
+        slug="plogger-unit",
+        title="H01 pLogger Unit",
+        family="Utility Infrastructure",
+        path="harnesses/plogger_harnesses/H01-plogger_unit",
+        mission="missions/plogger_missions/plogger_unit",
+        summary="Headless artifact harness for pLogger explicit logs, wildcard omit and exclusion logs, dynamic log requests, datatype marking, sync logs, copy-file requests, and fixed artifact naming.",
+        proof="Checks mission-owned live mail grades plus harness-owned .alog, .slog, .xlog, and copied-file evidence for explicit, wildcard, omitted, dynamically requested, numeric, typed, synchronous, fixed-name, and copy-request artifacts.",
+        gifs=(
+            ("Explicit Log Capture", "plogger_explicit_log_pass", "plogger-explicit-log-capture.gif"),
+            ("Wildcard Omit", "plogger_wildcard_omit_pass", "plogger-wildcard-omit.gif"),
+        ),
+        run="./zlaunch.sh --jobs=2 --port_base=12000 10",
+        notes=(
+            "pLogger's real product is an artifact on disk, so this harness supplements pMissionEval with narrow .alog content checks.",
+            "The artifact checks look only for the variables that define each case rather than treating the whole log as a golden file.",
+        ),
+    ),
+    Harness(
+        slug="pantler-unit",
+        title="H01 pAntler Unit",
+        family="Utility Infrastructure",
+        path="harnesses/pantler_harnesses/H01-pantler_unit",
+        mission="missions/pantler_missions/pantler_unit",
+        summary="Headless launch-composition harness for pAntler baseline launches, aliases, launch filters, explicit system-path launches, and extra process parameters.",
+        proof="Checks that pAntler starts the expected configured apps, honors MOOS-name aliases, launches multiple aliases of the same binary, filters a launch set, accepts explicit system-path lookup, and forwards extra process parameters.",
+        gifs=(
+            ("Alias Launch", "pantler_alias_launch_pass", "pantler-alias-launch.gif"),
+            ("Multi-alias Launch", "pantler_multi_alias_launch_pass", "pantler-multi-alias-launch.gif"),
+        ),
+        run="./zlaunch.sh --jobs=2 --port_base=12200 10",
+        notes=(
+            "The graded flags are emitted only by apps launched through pAntler, keeping the verdict tied to launch composition.",
+            "These remain deliberately small smoke tests; deeper pAntler failure-mode coverage would need process-exit and stderr inspection.",
         ),
     ),
     Harness(
@@ -959,10 +1232,70 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("usim-marine-motion", "pnodereporter-unit"),
     ),
     Family(
+        name="uPokeDB",
+        label="uPokeDB",
+        summary="Checks command-line MOOSDB pokes across connection modes, value forms, cache parsing, short aliases, overwrites, quiet operation, and time macros.",
+        slugs=("upokedb-unit",),
+    ),
+    Family(
+        name="uXMS",
+        label="uXMS",
+        summary="Checks terminal MOOSDB scoping output across variable scopes, display columns, history, filters, source selection, config, aliases, refresh modes, and truncation.",
+        slugs=("uxms-unit",),
+    ),
+    Family(
+        name="uQueryDB",
+        label="uQueryDB",
+        summary="Checks command-line MOOSDB query pass/fail logic, timeout behavior, mission-file configuration, compound conditions, and check-variable output formats.",
+        slugs=("uquerydb-unit",),
+    ),
+    Family(
+        name="pDeadManPost",
+        label="pDeadManPost",
+        summary="Checks watchdog deadflag posting across active-at-start behavior, heartbeat suppression, stale heartbeat detection, and numeric/string/multiple deadflags.",
+        slugs=("pdeadmanpost-unit",),
+    ),
+    Family(
+        name="pSpoofNode",
+        label="pSpoofNode",
+        summary="Checks spoofed NODE_REPORT generation, defaults, runtime requests, motion advancement, duration expiry, cancellation, and malformed request rejection.",
+        slugs=("pspoofnode-unit",),
+    ),
+    Family(
+        name="uTermCommand",
+        label="uTermCommand",
+        summary="Checks terminal command mapping, typed posts, partial matching, duplicate precedence, tab expansion, and unknown command absence.",
+        slugs=("utermcommand-unit",),
+    ),
+    Family(
+        name="pSearchGrid",
+        label="pSearchGrid",
+        summary="Checks grid construction, full and delta publication, node-report ingestion, custom output variables, community filters, and invalid/outside-grid absence.",
+        slugs=("psearchgrid-unit",),
+    ),
+    Family(
         name="uFldNodeComms + uField Brokers",
         label="uField Communications",
         summary="Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.",
         slugs=("ufield-comms-unit", "ufield-broker-bridge", "ufield-route-resilience"),
+    ),
+    Family(
+        name="uFldPathCheck",
+        label="uFldPathCheck",
+        summary="Checks path-history, odometry, trip-reset, and speed-report contracts from controlled node-report mail.",
+        slugs=("ufld-pathcheck-unit",),
+    ),
+    Family(
+        name="uFldMessageHandler",
+        label="uFldMessageHandler",
+        summary="Checks NODE_MESSAGE routing, addressing, payload forwarding, summary counters, and configured flag outputs.",
+        slugs=("ufld-message-handler-unit",),
+    ),
+    Family(
+        name="uFldContactRangeSensor",
+        label="uFldContactRangeSensor",
+        summary="Checks contact-ledger range requests, report variable modes, sensor arcs, echo filters, ping waits, and range limits.",
+        slugs=("ufld-contact-range-sensor-unit",),
     ),
     Family(
         name="BHV_ConstantDepth",
@@ -1113,6 +1446,24 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("processwatch-unit",),
     ),
     Family(
+        name="pShare",
+        label="pShare",
+        summary="Checks direct and renamed routed mail, max-share limiting, wildcard matching, source-qualified wildcards, multicast aliases, wildcard renaming, duration expiry, shorthand routes, fanout, command-line output routes, frequency throttling, multi-sender topology, multi-port input, input route-list parsing, multicast listeners, custom multicast channels, relay proof, and runtime route insertion.",
+        slugs=("pshare-unit", "pshare-topology"),
+    ),
+    Family(
+        name="pLogger",
+        label="pLogger",
+        summary="Checks explicit log capture, wildcard omit and exclusion logs, dynamic log requests, sync logs, numeric and typed values, copy-file requests, and fixed artifact names.",
+        slugs=("plogger-unit",),
+    ),
+    Family(
+        name="pAntler",
+        label="pAntler",
+        summary="Checks baseline process launch, MOOS-name aliases, multiple aliases, launch filters, explicit system-path lookup, and extra process parameters.",
+        slugs=("pantler-unit",),
+    ),
+    Family(
         name="pMissionEval",
         label="pMissionEval",
         summary="Checks mission grading, staged logic, result flags, report formatting, macro expansion, and no-hash report behavior.",
@@ -1129,6 +1480,30 @@ FAMILIES: tuple[Family, ...] = (
         label="uMayFinish",
         summary="Checks default finish exits, custom finish variables, mismatched finish values, and timeout exits.",
         slugs=("umayfinish-unit",),
+    ),
+    Family(
+        name="uFldPathCheck",
+        label="uFldPathCheck",
+        summary="Checks path-history, odometry, trip-reset, and speed-report contracts from controlled node-report mail.",
+        slugs=("ufld-pathcheck-unit",),
+    ),
+    Family(
+        name="uFldMessageHandler",
+        label="uFldMessageHandler",
+        summary="Checks NODE_MESSAGE routing, addressing, payload forwarding, summary counters, and configured flag outputs.",
+        slugs=("ufld-message-handler-unit",),
+    ),
+    Family(
+        name="uFldContactRangeSensor",
+        label="uFldContactRangeSensor",
+        summary="Checks contact-ledger range requests, report variable modes, sensor arcs, echo filters, ping waits, and range limits.",
+        slugs=("ufld-contact-range-sensor-unit",),
+    ),
+    Family(
+        name="uField Obstacle Simulation",
+        label="uFldObstacleSim",
+        summary="Checks obstacle-field source publication, simulated point sensing, refresh, reset, visual, and range-gating behavior.",
+        slugs=("ufld-obstacle-sim-unit",),
     ),
     Family(
         name="BHV_ZigZag",
@@ -1160,9 +1535,20 @@ TEST_STYLE: dict[str, str] = {
     "pid-motion": "Moving correctness tests for pMarinePIDV22 closed-loop behavior. These cases add pHelmIvP and uSimMarineV22 and verify that PID output drives arrival, turn recovery, speed-PID transit, depth response, and expected authority failures.",
     "usim-marine-motion": "App-level correctness tests for uSimMarineV22. These cases directly verify simulator publications under scripted actuator mail, embedded PID coupling, limit parameters, drift/current inputs, water-depth altitude, pause, reset, disabled-nav, and stop-control inputs.",
     "pnodereporter-unit": "App-level correctness tests for pNodeReporter. These cases directly verify node-report construction, platform metadata, helm-mode fields, JSON modes, alternate nav streams, coordinate cross-fill policies, runtime metadata updates, pause/resume behavior, odometry evidence, and expected blackout-interval failure detection.",
+    "upokedb-unit": "Utility app correctness tests for uPokeDB. These cases verify that command-line, mission-file, and cached pokes publish the intended numeric, string, boolean-looking, overwritten, repeated, alias-driven, and time-macro values to a live MOOSDB.",
+    "uxms-unit": "Utility app correctness tests for uXMS. These cases verify terminal scoping output for named variables, all/alll display, source/time/community columns, history, truncation, config-file variables, clean CLI overrides, filters, source selection, novirgins, connection aliases, refresh modes, shortcuts, and color mapping.",
+    "uquerydb-unit": "Utility app correctness tests for uQueryDB. These cases verify query return codes, CLI and ProcessConfig pass/fail conditions, fail-only queries, missing-variable timeouts, halt_max_time, numeric comparisons, compound logic, unique client names, and check-variable file formats.",
+    "pdeadmanpost-unit": "Utility app correctness tests for pDeadManPost. These cases verify deadflag posting and suppression across active-at-start, inactive-until-first-heartbeat, stale heartbeat, custom heartbeat variables, once/repeat/reset post policies, invalid policy fallback, and typed deadflag configurations.",
+    "pspoofnode-unit": "Utility app correctness tests for pSpoofNode. These cases verify structured NODE_REPORT output for config and runtime spoof requests, generated names, moving contacts, name/group/contact cancellation, expiration, defaults and startup ordering, runtime normalization, color/type edge behavior, and malformed requests.",
+    "utermcommand-unit": "Utility app correctness tests for uTermCommand. These cases verify terminal command mapping for numeric and string posts, arrow syntax, unique and ambiguous partial keys, exact-prefix handling, delete editing, duplicate-key precedence, command config parsing, multi-command configs, and unknown command absence.",
+    "psearchgrid-unit": "Utility app correctness tests for pSearchGrid. These cases verify initial grid output, local/global node-report deltas, repeated and multi-cell delta behavior, reset clearing semantics, full-grid publication, custom grid variables, single and list filter blocking, malformed reports, and outside-grid absence.",
     "ufield-comms-unit": "App-level correctness tests for uFldNodeComms. These cases verify report and message delivery under controlled range, group, stale-report, payload, shared-report, pulse, runtime-mail, and drop-policy conditions.",
     "ufield-broker-bridge": "Broker-level correctness tests for uFldNodeBroker and uFldShoreBroker. These cases verify broker handshakes, pShare command generation, qbridge expansion, custom bridge expansion, mediated bridge selection, vnode discovery, keyword mismatch status, and auto-bridge suppression.",
     "ufield-route-resilience": "Integration correctness tests for uFldNodeBroker, uFldShoreBroker, and pShare route lifecycle behavior. These cases verify startup/runtime route parsing, dead-first-route blocking, secondary dead-route tolerance, runtime route timing, duplicate suppression, invalid route rejection, numeric loopback routes, per-node route gaps, and shore-driven vnode discovery.",
+    "ufld-obstacle-sim-unit": "App-level correctness tests for uFldObstacleSim. These cases verify obstacle-file ingestion, truth and vehicle-facing obstacle publications, visual toggles, point-sensor mode, sensor-range boundaries, runtime point-size mail, refresh intervals, reset gating, and visual style settings.",
+    "ufld-pathcheck-unit": "App-level correctness tests for uFldPathCheck. These cases verify speed and odometry reports, trip-reset behavior, local report handling, invalid-report suppression, stationary tracks, independent multi-node accounting, and history-window speed calculations.",
+    "ufld-message-handler-unit": "App-level correctness tests for uFldMessageHandler. These cases verify broad and specific addressing, strict-addressing rejection, invalid-message handling, numeric and string payload forwarding, summary counters, and good/bad flag macro expansion.",
+    "ufld-contact-range-sensor-unit": "App-level correctness tests for uFldContactRangeSensor. These cases verify report variable modes, ground-truth output, echo-type filtering, sensor arcs, ping wait, pulse suppression, local reports, unknown requesters, and unlimited range overrides.",
     "constant-depth-motion": "Moving correctness tests for BHV_ConstantDepth. These cases verify held depths, surfacing, negative-depth clipping, shape parameters, runtime updates, malformed update preservation, finite-duration completion, malformed config, missing inputs/domain, and disabled depth-control authority.",
     "goto-depth-motion": "Moving correctness tests for BHV_GoToDepth. These cases verify multi-level sequences, repeated cycles and exhaustion, vertical target crossings, zero-delta arrivals, single-level targets, malformed update preservation, unsupported perpetual config, invalid sequences, malformed repeat values, missing inputs, and missing domain support.",
     "periodic-surface-motion": "Moving correctness tests for BHV_PeriodicSurface. These cases verify periodic surfacing, status variables, wait windows, timeout reset behavior, mark-variable resets, acomms extension, ascent profiles, current-speed mode, malformed status/ascent parameters, and missing inputs/domain.",
@@ -1189,6 +1575,10 @@ TEST_STYLE: dict[str, str] = {
     "hostinfo-unit": "Utility infrastructure tests for pHostInfo. These cases verify deterministic host reporting, MOOSDB port publication, and exact pShare route normalization for valid, multi-route, mixed, non-UDP, and invalid route specifications.",
     "loadwatch-unit": "Utility infrastructure tests for uLoadWatch. These cases verify threshold counters, near and hard threshold boundary behavior, low-threshold ignore behavior, clamped near-threshold behavior, breach-trigger holdoff, app-specific threshold matching, and threshold-name case sensitivity.",
     "processwatch-unit": "Utility infrastructure tests for uProcessWatch. These cases verify process summary publications, custom present posts, event and summary post remapping, full summaries, and expected missing-process detection.",
+    "pshare-unit": "Utility infrastructure tests for pShare. These cases verify direct route delivery, destination renaming, max-share limiting, wildcard source matching, source-app-qualified wildcards, multicast aliases, wildcard prefix renaming, caret wildcard renaming, duration expiry, shorthand route syntax, multi-destination fanout, command-line -o route configuration, and frequency throttling.",
+    "pshare-topology": "Utility infrastructure tests for pShare topology behavior. These cases verify two-sender fan-in, competing updates to the same destination, one receiver listening on multiple UDP input ports, input route-list parsing, multicast delivery to more than one listener, custom multicast base/address mapping, relay proof of receipt, dynamic unicast and multicast receiver input-route insertion, unicast branching to a relay, route-list branching across communities, alias-specific command routing, and runtime output-route insertion through PSHARE_CMD.",
+    "plogger-unit": "Utility infrastructure tests for pLogger. These cases verify explicit .alog capture, wildcard logging with omit patterns, dynamic log requests through PLOGGER_CMD, numeric mail capture, datatype marking and precision, synchronous .slog columns, wildcard exclusion .xlog output, copy-file requests, and fixed file naming.",
+    "pantler-unit": "Utility infrastructure tests for pAntler. These cases verify ordinary launch composition, MOOS-name alias launch, multiple aliases of the same binary, launch filtering, explicit system-path process lookup, and extra process parameters.",
     "pmissioneval-unit": "Mission utility tests for pMissionEval. These cases verify pass/fail grading, built-in finish publication, staged logic sequences, fail-condition precedence, lead-only and fail-only evaluator shapes, flags and mailflags, numeric and mission-hash macros, literal numeric flags, CSP report output, clock macros, and no-hash report output.",
     "pmissionhash-unit": "Mission utility tests for pMissionHash. These cases verify custom hash variable names, short-hash disable behavior, long-hash disable behavior, and RESET_MHASH-driven hash changes.",
     "umayfinish-unit": "Mission utility tests for uMayFinish. These cases verify default MISSION_EVALUATED exits, custom finish variables, mismatched finish-value timeouts, and missing-finish timeouts.",
@@ -1234,10 +1624,25 @@ STEM_CONTEXT: dict[str, str] = {
     "hostinfo-unit": "The stem mission runs a single shoreside MOOS community with pHostInfo, uTimerScript, pAutoPoke, and pMissionEval. Case overlays change only pHostInfo configuration and mission-owned host-info pass/fail conditions.",
     "loadwatch-unit": "The stem mission runs a single shoreside MOOS community with uLoadWatch, uTimerScript, pAutoPoke, and pMissionEval. Case overlays change only load-watch configuration, scripted DB_UPTIME mail, and mission-owned threshold pass/fail conditions.",
     "processwatch-unit": "The stem mission runs a single shoreside MOOS community with uProcessWatch plus small watched peer apps. Case overlays change only process-watch configuration and mission-owned process-presence pass/fail conditions.",
+    "pshare-unit": "The stem mission runs two local MOOS communities connected by pShare. Case overlays change only pShare route configuration, scripted sender mail, and receiver-side mission-owned pass/fail conditions.",
+    "pshare-topology": "The stem mission runs four local MOOS communities: a shoreside evaluator, two sender peers, and one relay/listener peer. Case overlays keep the topology fixed while changing pShare routes, scripted sender mail, and the evaluator conditions needed to prove multi-peer delivery.",
+    "plogger-unit": "The stem mission runs a single shoreside MOOS community with pLogger, uTimerScript, pMissionEval, and pMissionHash. The harness adds focused .alog/.slog/.xlog/copied-file checks because the logged files are the behavior under test.",
+    "pantler-unit": "The stem mission runs a single shoreside MOOS community whose graded flags come from apps started by pAntler. Case overlays change the ANTLER launch block, matching aliased app config blocks, launcher-supplied filter argument, system path lookup, and extra process parameter forwarding.",
     "pnodereporter-unit": "The stem mission runs a single MOOS community with pNodeReporter, uTimerScript, pMissionEval, pAutoPoke, pMissionHash, and logging/watchdog support. Case overlays change only reporter configuration, scripted nav/helm/platform mail, and mission-owned report pass/fail conditions.",
+    "upokedb-unit": "The stem mission runs one MOOS community with MOOSDB, pLogger, pMissionEval, and pMissionHash. The harness runs uPokeDB externally against that live DB, then pMissionEval grades the exact variables that should have been posted.",
+    "uxms-unit": "The stem mission runs one MOOS community with uTimerScript publishing controlled mail and pMissionEval proving publisher readiness. The harness runs bounded uXMS terminal captures and grades required and forbidden display tokens.",
+    "uquerydb-unit": "The stem mission runs one MOOS community with uTimerScript publishing controlled query variables and pMissionEval proving publisher readiness. The harness runs bounded uQueryDB invocations and grades return codes plus .checkvars content.",
+    "pdeadmanpost-unit": "The stem mission runs one MOOS community with pDeadManPost and a case-generated heartbeat schedule. The harness grades exact deadflag variables and absence conditions through pMissionEval, then uses alog counts for policy cases where posting multiplicity matters.",
+    "pspoofnode-unit": "The stem mission runs one MOOS community with pSpoofNode and case-generated spoof/cancel mail. The harness uses pMissionEval for readiness and alog checks for structured NODE_REPORT payload fields.",
+    "utermcommand-unit": "The stem mission runs one MOOS community with MOOSDB, pMissionEval, and logging while the harness drives uTermCommand externally through stdin and grades the resulting posts.",
+    "psearchgrid-unit": "The stem mission runs one MOOS community with pSearchGrid and case-generated NODE_REPORT mail. The harness uses pMissionEval for readiness and alog payload checks for grid and delta publications.",
     "ufield-comms-unit": "The stem mission runs one shoreside community and two static vehicle communities with uFldNodeComms, uFldNodeBroker, uFldShoreBroker, pShare, uTimerScript, and pMissionEval. Case overlays change communication policy and scripted report/message traffic while the harness verifies payload-level effects.",
     "ufield-broker-bridge": "The stem mission runs the same two-vehicle uField setup but focuses on broker configuration. Case overlays change shore broker bridges, vnode discovery, keywords, mediated node bridging, and auto-bridge settings while the harness verifies broker pShare command output.",
     "ufield-route-resilience": "The stem mission runs the same two static vehicle communities and one shoreside community, but startup and runtime route setup is delayed, invalid, duplicated, partially supplied, or supplied by shore vnode discovery. The mission grade proves communications recovered or intentionally failed, and harness alog checks prove which route path was used.",
+    "ufld-obstacle-sim-unit": "The stem mission runs a single shoreside MOOS community with uFldObstacleSim, uTimerScript, pMissionHash, pMissionEval, and pLogger. Case overlays change only simulator configuration and scripted refresh/reset/node-report mail while the harness verifies source-side obstacle and point publications.",
+    "ufld-pathcheck-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldPathCheck config and scripted node-report mail, then checks path and speed report payloads from the alog.",
+    "ufld-message-handler-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldMessageHandler config and scripted NODE_MESSAGE mail, then checks forwarded variables, counters, flags, and expected absence from the alog.",
+    "ufld-contact-range-sensor-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness scripts static contact geometry and range requests, then checks range-report, ground-truth, and pulse outputs from the alog.",
     "pmissioneval-unit": "The stem mission runs a single shoreside MOOS community with pMissionHash, pMissionEval, uTimerScript, logging, and process-watch support. Case overlays change pMissionEval configuration and scripted MOOS mail while the harness starts uniquely aliased uMayFinish instances so completion remains observable.",
     "pmissionhash-unit": "The stem mission runs a single shoreside MOOS community with pMissionHash, pMissionEval, uTimerScript, logging, and process-watch support. Case overlays change pMissionHash settings while pMissionEval consumes the hash mail as the mission-owned grader.",
     "umayfinish-unit": "The stem mission runs a single shoreside MOOS community with pMissionEval, uTimerScript, logging, and process-watch support. The harness starts uMayFinish directly with unique aliases so each case can assert the process exit code.",
@@ -1718,6 +2123,12 @@ def phrase_performance_case(slug: str, case_name: str) -> str:
 
 
 def describe_case(slug: str, case_name: str) -> str:
+    explicit_cases = {
+        "reset_false_visual_pass": "Slower visual version of reset_upon_running=false: RUN_PS_ALL turns off, the timer continues aging, and speed returns after re-enable.",
+    }
+    if case_name in explicit_cases:
+        return explicit_cases[case_name]
+
     if slug == "colregs-thresholds":
         desc = phrase_threshold_case(case_name)
     elif slug == "colregs-parameters":
@@ -2746,6 +3157,8 @@ def render_gif_manifest() -> str:
         "Generated utility infrastructure visuals live in `docs/tools/render_utility_watch_gifs.py`.",
         "Generated simulator infrastructure visuals live in `docs/tools/render_simulator_infrastructure_gifs.py`.",
         "Generated mission utility visuals live in `docs/tools/render_mission_utility_gifs.py`.",
+        "Generated uFldObstacleSim visuals live in `docs/tools/render_ufld_obstacle_sim_gifs.py`.",
+        "Generated uField app visuals live in `docs/tools/render_ufield_app_gifs.py`.",
         "Headless harness runs remain the source of truth for the case behavior; the",
         "generated GIFs are documentation views of that same geometry and variable-level",
         "evidence.",

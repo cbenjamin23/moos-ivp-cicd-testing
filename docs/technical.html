@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Technical Overview | MOOS-IvP CI/CD</title>
-  <link rel="stylesheet" href="styles.css?v=20260511-2">
-  <script src="theme.js?v=20260511-2"></script>
+  <link rel="stylesheet" href="styles.css?v=20260511-5">
+  <script src="theme.js?v=20260511-5"></script>
 </head>
 <body>
   <header class="site-header">
@@ -149,9 +149,79 @@
 
 
           <tr>
+            <th>uPokeDB</th>
+            <td>Checks command-line MOOSDB pokes across connection modes, value forms, cache parsing, short aliases, overwrites, quiet operation, and time macros.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uXMS</th>
+            <td>Checks terminal MOOSDB scoping output across variable scopes, display columns, history, filters, source selection, config, aliases, refresh modes, and truncation.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uQueryDB</th>
+            <td>Checks command-line MOOSDB query pass/fail logic, timeout behavior, mission-file configuration, compound conditions, and check-variable output formats.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pDeadManPost</th>
+            <td>Checks watchdog deadflag posting across active-at-start behavior, heartbeat suppression, stale heartbeat detection, and numeric/string/multiple deadflags.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pSpoofNode</th>
+            <td>Checks spoofed NODE_REPORT generation, defaults, runtime requests, motion advancement, duration expiry, cancellation, and malformed request rejection.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uTermCommand</th>
+            <td>Checks terminal command mapping, typed posts, partial matching, duplicate precedence, tab expansion, and unknown command absence.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pSearchGrid</th>
+            <td>Checks grid construction, full and delta publication, node-report ingestion, custom output variables, community filters, and invalid/outside-grid absence.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
             <th>uFldNodeComms + uField Brokers</th>
             <td>Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.</td>
             <td>3</td>
+          </tr>
+
+
+          <tr>
+            <th>uFldPathCheck</th>
+            <td>Checks path-history, odometry, trip-reset, and speed-report contracts from controlled node-report mail.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uFldMessageHandler</th>
+            <td>Checks NODE_MESSAGE routing, addressing, payload forwarding, summary counters, and configured flag outputs.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uFldContactRangeSensor</th>
+            <td>Checks contact-ledger range requests, report variable modes, sensor arcs, echo filters, ping waits, and range limits.</td>
+            <td>1</td>
           </tr>
 
 
@@ -317,6 +387,27 @@
 
 
           <tr>
+            <th>pShare</th>
+            <td>Checks direct and renamed routed mail, max-share limiting, wildcard matching, source-qualified wildcards, multicast aliases, wildcard renaming, duration expiry, shorthand routes, fanout, command-line output routes, frequency throttling, multi-sender topology, multi-port input, input route-list parsing, multicast listeners, custom multicast channels, relay proof, and runtime route insertion.</td>
+            <td>2</td>
+          </tr>
+
+
+          <tr>
+            <th>pLogger</th>
+            <td>Checks explicit log capture, wildcard omit and exclusion logs, dynamic log requests, sync logs, numeric and typed values, copy-file requests, and fixed artifact names.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pAntler</th>
+            <td>Checks baseline process launch, MOOS-name aliases, multiple aliases, launch filters, explicit system-path lookup, and extra process parameters.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
             <th>pMissionEval</th>
             <td>Checks mission grading, staged logic, result flags, report formatting, macro expansion, and no-hash report behavior.</td>
             <td>1</td>
@@ -333,6 +424,34 @@
           <tr>
             <th>uMayFinish</th>
             <td>Checks default finish exits, custom finish variables, mismatched finish values, and timeout exits.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uFldPathCheck</th>
+            <td>Checks path-history, odometry, trip-reset, and speed-report contracts from controlled node-report mail.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uFldMessageHandler</th>
+            <td>Checks NODE_MESSAGE routing, addressing, payload forwarding, summary counters, and configured flag outputs.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uFldContactRangeSensor</th>
+            <td>Checks contact-ledger range requests, report variable modes, sensor arcs, echo filters, ping waits, and range limits.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>uField Obstacle Simulation</th>
+            <td>Checks obstacle-field source publication, simulated point sensing, refresh, reset, visual, and range-gating behavior.</td>
             <td>1</td>
           </tr>
 

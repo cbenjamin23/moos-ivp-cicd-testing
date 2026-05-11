@@ -56,6 +56,55 @@
     "families": ["pnodereporter"]
   },
   {
+    "key": "upokedb_h01",
+    "path": "harnesses/upokedb_harnesses/H01-upokedb_unit",
+    "harness": "H01-upokedb_unit",
+    "artifact": "manual-upokedb-h01-results",
+    "families": ["upokedb"]
+  },
+  {
+    "key": "uxms_h01",
+    "path": "harnesses/uxms_harnesses/H01-uxms_unit",
+    "harness": "H01-uxms_unit",
+    "artifact": "manual-uxms-h01-results",
+    "families": ["uxms"]
+  },
+  {
+    "key": "uquerydb_h01",
+    "path": "harnesses/uquerydb_harnesses/H01-uquerydb_unit",
+    "harness": "H01-uquerydb_unit",
+    "artifact": "manual-uquerydb-h01-results",
+    "families": ["uquerydb"]
+  },
+  {
+    "key": "pdeadmanpost_h01",
+    "path": "harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit",
+    "harness": "H01-pdeadmanpost_unit",
+    "artifact": "manual-pdeadmanpost-h01-results",
+    "families": ["pdeadmanpost"]
+  },
+  {
+    "key": "pspoofnode_h01",
+    "path": "harnesses/pspoofnode_harnesses/H01-pspoofnode_unit",
+    "harness": "H01-pspoofnode_unit",
+    "artifact": "manual-pspoofnode-h01-results",
+    "families": ["pspoofnode"]
+  },
+  {
+    "key": "utermcommand_h01",
+    "path": "harnesses/utermcommand_harnesses/H01-utermcommand_unit",
+    "harness": "H01-utermcommand_unit",
+    "artifact": "manual-utermcommand-h01-results",
+    "families": ["utermcommand"]
+  },
+  {
+    "key": "psearchgrid_h01",
+    "path": "harnesses/psearchgrid_harnesses/H01-psearchgrid_unit",
+    "harness": "H01-psearchgrid_unit",
+    "artifact": "manual-psearchgrid-h01-results",
+    "families": ["psearchgrid"]
+  },
+  {
     "key": "depth_constant_h01",
     "path": "harnesses/depth_behavior_harnesses/H01-constant_depth_motion",
     "harness": "H01-constant_depth_motion",
@@ -210,6 +259,34 @@
     "families": ["processwatch"]
   },
   {
+    "key": "pshare_h01",
+    "path": "harnesses/pshare_harnesses/H01-pshare_unit",
+    "harness": "H01-pshare_unit",
+    "artifact": "manual-pshare-h01-results",
+    "families": ["pshare"]
+  },
+  {
+    "key": "pshare_h02",
+    "path": "harnesses/pshare_harnesses/H02-pshare_topology",
+    "harness": "H02-pshare_topology",
+    "artifact": "manual-pshare-h02-results",
+    "families": ["pshare"]
+  },
+  {
+    "key": "plogger_h01",
+    "path": "harnesses/plogger_harnesses/H01-plogger_unit",
+    "harness": "H01-plogger_unit",
+    "artifact": "manual-plogger-h01-results",
+    "families": ["plogger"]
+  },
+  {
+    "key": "pantler_h01",
+    "path": "harnesses/pantler_harnesses/H01-pantler_unit",
+    "harness": "H01-pantler_unit",
+    "artifact": "manual-pantler-h01-results",
+    "families": ["pantler"]
+  },
+  {
     "key": "pmissioneval_h01",
     "path": "harnesses/mission_utility_harnesses/H01-pmissioneval_unit",
     "harness": "H01-pmissioneval_unit",
@@ -303,6 +380,27 @@
     "perf_profile": "ci"
   },
   {
+    "key": "ufld_pathcheck_h01",
+    "path": "harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit",
+    "harness": "H01-ufld_pathcheck_unit",
+    "artifact": "manual-ufld-pathcheck-h01-results",
+    "families": ["ufld_pathcheck"]
+  },
+  {
+    "key": "ufld_message_handler_h01",
+    "path": "harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit",
+    "harness": "H01-ufld_message_handler_unit",
+    "artifact": "manual-ufld-message-handler-h01-results",
+    "families": ["ufld_message_handler"]
+  },
+  {
+    "key": "ufld_contact_range_sensor_h01",
+    "path": "harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit",
+    "harness": "H01-ufld_contact_range_sensor_unit",
+    "artifact": "manual-ufld-contact-range-sensor-h01-results",
+    "families": ["ufld_contact_range_sensor"]
+  },
+  {
     "key": "ufield_comms_h01",
     "path": "harnesses/ufield_comms_harnesses/H01-ufield_comms_unit",
     "harness": "H01-ufield_comms_unit",
@@ -322,5 +420,12 @@
     "harness": "H03-ufield_route_resilience",
     "artifact": "manual-ufield-comms-h03-results",
     "families": ["ufield_comms"]
+  },
+  {
+    "key": "ufld_obstacle_sim_h01",
+    "path": "harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit",
+    "harness": "H01-ufld_obstacle_sim_unit",
+    "artifact": "manual-ufld-obstacle-sim-h01-results",
+    "families": ["ufld_obstacle_sim"]
   }
 ]
