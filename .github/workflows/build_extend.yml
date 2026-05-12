@@ -471,7 +471,7 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: build/cpp-unit-test-reports/*.xml
-          retention-days: 7
+          retention-days: 1
           if-no-files-found: warn
 
   runtime-harnesses:
@@ -543,7 +543,7 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.path }}/results.txt
-          retention-days: 7
+          retention-days: 1
           if-no-files-found: warn
 
       - name: Summarize selected runtime results

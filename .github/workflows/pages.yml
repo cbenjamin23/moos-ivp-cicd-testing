@@ -29,10 +29,21 @@ jobs:
         with:
           enablement: true
 
+      - name: Prepare Pages payload
+        run: |
+          set -euo pipefail
+          rm -rf site
+          mkdir -p site
+          rsync -a --delete \
+            --exclude tools \
+            docs/ site/
+          du -sh site
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: docs
+          path: site
+          retention-days: 1
 
       - name: Deploy to GitHub Pages
         id: deployment
