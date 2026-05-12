@@ -1,0 +1,15 @@
+//-------------------------------------------------
+// FILE: case_utimerscript.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  script_name = timed_numeric_string
+  event = var=UTS_NUM, val=42, time=0.2
+  event = var=UTS_STR, val=alpha, time=0.3
+  event = var=TEST_EVAL_READY, val=true, time=0.5
+}

@@ -67,14 +67,14 @@
 
 
       <article class="stat-card">
-        <strong>1415</strong>
+        <strong>1543</strong>
         <span>Harness Cases</span>
         <p>Mission-run cases with expected outcomes and generated result summaries.</p>
       </article>
 
 
       <article class="stat-card">
-        <strong>43</strong>
+        <strong>49</strong>
         <span>Apps &amp; Behaviors</span>
         <p>MOOS apps and IvP behaviors covered by mission harness cases.</p>
       </article>
@@ -278,6 +278,44 @@
 
       <details class="family-panel">
         <summary>
+          <span class="family-label">pEchoVar</span>
+          <span class="family-name">pEchoVar</span>
+          <span class="family-summary">Checks live echo mappings, boolean inversion, EFlipper component extraction, filters, separators, cycle suppression, and duplicate mapping behavior.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/pechovar-unit.html">
+        <span class="eyebrow">pEchoVar</span>
+        <h3>H01 pEchoVar Unit</h3>
+        <p>Headless pEchoVar matrix covering live numeric and string echoing, boolean inversion, fan-out, duplicate mapping de-duplication, latest-value handling, EFlipper component maps, filters, separators, cycle suppression, invalid flippers, and independent named flippers.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uTimerScript</span>
+          <span class="family-name">uTimerScript</span>
+          <span class="family-summary">Checks live timer-script event publication, runtime control mail, reset/repeat behavior, status reporting, macro expansion, random-value outputs, custom controls, timer warp, awake policies, shuffle, and quit behavior.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/utimerscript-unit.html">
+        <span class="eyebrow">uTimerScript</span>
+        <h3>H01 uTimerScript Unit</h3>
+        <p>Headless uTimerScript runtime matrix covering timed posts, quoted payloads, macros, conditions, pause, forward, reset, status, random values, block-on, atomic scripts, custom controls, timer warp, awake policies, shuffle, and quit behavior.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
           <span class="family-label">pDeadManPost</span>
           <span class="family-name">pDeadManPost</span>
           <span class="family-summary">Checks watchdog deadflag posting across active-at-start behavior, heartbeat suppression, stale heartbeat detection, and numeric/string/multiple deadflags.</span>
@@ -436,6 +474,82 @@
         <span class="eyebrow">uFldContactRangeSensor</span>
         <h3>H01 uFldContactRangeSensor Unit</h3>
         <p>Headless uFldContactRangeSensor matrix covering short/long report forms, ground-truth reporting, echo-type filters, sensor arcs, ping wait, pulse suppression, local reports, unknown requesters, and unlimited range overrides.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldBeaconRangeSensor</span>
+          <span class="family-name">uFldBeaconRangeSensor</span>
+          <span class="family-summary">Checks beacon range requests, report variable modes, ground-truth output, request/reply range gates, malformed request rejection, ping waits, ping-payment policies, marker styling, and frequency reports.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-beacon-range-sensor-unit.html">
+        <span class="eyebrow">uFldBeaconRangeSensor</span>
+        <h3>H01 uFldBeaconRangeSensor Unit</h3>
+        <p>Headless uFldBeaconRangeSensor matrix covering short/long report modes, ground-truth output, NODE_REPORT_LOCAL input, request/reply range gates, malformed and unknown requests, node-level unlimited range, node-specific ping wait, ping-payment policy, marker styling, and unsolicited frequency reports.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldCollisionDetect</span>
+          <span class="family-name">uFldCollisionDetect</span>
+          <span class="family-summary">Checks contact encounter ranking, collision and near-miss thresholds, clear-report controls, encounter-range blocking, group and condition gates, closest-range mail controls, and flag outputs.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-collision-detect-unit.html">
+        <span class="eyebrow">uFldCollisionDetect</span>
+        <h3>H01 uFldCollisionDetect Unit</h3>
+        <p>Headless uFldCollisionDetect matrix covering collision, near-miss, clear encounter reporting and suppression, encounter-range blocking, closest-range publish suppression, reset, pulse and ring suppression, range normalization, group filters, conditions, and configured collision/near/encounter flags.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldCollObDetect</span>
+          <span class="family-name">uFldCollObDetect</span>
+          <span class="family-summary">Checks vehicle-to-obstacle collision, near-miss, encounter, strict threshold boundaries, global-minimum-distance, obstacle clearing age/name gates, numeric flags, and macro flag behavior.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-collob-detect-unit.html">
+        <span class="eyebrow">uFldCollObDetect</span>
+        <h3>H01 uFldCollObDetect Unit</h3>
+        <p>Headless uFldCollObDetect matrix covering obstacle collision flags, near-miss flags, encounter-only flags, strict threshold boundaries, normalized range ordering, numeric distance flags, global minimum distance, invalid obstacle suppression, aged/fresh/named obstacle clearing, and macro flag output.</p>
+      </a>
+
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">uFldScope</span>
+          <span class="family-name">uFldScope</span>
+          <span class="family-summary">Checks scope table appcasts, field aliases, same-key replacement including blank overwrites, multi-row display, invalid-scope recovery, and missing field/key rendering.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
+
+      <a class="harness-card" href="harnesses/ufld-scope-unit.html">
+        <span class="eyebrow">uFldScope</span>
+        <h3>H01 uFldScope Unit</h3>
+        <p>Headless uFldScope matrix covering appcast table construction, field aliases, same-key row replacement including blank overwrites, multiple vehicle rows, invalid-scope recovery, missing fields, and missing key values.</p>
       </a>
 
         </div>

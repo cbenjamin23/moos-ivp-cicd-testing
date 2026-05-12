@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uFldScope Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uFldScope</p>
+      <h1>H01 uFldScope Unit</h1>
+      <p class="lede">App-level correctness tests for uFldScope. These cases verify appcast table construction, field alias headers, same-key row replacement including blank overwrites, multi-vehicle rows, recovery after invalid scope configuration, missing-field blank cells, and missing-key blank rows.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness scripts scoped MOOS mail and appcast requests, then checks only uFldScope appcast payloads for table content and recovery behavior.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-scope-table.gif">
+          <img src="../assets/gifs/ufld-scope-table.gif?v=20260511-5" alt="Scope Table GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Scope Table</h3>
+          <p>Description: Verifies scoped node, speed, and odometry fields appear in the appcast table.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-scope-row-replacement.gif">
+          <img src="../assets/gifs/ufld-scope-row-replacement.gif?v=20260511-5" alt="Row Replacement GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Row Replacement</h3>
+          <p>Description: Verifies a later posting for the same key replaces the displayed row value.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>appcast_table_pass</code>
+          <p>Verifies scoped node, speed, and odometry fields appear in the appcast table.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>alias_headers_pass</code>
+          <p>Verifies configured field aliases are used as appcast table headers.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>update_replaces_same_key_pass</code>
+          <p>Verifies a later posting for the same key replaces the displayed row value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multi_vehicle_rows_pass</code>
+          <p>Verifies separate key values produce separate appcast rows.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_scope_ignored_pass</code>
+          <p>Verifies an invalid scope line is ignored while a later valid scope still builds the table.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_field_blank_cell_pass</code>
+          <p>Verifies a missing scoped field leaves an empty cell while preserving the keyed row.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>missing_key_blank_row_pass</code>
+          <p>Verifies a missing key value produces a blank-key row rather than a named vehicle row.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>later_missing_field_replaces_value_pass</code>
+          <p>Verifies a later same-key posting with a missing field replaces an earlier populated value with a blank cell.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_app_missions/ufield_app_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

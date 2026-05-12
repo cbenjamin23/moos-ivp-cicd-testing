@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uFldCollisionDetect Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uFldCollisionDetect</p>
+      <h1>H01 uFldCollisionDetect Unit</h1>
+      <p class="lede">App-level correctness tests for uFldCollisionDetect. These cases verify collision, near-miss, and clear encounter rankings, clear-report suppression by default, closest-range publications and suppression, reset behavior, pulse and ring suppression, range normalization, group filters, condition gates, encounter-range blocking, and configured collision/near/encounter flags.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness scripts controlled contact report sequences, then checks encounter ranking, counters, closest-range state, filters, ring/pulse controls, range normalization, conditions, and flag outputs from the alog.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-collision-detect-collision-event.gif">
+          <img src="../assets/gifs/ufld-collision-detect-collision-event.gif?v=20260511-5" alt="Collision Event GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Collision Event</h3>
+          <p>Description: Verifies a closing/opening contact pair below the collision range posts collision totals, report, and pulse evidence.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-collision-detect-condition-gate.gif">
+          <img src="../assets/gifs/ufld-collision-detect-condition-gate.gif?v=20260511-5" alt="Condition Gate GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Condition Gate</h3>
+          <p>Description: Verifies a satisfied logic condition allows the same CPA event path.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>collision_event_pass</code>
+          <p>Verifies a closing/opening contact pair below the collision range posts collision totals, report, and pulse evidence.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>near_miss_event_pass</code>
+          <p>Verifies the same CPA event path ranks a wider miss as near_miss.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>clear_encounter_report_pass</code>
+          <p>Verifies report_all_encounters=true publishes clear encounter reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>closest_range_posts_pass</code>
+          <p>Verifies closest-range and closest-range-ever telemetry are published from live node reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_closest_range_ever_pass</code>
+          <p>Verifies UCD_RESET clears closest-range-ever before later range tracking.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pulse_render_false_pass</code>
+          <p>Verifies collision reports can be generated while range-pulse visuals are suppressed.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>ignore_group_blocks_pass</code>
+          <p>Verifies contacts in an ignored group do not generate encounter reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reject_group_blocks_pass</code>
+          <p>Verifies rejected-group contacts are removed before encounter evaluation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>condition_blocks_pass</code>
+          <p>Verifies an unsatisfied logic condition blocks generated CPA events.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>condition_allows_pass</code>
+          <p>Verifies a satisfied logic condition allows the same CPA event path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>collision_flag_macro_pass</code>
+          <p>Verifies collision flag variable/value macros expand with contact names and CPA.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>near_miss_flag_macro_pass</code>
+          <p>Verifies near-miss flag value macros expand on a non-collision encounter.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>encounter_flag_density_pass</code>
+          <p>Verifies encounter flags can expand contact-density macros at encounter completion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>outside_encounter_range_blocks_pass</code>
+          <p>Verifies CPA events outside the configured encounter range are not reported.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>closest_posts_disabled_absent_pass</code>
+          <p>Verifies disabling closest-range posting suppresses closest-range mail while reports still occur.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>clear_encounter_default_suppressed_pass</code>
+          <p>Verifies clear encounters increment totals but suppress UCD_REPORT unless report_all_encounters=true.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>collision_flag_numeric_cpa_pass</code>
+          <p>Verifies $CPA can be posted as a numeric collision flag value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>encounter_rings_true_posts_pass</code>
+          <p>Verifies default encounter-ring rendering posts per-contact VIEW_CIRCLE mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>encounter_rings_false_absent_pass</code>
+          <p>Verifies encounter_rings=false suppresses per-contact VIEW_CIRCLE mail.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>range_normalization_params_pass</code>
+          <p>Verifies invalid range ordering is normalized and advertised in COLLISION_DETECT_PARAMS.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_app_missions/ufield_app_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

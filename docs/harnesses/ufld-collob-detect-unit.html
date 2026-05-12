@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uFldCollObDetect Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uFldCollObDetect</p>
+      <h1>H01 uFldCollObDetect Unit</h1>
+      <p class="lede">App-level correctness tests for uFldCollObDetect. These cases verify obstacle collision flags, near-miss and encounter-only flags, strict collision/near threshold boundaries, normalized range ordering, numeric distance flags, global minimum distance, invalid obstacle suppression, fresh, aged, and named obstacle clearing, and configured macro flag output.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness scripts known-obstacle and node-report geometry, then checks obstacle encounter, near-miss, collision, range-normalization, global-minimum, and flag outputs from the alog.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-collob-detect-obstacle-collision.gif">
+          <img src="../assets/gifs/ufld-collob-detect-obstacle-collision.gif?v=20260511-5" alt="Obstacle Collision GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Obstacle Collision</h3>
+          <p>Description: Verifies a vehicle crossing through a known obstacle posts collision and encounter flags.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="ufld-collob-detect-encounter-only.gif">
+          <img src="../assets/gifs/ufld-collob-detect-encounter-only.gif?v=20260511-5" alt="Encounter Only GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Encounter Only</h3>
+          <p>Description: Verifies a wider obstacle pass posts an encounter flag without near-miss or collision flags.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>collision_flag_pass</code>
+          <p>Verifies a vehicle crossing through a known obstacle posts collision and encounter flags.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>near_miss_flag_pass</code>
+          <p>Verifies an obstacle pass inside the near-miss band posts near-miss and encounter flags.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>encounter_only_flag_pass</code>
+          <p>Verifies a wider obstacle pass posts an encounter flag without near-miss or collision flags.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>global_min_distance_pass</code>
+          <p>Verifies OB_GLOBAL_MIN tracks the closest vehicle-to-obstacle distance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_obstacle_absent_pass</code>
+          <p>Verifies a non-convex obstacle spec is rejected without distance or flag output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>obstacle_clear_blocks_later_pass</code>
+          <p>Verifies an aged KNOWN_OBSTACLE_CLEAR=all removes the obstacle before later node reports.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>upper_macro_flag_pass</code>
+          <p>Verifies $UP_VNAME, $ID, and count macros expand in collision flag output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>fresh_clear_keeps_obstacle_pass</code>
+          <p>Verifies a too-fresh obstacle clear is ignored and the obstacle remains active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>encounter_double_flag_pass</code>
+          <p>Verifies $DIST can be posted as a numeric encounter flag value.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>near_miss_upper_macro_flag_pass</code>
+          <p>Verifies near-miss flags expand uppercase vehicle-name and count macros.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>collision_boundary_counts_near_pass</code>
+          <p>Verifies a distance exactly on collision_dist is treated as near-miss, not collision.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>near_boundary_counts_encounter_pass</code>
+          <p>Verifies a distance exactly on near_miss_dist is treated as encounter-only.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>named_clear_only_removes_target_pass</code>
+          <p>Verifies a named obstacle clear removes only the requested obstacle and leaves another obstacle active.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>range_normalization_collision_pass</code>
+          <p>Verifies invalid obstacle range ordering is normalized so collision-distance encounters remain reportable.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/ufield_app_missions/ufield_app_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

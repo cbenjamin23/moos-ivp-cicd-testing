@@ -1,0 +1,20 @@
+//-------------------------------------------------
+// FILE: plugs.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+#ifdef origin_warp
+MOOSTimeWarp = $(WARP)
+#endif
+
+#ifdef pLogger
+ProcessConfig = pLogger
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  AsyncLog = true
+  File    = LOG_SHORESIDE
+  PATH    = ./
+}
+#endif

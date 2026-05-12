@@ -125,6 +125,22 @@ Typical capture launch: `./zlaunch.sh --case=cli_numeric_pass --port_base=15600 
 - `uquerydb-numeric-condition.gif` - Numeric Condition; representative case `cli_numeric_pass`
 - `uquerydb-checkvar-formats.gif` - Checkvar Formats; representative case `checkvar_csv_pass`
 
+## H01 pEchoVar Unit
+
+Capture from: `harnesses/pechovar_harnesses/H01-pechovar_unit`
+Typical capture launch: `./zlaunch.sh --case=numeric_echo_pass --port_base=17600 10`
+
+- `pechovar-echo-mapping.gif` - Echo Mapping; representative case `numeric_echo_pass`
+- `pechovar-filtered-flip.gif` - Filtered Flip; representative case `flip_filter_suppresses_pass`
+
+## H01 uTimerScript Unit
+
+Capture from: `harnesses/utimerscript_harnesses/H01-utimerscript_unit`
+Typical capture launch: `./zlaunch.sh --case=timed_numeric_string_pass --port_base=7300 10`
+
+- `utimerscript-timed-numeric-string.gif` - Timed Numeric/String; representative case `timed_numeric_string_pass`
+- `utimerscript-pause-unpause.gif` - Pause/Unpause; representative case `pause_unpause_external_pass`
+
 ## H01 pDeadManPost Unit
 
 Capture from: `harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit`
@@ -212,6 +228,38 @@ Typical capture launch: `./zlaunch.sh --case=baseline_short_report_pass --port_b
 
 - `ufld-contact-range-sensor-baseline.gif` - Baseline Range; representative case `baseline_short_report_pass`
 - `ufld-contact-range-sensor-arc-block.gif` - Arc Block; representative case `sensor_arc_aft_block_pass`
+
+## H01 uFldBeaconRangeSensor Unit
+
+Capture from: `harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit`
+Typical capture launch: `./zlaunch.sh --case=request_short_report_pass --port_base=4000 10`
+
+- `ufld-beacon-range-sensor-baseline.gif` - Baseline Beacon Range; representative case `request_short_report_pass`
+- `ufld-beacon-range-sensor-ground-truth.gif` - Ground Truth Report; representative case `brs_ground_truth_uniform_zero_pass`
+
+## H01 uFldCollisionDetect Unit
+
+Capture from: `harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit`
+Typical capture launch: `./zlaunch.sh --case=collision_event_pass --port_base=4000 10`
+
+- `ufld-collision-detect-collision-event.gif` - Collision Event; representative case `collision_event_pass`
+- `ufld-collision-detect-condition-gate.gif` - Condition Gate; representative case `condition_allows_pass`
+
+## H01 uFldCollObDetect Unit
+
+Capture from: `harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit`
+Typical capture launch: `./zlaunch.sh --case=collision_flag_pass --port_base=4000 10`
+
+- `ufld-collob-detect-obstacle-collision.gif` - Obstacle Collision; representative case `collision_flag_pass`
+- `ufld-collob-detect-encounter-only.gif` - Encounter Only; representative case `encounter_only_flag_pass`
+
+## H01 uFldScope Unit
+
+Capture from: `harnesses/ufld_scope_harnesses/H01-ufld_scope_unit`
+Typical capture launch: `./zlaunch.sh --case=appcast_table_pass --port_base=4000 10`
+
+- `ufld-scope-table.gif` - Scope Table; representative case `appcast_table_pass`
+- `ufld-scope-row-replacement.gif` - Row Replacement; representative case `update_replaces_same_key_pass`
 
 ## H01 Constant Depth Motion
 

@@ -553,6 +553,118 @@ def pdeadmanpost_heartbeat_suppression() -> None:
     )
 
 
+def pechovar_echo_mapping() -> None:
+    def inputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        card(draw, check, BOX_INPUT, "source mail", ("ECHO_SRC_NUM", "42.5", "Echo -> OUT"), BLUE, p >= 0.12)
+
+    def outputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        if p >= 0.82:
+            card(draw, check, BOX_OUTPUT, "graded output", ("ECHO_OUT_NUM=42.5", "alog token seen", "GRADE=pass"), GREEN, True)
+            return
+        card(draw, check, BOX_OUTPUT, "echo output", ("ECHO_OUT_NUM", "42.5"), GREEN, p >= 0.56)
+
+    render_sequence(
+        "pechovar-echo-mapping.gif",
+        "pEchoVar echo mapping",
+        "one source variable is republished on the configured target",
+        "pEchoVar",
+        ((0.12, "source", BLUE), (0.38, "map", TEAL), (0.56, "echo", GREEN), (0.82, "pass", GREEN)),
+        inputs,
+        outputs,
+        output_mark_override=0.56,
+    )
+
+
+def pechovar_filtered_flip() -> None:
+    def inputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        if p < 0.48:
+            lines = ("type=loiter", "x=12,y=22", "filter redeploy")
+        else:
+            lines = ("filter mismatch", "payload suppressed")
+        card(draw, check, BOX_INPUT, "flip source", lines, ORANGE, p >= 0.12)
+
+    def outputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        if p >= 0.82:
+            card(draw, check, BOX_OUTPUT, "alog check", ("FLIP_OUT absent", "source still logged", "GRADE=pass"), GREEN, True)
+            return
+        card(draw, check, BOX_OUTPUT, "flip output", ("FLIP_OUT", "not posted"), GREEN, p >= 0.56)
+
+    render_sequence(
+        "pechovar-filtered-flip.gif",
+        "pEchoVar filtered flip",
+        "a mismatched EFlipper filter suppresses the destination mail",
+        "pEchoVar",
+        ((0.12, "source", BLUE), (0.40, "filter", ORANGE), (0.56, "suppress", GREEN), (0.82, "pass", GREEN)),
+        inputs,
+        outputs,
+        output_mark_override=0.56,
+    )
+
+
+def utimerscript_timed_numeric_string() -> None:
+    def inputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        if p < 0.42:
+            lines = ("time=0.2 -> UTS_NUM", "time=0.3 -> UTS_STR", "time=0.5 -> EVAL_READY")
+        else:
+            lines = ("UTS_NUM=42", "UTS_STR=alpha", "EVAL_READY=true")
+        card(draw, check, BOX_INPUT, "timer script", lines, BLUE, p >= 0.12)
+
+    def outputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        if p >= 0.82:
+            card(draw, check, BOX_OUTPUT, "graded output", ("UTS_NUM=42", "UTS_STR=alpha", "GRADE=pass"), GREEN, True)
+            return
+        if p >= 0.54:
+            rows = ("UTS_NUM=42", "UTS_STR=alpha", "ready=true")
+        elif p >= 0.38:
+            rows = ("UTS_NUM=42", "UTS_STR pending")
+        else:
+            rows = ("waiting on", "scheduled posts")
+        card(draw, check, BOX_OUTPUT, "MOOSDB mail", rows, GREEN, p >= 0.32)
+
+    render_sequence(
+        "utimerscript-timed-numeric-string.gif",
+        "uTimerScript timed posts",
+        "scheduled numeric and string mail become the graded values",
+        "uTimerScript",
+        ((0.12, "script", BLUE), (0.32, "num", GREEN), (0.44, "str", GREEN), (0.62, "ready", TEAL), (0.82, "pass", GREEN)),
+        inputs,
+        outputs,
+        output_mark_override=0.32,
+    )
+
+
+def utimerscript_pause_unpause() -> None:
+    def inputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        if p < 0.38:
+            lines = ("paused=true", "event waits", "UTS_PAUSE pending")
+        elif p < 0.56:
+            lines = ("uPokeDB", "UTS_PAUSE=false", "resume script")
+        else:
+            lines = ("unpaused", "UTS_PAUSED_OUT", "EVAL_READY=true")
+        card(draw, check, BOX_INPUT, "control mail", lines, ORANGE if p < 0.56 else BLUE, p >= 0.12)
+
+    def outputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
+        if p >= 0.82:
+            card(draw, check, BOX_OUTPUT, "graded output", ("UTS_PAUSED_OUT", "after_pause", "GRADE=pass"), GREEN, True)
+            return
+        if p >= 0.60:
+            rows = ("UTS_PAUSED_OUT", "after_pause", "ready=true")
+        else:
+            rows = ("event held", "paused state")
+        card(draw, check, BOX_OUTPUT, "MOOSDB mail", rows, GREEN, p >= 0.60)
+
+    render_sequence(
+        "utimerscript-pause-unpause.gif",
+        "uTimerScript pause/unpause",
+        "runtime control mail releases a paused scheduled event",
+        "uTimerScript",
+        ((0.12, "paused", ORANGE), (0.40, "poke", BLUE), (0.60, "post", GREEN), (0.82, "pass", GREEN)),
+        inputs,
+        outputs,
+        output_mark_override=0.60,
+    )
+
+
 def ufield_comms_baseline() -> None:
     def inputs(draw: ImageDraw.ImageDraw, check: LayoutCheck, p: float) -> None:
         card(draw, check, BOX_INPUT, "field mail", ("alpha report", "message to bravo", "range ok"), BLUE, p >= 0.12)
@@ -1200,6 +1312,10 @@ def main() -> None:
     uxms_history_view()
     uquerydb_numeric_condition()
     uquerydb_checkvar_formats()
+    pechovar_echo_mapping()
+    pechovar_filtered_flip()
+    utimerscript_timed_numeric_string()
+    utimerscript_pause_unpause()
     pdeadmanpost_deadman_trip()
     pdeadmanpost_heartbeat_suppression()
     ufield_comms_baseline()

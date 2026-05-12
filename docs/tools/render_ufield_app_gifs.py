@@ -302,6 +302,257 @@ def crs_arc_block() -> None:
     save_gif("ufld-contact-range-sensor-arc-block.gif", frames)
 
 
+def beacon_range_baseline() -> None:
+    frames: list[Image.Image] = []
+    bounds = (-20, 70, -20, 70)
+    alpha = (0, 0)
+    beacon = (30, 40)
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldBeaconRangeSensor", "Request and reply produce a beacon range report", "request_short_report_pass")
+        ap = map_point(alpha, bounds)
+        bp = map_point(beacon, bounds)
+        boat(draw, ap, YELLOW, "alpha")
+        draw.ellipse((bp[0] - 10, bp[1] - 10, bp[0] + 10, bp[1] + 10), fill=ORANGE, outline="#ffe0b6", width=2)
+        tag(draw, (int(bp[0]) + 16, int(bp[1]) - 12), "beacon", ORANGE)
+        draw.ellipse((bp[0] - 86, bp[1] - 86, bp[0] + 86, bp[1] + 86), outline="#dd965455", width=2)
+        pulse_t = min(1.0, max(0.0, (t - 0.16) * 1.9))
+        rx = ap[0] + (bp[0] - ap[0]) * pulse_t
+        ry = ap[1] + (bp[1] - ap[1]) * pulse_t
+        dashed(draw, ap, bp, WHITE_FAINT, 2)
+        if t > 0.16:
+            draw.ellipse((rx - 7, ry - 7, rx + 7, ry + 7), fill=BLUE)
+        if t > 0.58:
+            dashed(draw, bp, ap, TEAL, 3)
+            pill(draw, (678, 160, 918, 228), "BRS_RANGE_REPORT", "vname=alpha range=50", TEAL)
+            pill(draw, (678, 250, 918, 318), "VIEW_RANGE_PULSE", "request and beacon pulse", BLUE)
+        else:
+            pill(draw, (678, 160, 918, 228), "BRS_RANGE_REQUEST", "name=alpha", BLUE)
+            pill(draw, (678, 250, 918, 318), "beacon ledger", "id=beacon at (30,40)", ORANGE)
+        frames.append(im)
+    save_gif("ufld-beacon-range-sensor-baseline.gif", frames)
+
+
+def beacon_range_ground_truth() -> None:
+    frames: list[Image.Image] = []
+    bounds = (-20, 70, -20, 70)
+    alpha = (0, 0)
+    beacon = (30, 40)
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldBeaconRangeSensor", "Uniform zero-noise also publishes ground truth", "brs_ground_truth_uniform_zero_pass")
+        ap = map_point(alpha, bounds)
+        bp = map_point(beacon, bounds)
+        boat(draw, ap, YELLOW, "alpha")
+        draw.ellipse((bp[0] - 10, bp[1] - 10, bp[0] + 10, bp[1] + 10), fill=ORANGE, outline="#ffe0b6", width=2)
+        tag(draw, (int(bp[0]) + 16, int(bp[1]) - 12), "beacon", ORANGE)
+        dashed(draw, ap, bp, TEAL if t > 0.34 else WHITE_FAINT, 3 if t > 0.34 else 2)
+        if t > 0.25:
+            pill(draw, (672, 128, 922, 196), "BRS_RANGE_REPORT", "reported range=50", TEAL)
+        else:
+            pill(draw, (672, 128, 922, 196), "rn_algorithm", "uniform,pct=0", BLUE)
+        if t > 0.52:
+            pill(draw, (672, 222, 922, 290), "BRS_RANGE_REPORT_GT", "truth range=50", TEAL)
+        else:
+            pill(draw, (672, 222, 922, 290), "ground_truth", "true", ORANGE)
+        if t > 0.74:
+            pill(draw, (672, 316, 922, 384), "graded evidence", "both channels seen", TEAL)
+        else:
+            pill(draw, (672, 316, 922, 384), "pMissionEval", "waiting for ready", MUTED)
+        frames.append(im)
+    save_gif("ufld-beacon-range-sensor-ground-truth.gif", frames)
+
+
+def collision_detect_event() -> None:
+    frames: list[Image.Image] = []
+    bounds = (-5, 35, -10, 10)
+    alpha = (0, 0)
+    bravo_start = (30, 0)
+    bravo_cpa = (2, 0)
+    bravo_end = (20, 0)
+    ap = map_point(alpha, bounds)
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldCollisionDetect", "CPA below collision range posts collision evidence", "collision_event_pass")
+        bp0 = map_point(bravo_start, bounds)
+        bp1 = map_point(bravo_cpa, bounds)
+        bp2 = map_point(bravo_end, bounds)
+        dashed(draw, bp0, bp1, WHITE_FAINT, 2)
+        dashed(draw, bp1, bp2, WHITE_FAINT, 2)
+        draw.ellipse((ap[0] - 42, ap[1] - 42, ap[0] + 42, ap[1] + 42), outline=RED, width=2)
+        boat(draw, ap, YELLOW, "alpha")
+        if t < 0.62:
+            lt = t / 0.62
+            bx = bp0[0] + (bp1[0] - bp0[0]) * lt
+            by = bp0[1] + (bp1[1] - bp0[1]) * lt
+        else:
+            lt = (t - 0.62) / 0.38
+            bx = bp1[0] + (bp2[0] - bp1[0]) * lt
+            by = bp1[1] + (bp2[1] - bp1[1]) * lt
+        boat(draw, (bx, by), TEAL, "bravo")
+        if t > 0.56:
+            draw.line((ap[0], ap[1], bp1[0], bp1[1]), fill=RED, width=3)
+            tag(draw, (int(bp1[0]) + 10, int(bp1[1]) + 14), "CPA=2", RED)
+            pill(draw, (668, 154, 922, 222), "UCD_REPORT", "rank=collision cpa=2", RED)
+            pill(draw, (668, 244, 922, 312), "COLLISION_TOTAL", "1", RED)
+        else:
+            pill(draw, (668, 154, 922, 222), "node reports", "closing contact pair", BLUE)
+            pill(draw, (668, 244, 922, 312), "thresholds", "collision_range=3", ORANGE)
+        frames.append(im)
+    save_gif("ufld-collision-detect-collision-event.gif", frames)
+
+
+def collision_detect_condition_gate() -> None:
+    frames: list[Image.Image] = []
+    bounds = (-5, 35, -10, 10)
+    alpha = (0, 0)
+    bravo_start = (30, 0)
+    bravo_cpa = (2, 0)
+    ap = map_point(alpha, bounds)
+    bp0 = map_point(bravo_start, bounds)
+    bp1 = map_point(bravo_cpa, bounds)
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldCollisionDetect", "Satisfied condition opens the same collision path", "condition_allows_pass")
+        draw.ellipse((ap[0] - 42, ap[1] - 42, ap[0] + 42, ap[1] + 42), outline=RED if t > 0.62 else WHITE_FAINT, width=2)
+        boat(draw, ap, YELLOW, "alpha")
+        lt = min(1.0, max(0.0, (t - 0.30) / 0.55))
+        bx = bp0[0] + (bp1[0] - bp0[0]) * lt
+        by = bp0[1] + (bp1[1] - bp0[1]) * lt
+        boat(draw, (bx, by), TEAL, "bravo")
+        dashed(draw, bp0, bp1, WHITE_FAINT if t < 0.42 else TEAL, 2)
+        if t < 0.34:
+            pill(draw, (664, 126, 924, 194), "condition", "TEST_GATE not set", MUTED)
+            pill(draw, (664, 220, 924, 288), "UCD_REPORT", "blocked", MUTED)
+        elif t < 0.62:
+            pill(draw, (664, 126, 924, 194), "TEST_GATE", "true", TEAL)
+            pill(draw, (664, 220, 924, 288), "condition gate", "app now evaluates CPA", BLUE)
+        else:
+            pill(draw, (664, 126, 924, 194), "UCD_REPORT", "rank=collision", RED)
+            pill(draw, (664, 220, 924, 288), "COLLISION_TOTAL", "1", RED)
+        frames.append(im)
+    save_gif("ufld-collision-detect-condition-gate.gif", frames)
+
+
+def collob_obstacle_collision() -> None:
+    frames: list[Image.Image] = []
+    bounds = (-10, 30, -14, 14)
+    obs = [(-5, -5), (5, -5), (5, 5), (-5, 5)]
+    pts = [map_point(p, bounds) for p in obs]
+    start = map_point((25, 0), bounds)
+    hit = map_point((0.5, 0), bounds)
+    end = map_point((25, 0), bounds)
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldCollObDetect", "Vehicle crossing through known obstacle posts collision flags", "collision_flag_pass")
+        draw.polygon(pts, fill="#dd965433", outline=ORANGE)
+        tag(draw, (int(pts[1][0]) + 12, int(pts[1][1]) - 10), "KNOWN_OBSTACLE obs", ORANGE)
+        if t < 0.58:
+            bx = start[0] + (hit[0] - start[0]) * (t / 0.58)
+            by = start[1] + (hit[1] - start[1]) * (t / 0.58)
+        else:
+            bx, by = hit
+        dashed(draw, start, end, WHITE_FAINT, 2)
+        boat(draw, (bx, by), YELLOW, "alpha")
+        if t > 0.58:
+            draw.line((hit[0] - 18, hit[1] - 18, hit[0] + 18, hit[1] + 18), fill=RED, width=4)
+            draw.line((hit[0] - 18, hit[1] + 18, hit[0] + 18, hit[1] - 18), fill=RED, width=4)
+            pill(draw, (664, 150, 924, 218), "COD_COLLISION", "alpha:obs:0.5:1", RED)
+            pill(draw, (664, 244, 924, 312), "COD_ENCOUNTER", "same obstacle counted", ORANGE)
+        else:
+            pill(draw, (664, 150, 924, 218), "obstacle ledger", "obs active", ORANGE)
+            pill(draw, (664, 244, 924, 312), "NODE_REPORT", "alpha approaches", BLUE)
+        frames.append(im)
+    save_gif("ufld-collob-detect-obstacle-collision.gif", frames)
+
+
+def collob_encounter_only() -> None:
+    frames: list[Image.Image] = []
+    bounds = (-10, 30, -16, 18)
+    obs = [(-5, -5), (5, -5), (5, 5), (-5, 5)]
+    pts = [map_point(p, bounds) for p in obs]
+    start = map_point((25, 0), bounds)
+    near = map_point((14, 0), bounds)
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldCollObDetect", "Wider pass posts encounter without near-miss or collision", "encounter_only_flag_pass")
+        draw.polygon(pts, fill="#dd965433", outline=ORANGE)
+        xs = [pt[0] for pt in pts]
+        ys = [pt[1] for pt in pts]
+        draw.ellipse((min(xs) - 94, min(ys) - 26, max(xs) + 94, max(ys) + 26), outline="#35c7ba55", width=2)
+        tag(draw, (int(pts[1][0]) + 12, int(pts[1][1]) - 10), "encounter band", TEAL)
+        bx = start[0] + (near[0] - start[0]) * min(1.0, t * 1.2)
+        by = start[1] + (near[1] - start[1]) * min(1.0, t * 1.2)
+        dashed(draw, start, near, WHITE_FAINT, 2)
+        boat(draw, (bx, by), YELLOW, "alpha")
+        if t > 0.58:
+            pill(draw, (654, 134, 924, 202), "COD_ENCOUNTER", "alpha:obs:9:1", TEAL)
+            pill(draw, (654, 226, 924, 294), "COD_NEAR", "absent", TEAL)
+            pill(draw, (654, 318, 924, 386), "COD_COLLISION", "absent", TEAL)
+        else:
+            pill(draw, (654, 134, 924, 202), "distance", "outside near_miss_dist", BLUE)
+            pill(draw, (654, 226, 924, 294), "obstacle", "inside encounter_dist", ORANGE)
+        frames.append(im)
+    save_gif("ufld-collob-detect-encounter-only.gif", frames)
+
+
+def scope_table() -> None:
+    frames: list[Image.Image] = []
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldScope", "Appcast table renders scoped fields from live mail", "appcast_table_pass")
+        rows = [
+            ("NODE_REPORT", "NAME=alpha MODE=survey"),
+            ("UPC_SPEED_REPORT", "avg_spd=2.5"),
+            ("UPC_ODOMETRY_REPORT", "trip_dist=12"),
+            ("APPCAST_REQ", "proc=uFldScope"),
+        ]
+        for idx, (title, detail) in enumerate(rows):
+            active = t > 0.12 + idx * 0.13
+            pill(draw, (48, 126 + idx * 84, 344, 188 + idx * 84), title, detail, TEAL if active else MUTED)
+        x0, y0, w, h = 430, 136, 446, 232
+        draw.rounded_rectangle((x0, y0, x0 + w, y0 + h), radius=8, fill="#283142", outline=TEAL if t > 0.58 else MUTED, width=2)
+        draw.text((x0 + 18, y0 + 16), "uFldScope APPCAST", fill=TEAL if t > 0.58 else MUTED, font=FONT_SMALL_BOLD)
+        headers = ["key", "MODE", "speed", "trip_dist"]
+        values = ["alpha", "survey", "2.5", "12"] if t > 0.58 else ["alpha", "...", "...", "..."]
+        colx = [x0 + 24, x0 + 122, x0 + 236, x0 + 334]
+        for cx, header in zip(colx, headers):
+            draw.text((cx, y0 + 62), header, fill=BLUE, font=FONT_TINY)
+        draw.line((x0 + 18, y0 + 88, x0 + w - 18, y0 + 88), fill=WHITE_FAINT, width=1)
+        for cx, value in zip(colx, values):
+            draw.text((cx, y0 + 106), value, fill=TEXT, font=FONT_SMALL_BOLD if value != "..." else FONT_TINY)
+        if t > 0.78:
+            pill(draw, (556, 406, 876, 474), "harness evidence", "APPCAST proc=uFldScope matched", TEAL)
+        frames.append(im)
+    save_gif("ufld-scope-table.gif", frames)
+
+
+def scope_row_replacement() -> None:
+    frames: list[Image.Image] = []
+    for i in range(FRAMES):
+        t = ease(i / (FRAMES - 1))
+        im, draw = base("uFldScope", "Later same-key mail replaces the displayed row", "update_replaces_same_key_pass")
+        pill(draw, (54, 148, 342, 216), "first NODE_REPORT", "alpha MODE=survey", BLUE if t > 0.12 else MUTED)
+        pill(draw, (54, 252, 342, 320), "second NODE_REPORT", "alpha MODE=return", ORANGE if t > 0.44 else MUTED)
+        pill(draw, (54, 356, 342, 424), "APPCAST_REQ", "request table evidence", TEAL if t > 0.68 else MUTED)
+        x0, y0, w, h = 430, 156, 438, 196
+        draw.rounded_rectangle((x0, y0, x0 + w, y0 + h), radius=8, fill="#283142", outline=TEAL if t > 0.50 else BLUE, width=2)
+        draw.text((x0 + 18, y0 + 18), "scope row", fill=TEAL if t > 0.50 else BLUE, font=FONT_SMALL_BOLD)
+        draw.text((x0 + 42, y0 + 72), "key", fill=BLUE, font=FONT_TINY)
+        draw.text((x0 + 178, y0 + 72), "MODE", fill=BLUE, font=FONT_TINY)
+        draw.line((x0 + 24, y0 + 98, x0 + w - 24, y0 + 98), fill=WHITE_FAINT, width=1)
+        draw.text((x0 + 42, y0 + 116), "alpha", fill=TEXT, font=FONT_SMALL_BOLD)
+        if t < 0.50:
+            draw.text((x0 + 178, y0 + 116), "survey", fill=TEXT, font=FONT_SMALL_BOLD)
+        else:
+            draw.text((x0 + 178, y0 + 116), "return", fill=ORANGE, font=FONT_SMALL_BOLD)
+            tag(draw, (x0 + 260, y0 + 114), "survey absent", TEAL)
+        if t > 0.70:
+            pill(draw, (556, 404, 878, 472), "replacement check", "return present; survey absent", TEAL)
+        frames.append(im)
+    save_gif("ufld-scope-row-replacement.gif", frames)
+
+
 def main() -> None:
     pathcheck_baseline()
     pathcheck_trip_reset()
@@ -309,6 +560,14 @@ def main() -> None:
     message_flow(False)
     crs_baseline()
     crs_arc_block()
+    beacon_range_baseline()
+    beacon_range_ground_truth()
+    collision_detect_event()
+    collision_detect_condition_gate()
+    collob_obstacle_collision()
+    collob_encounter_only()
+    scope_table()
+    scope_row_replacement()
 
 
 if __name__ == "__main__":

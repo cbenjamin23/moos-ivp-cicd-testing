@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 uTimerScript Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">uTimerScript</p>
+      <h1>H01 uTimerScript Unit</h1>
+      <p class="lede">Utility app correctness tests for uTimerScript. These cases verify live scheduled posts, quoted payloads, runtime condition/pause/forward/reset controls, automatic reset, status variables, random-value bounds, block-on release, atomic condition handling, custom controls, timer warp, burst events, awake policies, shuffle, and quit behavior.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with uTimerScript, pMissionEval, pMissionHash, and pLogger. The harness writes case-specific script/evaluator blocks and uses external uPokeDB only for control mail so uTimerScript is not used to test itself.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="utimerscript-timed-numeric-string.gif">
+          <img src="../assets/gifs/utimerscript-timed-numeric-string.gif?v=20260511-5" alt="Timed Numeric/String GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Timed Numeric/String</h3>
+          <p>Description: Posts one numeric value and one string value on a short schedule, proving the basic event publication path.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="utimerscript-pause-unpause.gif">
+          <img src="../assets/gifs/utimerscript-pause-unpause.gif?v=20260511-5" alt="Pause/Unpause GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Pause/Unpause</h3>
+          <p>Description: Starts paused, receives runtime unpause mail, and then posts the scheduled event.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>timed_numeric_string_pass</code>
+          <p>Posts one numeric value and one string value on a short schedule, proving the basic event publication path.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>quoted_comma_payload_pass</code>
+          <p>Posts a quoted comma-bearing payload and checks the alog for the exact structured string.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>macro_count_nav_pass</code>
+          <p>Publishes nav mail and then expands NAV_X, NAV_Y, local count, and total count macros into a later payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>condition_gate_external_pass</code>
+          <p>Holds the script behind a logic condition until an external poke releases it.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pause_unpause_external_pass</code>
+          <p>Starts paused, receives runtime unpause mail, and then posts the scheduled event.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>forward_jump_next_pass</code>
+          <p>Uses UTS_FORWARD=0 to jump directly to a late pending posting rather than waiting for the full script time.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_var_repost_pass</code>
+          <p>Uses runtime reset mail and checks that the same scripted event posts again after reset.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_time_all_posted_pass</code>
+          <p>Uses reset_time=all-posted and a finite reset limit to prove automatic reposting after all events are complete.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>delay_start_pass</code>
+          <p>Adds an initial delay and verifies that delayed events still publish and grade correctly.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>status_var_initial_pass</code>
+          <p>Uses a custom status variable and checks that status mail includes the configured script name and pending count.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>silent_status_pass</code>
+          <p>Sets status_var=silent and verifies that default status mail is absent while scripted completion still works.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>randvar_uniform_bounds_pass</code>
+          <p>Expands a runtime random variable and grades that the value remains inside the configured bounds.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>randvar_gaussian_bounds_pass</code>
+          <p>Expands a gaussian runtime random variable and grades that the clamped sample stays inside its configured bounds.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>randpair_poly_bounds_pass</code>
+          <p>Expands a random point sampled from a polygon and grades both coordinates against the polygon bounds.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>block_on_peer_pass</code>
+          <p>Blocks until pMissionHash is visible as a DB client, then proves the pending event is released.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>atomic_condition_drop_pass</code>
+          <p>Uses script_atomic=true to prove a script that has started continues after its condition drops midstream.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>pause_toggle_external_pass</code>
+          <p>Uses two runtime UTS_PAUSE=toggle pokes to pause and later resume a pending event.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>forward_positive_skip_pass</code>
+          <p>Uses positive UTS_FORWARD mail to skip elapsed script time and release a later event early.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>custom_control_vars_pass</code>
+          <p>Rebinds pause, forward, and reset control variables, then proves those custom controls drive the script.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>time_warp_accelerates_pass</code>
+          <p>Sets the app-level timer-script time warp and checks that a delayed script-time event publishes.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>delay_reset_pass</code>
+          <p>Combines reset_time=all-posted with delay_reset and verifies the delayed second pass posts.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_max_one_limit_pass</code>
+          <p>Uses a finite reset limit and checks that automatic all-posted reset stops after one reset.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>amount_multiple_posts_pass</code>
+          <p>Uses amt=3 on one event and verifies three live publications.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dbtime_utc_macro_pass</code>
+          <p>Posts DBTIME and UTC macros as numeric values and grades that both are positive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>upon_awake_reset_pass</code>
+          <p>Drops and restores a condition with upon_awake=reset, proving the script resets and reposts.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>upon_awake_restart_pass</code>
+          <p>Drops and restores a condition with upon_awake=restart, proving the script restarts without incrementing reset count.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>math_expression_pass</code>
+          <p>Expands a nested math expression at runtime and grades the resulting numeric post.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>idx_amount_expansion_pass</code>
+          <p>Uses amt=3 with the IDX macro and verifies the final indexed payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>time_window_event_pass</code>
+          <p>Uses an event time window and verifies the scheduled event publishes before evaluation.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>reset_time_numeric_pass</code>
+          <p>Uses a numeric reset_time and finite reset limit to prove timed automatic reset behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multi_condition_gate_pass</code>
+          <p>Requires two independent logic conditions before a gated event may publish.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shuffle_false_status_pass</code>
+          <p>Disables shuffle and verifies status reports the non-shuffled script mode.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>quit_event_pass</code>
+          <p>Runs the quit event path after posting a readiness flag, then grades completion externally.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/utimerscript_harnesses/H01-utimerscript_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/utimerscript_missions/utimerscript_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

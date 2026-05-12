@@ -1,0 +1,12 @@
+//-------------------------------------------------
+// FILE: case_echo.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  Echo = ECHO_SRC_NUM -> ECHO_OUT_NUM
+}

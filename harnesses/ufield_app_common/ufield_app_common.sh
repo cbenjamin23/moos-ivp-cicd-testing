@@ -115,6 +115,21 @@ node_report_charlie_80() {
     echo 'NAME=charlie,TYPE=KAYAK,GROUP=green,UTC_TIME=100,X=80,Y=0,LAT=43.825300,LON=-70.329405,SPD=0,HDG=180'
 }
 
+node_report_xy() {
+    local name="$1"
+    local group="$2"
+    local x="$3"
+    local y="$4"
+    local spd="${5:-0}"
+    local hdg="${6:-0}"
+    echo "NAME=$name,TYPE=KAYAK,GROUP=$group,UTC_TIME=100,X=$x,Y=$y,LAT=43.825300,LON=-70.330400,SPD=$spd,HDG=$hdg"
+}
+
+obstacle_square() {
+    local label="${1:-obs}"
+    echo "pts={-5,-5:5,-5:5,5:-5,5},label=$label"
+}
+
 pathcheck_events_base() {
     cat <<EOF
   event = var=NODE_REPORT, val="$(node_report_alpha_0)", time=0.5
@@ -953,12 +968,762 @@ EOF
     esac
 }
 
+get_brs_case_config() {
+    set_defaults
+    APP_NAME="uFldBeaconRangeSensor"
+    APP_RUN="uFldBeaconRangeSensor"
+    APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=0
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+    TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+EOF
+)"
+    REPORT_COLUMNS='  report_column = brs_short=$[BRS_RANGE_REPORT]
+  report_column = brs_long=$[BRS_RANGE_REPORT_ALPHA]
+  report_column = brs_gt=$[BRS_RANGE_REPORT_GT]
+  report_column = brs_pulse=$[VIEW_RANGE_PULSE]
+  report_column = brs_marker=$[VIEW_MARKER]'
+
+    case "$CASE_NAME" in
+        request_short_report_pass)
+            ;;
+        request_long_report_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=0
+  report_vars = long
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            ;;
+        request_both_report_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=0
+  report_vars = both
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            ;;
+        brs_ground_truth_uniform_zero_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=0
+  report_vars = both
+  rn_algorithm = uniform,pct=0
+  ground_truth = true
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            ;;
+        brs_ground_truth_false_no_gt_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=0
+  report_vars = both
+  rn_algorithm = uniform,pct=0
+  ground_truth = false
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            ;;
+        far_request_blocked_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 500 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+EOF
+)"
+            ;;
+        node_push_unlimited_far_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  node_push_dist = default=unlimited
+  node_pull_dist = default=unlimited
+  ping_wait = default=0
+  report_vars = short
+  beacon = x=300,y=400,label=farbeacon,push_dist=10,pull_dist=10
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+EOF
+)"
+            ;;
+        brs_ping_wait_blocks_second_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=30
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=2.0
+EOF
+)"
+            ;;
+        brs_named_ping_wait_blocks_only_alpha_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=0
+  ping_wait = alpha=30
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 0 0)", time=0.6
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=2.0
+  event = var=BRS_RANGE_REQUEST, val="name=bravo", time=2.2
+EOF
+)"
+            ;;
+        ping_payment_request_blocks_retry_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=30
+  ping_payments = upon_request
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 500 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.0
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=1.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=2.0
+EOF
+)"
+            ;;
+        ping_payment_response_allows_retry_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  ping_wait = default=30
+  ping_payments = upon_response
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 500 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.0
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=1.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=2.0
+EOF
+)"
+            ;;
+        ping_payment_accept_blocks_retry_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  node_pull_dist = default=10
+  ping_wait = default=30
+  ping_payments = upon_accept
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=10,pull_dist=100
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.0
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 25 40)", time=1.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=2.0
+EOF
+)"
+            ;;
+        brs_node_report_local_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT_LOCAL, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+EOF
+)"
+            ;;
+        beacon_style_defaults_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  default_beacon_color = green
+  default_beacon_shape = square
+  default_beacon_width = 7
+  ping_wait = default=0
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}"
+            TIMER_EVENTS='  event = var=TEST_VISUAL_ONLY, val=true, time=0.6'
+            ;;
+        beacon_reply_push_blocks_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  node_pull_dist = default=10
+  ping_wait = default=0
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=10,pull_dist=100
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+EOF
+)"
+            ;;
+        request_path_pull_blocks_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  node_push_dist = default=10
+  ping_wait = default=0
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=100,pull_dist=10
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+EOF
+)"
+            ;;
+        unknown_request_no_report_pass)
+            TIMER_EVENTS='  event = var=BRS_RANGE_REQUEST, val="name=ghost", time=1.2'
+            ;;
+        missing_name_request_no_report_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="vehicle=alpha", time=1.2
+EOF
+)"
+            ;;
+        beacon_visual_marker_pass)
+            TIMER_EVENTS='  event = var=TEST_VISUAL_ONLY, val=true, time=0.6'
+            ;;
+        unsolicited_frequency_pass)
+            APP_CONFIG="ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,freq=0.6,push_dist=50,pull_dist=50
+}"
+            TIMER_EVENTS="  event = var=NODE_REPORT, val=\"$(node_report_xy alpha red 0 0)\", time=0.5"
+            READY_TIME="3.0"
+            ;;
+        *)
+            echo "$ME: Unknown beacon-range-sensor case: [$CASE_NAME]"
+            return 1
+            ;;
+    esac
+}
+
+ucd_sequence() {
+    local min_x="$1"
+    cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 10 0 0 270)", time=0.5
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 30 0 0 270)", time=0.9
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue "$min_x" 0 0 270)", time=1.3
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 10 0 0 270)", time=1.8
+EOF
+}
+
+insert_app_config_line() {
+    local line="$1"
+    APP_CONFIG="$(printf "%s\n" "$APP_CONFIG" | awk -v line="$line" '/^}$/ { print line } { print }')"
+}
+
+get_ucd_case_config() {
+    set_defaults
+    APP_NAME="uFldCollisionDetect"
+    APP_RUN="uFldCollisionDetect"
+    APP_CONFIG="ProcessConfig = uFldCollisionDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_range = 3
+  near_miss_range = 6
+  encounter_range = 20
+  post_closest_range = true
+  post_closest_range_ever = true
+  report_all_encounters = false
+}"
+    TIMER_EVENTS="$(ucd_sequence 2)"
+    READY_TIME="4.0"
+    REPORT_COLUMNS='  report_column = ucd_report=$[UCD_REPORT]
+  report_column = encounter_total=$[ENCOUNTER_TOTAL]
+  report_column = near_total=$[NEAR_MISS_TOTAL]
+  report_column = collision_total=$[COLLISION_TOTAL]
+  report_column = closest=$[UCD_CLOSEST_RANGE]
+  report_column = closest_ever=$[UCD_CLOSEST_RANGE_EVER]
+  report_column = params=$[COLLISION_DETECT_PARAMS]'
+
+    case "$CASE_NAME" in
+        collision_event_pass)
+            ;;
+        near_miss_event_pass)
+            APP_CONFIG="$(echo "$APP_CONFIG" | sed 's/collision_range = 3/collision_range = 1/')"
+            TIMER_EVENTS="$(ucd_sequence 3)"
+            ;;
+        clear_encounter_report_pass)
+            APP_CONFIG="$(echo "$APP_CONFIG" | sed 's/report_all_encounters = false/report_all_encounters = true/')"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 30 0 0 270)", time=0.5
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 10 0 0 270)", time=1.0
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 30 0 0 270)", time=1.5
+EOF
+)"
+            ;;
+        closest_range_posts_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 8 0 0 270)", time=0.5
+EOF
+)"
+            READY_TIME="2.5"
+            ;;
+        reset_closest_range_ever_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 8 0 0 270)", time=0.5
+  event = var=UCD_RESET, val=true, time=1.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 12 0 0 270)", time=1.8
+EOF
+)"
+            READY_TIME="3.5"
+            ;;
+        pulse_render_false_pass)
+            APP_CONFIG="$(echo "$APP_CONFIG" | sed 's/report_all_encounters = false/report_all_encounters = true/')"
+            insert_app_config_line '  pulse_render = false'
+            ;;
+        ignore_group_blocks_pass)
+            insert_app_config_line '  ignore_group = red'
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo red 10 0 0 270)", time=0.5
+  event = var=NODE_REPORT, val="$(node_report_xy bravo red 30 0 0 270)", time=0.9
+  event = var=NODE_REPORT, val="$(node_report_xy bravo red 2 0 0 270)", time=1.3
+  event = var=NODE_REPORT, val="$(node_report_xy bravo red 10 0 0 270)", time=1.8
+EOF
+)"
+            ;;
+        reject_group_blocks_pass)
+            insert_app_config_line '  reject_group = blue'
+            ;;
+        condition_blocks_pass)
+            insert_app_config_line '  condition = TEST_GATE = true'
+            ;;
+        condition_allows_pass)
+            insert_app_config_line '  condition = TEST_GATE = true'
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=TEST_GATE, val=true, time=0.3
+$(ucd_sequence 2)
+EOF
+)"
+            ;;
+        collision_flag_macro_pass)
+            insert_app_config_line '  collision_flag = UCD_HIT=hit_$V2_$CPA'
+            ;;
+        near_miss_flag_macro_pass)
+            APP_CONFIG="$(echo "$APP_CONFIG" | sed 's/collision_range = 3/collision_range = 1/')"
+            insert_app_config_line '  near_miss_flag = UCD_NEAR=near_$V2_$CPA'
+            TIMER_EVENTS="$(ucd_sequence 3)"
+            ;;
+        encounter_flag_density_pass)
+            APP_CONFIG="$(echo "$APP_CONFIG" | sed 's/report_all_encounters = false/report_all_encounters = true/')"
+            insert_app_config_line '  encounter_flag = UCD_DENSITY=$[V1@40]'
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 30 0 0 270)", time=0.5
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 10 0 0 270)", time=1.0
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 30 0 0 270)", time=1.5
+EOF
+)"
+            ;;
+        outside_encounter_range_blocks_pass)
+            APP_CONFIG="ProcessConfig = uFldCollisionDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_range = 1
+  near_miss_range = 1
+  encounter_range = 1
+  post_closest_range = true
+  post_closest_range_ever = true
+  report_all_encounters = true
+}"
+            TIMER_EVENTS="$(ucd_sequence 3)"
+            ;;
+        closest_posts_disabled_absent_pass)
+            APP_CONFIG="ProcessConfig = uFldCollisionDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_range = 3
+  near_miss_range = 6
+  encounter_range = 20
+  post_closest_range = false
+  post_closest_range_ever = false
+  report_all_encounters = true
+}"
+            TIMER_EVENTS="$(ucd_sequence 2)"
+            ;;
+        clear_encounter_default_suppressed_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 30 0 0 270)", time=0.5
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 10 0 0 270)", time=1.0
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 30 0 0 270)", time=1.5
+EOF
+)"
+            ;;
+        collision_flag_numeric_cpa_pass)
+            insert_app_config_line '  collision_flag = UCD_COLLISION_CPA=$CPA'
+            ;;
+        encounter_rings_true_posts_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 10 0 0 270)", time=0.5
+EOF
+)"
+            READY_TIME="2.5"
+            ;;
+        encounter_rings_false_absent_pass)
+            insert_app_config_line '  encounter_rings = false'
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0 0 90)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy bravo blue 10 0 0 270)", time=0.5
+EOF
+)"
+            READY_TIME="2.5"
+            ;;
+        range_normalization_params_pass)
+            APP_CONFIG="ProcessConfig = uFldCollisionDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_range = 6
+  near_miss_range = 3
+  encounter_range = 4
+  post_closest_range = true
+  post_closest_range_ever = true
+  report_all_encounters = false
+}"
+            TIMER_EVENTS='  event = var=TEST_VISUAL_ONLY, val=true, time=0.6'
+            READY_TIME="2.0"
+            ;;
+        *)
+            echo "$ME: Unknown collision-detect case: [$CASE_NAME]"
+            return 1
+            ;;
+    esac
+}
+
+cod_sequence() {
+    local near_x="$1"
+    cat <<EOF
+  event = var=KNOWN_OBSTACLE, val="$(obstacle_square obs)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 25 0)", time=0.7
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red "$near_x" 0)", time=1.2
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 25 0)", time=1.8
+EOF
+}
+
+get_cod_case_config() {
+    set_defaults
+    APP_NAME="uFldCollObDetect"
+    APP_RUN="uFldCollObDetect"
+    APP_CONFIG="ProcessConfig = uFldCollObDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 15
+  encounter_flag = COD_ENCOUNTER=\$VNAME:\$ID:\$DIST:\$ENC_CNT
+  near_miss_flag = COD_NEAR=\$VNAME:\$ID:\$DIST:\$MISS_CNT
+  collision_flag = COD_COLLISION=\$VNAME:\$ID:\$DIST:\$COLL_CNT
+}"
+    TIMER_EVENTS="$(cod_sequence 5.5)"
+    READY_TIME="4.0"
+    REPORT_COLUMNS='  report_column = cod_encounter=$[COD_ENCOUNTER]
+  report_column = cod_near=$[COD_NEAR]
+  report_column = cod_collision=$[COD_COLLISION]
+  report_column = cod_min=$[OB_GLOBAL_MIN]'
+
+    case "$CASE_NAME" in
+        collision_flag_pass)
+            ;;
+        near_miss_flag_pass)
+            TIMER_EVENTS="$(cod_sequence 8)"
+            ;;
+        encounter_only_flag_pass)
+            TIMER_EVENTS="$(cod_sequence 14)"
+            ;;
+        global_min_distance_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=KNOWN_OBSTACLE, val="$(obstacle_square obs)", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 12 0)", time=0.8
+EOF
+)"
+            READY_TIME="2.5"
+            ;;
+        invalid_obstacle_absent_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=KNOWN_OBSTACLE, val="pts={0,0:10,0:5,5:10,10:0,10},label=bad", time=0.4
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=0.8
+EOF
+)"
+            READY_TIME="2.5"
+            ;;
+        obstacle_clear_blocks_later_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=KNOWN_OBSTACLE, val="$(obstacle_square obs)", time=0.4
+  event = var=KNOWN_OBSTACLE_CLEAR, val="all", time=5.0
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 0 0)", time=5.6
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 25 0)", time=6.2
+EOF
+)"
+            READY_TIME="8.0"
+            ;;
+        upper_macro_flag_pass)
+            APP_CONFIG="ProcessConfig = uFldCollObDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 15
+  collision_flag = COD_COLLISION_\$UP_VNAME=\$ID:\$COLL_CNT
+}"
+            ;;
+        fresh_clear_keeps_obstacle_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=KNOWN_OBSTACLE, val="$(obstacle_square obs)", time=0.4
+  event = var=KNOWN_OBSTACLE_CLEAR, val="all", time=2.0
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 25 0)", time=2.5
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 5.5 0)", time=3.0
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 25 0)", time=3.6
+EOF
+)"
+            READY_TIME="5.5"
+            ;;
+        encounter_double_flag_pass)
+            APP_CONFIG="ProcessConfig = uFldCollObDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 15
+  encounter_flag = COD_ENCOUNTER_DIST=\$DIST
+}"
+            TIMER_EVENTS="$(cod_sequence 14)"
+            ;;
+        near_miss_upper_macro_flag_pass)
+            APP_CONFIG="ProcessConfig = uFldCollObDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 15
+  near_miss_flag = COD_NEAR_\$UP_VNAME=\$ID:\$MISS_CNT
+}"
+            TIMER_EVENTS="$(cod_sequence 8)"
+            ;;
+        collision_boundary_counts_near_pass)
+            TIMER_EVENTS="$(cod_sequence 6)"
+            ;;
+        near_boundary_counts_encounter_pass)
+            TIMER_EVENTS="$(cod_sequence 10)"
+            ;;
+        named_clear_only_removes_target_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=KNOWN_OBSTACLE, val="$(obstacle_square obs1)", time=0.4
+  event = var=KNOWN_OBSTACLE, val="pts={35,-5:45,-5:45,5:35,5},label=obs2", time=0.5
+  event = var=KNOWN_OBSTACLE_CLEAR, val="obs1", time=5.2
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 65 0)", time=5.7
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 45.5 0)", time=6.2
+  event = var=NODE_REPORT, val="$(node_report_xy alpha red 65 0)", time=6.8
+EOF
+)"
+            READY_TIME="8.5"
+            ;;
+        range_normalization_collision_pass)
+            APP_CONFIG="ProcessConfig = uFldCollObDetect
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  collision_dist = 6
+  near_miss_dist = 3
+  encounter_dist = 4
+  encounter_flag = COD_ENCOUNTER=\$VNAME:\$ID:\$DIST:\$ENC_CNT
+  near_miss_flag = COD_NEAR=\$VNAME:\$ID:\$DIST:\$MISS_CNT
+  collision_flag = COD_COLLISION=\$VNAME:\$ID:\$DIST:\$COLL_CNT
+}"
+            TIMER_EVENTS="$(cod_sequence 10.5)"
+            ;;
+        *)
+            echo "$ME: Unknown coll-ob-detect case: [$CASE_NAME]"
+            return 1
+            ;;
+    esac
+}
+
+get_scope_case_config() {
+    set_defaults
+    APP_NAME="uFldScope"
+    APP_RUN="uFldScope"
+    APP_CONFIG="ProcessConfig = uFldScope
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  scope = var=NODE_REPORT,key=NAME,fld=MODE
+  scope = var=UPC_SPEED_REPORT,key=vname,fld=avg_spd,alias=speed
+  scope = var=UPC_ODOMETRY_REPORT,key=vname,fld=trip_dist
+}"
+    TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="NAME=alpha,MODE=survey,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=UPC_SPEED_REPORT, val="vname=alpha,avg_spd=2.5", time=0.7
+  event = var=UPC_ODOMETRY_REPORT, val="vname=alpha,trip_dist=12,total_dist=40", time=0.9
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+EOF
+)"
+    READY_TIME="4.0"
+    REPORT_COLUMNS='  report_column = appcast=$[APPCAST]'
+
+    case "$CASE_NAME" in
+        appcast_table_pass)
+            ;;
+        alias_headers_pass)
+            APP_CONFIG="ProcessConfig = uFldScope
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  scope = var=NODE_REPORT,key=NAME,fld=MODE,alias=nav_mode
+  scope = var=UPC_SPEED_REPORT,key=vname,fld=avg_spd,alias=speed
+  scope = var=UPC_ODOMETRY_REPORT,key=vname,fld=trip_dist,alias=trip
+}"
+            ;;
+        update_replaces_same_key_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="NAME=alpha,MODE=survey,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=alpha,MODE=return,X=0,Y=0,SPD=0,HDG=0", time=0.9
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+EOF
+)"
+            ;;
+        multi_vehicle_rows_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="NAME=alpha,MODE=survey,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=bravo,MODE=station,X=0,Y=0,SPD=0,HDG=0", time=0.7
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+EOF
+)"
+            ;;
+        invalid_scope_ignored_pass)
+            APP_CONFIG="ProcessConfig = uFldScope
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  scope = var=NODE_REPORT,key=NAME
+  scope = var=NODE_REPORT,key=NAME,fld=MODE
+}"
+            ;;
+        missing_field_blank_cell_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="NAME=alpha,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+EOF
+)"
+            ;;
+        missing_key_blank_row_pass)
+            APP_CONFIG="ProcessConfig = uFldScope
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  scope = var=NODE_REPORT,key=NAME,fld=MODE
+}"
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="MODE=survey,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+EOF
+)"
+            ;;
+        later_missing_field_replaces_value_pass)
+            TIMER_EVENTS="$(cat <<EOF
+  event = var=NODE_REPORT, val="NAME=alpha,MODE=survey,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=alpha,X=0,Y=0,SPD=0,HDG=0", time=0.9
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+EOF
+)"
+            ;;
+        *)
+            echo "$ME: Unknown scope case: [$CASE_NAME]"
+            return 1
+            ;;
+    esac
+}
+
 get_case_config() {
     CASE_NAME="$1"
     case "$HARNESS_KIND" in
         pathcheck) get_pathcheck_case_config ;;
         message_handler) get_message_case_config ;;
         contact_range_sensor) get_crs_case_config ;;
+        beacon_range_sensor) get_brs_case_config ;;
+        collision_detect) get_ucd_case_config ;;
+        collob_detect) get_cod_case_config ;;
+        scope) get_scope_case_config ;;
         *)
             echo "$ME: Unknown HARNESS_KIND: [$HARNESS_KIND]"
             return 1
@@ -1027,6 +1792,17 @@ ProcessConfig = pMissionEval
   mailflag = @CRS_RANGE_REPORT_ALPHA#CRS_LONG_SEEN=true
   mailflag = @CRS_RANGE_REPORT_GT#CRS_GT_SEEN=true
   mailflag = @VIEW_RANGE_PULSE#CRS_PULSE_SEEN=true
+  mailflag = @BRS_RANGE_REPORT#BRS_SHORT_SEEN=true
+  mailflag = @BRS_RANGE_REPORT_ALPHA#BRS_LONG_SEEN=true
+  mailflag = @BRS_RANGE_REPORT_GT#BRS_GT_SEEN=true
+  mailflag = @UCD_REPORT#UCD_REPORT_SEEN=true
+  mailflag = @COLLISION_TOTAL#UCD_COLLISION_SEEN=true
+  mailflag = @NEAR_MISS_TOTAL#UCD_NEAR_SEEN=true
+  mailflag = @ENCOUNTER_TOTAL#UCD_ENCOUNTER_SEEN=true
+  mailflag = @COD_ENCOUNTER#COD_ENCOUNTER_SEEN=true
+  mailflag = @COD_NEAR#COD_NEAR_SEEN=true
+  mailflag = @COD_COLLISION#COD_COLLISION_SEEN=true
+  mailflag = @APPCAST#APPCAST_SEEN=true
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_DRIVER_DONE = true
@@ -1048,6 +1824,12 @@ ProcessConfig = pMissionEval
   report_column    = crs_long_seen=\$[CRS_LONG_SEEN]
   report_column    = crs_gt_seen=\$[CRS_GT_SEEN]
   report_column    = crs_pulse_seen=\$[CRS_PULSE_SEEN]
+  report_column    = brs_short_seen=\$[BRS_SHORT_SEEN]
+  report_column    = brs_long_seen=\$[BRS_LONG_SEEN]
+  report_column    = brs_gt_seen=\$[BRS_GT_SEEN]
+  report_column    = ucd_report_seen=\$[UCD_REPORT_SEEN]
+  report_column    = cod_encounter_seen=\$[COD_ENCOUNTER_SEEN]
+  report_column    = appcast_seen=\$[APPCAST_SEEN]
 $REPORT_COLUMNS
   report_file      = results.txt
 }
@@ -1075,6 +1857,10 @@ alog_var_lines() {
     local alog
     alog=$(find_alog "$case_dir")
     [ "$alog" != "" ] || return 1
+    if [ "$var" = "APPCAST" ]; then
+        rg "^[[:space:]]*[0-9].*[[:space:]]$var[[:space:]]" "$alog"
+        return $?
+    fi
     aloggrep "$alog" "$var" 2>/dev/null | rg "^[[:space:]]*[0-9].*[[:space:]]$var[[:space:]]"
 }
 
@@ -1089,6 +1875,19 @@ alog_var_matches() {
     local var="$2"
     local pattern="$3"
     alog_var_lines "$case_dir" "$var" 2>/dev/null | rg -q "$pattern"
+}
+
+alog_var_not_matches() {
+    local case_dir="$1"
+    local var="$2"
+    local pattern="$3"
+    ! alog_var_matches "$case_dir" "$var" "$pattern"
+}
+
+alog_scope_appcast_matches() {
+    local case_dir="$1"
+    local pattern="$2"
+    alog_var_lines "$case_dir" "APPCAST" 2>/dev/null | rg 'proc=uFldScope' | rg -q "$pattern"
 }
 
 alog_var_absent() {
@@ -1365,6 +2164,295 @@ case_evidence_ok() {
             ;;
         reciprocal_request_report_pass)
             alog_var_matches "$case_dir" "CRS_RANGE_REPORT" 'vname=bravo.*range=50(\.0+)?.*target=alpha'
+            return $?
+            ;;
+        request_short_report_pass)
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon' && \
+            alog_var_matches "$case_dir" "VIEW_RANGE_PULSE" 'label=(alpha_range_req|beacon)'
+            return $?
+            ;;
+        request_long_report_pass)
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT" && \
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT_ALPHA" 'range=50(\.0+)?.*id=beacon'
+            return $?
+            ;;
+        request_both_report_pass)
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon' && \
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT_ALPHA" 'range=50(\.0+)?.*id=beacon'
+            return $?
+            ;;
+        brs_ground_truth_uniform_zero_pass)
+            if [ "$HARNESS_KIND" = "beacon_range_sensor" ]; then
+                alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon' && \
+                alog_var_matches "$case_dir" "BRS_RANGE_REPORT_GT" 'vname=ALPHA.*range=50(\.0+)?.*id=beacon'
+                return $?
+            fi
+            ;;
+        brs_ground_truth_false_no_gt_pass)
+            if [ "$HARNESS_KIND" = "beacon_range_sensor" ]; then
+                alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon' && \
+                alog_var_absent "$case_dir" "BRS_RANGE_REPORT_GT"
+                return $?
+            fi
+            ;;
+        far_request_blocked_pass)
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT" && \
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT_ALPHA"
+            return $?
+            ;;
+        node_push_unlimited_far_pass)
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=500(\.0+)?.*id=farbeacon'
+            return $?
+            ;;
+        brs_ping_wait_blocks_second_pass)
+            if [ "$HARNESS_KIND" = "beacon_range_sensor" ]; then
+                [ "$(alog_var_count "$case_dir" "BRS_RANGE_REPORT")" = "1" ]
+                return $?
+            fi
+            ;;
+        brs_named_ping_wait_blocks_only_alpha_pass)
+            [ "$(alog_var_count "$case_dir" "BRS_RANGE_REPORT")" = "2" ] && \
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon' && \
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=bravo.*range=50(\.0+)?.*id=beacon'
+            return $?
+            ;;
+        ping_payment_request_blocks_retry_pass)
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT"
+            return $?
+            ;;
+        ping_payment_response_allows_retry_pass)
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon'
+            return $?
+            ;;
+        ping_payment_accept_blocks_retry_pass)
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT" && \
+            [ "$(alog_var_count "$case_dir" "VIEW_RANGE_PULSE")" = "1" ]
+            return $?
+            ;;
+        brs_node_report_local_pass)
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon'
+            return $?
+            ;;
+        beacon_style_defaults_pass)
+            alog_var_matches "$case_dir" "VIEW_MARKER" 'x=30.*y=40.*width=7.*primary_color=green.*type=square'
+            return $?
+            ;;
+        beacon_reply_push_blocks_pass)
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT" && \
+            alog_var_matches "$case_dir" "VIEW_RANGE_PULSE" 'label=alpha_range_req'
+            return $?
+            ;;
+        request_path_pull_blocks_pass)
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT" && \
+            alog_var_matches "$case_dir" "VIEW_RANGE_PULSE" 'label=alpha_range_req'
+            return $?
+            ;;
+        unknown_request_no_report_pass|missing_name_request_no_report_pass)
+            alog_var_absent "$case_dir" "BRS_RANGE_REPORT" && \
+            alog_var_absent "$case_dir" "VIEW_RANGE_PULSE"
+            return $?
+            ;;
+        beacon_visual_marker_pass)
+            alog_var_matches "$case_dir" "VIEW_MARKER" 'x=30.*y=40'
+            return $?
+            ;;
+        unsolicited_frequency_pass)
+            alog_var_matches "$case_dir" "BRS_RANGE_REPORT" 'vname=alpha.*range=50(\.0+)?.*id=beacon'
+            return $?
+            ;;
+        collision_event_pass)
+            alog_var_matches "$case_dir" "COLLISION_TOTAL" 'COLLISION_TOTAL.*[[:space:]]1(\.0+)?[[:space:]]*$' && \
+            alog_var_matches "$case_dir" "UCD_REPORT" 'cpa=2.*rank=collision' && \
+            [ "$(alog_var_count "$case_dir" "VIEW_RANGE_PULSE")" -ge "1" ]
+            return $?
+            ;;
+        near_miss_event_pass)
+            alog_var_matches "$case_dir" "NEAR_MISS_TOTAL" 'NEAR_MISS_TOTAL.*[[:space:]]1(\.0+)?[[:space:]]*$' && \
+            alog_var_matches "$case_dir" "UCD_REPORT" 'cpa=3.*rank=near_miss'
+            return $?
+            ;;
+        clear_encounter_report_pass)
+            alog_var_matches "$case_dir" "ENCOUNTER_TOTAL" 'ENCOUNTER_TOTAL.*[[:space:]]1(\.0+)?[[:space:]]*$' && \
+            alog_var_matches "$case_dir" "UCD_REPORT" 'cpa=10.*rank=clear'
+            return $?
+            ;;
+        closest_range_posts_pass)
+            alog_var_matches "$case_dir" "UCD_CLOSEST_RANGE" 'UCD_CLOSEST_RANGE.*[[:space:]]8(\.0+)?[[:space:]]*$' && \
+            alog_var_matches "$case_dir" "UCD_CLOSEST_RANGE_EVER" 'UCD_CLOSEST_RANGE_EVER.*[[:space:]]8(\.0+)?[[:space:]]*$'
+            return $?
+            ;;
+        reset_closest_range_ever_pass)
+            alog_var_matches "$case_dir" "UCD_CLOSEST_RANGE_EVER" 'UCD_CLOSEST_RANGE_EVER.*[[:space:]]12(\.0+)?[[:space:]]*$'
+            return $?
+            ;;
+        pulse_render_false_pass)
+            alog_var_matches "$case_dir" "UCD_REPORT" 'rank=collision' && \
+            alog_var_absent "$case_dir" "VIEW_RANGE_PULSE"
+            return $?
+            ;;
+        ignore_group_blocks_pass|reject_group_blocks_pass|condition_blocks_pass)
+            alog_var_absent "$case_dir" "UCD_REPORT"
+            return $?
+            ;;
+        condition_allows_pass)
+            alog_var_matches "$case_dir" "UCD_REPORT" 'rank=collision' && \
+            alog_var_matches "$case_dir" "COLLISION_TOTAL" 'COLLISION_TOTAL.*[[:space:]]1(\.0+)?[[:space:]]*$'
+            return $?
+            ;;
+        collision_flag_macro_pass)
+            alog_var_matches "$case_dir" "UCD_HIT" 'hit_alpha_2'
+            return $?
+            ;;
+        near_miss_flag_macro_pass)
+            alog_var_matches "$case_dir" "UCD_NEAR" 'near_alpha_3'
+            return $?
+            ;;
+        encounter_flag_density_pass)
+            alog_var_matches "$case_dir" "UCD_DENSITY" 'UCD_DENSITY.*[[:space:]]1(\.0+)?[[:space:]]*$'
+            return $?
+            ;;
+        outside_encounter_range_blocks_pass)
+            alog_var_absent "$case_dir" "UCD_REPORT"
+            return $?
+            ;;
+        closest_posts_disabled_absent_pass)
+            alog_var_matches "$case_dir" "UCD_REPORT" 'rank=collision' && \
+            alog_var_absent "$case_dir" "UCD_CLOSEST_RANGE" && \
+            alog_var_absent "$case_dir" "UCD_CLOSEST_RANGE_EVER"
+            return $?
+            ;;
+        clear_encounter_default_suppressed_pass)
+            alog_var_matches "$case_dir" "ENCOUNTER_TOTAL" 'ENCOUNTER_TOTAL.*[[:space:]]1(\.0+)?[[:space:]]*$' && \
+            alog_var_absent "$case_dir" "UCD_REPORT"
+            return $?
+            ;;
+        collision_flag_numeric_cpa_pass)
+            alog_var_matches "$case_dir" "UCD_COLLISION_CPA" 'UCD_COLLISION_CPA.*[[:space:]]2(\.0+)?[[:space:]]*$'
+            return $?
+            ;;
+        encounter_rings_true_posts_pass)
+            alog_var_matches "$case_dir" "VIEW_CIRCLE" 'label=alpharng' && \
+            alog_var_matches "$case_dir" "VIEW_CIRCLE" 'label=bravorng'
+            return $?
+            ;;
+        encounter_rings_false_absent_pass)
+            alog_var_absent "$case_dir" "VIEW_CIRCLE"
+            return $?
+            ;;
+        range_normalization_params_pass)
+            alog_var_matches "$case_dir" "COLLISION_DETECT_PARAMS" 'collision_range=6, near_miss_range=6, encounter_range=6'
+            return $?
+            ;;
+        collision_flag_pass)
+            alog_var_matches "$case_dir" "COD_COLLISION" 'alpha:obs:0\.5:1' && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs:0\.5:1'
+            return $?
+            ;;
+        near_miss_flag_pass)
+            alog_var_matches "$case_dir" "COD_NEAR" 'alpha:obs:3:1' && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs:3:1'
+            return $?
+            ;;
+        encounter_only_flag_pass)
+            alog_var_absent "$case_dir" "COD_NEAR" && \
+            alog_var_absent "$case_dir" "COD_COLLISION" && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs:9:1'
+            return $?
+            ;;
+        global_min_distance_pass)
+            alog_var_matches "$case_dir" "OB_GLOBAL_MIN" 'OB_GLOBAL_MIN.*[[:space:]]7(\.0+)?[[:space:]]*$'
+            return $?
+            ;;
+        invalid_obstacle_absent_pass|obstacle_clear_blocks_later_pass)
+            alog_var_absent "$case_dir" "COD_ENCOUNTER" && \
+            alog_var_absent "$case_dir" "COD_COLLISION" && \
+            alog_var_absent "$case_dir" "OB_GLOBAL_MIN"
+            return $?
+            ;;
+        upper_macro_flag_pass)
+            alog_var_matches "$case_dir" "COD_COLLISION_ALPHA" 'obs:1'
+            return $?
+            ;;
+        fresh_clear_keeps_obstacle_pass)
+            alog_var_matches "$case_dir" "COD_COLLISION" 'alpha:obs:0\.5:1' && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs:0\.5:1'
+            return $?
+            ;;
+        encounter_double_flag_pass)
+            alog_var_matches "$case_dir" "COD_ENCOUNTER_DIST" 'COD_ENCOUNTER_DIST.*[[:space:]]9(\.0+)?[[:space:]]*$'
+            return $?
+            ;;
+        near_miss_upper_macro_flag_pass)
+            alog_var_matches "$case_dir" "COD_NEAR_ALPHA" 'obs:1'
+            return $?
+            ;;
+        collision_boundary_counts_near_pass)
+            alog_var_absent "$case_dir" "COD_COLLISION" && \
+            alog_var_matches "$case_dir" "COD_NEAR" 'alpha:obs:1:1' && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs:1:1'
+            return $?
+            ;;
+        near_boundary_counts_encounter_pass)
+            alog_var_absent "$case_dir" "COD_NEAR" && \
+            alog_var_absent "$case_dir" "COD_COLLISION" && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs:5:1'
+            return $?
+            ;;
+        named_clear_only_removes_target_pass)
+            alog_var_matches "$case_dir" "COD_COLLISION" 'alpha:obs2:0\.5:1' && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs2:0\.5:1' && \
+            alog_var_not_matches "$case_dir" "COD_COLLISION" 'obs1'
+            return $?
+            ;;
+        range_normalization_collision_pass)
+            alog_var_matches "$case_dir" "COD_COLLISION" 'alpha:obs:5\.5:1' && \
+            alog_var_matches "$case_dir" "COD_ENCOUNTER" 'alpha:obs:5\.5:1'
+            return $?
+            ;;
+        appcast_table_pass)
+            alog_scope_appcast_matches "$case_dir" 'alpha' && \
+            alog_scope_appcast_matches "$case_dir" 'survey' && \
+            alog_scope_appcast_matches "$case_dir" '2\.5' && \
+            alog_scope_appcast_matches "$case_dir" '12'
+            return $?
+            ;;
+        alias_headers_pass)
+            alog_scope_appcast_matches "$case_dir" 'nav_mode' && \
+            alog_scope_appcast_matches "$case_dir" 'speed' && \
+            alog_scope_appcast_matches "$case_dir" 'trip' && \
+            ! alog_scope_appcast_matches "$case_dir" 'trip_dist'
+            return $?
+            ;;
+        update_replaces_same_key_pass)
+            alog_scope_appcast_matches "$case_dir" 'return' && \
+            ! alog_scope_appcast_matches "$case_dir" 'survey'
+            return $?
+            ;;
+        multi_vehicle_rows_pass)
+            alog_scope_appcast_matches "$case_dir" 'alpha' && \
+            alog_scope_appcast_matches "$case_dir" 'bravo' && \
+            alog_scope_appcast_matches "$case_dir" 'station'
+            return $?
+            ;;
+        invalid_scope_ignored_pass)
+            alog_scope_appcast_matches "$case_dir" 'MODE'
+            return $?
+            ;;
+        missing_field_blank_cell_pass)
+            alog_scope_appcast_matches "$case_dir" 'alpha' && \
+            alog_scope_appcast_matches "$case_dir" 'MODE' && \
+            ! alog_scope_appcast_matches "$case_dir" 'survey'
+            return $?
+            ;;
+        missing_key_blank_row_pass)
+            alog_scope_appcast_matches "$case_dir" 'MODE' && \
+            alog_scope_appcast_matches "$case_dir" 'survey' && \
+            ! alog_scope_appcast_matches "$case_dir" 'alpha'
+            return $?
+            ;;
+        later_missing_field_replaces_value_pass)
+            alog_scope_appcast_matches "$case_dir" 'alpha' && \
+            ! alog_scope_appcast_matches "$case_dir" 'survey'
             return $?
             ;;
     esac

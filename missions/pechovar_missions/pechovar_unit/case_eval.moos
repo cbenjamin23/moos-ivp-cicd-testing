@@ -1,0 +1,27 @@
+//-------------------------------------------------
+// FILE: case_eval.moos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = ECHO_OUT_NUM = 42.5
+
+  result_flag  = MISSION_EVALUATED = true
+  mission_form = pechovar_unit
+  mission_mod  = $(MMOD:=numeric_echo_pass)
+
+  prereport_column = form=$[MISSION_FORM]
+  prereport_column = mmod=$[MMOD]
+  report_column    = grade=$[GRADE]
+  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = out_num=$[ECHO_OUT_NUM]
+  report_column    = out_str=$[ECHO_OUT_STR]
+  report_column    = flip_out=$[FLIP_OUT]
+  report_column    = mhash=$[MHASH_SHORT]
+  report_file      = results.txt
+}

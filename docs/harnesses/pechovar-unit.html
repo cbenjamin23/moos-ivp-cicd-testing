@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>H01 pEchoVar Unit | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="../styles.css?v=20260511-5">
+  <script src="../theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="../index.html#families">Harnesses</a>
+        <a href="../ctest-coverage.html">CTest Coverage</a>
+        <a href="../user-guide.html">Run Tests</a>
+        <a href="../technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back-link" href="../index.html#families">Back to catalog</a>
+      <p class="eyebrow">pEchoVar</p>
+      <h1>H01 pEchoVar Unit</h1>
+      <p class="lede">Utility app correctness tests for pEchoVar. These cases verify live echo mapping, boolean inversion, fan-out, duplicate mapping de-duplication, latest-value handling, EFlipper component maps, filters, custom separators, cycle suppression, invalid flipper suppression, and independent named flippers.</p>
+    </section>
+
+
+    <section class="content-section compact-section">
+      <article class="stem-card">
+        <p class="eyebrow">Stem Mission</p>
+        <h2>Baseline scenario context</h2>
+        <p>The stem mission runs one MOOS community with pEchoVar, uTimerScript, pMissionEval, pMissionHash, and pLogger. The harness writes case-specific echo/flip mappings and scripted source mail, then grades direct echo variables plus alog evidence for structured EFlipper payloads and suppression.</p>
+      </article>
+    </section>
+
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Examples</p>
+        <h2>Representative runs</h2>
+      </div>
+
+      <div class="gif-grid gif-grid--two">
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pechovar-echo-mapping.gif">
+          <img src="../assets/gifs/pechovar-echo-mapping.gif?v=20260511-5" alt="Echo Mapping GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Echo Mapping</h3>
+          <p>Description: Numeric source mail is echoed to the configured target variable.</p>
+        </div>
+      </article>
+
+
+      <article class="gif-card">
+        <div class="gif-frame" data-file="pechovar-filtered-flip.gif">
+          <img src="../assets/gifs/pechovar-filtered-flip.gif?v=20260511-5" alt="Filtered Flip GIF" onerror="this.style.display='none'">
+        </div>
+        <div class="gif-meta">
+          <h3>Filtered Flip</h3>
+          <p>Description: A mismatched EFlipper filter suppresses the destination publication.</p>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Case Matrix</p>
+        <h2>All cases</h2>
+      </div>
+      <div class="case-matrix">
+
+        <article class="case-row">
+          <code>numeric_echo_pass</code>
+          <p>Numeric source mail is echoed to the configured target variable.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>string_echo_pass</code>
+          <p>String source mail is echoed without numeric coercion.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bool_switch_true_pass</code>
+          <p>!-&gt; mapping flips lowercase true to false.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bool_switch_mixed_case_pass</code>
+          <p>!-&gt; mapping preserves the documented mixed-case boolean flip behavior.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bool_switch_upper_false_pass</code>
+          <p>!-&gt; mapping flips uppercase FALSE to uppercase TRUE.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bool_switch_numeric_passthrough_pass</code>
+          <p>!-&gt; leaves numeric source mail unchanged because boolean inversion only applies to strings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>bool_switch_nonbool_passthrough_pass</code>
+          <p>!-&gt; leaves non-boolean string payloads unchanged.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>multi_target_echo_pass</code>
+          <p>One source variable fans out to two independent target variables.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>acyclic_chain_echo_pass</code>
+          <p>A non-cyclic echo chain can propagate source mail through two configured mappings.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>duplicate_mapping_single_post_pass</code>
+          <p>Duplicate Echo entries for the same source-target pair produce a single target publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>default_repeated_source_posts_each_pass</code>
+          <p>Repeated source mail publishes each update when echo_latest_only is left at its default.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>latest_only_repeated_source_pass</code>
+          <p>echo_latest_only=true accepts repeated source mail and the latest value is the final echoed output.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_component_pass</code>
+          <p>EFlipper component mapping builds a destination payload from selected fields.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_explicit_param_syntax_pass</code>
+          <p>EFlipper accepts explicit filter = and component = configuration syntax.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_filter_match_pass</code>
+          <p>Matching EFlipper filters allow the mapped destination payload through.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_multiple_filters_match_pass</code>
+          <p>Multiple EFlipper filters all match and allow the mapped destination payload through.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_filter_case_insensitive_match_pass</code>
+          <p>EFlipper filters match source field names and values case-insensitively.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_missing_filter_allows_pass</code>
+          <p>A configured filter does not suppress output when the filtered field is absent from the source payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_filter_suppresses_pass</code>
+          <p>A mismatched EFlipper filter suppresses the destination publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_multiple_filters_suppress_pass</code>
+          <p>A single mismatch among multiple EFlipper filters suppresses the destination publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_custom_separator_pass</code>
+          <p>EFlipper honors custom source and destination separators.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_component_case_sensitive_pass</code>
+          <p>EFlipper component mappings remain case-sensitive even when filters are case-insensitive.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_unmapped_component_omitted_pass</code>
+          <p>Unmapped source fields are omitted while mapped fields still publish.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_no_mapped_fields_no_output_pass</code>
+          <p>Source mail with no mapped components produces no destination publication.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_duplicate_component_repeats_pass</code>
+          <p>Duplicate source fields produce repeated mapped fields in the destination payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_empty_value_pass</code>
+          <p>Empty source component values are preserved in the mapped destination payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>cycle_guard_no_echo_pass</code>
+          <p>A detected echo cycle prevents cyclic echo output from being posted.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>self_cycle_guard_no_echo_pass</code>
+          <p>A direct source-to-self echo is rejected by the cycle guard.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>indirect_cycle_blocks_all_pass</code>
+          <p>A detected indirect cycle prevents all echo processing in the app instance.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_flip_no_output_pass</code>
+          <p>An incomplete EFlipper receives source mail but posts no destination payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>invalid_flip_alias_no_output_pass</code>
+          <p>An EFlipper that aliases source and destination variables is rejected and posts no mapped payload.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>shared_source_dual_flip_pass</code>
+          <p>Two named EFlippers can consume the same source mail and publish separate mapped outputs.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>dual_flip_independent_pass</code>
+          <p>Two named EFlippers with separate source variables publish independent destination payloads.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="source-strip">
+      <h2>Source links</h2>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/harnesses/pechovar_harnesses/H01-pechovar_unit/README.md">Harness README</a>
+      <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main/missions/pechovar_missions/pechovar_unit/README.md">Mission README</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>
