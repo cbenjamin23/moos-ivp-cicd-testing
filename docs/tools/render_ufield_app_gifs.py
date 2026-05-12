@@ -367,36 +367,47 @@ def collision_detect_event() -> None:
     frames: list[Image.Image] = []
     bounds = (-5, 35, -10, 10)
     alpha = (0, 0)
-    bravo_start = (30, 0)
-    bravo_cpa = (2, 0)
-    bravo_end = (20, 0)
+    bravo_reports = [(10, 0), (30, 0), (2, 0), (10, 0)]
+    report_steps = [0.12, 0.34, 0.64, 0.82]
     ap = map_point(alpha, bounds)
+    bps = [map_point(p, bounds) for p in bravo_reports]
     for i in range(FRAMES):
         t = ease(i / (FRAMES - 1))
         im, draw = base("uFldCollisionDetect", "CPA below collision range posts collision evidence", "collision_event_pass")
-        bp0 = map_point(bravo_start, bounds)
-        bp1 = map_point(bravo_cpa, bounds)
-        bp2 = map_point(bravo_end, bounds)
-        dashed(draw, bp0, bp1, WHITE_FAINT, 2)
-        dashed(draw, bp1, bp2, WHITE_FAINT, 2)
         draw.ellipse((ap[0] - 42, ap[1] - 42, ap[0] + 42, ap[1] + 42), outline=RED, width=2)
         boat(draw, ap, YELLOW, "alpha")
-        if t < 0.62:
-            lt = t / 0.62
-            bx = bp0[0] + (bp1[0] - bp0[0]) * lt
-            by = bp0[1] + (bp1[1] - bp0[1]) * lt
+        if t < report_steps[1]:
+            lt = max(0.0, (t - report_steps[0]) / (report_steps[1] - report_steps[0]))
+            a, b = bps[0], bps[1]
+        elif t < report_steps[2]:
+            lt = (t - report_steps[1]) / (report_steps[2] - report_steps[1])
+            a, b = bps[1], bps[2]
         else:
-            lt = (t - 0.62) / 0.38
-            bx = bp1[0] + (bp2[0] - bp1[0]) * lt
-            by = bp1[1] + (bp2[1] - bp1[1]) * lt
+            lt = min(1.0, (t - report_steps[2]) / (report_steps[3] - report_steps[2]))
+            a, b = bps[2], bps[3]
+        bx = a[0] + (b[0] - a[0]) * lt
+        by = a[1] + (b[1] - a[1]) * lt
+        dashed(draw, bps[2], bps[1], WHITE_FAINT, 2)
+        if t >= report_steps[0]:
+            dashed(draw, a, (bx, by), TEAL, 3)
+        label_points = (
+            (2, bps[2], t >= report_steps[2]),
+            (10, bps[0], t >= report_steps[0]),
+            (30, bps[1], t >= report_steps[1]),
+        )
+        for dist, bp, active in label_points:
+            fill = TEAL if active else MUTED
+            draw.ellipse((bp[0] - 5, bp[1] - 5, bp[0] + 5, bp[1] + 5), fill=fill)
+            tag(draw, (int(bp[0]) - 18, int(bp[1]) + 22), f"d={dist}", fill)
         boat(draw, (bx, by), TEAL, "bravo")
-        if t > 0.56:
-            draw.line((ap[0], ap[1], bp1[0], bp1[1]), fill=RED, width=3)
-            tag(draw, (int(bp1[0]) + 10, int(bp1[1]) + 14), "CPA=2", RED)
+        if t >= report_steps[2]:
+            cpa = bps[2]
+            draw.line((ap[0], ap[1], cpa[0], cpa[1]), fill=RED, width=3)
+            tag(draw, (int(cpa[0]) + 10, int(cpa[1]) + 44), "CPA=2", RED)
             pill(draw, (668, 154, 922, 222), "UCD_REPORT", "rank=collision cpa=2", RED)
             pill(draw, (668, 244, 922, 312), "COLLISION_TOTAL", "1", RED)
         else:
-            pill(draw, (668, 154, 922, 222), "node reports", "closing contact pair", BLUE)
+            pill(draw, (668, 154, 922, 222), "NODE_REPORT", "bravo d=10/30/2/10", BLUE)
             pill(draw, (668, 244, 922, 312), "thresholds", "collision_range=3", ORANGE)
         frames.append(im)
     save_gif("ufld-collision-detect-collision-event.gif", frames)
@@ -406,30 +417,48 @@ def collision_detect_condition_gate() -> None:
     frames: list[Image.Image] = []
     bounds = (-5, 35, -10, 10)
     alpha = (0, 0)
-    bravo_start = (30, 0)
-    bravo_cpa = (2, 0)
+    bravo_reports = [(10, 0), (30, 0), (2, 0), (10, 0)]
+    report_steps = [0.20, 0.40, 0.68, 0.84]
     ap = map_point(alpha, bounds)
-    bp0 = map_point(bravo_start, bounds)
-    bp1 = map_point(bravo_cpa, bounds)
+    bps = [map_point(p, bounds) for p in bravo_reports]
     for i in range(FRAMES):
         t = ease(i / (FRAMES - 1))
         im, draw = base("uFldCollisionDetect", "Satisfied condition opens the same collision path", "condition_allows_pass")
-        draw.ellipse((ap[0] - 42, ap[1] - 42, ap[0] + 42, ap[1] + 42), outline=RED if t > 0.62 else WHITE_FAINT, width=2)
+        draw.ellipse((ap[0] - 42, ap[1] - 42, ap[0] + 42, ap[1] + 42), outline=RED if t >= report_steps[2] else WHITE_FAINT, width=2)
         boat(draw, ap, YELLOW, "alpha")
-        lt = min(1.0, max(0.0, (t - 0.30) / 0.55))
-        bx = bp0[0] + (bp1[0] - bp0[0]) * lt
-        by = bp0[1] + (bp1[1] - bp0[1]) * lt
-        boat(draw, (bx, by), TEAL, "bravo")
-        dashed(draw, bp0, bp1, WHITE_FAINT if t < 0.42 else TEAL, 2)
-        if t < 0.34:
-            pill(draw, (664, 126, 924, 194), "condition", "TEST_GATE not set", MUTED)
-            pill(draw, (664, 220, 924, 288), "UCD_REPORT", "blocked", MUTED)
-        elif t < 0.62:
-            pill(draw, (664, 126, 924, 194), "TEST_GATE", "true", TEAL)
-            pill(draw, (664, 220, 924, 288), "condition gate", "app now evaluates CPA", BLUE)
+        if t < report_steps[1]:
+            lt = max(0.0, (t - report_steps[0]) / (report_steps[1] - report_steps[0]))
+            a, b = bps[0], bps[1]
+        elif t < report_steps[2]:
+            lt = (t - report_steps[1]) / (report_steps[2] - report_steps[1])
+            a, b = bps[1], bps[2]
         else:
-            pill(draw, (664, 126, 924, 194), "UCD_REPORT", "rank=collision", RED)
-            pill(draw, (664, 220, 924, 288), "COLLISION_TOTAL", "1", RED)
+            lt = min(1.0, (t - report_steps[2]) / (report_steps[3] - report_steps[2]))
+            a, b = bps[2], bps[3]
+        bx = a[0] + (b[0] - a[0]) * lt
+        by = a[1] + (b[1] - a[1]) * lt
+        dashed(draw, bps[2], bps[1], WHITE_FAINT, 2)
+        if t >= report_steps[0]:
+            dashed(draw, a, (bx, by), TEAL, 3)
+        label_points = (
+            (2, bps[2], t >= report_steps[2]),
+            (10, bps[0], t >= report_steps[0]),
+            (30, bps[1], t >= report_steps[1]),
+        )
+        for dist, bp, active in label_points:
+            fill = TEAL if active else MUTED
+            draw.ellipse((bp[0] - 5, bp[1] - 5, bp[0] + 5, bp[1] + 5), fill=fill)
+            tag(draw, (int(bp[0]) - 18, int(bp[1]) + 22), f"d={dist}", fill)
+        boat(draw, (bx, by), TEAL, "bravo")
+        if t < 0.34:
+            pill(draw, (668, 154, 922, 222), "condition", "TEST_GATE not set", MUTED)
+            pill(draw, (668, 244, 922, 312), "UCD_REPORT", "blocked", MUTED)
+        elif t < report_steps[2]:
+            pill(draw, (668, 154, 922, 222), "TEST_GATE", "true", TEAL)
+            pill(draw, (668, 244, 922, 312), "NODE_REPORT", "waiting for d=2 CPA", BLUE)
+        else:
+            pill(draw, (668, 154, 922, 222), "UCD_REPORT", "rank=collision", RED)
+            pill(draw, (668, 244, 922, 312), "COLLISION_TOTAL", "1", RED)
         frames.append(im)
     save_gif("ufld-collision-detect-condition-gate.gif", frames)
 
@@ -510,7 +539,7 @@ def scope_table() -> None:
         for idx, (title, detail) in enumerate(rows):
             active = t > 0.12 + idx * 0.13
             pill(draw, (48, 126 + idx * 84, 344, 188 + idx * 84), title, detail, TEAL if active else MUTED)
-        x0, y0, w, h = 430, 136, 446, 232
+        x0, y0, w, h = 430, 126, 446, 230
         draw.rounded_rectangle((x0, y0, x0 + w, y0 + h), radius=8, fill="#283142", outline=TEAL if t > 0.58 else MUTED, width=2)
         draw.text((x0 + 18, y0 + 16), "uFldScope APPCAST", fill=TEAL if t > 0.58 else MUTED, font=FONT_SMALL_BOLD)
         headers = ["key", "MODE", "speed", "trip_dist"]
@@ -522,7 +551,7 @@ def scope_table() -> None:
         for cx, value in zip(colx, values):
             draw.text((cx, y0 + 106), value, fill=TEXT, font=FONT_SMALL_BOLD if value != "..." else FONT_TINY)
         if t > 0.78:
-            pill(draw, (556, 406, 876, 474), "harness evidence", "APPCAST proc=uFldScope matched", TEAL)
+            pill(draw, (493, 378, 813, 440), "harness evidence", "APPCAST proc=uFldScope matched", TEAL)
         frames.append(im)
     save_gif("ufld-scope-table.gif", frames)
 
@@ -535,7 +564,7 @@ def scope_row_replacement() -> None:
         pill(draw, (54, 148, 342, 216), "first NODE_REPORT", "alpha MODE=survey", BLUE if t > 0.12 else MUTED)
         pill(draw, (54, 252, 342, 320), "second NODE_REPORT", "alpha MODE=return", ORANGE if t > 0.44 else MUTED)
         pill(draw, (54, 356, 342, 424), "APPCAST_REQ", "request table evidence", TEAL if t > 0.68 else MUTED)
-        x0, y0, w, h = 430, 156, 438, 196
+        x0, y0, w, h = 430, 148, 438, 172
         draw.rounded_rectangle((x0, y0, x0 + w, y0 + h), radius=8, fill="#283142", outline=TEAL if t > 0.50 else BLUE, width=2)
         draw.text((x0 + 18, y0 + 18), "scope row", fill=TEAL if t > 0.50 else BLUE, font=FONT_SMALL_BOLD)
         draw.text((x0 + 42, y0 + 72), "key", fill=BLUE, font=FONT_TINY)
@@ -548,7 +577,7 @@ def scope_row_replacement() -> None:
             draw.text((x0 + 178, y0 + 116), "return", fill=ORANGE, font=FONT_SMALL_BOLD)
             tag(draw, (x0 + 260, y0 + 114), "survey absent", TEAL)
         if t > 0.70:
-            pill(draw, (556, 404, 878, 472), "replacement check", "return present; survey absent", TEAL)
+            pill(draw, (488, 356, 810, 424), "replacement check", "return present; survey absent", TEAL)
         frames.append(im)
     save_gif("ufld-scope-row-replacement.gif", frames)
 
