@@ -7,10 +7,11 @@ editing missions, harnesses, and launcher scripts.
 
 - Prefer the nearest existing mission or harness exemplar before inventing a
   new pattern.
+- Before broad repo exploration, consult `docs/context/dependency_tree.md` when
+  present; regenerate it with `python3 scripts/generate_context_graph.py` after
+  changing harness target metadata, harness launchers, mission stems, docs
+  catalog wiring, or C++ test family metadata.
 - When running harnesses, prefer batch or grouped validation over ad hoc
   one-off runs when that is faster and still representative.
 - Do not run two scripts at the same time if their MOOSDB or pShare port
   ranges could overlap.
-- Harness launchers intended for grouped local or CI validation should expose
-  caller-controlled `--jobs` and `--port_base` options so runs can be isolated
-  safely.

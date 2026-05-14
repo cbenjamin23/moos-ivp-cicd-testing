@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import importlib.util
+import json
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -15,7 +16,7 @@ from typing import Iterable
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import check_cpp_tests, ci_cpp_test_targets, ci_harness_case_count, harness_targets  # noqa: E402
+from scripts import check_cpp_tests, ci_cpp_test_targets, ci_harness_case_count, generate_context_graph, harness_targets  # noqa: E402
 
 WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "build_extend.yml"
 DOCS_BUILD_PATH = REPO_ROOT / "docs" / "tools" / "build_pages.py"
@@ -289,6 +290,26 @@ def check_docs_generated_clean() -> list[CheckFailure]:
     return []
 
 
+def check_context_graph_generated_clean(_targets: list[dict[str, object]]) -> list[CheckFailure]:
+    try:
+        graph = generate_context_graph.build_graph()
+    except Exception as err:  # noqa: BLE001 - report graph generation failures as invariant failures.
+        return [CheckFailure("context graph generation", str(err))]
+
+    expected = {
+        generate_context_graph.DEFAULT_JSON_PATH: json.dumps(graph, indent=2, sort_keys=True) + "\n",
+        generate_context_graph.DEFAULT_MD_PATH: generate_context_graph.render_markdown(graph),
+    }
+    failures: list[CheckFailure] = []
+    for path, content in expected.items():
+        if not path.is_file():
+            failures.append(CheckFailure("context graph output", f"missing generated file: {path}"))
+            continue
+        if path.read_text(encoding="utf-8") != content:
+            failures.append(CheckFailure("context graph output", f"out of date: {path}"))
+    return failures
+
+
 def check_cpp_test_tree(_targets: list[dict[str, object]]) -> list[CheckFailure]:
     return [
         CheckFailure(failure.label, failure.detail)
@@ -333,6 +354,7 @@ def main() -> int:
         check_harness_targets,
         check_docs_catalog,
         check_workflow_inputs,
+        check_context_graph_generated_clean,
         check_cpp_test_tree,
     ]
 
