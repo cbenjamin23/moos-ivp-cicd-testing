@@ -50,7 +50,7 @@ isolated.
 
 ## Local Testing Against MOOS-IvP Edits
 
-This is the simplest workflow. Check out the branch in the local `moos-ivp`
+This is the simplest workflow. Check out the edited branch in your local `moos-ivp`
 tree this repo already uses, rebuild MOOS-IvP if the branch changes compiled
 C++ code, then run the normal tests.
 
@@ -78,7 +78,7 @@ repo with `cmake -S . -B build -DMOOSIVP_SOURCE_TREE_BASE=/path/to/moos-ivp`
 and make sure that checkout's `bin/`, `scripts/`, and libraries are first in
 your shell's `PATH` and library path before running harnesses.
 
-For hosted validation, use the manual workflow input `moos_ivp_ref` with a
+For Github Actions hosted validation, use the manual workflow input `moos_ivp_ref` with a
 MOOS-IvP branch, tag, or commit SHA. The workflow clones that ref, builds it,
 then runs the selected CTest families and harnesses.
 
