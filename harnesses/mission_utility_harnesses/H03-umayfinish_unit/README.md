@@ -7,6 +7,10 @@ The harness uses the stem mission at
 `uMayFinish` directly with a unique alias per case so the process exit code is
 part of the tested contract.
 
+Exported harness rows use `grade=<pass|fail>` for the harness verdict and
+`subject=uMayFinish` for the utility under test. Expected timeout cases pass the
+harness when `expected_subject=timeout` and the observed `subject_rc=1`.
+
 ## Current Matrix
 
 - `mayfinish_default_exit_pass` Direct default-exit case. The harness requires `uMayFinish` to exit with code 0 when `MISSION_EVALUATED=true` arrives.

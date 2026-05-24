@@ -1,60 +1,30 @@
-case=given_baseline_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_baseline_pass  grade=pass  eval=true  new_given=true  dist=OB_NEAR,18.0  mindist=18  alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near  mhash=[INKY-BRAD]
-
-case=config_given_obstacle_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=config_given_obstacle_pass  grade=pass  eval=true  dist=CONFIG_NEAR,18.0  alert=name=avd_config_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=config_near#id=config_near  mhash=[IRON-NOVA]
-
-case=given_obstable_alias_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_obstable_alias_pass  grade=pass  eval=true  dist=ALIAS_NEAR,18.0  alert=name=avd_alias_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=alias_near#id=alias_near  mhash=[FAST-JASE]
-
-case=no_alert_request_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=no_alert_request_absent_pass  grade=pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[ABLE-ALVA]
-
-case=bad_alert_request_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=bad_alert_request_absent_pass  grade=pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[HALS-SIDE]
-
-case=given_far_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_far_absent_pass  grade=pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[FOND-COLT]
-
-case=given_general_alert_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_general_alert_pass  grade=pass  eval=true  new_given=true  gen_seen=true  dist=$[OBM_DIST_TO_OBJ]  gen_alert=name=gen_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far  mhash=[WAVY-WILL]
-
-case=general_alert_default_name_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=general_alert_default_name_pass  grade=pass  eval=true  new_given=true  gen_seen=true  dist=$[OBM_DIST_TO_OBJ]  gen_alert=name=gen_alert_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far  mhash=[WILD-ARES]
-
-case=given_duration_resolve_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_duration_resolve_pass  grade=pass  eval=true  resolved=ob_near  dist=OB_NEAR,18.0  alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near  mhash=[SAFE-TECH]
-
-case=given_max_duration_reject_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_max_duration_reject_absent_pass  grade=pass  eval=true  new_given=$[OBM_NEW_GIVEN]  alert=$[OBSTACLE_ALERT]  mhash=[FULL-ARES]
-
-case=given_max_duration_missing_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_max_duration_missing_absent_pass  grade=pass  eval=true  new_given=$[OBM_NEW_GIVEN]  alert=$[OBSTACLE_ALERT]  mhash=[PURE-SIDE]
-
-case=invalid_given_nonconvex_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=invalid_given_nonconvex_absent_pass  grade=pass  eval=true  new_given=$[OBM_NEW_GIVEN]  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[FIRM-NERO]
-
-case=post_dist_always_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=post_dist_always_pass  grade=pass  eval=true  new_given=true  dist=OB_FAR,35.0  mindist=35  alert=$[OBSTACLE_ALERT]  mhash=[GREY-LINK]
-
-case=post_dist_false_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=post_dist_false_absent_pass  grade=pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  mhash=[FOUL-HOUR]
-
-case=points_cluster_dist_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=points_cluster_dist_pass  grade=pass  eval=true  dist=ROCK_A,18.0  mindist=18  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:22,-62:18,-62},label=rock_a#id=rock_a  mhash=[MISC-TAPE]
-
-case=custom_point_var_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=custom_point_var_pass  grade=pass  eval=true  dist=ROCK_A,18.0  mindist=18  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:22,-62:18,-62},label=rock_a#id=rock_a  mhash=[NEDS-RICH]
-
-case=invalid_point_missing_key_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=invalid_point_missing_key_absent_pass  grade=pass  eval=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[EPIC-DEON]
-
-case=max_pts_per_cluster_trim_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=max_pts_per_cluster_trim_pass  grade=pass  eval=true  dist=ROCK_A,18.1  mindist=18.071  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:20,-60},label=rock_a#id=rock_a  mhash=[VERY-ROOT]
-
-case=points_ignore_range_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=points_ignore_range_absent_pass  grade=pass  eval=true  dist=$[OBM_DIST_TO_OBJ]  mindist=$[OBM_MIN_DIST_EVER]  alert=$[OBSTACLE_ALERT]  mhash=[WAXY-FORM]
-
-case=points_age_resolve_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=points_age_resolve_pass  grade=pass  eval=true  resolved=rock_a  dist=ROCK_A,18.0  mhash=[MEAN-ODIN]
-
-case=lasso_cluster_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=lasso_cluster_pass  grade=pass  eval=true  dist=LASSO_A,15.0  mindist=15  alert=name=avd_lasso_a#poly=pts={22.5,-55.67:25,-60:22.5,-64.33:17.5,-64.33:15,-60:17.5,-55.67},label=lasso_a#id=lasso_a  mhash=[ZANY-QUIL]
-
-case=placeholder_hull_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=placeholder_hull_pass  grade=pass  eval=true  dist=LINE_A,20.0  mindist=20  alert=name=avd_line_a#poly=pts={20,-60.4:20,-59.6:24,-59.6:24,-60.4},label=line_a#id=line_a  mhash=[NEAR-NOAH]
-
-case=post_view_polys_false_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=post_view_polys_false_absent_pass  grade=pass  eval=true  view_poly_seen=$[VIEW_POLY_SEEN]  dist=ROCK_A,18.0  mhash=[MEGA-GULP]
-
-case=new_obs_flag_macros_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=new_obs_flag_macros_pass  grade=pass  eval=true  new_stats=now_1_ever_1  dist=OB_NEAR,18.0  mhash=[MAIN-BRET]
-
-case=point_vsource_alert_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=point_vsource_alert_pass  grade=pass  eval=true  alert_seen=true  dist=ROCK_A,18.0  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:22,-62:18,-62},label=rock_a,vsource=radar#id=rock_a  mhash=[MEGA-HALE]
-
-case=given_after_points_same_key_reject_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=given_after_points_same_key_reject_pass  grade=pass  eval=true  new_given=$[OBM_NEW_GIVEN]  dist=MIX_KEY,18.0  alert=name=avd_mix_key#poly=pts={18,-58:22,-58:22,-62:18,-62},label=mix_key#id=mix_key  mhash=[THEN-ROBB]
-
-case=disable_obstacle_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=disable_obstacle_pass  grade=pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=disable  mhash=[DAFT-ELON]
-
-case=disable_vsource_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=disable_vsource_pass  grade=pass  eval=true  filter_seen=true  filter=vsource=radar,action=disable  mhash=[BUSY-TEST]
-
-case=enable_obstacle_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=enable_obstacle_pass  grade=pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=enable  mhash=[MERE-WADE]
-
-case=expunge_obstacle_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests_harness  mmod=expunge_obstacle_pass  grade=pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=expunge  mhash=[NUMB-AMES]
-
+case=given_baseline_pass  grade=pass  form=obmgr_tests_harness  mmod=given_baseline_pass  eval=true  new_given=true  dist=OB_NEAR,18.0  mindist=18  alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near  mhash=[DRAB-GURU]
+case=config_given_obstacle_pass  grade=pass  form=obmgr_tests_harness  mmod=config_given_obstacle_pass  eval=true  dist=CONFIG_NEAR,18.0  alert=name=avd_config_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=config_near#id=config_near  mhash=[MEEK-CITY]
+case=given_obstable_alias_pass  grade=pass  form=obmgr_tests_harness  mmod=given_obstable_alias_pass  eval=true  dist=ALIAS_NEAR,18.0  alert=name=avd_alias_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=alias_near#id=alias_near  mhash=[BOBS-FINN]
+case=no_alert_request_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=no_alert_request_absent_pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[RICH-JETS]
+case=bad_alert_request_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=bad_alert_request_absent_pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[HEAD-CODE]
+case=given_far_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=given_far_absent_pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[TINY-TIME]
+case=given_general_alert_pass  grade=pass  form=obmgr_tests_harness  mmod=given_general_alert_pass  eval=true  new_given=true  gen_seen=true  dist=$[OBM_DIST_TO_OBJ]  gen_alert=name=gen_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far  mhash=[OILY-JOEY]
+case=general_alert_default_name_pass  grade=pass  form=obmgr_tests_harness  mmod=general_alert_default_name_pass  eval=true  new_given=true  gen_seen=true  dist=$[OBM_DIST_TO_OBJ]  gen_alert=name=gen_alert_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far  mhash=[FINE-MOOD]
+case=given_duration_resolve_pass  grade=pass  form=obmgr_tests_harness  mmod=given_duration_resolve_pass  eval=true  resolved=ob_near  dist=OB_NEAR,18.0  alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near  mhash=[FIVE-STEP]
+case=given_max_duration_reject_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=given_max_duration_reject_absent_pass  eval=true  new_given=$[OBM_NEW_GIVEN]  alert=$[OBSTACLE_ALERT]  mhash=[NEAR-CARL]
+case=given_max_duration_missing_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=given_max_duration_missing_absent_pass  eval=true  new_given=$[OBM_NEW_GIVEN]  alert=$[OBSTACLE_ALERT]  mhash=[GAMY-HUEY]
+case=invalid_given_nonconvex_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=invalid_given_nonconvex_absent_pass  eval=true  new_given=$[OBM_NEW_GIVEN]  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[FAIR-PUFF]
+case=post_dist_always_pass  grade=pass  form=obmgr_tests_harness  mmod=post_dist_always_pass  eval=true  new_given=true  dist=OB_FAR,35.0  mindist=35  alert=$[OBSTACLE_ALERT]  mhash=[FLAT-DART]
+case=post_dist_false_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=post_dist_false_absent_pass  eval=true  new_given=true  dist=$[OBM_DIST_TO_OBJ]  mhash=[MISC-INDY]
+case=points_cluster_dist_pass  grade=pass  form=obmgr_tests_harness  mmod=points_cluster_dist_pass  eval=true  dist=ROCK_A,18.0  mindist=18  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:22,-62:18,-62},label=rock_a#id=rock_a  mhash=[FREE-LEAF]
+case=custom_point_var_pass  grade=pass  form=obmgr_tests_harness  mmod=custom_point_var_pass  eval=true  dist=ROCK_A,18.0  mindist=18  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:22,-62:18,-62},label=rock_a#id=rock_a  mhash=[BONY-PAWS]
+case=invalid_point_missing_key_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=invalid_point_missing_key_absent_pass  eval=true  dist=$[OBM_DIST_TO_OBJ]  alert=$[OBSTACLE_ALERT]  mhash=[THEN-KADE]
+case=max_pts_per_cluster_trim_pass  grade=pass  form=obmgr_tests_harness  mmod=max_pts_per_cluster_trim_pass  eval=true  dist=ROCK_A,18.1  mindist=18.011  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:20,-60},label=rock_a#id=rock_a  mhash=[DEAR-MYLO]
+case=points_ignore_range_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=points_ignore_range_absent_pass  eval=true  dist=$[OBM_DIST_TO_OBJ]  mindist=$[OBM_MIN_DIST_EVER]  alert=$[OBSTACLE_ALERT]  mhash=[NUDE-RAKE]
+case=points_age_resolve_pass  grade=pass  form=obmgr_tests_harness  mmod=points_age_resolve_pass  eval=true  resolved=rock_a  dist=ROCK_A,18.0  mhash=[WISE-FONT]
+case=lasso_cluster_pass  grade=pass  form=obmgr_tests_harness  mmod=lasso_cluster_pass  eval=true  dist=LASSO_A,15.0  mindist=15  alert=name=avd_lasso_a#poly=pts={22.5,-55.67:25,-60:22.5,-64.33:17.5,-64.33:15,-60:17.5,-55.67},label=lasso_a#id=lasso_a  mhash=[BONY-BABY]
+case=placeholder_hull_pass  grade=pass  form=obmgr_tests_harness  mmod=placeholder_hull_pass  eval=true  dist=LINE_A,20.0  mindist=20  alert=name=avd_line_a#poly=pts={20,-60.4:20,-59.6:24,-59.6:24,-60.4},label=line_a#id=line_a  mhash=[FOUR-PAUL]
+case=post_view_polys_false_absent_pass  grade=pass  form=obmgr_tests_harness  mmod=post_view_polys_false_absent_pass  eval=true  view_poly_seen=$[VIEW_POLY_SEEN]  dist=ROCK_A,18.0  mhash=[KEEN-BIRD]
+case=new_obs_flag_macros_pass  grade=pass  form=obmgr_tests_harness  mmod=new_obs_flag_macros_pass  eval=true  new_stats=now_1_ever_1  dist=OB_NEAR,18.0  mhash=[HEAD-LINE]
+case=point_vsource_alert_pass  grade=pass  form=obmgr_tests_harness  mmod=point_vsource_alert_pass  eval=true  alert_seen=true  dist=ROCK_A,18.0  alert=name=avd_rock_a#poly=pts={18,-58:22,-58:22,-62:18,-62},label=rock_a,vsource=radar#id=rock_a  mhash=[SLIM-BAND]
+case=given_after_points_same_key_reject_pass  grade=pass  form=obmgr_tests_harness  mmod=given_after_points_same_key_reject_pass  eval=true  new_given=$[OBM_NEW_GIVEN]  dist=MIX_KEY,18.0  alert=name=avd_mix_key#poly=pts={18,-58:22,-58:22,-62:18,-62},label=mix_key#id=mix_key  mhash=[MAIN-GOTO]
+case=disable_obstacle_pass  grade=pass  form=obmgr_tests_harness  mmod=disable_obstacle_pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=disable  mhash=[VAIN-TERM]
+case=disable_vsource_pass  grade=pass  form=obmgr_tests_harness  mmod=disable_vsource_pass  eval=true  filter_seen=true  filter=vsource=radar,action=disable  mhash=[HAZY-STAR]
+case=enable_obstacle_pass  grade=pass  form=obmgr_tests_harness  mmod=enable_obstacle_pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=enable  mhash=[NICE-HYDE]
+case=expunge_obstacle_pass  grade=pass  form=obmgr_tests_harness  mmod=expunge_obstacle_pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=expunge  mhash=[ONLY-IZZY]

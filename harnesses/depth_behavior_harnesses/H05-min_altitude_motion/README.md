@@ -16,20 +16,20 @@ constant-depth behavior commands unsafe deeper targets.
 - `min_altitude_noncritical_available_pass` Sets `missing_altitude_critical=false` with valid altitude mail and verifies normal clearance guarding still works.
 - `min_altitude_unconstrained_deep_bottom_pass` Uses ample simulated water depth and verifies the clearance guard does not interfere with a normal deep target.
 - `min_altitude_clearance_boundary_pass` Commands past the bottom-clearance limit and verifies the vehicle settles near the computed clearance boundary.
-- `min_altitude_zero_altitude_fail` Sets zero simulated altitude while commanding a dive and expects the normal clearance verdict to fail.
-- `min_altitude_bad_config_fail` Supplies malformed minimum-altitude config and expects the normal good-case verdict to fail.
-- `min_altitude_negative_min_fail` Supplies a negative minimum altitude and expects the normal good-case verdict to fail.
-- `min_altitude_bad_critical_bool_fail` Supplies an invalid `missing_altitude_critical` value and expects the normal good-case verdict to fail.
-- `min_altitude_missing_nav_fail` Removes usable ownship depth/altitude mail and expects the clearance verdict to fail.
-- `min_altitude_noncritical_missing_altitude_fail` Sets `missing_altitude_critical=false` while depth/altitude mail is unavailable and verifies the current failure path remains caught.
+- `min_altitude_zero_altitude_fail` Sets zero simulated altitude while commanding a dive, and passes when the mission observes zero-depth rejection evidence and a behavior error.
+- `min_altitude_bad_config_fail` Supplies malformed minimum-altitude config, and passes when the helm reports `MALCONFIG`.
+- `min_altitude_negative_min_fail` Supplies a negative minimum altitude, and passes when the helm reports `MALCONFIG`.
+- `min_altitude_bad_critical_bool_fail` Supplies an invalid `missing_altitude_critical` value, and passes when the helm reports `MALCONFIG`.
+- `min_altitude_missing_nav_fail` Removes usable ownship depth/altitude mail, and passes when depth/nav data stays absent and the vehicle does not command elevator authority.
+- `min_altitude_noncritical_missing_altitude_fail` Sets `missing_altitude_critical=false` while depth/altitude mail is unavailable, and passes when the current no-depth-data failure path remains caught.
 
 ## Running
 
 ```bash
 ./zlaunch.sh --case=min_altitude_guard_pass 10
-./zlaunch.sh --jobs=3 --port_base=45000 10
+./zlaunch.sh --jobs=3 --port_base=45000 --port_stride=12 10
 ./zlaunch.sh --just_make 10
 ```
 
-The wrapper supports `--jobs` and `--port_base` for isolated grouped local and
-CI runs.
+The wrapper supports `--jobs`, `--port_base`, and `--port_stride` for isolated
+grouped local and CI runs.

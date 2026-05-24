@@ -1,1 +1,1 @@
-  grade=fail  form=obavoid_tests_harness  mmod=no_alert_request_fail  eval=true  arrived=true  collisions=1  near_misses=0  encounters=1  mhash=[MEGA-LINK]
+  grade=pass  form=obavoid_tests_harness  mmod=no_alert_request_fail  eval=true  expected=collision  arrived=true  collisions=1  near_misses=0  encounters=1  mhash=[HAZY-LOVE]

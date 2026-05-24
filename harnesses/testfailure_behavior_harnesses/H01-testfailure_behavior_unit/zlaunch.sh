@@ -36,7 +36,7 @@ TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 BHV_STEM="$MISSION_DIR/meta_behavior.bhv"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
@@ -130,6 +130,41 @@ wait_for_result_line() {
     return 1
 }
 
+grade_from_line() {
+    echo "$1" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'
+}
+
+format_case_row() {
+    local case_name="$1"
+    local line="$2"
+    local launch_rc="${3:-0}"
+    local grade
+
+    if [ "$launch_rc" != 0 ]; then
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/^[[:space:]]*//')
+    grade=$(grade_from_line "$line")
+    if [ "$grade" = "" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+
+    echo "case=$case_name  grade=$grade  $line"
+}
+
+case_row_passed() {
+    local line="$1"
+    local grade
+    grade=$(grade_from_line "$line")
+    [ "$grade" = "pass" ]
+}
+
 remove_tree() {
     local targ="$1"
     if [ "$targ" != "" ] && [ -d "$targ" ]; then
@@ -164,7 +199,6 @@ cleanup() {
 
 get_case_config() {
     CASE_NAME="$1"
-    EXPECTED="pass"
     SHORE_PATCH=""
     BHV_PATCH=""
 
@@ -189,11 +223,9 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/burn-zero-complete-pass-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/burn-zero-complete-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "crash_on_complete_fail" ]; then
-        EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/crash-on-complete-fail-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/crash-on-complete-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "unknown_type_default_crash_fail" ]; then
-        EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/unknown-type-default-crash-fail-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/unknown-type-default-crash-fail-vehicle.xbhv"
     else
@@ -227,18 +259,26 @@ run_case() {
     local case_base
     local xargs
     local line
-    local actual
-    local status
+    local result_line
     local launch_rc
 
-    get_case_config "$case_name" || return 1
+    get_case_config "$case_name" || {
+        echo "case=$case_name  grade=fail  reason=case_config_error" >> "$RESULTS_FILE"
+        ALL_OK="no"
+        return 1
+    }
 
     vecho "Preparing case: $case_name"
 
     cd "$MISSION_DIR"
     ./clean.sh >/dev/null 2>&1
     stop_mission_apps "$MISSION_DIR"
-    apply_case_patches || return 1
+    apply_case_patches || {
+        echo "case=$case_name  grade=fail  reason=patch_error" >> "$RESULTS_FILE"
+        ALL_OK="no"
+        cd "$HARNESS_DIR"
+        return 1
+    }
     : > results.txt
 
     xargs="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
@@ -261,22 +301,25 @@ run_case() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         cd "$HARNESS_DIR"
+        if [ "$launch_rc" = 0 ]; then
+            echo "case=$case_name  grade=pass  reason=just_make" >> "$RESULTS_FILE"
+        else
+            echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" >> "$RESULTS_FILE"
+            ALL_OK="no"
+        fi
         return "$launch_rc"
     fi
 
-    line=$(wait_for_result_line results.txt 160)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
+    if [ "$launch_rc" = 0 ]; then
+        line=$(wait_for_result_line results.txt 160)
+    else
+        line=""
     fi
-
-    status="success"
-    if [ "$launch_rc" != 0 ] || [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
+    result_line=$(format_case_row "$case_name" "$line" "$launch_rc")
+    echo "$result_line" >> "$RESULTS_FILE"
+    if ! case_row_passed "$result_line"; then
         ALL_OK="no"
     fi
-
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" >> "$RESULTS_FILE"
     cd "$HARNESS_DIR"
 }
 
@@ -311,24 +354,26 @@ run_case_isolated() {
     local case_name="$2"
     local case_tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local shore_mport
     local shore_pshare
     local case_base
     local line
-    local actual
-    local status
+    local result_line
     local xargs
     local launch_rc
 
-    get_case_config "$case_name" || return 1
-
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
-    case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
+
+    get_case_config "$case_name" || {
+        echo "case=$case_name  grade=fail  reason=case_config_error" > "$case_row_file"
+        return 1
+    }
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=prepare_error" > "$case_row_file"
         return 1
     }
 
@@ -352,27 +397,23 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = 0 ]; then
-            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
+            echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
             return 0
         fi
-        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" > "$case_row_file"
         return 1
     fi
 
-    line=$(wait_for_result_line "$case_dir/results.txt" 160)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
+    if [ "$launch_rc" = 0 ]; then
+        line=$(wait_for_result_line "$case_dir/results.txt" 160)
+    else
+        line=""
     fi
+    result_line=$(format_case_row "$case_name" "$line" "$launch_rc")
 
-    status="success"
-    if [ "$launch_rc" != 0 ] || [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
-    fi
+    echo "$result_line" > "$case_row_file"
 
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" > "$case_result_file"
-
-    if [ "$status" = "success" ]; then
+    if case_row_passed "$result_line"; then
         return 0
     fi
     return 1
@@ -411,7 +452,6 @@ fi
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     for case_name in "${RUN_CASES[@]}"; do
         run_case "$case_name" || {
-            echo "case=$case_name  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
             if [ "$JUST_MAKE" != "yes" ]; then
                 break
@@ -420,8 +460,8 @@ if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     done
 else
     RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_testfailure_unit_XXXXXX")
-    CASE_RESULT_DIR="$RUN_ROOT/case_results"
-    mkdir -p "$CASE_RESULT_DIR"
+    CASE_ROW_DIR="$RUN_ROOT/case_rows"
+    mkdir -p "$CASE_ROW_DIR"
 
     case_index=0
     remaining_cases="${RUN_CASES[*]}"
@@ -448,16 +488,15 @@ else
         done
 
         for case_tag in $wave_cases; do
-            if [ -f "$CASE_RESULT_DIR/${case_tag}.txt" ]; then
-                cat "$CASE_RESULT_DIR/${case_tag}.txt" >> "$RESULTS_FILE"
-                echo >> "$RESULTS_FILE"
-                line=`tail -n 2 "$RESULTS_FILE" | head -n 1`
-                case_result=`echo "$line" | sed -n 's/.*case_result=\([^ ]*\).*/\1/p'`
-                if [ "$case_result" != "success" ]; then
+            if [ -f "$CASE_ROW_DIR/${case_tag}.txt" ]; then
+                cat "$CASE_ROW_DIR/${case_tag}.txt" >> "$RESULTS_FILE"
+                line=`tail -n 1 "$RESULTS_FILE"`
+                if ! case_row_passed "$line"; then
                     ALL_OK="no"
                 fi
             else
                 ALL_OK="no"
+                echo "case=${case_tag#*_}  grade=fail  reason=missing_result_file" >> "$RESULTS_FILE"
             fi
         done
 

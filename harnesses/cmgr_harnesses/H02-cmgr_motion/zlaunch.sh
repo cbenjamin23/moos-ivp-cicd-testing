@@ -36,7 +36,7 @@ TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 VEHICLE_STEM="$MISSION_DIR/meta_vehicle.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
@@ -128,6 +128,41 @@ wait_for_result_line() {
     return 1
 }
 
+grade_from_line() {
+    echo "$1" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'
+}
+
+format_case_row() {
+    local case_name="$1"
+    local line="$2"
+    local launch_rc="${3:-0}"
+    local grade
+
+    if [ "$launch_rc" != 0 ]; then
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/^[[:space:]]*//')
+    grade=$(grade_from_line "$line")
+    if [ "$grade" = "" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+
+    echo "case=$case_name  grade=$grade  $line"
+}
+
+case_row_passed() {
+    local line="$1"
+    local grade
+    grade=$(grade_from_line "$line")
+    [ "$grade" = "pass" ]
+}
+
 #------------------------------------------------------------
 #  Part 4: Define cleanup and patch application helpers.
 #------------------------------------------------------------
@@ -165,61 +200,47 @@ stop_mission_apps() {
 
 get_case_config() {
     CASE_NAME="$1"
-    EXPECTED=""
     SHORE_PATCH=""
     VEH_PATCH=""
 
     if [ "$CASE_NAME" = "baseline_crossing_pass" ]; then
-        EXPECTED="pass"
+        :
     elif [ "$CASE_NAME" = "offset_clear_pass" ]; then
-        EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/offset-clear-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/offset-clear-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "no_detect_clear_pass" ]; then
-        EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/no-detect-clear-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/no-detect-clear-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "delayed_crossing_pass" ]; then
-        EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/delayed-crossing-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/delayed-crossing-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "head_on_pass" ]; then
-        EXPECTED="pass"
         VEH_PATCH="$HARNESS_DIR/head-on-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_alert_add_pass" ]; then
-        EXPECTED="pass"
         VEH_PATCH="$HARNESS_DIR/runtime-alert-add-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_alert_reenable_pass" ]; then
-        EXPECTED="pass"
         VEH_PATCH="$HARNESS_DIR/runtime-alert-reenable-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "hold_alerts_for_helm_pass" ]; then
-        EXPECTED="pass"
         VEH_PATCH="$HARNESS_DIR/hold-alerts-for-helm-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "filter_match_type_clear_pass" ]; then
-        EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/filter-match-type-clear-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/filter-match-type-clear-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "stale_reappear_pass" ]; then
-        EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/stale-reappear-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/stale-reappear-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "two_contact_pass" ]; then
-        EXPECTED="pass"
         SHORE_PATCH="$HARNESS_DIR/two-contact-pass-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/two-contact-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "tight_alert_fail" ]; then
-        EXPECTED="fail"
+        SHORE_PATCH="$HARNESS_DIR/tight-alert-fail-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/tight-alert-fail-vehicle.xmoos"
     elif [ "$CASE_NAME" = "avoid_disabled_fail" ]; then
-        EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/avoid-disabled-fail-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/avoid-disabled-fail-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_alert_disable_fail" ]; then
-        EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/runtime-alert-disable-fail-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/runtime-alert-disable-fail-vehicle.xmoos"
     elif [ "$CASE_NAME" = "fast_intruder_fail" ]; then
-        EXPECTED="fail"
         SHORE_PATCH="$HARNESS_DIR/fast-intruder-fail-shoreside.xmoos"
         VEH_PATCH="$HARNESS_DIR/fast-intruder-fail-vehicle.xmoos"
     else
@@ -252,6 +273,10 @@ run_case() {
     local veh_mport
     local shore_pshare
     local veh_pshare
+    local line
+    local result_line
+    local launch_rc
+    local case_base
     get_case_config "$case_name" || return 1
 
     vecho "Preparing case: $case_name"
@@ -259,7 +284,11 @@ run_case() {
     cd "$MISSION_DIR"
     ./clean.sh >/dev/null 2>&1
     stop_mission_apps "$MISSION_DIR"
-    apply_case_patches || return 1
+    apply_case_patches || {
+        echo "case=$case_name  grade=fail  reason=prepare_error" >> "$RESULTS_FILE"
+        cd "$HARNESS_DIR"
+        return 1
+    }
     : > results.txt
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name $TIME_WARP"
@@ -280,25 +309,31 @@ run_case() {
 
     vecho "Running case [$case_name] with xlaunch args: $XARGS"
     xlaunch.sh $XARGS
+    launch_rc=$?
 
     if [ "$JUST_MAKE" = "yes" ]; then
         cd "$HARNESS_DIR"
-        return 0
+        if [ "$launch_rc" = 0 ]; then
+            echo "case=$case_name  grade=pass  reason=just_make" >> "$RESULTS_FILE"
+            return 0
+        fi
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" >> "$RESULTS_FILE"
+        return 1
     fi
 
-    line=$(wait_for_result_line results.txt 24)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
+    if [ "$launch_rc" = 0 ]; then
+        line=$(wait_for_result_line results.txt 24)
+    else
+        line=""
     fi
+    result_line=$(format_case_row "$case_name" "$line" "$launch_rc")
 
-    status="success"
-    if [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
+    echo "$result_line" >> "$RESULTS_FILE"
+    if ! case_row_passed "$result_line"; then
         ALL_OK="no"
+        cd "$HARNESS_DIR"
+        return 1
     fi
-
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" >> "$RESULTS_FILE"
     cd "$HARNESS_DIR"
 }
 
@@ -332,14 +367,13 @@ run_case_isolated() {
     local case_name="$2"
     local case_tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local shore_mport
     local veh_mport
     local shore_pshare
     local veh_pshare
     local line
-    local actual
-    local status
+    local result_line
     local xargs
     local launch_rc
 
@@ -347,10 +381,10 @@ run_case_isolated() {
 
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
-    case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=prepare_error" > "$case_row_file"
         return 1
     }
 
@@ -376,27 +410,23 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = 0 ]; then
-            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
+            echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
             return 0
         fi
-        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" > "$case_row_file"
         return 1
     fi
 
-    line=$(wait_for_result_line "$case_dir/results.txt" 24)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
+    if [ "$launch_rc" = 0 ]; then
+        line=$(wait_for_result_line "$case_dir/results.txt" 24)
+    else
+        line=""
     fi
+    result_line=$(format_case_row "$case_name" "$line" "$launch_rc")
 
-    status="success"
-    if [ "$launch_rc" != 0 ] || [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
-    fi
+    echo "$result_line" > "$case_row_file"
 
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" > "$case_result_file"
-
-    if [ "$status" = "success" ]; then
+    if case_row_passed "$result_line"; then
         return 0
     fi
     return 1
@@ -435,7 +465,6 @@ fi
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$ONE_CASE" || {
-            echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
             if [ "$JUST_MAKE" != "yes" ]; then
                 break
@@ -444,8 +473,8 @@ if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     done
 else
     RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_cmgr_motion_XXXXXX")
-    CASE_RESULT_DIR="$RUN_ROOT/case_results"
-    mkdir -p "$CASE_RESULT_DIR"
+    CASE_ROW_DIR="$RUN_ROOT/case_rows"
+    mkdir -p "$CASE_ROW_DIR"
 
     case_index=0
     remaining_cases="${RUN_CASES[*]}"
@@ -472,15 +501,16 @@ else
         done
 
         for case_tag in $wave_cases; do
-            if [ -f "$CASE_RESULT_DIR/${case_tag}.txt" ]; then
-                cat "$CASE_RESULT_DIR/${case_tag}.txt" >> "$RESULTS_FILE"
+            if [ -f "$CASE_ROW_DIR/${case_tag}.txt" ]; then
+                cat "$CASE_ROW_DIR/${case_tag}.txt" >> "$RESULTS_FILE"
                 echo >> "$RESULTS_FILE"
                 line=`tail -n 2 "$RESULTS_FILE" | head -n 1`
-                case_result=`echo "$line" | sed -n 's/.*case_result=\([^ ]*\).*/\1/p'`
-                if [ "$case_result" != "success" ]; then
+                if ! case_row_passed "$line"; then
                     ALL_OK="no"
                 fi
             else
+                echo "case=${case_tag#???_}  grade=fail  reason=missing_result_file" >> "$RESULTS_FILE"
+                echo >> "$RESULTS_FILE"
                 ALL_OK="no"
             fi
         done

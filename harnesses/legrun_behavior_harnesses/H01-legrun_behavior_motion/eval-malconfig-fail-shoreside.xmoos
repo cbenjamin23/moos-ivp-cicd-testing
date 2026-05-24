@@ -16,7 +16,8 @@ ProcessConfig = pMissionEval
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
   lead_condition = (BHV_ERROR_SEEN = true) or (MISSION_TIMEOUT = true)
-  pass_condition = LR_TURN2_DONE = true
+  pass_condition = MISSION_TIMEOUT = true
+  pass_condition = LR_TURN2_DONE = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -30,6 +31,8 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
+  report_column = eval=$[MISSION_TIMEOUT]
+  report_column = expected=malconfig_timeout
   report_column = turn2=$[LR_TURN2_DONE]
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = bhv_error=$[BHV_ERROR_SEEN]

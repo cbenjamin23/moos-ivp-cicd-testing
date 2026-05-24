@@ -34,7 +34,7 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
 - `pwt_outer_too_small_fail`
   The collision-relevance outer distance is made too small for the on-lane
   encounter. The behavior may resolve administratively, but the mission should
-  fail because the vessel still collides.
+  grade pass only when the expected collision evidence is observed.
 - `pwt_grade_quadratic_pass`
   The objective-function grade is switched to `quadratic`. The behavior should
   still resolve the baseline encounter with no collision.
@@ -53,58 +53,59 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
   behavior should still resolve the encounter cleanly.
 - `no_alert_request_fail`
   The behavior is told not to request an alert while the contact remains
-  challenging. The mission should fail because the avoid behavior never
-  engages and the required resolution does not complete.
+  challenging. The mission should grade pass only when the avoid behavior stays
+  idle, no contact info arrives, and a collision is observed.
 - `bad_pwt_inner_dist_fail`
   `pwt_inner_dist` is set outside the valid relationship to `pwt_outer_dist`.
-  The mission should grade fail rather than silently accepting the unsafe
-  behavior configuration.
+  The mission should grade pass only when the helm reports malconfiguration.
 - `bad_pwt_outer_dist_fail`
   `pwt_outer_dist` is set inside the configured inner distance. The mission
-  should grade fail.
+  should grade pass only when the helm reports malconfiguration.
 - `bad_min_util_cpa_dist_fail`
   `min_util_cpa_dist` is set above `max_util_cpa_dist`. The mission should
-  grade fail.
+  grade pass only when the helm reports malconfiguration.
 - `bad_max_util_cpa_dist_fail`
   `max_util_cpa_dist` is set below `min_util_cpa_dist`. The mission should
-  grade fail.
+  grade pass only when the helm reports malconfiguration.
 - `bad_pwt_grade_fail`
   `pwt_grade` is set to an unsupported token. The behavior configuration
-  should be rejected and the mission should grade fail.
+  should be rejected and the mission should grade pass only when the helm
+  reports malconfiguration.
 - `bad_completed_dist_fail`
   `completed_dist` is set negative. The behavior configuration should be
-  rejected and the mission should grade fail.
+  rejected and the mission should grade pass only when the helm reports
+  malconfiguration.
 - `bad_time_on_leg_fail`
   The inherited `time_on_leg` setting is set negative. The mission should
-  grade fail.
+  grade pass only when the helm reports malconfiguration.
 - `bad_decay_fail`
   The inherited contact-decay window is malformed by making the stale threshold
-  lower than the linear threshold. The mission should grade fail.
+  lower than the linear threshold. The mission should grade pass only when the
+  helm reports malconfiguration.
 - `bad_collision_depth_fail`
   `collision_depth` is enabled in this 2D mission, where the source requires a
-  depth domain. The mission should grade fail.
+  depth domain. The mission should grade pass only when the helm reports
+  malconfiguration.
 
 ## Results Lines
 
 Typical pass line:
 
 ```text
-case=default_resolve_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=1  near_misses=0  collisions=0  mhash=[...]
+case=default_resolve_pass  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=1  near_misses=0  collisions=0  mhash=[...]
 ```
 
-Typical fail line:
+Typical expected-negative pass line:
 
 ```text
-case=no_alert_request_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  encounters=1  near_misses=0  collisions=1  mhash=[...]
+case=no_alert_request_fail  grade=pass  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  resolved=none  arrived=true  collisions=1  mhash=[...]
 ```
 
 Field anatomy:
 
 - `case`: harness case name
-- `expected`: what the harness expected the mission to grade
-- `actual`: what the mission actually graded
-- `case_result`: `success` when expected equals actual
-- `grade`: mission-level pass/fail from `pMissionEval`
+- `grade`: mission-owned pass/fail from `pMissionEval`; expected-negative
+  cases grade `pass` when their negative evidence is observed
 - `form`: mission family name
 - `mmod`: mission mode for the selected case
 - `eval`: whether the evaluation checkpoint fired
@@ -138,13 +139,14 @@ Wave mode notes:
 - `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
 - each live case in a wave gets its own temp mission directory and unique port
   block
-- the harness uses one `ktm` barrier between waves, not after every case
+- the harness uses scoped teardown between waves
 - this mode is intended for CI wall-clock reduction, not for interactive use
   alongside other MOOS missions
 
 Latest validation:
 
-- April 26, 2026
-- full matrix: `21/21` passing
+- May 21, 2026
+- full case sweep: `21/21` passing
 - warp: `10`
-- command: `./zlaunch.sh --jobs=4 --port_base=17000 10`
+- command: individual `--case=<name>` runs with `--port_base` values from
+  `36100` through `36500`

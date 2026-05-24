@@ -292,6 +292,8 @@ def build_graph() -> dict[str, Any]:
         for base in ("harnesses", "missions", "scripts", "tests", "src", "docs")
         for path in (REPO_ROOT / base).rglob("*")
         if path.is_file()
+        and path.suffix != ".pyc"
+        and "__pycache__" not in path.parts
     )
 
     return {

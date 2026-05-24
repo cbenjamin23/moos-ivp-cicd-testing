@@ -70,20 +70,26 @@ behavior-owned outputs:
 - `slow_speed_acquire_pass`
   Evaluates while a deliberately slow vehicle is still acquiring.
 - `empty_polygon_fail`
-  Empty polygon configuration is expected to fail.
+  Empty polygon configuration should put the helm in `MALCONFIG`; the case
+  grades `pass` when that rejection evidence is observed.
 - `bad_polygon_fail`
-  Malformed polygon configuration is expected to fail.
+  Malformed polygon configuration should put the helm in `MALCONFIG`; the case
+  grades `pass` when that rejection evidence is observed.
 - `bad_update_fail`
-  Malformed runtime update is expected to fail.
+  Malformed runtime update should be rejected with a behavior warning while the
+  stock loiter remains stable; the case grades `pass` on that evidence.
 - `bad_clockwise_fail`
   Malformed `clockwise` input outside the accepted boolean/`best` values should
-  be rejected and the mission should fail.
+  be rejected with helm `MALCONFIG`; the case grades `pass` on that evidence.
 - `bad_use_alt_speed_fail`
-  Non-boolean `use_alt_speed` should be rejected and the mission should fail.
+  Non-boolean `use_alt_speed` should be rejected with helm `MALCONFIG`; the
+  case grades `pass` on that evidence.
 - `bad_patience_fail`
-  Rejects `patience` outside the accepted 1..99 course/speed ZAIC ratio range.
+  Rejects `patience` outside the accepted 1..99 course/speed ZAIC ratio range
+  with helm `MALCONFIG`; the case grades `pass` on that evidence.
 - `bad_capture_radius_fail`
-  Negative `capture_radius` should be rejected and the mission should fail.
+  Negative `capture_radius` should be rejected with helm `MALCONFIG`; the case
+  grades `pass` on that evidence.
 - `center_bad_update_recover_pass`
   Bad center update followed by valid recovery update.
 - `spiral_factor_pass`
@@ -107,16 +113,24 @@ behavior-owned outputs:
 ./zlaunch.sh --jobs=4 --port_base=27000 10
 ```
 
-Results are written to `results.txt` with the mission-owned `grade` and the
-loiter status columns used for grading. Wave mode runs the full matrix in
-isolated temporary mission copies. Each case gets its own MOOSDB and pShare
-port block using `case_base = port_base + case_idx*PORT_STRIDE`, with pShare
-ports starting at `case_base + 10`. The default is serial `--jobs=1`; use `--keep_workdirs` when
+Results are written to `results.txt` as `case=<name>` followed by the
+mission-owned row. Expected-negative cases still produce `grade=pass` when their
+specific evidence is observed, using `expected=helm_malconfig` or
+`expected=bad_update_rejected` plus the supporting fields. Harness-synthesized
+`grade=fail reason=...` rows are reserved for runner failures such as launch or
+missing-result errors. Wave mode runs the full matrix in isolated temporary
+mission copies. Each case gets its own MOOSDB and pShare port block using
+`case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
+`case_base + 10`. The default is serial `--jobs=1`; use `--keep_workdirs` when
 preserving temporary case folders is useful for debugging.
 
 Latest validation:
 
-- April 27, 2026
-- generated-file matrix: `34/34` cases completed with `--just_make --jobs=4 --port_base=15000`
-- full wave matrix: `34/34` expected outcomes matched with `--jobs=4 --port_base=15000`
+- May 20, 2026
+- focused expected-negative cases:
+  `empty_polygon_fail`, `bad_polygon_fail`, `bad_update_fail`,
+  `bad_clockwise_fail`, `bad_use_alt_speed_fail`, `bad_patience_fail`,
+  `bad_capture_radius_fail`
+- full reserved-port matrix: `34/34` cases passed via serial `--case` loop with
+  `--port_base=29100`
 - warp: `10`

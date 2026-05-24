@@ -1,0 +1,4 @@
+case=mayfinish_default_exit_pass  grade=pass  subject=uMayFinish  expected_subject=pass  subject_rc=0  form=mission_utility_unit  mmod=mayfinish_default_exit_pass  prehash=[GLUM-IGOR]  subject_grade=pass  eval=true  pass_input=true  case_value=alpha  mhash=[GLUM-IGOR]  wall=2.66
+case=mayfinish_custom_finish_pass  grade=pass  subject=uMayFinish  expected_subject=pass  subject_rc=0    subject_grade=pass  case_value=customfinish
+case=mayfinish_custom_value_timeout_fail  grade=pass  subject=uMayFinish  expected_subject=timeout  subject_rc=1
+case=mayfinish_timeout_fail  grade=pass  subject=uMayFinish  expected_subject=timeout  subject_rc=1

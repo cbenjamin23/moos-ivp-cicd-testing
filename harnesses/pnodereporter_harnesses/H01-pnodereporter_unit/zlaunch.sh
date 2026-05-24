@@ -36,7 +36,7 @@ TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 
@@ -195,7 +195,6 @@ check_payload() {
 
 get_case_config() {
     CASE_NAME="$1"
-    EXPECTED="pass"
     SHORE_PATCH=""
     CHECK_TOKENS=""
     ABSENT_TOKENS=""
@@ -261,8 +260,7 @@ get_case_config() {
     elif [ "$CASE_NAME" = "reverse_load_warning_pass" ]; then
         CHECK_TOKENS="NAME=reporter THRUST_MODE_REVERSE=true LOAD_WARNING=pHelmIvP:5"
     elif [ "$CASE_NAME" = "blackout_interval_reset_fail" ]; then
-        EXPECTED="fail"
-        CHECK_TOKENS="node_seen=true pnr_gap="
+        CHECK_TOKENS="evidence=blackout_gap_below_threshold node_seen=true pnr_gap="
     elif [ "$CASE_NAME" = "mhash_odometer_pass" ]; then
         CHECK_TOKENS="pnr_mhash_seen=true pnr_mhash=mhash="
     elif [ "$CASE_NAME" = "report_cog_pass" ]; then
@@ -299,6 +297,68 @@ get_case_config() {
     return 0
 }
 
+grade_from_line() {
+    echo "$1" | sed -n 's/.*grade=\([^, ]*\).*/\1/p'
+}
+
+mission_line_for_failure() {
+    local line="$1"
+    if [ "$line" = "" ]; then
+        return 0
+    fi
+    echo "$line" | sed 's/grade=/mission_grade=/'
+}
+
+mission_line_without_grade() {
+    local line="$1"
+    echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//'
+}
+
+case_failure_reason() {
+    local launch_rc="$1"
+    local mission_grade="$2"
+    local token_status="$3"
+
+    if [ "$launch_rc" != 0 ]; then
+        echo "launch_error"
+    elif [ "$mission_grade" = "missing" ]; then
+        echo "missing_result"
+    elif [ "$mission_grade" != "pass" ]; then
+        echo "mission_grade_mismatch"
+    elif [ "${token_status%%:*}" != "pass" ]; then
+        echo "token_check_failed"
+    else
+        echo "unknown"
+    fi
+}
+
+format_case_row() {
+    local case_name="$1"
+    local launch_rc="$2"
+    local line="$3"
+    local token_status="$4"
+    local mission_grade
+    local success_line
+    local reason
+    local failure_line
+
+    mission_grade=$(grade_from_line "$line")
+    if [ "$mission_grade" = "" ]; then
+        mission_grade="missing"
+    fi
+
+    if [ "$launch_rc" = 0 ] && [ "$mission_grade" = "pass" ] && [ "${token_status%%:*}" = "pass" ]; then
+        success_line=$(mission_line_without_grade "$line")
+        echo "case=$case_name  grade=$mission_grade  $success_line  token_check=$token_status"
+        return 0
+    fi
+
+    reason=$(case_failure_reason "$launch_rc" "$mission_grade" "$token_status")
+    failure_line=$(mission_line_for_failure "$line")
+    echo "case=$case_name  grade=fail  reason=$reason  launch_rc=$launch_rc  token_check=$token_status  $failure_line"
+    return 1
+}
+
 apply_case_patches() {
     clear_xfiles
 
@@ -319,10 +379,9 @@ run_case() {
     local case_base
     local xargs
     local line
-    local actual
-    local status
     local launch_rc
     local token_status
+    local case_row
 
     get_case_config "$case_name" || return 1
 
@@ -354,23 +413,23 @@ run_case() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         cd "$HARNESS_DIR"
-        return "$launch_rc"
+        if [ "$launch_rc" = 0 ]; then
+            echo "case=$case_name  grade=pass  reason=just_make" >> "$RESULTS_FILE"
+        else
+            echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" >> "$RESULTS_FILE"
+            ALL_OK="no"
+        fi
+        return 0
     fi
 
     line=$(wait_for_result_line results.txt 120)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
-    fi
-
     token_status=$(check_payload "$line")
-    status="success"
-    if [ "$launch_rc" != 0 ] || [ "$actual" != "$EXPECTED" ] || [ "${token_status%%:*}" != "pass" ]; then
-        status="mismatch"
+    case_row=$(format_case_row "$case_name" "$launch_rc" "$line" "$token_status")
+    if ! echo "$case_row" | grep -Eq '(^|[[:space:]])grade=pass([[:space:]]|$)'; then
         ALL_OK="no"
     fi
 
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  token_check=$token_status  $line" >> "$RESULTS_FILE"
+    echo "$case_row" >> "$RESULTS_FILE"
     cd "$HARNESS_DIR"
 }
 
@@ -399,25 +458,24 @@ run_case_isolated() {
     local case_name="$2"
     local case_tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local shore_mport
     local shore_pshare
     local case_base
     local line
-    local actual
-    local status
     local xargs
     local launch_rc
     local token_status
+    local case_row
 
     get_case_config "$case_name" || return 1
 
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
-    case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=prepare_error" > "$case_row_file"
         return 1
     }
 
@@ -441,28 +499,20 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = 0 ]; then
-            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
+            echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
             return 0
         fi
-        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" > "$case_row_file"
         return 1
     fi
 
     line=$(wait_for_result_line "$case_dir/results.txt" 120)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
-    fi
-
     token_status=$(check_payload "$line")
-    status="success"
-    if [ "$launch_rc" != 0 ] || [ "$actual" != "$EXPECTED" ] || [ "${token_status%%:*}" != "pass" ]; then
-        status="mismatch"
-    fi
+    case_row=$(format_case_row "$case_name" "$launch_rc" "$line" "$token_status")
 
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  token_check=$token_status  $line" > "$case_result_file"
+    echo "$case_row" > "$case_row_file"
 
-    if [ "$status" = "success" ]; then
+    if echo "$case_row" | grep -Eq '(^|[[:space:]])grade=pass([[:space:]]|$)'; then
         return 0
     fi
     return 1
@@ -524,7 +574,7 @@ fi
 if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     for case_name in "${RUN_CASES[@]}"; do
         run_case "$case_name" || {
-            echo "case=$case_name  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
+            echo "case=$case_name  grade=fail  reason=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
             if [ "$JUST_MAKE" != "yes" ]; then
                 break
@@ -533,8 +583,8 @@ if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     done
 else
     RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_pnodereporter_unit_XXXXXX")
-    CASE_RESULT_DIR="$RUN_ROOT/case_results"
-    mkdir -p "$CASE_RESULT_DIR"
+    CASE_ROW_DIR="$RUN_ROOT/case_rows"
+    mkdir -p "$CASE_ROW_DIR"
 
     case_index=0
     remaining_cases="${RUN_CASES[*]}"
@@ -561,16 +611,16 @@ else
         done
 
         for case_tag in $wave_cases; do
-            if [ -f "$CASE_RESULT_DIR/${case_tag}.txt" ]; then
-                cat "$CASE_RESULT_DIR/${case_tag}.txt" >> "$RESULTS_FILE"
+            if [ -f "$CASE_ROW_DIR/${case_tag}.txt" ]; then
+                cat "$CASE_ROW_DIR/${case_tag}.txt" >> "$RESULTS_FILE"
                 echo >> "$RESULTS_FILE"
                 line=`tail -n 2 "$RESULTS_FILE" | head -n 1`
-                case_result=`echo "$line" | sed -n 's/.*case_result=\([^ ]*\).*/\1/p'`
-                if [ "$case_result" != "success" ]; then
+                if ! echo "$line" | grep -Eq '(^|[[:space:]])grade=pass([[:space:]]|$)'; then
                     ALL_OK="no"
                 fi
             else
                 ALL_OK="no"
+                echo "case=${case_tag#???_}  grade=fail  reason=missing_case_row" >> "$RESULTS_FILE"
             fi
         done
 

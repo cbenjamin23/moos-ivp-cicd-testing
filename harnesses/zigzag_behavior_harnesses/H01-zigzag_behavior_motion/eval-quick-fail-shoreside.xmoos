@@ -13,11 +13,11 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = (ZZ_DONE = true) or (MISSION_TIMEOUT = true)
-  pass_condition = ZZ_DONE = true
-  pass_condition = BHV_ERROR_SEEN = false
+  lead_condition = (HELM_MALCONFIG = true) or (MISSION_TIMEOUT = true)
+  pass_condition = HELM_MALCONFIG = true
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -30,14 +30,8 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[ZZ_DONE]
-  report_column = zz_done=$[ZZ_DONE]
-  report_column = timeout=$[MISSION_TIMEOUT]
-  report_column = transit=$[TRANSIT_DONE]
-  report_column = heading=$[NAV_HEADING]
-  report_column = nav_speed=$[NAV_SPEED]
-  report_column = zigs=$[ZIG_COUNT]
-  report_column = zags=$[ZAG_COUNT]
-  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = eval=$[HELM_MALCONFIG]
+  report_column = expected=helm_malconfig
+  report_column = helm_malconfig=$[HELM_MALCONFIG]
   report_column = mhash=$[MHASH_SHORT]
 }

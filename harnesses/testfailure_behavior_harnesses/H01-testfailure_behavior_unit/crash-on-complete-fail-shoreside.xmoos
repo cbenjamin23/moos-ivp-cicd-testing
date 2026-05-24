@@ -9,8 +9,8 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = HELM_PRESENT = false
-  pass_condition = HELM_PRESENT = true
-  pass_condition = PROC_WATCH_ALL_OK = true
+  pass_condition = HELM_PRESENT = false
+  pass_condition = PROC_WATCH_ALL_OK = false
   pass_condition = ULW_BREACH_COUNT = 0
 
   result_flag  = MISSION_EVALUATED = true
@@ -21,6 +21,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = expected=process_loss
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
   report_column    = helm_present=$[HELM_PRESENT]
   report_column    = done=$[TEST_FAILURE_DONE]

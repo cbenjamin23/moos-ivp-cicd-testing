@@ -236,43 +236,43 @@
 
         <article class="case-row">
           <code>empty_polygon_fail</code>
-          <p>Empty polygon configuration is expected to fail.</p>
+          <p>Empty polygon configuration should put the helm in MALCONFIG; the case grades pass when that rejection evidence is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_polygon_fail</code>
-          <p>Malformed polygon configuration is expected to fail.</p>
+          <p>Malformed polygon configuration should put the helm in MALCONFIG; the case grades pass when that rejection evidence is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_update_fail</code>
-          <p>Malformed runtime update is expected to fail.</p>
+          <p>Malformed runtime update should be rejected with a behavior warning while the stock loiter remains stable; the case grades pass on that evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_clockwise_fail</code>
-          <p>Malformed clockwise input outside the accepted boolean/best values should be rejected and the mission should fail.</p>
+          <p>Malformed clockwise input outside the accepted boolean/best values should be rejected with helm MALCONFIG; the case grades pass on that evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_use_alt_speed_fail</code>
-          <p>Non-boolean use_alt_speed should be rejected and the mission should fail.</p>
+          <p>Non-boolean use_alt_speed should be rejected with helm MALCONFIG; the case grades pass on that evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_patience_fail</code>
-          <p>Rejects patience outside the accepted 1..99 course/speed ZAIC ratio range.</p>
+          <p>Rejects patience outside the accepted 1..99 course/speed ZAIC ratio range with helm MALCONFIG; the case grades pass on that evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_capture_radius_fail</code>
-          <p>Negative capture_radius should be rejected and the mission should fail.</p>
+          <p>Negative capture_radius should be rejected with helm MALCONFIG; the case grades pass on that evidence.</p>
         </article>
 
 

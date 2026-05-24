@@ -10,6 +10,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
+  event = var=BHV_ERROR_SEEN, val=false, time=0
   event = var=TEST_EVAL_READY, val=true, time=20
 }
 
@@ -18,8 +19,10 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
+
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = HELM_MALCONFIG = false
+  pass_condition = HELM_MALCONFIG = true
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -33,6 +36,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=helm_malconfig
   report_column = helm_malconfig=$[HELM_MALCONFIG]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]

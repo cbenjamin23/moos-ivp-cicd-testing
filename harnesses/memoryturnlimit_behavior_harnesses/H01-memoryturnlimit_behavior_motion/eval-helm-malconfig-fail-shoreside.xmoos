@@ -1,0 +1,59 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
+
+  lead_condition = EVAL_TIME = true
+  pass_condition = EVAL_TIME = true
+  pass_condition = HELM_MALCONFIG = true
+  pass_condition = NAV_SPEED <= 0.05
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = memoryturnlimit_behavior_tests
+  mission_mod  = $(MMOD:=helm_malconfig_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[EVAL_TIME]
+  report_column = expected=helm_malconfig
+  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = helm_state=$[IVPHELM_STATE]
+  report_column = nav_speed=$[NAV_SPEED]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = EVAL_TIME=false
+  flag = MISSION_TIMEOUT=false
+  flag = BHV_WARNING_SEEN=false
+  flag = BHV_ERROR_SEEN=false
+  flag = HELM_MALCONFIG=false
+
+  required_nodes = 1
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = EVAL_TIME, MISSION_TIMEOUT
+  qbridge  = MEM_HDG_AVG, HEADING_MISMATCH
+  qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING, IVPHELM_STATE
+}

@@ -103,29 +103,31 @@ behavior and grades mission-owned evidence:
   behavior errors.
 - `bad_fix_turn_fail`
   Invalid fixed-turn case. The behavior patch sets an invalid negative
-  `fix_turn`; the expected mission result is `fail` because `FT_DONE` should
-  remain false until the short evaluation timeout.
+  `fix_turn`; the case passes when the mission observes the expected rejection
+  evidence: `FT_DONE=false`, timeout reached, no vehicle motion, unchanged
+  heading, and no behavior runtime error.
 - `bad_stale_nav_thresh_fail`
   Invalid stale-navigation threshold case. The behavior patch sets an invalid
-  `stale_nav_thresh`; the expected mission result is `fail` because the
-  behavior should not run to completion and `FT_DONE` should remain false until
-  timeout.
+  `stale_nav_thresh`; the case passes when the behavior does not run to
+  completion and the mission observes timeout, no motion, unchanged heading,
+  and `FT_DONE=false`.
 - `bad_turn_dir_fail`
   Invalid turn-direction case. The behavior patch sets an unsupported
-  `turn_dir`; the expected mission result is `fail` because the behavior should
-  not complete and `FT_DONE` should remain false until timeout.
+  `turn_dir`; the case passes when the behavior does not complete and the
+  mission observes timeout, no motion, unchanged heading, and `FT_DONE=false`.
 - `bad_speed_fail`
   Invalid speed case. The behavior patch sets a negative fixed speed; the
-  expected mission result is `fail` because the behavior should reject the
-  configuration and never post `FT_DONE`.
+  case passes when the behavior rejects the configuration, never posts
+  `FT_DONE`, and the vehicle remains stationary until the evaluation timeout.
 - `bad_turn_spec_fail`
   Invalid scheduled-turn case. The behavior patch provides a malformed
-  `turn_spec`; the expected mission result is `fail` because no valid turn
-  should complete before the evaluation timeout.
+  `turn_spec`; the case passes when no valid turn completes before the
+  evaluation timeout and the vehicle remains at the initial heading and speed.
 - `bad_schedule_repeat_fail`
   Invalid schedule-repeat case. The behavior patch sets `schedule_repeat` to a
-  non-boolean token; the expected mission result is `fail` because the behavior
-  should reject the configuration and never post `FT_DONE`.
+  non-boolean token; the case passes when the behavior rejects the
+  configuration, never posts `FT_DONE`, and the vehicle remains stationary
+  until the evaluation timeout.
 
 The stem also posts viewer-only context markers: a white approach-leg segment
 and an orange fixed-turn start point. These markers do not participate in
@@ -139,18 +141,21 @@ samples from a quarter turn.
 ```bash
 ./zlaunch.sh
 ./zlaunch.sh --case=port_90_pass 10
-./zlaunch.sh --jobs=4 --port_base=15000 10
-./zlaunch.sh --just_make --jobs=4 --port_base=15000 10
+./zlaunch.sh --jobs=4 --port_base=29400 --port_stride=12 10
+./zlaunch.sh --just_make --jobs=4 --port_base=29400 --port_stride=12 10
 ```
 
 The default `--port_base` is `15000` to avoid the repository's older 9000-range
-defaults during active development. Grouped runs use 30-port case blocks from
-that base so each live case gets isolated MOOSDB and pShare ports.
+defaults during active development. Grouped runs use 30-port case blocks by
+default so each live case gets isolated MOOSDB and pShare ports. Use
+`--port_stride=12` when a validation window must keep the full 24-case matrix
+inside a 300-port range; each case uses only the `+0`, `+1`, `+10`, and `+11`
+offsets within its block.
 
 Latest validation:
 
-- April 26, 2026
-- full matrix: `24/24` expected outcomes matched
-- wave matrix: `24/24` expected outcomes matched with `--jobs=4 --port_base=15000`
-- port base: `15000`
+- May 20, 2026
+- focused expected-negative cases: `6/6` mission `grade=pass`
+- wave matrix: `24/24` mission `grade=pass` with `--jobs=4 --port_base=29400 --port_stride=12`
+- port range used by grouped run: `29400-29687`
 - warp: `10`

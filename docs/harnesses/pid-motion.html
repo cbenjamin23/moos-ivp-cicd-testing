@@ -137,31 +137,31 @@
 
         <article class="case-row">
           <code>low_rudder_authority_fail</code>
-          <p>intentionally low maxrudder should fail the same turn-recovery arrival gate within the evaluation window.</p>
+          <p>intentionally low maxrudder should pass when the vehicle remains far from the arrival corridor with low rudder authority.</p>
         </article>
 
 
         <article class="case-row">
           <code>low_thrust_authority_fail</code>
-          <p>intentionally low maxthrust should fail the arrival gate because the vehicle lacks forward authority.</p>
+          <p>intentionally low maxthrust should pass when the vehicle remains short of the arrival corridor with low speed and low thrust.</p>
         </article>
 
 
         <article class="case-row">
           <code>low_elevator_authority_fail</code>
-          <p>intentionally low maxelevator should fail an aggressive depth-response gate while still moving east.</p>
+          <p>intentionally low maxelevator should pass when the vehicle moves east but remains below the aggressive depth-response band.</p>
         </article>
 
 
         <article class="case-row">
           <code>depth_control_disabled_fail</code>
-          <p>a depth behavior with depth_control=false should fail the depth band because no elevator response is produced.</p>
+          <p>a depth behavior with depth_control=false should pass when the vehicle moves east but depth remains near zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>manual_override_fail</code>
-          <p>holding manual override should prevent actuator authority and fail the arrival gate.</p>
+          <p>holding manual override should pass when the vehicle remains stopped with zero thrust.</p>
         </article>
 
       </div>

@@ -1,0 +1,29 @@
+//-------------------------------------------------
+// FILE: helm-malconfig-fail-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=ARRIVED
+  bridge = src=OBAVOIDING
+  bridge = src=OBM_ALERT_REQUEST
+  bridge = src=OBSTACLE_ALERT
+  bridge = src=OBM_RESOLVED
+  bridge = src=AVOID_RANGE_SEEN
+  bridge = src=AVOID_CPA_SEEN
+  bridge = src=BHV_ERROR
+  bridge = src=BHV_WARNING
+  bridge = src=IVPHELM_STATE
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+}

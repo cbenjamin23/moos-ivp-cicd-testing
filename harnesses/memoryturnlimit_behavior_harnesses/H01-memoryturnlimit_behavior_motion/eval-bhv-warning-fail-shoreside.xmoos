@@ -1,0 +1,46 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = EVAL_TIME = true
+  pass_condition = EVAL_TIME = true
+  pass_condition = BHV_WARNING_SEEN = true
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = memoryturnlimit_behavior_tests
+  mission_mod  = $(MMOD:=bhv_warning_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[EVAL_TIME]
+  report_column = expected=bhv_warning
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = EVAL_TIME=false
+  flag = MISSION_TIMEOUT=false
+  flag = BHV_WARNING_SEEN=false
+  flag = BHV_ERROR_SEEN=false
+
+  required_nodes = 1
+}

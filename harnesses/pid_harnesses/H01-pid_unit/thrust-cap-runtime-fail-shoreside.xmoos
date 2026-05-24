@@ -52,8 +52,8 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = DESIRED_RUDDER_PID > 1
-  pass_condition = DESIRED_THRUST_PID >= 49
-  pass_condition = DESIRED_THRUST_PID <= 51
+  pass_condition = DESIRED_THRUST_PID >= 99
+  pass_condition = DESIRED_THRUST_PID <= 100
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pid_unit
@@ -63,6 +63,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = expected=runtime_cap_ignored
   report_column    = rudder=$[DESIRED_RUDDER_PID]
   report_column    = thrust=$[DESIRED_THRUST_PID]
   report_column    = mhash=$[MHASH_SHORT]

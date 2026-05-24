@@ -131,37 +131,37 @@
 
         <article class="case-row">
           <code>min_altitude_zero_altitude_fail</code>
-          <p>Sets zero simulated altitude while commanding a dive and expects the normal clearance verdict to fail.</p>
+          <p>Sets zero simulated altitude while commanding a dive, and passes when the mission observes zero-depth rejection evidence and a behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_bad_config_fail</code>
-          <p>Supplies malformed minimum-altitude config and expects the normal good-case verdict to fail.</p>
+          <p>Supplies malformed minimum-altitude config, and passes when the helm reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_negative_min_fail</code>
-          <p>Supplies a negative minimum altitude and expects the normal good-case verdict to fail.</p>
+          <p>Supplies a negative minimum altitude, and passes when the helm reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_bad_critical_bool_fail</code>
-          <p>Supplies an invalid missing_altitude_critical value and expects the normal good-case verdict to fail.</p>
+          <p>Supplies an invalid missing_altitude_critical value, and passes when the helm reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_missing_nav_fail</code>
-          <p>Removes usable ownship depth/altitude mail and expects the clearance verdict to fail.</p>
+          <p>Removes usable ownship depth/altitude mail, and passes when depth/nav data stays absent and the vehicle does not command elevator authority.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_noncritical_missing_altitude_fail</code>
-          <p>Sets missing_altitude_critical=false while depth/altitude mail is unavailable and verifies the current failure path remains caught.</p>
+          <p>Sets missing_altitude_critical=false while depth/altitude mail is unavailable, and passes when the current no-depth-data failure path remains caught.</p>
         </article>
 
       </div>

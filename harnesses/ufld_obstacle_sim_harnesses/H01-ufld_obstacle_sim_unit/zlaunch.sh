@@ -483,18 +483,33 @@ prepare_case_dir() {
     fi
 }
 
+format_case_row() {
+    local case_name="$1"
+    local line="$2"
+    local grade
+
+    grade=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
+    if [ "$grade" = "" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+    echo "case=$case_name  grade=$grade  $line"
+}
+
 run_case() {
     local case_name="$1"
     local case_index="$2"
     get_case_config "$case_name" || return 1
 
     local case_dir="$RUN_ROOT/$case_name"
-    local case_results="$case_dir/results.txt"
+    local case_rows="$case_dir/results.txt"
     local pbase=$((PORT_BASE + case_index * PORT_STRIDE))
     local just_make_arg=""
     mkdir -p "$case_dir"
     prepare_case_dir "$case_dir"
-    : > "$case_results"
+    : > "$case_rows"
 
     if [ "$JUST_MAKE" = "yes" ]; then
         just_make_arg="--just_make"
@@ -516,13 +531,14 @@ run_case() {
     fi
 
     local line
-    line=`wait_for_result_line "$case_results"`
+    line=`wait_for_result_line "$case_rows"`
     if [ "$line" = "" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result" >> "$RESULTS_FILE"
         echo "$case_name: no-result"
         return 1
     fi
 
-    echo "$case_name $line" >> "$RESULTS_FILE"
+    format_case_row "$case_name" "$line" >> "$RESULTS_FILE"
     if ! echo "$line" | rg -q "grade=$EXPECTED"; then
         echo "$case_name: expected $EXPECTED but got: $line"
         return 1

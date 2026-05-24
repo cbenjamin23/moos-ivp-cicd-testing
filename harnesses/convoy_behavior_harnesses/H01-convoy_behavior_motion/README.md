@@ -110,35 +110,36 @@ uses behavior outputs plus chaser/target speed aliases:
   Uses a missing contact with `on_no_contact_ok=true` and expects warning-only
   behavior.
 - `missing_contact_fail`
-  Uses a missing contact with `on_no_contact_ok=false` and expects failure.
+  Uses a missing contact with `on_no_contact_ok=false` and expects helm
+  malconfig evidence.
 - `missing_contact_param_fail`
-  Omits `contact` with `on_no_contact_ok=false` and expects failure.
+  Omits `contact` with `on_no_contact_ok=false` and expects helm malconfig
+  evidence.
 - `bad_inter_mark_range_fail`
-  Negative `inter_mark_range` should be rejected and the mission should fail.
+  Negative `inter_mark_range` should be rejected with helm malconfig evidence.
 - `bad_max_mark_range_fail`
-  Negative `max_mark_range` should be rejected and the mission should fail.
+  Negative `max_mark_range` should be rejected with helm malconfig evidence.
 - `bad_radius_fail`
-  Negative `radius` should be rejected and the mission should fail.
+  Negative `radius` should be rejected with helm malconfig evidence.
 - `bad_nm_radius_fail`
-  Negative `nm_radius` should be rejected and the mission should fail.
+  Negative `nm_radius` should be rejected with helm malconfig evidence.
 - `bad_spd_slower_fail`
   Rejects `spd_slower` outside its accepted range.
 - `bad_spd_faster_fail`
   Rejects `spd_faster` outside its accepted range.
 - `bad_spd_max_fail`
-  Rejects zero `spd_max`, which would make the convoy speed cap invalid, and
-  expects mission failure.
+  Rejects zero `spd_max`, which would make the convoy speed cap invalid.
 - `bad_rng_estop_fail`
-  Negative `rng_estop` safety range should be rejected and the mission should
-  fail.
+  Negative `rng_estop` safety range should be rejected with helm malconfig
+  evidence.
 - `bad_rng_tgating_fail`
-  Rejects a negative `rng_tgating` safety range and expects mission failure.
+  Rejects a negative `rng_tgating` safety range with helm malconfig evidence.
 - `bad_rng_lagging_fail`
-  Rejects a negative `rng_lagging` safety range and expects mission failure.
+  Rejects a negative `rng_lagging` safety range with helm malconfig evidence.
 - `bad_rng_safety_fail`
-  Malformed `rng_safety` should be rejected and the mission should fail.
+  Malformed `rng_safety` should be rejected with helm malconfig evidence.
 - `bad_cruise_speed_fail`
-  Rejects a negative `cruise_speed` configuration and expects mission failure.
+  Rejects a negative `cruise_speed` configuration with helm malconfig evidence.
 
 ## Running
 

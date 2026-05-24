@@ -1,0 +1,1 @@
+  grade=pass  form=zigzag_behavior_tests  mmod=bad_visual_hint_fail  eval=true  expected=helm_malconfig  helm_malconfig=true  mhash=[]

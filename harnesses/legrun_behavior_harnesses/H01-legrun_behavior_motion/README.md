@@ -33,15 +33,19 @@ leg, turn, mid-leg, mid-turn, completion, and warning/error signals.
 - `flag_aliases_pass` Uses the underscore flag aliases for leg, turn, mid-leg, and mid-turn events and requires those alias flags to reach shoreside.
 - `mid_pct_late_pass` Moves mid-leg and mid-turn flag thresholds later in each segment and verifies those events still fire before completion.
 - `patience_clip_pass` Supplies an above-range patience value and verifies the clipped objective weighting still completes the leg-run cycle cleanly.
-- `bad_leg_config_fail` Supplies a malformed leg geometry and expects the mission grade to fail.
-- `bad_speed_schedule_fail` Supplies a malformed speed schedule and expects the mission grade to fail.
-- `bad_init_mode_fail` Supplies an invalid `init_leg_mode` and expects the mission grade to fail.
-- `bad_mid_pct_fail` Supplies an out-of-range mid-leg percentage and expects the mission grade to fail.
-- `bad_turn_radius_fail` Supplies a zero turn radius and expects the mission grade to fail.
-- `bad_turn_ext_fail` Supplies a negative turn extension and expects the mission grade to fail.
-- `bad_turn_dir_fail` Supplies an invalid shared turn direction and expects the mission grade to fail.
-- `bad_speed_high_fail` Supplies a cruise speed above the helm domain maximum and expects the mission grade to fail.
-- `bad_speed_count_fail` Supplies a zero-count speed schedule entry and expects the mission grade to fail.
+- `bad_leg_config_fail` Supplies malformed leg geometry and passes when the expected no-progress timeout evidence is observed.
+- `bad_speed_schedule_fail` Supplies a malformed speed schedule and passes when the expected no-progress timeout evidence is observed.
+- `bad_init_mode_fail` Supplies an invalid `init_leg_mode` and passes when the expected no-progress timeout evidence is observed.
+- `bad_mid_pct_fail` Supplies an out-of-range mid-leg percentage and passes when the expected no-progress timeout evidence is observed.
+- `bad_turn_radius_fail` Supplies a zero turn radius and passes when the expected no-progress timeout evidence is observed.
+- `bad_turn_ext_fail` Supplies a negative turn extension and passes when the expected no-progress timeout evidence is observed.
+- `bad_turn_dir_fail` Supplies an invalid shared turn direction and passes when the expected no-progress timeout evidence is observed.
+- `bad_speed_high_fail` Supplies a cruise speed above the helm domain maximum and passes when the expected no-progress timeout evidence is observed.
+- `bad_speed_count_fail` Supplies a zero-count speed schedule entry and passes when the expected no-progress timeout evidence is observed.
+
+Expected-negative cases use mission-owned criteria. The result row grades
+`pass` only when `timeout=true`, `turn2=false`, and `bhv_error=false`, with
+`expected=malconfig_timeout` included as the evidence label.
 
 ## Running
 

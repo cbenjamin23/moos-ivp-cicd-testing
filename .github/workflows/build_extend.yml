@@ -400,6 +400,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Validate C++ test registry
+        if: ${{ inputs.cpp_test_mode != 'none' }}
         run: |
           python3 scripts/check_cpp_tests.py \
             --build-dir build \

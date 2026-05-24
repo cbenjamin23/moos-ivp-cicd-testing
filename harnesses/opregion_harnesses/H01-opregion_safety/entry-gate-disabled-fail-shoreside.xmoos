@@ -18,11 +18,9 @@ ProcessConfig = pMissionEval
 
   lead_condition = HALT_REGION_BREACHED = true
   lead_condition = BHV_ERROR_SEEN = true
-  pass_condition = ARRIVED = true
-  pass_condition = SAVE_REGION_BREACHED = false
-  pass_condition = HALT_REGION_BREACHED = false
+  pass_condition = HALT_REGION_BREACHED = true
   pass_condition = TIME_LIMIT_BREACHED = false
-  pass_condition = BHV_ERROR_SEEN = false
+  pass_condition = BHV_ERROR_SEEN = true
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass

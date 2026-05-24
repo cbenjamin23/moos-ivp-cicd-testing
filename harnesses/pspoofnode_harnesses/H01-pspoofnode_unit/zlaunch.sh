@@ -26,7 +26,7 @@ MISSION_DIR="$REPO_DIR/missions/pspoofnode_missions/pspoofnode_unit"
 TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 RUN_ROOT=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 ALL_OK="yes"
 
 if [ -f "$TEARDOWN_HELPER" ]; then
@@ -496,6 +496,29 @@ check_payloads() {
     echo "$status"
 }
 
+
+emit_case_row() {
+    local case_name="$1"
+    local status="$2"
+    local expected="$3"
+    local actual="$4"
+    shift 4
+    local line="$1"
+    shift || true
+    local grade
+
+    grade=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+    if [ "$grade" != "" ]; then
+        echo "case=$case_name  grade=$grade  $line  $*"
+    elif [ "$status" = "success" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result  $line  $*"
+    else
+        echo "case=$case_name  grade=fail  reason=$status  $line  $*"
+    fi
+}
+
 run_case_isolated() {
     local case_idx="$1"
     local case_name="$2"
@@ -504,7 +527,7 @@ run_case_isolated() {
     local shore_pshare=$((case_base + 10))
     local tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local line
     local actual
     local status="success"
@@ -515,7 +538,7 @@ run_case_isolated() {
 
     tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$tag"
-    case_result_file="$CASE_RESULT_DIR/$tag.txt"
+    case_row_file="$CASE_ROW_DIR/$tag.txt"
     mkdir -p "$case_dir"
     cp -R "$MISSION_DIR"/. "$case_dir"/
     write_case_files "$case_dir"
@@ -526,7 +549,7 @@ run_case_isolated() {
         ./launch.sh --just_make --xlaunched --nogui --shore_mport="$shore_mport" --shore_pshare="$shore_pshare" --mmod="$case_name" "$TIME_WARP" >/dev/null
     )
     if [ "$JUST_MAKE" = "yes" ]; then
-        echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
+        echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
         return 0
     fi
 
@@ -548,7 +571,7 @@ run_case_isolated() {
         status="mismatch"
     fi
 
-    echo "case=$case_name  case_result=$status  expected=pass  actual=$actual  payload=$payload_status  reports=$(echo "$reports" | wc -l | tr -d ' ')  $line" > "$case_result_file"
+    emit_case_row "$case_name" "$status" "pass" "$actual" "$line" "payload=$payload_status" "reports=$(echo "$reports" | wc -l | tr -d ' ')" > "$case_row_file"
     harness_teardown_stop_root "$case_dir"
 
     if [ "$status" = "success" ]; then
@@ -574,8 +597,8 @@ fi
 trap cleanup EXIT
 : > "$RESULTS_FILE"
 RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_pspoofnode_unit_XXXXXX")
-CASE_RESULT_DIR="$RUN_ROOT/case_results"
-mkdir -p "$CASE_RESULT_DIR"
+CASE_ROW_DIR="$RUN_ROOT/case_rows"
+mkdir -p "$CASE_ROW_DIR"
 
 case_index=0
 remaining_cases="${RUN_CASES[*]}"
@@ -602,10 +625,10 @@ while [ "$remaining_cases" != "" ]; do
     done
 
     for case_tag in $wave_cases; do
-        if [ -f "$CASE_RESULT_DIR/$case_tag.txt" ]; then
-            cat "$CASE_RESULT_DIR/$case_tag.txt" >> "$RESULTS_FILE"
+        if [ -f "$CASE_ROW_DIR/$case_tag.txt" ]; then
+            cat "$CASE_ROW_DIR/$case_tag.txt" >> "$RESULTS_FILE"
         else
-            echo "case=${case_tag#*_}  case_result=error  expected=unknown  actual=missing_result" >> "$RESULTS_FILE"
+            echo "case=${case_tag#*_}  grade=fail  reason=missing_result" >> "$RESULTS_FILE"
             ALL_OK="no"
         fi
     done
@@ -613,7 +636,7 @@ while [ "$remaining_cases" != "" ]; do
     remaining_cases="$next_remaining"
 done
 
-if grep -q 'case_result=mismatch\|case_result=error' "$RESULTS_FILE"; then
+if grep -Eq '(^|[[:space:]])grade=fail([[:space:]]|$)' "$RESULTS_FILE"; then
     ALL_OK="no"
 fi
 

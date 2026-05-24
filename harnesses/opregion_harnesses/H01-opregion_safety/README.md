@@ -39,23 +39,26 @@ signals:
 - `save_dist_buffer_fail`
   The vehicle uses the same positive `save_dist` setup, but drives beyond the
   generated save buffer while staying inside the generated halt buffer. The case
-  should fail due to save-region breach.
+  should pass when the save-region breach evidence is observed without a halt
+  or time breach.
 - `halt_breach_fail`
-  The vehicle is driven outside a tight halt region and should fail.
+  The vehicle is driven outside a tight halt region. The case should pass when
+  halt-breach and behavior-error evidence are observed.
 - `entry_gate_start_outside_pass`
   The configured halt polygon starts to the east of the vehicle, so the vehicle
   launches outside the halt envelope, enters it, and finishes safely. With
   `trigger_on_poly_entry=true`, the initial outside state should not fail.
 - `entry_gate_disabled_fail`
   Same start-outside geometry, but with `trigger_on_poly_entry=false`. The case
-  should fail quickly.
+  should pass when halt-breach and behavior-error evidence are observed quickly.
 - `trigger_exit_debounce_pass`
   The vehicle briefly leaves the halt region, but the configured
   `trigger_exit_time` is long enough that no halt breach should be declared.
   This case grades the debounce contract rather than late transit completion.
 - `trigger_exit_strict_fail`
   Companion case using the same short excursion shape, but with the stock
-  short `trigger_exit_time`. The case should fail.
+  short `trigger_exit_time`. The case should pass when halt-breach and
+  behavior-error evidence are observed.
 - `trigger_entry_delay_pass`
   The vehicle leaves the halt envelope before the long `trigger_entry_time`
   matures, so the later outside state should not count as a breach.
@@ -65,39 +68,40 @@ signals:
   clears the entry state before breach declaration. The case should pass with
   no halt breach.
 - `max_time_fail`
-  A short `max_time` should expire before the transit finishes, producing the
-  expected mission failure.
+  A short `max_time` should expire before the transit finishes. The case should
+  pass when time-breach and behavior-error evidence are observed.
 - `max_depth_breach_fail`
   Vehicle-side sensor input posts `NAV_DEPTH` beyond a configured `max_depth`.
-  The case should grade `fail` through the OpRegion depth-breach error.
+  The case should pass when the OpRegion depth-breach behavior error is
+  observed.
 - `min_altitude_breach_fail`
   Vehicle-side sensor input posts `NAV_ALTITUDE` below a configured
-  `min_altitude`. The case should grade `fail` through the OpRegion
-  altitude-breach error.
+  `min_altitude`. The case should pass when the OpRegion altitude-breach
+  behavior error is observed.
 - `bad_save_dist_fail`
-  The behavior is configured with a negative `save_dist`. The case should
-  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+  The behavior is configured with a negative `save_dist`. The case should pass
+  when `pHelmIvP` reports `MALCONFIG`.
 - `bad_halt_dist_fail`
-  The behavior is configured with a negative `halt_dist`. The case should
-  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+  The behavior is configured with a negative `halt_dist`. The case should pass
+  when `pHelmIvP` reports `MALCONFIG`.
 - `bad_max_depth_fail`
-  The behavior is configured with a negative `max_depth`. The case should
-  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+  The behavior is configured with a negative `max_depth`. The case should pass
+  when `pHelmIvP` reports `MALCONFIG`.
 - `bad_min_altitude_fail`
   The behavior is configured with a negative `min_altitude`. The case should
-  grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+  pass when `pHelmIvP` reports `MALCONFIG`.
 - `bad_recover_spd_fail`
-  The behavior is configured with zero `recover_spd`. The case should grade
-  `fail` when `pHelmIvP` reports `MALCONFIG`.
+  The behavior is configured with zero `recover_spd`. The case should pass when
+  `pHelmIvP` reports `MALCONFIG`.
 - `bad_trigger_on_poly_entry_fail`
   The behavior is configured with an invalid `trigger_on_poly_entry` boolean.
-  The case should grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+  The case should pass when `pHelmIvP` reports `MALCONFIG`.
 - `bad_trigger_entry_time_fail`
   The behavior is configured with a negative `trigger_entry_time`. The case
-  should grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+  should pass when `pHelmIvP` reports `MALCONFIG`.
 - `bad_trigger_exit_time_fail`
   The behavior is configured with a negative `trigger_exit_time`. The case
-  should grade `fail` when `pHelmIvP` reports `MALCONFIG`.
+  should pass when `pHelmIvP` reports `MALCONFIG`.
 - `dynamic_region_expand_pass`
   The behavior starts with a narrow dynamic-region core, then receives an early
   vehicle-side `OPREGION_CORE_POLY` expansion before the vehicle reaches the
@@ -108,7 +112,8 @@ signals:
   recovery flags and still finish without a halt breach.
 - `dynamic_region_halt_fail`
   A timer-posted update shrinks the operating region far enough that the
-  vehicle should breach the recomputed halt region and fail.
+  vehicle should breach the recomputed halt region. The case should pass when
+  halt-breach and behavior-error evidence are observed.
 
 ## Running
 
@@ -118,25 +123,30 @@ signals:
 ./zlaunch.sh --case=trigger_exit_debounce_pass --gui 1
 ./zlaunch.sh --just_make 10
 ./zlaunch.sh --jobs=4 --port_base=31000 10
+./zlaunch.sh --jobs=4 --port_base=35600 --port_stride=20 10
 ```
 
-Results are appended to `results.txt` with the mission-owned `grade` and the
-OpRegion safety flags used for grading. Most cases evaluate as soon as the
-natural terminal event occurs: arrival for pass transits, save/halt/time flags
-for expected failures. The exit-debounce, entry-delay, and reset cases retain a
+Results are appended to `results.txt` with `case=<case_name>` followed by the
+mission-owned `grade` and the OpRegion safety flags used for grading. Expected
+negative cases grade `pass` when their breach, behavior-error, or malconfig
+evidence is observed. The exit-debounce, entry-delay, and reset cases retain a
 short `TEST_EVAL_READY` timer because they verify that a breach does not happen
 after a configured timing window.
 
 Wave mode runs the full matrix in isolated temporary mission copies. Each case
 gets its own MOOSDB and pShare port block using
 `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
-`case_base + 10`. The default is serial
-`--jobs=1`; use `--keep_workdirs` when preserving the temporary case folders is
-useful for debugging.
+`case_base + 10`. The default is serial `--jobs=1` and `PORT_STRIDE=30`; use
+`--port_stride=20` with the 25-case matrix to keep validation inside a 500-port
+band. Use `--keep_workdirs` when preserving the temporary case folders is useful
+for debugging.
 
 Latest validation:
 
-- April 27, 2026
-- just_make matrix: `25/25` target generations completed with `--jobs=4 --port_base=31000`
-- wave matrix: `25/25` expected outcomes matched with `--jobs=4 --port_base=31000`
+- May 21, 2026
+- syntax: `bash -n harnesses/opregion_harnesses/H01-opregion_safety/zlaunch.sh`
+- just_make matrix: `25/25` target generations completed with
+  `--just_make --jobs=4 --port_base=35600 --port_stride=20 10`
+- wave matrix: `25/25` mission-owned grades passed with
+  `--jobs=4 --port_base=35600 --port_stride=20 10`
 - warp: `10`

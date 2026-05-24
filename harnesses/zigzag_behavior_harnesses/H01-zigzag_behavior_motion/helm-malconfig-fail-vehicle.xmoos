@@ -1,0 +1,15 @@
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=BHV_WARNING
+  bridge = src=BHV_ERROR
+  bridge = src=IVPHELM_STATE
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+}

@@ -173,43 +173,39 @@ execution path.
 Typical baseline line:
 
 ```text
-case=given_baseline_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests  mmod=given_baseline_pass  grade=pass  eval=true  new_given=true  dist=OB_NEAR,18.0  mindist=18  alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near  mhash=[THEN-PONY]
+case=given_baseline_pass grade=pass form=obmgr_tests mmod=given_baseline_pass eval=true new_given=true dist=OB_NEAR,18.0 mindist=18 alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near mhash=[THEN-PONY]
 ```
 
 Typical resolution line:
 
 ```text
-case=points_age_resolve_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests  mmod=points_age_resolve_pass  grade=pass  eval=true  resolved=rock_a  dist=$[OBM_DIST_TO_OBJ]  mhash=[....]
+case=points_age_resolve_pass grade=pass form=obmgr_tests mmod=points_age_resolve_pass eval=true resolved=rock_a dist=$[OBM_DIST_TO_OBJ] mhash=[....]
 ```
 
 Typical modification line:
 
 ```text
-case=disable_obstacle_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests  mmod=disable_obstacle_pass  grade=pass  eval=true  filter=obstacle_id=ob_near,action=disable  mhash=[....]
+case=disable_obstacle_pass grade=pass form=obmgr_tests mmod=disable_obstacle_pass eval=true filter=obstacle_id=ob_near,action=disable mhash=[....]
 ```
 
 Typical default-name alert line:
 
 ```text
-case=general_alert_default_name_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests  mmod=general_alert_default_name_pass  grade=pass  eval=true  new_given=true  gen_alert=name=gen_alert_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far  mhash=[MERE-NAVY]
+case=general_alert_default_name_pass grade=pass form=obmgr_tests mmod=general_alert_default_name_pass eval=true new_given=true gen_alert=name=gen_alert_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far mhash=[MERE-NAVY]
 ```
 
 Typical reject-before-accept line:
 
 ```text
-case=given_max_duration_missing_absent_pass  case_result=success  expected=pass  actual=pass  form=obmgr_tests  mmod=given_max_duration_missing_absent_pass  grade=pass  eval=true  new_given=$[OBM_NEW_GIVEN]  alert=$[OBSTACLE_ALERT]  mhash=[SOFT-HELM]
+case=given_max_duration_missing_absent_pass grade=pass form=obmgr_tests mmod=given_max_duration_missing_absent_pass eval=true new_given=$[OBM_NEW_GIVEN] alert=$[OBSTACLE_ALERT] mhash=[SOFT-HELM]
 ```
 
 Field anatomy:
 
 - `case`
   The harness case name that was run.
-- `expected`
-  What the harness expected the mission to grade.
-- `actual`
-  What the mission actually graded after parsing the mission result line.
-- `case_result`
-  `success` if expected equals actual, otherwise `mismatch`.
+- `grade`
+  Pass/fail result written by the mission itself.
 - `form`
   Harness or mission family name.
 - `mmod`

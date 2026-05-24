@@ -29,7 +29,7 @@ TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 ALL_OK="yes"
 RUN_ROOT=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
 VEHICLE_MOOS_STEM="$MISSION_DIR/meta_vehicle.moos"
 VEHICLE_BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
@@ -57,13 +57,14 @@ for ARGI; do
         echo "  --case=<name>      Run one named case"
         echo "  --jobs=<n>         Run up to n cases per wave"
         echo "  --port_base=<n>    Base port for per-case wave blocks"
+        echo "  --port_stride=<n>  Port block stride between cases"
         echo "  --keep_workdirs    Keep temp mission copies in wave mode"
         echo "  --gui              Launch with pMarineViewer"
         echo ""
         echo "Examples:"
         echo "  ./zlaunch.sh"
         echo "  ./zlaunch.sh --case=baseline_port_first_pass --port_base=15000 10"
-        echo "  ./zlaunch.sh --jobs=4 --port_base=15000 10"
+        echo "  ./zlaunch.sh --jobs=4 --port_base=15000 --port_stride=12 10"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
         TIME_WARP=$ARGI
@@ -79,6 +80,8 @@ for ARGI; do
         JOBS="${ARGI#--jobs=*}"
     elif [ "${ARGI:0:12}" = "--port_base=" ]; then
         PORT_BASE="${ARGI#--port_base=*}"
+    elif [ "${ARGI:0:14}" = "--port_stride=" ]; then
+        PORT_STRIDE="${ARGI#--port_stride=*}"
     elif [ "${ARGI}" = "--keep_workdirs" ]; then
         KEEP_WORKDIRS="yes"
     elif [ "${ARGI}" = "--gui" ]; then
@@ -98,6 +101,46 @@ if ! echo "$PORT_BASE" | grep -Eq '^[0-9]+$'; then
     echo "$ME: Bad value for --port_base: [$PORT_BASE]"
     exit 1
 fi
+
+if ! echo "$PORT_STRIDE" | grep -Eq '^[0-9]+$' || [ "$PORT_STRIDE" -lt 12 ]; then
+    echo "$ME: Bad value for --port_stride: [$PORT_STRIDE]"
+    exit 1
+fi
+
+grade_from_line() {
+    echo "$1" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'
+}
+
+format_case_row() {
+    local case_name="$1"
+    local line="$2"
+    local launch_rc="${3:-0}"
+    local grade
+
+    if [ "$launch_rc" != 0 ]; then
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/^[[:space:]]*//')
+    grade=$(grade_from_line "$line")
+    if [ "$grade" = "" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+
+    echo "case=$case_name  grade=$grade  $line"
+}
+
+case_row_passed() {
+    local line="$1"
+    local grade
+    grade=$(grade_from_line "$line")
+    [ "$grade" = "pass" ]
+}
 
 clear_xfiles() {
     rm -f "$SHORE_XFILE" "$VEHICLE_MOOS_XFILE" "$VEHICLE_BHV_XFILE"
@@ -153,182 +196,156 @@ wait_for_result_line() {
 
 get_case_config() {
     CASE_NAME="$1"
-    EXPECTED=""
     SHORE_PATCH=""
     VEH_MOOS_PATCH=""
     VEH_BHV_PATCH=""
 
     case "$CASE_NAME" in
         baseline_port_first_pass)
-            EXPECTED="pass"
             ;;
         star_first_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-star-first-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/star-first-pass-vehicle.xbhv"
             ;;
         zig_first_right_alias_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-star-first-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/zig-first-right-alias-pass-vehicle.xbhv"
             ;;
         zig_first_starboard_alias_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-star-first-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/zig-first-starboard-alias-pass-vehicle.xbhv"
             ;;
         stem_hdg_wrap_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-stem-hdg-wrap-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/stem-hdg-wrap-pass-vehicle.xbhv"
             ;;
         stem_hdg_negative_wrap_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-stem-hdg-wrap-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/stem-hdg-negative-wrap-pass-vehicle.xbhv"
             ;;
         hdg_thresh_loose_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-hdg-thresh-loose-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/hdg-thresh-loose-pass-vehicle.xbhv"
             ;;
         small_angle_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-small-angle-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/small-angle-pass-vehicle.xbhv"
             ;;
         wide_angle_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-wide-angle-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/wide-angle-pass-vehicle.xbhv"
             ;;
         max_zig_zags_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-max-zig-zags-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/max-zig-zags-pass-vehicle.xbhv"
             ;;
         single_leg_complete_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-short-complete-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/single-leg-complete-pass-vehicle.xbhv"
             ;;
         zero_leg_limit_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-short-complete-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/zero-leg-limit-pass-vehicle.xbhv"
             ;;
         stem_odo_complete_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-stem-odo-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/stem-odo-complete-pass-vehicle.xbhv"
             ;;
         short_stem_odo_complete_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-short-stem-odo-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/short-stem-odo-complete-pass-vehicle.xbhv"
             ;;
         stem_on_active_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-stem-on-active-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/stem-on-active-pass-vehicle.xbhv"
             ;;
         speed_on_active_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-speed-on-active-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/speed-on-active-pass-vehicle.xbhv"
             ;;
         mod_speed_increase_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-mod-speed-pass-shoreside.xmoos"
             VEH_MOOS_PATCH="$HARNESS_DIR/mod-speed-increase-pass-vehicle.xmoos"
             ;;
         mod_speed_reset_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-mod-speed-reset-pass-shoreside.xmoos"
             VEH_MOOS_PATCH="$HARNESS_DIR/mod-speed-reset-pass-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/mod-speed-reset-pass-vehicle.xbhv"
             ;;
         mod_speed_clip_high_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-mod-speed-clip-high-pass-shoreside.xmoos"
             VEH_MOOS_PATCH="$HARNESS_DIR/mod-speed-clip-high-pass-vehicle.xmoos"
             ;;
         mod_speed_clip_low_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-mod-speed-clip-low-pass-shoreside.xmoos"
             VEH_MOOS_PATCH="$HARNESS_DIR/mod-speed-clip-low-pass-vehicle.xmoos"
             ;;
         bad_runtime_update_recover_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-bad-runtime-update-recover-pass-shoreside.xmoos"
             VEH_MOOS_PATCH="$HARNESS_DIR/bad-runtime-update-recover-pass-vehicle.xmoos"
             ;;
         fierce_zigging_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-fierce-zigging-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/fierce-zigging-pass-vehicle.xbhv"
             ;;
         delta_heading_alias_pass)
-            EXPECTED="pass"
             SHORE_PATCH="$HARNESS_DIR/eval-fierce-zigging-pass-shoreside.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/delta-heading-alias-pass-vehicle.xbhv"
             ;;
         visual_hints_off_pass)
-            EXPECTED="pass"
             VEH_BHV_PATCH="$HARNESS_DIR/visual-hints-off-pass-vehicle.xbhv"
             ;;
         visual_hints_custom_pass)
-            EXPECTED="pass"
             VEH_BHV_PATCH="$HARNESS_DIR/visual-hints-custom-pass-vehicle.xbhv"
             ;;
         bad_zig_angle_low_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-zig-angle-low-fail-vehicle.xbhv"
             ;;
         bad_zig_angle_high_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-zig-angle-high-fail-vehicle.xbhv"
             ;;
         bad_zig_first_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-zig-first-fail-vehicle.xbhv"
             ;;
         bad_max_zig_zags_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-max-zig-zags-fail-vehicle.xbhv"
             ;;
         bad_max_stem_odo_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-max-stem-odo-fail-vehicle.xbhv"
             ;;
         bad_speed_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-speed-fail-vehicle.xbhv"
             ;;
         bad_delta_heading_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-delta-heading-fail-vehicle.xbhv"
             ;;
         bad_stale_nav_thresh_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-stale-nav-thresh-fail-vehicle.xbhv"
             ;;
         bad_hdg_thresh_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-hdg-thresh-fail-vehicle.xbhv"
             ;;
         bad_visual_hint_fail)
-            EXPECTED="fail"
             SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+            VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             VEH_BHV_PATCH="$HARNESS_DIR/bad-visual-hint-fail-vehicle.xbhv"
             ;;
         *)
@@ -359,8 +376,7 @@ run_case() {
     local case_idx="$1"
     local case_name="$2"
     local line
-    local actual
-    local status
+    local result_line
     local launch_rc
     local shore_mport
     local veh_mport
@@ -368,7 +384,10 @@ run_case() {
     local veh_pshare
     local case_base
 
-    get_case_config "$case_name" || return 1
+    get_case_config "$case_name" || {
+        echo "case=$case_name  grade=fail  reason=case_config_error" >> "$RESULTS_FILE"
+        return 1
+    }
 
     case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
     shore_mport=$((case_base + 0))
@@ -379,7 +398,11 @@ run_case() {
     cd "$MISSION_DIR"
     ./clean.sh >/dev/null 2>&1
     stop_mission_apps "$MISSION_DIR"
-    apply_case_patches || return 1
+    apply_case_patches || {
+        echo "case=$case_name  grade=fail  reason=prepare_error" >> "$RESULTS_FILE"
+        cd "$HARNESS_DIR"
+        return 1
+    }
     : > results.txt
 
     XARGS="--max_time=$MAX_TIME --mmod=$case_name --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare $TIME_WARP"
@@ -397,35 +420,27 @@ run_case() {
     if [ "$JUST_MAKE" = "yes" ]; then
         cd "$HARNESS_DIR"
         if [ "$launch_rc" = 0 ]; then
+            echo "case=$case_name  grade=pass  reason=just_make" >> "$RESULTS_FILE"
             return 0
         fi
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" >> "$RESULTS_FILE"
         return 1
     fi
 
     sleep 1
-    line=$(wait_for_result_line results.txt 80)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
-    fi
 
-    status="success"
-    if [ "$launch_rc" != 0 ]; then
-        status="error"
-        actual="script_error"
-        ALL_OK="no"
-    elif [ "$actual" = "missing" ]; then
-        status="error"
-        ALL_OK="no"
-    elif [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
-        ALL_OK="no"
-    fi
-
-    if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  launch_rc=$launch_rc  $line" >> "$RESULTS_FILE"
+    if [ "$launch_rc" = 0 ]; then
+        line=$(wait_for_result_line results.txt 80)
     else
-        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" >> "$RESULTS_FILE"
+        line=""
+    fi
+    result_line=$(format_case_row "$case_name" "$line" "$launch_rc")
+
+    echo "$result_line" >> "$RESULTS_FILE"
+    if ! case_row_passed "$result_line"; then
+        ALL_OK="no"
+        cd "$HARNESS_DIR"
+        return 1
     fi
     cd "$HARNESS_DIR"
 }
@@ -464,29 +479,28 @@ run_case_isolated() {
     local case_name="$2"
     local case_tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local shore_mport
     local veh_mport
     local shore_pshare
     local veh_pshare
     local line
-    local actual
-    local status
+    local result_line
     local xargs
     local launch_rc
     local case_base
 
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
-    case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
 
     get_case_config "$case_name" || {
-        echo "case=$case_name  case_result=error  expected=unknown  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=case_config_error" > "$case_row_file"
         return 1
     }
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=prepare_error" > "$case_row_file"
         return 1
     }
 
@@ -512,36 +526,23 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = 0 ]; then
-            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
+            echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
             return 0
         fi
-        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" > "$case_row_file"
         return 1
     fi
 
-    line=$(wait_for_result_line "$case_dir/results.txt" 80)
-    actual=`echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'`
-    if [ "$actual" = "" ]; then
-        actual="missing"
-    fi
-
-    status="success"
-    if [ "$launch_rc" != 0 ]; then
-        status="error"
-        actual="script_error"
-    elif [ "$actual" = "missing" ]; then
-        status="error"
-    elif [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
-    fi
-
-    if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  launch_rc=$launch_rc  $line" > "$case_result_file"
+    if [ "$launch_rc" = 0 ]; then
+        line=$(wait_for_result_line "$case_dir/results.txt" 80)
     else
-        echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" > "$case_result_file"
+        line=""
     fi
+    result_line=$(format_case_row "$case_name" "$line" "$launch_rc")
 
-    if [ "$status" = "success" ]; then
+    echo "$result_line" > "$case_row_file"
+
+    if case_row_passed "$result_line"; then
         return 0
     fi
     return 1
@@ -598,7 +599,6 @@ if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     case_idx=0
     for ONE_CASE in "${RUN_CASES[@]}"; do
         run_case "$case_idx" "$ONE_CASE" || {
-            echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=script_error" >> "$RESULTS_FILE"
             ALL_OK="no"
             if [ "$JUST_MAKE" != "yes" ]; then
                 break
@@ -608,8 +608,8 @@ if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     done
 else
     RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_zigzag_XXXXXX")
-    CASE_RESULT_DIR="$RUN_ROOT/case_results"
-    mkdir -p "$CASE_RESULT_DIR"
+    CASE_ROW_DIR="$RUN_ROOT/case_rows"
+    mkdir -p "$CASE_ROW_DIR"
 
     case_idx=0
     wave_pids=""
@@ -637,7 +637,7 @@ else
         stop_mission_apps "$RUN_ROOT"
     fi
 
-    for result_file in $(find "$CASE_RESULT_DIR" -type f | sort); do
+    for result_file in $(find "$CASE_ROW_DIR" -type f | sort); do
         cat "$result_file" >> "$RESULTS_FILE"
     done
 fi

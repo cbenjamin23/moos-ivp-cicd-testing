@@ -3,8 +3,9 @@
 This harness reuses the `ufield_comms_unit` stem to test route recovery paths in
 `uFldNodeBroker`, `uFldShoreBroker`, and pShare rather than static bridge
 configuration. Recovery cases require the base two-node communications mission
-to pass; the expected-fail case requires the corresponding blocked-route grade.
-All cases add alog checks for the specific route mechanism under test.
+to pass; expected-negative cases require mission-owned blocked-route evidence
+and still report `grade=pass` when that evidence is observed. All cases add
+alog checks for the specific route mechanism under test.
 
 Typical runs:
 
@@ -43,8 +44,11 @@ Typical runs:
 
 ## Evaluation
 
-`pMissionEval` owns the mission grade by requiring two brokered nodes, direct
-message delivery, ack delivery, cross-node report delivery, pulse evidence, and
-no shared-report leakage. The harness supplements that grade with targeted alog
-metrics: exact pShare command routes, broker ack keys, runtime
-`TRY_SHORE_HOST` mail, and absence of pShare output for invalid route strings.
+`pMissionEval` owns the mission grade. Recovery cases require two brokered
+nodes, direct message delivery, ack delivery, cross-node report delivery, pulse
+evidence, and no shared-report leakage. Expected-negative cases replace those
+criteria with the corresponding blocked-route evidence and include an
+`expected=<scenario>` result field. The harness supplements the mission grade
+with targeted alog metrics: exact pShare command routes, broker ack keys,
+runtime `TRY_SHORE_HOST` mail, and absence of pShare output for invalid route
+strings.

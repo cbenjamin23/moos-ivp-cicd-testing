@@ -1,1 +1,1 @@
-form=pid_unit  mmod=manual_override_zero_pass  grade=pass  eval=true  rudder=0  thrust=0  control=false  mhash=[OPEN-USER]
+form=pid_unit  mmod=depth_missing_pitch_zero_pass  grade=pass  eval=true  rudder=0  thrust=0  elevator=0  control=true  mhash=[JIMS-RUMP]

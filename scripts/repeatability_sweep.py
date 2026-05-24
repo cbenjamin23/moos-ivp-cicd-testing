@@ -66,11 +66,13 @@ def parse_results_line(line: str) -> dict[str, str]:
             continue
         key, value = token.split("=", 1)
         fields[key] = value
-    if "case_result" not in fields and "status" in fields:
-        fields["case_result"] = "success" if fields["status"] == "ok" else fields["status"]
-    if "perf_status" not in fields and "perf_case_result" in fields:
-        fields["perf_status"] = fields["perf_case_result"]
     return fields
+
+
+def row_result(row: dict[str, str]) -> str:
+    if row.get("grade") == "pass":
+        return "pass"
+    return "fail"
 
 
 def extract_case_order(zlaunch_path: Path) -> list[str]:
@@ -117,7 +119,8 @@ def main() -> int:
         case_stats[case] = {
             "seen": 0,
             "success": 0,
-            "case_results": set(),
+            "results": set(),
+            "mission_grades": set(),
             "cn_ports": set(),
             "cn_fores": set(),
             "cn_crosseds": set(),
@@ -178,11 +181,16 @@ def main() -> int:
             seen_cases.add(case)
             stats = case_stats[case]
             stats["seen"] = int(stats["seen"]) + 1
-            case_result = row.get("case_result", "missing")
-            cast_case_results = stats["case_results"]
-            assert isinstance(cast_case_results, set)
-            cast_case_results.add(case_result)
-            if case_result == "success":
+            result = row_result(row)
+            cast_results = stats["results"]
+            assert isinstance(cast_results, set)
+            cast_results.add(result)
+            grade = row.get("grade")
+            if grade not in (None, ""):
+                cast_grades = stats["mission_grades"]
+                assert isinstance(cast_grades, set)
+                cast_grades.add(grade)
+            if result == "pass":
                 stats["success"] = int(stats["success"]) + 1
 
             for key, stat_key in (
@@ -288,19 +296,20 @@ def main() -> int:
             "",
             "Per-case summary:",
             "",
-            "| case | success/runs | case_results | CPA range | wall range | cn_port values | cn_fore values | cn_crossed values | mode values | ix values |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            "| case | pass/runs | result values | mission_grade values | CPA range | wall range | cn_port values | cn_fore values | cn_crossed values | mode values | ix values |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
 
     for case in case_order:
         stats = case_stats[case]
         lines.append(
-            "| {case} | {success}/{runs} | {case_results} | {cpa} | {wall} | {cn_ports} | {cn_fores} | {cn_crosseds} | {modes} | {ixs} |".format(
+            "| {case} | {success}/{runs} | {results} | {mission_grades} | {cpa} | {wall} | {cn_ports} | {cn_fores} | {cn_crosseds} | {modes} | {ixs} |".format(
                 case=case,
                 success=stats["success"],
                 runs=args.runs,
-                case_results=set_string(stats["case_results"]),  # type: ignore[arg-type]
+                results=set_string(stats["results"]),  # type: ignore[arg-type]
+                mission_grades=set_string(stats["mission_grades"]),  # type: ignore[arg-type]
                 cpa=fmt_float_range(stats["cpa_values"]),  # type: ignore[arg-type]
                 wall=fmt_float_range(stats["wall_values"]),  # type: ignore[arg-type]
                 cn_ports=set_string(stats["cn_ports"]),  # type: ignore[arg-type]

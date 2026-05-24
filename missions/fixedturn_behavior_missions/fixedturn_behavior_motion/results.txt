@@ -1,1 +1,1 @@
-  grade=pass  form=fixedturn_behavior_tests  mmod=turn_spec_bad_update_recover_pass  eval=true  ft_done=true  timeout=false  heading=94.837  nav_speed=1.53  turn_time=5.238  turn_dist=8  turn_one=true  turn_two=true  turn_three=false  ft_report=spd=1.4,mod_hdg=45,rudder_avg=52.3  bhv_error=false  mhash=[OKAY-KARL]
+  grade=pass  form=fixedturn_behavior_tests  mmod=bad_schedule_repeat_fail  eval=true  expected=invalid_config_rejected  ft_done=false  timeout=true  heading=45  nav_speed=0  bhv_error=false  mhash=[CUTE-RAFT]

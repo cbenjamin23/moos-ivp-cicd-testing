@@ -105,15 +105,15 @@ case_list() {
 
 get_case_config() {
     CASE_NAME="$1"
-    EXPECTED="pass"
     ROUTE_MODE="stock"
     EXTRA_CHECK=""
+    NEGATIVE_PROFILE=""
 
     case "$CASE_NAME" in
         dead_first_tryhost_blocks_fail)
-            EXPECTED="fail"
             ROUTE_MODE="dead_first_tryhost"
             EXTRA_CHECK="dead_first_tryhost_blocks"
+            NEGATIVE_PROFILE="blocked_no_nodes"
             ;;
         secondary_dead_tryhost_ignored_pass)
             ROUTE_MODE="secondary_dead_tryhost"
@@ -136,9 +136,9 @@ get_case_config() {
             EXTRA_CHECK="runtime_tryhost_recover"
             ;;
         runtime_dead_then_valid_blocks_fail)
-            EXPECTED="fail"
             ROUTE_MODE="runtime_dead_then_valid"
             EXTRA_CHECK="runtime_dead_then_valid_blocks"
+            NEGATIVE_PROFILE="blocked_no_nodes"
             ;;
         runtime_valid_then_dead_stays_pass)
             ROUTE_MODE="runtime_valid_then_dead"
@@ -157,14 +157,14 @@ get_case_config() {
             EXTRA_CHECK="delayed_runtime_tryhost_recover"
             ;;
         late_runtime_tryhost_blocks_delivery_fail)
-            EXPECTED="fail"
             ROUTE_MODE="late_runtime_tryhost"
             EXTRA_CHECK="late_runtime_tryhost_blocks_delivery"
+            NEGATIVE_PROFILE="late_blocks_delivery"
             ;;
         runtime_one_node_missing_route_fail)
-            EXPECTED="fail"
             ROUTE_MODE="runtime_one_node_missing_route"
             EXTRA_CHECK="runtime_one_node_missing_route"
+            NEGATIVE_PROFILE="one_node_only"
             ;;
         runtime_staggered_nodes_recover_pass)
             ROUTE_MODE="runtime_staggered_nodes"
@@ -191,18 +191,18 @@ get_case_config() {
             EXTRA_CHECK="shore_vnode_discovery_recover"
             ;;
         shore_vnode_one_node_only_fail)
-            EXPECTED="fail"
             ROUTE_MODE="shore_vnode_one_node_only"
             EXTRA_CHECK="shore_vnode_one_node_only"
+            NEGATIVE_PROFILE="one_node_only"
             ;;
         shore_vnode_extra_dead_ignored_pass)
             ROUTE_MODE="shore_vnode_extra_dead"
             EXTRA_CHECK="shore_vnode_extra_dead_ignored"
             ;;
         shore_vnode_default_port_no_listener_fail)
-            EXPECTED="fail"
             ROUTE_MODE="shore_vnode_default_port"
             EXTRA_CHECK="shore_vnode_default_port_no_listener"
+            NEGATIVE_PROFILE="blocked_no_nodes"
             ;;
         shore_vnode_invalid_host_ignored_pass)
             ROUTE_MODE="shore_vnode_invalid_host"
@@ -239,6 +239,41 @@ wait_for_result_line() {
     done
     echo ""
     return 1
+}
+
+grade_from_line() {
+    echo "$1" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'
+}
+
+format_result_row() {
+    local case_name="$1"
+    local line="$2"
+    local launch_rc="${3:-0}"
+    local grade
+
+    if [ "$launch_rc" != 0 ]; then
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/^[[:space:]]*//')
+    grade=$(grade_from_line "$line")
+    if [ "$grade" = "" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result"
+        return
+    fi
+
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+
+    echo "case=$case_name  grade=$grade  $line"
+}
+
+result_row_passed() {
+    local line="$1"
+    local grade
+    grade=$(grade_from_line "$line")
+    [ "$grade" = "pass" ]
 }
 
 shore_alog() {
@@ -324,6 +359,8 @@ extra_check_ok() {
 
     case "$check" in
         dead_first_tryhost_blocks)
+            echo "$line" | rg -q 'grade=pass' && \
+            echo "$line" | rg -q 'expected=dead_first_tryhost_blocks' && \
             echo "$line" | rg -q 'node_count=0' && \
             echo "$line" | rg -q 'direct=false' && \
             echo "$line" | rg -q 'ack=false' && \
@@ -377,6 +414,8 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         runtime_dead_then_valid_blocks)
+            echo "$line" | rg -q 'grade=pass' && \
+            echo "$line" | rg -q 'expected=runtime_dead_then_valid_blocks' && \
             echo "$line" | rg -q 'node_count=0' && \
             echo "$line" | rg -q 'direct=false' && \
             echo "$line" | rg -q 'ack=false' && \
@@ -422,15 +461,19 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         late_runtime_tryhost_blocks_delivery)
-            echo "$line" | rg -q 'grade=fail' && \
+            echo "$line" | rg -q 'grade=pass' && \
+            echo "$line" | rg -q 'expected=late_runtime_tryhost_blocks_delivery' && \
             echo "$line" | rg -q 'node_count=2' && \
+            ! base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         runtime_one_node_missing_route)
-            echo "$line" | rg -q 'grade=fail' && \
+            echo "$line" | rg -q 'grade=pass' && \
+            echo "$line" | rg -q 'expected=runtime_one_node_missing_route' && \
+            echo "$line" | rg -q 'node_count=1' && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             ! vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok"
@@ -488,7 +531,9 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         shore_vnode_one_node_only)
-            echo "$line" | rg -q 'grade=fail' && \
+            echo "$line" | rg -q 'grade=pass' && \
+            echo "$line" | rg -q 'expected=shore_vnode_one_node_only' && \
+            echo "$line" | rg -q 'node_count=1' && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=.*:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
@@ -502,7 +547,9 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         shore_vnode_default_port_no_listener)
-            echo "$line" | rg -q 'grade=fail' && \
+            echo "$line" | rg -q 'grade=pass' && \
+            echo "$line" | rg -q 'expected=shore_vnode_default_port_no_listener' && \
+            echo "$line" | rg -q 'node_count=0' && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:9200" && \
             ! vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok" && \
             ! vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok"
@@ -560,6 +607,76 @@ patch_shore_broker_block() {
     local case_dir="$1"
     local block="$2"
     BLOCK="$block" perl -0pi -e 's/ProcessConfig = uFldShoreBroker\n\{\n.*?\n\}/$ENV{BLOCK}/s or die "failed to patch uFldShoreBroker block\n";' "$case_dir/meta_shoreside.moos"
+}
+
+patch_pmission_eval_block() {
+    local case_dir="$1"
+    local block="$2"
+    BLOCK="$block" perl -0pi -e 's/ProcessConfig = pMissionEval\n\{\n.*?\n\}/$ENV{BLOCK}/s or die "failed to patch pMissionEval block\n";' "$case_dir/meta_shoreside.moos"
+}
+
+patch_negative_eval_block() {
+    local case_dir="$1"
+    local profile="$2"
+    local expected="$3"
+    local conditions
+
+    if [ "$profile" = "blocked_no_nodes" ]; then
+        conditions="  pass_condition = UFSB_NODE_COUNT = 0
+  pass_condition = DIRECT_MSG_DELIVERED = false
+  pass_condition = ACK_DELIVERED = false
+  pass_condition = REPORT_ABE_TO_BEN = false
+  pass_condition = REPORT_BEN_TO_ABE = false
+  pass_condition = SHARED_REPORT_SEEN = false
+  pass_condition = MISSION_TIMEOUT = false"
+    elif [ "$profile" = "late_blocks_delivery" ]; then
+        conditions="  pass_condition = UFSB_NODE_COUNT >= 2
+  pass_condition = MISSION_TIMEOUT = false"
+    elif [ "$profile" = "one_node_only" ]; then
+        conditions="  pass_condition = UFSB_NODE_COUNT = 1
+  pass_condition = DIRECT_MSG_DELIVERED = false
+  pass_condition = MISSION_TIMEOUT = false"
+    else
+        return 0
+    fi
+
+    patch_pmission_eval_block "$case_dir" "ProcessConfig = pMissionEval
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  mailflag = @NODE_MESSAGE_BEN#DIRECT_MSG_DELIVERED=true
+  mailflag = @ACK_MESSAGE_abe#ACK_DELIVERED=true
+  mailflag = @NODE_REPORT_BEN#REPORT_ABE_TO_BEN=true
+  mailflag = @NODE_REPORT_ABE#REPORT_BEN_TO_ABE=true
+  mailflag = @VIEW_COMMS_PULSE#VIEW_COMMS_PULSE_SEEN=true
+  mailflag = @NODE_REPORT_UNC#SHARED_REPORT_SEEN=true
+
+  lead_condition = MISSION_DONE = true
+$conditions
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = ufield_comms_tests
+  mission_mod  = \$(MMOD:=route_resilience_expected_negative_pass)
+
+  report_file   = results.txt
+  report_column = grade=\$[GRADE]
+  report_column = form=\$[MISSION_FORM]
+  report_column = mmod=\$[MMOD]
+  report_column = expected=$expected
+  report_column = node_count=\$[UFSB_NODE_COUNT]
+  report_column = direct=\$[DIRECT_MSG_DELIVERED]
+  report_column = ack=\$[ACK_DELIVERED]
+  report_column = rpt_ab=\$[REPORT_ABE_TO_BEN]
+  report_column = rpt_ba=\$[REPORT_BEN_TO_ABE]
+  report_column = pulse=\$[VIEW_COMMS_PULSE_SEEN]
+  report_column = shared=\$[SHARED_REPORT_SEEN]
+  report_column = timeout=\$[MISSION_TIMEOUT]
+  report_column = mhash=\$[MHASH_SHORT]
+}"
 }
 
 prepare_case_dir() {
@@ -714,19 +831,29 @@ prepare_case_dir() {
   try_vnode = route=127.0.0.1:$veh2_pshare
 }"
     fi
+
+    if [ "$NEGATIVE_PROFILE" != "" ]; then
+        patch_negative_eval_block "$case_dir" "$NEGATIVE_PROFILE" "$EXTRA_CHECK"
+    fi
 }
 
 run_case() {
     local case_name="$1"
     local case_index="$2"
-    get_case_config "$case_name" || return 1
+    get_case_config "$case_name" || {
+        echo "case=$case_name  grade=fail  reason=case_config_error" >> "$RESULTS_FILE"
+        return 1
+    }
 
     local case_dir="$RUN_ROOT/$case_name"
-    local case_results="$case_dir/results.txt"
+    local case_rows="$case_dir/results.txt"
     local pbase=$((PORT_BASE + case_index * PORT_STRIDE))
     mkdir -p "$case_dir"
-    prepare_case_dir "$case_dir" "$pbase"
-    : > "$case_results"
+    prepare_case_dir "$case_dir" "$pbase" || {
+        echo "case=$case_name  grade=fail  reason=prepare_error" >> "$RESULTS_FILE"
+        return 1
+    }
+    : > "$case_rows"
 
     local just_make_arg=""
     if [ "$JUST_MAKE" = "yes" ]; then
@@ -745,27 +872,36 @@ run_case() {
             --veh2_pshare="$((pbase+12))" \
             "$TIME_WARP" >"$case_dir/xlaunch.out" 2>&1
     )
+    local launch_rc=$?
     harness_teardown_stop_root "$case_dir" >/dev/null 2>&1 || true
 
     if [ "$JUST_MAKE" = "yes" ]; then
-        echo "$case_name: just_make ok"
-        return 0
+        if [ "$launch_rc" = 0 ]; then
+            echo "case=$case_name  grade=pass  reason=just_make" >> "$RESULTS_FILE"
+            echo "$case_name: just_make ok"
+            return 0
+        fi
+        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" >> "$RESULTS_FILE"
+        echo "$case_name: launch failed in just_make"
+        return 1
     fi
 
     local line
-    line=`wait_for_result_line "$case_results"`
-    if [ "$line" = "" ]; then
-        echo "$case_name: no-result"
-        return 1
+    local result_line
+    if [ "$launch_rc" = 0 ]; then
+        line=`wait_for_result_line "$case_rows"`
+    else
+        line=""
     fi
 
-    echo "$case_name $line" >> "$RESULTS_FILE"
-    if ! echo "$line" | rg -q "grade=$EXPECTED"; then
-        echo "$case_name: expected $EXPECTED but got: $line"
+    result_line=$(format_result_row "$case_name" "$line" "$launch_rc")
+    echo "$result_line" >> "$RESULTS_FILE"
+    if ! result_row_passed "$result_line"; then
+        echo "$case_name: result failed: $result_line"
         return 1
     fi
-    if ! extra_check_ok "$EXTRA_CHECK" "$case_dir" "$line"; then
-        echo "$case_name: extra check failed: $line"
+    if ! extra_check_ok "$EXTRA_CHECK" "$case_dir" "$result_line"; then
+        echo "$case_name: extra check failed: $result_line"
         return 1
     fi
     echo "$case_name: ok"

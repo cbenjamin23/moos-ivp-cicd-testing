@@ -28,9 +28,7 @@ The harness currently expects the gauntlet mission to:
 It preserves the mission-owned report columns and wraps them in the usual harness summary line:
 
 - `case`
-- `expected`
-- `actual`
-- `case_result`
+- `grade`
 - `perf_status`
 - `perf_notes`
 - `warning_count`

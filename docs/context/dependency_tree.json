@@ -852,7 +852,7 @@
         "path": "missions/cmgr_missions/cmgr_motion"
       },
       "patches": {
-        "file_count": 23
+        "file_count": 24
       },
       "path": "harnesses/cmgr_harnesses/H02-cmgr_motion",
       "perf_profile": "",
@@ -2045,7 +2045,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 38
+        "file_count": 39
       },
       "path": "harnesses/depth_behavior_harnesses/H01-constant_depth_motion",
       "perf_profile": "",
@@ -2125,7 +2125,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 37
+        "file_count": 38
       },
       "path": "harnesses/depth_behavior_harnesses/H02-goto_depth_motion",
       "perf_profile": "",
@@ -2204,7 +2204,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 52
+        "file_count": 53
       },
       "path": "harnesses/depth_behavior_harnesses/H03-periodic_surface_motion",
       "perf_profile": "",
@@ -2289,7 +2289,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 30
+        "file_count": 31
       },
       "path": "harnesses/depth_behavior_harnesses/H04-max_depth_motion",
       "perf_profile": "",
@@ -2365,7 +2365,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 31
+        "file_count": 32
       },
       "path": "harnesses/depth_behavior_harnesses/H05-min_altitude_motion",
       "perf_profile": "",
@@ -2845,7 +2845,7 @@
         "path": "missions/collision_behavior_missions/collision_behavior_motion"
       },
       "patches": {
-        "file_count": 30
+        "file_count": 33
       },
       "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion",
       "perf_profile": "",
@@ -2932,7 +2932,7 @@
         "path": "missions/convoy_behavior_missions/convoy_behavior_motion"
       },
       "patches": {
-        "file_count": 59
+        "file_count": 60
       },
       "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion",
       "perf_profile": "",
@@ -3234,7 +3234,7 @@
         "path": "missions/periodic_speed_behavior_missions/periodic_speed_behavior_motion"
       },
       "patches": {
-        "file_count": 35
+        "file_count": 36
       },
       "path": "harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion",
       "perf_profile": "",
@@ -3320,7 +3320,7 @@
         "path": "missions/zigzag_behavior_missions/zigzag_behavior_motion"
       },
       "patches": {
-        "file_count": 53
+        "file_count": 54
       },
       "path": "harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion",
       "perf_profile": "",
@@ -3512,7 +3512,7 @@
         "path": "missions/memoryturnlimit_behavior_missions/memoryturnlimit_behavior_motion"
       },
       "patches": {
-        "file_count": 37
+        "file_count": 40
       },
       "path": "harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion",
       "perf_profile": "",
@@ -3595,7 +3595,7 @@
         "path": "missions/timer_behavior_missions/timer_behavior_motion"
       },
       "patches": {
-        "file_count": 29
+        "file_count": 31
       },
       "path": "harnesses/timer_behavior_harnesses/H01-timer_behavior_motion",
       "perf_profile": "",
@@ -4275,7 +4275,7 @@
         "path": "missions/loiter_behavior_missions/loiter_behavior_motion"
       },
       "patches": {
-        "file_count": 42
+        "file_count": 44
       },
       "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
       "perf_profile": "",
@@ -4373,7 +4373,7 @@
         "path": "missions/obstacle_behavior_missions/obstacle_behavior_motion"
       },
       "patches": {
-        "file_count": 29
+        "file_count": 30
       },
       "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion",
       "perf_profile": "",
@@ -4617,7 +4617,7 @@
         "path": "missions/shadow_behavior_missions/shadow_behavior_motion"
       },
       "patches": {
-        "file_count": 49
+        "file_count": 51
       },
       "path": "harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion",
       "perf_profile": "",
@@ -4715,7 +4715,7 @@
         "path": "missions/stationkeep_behavior_missions/stationkeep_behavior_motion"
       },
       "patches": {
-        "file_count": 49
+        "file_count": 50
       },
       "path": "harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion",
       "perf_profile": "",
@@ -4812,7 +4812,7 @@
         "path": "missions/trail_behavior_missions/trail_behavior_motion"
       },
       "patches": {
-        "file_count": 61
+        "file_count": 63
       },
       "path": "harnesses/trail_behavior_harnesses/H01-trail_behavior_motion",
       "perf_profile": "",
@@ -6952,11 +6952,7 @@
   },
   "repo": {
     "file_counts_by_suffix": {
-      "._bhv": 1,
-      "._moos": 2,
-      ".alog": 2,
       ".bhv": 32,
-      ".blog": 2,
       ".cpp": 220,
       ".css": 3,
       ".gif": 150,
@@ -6964,7 +6960,7 @@
       ".html": 71,
       ".js": 1,
       ".json": 2,
-      ".md": 135,
+      ".md": 136,
       ".mjo": 1,
       ".moos": 155,
       ".moos#": 1,
@@ -6973,13 +6969,12 @@
       ".py": 31,
       ".sh": 309,
       ".slog": 1,
-      ".txt": 284,
+      ".txt": 296,
       ".xbhv": 518,
-      ".xmoos": 1009,
-      ".ylog": 2,
-      "[none]": 8
+      ".xmoos": 1034,
+      "[none]": 7
     },
-    "harness_patch_count": 1504,
+    "harness_patch_count": 1529,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 425,

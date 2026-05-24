@@ -35,7 +35,8 @@ The most important behavior-specific patches are:
   prove non-templated obstacle configuration still avoids and completes
 - malformed polygon, distance, CPA, flag, boolean, and currently unsupported
   `pwt_grade` settings
-  prove rejected configuration paths grade fail under mission control
+  prove rejected configuration paths grade pass on mission-owned malconfig
+  evidence
 - altered `condition = AVOID = ...`
   proves the behavior can be effectively disabled without changing the rest of
   the mission stack

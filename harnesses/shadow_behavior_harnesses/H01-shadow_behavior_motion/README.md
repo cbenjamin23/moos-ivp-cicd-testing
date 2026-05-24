@@ -32,20 +32,20 @@ telemetry plus bridged NAV speed/heading from both vehicles.
 - `no_extrapolate_pass` Verifies clean shadowing with contact extrapolation disabled.
 - `cnflag_range_macro_pass` Exercises inherited contact-flag handling by posting a range macro when the target is within 120 meters and requiring the bridged value.
 - `missing_contact_warn_pass` Uses a missing contact with `on_no_contact_ok=true` and requires warning-only behavior with no behavior error.
-- `missing_contact_fail` Uses a missing contact with `on_no_contact_ok=false` and expects the mission to fail.
-- `missing_contact_param_fail` Omits the required `contact` setting and expects the mission to fail.
-- `bad_pwt_outer_dist_fail` Negative `pwt_outer_dist` should be rejected and the mission should fail.
-- `bad_heading_peakwidth_fail` Negative `heading_peakwidth` should be rejected and the mission should fail.
-- `bad_heading_basewidth_fail` Negative `heading_basewidth` should be rejected and the mission should fail.
-- `bad_speed_peakwidth_fail` Negative `speed_peakwidth` should be rejected and the mission should fail.
-- `bad_speed_basewidth_fail` Negative `speed_basewidth` should be rejected and the mission should fail.
-- `bad_decay_fail` Malformed `decay` input should be rejected and the mission should fail.
-- `bad_decay_order_fail` Rejects `decay` ranges whose start is greater than the end.
-- `bad_extrapolate_fail` Non-boolean `extrapolate` input should be rejected and the mission should fail.
-- `bad_on_no_contact_ok_fail` Non-boolean `on_no_contact_ok` input should be rejected and the mission should fail.
-- `bad_time_on_leg_fail` Negative inherited `time_on_leg` input should be rejected and the mission should fail.
-- `bad_cnflag_fail` Rejects a malformed inherited contact-flag tag.
-- `bad_post_per_contact_info_fail` Non-boolean `post_per_contact_info` input should be rejected and the mission should fail.
+- `missing_contact_fail` Uses a missing contact with `on_no_contact_ok=false` and passes only when `BHV_ERROR` proves the missing contact was rejected.
+- `missing_contact_param_fail` Omits the required `contact` setting and passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_pwt_outer_dist_fail` Negative `pwt_outer_dist` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_heading_peakwidth_fail` Negative `heading_peakwidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_heading_basewidth_fail` Negative `heading_basewidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_speed_peakwidth_fail` Negative `speed_peakwidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_speed_basewidth_fail` Negative `speed_basewidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_decay_fail` Malformed `decay` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_decay_order_fail` Rejects `decay` ranges whose start is greater than the end and passes only on `HELM_MALCONFIG`.
+- `bad_extrapolate_fail` Non-boolean `extrapolate` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_on_no_contact_ok_fail` Non-boolean `on_no_contact_ok` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_time_on_leg_fail` Negative inherited `time_on_leg` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `bad_cnflag_fail` Rejects a malformed inherited contact-flag tag and passes only on `HELM_MALCONFIG`.
+- `bad_post_per_contact_info_fail` Non-boolean `post_per_contact_info` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
 
 ## Running
 

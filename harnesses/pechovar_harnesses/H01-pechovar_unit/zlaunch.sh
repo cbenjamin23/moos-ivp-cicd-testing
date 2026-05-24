@@ -27,7 +27,7 @@ MISSION_DIR="$REPO_DIR/missions/pechovar_missions/pechovar_unit"
 TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 RUN_ROOT=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 ALL_OK="yes"
 
 if [ -f "$TEARDOWN_HELPER" ]; then
@@ -511,6 +511,29 @@ check_alog_evidence() {
     return 0
 }
 
+
+emit_case_row() {
+    local case_name="$1"
+    local status="$2"
+    local expected="$3"
+    local actual="$4"
+    shift 4
+    local line="$1"
+    shift || true
+    local grade
+
+    grade=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+    if [ "$grade" != "" ]; then
+        echo "case=$case_name  grade=$grade  $line  $*"
+    elif [ "$status" = "success" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result  $line  $*"
+    else
+        echo "case=$case_name  grade=fail  reason=$status  $line  $*"
+    fi
+}
+
 run_case() {
     local case_name="$1"
     local case_idx="$2"
@@ -533,7 +556,7 @@ run_case() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         (cd "$case_dir" && ./launch.sh --just_make --mmod="$case_name" --shore_mport="$shore_mport" --shore_pshare="$shore_pshare" "$TIME_WARP")
-        echo "case=$case_name  case_result=success  expected=pass  actual=pass  grade=not_run  form=pechovar_unit  mmod=$case_name  done=true"
+        echo "case=$case_name  grade=pass  form=pechovar_unit  mmod=$case_name  done=true  reason=just_make"
         return 0
     fi
 
@@ -558,7 +581,7 @@ run_case() {
         status="mismatch"
     fi
 
-    echo "case=$case_name  case_result=$status  expected=pass  actual=$actual  $line  evidence=$evidence"
+    emit_case_row "$case_name" "$status" "pass" "$actual" "$line" "evidence=$evidence"
 
     if [ "$status" = "success" ]; then
         return 0
@@ -579,11 +602,11 @@ run_cases() {
 
     : > "$RESULTS_FILE"
     RUN_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/pechovar_harness.XXXXXX")
-    CASE_RESULT_DIR="$RUN_ROOT/case_results"
-    mkdir -p "$CASE_RESULT_DIR"
+    CASE_ROW_DIR="$RUN_ROOT/case_rows"
+    mkdir -p "$CASE_ROW_DIR"
 
     for name in "${cases[@]}"; do
-        outfile="$CASE_RESULT_DIR/$name.out"
+        outfile="$CASE_ROW_DIR/$name.out"
         (run_case "$name" "$idx") > "$outfile" 2>&1 &
         pids+=("$!")
         names+=("$name")
@@ -595,7 +618,7 @@ run_cases() {
                 wait "$pid" || ALL_OK="no"
             done
             for name in "${names[@]}"; do
-                cat "$CASE_RESULT_DIR/$name.out" | tee -a "$RESULTS_FILE"
+                cat "$CASE_ROW_DIR/$name.out" | tee -a "$RESULTS_FILE"
             done
             pids=()
             names=()
@@ -607,7 +630,7 @@ run_cases() {
         wait "$pid" || ALL_OK="no"
     done
     for name in "${names[@]}"; do
-        cat "$CASE_RESULT_DIR/$name.out" | tee -a "$RESULTS_FILE"
+        cat "$CASE_ROW_DIR/$name.out" | tee -a "$RESULTS_FILE"
     done
 }
 

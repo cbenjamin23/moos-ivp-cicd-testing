@@ -35,8 +35,8 @@ input/output contract before introducing a vehicle simulator or helm behavior.
 - `max_elevator_limit_pass` - `maxelevator=5` must clip otherwise larger elevator output at the configured limit.
 - `speed_debug_pass` - `speed_debug=true` must publish speed debug text alongside thrust output.
 - `nav_heading_after_yaw_pass` - a later `NAV_HEADING` update must override an earlier `NAV_YAW`-derived heading.
-- `simulation_mode_fail` - expected-fail coverage for current `simulation=true` behavior, where actuator output stays zero despite a misleading control flag.
-- `thrust_cap_runtime_fail` - expected-fail coverage for current runtime `PID_THRUST_CAP` behavior, which computes a cap but still posts uncapped thrust.
+- `simulation_mode_fail` - current-bug coverage for `simulation=true`, where actuator output stays zero despite a misleading control flag.
+- `thrust_cap_runtime_fail` - current-bug coverage for runtime `PID_THRUST_CAP`, which computes a cap but still posts uncapped thrust.
 - `heading_wrap_negative_pass` - desired `355` degrees from current `5` degrees must take the short negative wrap, with bounded negative rudder.
 - `nav_heading_normalize_pass` - out-of-range `NAV_HEADING=-90` must be normalized before rudder calculation.
 - `runtime_speed_factor_zero_pid_pass` - runtime `SPEED_FACTOR=0` must switch from factor mapping to PID speed control.
@@ -66,9 +66,11 @@ Deferred to H02:
 Each H01 case should prove one app-level contract with a narrow `pMissionEval`
 grade. Numeric pass bands are tight where output is deterministic, and wider
 only when the exact timestamp of a repeated PID iteration can vary slightly.
-Expected-fail cases are named with `_fail`, mapped to expected `fail` in the
-harness wrapper, and should remain actionable: if upstream fixes the app, those
-cases should flip from harness success to mismatch and prompt a case update.
+Current-bug cases are still named with `_fail`, but the mission criteria own the
+verdict. They grade `pass` only when the documented buggy evidence is observed:
+`simulation_mode_fail` requires zero actuator output with `PID_HAS_CONTROL=true`,
+and `thrust_cap_runtime_fail` requires uncapped thrust near `100`. If upstream
+fixes the app, those cases should flip to `grade=fail` and prompt a case update.
 The missing-mail cases intentionally grade zero actuator publications from the
 app's all-stop path; their `PID_HAS_CONTROL` field reflects the app's current
 override-release publication, not proof that a complete input set was accepted.

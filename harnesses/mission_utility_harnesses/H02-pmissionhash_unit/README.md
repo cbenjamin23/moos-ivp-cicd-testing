@@ -7,6 +7,10 @@ The harness uses the stem mission at
 publication settings and use `pMissionEval` only as the mission-owned grading
 consumer for hash mail and report rows.
 
+Exported harness rows use `grade=<pass|fail>` for the harness verdict and
+`subject=pMissionHash` to identify the utility under test. The evaluator row is
+preserved as `subject_grade=pass` plus the hash evidence fields.
+
 ## Current Matrix
 
 - `hash_custom_vars_pass` Custom variable case. `pMissionHash` publishes non-default long and short hash variables, and the evaluator expands them into the report row.

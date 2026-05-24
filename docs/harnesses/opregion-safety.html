@@ -116,13 +116,13 @@
 
         <article class="case-row">
           <code>save_dist_buffer_fail</code>
-          <p>The vehicle uses the same positive save_dist setup, but drives beyond the generated save buffer while staying inside the generated halt buffer. The case should fail due to save-region breach.</p>
+          <p>The vehicle uses the same positive save_dist setup, but drives beyond the generated save buffer while staying inside the generated halt buffer. The case should pass when the save-region breach evidence is observed without a halt or time breach.</p>
         </article>
 
 
         <article class="case-row">
           <code>halt_breach_fail</code>
-          <p>The vehicle is driven outside a tight halt region and should fail.</p>
+          <p>The vehicle is driven outside a tight halt region. The case should pass when halt-breach and behavior-error evidence are observed.</p>
         </article>
 
 
@@ -134,7 +134,7 @@
 
         <article class="case-row">
           <code>entry_gate_disabled_fail</code>
-          <p>Same start-outside geometry, but with trigger_on_poly_entry=false. The case should fail quickly.</p>
+          <p>Same start-outside geometry, but with trigger_on_poly_entry=false. The case should pass when halt-breach and behavior-error evidence are observed quickly.</p>
         </article>
 
 
@@ -146,7 +146,7 @@
 
         <article class="case-row">
           <code>trigger_exit_strict_fail</code>
-          <p>Companion case using the same short excursion shape, but with the stock short trigger_exit_time. The case should fail.</p>
+          <p>Companion case using the same short excursion shape, but with the stock short trigger_exit_time. The case should pass when halt-breach and behavior-error evidence are observed.</p>
         </article>
 
 
@@ -164,67 +164,67 @@
 
         <article class="case-row">
           <code>max_time_fail</code>
-          <p>A short max_time should expire before the transit finishes, producing the expected mission failure.</p>
+          <p>A short max_time should expire before the transit finishes. The case should pass when time-breach and behavior-error evidence are observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_breach_fail</code>
-          <p>Vehicle-side sensor input posts NAV_DEPTH beyond a configured max_depth. The case should grade fail through the OpRegion depth-breach error.</p>
+          <p>Vehicle-side sensor input posts NAV_DEPTH beyond a configured max_depth. The case should pass when the OpRegion depth-breach behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_breach_fail</code>
-          <p>Vehicle-side sensor input posts NAV_ALTITUDE below a configured min_altitude. The case should grade fail through the OpRegion altitude-breach error.</p>
+          <p>Vehicle-side sensor input posts NAV_ALTITUDE below a configured min_altitude. The case should pass when the OpRegion altitude-breach behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_save_dist_fail</code>
-          <p>The behavior is configured with a negative save_dist. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with a negative save_dist. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_halt_dist_fail</code>
-          <p>The behavior is configured with a negative halt_dist. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with a negative halt_dist. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_depth_fail</code>
-          <p>The behavior is configured with a negative max_depth. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with a negative max_depth. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_min_altitude_fail</code>
-          <p>The behavior is configured with a negative min_altitude. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with a negative min_altitude. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_recover_spd_fail</code>
-          <p>The behavior is configured with zero recover_spd. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with zero recover_spd. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trigger_on_poly_entry_fail</code>
-          <p>The behavior is configured with an invalid trigger_on_poly_entry boolean. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with an invalid trigger_on_poly_entry boolean. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trigger_entry_time_fail</code>
-          <p>The behavior is configured with a negative trigger_entry_time. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with a negative trigger_entry_time. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trigger_exit_time_fail</code>
-          <p>The behavior is configured with a negative trigger_exit_time. The case should grade fail when pHelmIvP reports MALCONFIG.</p>
+          <p>The behavior is configured with a negative trigger_exit_time. The case should pass when pHelmIvP reports MALCONFIG.</p>
         </article>
 
 
@@ -242,7 +242,7 @@
 
         <article class="case-row">
           <code>dynamic_region_halt_fail</code>
-          <p>A timer-posted update shrinks the operating region far enough that the vehicle should breach the recomputed halt region and fail.</p>
+          <p>A timer-posted update shrinks the operating region far enough that the vehicle should breach the recomputed halt region. The case should pass when halt-breach and behavior-error evidence are observed.</p>
         </article>
 
       </div>

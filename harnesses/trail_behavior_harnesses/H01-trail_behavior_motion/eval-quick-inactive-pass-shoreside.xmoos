@@ -1,0 +1,53 @@
+//-------------------------------------------------
+// FILE: eval-quick-inactive-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=20
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = TRAIL_DISTANCE >= 900
+  pass_condition = TRAIL_RELEVANCE = 0
+  pass_condition = PURSUIT = -1
+  pass_condition = REGION = UNKNOWN
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = trail_behavior_tests
+  mission_mod  = $(MMOD:=trail_inactive_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=trail_inactive
+  report_column = dist=$[TRAIL_DISTANCE]
+  report_column = relevance=$[TRAIL_RELEVANCE]
+  report_column = range=$[TRAIL_RANGE]
+  report_column = pursuit=$[PURSUIT]
+  report_column = region=$[REGION]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

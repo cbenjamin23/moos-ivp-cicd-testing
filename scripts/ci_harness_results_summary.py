@@ -7,9 +7,6 @@ from pathlib import Path
 import sys
 
 
-REQUIRED_KEYS = ("case", "expected", "actual", "case_result")
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Summarize a harness results.txt file for GitHub Actions."
@@ -25,9 +22,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--require-case-result",
         "--require-status",
-        dest="require_case_result",
+        dest="deprecated_require_status",
         default="success",
-        help="Require every case to have this case_result value.",
+        help="Deprecated no-op kept so existing workflow calls do not break.",
     )
     parser.add_argument(
         "--summary-path",
@@ -44,11 +41,23 @@ def parse_results_line(line: str) -> dict[str, str]:
             continue
         key, value = token.split("=", 1)
         fields[key] = value
-    if "case_result" not in fields and "status" in fields:
-        fields["case_result"] = "success" if fields["status"] == "ok" else fields["status"]
-    if "perf_status" not in fields and "perf_case_result" in fields:
-        fields["perf_status"] = fields["perf_case_result"]
     return fields
+
+
+def row_result(row: dict[str, str]) -> str:
+    """Return the case-level result from the mission grade."""
+    if row.get("grade") == "pass":
+        return "pass"
+    return "fail"
+
+
+def missing_required_fields(row: dict[str, str]) -> list[str]:
+    missing: list[str] = []
+    if "case" not in row:
+        missing.append("case")
+    if "grade" not in row:
+        missing.append("grade")
+    return missing
 
 
 def build_summary(
@@ -72,26 +81,25 @@ def build_summary(
     lines.extend(
         [
             "",
-            "| case | case_result | expected | actual | perf_status | warning_count | grade |",
-            "| --- | --- | --- | --- | --- | --- | --- |",
+            "| case | result | mission_grade | reason | perf_status | warning_count |",
+            "| --- | --- | --- | --- | --- | --- |",
         ]
     )
 
     if rows:
         for row in rows:
             lines.append(
-                "| {case} | {case_result} | {expected} | {actual} | {perf_status} | {warning_count} | {grade} |".format(
+                "| {case} | {result} | {grade} | {reason} | {perf_status} | {warning_count} |".format(
                     case=row.get("case", "?"),
-                    case_result=row.get("case_result", "?"),
-                    expected=row.get("expected", "?"),
-                    actual=row.get("actual", "?"),
+                    result=row_result(row),
+                    grade=row.get("grade", "?"),
+                    reason=row.get("reason", "-"),
                     perf_status=row.get("perf_status", "-"),
                     warning_count=row.get("warning_count", "-"),
-                    grade=row.get("grade", "?"),
                 )
             )
     else:
-        lines.append("| _none_ | - | - | - | - | - | - |")
+        lines.append("| _none_ | - | - | - | - | - |")
 
     if issues:
         lines.extend(["", "#### Issues", ""])
@@ -117,7 +125,7 @@ def main() -> int:
         else:
             for index, line in enumerate(raw_lines, start=1):
                 row = parse_results_line(line)
-                missing_keys = [key for key in REQUIRED_KEYS if key not in row]
+                missing_keys = missing_required_fields(row)
                 if missing_keys:
                     issues.append(
                         f"Line {index} was missing required field(s): {', '.join(missing_keys)}."
@@ -131,18 +139,9 @@ def main() -> int:
 
     for row in rows:
         case_name = row.get("case", "<missing>")
-        expected = row.get("expected")
-        actual = row.get("actual")
-        case_result = row.get("case_result")
 
-        if expected is not None and actual is not None and actual != expected:
-            issues.append(
-                f"Case `{case_name}` expected `{expected}` but got `{actual}`."
-            )
-        if case_result is not None and case_result != args.require_case_result:
-            issues.append(
-                f"Case `{case_name}` had case_result `{case_result}` instead of `{args.require_case_result}`."
-            )
+        if row_result(row) != "pass":
+            issues.append(f"Case `{case_name}` had result `{row_result(row)}`.")
 
     summary = build_summary(args.harness, results_path, rows, issues)
     print(summary)

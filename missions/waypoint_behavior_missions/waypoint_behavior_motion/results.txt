@@ -1,1 +1,1 @@
-  grade=pass  form=waypoint_behavior_tests  mmod=slow_speed_no_arrival_pass  eval=true  wpt_done=false  wpt_hit=false  cycle_hit=false  waypoint_end=false  test_ready=true  wpt_index=0  cycle_index=0  wpt_dist=56.787  bhv_error=false  mhash=[WIDE-KODA]
+  grade=pass  form=waypoint_behavior_tests  mmod=bad_efficiency_measure_fail  eval=true  expected=helm_malconfig  helm_malconfig=true  mhash=[]

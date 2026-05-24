@@ -1,0 +1,37 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BCM_ALERT_REQUEST#ALERT_REQUEST_SEEN=true
+  mailflag = @CONTACT_INFO#CONTACT_INFO_SEEN=true
+  mailflag = @RANGE_AVD_intruder#RANGE_INFO_SEEN=true
+  mailflag = @CLSG_SPD_AVD_intruder#CLSG_INFO_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = AVOIDING = idle
+  pass_condition = CONTACT_RESOLVED = none
+  pass_condition = CONTACT_INFO_SEEN = false
+  pass_condition = ARRIVED = true
+  pass_condition = COLLISION_TOTAL > 0
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = collision_behavior_motion_tests
+  mission_mod = $(MMOD:=no_alert_request_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = avoiding=$[AVOIDING]
+  report_column = alert_req_seen=$[ALERT_REQUEST_SEEN]
+  report_column = contact_seen=$[CONTACT_INFO_SEEN]
+  report_column = resolved=$[CONTACT_RESOLVED]
+  report_column = arrived=$[ARRIVED]
+  report_column = collisions=$[COLLISION_TOTAL]
+  report_column = mhash=$[MHASH_SHORT]
+}

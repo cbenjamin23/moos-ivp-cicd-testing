@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>No Alert Request Fail</h3>
-          <p>Description: The behavior is told not to request an alert while the contact remains challenging. The mission should fail because the avoid behavior never engages and the required resolution does not complete.</p>
+          <p>Description: The behavior is told not to request an alert while the contact remains challenging. The mission should grade pass only when the avoid behavior stays idle, no contact info arrives, and a collision is observed.</p>
         </div>
       </article>
 
@@ -128,7 +128,7 @@
 
         <article class="case-row">
           <code>pwt_outer_too_small_fail</code>
-          <p>The collision-relevance outer distance is made too small for the on-lane encounter. The behavior may resolve administratively, but the mission should fail because the vessel still collides.</p>
+          <p>The collision-relevance outer distance is made too small for the on-lane encounter. The behavior may resolve administratively, but the mission should grade pass only when the expected collision evidence is observed.</p>
         </article>
 
 
@@ -164,61 +164,61 @@
 
         <article class="case-row">
           <code>no_alert_request_fail</code>
-          <p>The behavior is told not to request an alert while the contact remains challenging. The mission should fail because the avoid behavior never engages and the required resolution does not complete.</p>
+          <p>The behavior is told not to request an alert while the contact remains challenging. The mission should grade pass only when the avoid behavior stays idle, no contact info arrives, and a collision is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_inner_dist_fail</code>
-          <p>pwt_inner_dist is set outside the valid relationship to pwt_outer_dist. The mission should grade fail rather than silently accepting the unsafe behavior configuration.</p>
+          <p>pwt_inner_dist is set outside the valid relationship to pwt_outer_dist. The mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>pwt_outer_dist is set inside the configured inner distance. The mission should grade fail.</p>
+          <p>pwt_outer_dist is set inside the configured inner distance. The mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_min_util_cpa_dist_fail</code>
-          <p>min_util_cpa_dist is set above max_util_cpa_dist. The mission should grade fail.</p>
+          <p>min_util_cpa_dist is set above max_util_cpa_dist. The mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_util_cpa_dist_fail</code>
-          <p>max_util_cpa_dist is set below min_util_cpa_dist. The mission should grade fail.</p>
+          <p>max_util_cpa_dist is set below min_util_cpa_dist. The mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_grade_fail</code>
-          <p>pwt_grade is set to an unsupported token. The behavior configuration should be rejected and the mission should grade fail.</p>
+          <p>pwt_grade is set to an unsupported token. The behavior configuration should be rejected and the mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_completed_dist_fail</code>
-          <p>completed_dist is set negative. The behavior configuration should be rejected and the mission should grade fail.</p>
+          <p>completed_dist is set negative. The behavior configuration should be rejected and the mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>The inherited time_on_leg setting is set negative. The mission should grade fail.</p>
+          <p>The inherited time_on_leg setting is set negative. The mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>The inherited contact-decay window is malformed by making the stale threshold lower than the linear threshold. The mission should grade fail.</p>
+          <p>The inherited contact-decay window is malformed by making the stale threshold lower than the linear threshold. The mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_collision_depth_fail</code>
-          <p>collision_depth is enabled in this 2D mission, where the source requires a depth domain. The mission should grade fail.</p>
+          <p>collision_depth is enabled in this 2D mission, where the source requires a depth domain. The mission should grade pass only when the helm reports malconfiguration.</p>
         </article>
 
       </div>

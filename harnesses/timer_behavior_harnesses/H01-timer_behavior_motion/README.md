@@ -28,12 +28,12 @@ owned by `pMissionEval` and uses timer-posted duration counters:
 - `post_mapping_pass` Post-mapping case. The timer posts stock suffixed counter names, inherited `post_mapping` remaps them, and evaluation requires the remapped counters.
 - `duration_complete_pass` Duration-complete case. The timer uses inherited duration support, posts an end flag, and stops with a bounded running counter and zero remaining time.
 - `runtime_update_pass` Runtime update case. The timer starts with stock suffixed counters, then receives `TIMER_UPDATES` that change both status variable names and suffix; both pre-update and post-update counters must be present.
-- `never_active_fail` Never-active case. The timer remains idle through evaluation, so the normal running-counter requirement is expected to fail.
-- `bad_idle_var_fail` Invalid idle-variable case. The timer is configured with a whitespace-bearing idle status variable and is expected to fail normal evaluation.
-- `bad_running_var_fail` Invalid running-variable case. The timer is configured with a whitespace-bearing running status variable and is expected to fail normal evaluation.
-- `bad_suffix_fail` Invalid suffix case. The timer is configured with a whitespace-bearing suffix and is expected to fail normal evaluation.
-- `post_mapping_silent_fail` Silent post-mapping case. The running counter is remapped to `silent`, so the normal baseline running-counter requirement is expected to fail.
-- `unknown_param_fail` Unknown-parameter case. The timer receives an unsupported behavior parameter and is expected to fail normal evaluation.
+- `never_active_fail` Never-active case. The timer remains idle through evaluation, and the case passes when the idle counter grows while the running counter stays zero.
+- `bad_idle_var_fail` Invalid idle-variable case. The timer is configured with a whitespace-bearing idle status variable, and the case passes when no stock status counters are emitted.
+- `bad_running_var_fail` Invalid running-variable case. The timer is configured with a whitespace-bearing running status variable, and the case passes when no stock status counters are emitted.
+- `bad_suffix_fail` Invalid suffix case. The timer is configured with a whitespace-bearing suffix, and the case passes when no stock status counters are emitted.
+- `post_mapping_silent_fail` Silent post-mapping case. The running counter is remapped to `silent`, and the case passes when the idle counter is present while the stock running counter is absent.
+- `unknown_param_fail` Unknown-parameter case. The timer receives an unsupported behavior parameter, and the case passes when no stock status counters are emitted.
 
 ## Running
 
@@ -41,9 +41,12 @@ owned by `pMissionEval` and uses timer-posted duration counters:
 ./zlaunch.sh
 ./zlaunch.sh --case=custom_status_vars_pass 10
 ./zlaunch.sh --jobs=4 --port_base=15000 10
+./zlaunch.sh --jobs=4 --port_base=29700 --port_stride=15 10
 ./zlaunch.sh --just_make --jobs=4 --port_base=15000 10
 ```
 
 The default `--port_base` is `15000` to avoid the repository's older 9000-range
 defaults during active development. Grouped runs use 30-port case blocks from
-that base so each live case gets isolated MOOSDB and pShare ports.
+that base so each live case gets isolated MOOSDB and pShare ports. A smaller
+`--port_stride` may be used when a coordinator assigns a tighter non-overlapping
+port band.

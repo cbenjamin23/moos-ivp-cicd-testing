@@ -1,0 +1,1 @@
+  grade=pass  form=colregs_joust  mmod=endurance_colregs_pass  eval=true  done=true  timeout=false  encounters=57  closest_range_ever=8.157  near_misses=5  collisions=0  wall_time=120.95  mhash=[SLOW-LORD]

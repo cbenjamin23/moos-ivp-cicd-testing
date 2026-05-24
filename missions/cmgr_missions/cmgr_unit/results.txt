@@ -1,0 +1,1 @@
+form=cmgr_tests_harness  mmod=alpha_far_bravo_only_pass  grade=pass  eval=true  count=1  list=alpha,bravo  closest=bravo  range=8  mhash=[DEAR-BREW]

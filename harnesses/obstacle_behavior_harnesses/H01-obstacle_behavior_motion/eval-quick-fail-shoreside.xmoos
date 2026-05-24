@@ -8,3 +8,30 @@ ProcessConfig = uTimerScript
   event = var=KNOWN_OBSTACLE, val="pts={29,-53:43,-53:43,-67:29,-67},label=ob_lane", time=1
   event = var=TEST_EVAL_READY, val=true, time=20
 }
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
+
+  lead_condition = HELM_MALCONFIG = true
+  pass_condition = HELM_MALCONFIG = true
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = obstacle_behavior_motion_tests
+  mission_mod  = $(MMOD:=bad_config_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[HELM_MALCONFIG]
+  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = helm_state=$[IVPHELM_STATE]
+  report_column = mhash=$[MHASH_SHORT]
+}

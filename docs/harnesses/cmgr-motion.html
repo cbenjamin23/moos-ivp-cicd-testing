@@ -164,25 +164,25 @@
 
         <article class="case-row">
           <code>tight_alert_fail</code>
-          <p>This case delays the pContactMgrV20 alert. In the tuned geometry this means the mission still arrives, but it no longer satisfies the required contact-detected safe-encounter rule and therefore grades fail.</p>
+          <p>This case delays the pContactMgrV20 alert. In the tuned geometry this should still arrive cleanly, but without the contact alert path firing in time. The case grades pass when that expected no-detection evidence is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>avoid_disabled_fail</code>
-          <p>Contact manager still detects the contact, but this case redirects the alert away from CONTACT_INFO, so the avoid-collision behavior never spawns. In the tuned case the vehicle still arrives, but it no longer stays encounter-free, which is the mission-level failure this case is meant to catch.</p>
+          <p>Contact manager still detects the contact, but this case redirects the alert away from CONTACT_INFO, so the avoid-collision behavior never spawns. In the tuned case the vehicle still arrives without collision, and the case grades pass when the expected encounter-without-avoid evidence appears.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_alert_disable_fail</code>
-          <p>The configured alert is disabled by a runtime BCM_ALERT_REQUEST before a harsh contact arrives. The expected mission result is failure because the contact remains tracked but does not trigger the spawned avoid behavior.</p>
+          <p>The configured alert is disabled by a runtime BCM_ALERT_REQUEST before a harsh contact arrives. The case grades pass when the vehicle still arrives without collision, the encounter occurs, and the contact alert path remains disabled.</p>
         </article>
 
 
         <article class="case-row">
           <code>fast_intruder_fail</code>
-          <p>A faster head-on intruder creates a harsher encounter. This case is graded as a failure when the mission can no longer remain encounter-free under that geometry, even if it still avoids an actual collision.</p>
+          <p>A faster head-on intruder creates a harsher encounter. The case grades pass when contact manager detects the intruder and the expected encounter evidence is observed without an actual collision.</p>
         </article>
 
       </div>

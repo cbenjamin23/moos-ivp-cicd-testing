@@ -31,7 +31,7 @@ ProcessConfig = pMarinePIDV22
   pitch_pid_kd             = 1.0
   pitch_pid_ki             = 0
   pitch_pid_integral_limit = 0
-  maxelevator              = 0.25
+  maxelevator              = 0.05
 
   maxrudder = 100
   maxthrust = 100

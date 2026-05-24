@@ -6,10 +6,7 @@ ProcessConfig = pMissionEval
   mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
 
   lead_condition = HELM_MALCONFIG = true
-  pass_condition = WPT_DONE = true
-  pass_condition = WAYPOINT_END = true
-  pass_condition = HELM_MALCONFIG = false
-  pass_condition = BHV_ERROR_SEEN = false
+  pass_condition = HELM_MALCONFIG = true
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -23,9 +20,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[HELM_MALCONFIG]
+  report_column = expected=helm_malconfig
   report_column = helm_malconfig=$[HELM_MALCONFIG]
-  report_column = wpt_done=$[WPT_DONE]
-  report_column = waypoint_end=$[WAYPOINT_END]
-  report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }

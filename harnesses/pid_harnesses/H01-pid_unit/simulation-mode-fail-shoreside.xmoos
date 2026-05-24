@@ -35,9 +35,10 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = DESIRED_RUDDER_PID > 1
-  pass_condition = DESIRED_THRUST_PID >= 39
-  pass_condition = DESIRED_THRUST_PID <= 41
+  pass_condition = DESIRED_RUDDER_PID >= -0.1
+  pass_condition = DESIRED_RUDDER_PID <= 0.1
+  pass_condition = DESIRED_THRUST_PID >= -0.1
+  pass_condition = DESIRED_THRUST_PID <= 0.1
   pass_condition = PID_HAS_CONTROL = true
 
   result_flag  = MISSION_EVALUATED = true
@@ -48,6 +49,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = expected=simulation_zero_output
   report_column    = rudder=$[DESIRED_RUDDER_PID]
   report_column    = thrust=$[DESIRED_THRUST_PID]
   report_column    = control=$[PID_HAS_CONTROL]

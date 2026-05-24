@@ -1,0 +1,1 @@
+  grade=pass  form=obstacle_behavior_motion_tests  mmod=bad_polygon_fail  eval=true  helm_malconfig=true  helm_state=MALCONFIG  mhash=[]

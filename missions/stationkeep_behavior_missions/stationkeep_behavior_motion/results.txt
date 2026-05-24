@@ -1,1 +1,1 @@
-  grade=pass  form=stationkeep_behavior_tests  mmod=bad_point_update_recover_pass  eval=true  dist=6.853  pskeep=SEEKING_STATION  warning=true  bhv_error=false  settings=type=BHV_StationKeep,name=station_keep,x=12.00,y=-121.00,inner_radius=4.0,outer_radius=15.0,hibernation_radius=-1.0,outer_speed=1.2,center_activate=false  mhash=[DAFT-BUTT]
+  grade=pass  form=stationkeep_behavior_tests  mmod=bad_outer_radius_fail  eval=true  expected=stationkeep_inactive  dist=999  pskeep=UNKNOWN  warning=false  bhv_error=false  settings=$[BHV_SETTINGS]  mhash=[DULL-FISH]

@@ -1,0 +1,40 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
+
+  lead_condition = HELM_MALCONFIG = true
+  pass_condition = HELM_MALCONFIG = true
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = loiter_behavior_tests
+  mission_mod  = $(MMOD:=helm_malconfig_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[HELM_MALCONFIG]
+  report_column = expected=helm_malconfig
+  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = LOITER_UPDATES, LOITER_DONE, LOITER_COMPLETE
+  qbridge  = TEST_EVAL_READY, BHV_WARNING, BHV_ERROR, IVPHELM_STATE
+  qbridge  = LOITER_REPORT, LOITER_INDEX, LOITER_MODE, LOITER_ACQUIRE
+  qbridge  = LOITER_DIST_TO_POLY, LOITER_ETA_TO_POLY, LOITER_DIST_TO_VERT
+  qbridge  = LOITER_BNG_TOTAL, LOITER_BNG_DELTA
+}

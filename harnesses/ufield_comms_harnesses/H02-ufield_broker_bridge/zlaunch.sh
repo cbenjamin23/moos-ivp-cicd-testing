@@ -362,11 +362,11 @@ run_case() {
     get_case_config "$case_name" || return 1
 
     local case_dir="$RUN_ROOT/$case_name"
-    local case_results="$case_dir/results.txt"
+    local case_rows="$case_dir/results.txt"
     local pbase=$((PORT_BASE + case_index * PORT_STRIDE))
     mkdir -p "$case_dir"
     prepare_case_dir "$case_dir"
-    : > "$case_results"
+    : > "$case_rows"
 
     (
         cd "$case_dir"
@@ -383,7 +383,7 @@ run_case() {
     harness_teardown_stop_root "$case_dir" >/dev/null 2>&1 || true
 
     local line
-    line=`wait_for_result_line "$case_results"`
+    line=`wait_for_result_line "$case_rows"`
     if [ "$line" = "" ]; then
         echo "$case_name: no-result"
         return 1

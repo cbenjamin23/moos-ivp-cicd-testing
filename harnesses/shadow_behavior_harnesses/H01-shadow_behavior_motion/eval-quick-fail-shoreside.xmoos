@@ -3,9 +3,8 @@ ProcessConfig = uTimerScript
   AppTick   = 2
   CommsTick = 2
 
-  condition = DEPLOY_ALL = true
-
-  event = var=TEST_EVAL_READY, val=true, time=10
+  event = var=BHV_ERROR_SEEN, val=false, time=1
+  event = var=TEST_EVAL_READY, val=true, time=20
 }
 
 ProcessConfig = pMissionEval
@@ -14,14 +13,9 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
-  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
-  pass_condition = SHADOW_RELEVANCE > 0
-  pass_condition = ABE_NAV_SPEED >= 1.0
-  pass_condition = BHV_WARNING_SEEN = false
-  pass_condition = BHV_ERROR_SEEN = false
+  lead_condition = (BHV_ERROR_SEEN = true) or (TEST_EVAL_READY = true)
+  pass_condition = BHV_ERROR_SEEN = true
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -34,15 +28,9 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = eval=$[BHV_ERROR_SEEN]
+  report_column = expected=bhv_error
   report_column = relevance=$[SHADOW_RELEVANCE]
-  report_column = shdw_spd=$[SHADOW_CONTACT_SPEED]
-  report_column = shdw_hdg=$[SHADOW_CONTACT_HEADING]
-  report_column = abe_spd=$[ABE_NAV_SPEED]
-  report_column = abe_hdg=$[ABE_NAV_HEADING]
-  report_column = ben_spd=$[BEN_NAV_SPEED]
-  report_column = ben_hdg=$[BEN_NAV_HEADING]
-  report_column = warning=$[BHV_WARNING_SEEN]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }

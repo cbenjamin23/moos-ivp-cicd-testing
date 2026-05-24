@@ -1,0 +1,66 @@
+case=nav_report_baseline_pass  grade=pass  form=pnodereporter_unit  mmod=nav_report_baseline_pass  eval=true  node_seen=true  first_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=15,YAW=-0.5759587,TIME=17793861238.22,TRANSPARENCY=0.4,LENGTH=4.2,BEAM=1.4,TRAJECTORY={points=0:0:10:-5}  first_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,YAW=-0.5759587,TIME=17793861233.89,TRANSPARENCY=0.4,LENGTH=4.2,BEAM=1.4,TRAJECTORY={points=0:0:10:-5}  platform_report=$[PLATFORM_REPORT_LOCAL]  json_report=$[NODE_REPORT_JSON]  my_report=$[MY_NODE_REPORT]  pnr_gap=0.288  pnr_mhash=$[PNR_MHASH]  mhash=[NEDS-NOEL]  token_check=pass
+
+case=platform_metadata_pass  grade=pass  form=pnodereporter_unit  mmod=platform_metadata_pass  eval=true  node_seen=true  first_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=uuv,COLOR=blue,GROUP=survey,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=15,YAW=-0.5759587,TIME=17793861237.14,TRANSPARENCY=0.4,LENGTH=9.5,BEAM=2.1,TRAJECTORY={points=0:0:10:-5},PAYLOAD=ctd,ROLE=lead  first_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=uuv,COLOR=blue,GROUP=survey,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,YAW=-0.5759587,TIME=17793861232.85,TRANSPARENCY=0.4,LENGTH=9.5,BEAM=2.1,TRAJECTORY={points=0:0:10:-5},PAYLOAD=ctd,ROLE=lead  mhash=[LEWD-QUIN]  token_check=pass
+
+case=helm_nohelm_mode_pass  grade=pass  form=pnodereporter_unit  mmod=helm_nohelm_mode_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=NOHELM-EVER,ALLSTOP=unknown,INDEX=16,TIME=17793861240.33,LENGTH=4.2,BEAM=1.4  mhash=[NICE-BRIO]  token_check=pass
+
+case=helm_standby_switch_pass  grade=pass  form=pnodereporter_unit  mmod=helm_standby_switch_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:STANDBY_TRACK,INDEX=16,TIME=17793861241.02,LENGTH=4.2,BEAM=1.4  mhash=[NUMB-FARM]  token_check=pass
+
+case=helm_stale_threshold_pass  grade=pass  form=pnodereporter_unit  mmod=helm_stale_threshold_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=NOHELM-3,ALLSTOP=unknown,INDEX=12,TIME=17793861303.17,LENGTH=4.2  mhash=[SOFT-ZEKE]  token_check=pass
+
+case=color_change_blocked_pass  grade=pass  form=pnodereporter_unit  mmod=color_change_blocked_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=16,TIME=17793861305.59,LENGTH=4.2,BEAM=1.4  mhash=[HIGH-JETT]  token_check=pass
+
+case=color_change_allowed_pass  grade=pass  form=pnodereporter_unit  mmod=color_change_allowed_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=yellow,MODE=DRIVE,ALLSTOP=unknown,INDEX=16,TIME=17793861306.59,LENGTH=4.2  mhash=[GORY-STAR]  token_check=pass
+
+case=platform_report_pass  grade=pass  form=pnodereporter_unit  mmod=platform_report_pass  eval=true  node_seen=true  platform_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861308.23,LENGTH=4.2  platform_report=platform=reporter,utc_time=17793861304.55223,sats=9,batt=12.7  mhash=[MALT-EPIC]  token_check=pass
+
+case=platform_report_gap_pass  grade=pass  form=pnodereporter_unit  mmod=platform_report_gap_pass  eval=true  node_seen=true  platform_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861372.9,LENGTH=4.2  platform_report=platform=reporter,utc_time=17793861371.15714,batt=12.8  mhash=[VILE-DION]  token_check=pass
+
+case=rider_payload_pass  grade=pass  form=pnodereporter_unit  mmod=rider_payload_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861374.09,LENGTH=4.2,payload=armed,batt=12.7  mhash=[TINY-CHET]  token_check=pass
+
+case=custom_output_var_pass  grade=pass  form=pnodereporter_unit  mmod=custom_output_var_pass  eval=true  my_seen=true  my_first_seen=true  node_report=$[NODE_REPORT_LOCAL]  my_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=16,YAW=-0.5759587,TIME=17793861375.4,TRANSPARENCY=0.4,LENGTH=4.2,TRAJECTORY={points=0:0:10:-5}  my_first=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=NOHELM-EVER,ALLSTOP=unknown,ALTITUDE=33,YAW=-0.5759587,TIME=17793861370.76,TRANSPARENCY=0.4,LENGTH=4.2,TRAJECTORY={points=0:0:10:-5}  mhash=[LIMP-BOND]  token_check=pass
+
+case=json_only_report_pass  grade=pass  form=pnodereporter_unit  mmod=json_only_report_pass  eval=true  node_seen=true  node_report={"NAME":"reporter","X":10,"Y":-5,"SPD":2.5,"HDG":123,"DEP":7,"LAT":43.82535,"LON":-70.33045,"TYPE":"kayak","COLOR":"red","MODE":"MODE@ACTIVE:TRANSIT","ALLSTOP":"clear","ALTITUDE":33,"INDEX":15,"YAW":-0.5759587,"TIME":17793861376.14,"TRANSPARENCY":0.4,"LENGTH":4.2,"TRAJECTORY":"{points=0:0:10:-5}"}  json_report=$[NODE_REPORT_JSON]  mhash=[LAST-DUTY]  token_check=pass
+
+case=json_dual_report_pass  grade=pass  form=pnodereporter_unit  mmod=json_dual_report_pass  eval=true  node_seen=true  json_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=16,YAW=-0.5759587,TIME=17793861442.79,TRANSPARENCY=0.4,LENGTH=4.2,TRAJECTORY={points=0:0:10:-5}  json_report={"NAME":"reporter","X":10,"Y":-5,"SPD":2.5,"HDG":123,"DEP":7,"LAT":43.82535,"LON":-70.33045,"TYPE":"kayak","COLOR":"red","MODE":"MODE@ACTIVE:TRANSIT","ALLSTOP":"clear","ALTITUDE":33,"INDEX":16,"YAW":-0.5759587,"TIME":17793861442.79,"TRANSPARENCY":0.4,"LENGTH":4.2,"TRAJECTORY":"{points=0:0:10:-5}"}  mhash=[COOL-MACE]  token_check=pass
+
+case=alt_nav_report_pass  grade=pass  form=pnodereporter_unit  mmod=alt_nav_report_pass  eval=true  node_seen=true  node_report=NAME=reporter_GT,X=20,Y=-15,SPD=3.1,HDG=210,TYPE=kayak,COLOR=red,GROUP=truth,MODE=NOHELM-6,ALLSTOP=unknown,INDEX=20,TIME=17793861445.58,LENGTH=4.2  mhash=[LAZY-JODY]  token_check=pass
+
+case=alt_nav_named_absolute_pass  grade=pass  form=pnodereporter_unit  mmod=alt_nav_named_absolute_pass  eval=true  node_seen=true  node_report=NAME=truth_node,X=22,Y=-12,SPD=3.1,HDG=210,DEP=4,TYPE=kayak,COLOR=red,GROUP=truth_abs,MODE=NOHELM-5,ALLSTOP=unknown,ALTITUDE=40,INDEX=19,TIME=17793861446.22,LENGTH=4.2  mhash=[INKY-SHEP]  token_check=pass
+
+case=coord_policy_global_pass  grade=pass  form=pnodereporter_unit  mmod=coord_policy_global_pass  eval=true  node_seen=true  node_report=NAME=reporter,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=15,YAW=-0.5759587,TIME=17793861446.17,TRANSPARENCY=0.4,LENGTH=4.2,TRAJECTORY={points=0:0:10:-5}  mhash=[HIGH-ANTS]  token_check=pass
+
+case=heading_error_pass  grade=pass  form=pnodereporter_unit  mmod=heading_error_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=128,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=15,YAW=-0.6632251,TIME=17793861515.71,TRANSPARENCY=0.4,LENGTH=4.2,TRAJECTORY={points=0:0:10:-5}  mhash=[MILD-SEAT]  token_check=pass
+
+case=crossfill_local_to_global_pass  grade=pass  form=pnodereporter_unit  mmod=crossfill_local_to_global_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=12,Y=-8,SPD=1.8,HDG=45,LAT=43.82522971,LON=-70.33024916,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861514.77,LENGTH=4.2  mhash=[OKAY-STOP]  token_check=pass
+
+case=crossfill_global_to_local_pass  grade=pass  form=pnodereporter_unit  mmod=crossfill_global_to_local_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=-4.72,Y=6.74,SPD=1.8,HDG=45,LAT=43.82536,LON=-70.33046,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861516.37,LENGTH=4.2  mhash=[DEAR-ALEX]  token_check=pass
+
+case=crossfill_global_terse_pass  grade=pass  form=pnodereporter_unit  mmod=crossfill_global_terse_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=-4.72,Y=6.74,SPD=1.8,HDG=45,LAT=43.82536,LON=-70.33046,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861517.73,LENGTH=4.2  mhash=[DARK-CLAW]  token_check=pass
+
+case=node_group_update_pass  grade=pass  form=pnodereporter_unit  mmod=node_group_update_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,GROUP=dynamic,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861582.74,LENGTH=4.2,BEAM=1.4  mhash=[CALM-FACE]  token_check=pass
+
+case=platform_color_mail_pass  grade=pass  form=pnodereporter_unit  mmod=platform_color_mail_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=orange,MODE=DRIVE,ALLSTOP=unknown,INDEX=15,TIME=17793861583.78,LENGTH=4.2,BEAM=1.4  mhash=[SURE-COIL]  token_check=pass
+
+case=reverse_load_warning_pass  grade=pass  form=pnodereporter_unit  mmod=reverse_load_warning_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,LOAD_WARNING=pHelmIvP:5,INDEX=3,THRUST_MODE_REVERSE=true,TIME=17793861581.41,LENGTH=4.2,BEAM=1.4  mhash=[SEXY-BILL]  token_check=pass
+
+case=blackout_interval_reset_fail  grade=pass  form=pnodereporter_unit  mmod=blackout_interval_reset_fail  eval=true  evidence=blackout_gap_below_threshold  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,DEP=7,LAT=43.82535,LON=-70.33045,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=15,YAW=-0.5759587,TIME=17793861585.75,TRANSPARENCY=0.4,LENGTH=4.2,TRAJECTORY={points=0:0:10:-5}  pnr_gap=0.297  mhash=[RUDE-BILL]  token_check=pass
+
+case=mhash_odometer_pass  grade=pass  form=pnodereporter_unit  mmod=mhash_odometer_pass  eval=true  node_seen=true  pnr_mhash_seen=true  node_report=NAME=reporter,X=20,Y=0,SPD=1,HDG=90,TYPE=kayak,COLOR=red,MODE=NOHELM-5,ALLSTOP=unknown,INDEX=18,TIME=17793861653.87,LENGTH=4.2,BEAM=1.4  pnr_mhash=mhash=260521-1356N-BLUE-DOSE,ext=20  mhash=[BLUE-DOSE]  token_check=pass
+
+case=report_cog_pass  grade=pass  form=pnodereporter_unit  mmod=report_cog_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=8,Y=0,SPD=1,HDG=90,COG=0,TYPE=kayak,COLOR=red,MODE=NOHELM-5,ALLSTOP=unknown,INDEX=19,TIME=17793861656.51,LENGTH=4.2  mhash=[HUGE-BALL]  token_check=pass
+
+case=terse_reports_pass  grade=pass  form=pnodereporter_unit  mmod=terse_reports_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,MODE=MODE@ACTIVE:TRANSIT,ALLSTOP=clear,ALTITUDE=33,INDEX=16,TIME=17793861654.07,TRANSPARENCY=0.4,LENGTH=4.2,TRAJECTORY={points=0:0:10:-5}  mhash=[SOFT-CRAB]  token_check=pass
+
+case=vsource_aux_allstop_pass  grade=pass  form=pnodereporter_unit  mmod=vsource_aux_allstop_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=10,Y=-5,SPD=2.5,HDG=123,TYPE=kayak,COLOR=red,VSOURCE=ais,MODE=DRIVE,MODE_AUX=survey,ALLSTOP=manual,INDEX=16,TIME=17793861656.33,LENGTH=4.2  mhash=[HARD-JAWS]  token_check=pass
+
+case=pause_resume_pass  grade=pass  form=pnodereporter_unit  mmod=pause_resume_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=30,Y=-10,SPD=1,HDG=90,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=11,TIME=17793861725.61,LENGTH=4.2  mhash=[DAFT-HOLT]  token_check=pass
+
+case=crossfill_fill_empty_pass  grade=pass  form=pnodereporter_unit  mmod=crossfill_fill_empty_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=-5.5,Y=7.87,SPD=1.8,HDG=45,LAT=43.82537,LON=-70.33047,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=16,TIME=17793861724.35,LENGTH=4.2  mhash=[MEGA-JOAH]  token_check=pass
+
+case=crossfill_use_latest_local_pass  grade=pass  form=pnodereporter_unit  mmod=crossfill_use_latest_local_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=25,Y=5,SPD=1.8,HDG=45,LAT=43.82534865,LON=-70.3300901,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,INDEX=16,TIME=17793861726.48,LENGTH=4.2  mhash=[COLD-YALE]  token_check=pass
+
+case=extrap_gap_metric_pass  grade=pass  form=pnodereporter_unit  mmod=extrap_gap_metric_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=3,Y=0,SPD=1,HDG=90,TYPE=kayak,COLOR=red,MODE=NOHELM-6,ALLSTOP=unknown,INDEX=20,TIME=17793861728.63,LENGTH=4.2  extrap_pos=0.29  extrap_hdg=0  mhash=[TORY-WHIM]  token_check=pass
+
+case=extrap_prune_pass  grade=pass  form=pnodereporter_unit  mmod=extrap_prune_pass  eval=true  node_seen=true  node_report=NAME=reporter,X=0,Y=0,SPD=1,HDG=90,TYPE=kayak,COLOR=red,MODE=DRIVE,ALLSTOP=unknown,TIME=17793861791.33,LENGTH=4.2  extrap_pos=7  extrap_hdg=0  mhash=[DAFT-HALL]  token_check=pass
+

@@ -17,7 +17,10 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
-  pass_condition = WPT_DONE = true
+  pass_condition = WPT_DONE = false
+  pass_condition = WPT_HIT = false
+  pass_condition = CYCLE_HIT = false
+  pass_condition = WAYPOINT_END = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -32,6 +35,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=no_waypoint_completion
   report_column = wpt_done=$[WPT_DONE]
   report_column = wpt_hit=$[WPT_HIT]
   report_column = cycle_hit=$[CYCLE_HIT]

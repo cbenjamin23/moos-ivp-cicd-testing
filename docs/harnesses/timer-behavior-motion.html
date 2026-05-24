@@ -161,37 +161,37 @@
 
         <article class="case-row">
           <code>never_active_fail</code>
-          <p>Never-active case. The timer remains idle through evaluation, so the normal running-counter requirement is expected to fail.</p>
+          <p>Never-active case. The timer remains idle through evaluation, and the case passes when the idle counter grows while the running counter stays zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_idle_var_fail</code>
-          <p>Invalid idle-variable case. The timer is configured with a whitespace-bearing idle status variable and is expected to fail normal evaluation.</p>
+          <p>Invalid idle-variable case. The timer is configured with a whitespace-bearing idle status variable, and the case passes when no stock status counters are emitted.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_running_var_fail</code>
-          <p>Invalid running-variable case. The timer is configured with a whitespace-bearing running status variable and is expected to fail normal evaluation.</p>
+          <p>Invalid running-variable case. The timer is configured with a whitespace-bearing running status variable, and the case passes when no stock status counters are emitted.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_suffix_fail</code>
-          <p>Invalid suffix case. The timer is configured with a whitespace-bearing suffix and is expected to fail normal evaluation.</p>
+          <p>Invalid suffix case. The timer is configured with a whitespace-bearing suffix, and the case passes when no stock status counters are emitted.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_mapping_silent_fail</code>
-          <p>Silent post-mapping case. The running counter is remapped to silent, so the normal baseline running-counter requirement is expected to fail.</p>
+          <p>Silent post-mapping case. The running counter is remapped to silent, and the case passes when the idle counter is present while the stock running counter is absent.</p>
         </article>
 
 
         <article class="case-row">
           <code>unknown_param_fail</code>
-          <p>Unknown-parameter case. The timer receives an unsupported behavior parameter and is expected to fail normal evaluation.</p>
+          <p>Unknown-parameter case. The timer receives an unsupported behavior parameter, and the case passes when no stock status counters are emitted.</p>
         </article>
 
       </div>

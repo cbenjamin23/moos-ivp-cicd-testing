@@ -18,11 +18,11 @@ that those publications can drive simulated motion.
 - `runtime_speed_factor_update_pass` - an underway `SPEED_FACTOR` update must restore actuator authority and still complete the transit.
 - `depth_step_pass` - depth control must descend during transit and finish in the commanded depth band while holding eastbound heading.
 - `override_release_pass` - startup manual override must release cleanly, reacquire helm/nav mail, and still satisfy the arrival gate.
-- `low_rudder_authority_fail` - intentionally low `maxrudder` should fail the same turn-recovery arrival gate within the evaluation window.
-- `low_thrust_authority_fail` - intentionally low `maxthrust` should fail the arrival gate because the vehicle lacks forward authority.
-- `low_elevator_authority_fail` - intentionally low `maxelevator` should fail an aggressive depth-response gate while still moving east.
-- `depth_control_disabled_fail` - a depth behavior with `depth_control=false` should fail the depth band because no elevator response is produced.
-- `manual_override_fail` - holding manual override should prevent actuator authority and fail the arrival gate.
+- `low_rudder_authority_fail` - intentionally low `maxrudder` should pass when the vehicle remains far from the arrival corridor with low rudder authority.
+- `low_thrust_authority_fail` - intentionally low `maxthrust` should pass when the vehicle remains short of the arrival corridor with low speed and low thrust.
+- `low_elevator_authority_fail` - intentionally low `maxelevator` should pass when the vehicle moves east but remains below the aggressive depth-response band.
+- `depth_control_disabled_fail` - a depth behavior with `depth_control=false` should pass when the vehicle moves east but depth remains near zero.
+- `manual_override_fail` - holding manual override should pass when the vehicle remains stopped with zero thrust.
 
 ## Edge Audit
 
@@ -34,7 +34,7 @@ Covered in H02:
 - Runtime `SPEED_FACTOR` mail updates while underway.
 - Depth-control actuation through `BHV_ConstantDepth`, `pMarinePIDV22`, and simulated depth response.
 - PID control reacquisition after manual override release.
-- Expected-fail sentinels for insufficient rudder, thrust, and elevator authority, disabled depth control, and held manual override.
+- Expected-negative sentinels for insufficient rudder, thrust, and elevator authority, disabled depth control, and held manual override.
 
 Deferred beyond this first H02 layer:
 
@@ -64,9 +64,10 @@ closed-loop correctness contract.
 Each case grades motion outcome through `pMissionEval`, not by parsing alogs in
 the harness. Arrival-oriented cases evaluate on arrival or deadline and use
 endpoint, corridor, heading, and bounded-output checks. Depth-oriented cases use
-underway evaluation windows with tighter depth and heading bands. Expected-fail
-cases are named with `_fail` and should flip to harness mismatch if their
-intentionally bad setup ever satisfies the good-case criteria.
+underway evaluation windows with tighter depth and heading bands.
+Expected-negative cases are named with `_fail`, but now emit `grade=pass` when
+their degraded-motion evidence is observed, using `expected=<reason>` plus the
+supporting motion and actuator fields.
 
 ## Typical Runs
 
@@ -78,3 +79,14 @@ intentionally bad setup ever satisfies the good-case criteria.
 
 The wrapper supports `--jobs` and `--port_base` so local grouped runs and
 GitHub Actions dispatches can isolate each case's MOOSDB and pShare port block.
+
+Latest validation:
+
+- May 20, 2026
+- focused expected-negative cases:
+  `low_rudder_authority_fail`, `low_thrust_authority_fail`,
+  `low_elevator_authority_fail`, `depth_control_disabled_fail`,
+  `manual_override_fail`
+- grouped matrix: `13/13` cases passed with `--jobs=3 --port_base=23800`
+- serial matrix: `13/13` cases passed with `--port_base=24300`
+- warp: `10`

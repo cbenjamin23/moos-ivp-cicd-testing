@@ -1,0 +1,39 @@
+//-------------------------------------------------
+// FILE: goto-depth-helm-malconfig-fail-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=VIEW_POLYGON
+  bridge = src=ARRIVED
+  bridge = src=NAV_X,       alias=ABE_NAV_X
+  bridge = src=NAV_Y,       alias=ABE_NAV_Y
+  bridge = src=NAV_SPEED,   alias=ABE_NAV_SPEED
+  bridge = src=NAV_HEADING, alias=ABE_NAV_HEADING
+  bridge = src=NAV_DEPTH,   alias=ABE_NAV_DEPTH
+  bridge = src=NAV_ALTITUDE, alias=ABE_NAV_ALTITUDE
+  bridge = src=DESIRED_THRUST,   alias=ABE_DESIRED_THRUST
+  bridge = src=DESIRED_RUDDER,   alias=ABE_DESIRED_RUDDER
+  bridge = src=DESIRED_ELEVATOR, alias=ABE_DESIRED_ELEVATOR
+  bridge = src=DEPTH_MISMATCH
+  bridge = src=DEPTH_SLACK
+  bridge = src=LEVEL_DEPTH
+  bridge = src=GTD_LEVEL_HIT
+  bridge = src=PERIODIC_ASCEND
+  bridge = src=PENDING_SURFACE
+  bridge = src=TIME_AT_SURFACE
+  bridge = src=PSF_AT_SURFACE_TIMEOUT
+  bridge = src=CD_DONE
+  bridge = src=BHV_ERROR,   alias=ABE_BHV_ERROR
+  bridge = src=BHV_WARNING, alias=ABE_BHV_WARNING
+  bridge = src=IVPHELM_STATE
+  bridge = src=NODE_REPORT_LOCAL, alias=NODE_REPORT
+}

@@ -56,47 +56,46 @@ and running a short `70m` eastbound corridor.
   assertions. The case still reports `count` and `list`.
 - `tight_alert_fail`
   This case delays the `pContactMgrV20` alert. In the tuned geometry this
-  means the mission still arrives, but it no longer satisfies the required
-  contact-detected safe-encounter rule and therefore grades `fail`.
+  should still arrive cleanly, but without the contact alert path firing in
+  time. The case grades `pass` when that expected no-detection evidence is
+  observed.
 - `avoid_disabled_fail`
   Contact manager still detects the contact, but this case redirects the alert
   away from `CONTACT_INFO`, so the avoid-collision behavior never spawns. In
-  the tuned case the vehicle still arrives, but it no longer stays
-  encounter-free, which is the mission-level failure this case is meant to
-  catch.
+  the tuned case the vehicle still arrives without collision, and the case
+  grades `pass` when the expected encounter-without-avoid evidence appears.
 - `runtime_alert_disable_fail`
   The configured alert is disabled by a runtime `BCM_ALERT_REQUEST` before a
-  harsh contact arrives. The expected mission result is failure because the
-  contact remains tracked but does not trigger the spawned avoid behavior.
+  harsh contact arrives. The case grades `pass` when the vehicle still arrives
+  without collision, the encounter occurs, and the contact alert path remains
+  disabled.
 - `fast_intruder_fail`
-  A faster head-on intruder creates a harsher encounter. This case is graded as
-  a failure when the mission can no longer remain encounter-free under that
-  geometry, even if it still avoids an actual collision.
+  A faster head-on intruder creates a harsher encounter. The case grades `pass`
+  when contact manager detects the intruder and the expected encounter evidence
+  is observed without an actual collision.
 
 ## Results Lines
 
 Typical pass line:
 
 ```text
-case=baseline_crossing_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[COLD-DUKE]
+case=baseline_crossing_pass  grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[COLD-DUKE]
 ```
 
-Typical fail line:
+Expected-negative pass line:
 
 ```text
-case=avoid_disabled_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=cmgr_motion_tests  mmod=avoid_disabled_fail  eval=true  arrived=true  detected=true  closest=intruder  range=81  encounters=1  near_misses=0  collisions=0  mhash=[VICE-SLUG]
+case=avoid_disabled_fail  grade=pass  form=cmgr_motion_tests  mmod=avoid_disabled_fail  eval=true  expected=encounter_without_avoid  arrived=true  detected=true  closest=intruder  range=80  encounters=1  near_misses=0  collisions=0  mhash=[DARK-HYMM]
 ```
 
 Field anatomy:
 
 - `case`: harness case name
-- `expected`: what the harness expected the mission to grade
-- `actual`: what the mission actually graded
-- `case_result`: `success` when expected equals actual
 - `grade`: mission-level pass/fail from `pMissionEval`
 - `form`: mission family name
 - `mmod`: mission mode for the selected case
 - `eval`: whether the evaluation checkpoint fired
+- `expected`: optional evidence label for expected-negative cases
 - `arrived`: whether the ownship reached the goal waypoint
 - `detected`: whether contact manager produced the expected contact alert path
 - `closest`: closest reported contact when included
@@ -132,8 +131,11 @@ Wave mode notes:
 
 Latest validation:
 
-- April 27, 2026
-- full wave matrix: `15/15` expected outcomes matched
-- command: `./zlaunch.sh --jobs=4 --port_base=15000 10`
+- May 20, 2026
+- focused expected-negative cases:
+  `tight_alert_fail`, `avoid_disabled_fail`, `runtime_alert_disable_fail`,
+  `fast_intruder_fail`
+- grouped full matrix: `./zlaunch.sh --jobs=4 --port_base=25700 10`
+- serial full matrix: `./zlaunch.sh --port_base=26250 10`
 - compact port blocks: MOOSDB at `case_base + 0..1`, pShare at
   `case_base + 10..11`

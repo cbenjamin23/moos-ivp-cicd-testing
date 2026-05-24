@@ -5,6 +5,9 @@ Patch-driven harness for
 It isolates `pNodeReporter` report construction in one MOOS community with
 scripted navigation, helm, platform, and status mail.
 
+Harness result rows prepend `case=<name>` to the mission result row and retain
+the supplemental `token_check` field for structured report payload checks.
+
 ## Current Matrix
 
 - `nav_report_baseline_pass` Baseline CSP node report; expects scripted NAV fields, platform color/type/length, helm mode, and first-report publication.
@@ -30,7 +33,7 @@ scripted navigation, helm, platform, and status mail.
 - `node_group_update_pass` Posts `NODE_GROUP_UPDATE` at runtime and expects the node report group to change.
 - `platform_color_mail_pass` Posts `PLATFORM_COLOR` at runtime and expects the report color to update.
 - `reverse_load_warning_pass` Posts reverse-thrust mode and a load warning and expects both fields to ride in the report.
-- `blackout_interval_reset_fail` Enables a two-second blackout interval and expects the current implementation to fail the sustained posting-gap threshold.
+- `blackout_interval_reset_fail` Enables a two-second blackout interval and expects mission-owned evidence that the current posting gap remains below the sustained blackout threshold.
 - `mhash_odometer_pass` Moves the node after mission-hash startup and expects `PNR_MHASH` odometry evidence.
 - `report_cog_pass` Enables course-over-ground reporting and expects the report to include a computed COG field.
 - `terse_reports_pass` Enables terse reports and expects depth, lat/lon, and yaw details to be omitted while core position remains.

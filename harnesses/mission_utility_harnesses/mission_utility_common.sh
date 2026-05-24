@@ -23,7 +23,7 @@ CASE=""
 JUST_MAKE="no"
 KEEP_WORKDIRS="no"
 VERBOSE=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 RUN_ROOT=""
 RUN_ROOT_PREFIX=${RUN_ROOT_PREFIX:-mission_utility}
 ALL_OK="yes"
@@ -93,7 +93,7 @@ wait_for_result_line() {
 
 get_case_config() {
     CASE_NAME="$1"
-    EXPECTED="pass"
+    EXPECTED_SUBJECT="pass"
     SHORE_PATCH=""
     EXTRA_CHECK=""
     CASE_MAX_TIME="$MAX_TIME"
@@ -105,7 +105,7 @@ get_case_config() {
         eval_baseline_pass)
             ;;
         eval_false_condition_fail)
-            EXPECTED="fail"
+            EXPECTED_SUBJECT="fail"
             SHORE_PATCH="$PATCH_DIR/eval-false-condition-shoreside.xmoos"
             POKE_ARGS="PASS_INPUT=false CASE_VALUE:=falsecase CASE_MAIL:=falsecase TEST_EVAL_READY=true"
             ;;
@@ -128,13 +128,13 @@ get_case_config() {
             POKE_ARGS="STAGE1_READY=true STAGE1_PASS=true __SLEEP__=1 STAGE2_READY=true STAGE2_PASS=true"
             ;;
         eval_sequence_first_stage_fail)
-            EXPECTED="fail"
+            EXPECTED_SUBJECT="fail"
             SHORE_PATCH="$PATCH_DIR/eval-sequence-first-stage-fail-shoreside.xmoos"
             EXTRA_CHECK="sequence_first_fail"
             POKE_ARGS="STAGE1_READY=true STAGE1_PASS=false"
             ;;
         eval_sequence_second_stage_fail)
-            EXPECTED="fail"
+            EXPECTED_SUBJECT="fail"
             SHORE_PATCH="$PATCH_DIR/eval-sequence-second-stage-fail-shoreside.xmoos"
             EXTRA_CHECK="sequence_second_fail"
             CASE_MAX_TIME="120"
@@ -151,19 +151,19 @@ get_case_config() {
             POKE_ARGS="CASE_VALUE:=leadonly CASE_MAIL:=leadonly TEST_EVAL_READY=true"
             ;;
         eval_numeric_partial_fail)
-            EXPECTED="fail"
+            EXPECTED_SUBJECT="fail"
             SHORE_PATCH="$PATCH_DIR/eval-numeric-partial-fail-shoreside.xmoos"
             EXTRA_CHECK="numeric_partial_fail"
             POKE_ARGS="PASS_INPUT=true CASE_VALUE:=numericpartial CASE_PHASE:=ready NUM_SCORE=39 CASE_MAIL:=numericpartial TEST_EVAL_READY=true"
             ;;
         eval_fail_only_condition_fail)
-            EXPECTED="fail"
+            EXPECTED_SUBJECT="fail"
             SHORE_PATCH="$PATCH_DIR/eval-fail-only-condition-shoreside.xmoos"
             EXTRA_CHECK="fail_only"
             POKE_ARGS="FORCE_FAIL=true CASE_VALUE:=failonly CASE_MAIL:=failonly TEST_EVAL_READY=true"
             ;;
         eval_fail_condition_fail)
-            EXPECTED="fail"
+            EXPECTED_SUBJECT="fail"
             SHORE_PATCH="$PATCH_DIR/eval-fail-condition-shoreside.xmoos"
             EXTRA_CHECK="fail_flag"
             POKE_ARGS="PASS_INPUT=true FORCE_FAIL=true CASE_VALUE:=failcondition CASE_MAIL:=failcondition TEST_EVAL_READY=true"
@@ -217,14 +217,14 @@ get_case_config() {
             POKE_ARGS="PASS_INPUT=true CASE_VALUE:=customfinish CASE_MAIL:=customfinish TEST_EVAL_READY=true"
             ;;
         mayfinish_custom_value_timeout_fail)
-            EXPECTED="timeout"
+            EXPECTED_SUBJECT="timeout"
             SHORE_PATCH="$PATCH_DIR/mayfinish-custom-value-timeout-shoreside.xmoos"
             MAYFINISH_ALIAS="uMayFinish_custom_mismatch"
             CASE_MAX_TIME="6"
             POKE_ARGS="PASS_INPUT=true CASE_VALUE:=customtimeout CASE_MAIL:=customtimeout TEST_EVAL_READY=true"
             ;;
         mayfinish_timeout_fail)
-            EXPECTED="timeout"
+            EXPECTED_SUBJECT="timeout"
             SHORE_PATCH="$PATCH_DIR/mayfinish-timeout-shoreside.xmoos"
             CASE_MAX_TIME="2"
             POKE_ARGS="PASS_INPUT=true CASE_VALUE:=timeout CASE_MAIL:=timeout"
@@ -298,6 +298,30 @@ unique_hash_count() {
         return
     }
     aloggrep "$alog" MISSION_HASH 2>/dev/null | sed -n 's/.*mhash=\([^, ]*\).*/\1/p' | sort -u | wc -l | tr -d ' '
+}
+
+grade_from_line() {
+    echo "$1" | sed -n 's/.*grade=\([^, ]*\).*/\1/p'
+}
+
+subject_for_case() {
+    local case_name="$1"
+    case "$case_name" in
+        hash_*)
+            echo "pMissionHash"
+            ;;
+        mayfinish_*)
+            echo "uMayFinish"
+            ;;
+        *)
+            echo "pMissionEval"
+            ;;
+    esac
+}
+
+subject_result_line() {
+    local line="$1"
+    echo "$line" | sed 's/grade=/subject_grade=/'
 }
 
 extra_check_ok() {
@@ -443,25 +467,27 @@ run_direct_mayfinish_case() {
     local case_name="$2"
     local case_tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local case_base
     local rc
-    local status
-    local actual
     local expected_rc
     local line
+    local subject
+    local subject_grade
+    local subject_line
     local mayfinish_alias
 
     get_case_config "$case_name" || return 1
+    subject=$(subject_for_case "$case_name")
     mayfinish_alias="$MAYFINISH_ALIAS"
     if [ "$mayfinish_alias" = "" ]; then
         mayfinish_alias="uMayFinish_${case_idx}"
     fi
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
-    case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=prepare_error  subject=$subject" > "$case_row_file"
         return 1
     }
     case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
@@ -486,30 +512,40 @@ run_direct_mayfinish_case() {
     rc=$?
 
     expected_rc=0
-    actual="missing"
-    if [ "$EXPECTED" = "timeout" ]; then
+    if [ "$EXPECTED_SUBJECT" = "timeout" ]; then
         expected_rc=1
-        actual="timeout"
     fi
 
-    status="success"
     if [ "$rc" != "$expected_rc" ]; then
-        status="mismatch"
-    elif [ "$EXPECTED" != "timeout" ]; then
-        line=$(wait_for_result_line "$case_dir/results.txt" 80)
-        actual=`echo "$line" | sed -n 's/.*grade=\([^, ]*\).*/\1/p'`
-        if [ "$actual" = "" ]; then
-            actual="missing"
-        fi
-        if [ "$actual" != "$EXPECTED" ]; then
-            status="mismatch"
-        elif ! extra_check_ok "$EXTRA_CHECK" "$case_dir" "$line"; then
-            status="evidence_mismatch"
-        fi
+        echo "case=$case_name  grade=fail  reason=subject_rc_mismatch  subject=$subject  expected_subject=$EXPECTED_SUBJECT  subject_rc=$rc" > "$case_row_file"
+        return 1
     fi
 
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  mayfinish_rc=$rc  $line" > "$case_result_file"
-    [ "$status" = "success" ]
+    if [ "$EXPECTED_SUBJECT" = "timeout" ]; then
+        echo "case=$case_name  grade=pass  subject=$subject  expected_subject=timeout  subject_rc=$rc" > "$case_row_file"
+        return 0
+    fi
+
+    line=$(wait_for_result_line "$case_dir/results.txt" 80)
+    subject_grade=$(grade_from_line "$line")
+    if [ "$subject_grade" = "" ]; then
+        subject_grade="missing"
+    fi
+    if [ "$subject_grade" != "$EXPECTED_SUBJECT" ]; then
+        subject_line=$(subject_result_line "$line")
+        echo "case=$case_name  grade=fail  reason=subject_grade_mismatch  subject=$subject  expected_subject=$EXPECTED_SUBJECT  subject_rc=$rc  $subject_line" > "$case_row_file"
+        return 1
+    fi
+
+    if ! extra_check_ok "$EXTRA_CHECK" "$case_dir" "$line"; then
+        subject_line=$(subject_result_line "$line")
+        echo "case=$case_name  grade=fail  reason=evidence_mismatch  subject=$subject  expected_subject=$EXPECTED_SUBJECT  subject_rc=$rc  $subject_line" > "$case_row_file"
+        return 1
+    fi
+
+    subject_line=$(subject_result_line "$line")
+    echo "case=$case_name  grade=pass  subject=$subject  expected_subject=$EXPECTED_SUBJECT  subject_rc=$rc  $subject_line" > "$case_row_file"
+    return 0
 }
 
 run_case_isolated() {
@@ -519,18 +555,18 @@ run_case_isolated() {
     if [ "$JUST_MAKE" = "yes" ]; then
         local case_tag
         local case_dir
-        local case_result_file
+        local case_row_file
         local case_base
         case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
         case_dir="$RUN_ROOT/$case_tag"
-        case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+        case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
         prepare_case_dir "$case_dir" || return 1
         case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
         (
             cd "$case_dir"
             ./launch.sh --just_make --xlaunched --nogui --mport="$case_base" --pshare="$((case_base + 2))" --mmod="$case_name" "$TIME_WARP" >/dev/null
         )
-        echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
+        echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
         return 0
     fi
 
@@ -555,8 +591,8 @@ fi
 
 : > "$RESULTS_FILE"
 RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_${RUN_ROOT_PREFIX}_XXXXXX")
-CASE_RESULT_DIR="$RUN_ROOT/case_results"
-mkdir -p "$CASE_RESULT_DIR"
+CASE_ROW_DIR="$RUN_ROOT/case_rows"
+mkdir -p "$CASE_ROW_DIR"
 
 idx=0
 wave_count=0
@@ -571,9 +607,9 @@ for case_name in "${RUN_CASES[@]}"; do
 done
 wait || ALL_OK="no"
 
-for result_file in $(find "$CASE_RESULT_DIR" -type f | sort); do
+for result_file in $(find "$CASE_ROW_DIR" -type f | sort); do
     cat "$result_file" >> "$RESULTS_FILE"
-    if ! rg -q 'case_result=success' "$result_file"; then
+    if ! rg -q '(^|[[:space:]])grade=pass([[:space:]]|$)' "$result_file"; then
         ALL_OK="no"
     fi
 done

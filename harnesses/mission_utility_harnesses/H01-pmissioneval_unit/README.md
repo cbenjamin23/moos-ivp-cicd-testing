@@ -8,6 +8,12 @@ the same stem directly, starts a uniquely aliased `uMayFinish`, and then pokes
 the case mail. The mission grade still comes from `pMissionEval` through its
 `results.txt` row plus selected alog evidence.
 
+Exported harness rows use the mission-utility edge shape:
+`grade=<pass|fail>` is the harness case verdict, while the pMissionEval row is
+reported as `subject_grade=<pass|fail>`. Negative pMissionEval cases therefore
+pass the harness when `expected_subject=fail` and the subject row actually
+grades fail.
+
 ## Current Matrix
 
 - `eval_baseline_pass` Baseline `pMissionEval` case. Scripted mail satisfies the lead and pass conditions, writes a pass row, expands ordinary macros, and terminates through the default mission-evaluated flag.

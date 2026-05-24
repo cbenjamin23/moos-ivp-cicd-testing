@@ -1,0 +1,1 @@
+  grade=pass  form=loiter_behavior_tests  mmod=patience_high_pass  eval=true  loiter_done=false  complete=false  index=7  mode=stable  acquire=0  dist_poly=2.219  dist_vert=5.432  bhv_error=false  mhash=[PRIM-MITT]

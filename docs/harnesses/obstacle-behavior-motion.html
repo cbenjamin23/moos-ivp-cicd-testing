@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Avoid Disabled Fail</h3>
-          <p>Description: This case makes the AVOID=true condition impossible to satisfy. The alert request still happens, but the avoid-obstacle lifecycle should fail to complete and the mission should fail.</p>
+          <p>Description: This case makes the AVOID=true condition impossible to satisfy. The alert request still happens, but avoidance is disabled and the mission should grade pass only when the expected collision evidence is observed.</p>
         </div>
       </article>
 
@@ -152,73 +152,73 @@
 
         <article class="case-row">
           <code>avoid_disabled_fail</code>
-          <p>This case makes the AVOID=true condition impossible to satisfy. The alert request still happens, but the avoid-obstacle lifecycle should fail to complete and the mission should fail.</p>
+          <p>This case makes the AVOID=true condition impossible to satisfy. The alert request still happens, but avoidance is disabled and the mission should grade pass only when the expected collision evidence is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_polygon_fail</code>
-          <p>The launch-time polygon is non-convex. The behavior configuration should be rejected and the mission should grade fail.</p>
+          <p>The launch-time polygon is non-convex. The behavior configuration should be rejected and the mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_inner_dist_fail</code>
-          <p>pwt_inner_dist is set above pwt_outer_dist. The mission should grade fail rather than accepting an invalid relevance band.</p>
+          <p>pwt_inner_dist is set above pwt_outer_dist. The mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>pwt_outer_dist is set below pwt_inner_dist. The mission should grade fail.</p>
+          <p>pwt_outer_dist is set below pwt_inner_dist. The mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_completed_dist_fail</code>
-          <p>completed_dist is set below the configured outer relevance distance. The mission should grade fail.</p>
+          <p>completed_dist is set below the configured outer relevance distance. The mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_min_util_cpa_dist_fail</code>
-          <p>min_util_cpa_dist is set above max_util_cpa_dist. The mission should grade fail.</p>
+          <p>min_util_cpa_dist is set above max_util_cpa_dist. The mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_util_cpa_dist_fail</code>
-          <p>max_util_cpa_dist is set below min_util_cpa_dist. The mission should grade fail.</p>
+          <p>max_util_cpa_dist is set below min_util_cpa_dist. The mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_allowable_ttc_fail</code>
-          <p>allowable_ttc is set negative. The behavior configuration should be rejected and the mission should grade fail.</p>
+          <p>allowable_ttc is set negative. The behavior configuration should be rejected and the mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_rng_flag_fail</code>
-          <p>rng_flag is given a malformed threshold. The behavior configuration should be rejected and the mission should grade fail.</p>
+          <p>rng_flag is given a malformed threshold. The behavior configuration should be rejected and the mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_cpa_flag_fail</code>
-          <p>cpa_flag is missing an assignment payload. The behavior configuration should be rejected and the mission should grade fail.</p>
+          <p>cpa_flag is missing an assignment payload. The behavior configuration should be rejected and the mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_use_refinery_fail</code>
-          <p>use_refinery is set to a non-boolean token. The mission should grade fail.</p>
+          <p>use_refinery is set to a non-boolean token. The mission should grade pass on helm malconfig evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_grade_fail</code>
-          <p>pwt_grade is present in the source state but is not accepted by the current setParam() surface. The mission should grade fail if someone configures it.</p>
+          <p>pwt_grade is present in the source state but is not accepted by the current setParam() surface. The mission should grade pass on helm malconfig evidence if someone configures it.</p>
         </article>
 
       </div>

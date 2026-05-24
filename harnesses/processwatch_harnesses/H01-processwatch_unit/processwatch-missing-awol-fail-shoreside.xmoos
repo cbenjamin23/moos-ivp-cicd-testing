@@ -28,8 +28,8 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = PROC_WATCH_ALL_OK = true
-  pass_condition = GHOST_PRESENT = true
+  pass_condition = PROC_WATCH_ALL_OK = false
+  pass_condition = GHOST_PRESENT = false
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = processwatch_unit
@@ -39,6 +39,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = expected=watch_awol
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
   report_column    = ghost_present=$[GHOST_PRESENT]
   report_column    = proc_summary=$[PROC_WATCH_SUMMARY]

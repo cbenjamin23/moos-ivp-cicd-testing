@@ -22,7 +22,7 @@ CASE=""
 JUST_MAKE="no"
 KEEP_WORKDIRS="no"
 VERBOSE=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 RUN_ROOT=""
 RUN_ROOT_PREFIX=${RUN_ROOT_PREFIX:-ufield_app}
 ALL_OK="yes"
@@ -1903,6 +1903,27 @@ latest_result_line() {
     fi
 }
 
+format_case_row() {
+    local case_name="$1"
+    local status="$2"
+    local rc="$3"
+    local line="$4"
+    local grade
+
+    grade=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+    if [ "$status" = "success" ]; then
+        if [ "$grade" = "" ]; then
+            echo "case=$case_name  grade=fail  reason=missing_result  mayfinish_rc=$rc  $line"
+            return
+        fi
+        echo "case=$case_name  grade=$grade  $line  mayfinish_rc=$rc"
+    else
+        echo "case=$case_name  grade=fail  reason=$status  mayfinish_rc=$rc  $line"
+    fi
+}
+
 case_evidence_ok() {
     local case_dir="$1"
     local line="$2"
@@ -2466,7 +2487,7 @@ run_case_isolated() {
     local case_name="$2"
     local case_tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local case_base
     local rc
     local status
@@ -2477,10 +2498,10 @@ run_case_isolated() {
 
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
-    case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
     mkdir -p "$case_dir"
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  case_result=error  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=prepare_error" > "$case_row_file"
         return 1
     }
     case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
@@ -2504,7 +2525,7 @@ run_case_isolated() {
     rc=$?
 
     if [ "$JUST_MAKE" = "yes" ]; then
-        echo "case=$case_name  case_result=success  actual=just_make" > "$case_result_file"
+        echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
         return 0
     fi
 
@@ -2518,7 +2539,7 @@ run_case_isolated() {
         status="evidence_mismatch"
     fi
 
-    echo "case=$case_name  case_result=$status  mayfinish_rc=$rc  $line" > "$case_result_file"
+    format_case_row "$case_name" "$status" "$rc" "$line" > "$case_row_file"
     [ "$status" = "success" ]
 }
 
@@ -2539,8 +2560,8 @@ fi
 
 : > "$RESULTS_FILE"
 RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_${RUN_ROOT_PREFIX}_XXXXXX")
-CASE_RESULT_DIR="$RUN_ROOT/case_results"
-mkdir -p "$CASE_RESULT_DIR"
+CASE_ROW_DIR="$RUN_ROOT/case_rows"
+mkdir -p "$CASE_ROW_DIR"
 
 idx=0
 wave_count=0
@@ -2555,9 +2576,9 @@ for case_name in "${RUN_CASES[@]}"; do
 done
 wait || ALL_OK="no"
 
-for result_file in $(find "$CASE_RESULT_DIR" -type f | sort); do
+for result_file in $(find "$CASE_ROW_DIR" -type f | sort); do
     cat "$result_file" >> "$RESULTS_FILE"
-    if ! rg -q 'case_result=success' "$result_file"; then
+    if ! rg -q '^case=[^[:space:]]+[[:space:]]+grade=pass([[:space:]]|$)' "$result_file"; then
         ALL_OK="no"
     fi
 done

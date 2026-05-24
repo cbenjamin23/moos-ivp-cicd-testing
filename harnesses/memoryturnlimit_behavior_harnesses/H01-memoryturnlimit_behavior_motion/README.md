@@ -13,7 +13,7 @@ Typical commands:
 
 ```bash
 ./zlaunch.sh --case=baseline_memory_pass 10
-./zlaunch.sh --jobs=4 --port_base=15000 10
+./zlaunch.sh --jobs=4 --port_base=15000 --port_stride=30 10
 ./zlaunch.sh --just_make 10
 ```
 
@@ -35,11 +35,11 @@ Typical commands:
 - `zero_turn_range_pass` Exercises the legal `turn_range=0` boundary and expects a very tight memory constraint with no behavior warnings.
 - `runtime_widen_range_pass` Starts with a narrow `turn_range`, widens it through `MEMORY_TURN_UPDATES`, and expects the turn to advance without behavior warnings.
 - `runtime_tighten_range_pass` Starts with a loose `turn_range`, tightens it through `MEMORY_TURN_UPDATES`, and expects the final heading to remain in a constrained band.
-- `bad_memory_time_fail` Sets a negative `memory_time` and expects the mission grade to fail before the limiter publishes a memory average or the vehicle starts moving.
-- `bad_turn_range_high_fail` Sets `turn_range` above 180 and expects the mission grade to fail before the limiter publishes a memory average or the vehicle starts moving.
-- `bad_turn_range_text_fail` Sets a nonnumeric `turn_range` and expects the mission grade to fail before the limiter publishes a memory average or the vehicle starts moving.
-- `missing_memory_time_fail` Omits `memory_time` and expects the mission grade to fail through the behavior warning path.
-- `missing_turn_range_fail` Omits `turn_range` and expects the mission grade to fail through the behavior warning path.
+- `bad_memory_time_fail` Sets a negative `memory_time` and expects `pMissionEval` to pass only when `HELM_MALCONFIG` proves the bad launch-time behavior configuration was rejected.
+- `bad_turn_range_high_fail` Sets `turn_range` above 180 and expects `pMissionEval` to pass only when `HELM_MALCONFIG` proves the bad launch-time behavior configuration was rejected.
+- `bad_turn_range_text_fail` Sets a nonnumeric `turn_range` and expects `pMissionEval` to pass only when `HELM_MALCONFIG` proves the bad launch-time behavior configuration was rejected.
+- `missing_memory_time_fail` Omits `memory_time` and expects `pMissionEval` to pass only when a behavior warning proves the required limiter parameter was rejected.
+- `missing_turn_range_fail` Omits `turn_range` and expects `pMissionEval` to pass only when a behavior warning proves the required limiter parameter was rejected.
 
 ## Wave Notes
 

@@ -32,7 +32,7 @@ SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
 BHV_STEM="$MISSION_DIR/meta_vehicle.bhv"
 BHV_XFILE="$MISSION_DIR/meta_vehicle.bhvx"
 RUN_ROOT=""
-CASE_RESULT_DIR=""
+CASE_ROW_DIR=""
 SOLO_WAVE_CASES=(
     pts_port_turns_ok_true_pass
 )
@@ -333,6 +333,29 @@ get_case_config() {
     fi
 }
 
+
+emit_case_row() {
+    local case_name="$1"
+    local status="$2"
+    local expected="$3"
+    local actual="$4"
+    shift 4
+    local line="$1"
+    shift || true
+    local grade
+
+    grade=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
+    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+
+    if [ "$grade" != "" ]; then
+        echo "case=$case_name  grade=$grade  $line  $*"
+    elif [ "$status" = "success" ]; then
+        echo "case=$case_name  grade=fail  reason=missing_result  $line  $*"
+    else
+        echo "case=$case_name  grade=fail  reason=$status  $line  $*"
+    fi
+}
+
 run_case() {
     local case_name="$1"
     local case_idx="${RUN_CASE_IDX:-0}"
@@ -376,7 +399,7 @@ run_case() {
         ALL_OK="no"
     fi
 
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  $line" >> "$RESULTS_FILE"
+    emit_case_row "$case_name" "$status" "$EXPECTED" "$actual" "$line" >> "$RESULTS_FILE"
     stop_mission_apps "$MISSION_DIR"
     clear_xfiles
     cd "$HARNESS_DIR"
@@ -387,7 +410,7 @@ run_case_isolated() {
     local case_name="$2"
     local case_tag
     local case_dir
-    local case_result_file
+    local case_row_file
     local shore_mport
     local veh_mport
     local shore_pshare
@@ -400,10 +423,10 @@ run_case_isolated() {
     get_case_config "$case_name"
     case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
     case_dir="$RUN_ROOT/$case_tag"
-    case_result_file="$CASE_RESULT_DIR/${case_tag}.txt"
+    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
 
     prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  case_result=error  expected=$EXPECTED  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=script_error" > "$case_row_file"
         return 1
     }
 
@@ -424,10 +447,10 @@ run_case_isolated() {
 
     if [ "$JUST_MAKE" = "yes" ]; then
         if [ "$launch_rc" = "0" ]; then
-            echo "case=$case_name  case_result=success  expected=just_make  actual=just_make" > "$case_result_file"
+            echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
             return 0
         fi
-        echo "case=$case_name  case_result=error  expected=just_make  actual=script_error" > "$case_result_file"
+        echo "case=$case_name  grade=fail  reason=script_error" > "$case_row_file"
         return 1
     fi
 
@@ -443,7 +466,7 @@ run_case_isolated() {
         ALL_OK="no"
     fi
 
-    echo "case=$case_name  case_result=$status  expected=$EXPECTED  actual=$actual  launch_rc=$launch_rc  $line" > "$case_result_file"
+    emit_case_row "$case_name" "$status" "$EXPECTED" "$actual" "$line" "launch_rc=$launch_rc" > "$case_row_file"
     if [ "$launch_rc" != "0" ] && [ "$actual" = "missing" ]; then
         return 1
     fi
@@ -502,8 +525,8 @@ if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
     done
 else
     RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_colregs_parameters_XXXXXX")
-    CASE_RESULT_DIR="$RUN_ROOT/case_results"
-    mkdir -p "$CASE_RESULT_DIR"
+    CASE_ROW_DIR="$RUN_ROOT/case_rows"
+    mkdir -p "$CASE_ROW_DIR"
 
     stop_mission_apps "$MISSION_DIR"
     clear_xfiles
@@ -550,13 +573,13 @@ else
     fi
 
     for ONE_CASE in "${RUN_CASES[@]}"; do
-        case_file=$(find "$CASE_RESULT_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
+        case_file=$(find "$CASE_ROW_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
         if [ "$case_file" = "" ]; then
-            echo "case=$ONE_CASE  case_result=error  expected=unknown  actual=missing" >> "$RESULTS_FILE"
+            echo "case=$ONE_CASE  grade=fail  reason=missing_result" >> "$RESULTS_FILE"
             ALL_OK="no"
         else
             cat "$case_file" >> "$RESULTS_FILE"
-            grep -q " case_result=success " "$case_file" || ALL_OK="no"
+            grep -Eq '(^|[[:space:]])grade=pass([[:space:]]|$)' "$case_file" || ALL_OK="no"
         fi
     done
 fi

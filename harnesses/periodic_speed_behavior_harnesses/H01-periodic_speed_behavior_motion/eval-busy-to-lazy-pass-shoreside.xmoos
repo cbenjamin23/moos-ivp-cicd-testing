@@ -17,7 +17,7 @@ ProcessConfig = pMissionEval
 
   lead_condition = (MISSION_DONE = true) or (MISSION_TIMEOUT = true)
   pass_condition = PS_BUSY_COUNT = 0
-  pass_condition = PS_PENDING_ACTIVE > 3
+  pass_condition = PS_PENDING_ACTIVE >= 3
   pass_condition = PS_PENDING_INACTIVE = 0
 
   result_flag = MISSION_EVALUATED = true

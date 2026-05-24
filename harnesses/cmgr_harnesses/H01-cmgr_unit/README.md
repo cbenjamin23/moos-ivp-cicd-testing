@@ -155,49 +155,43 @@ execution path.
 Typical detection-style harness line:
 
 ```text
-case=detect_edge_pass  case_result=success  expected=pass  actual=pass  form=cmgr_tests  mmod=detect_edge_pass  grade=pass  eval=true  seen=true  closest=intruder  range=14  mhash=[RUDE-SLAB]
+case=detect_edge_pass grade=pass form=cmgr_tests mmod=detect_edge_pass eval=true seen=true closest=intruder range=14 mhash=[RUDE-SLAB]
 ```
 
 Typical multi-contact reporting line:
 
 ```text
-case=count_two_pass  case_result=success  expected=pass  actual=pass  form=cmgr_tests  mmod=count_two_pass  grade=pass  eval=true  count=2  list=alpha,bravo  closest=alpha  range=8  mhash=[MILD-SVEN]
+case=count_two_pass grade=pass form=cmgr_tests mmod=count_two_pass eval=true count=2 list=alpha,bravo closest=alpha range=8 mhash=[MILD-SVEN]
 ```
 
 Typical extended reporting line:
 
 ```text
-case=post_all_ranges_pass  case_result=success  expected=pass  actual=pass  form=cmgr_tests  mmod=post_all_ranges_pass  grade=pass  eval=true  count=2  list=alpha,bravo  ranges=8.7,18.9  closest=alpha  mhash=[TAME-THOR]
+case=post_all_ranges_pass grade=pass form=cmgr_tests mmod=post_all_ranges_pass eval=true count=2 list=alpha,bravo ranges=8.7,18.9 closest=alpha mhash=[TAME-THOR]
 ```
 
 Typical dynamic/reporting line:
 
 ```text
-case=report_request_pass  case_result=success  expected=pass  actual=pass  form=cmgr_tests  mmod=report_request_pass  grade=pass  eval=true  report=intruder  seen=true  range=14  mhash=[COOL-JEFF]
+case=report_request_pass grade=pass form=cmgr_tests mmod=report_request_pass eval=true report=intruder seen=true range=14 mhash=[COOL-JEFF]
 ```
 
 Typical retirement line:
 
 ```text
-case=reject_range_retire_pass  case_result=success  expected=pass  actual=pass  form=cmgr_tests  mmod=reject_range_retire_pass  grade=pass  eval=true  retired=intruder  mhash=[WARY-AVEN]
+case=reject_range_retire_pass grade=pass form=cmgr_tests mmod=reject_range_retire_pass eval=true retired=intruder mhash=[WARY-AVEN]
 ```
 
 Field anatomy:
 
 - `case`
   The harness case name that was run.
-- `expected`
-  What the harness expected the mission to grade.
-- `actual`
-  What the mission actually graded after parsing the mission result line.
-- `case_result`
-  `success` if expected equals actual, otherwise `mismatch`.
+- `grade`
+  Pass/fail result written by the mission itself.
 - `form`
   Harness or mission family name.
 - `mmod`
   The mission mode written by `pMissionEval` for the selected case.
-- `grade`
-  Pass/fail result written by the mission itself.
 - `eval`
   Whether the case's evaluation checkpoint was reached.
 - `seen`

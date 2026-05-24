@@ -53,53 +53,62 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
   avoidance run.
 - `avoid_disabled_fail`
   This case makes the `AVOID=true` condition impossible to satisfy. The
-  alert request still happens, but the avoid-obstacle lifecycle should fail to
-  complete and the mission should fail.
+  alert request still happens, but avoidance is disabled and the mission should
+  grade pass only when the expected collision evidence is observed.
 - `bad_polygon_fail`
   The launch-time `polygon` is non-convex. The behavior configuration should be
-  rejected and the mission should grade fail.
+  rejected and the mission should grade pass on helm malconfig evidence.
 - `bad_pwt_inner_dist_fail`
-  `pwt_inner_dist` is set above `pwt_outer_dist`. The mission should grade fail
-  rather than accepting an invalid relevance band.
+  `pwt_inner_dist` is set above `pwt_outer_dist`. The mission should grade pass
+  on helm malconfig evidence.
 - `bad_pwt_outer_dist_fail`
   `pwt_outer_dist` is set below `pwt_inner_dist`. The mission should grade
-  fail.
+  pass on helm malconfig evidence.
 - `bad_completed_dist_fail`
   `completed_dist` is set below the configured outer relevance distance. The
-  mission should grade fail.
+  mission should grade pass on helm malconfig evidence.
 - `bad_min_util_cpa_dist_fail`
   `min_util_cpa_dist` is set above `max_util_cpa_dist`. The mission should
-  grade fail.
+  grade pass on helm malconfig evidence.
 - `bad_max_util_cpa_dist_fail`
   `max_util_cpa_dist` is set below `min_util_cpa_dist`. The mission should
-  grade fail.
+  grade pass on helm malconfig evidence.
 - `bad_allowable_ttc_fail`
   `allowable_ttc` is set negative. The behavior configuration should be
-  rejected and the mission should grade fail.
+  rejected and the mission should grade pass on helm malconfig evidence.
 - `bad_rng_flag_fail`
   `rng_flag` is given a malformed threshold. The behavior configuration should
-  be rejected and the mission should grade fail.
+  be rejected and the mission should grade pass on helm malconfig evidence.
 - `bad_cpa_flag_fail`
   `cpa_flag` is missing an assignment payload. The behavior configuration
-  should be rejected and the mission should grade fail.
+  should be rejected and the mission should grade pass on helm malconfig
+  evidence.
 - `bad_use_refinery_fail`
-  `use_refinery` is set to a non-boolean token. The mission should grade fail.
+  `use_refinery` is set to a non-boolean token. The mission should grade pass
+  on helm malconfig evidence.
 - `bad_pwt_grade_fail`
   `pwt_grade` is present in the source state but is not accepted by the current
-  `setParam()` surface. The mission should grade fail if someone configures it.
+  `setParam()` surface. The mission should grade pass on helm malconfig
+  evidence if someone configures it.
 
 ## Results Lines
 
 Typical pass line:
 
 ```text
-case=default_auto_request_pass  case_result=success  expected=pass  actual=pass  grade=pass  form=obstacle_behavior_motion_tests  mmod=default_auto_request_pass  eval=true  obavoiding=end  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=true  range_flag_seen=false  cpa_flag_seen=false  resolved=ob_lane  arrived=true  collisions=0  near_misses=0  encounters=1  mhash=[...]
+case=default_auto_request_pass  grade=pass  form=obstacle_behavior_motion_tests  mmod=default_auto_request_pass  eval=true  obavoiding=end  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=$[RESOLVED_SEEN]  range_flag_seen=$[RANGE_FLAG_SEEN]  cpa_flag_seen=$[CPA_FLAG_SEEN]  resolved=$[OBM_RESOLVED]  arrived=true  collisions=0  near_misses=0  encounters=0  mhash=[...]
 ```
 
-Typical fail line:
+Typical expected-negative line:
 
 ```text
-case=avoid_disabled_fail  case_result=success  expected=fail  actual=fail  grade=fail  form=obstacle_behavior_motion_tests  mmod=avoid_disabled_fail  eval=true  obavoiding=idle  alert_req_seen=true  obstacle_alert_seen=true  resolved_seen=false  range_flag_seen=false  cpa_flag_seen=false  resolved=  arrived=false  collisions=0  near_misses=0  encounters=1  mhash=[...]
+case=avoid_disabled_fail  grade=pass  form=obstacle_behavior_motion_tests  mmod=avoid_disabled_fail  eval=true  obavoiding=end  alert_req_seen=true  obstacle_alert_seen=true  arrived=true  collisions=1  near_misses=0  encounters=1  mhash=[...]
+```
+
+Typical bad-config expected-negative line:
+
+```text
+case=bad_polygon_fail  grade=pass  form=obstacle_behavior_motion_tests  mmod=bad_polygon_fail  eval=true  helm_malconfig=true  helm_state=MALCONFIG  mhash=[...]
 ```
 
 Field anatomy:
@@ -114,19 +123,21 @@ Field anatomy:
   behavior flags
 - `resolved`: raw `OBM_RESOLVED` value at evaluation time
 - `arrived`, `collisions`, `near_misses`, `encounters`: mission outcome data
+- `helm_malconfig` / `helm_state`: malformed behavior configuration evidence
+  for bad-config expected-negative cases
 
 ## Running
 
 ```bash
 ./zlaunch.sh
 ./zlaunch.sh --case=cpa_flag_pass 10
-./zlaunch.sh --jobs=4 --port_base=18000 10
+./zlaunch.sh --jobs=4 --port_base=36600 --port_stride=20 10
 ./zlaunch.sh --just_make 10
 ```
 
 Latest validation:
 
-- April 26, 2026
-- full matrix: `21/21` expected outcomes matched
+- May 20, 2026
+- full matrix: `21/21` mission-owned grades passed
 - warp: `10`
-- command: `./zlaunch.sh --jobs=4 --port_base=18000 10`
+- command: `./zlaunch.sh --jobs=4 --port_base=36600 --port_stride=20 10`

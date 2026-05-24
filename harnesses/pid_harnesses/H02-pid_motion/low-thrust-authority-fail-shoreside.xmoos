@@ -8,14 +8,11 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = (ARRIVED = true) or (TEST_EVAL_READY = true)
-  pass_condition = ARRIVED = true
-  pass_condition = ABE_NAV_X >= 55
-  pass_condition = ABE_NAV_X <= 80
-  pass_condition = ABE_NAV_Y >= -72
-  pass_condition = ABE_NAV_Y <= -48
-  pass_condition = ABE_NAV_HEADING >= 85
-  pass_condition = ABE_NAV_HEADING <= 95
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = ABE_NAV_X < 55
+  pass_condition = ABE_NAV_SPEED <= 0.8
+  pass_condition = ABE_DESIRED_THRUST <= 8.5
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -28,6 +25,8 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=low_thrust_authority
   report_column = arrived=$[ARRIVED]
   report_column = x=$[ABE_NAV_X]
   report_column = y=$[ABE_NAV_Y]

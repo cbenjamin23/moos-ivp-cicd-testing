@@ -272,25 +272,25 @@
 
         <article class="case-row">
           <code>no_points_timeout_fail</code>
-          <p>The behavior starts empty and receives no useful update, so the mission should fail.</p>
+          <p>The behavior starts empty and receives no useful update, so the mission should pass when the timer verdict observes no waypoint completion.</p>
         </article>
 
 
         <article class="case-row">
           <code>malformed_update_fail</code>
-          <p>The behavior starts empty and receives a malformed update. The mission should fail because no valid waypoint is accepted.</p>
+          <p>The behavior starts empty and receives a malformed update. The mission should pass when no valid waypoint is accepted and no waypoint completion occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_xpoints_size_fail</code>
-          <p>The behavior starts with a two-point route and receives a one-point xpoints update. The update should be rejected, and the short timer verdict should fail.</p>
+          <p>The behavior starts with a two-point route and receives a one-point xpoints update. The update should be rejected, and the short timer verdict should pass when completion remains absent.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_fail</code>
-          <p>Launch-time speed=-1 should be rejected by BHV_Waypoint, putting the helm into malconfig and producing an expected fail grade.</p>
+          <p>Launch-time speed=-1 should be rejected by BHV_Waypoint, putting the helm into malconfig and producing an expected pass verdict.</p>
         </article>
 
 

@@ -24,8 +24,8 @@ ProcessConfig = pMissionEval
   pass_condition = ABE_NAV_Y <= -46
   pass_condition = ABE_NAV_HEADING >= 85
   pass_condition = ABE_NAV_HEADING <= 95
-  pass_condition = ABE_NAV_DEPTH >= 25
-  pass_condition = ABE_NAV_DEPTH <= 40
+  pass_condition = ABE_NAV_DEPTH < 25
+  pass_condition = ABE_DESIRED_ELEVATOR >= -0.5
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -39,6 +39,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=low_elevator_authority
   report_column = x=$[ABE_NAV_X]
   report_column = y=$[ABE_NAV_Y]
   report_column = speed=$[ABE_NAV_SPEED]

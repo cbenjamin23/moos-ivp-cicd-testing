@@ -62,7 +62,7 @@
         </div>
         <div class="gif-meta">
           <h3>Crash Process Loss</h3>
-          <p>Description: Crash case. failure_type=crash must make pHelmIvP disappear and therefore produce the expected mission failure.</p>
+          <p>Description: Crash case. failure_type=crash must make pHelmIvP disappear and produce a passing mission row with expected=process_loss.</p>
         </div>
       </article>
 
@@ -121,13 +121,13 @@
 
         <article class="case-row">
           <code>crash_on_complete_fail</code>
-          <p>Crash case. failure_type=crash must make pHelmIvP disappear and therefore produce the expected mission failure.</p>
+          <p>Crash case. failure_type=crash must make pHelmIvP disappear and produce a passing mission row with expected=process_loss.</p>
         </article>
 
 
         <article class="case-row">
           <code>unknown_type_default_crash_fail</code>
-          <p>Default-crash case. An unsupported failure_type leaves the behavior&#x27;s default crash mode in force and must fail by process loss.</p>
+          <p>Default-crash case. An unsupported failure_type leaves the behavior&#x27;s default crash mode in force and must pass by observed process loss.</p>
         </article>
 
       </div>

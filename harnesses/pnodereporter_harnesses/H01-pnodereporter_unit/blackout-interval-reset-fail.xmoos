@@ -23,9 +23,11 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = NODE_REPORT_SEEN = true
-  pass_condition = PNR_POST_GAP >= 1.8
+  pass_condition = PNR_POST_GAP < 1.8
 
   result_flag  = MISSION_EVALUATED = true
+  pass_flag    = SAY_MOOS = pass
+  fail_flag    = SAY_MOOS = fail
   mission_form = pnodereporter_unit
   mission_mod  = blackout_interval_reset_fail
 
@@ -33,6 +35,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = evidence=blackout_gap_below_threshold
   report_column    = node_seen=$[NODE_REPORT_SEEN]
   report_column    = node_report=$[NODE_REPORT_LOCAL]
   report_column    = pnr_gap=$[PNR_POST_GAP]

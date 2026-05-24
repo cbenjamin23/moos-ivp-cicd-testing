@@ -78,27 +78,36 @@ and expected malformed-configuration failures.
   Verifies valid custom `set_hdg_color` and `req_hdg_color` visual hints are
   accepted while the behavior still completes normally.
 - `bad_zig_angle_low_fail`
-  Expected fail for `zig_angle=0`.
+  Expected-negative case for `zig_angle=0`; requires helm malconfiguration
+  evidence.
 - `bad_zig_angle_high_fail`
-  Expected fail for `zig_angle=76`.
+  Expected-negative case for `zig_angle=76`; requires helm malconfiguration
+  evidence.
 - `bad_zig_first_fail`
-  Expected fail for an unsupported first-side value.
+  Expected-negative case for an unsupported first-side value; requires helm
+  malconfiguration evidence.
 - `bad_max_zig_zags_fail`
-  Expected fail for `max_zig_zags=0`.
+  Expected-negative case for `max_zig_zags=0`; requires helm malconfiguration
+  evidence.
 - `bad_max_stem_odo_fail`
-  Expected fail for `max_stem_odo=0`.
+  Expected-negative case for `max_stem_odo=0`; requires helm malconfiguration
+  evidence.
 - `bad_speed_fail`
-  Expected fail for negative speed.
+  Expected-negative case for negative speed; requires helm malconfiguration
+  evidence.
 - `bad_delta_heading_fail`
-  Expected fail for `delta_heading=0`.
+  Expected-negative case for `delta_heading=0`; requires helm malconfiguration
+  evidence.
 - `bad_stale_nav_thresh_fail`
-  Expected fail documenting that `stale_nav_thresh` is not accepted as a
-  `BHV_ZigZag` configuration parameter even though the behavior has an
-  internal stale-nav threshold.
+  Expected-negative case documenting that `stale_nav_thresh` is not accepted as
+  a `BHV_ZigZag` configuration parameter even though the behavior has an
+  internal stale-nav threshold; requires helm malconfiguration evidence.
 - `bad_hdg_thresh_fail`
-  Expected fail for negative `hdg_thresh`.
+  Expected-negative case for negative `hdg_thresh`; requires helm
+  malconfiguration evidence.
 - `bad_visual_hint_fail`
-  Expected fail for malformed visual-hint boolean input.
+  Expected-negative case for malformed visual-hint boolean input; requires helm
+  malconfiguration evidence.
 
 ## Manual Commands
 

@@ -104,17 +104,17 @@ behavior-owned waypoint outputs:
   progress.
 - `no_points_timeout_fail`
   The behavior starts empty and receives no useful update, so the mission should
-  fail.
+  pass when the timer verdict observes no waypoint completion.
 - `malformed_update_fail`
   The behavior starts empty and receives a malformed update. The mission should
-  fail because no valid waypoint is accepted.
+  pass when no valid waypoint is accepted and no waypoint completion occurs.
 - `bad_xpoints_size_fail`
   The behavior starts with a two-point route and receives a one-point
   `xpoints` update. The update should be rejected, and the short timer verdict
-  should fail.
+  should pass when completion remains absent.
 - `bad_speed_fail`
   Launch-time `speed=-1` should be rejected by `BHV_Waypoint`, putting the helm
-  into malconfig and producing an expected `fail` grade.
+  into malconfig and producing an expected pass verdict.
 - `bad_capture_line_fail`
   Launch-time `capture_line=diagonal` should be rejected and put the helm into
   malconfig.
@@ -155,17 +155,21 @@ behavior-owned waypoint outputs:
 ./zlaunch.sh --jobs=4 --port_base=36000 10
 ```
 
-Results are appended to `results.txt` with the mission-owned `grade` and the
-waypoint flags used for grading. Wave mode runs the full matrix in isolated
-temporary mission copies. Each case gets its own MOOSDB and pShare port block
-using `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports
-starting at `case_base + 10`. The default is serial `--jobs=1`; use
-`--keep_workdirs` when preserving the
-temporary case folders is useful for debugging.
+Results are appended to `results.txt` as `case=<name>` followed by the
+mission-owned row. Expected-negative cases still produce `grade=pass` when their
+specific evidence is observed, using `expected=no_waypoint_completion` or
+`expected=helm_malconfig` plus the supporting fields. Wave mode runs the full
+matrix in isolated temporary mission copies. Each case gets its own MOOSDB and
+pShare port block using `case_base = port_base + case_idx*PORT_STRIDE`, with
+pShare ports starting at `case_base + 10`. The default is serial `--jobs=1`;
+use `--keep_workdirs` when preserving the temporary case folders is useful for
+debugging.
 
 Latest validation:
 
-- April 27, 2026
-- generated-file matrix: `43/43` cases completed with `--just_make --jobs=4 --port_base=15000`
-- wave matrix: `43/43` expected outcomes matched with `--jobs=4 --port_base=15000`
+- May 20, 2026
+- focused expected-negative cases:
+  `no_points_timeout_fail`, `bad_speed_fail`, `bad_xpoints_size_fail`
+- wave matrix: `43/43` cases passed with `--jobs=4 --port_base=20000`
+- serial matrix: `43/43` cases passed with `--port_base=21400`
 - warp: `10`

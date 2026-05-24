@@ -206,37 +206,37 @@
 
         <article class="case-row">
           <code>bad_fix_turn_fail</code>
-          <p>Invalid fixed-turn case. this case sets an invalid negative fix_turn; the expected mission result is fail because FT_DONE should remain false until the short evaluation timeout.</p>
+          <p>Invalid fixed-turn case. this case sets an invalid negative fix_turn; the case passes when the mission observes the expected rejection evidence: FT_DONE=false, timeout reached, no vehicle motion, unchanged heading, and no behavior runtime error.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_stale_nav_thresh_fail</code>
-          <p>Invalid stale-navigation threshold case. this case sets an invalid stale_nav_thresh; the expected mission result is fail because the behavior should not run to completion and FT_DONE should remain false until timeout.</p>
+          <p>Invalid stale-navigation threshold case. this case sets an invalid stale_nav_thresh; the case passes when the behavior does not run to completion and the mission observes timeout, no motion, unchanged heading, and FT_DONE=false.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_dir_fail</code>
-          <p>Invalid turn-direction case. this case sets an unsupported turn_dir; the expected mission result is fail because the behavior should not complete and FT_DONE should remain false until timeout.</p>
+          <p>Invalid turn-direction case. this case sets an unsupported turn_dir; the case passes when the behavior does not complete and the mission observes timeout, no motion, unchanged heading, and FT_DONE=false.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_fail</code>
-          <p>Invalid speed case. this case sets a negative fixed speed; the expected mission result is fail because the behavior should reject the configuration and never post FT_DONE.</p>
+          <p>Invalid speed case. this case sets a negative fixed speed; the case passes when the behavior rejects the configuration, never posts FT_DONE, and the vehicle remains stationary until the evaluation timeout.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_spec_fail</code>
-          <p>Invalid scheduled-turn case. this case provides a malformed turn_spec; the expected mission result is fail because no valid turn should complete before the evaluation timeout.</p>
+          <p>Invalid scheduled-turn case. this case provides a malformed turn_spec; the case passes when no valid turn completes before the evaluation timeout and the vehicle remains at the initial heading and speed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_schedule_repeat_fail</code>
-          <p>Invalid schedule-repeat case. this case sets schedule_repeat to a non-boolean token; the expected mission result is fail because the behavior should reject the configuration and never post FT_DONE.</p>
+          <p>Invalid schedule-repeat case. this case sets schedule_repeat to a non-boolean token; the case passes when the behavior rejects the configuration, never posts FT_DONE, and the vehicle remains stationary until the evaluation timeout.</p>
         </article>
 
       </div>

@@ -23,9 +23,10 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
-  pass_condition = ABE_NAV_DEPTH >= 14
-  pass_condition = ABE_NAV_DEPTH <= 18
+  pass_condition = ABE_DESIRED_ELEVATOR = 0
   pass_condition = BHV_ERROR_SEEN = false
+  fail_condition = ABE_NAV_X >= -10000
+  fail_condition = ABE_NAV_DEPTH >= 0
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -39,6 +40,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=missing_altitude_unavailable
   report_column = x=$[ABE_NAV_X]
   report_column = depth=$[ABE_NAV_DEPTH]
   report_column = mismatch=$[DEPTH_MISMATCH]

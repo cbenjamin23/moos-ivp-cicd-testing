@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Two Sequential Fail</h3>
-          <p>Description: Two obstacles are placed in sequence as a stress case; the short stem is expected to fail its normal clean-transit criteria.</p>
+          <p>Description: Two obstacles are placed in sequence as a stress case; the case passes when the mission observes arrival, two encounters, and one collision.</p>
         </div>
       </article>
 
@@ -134,25 +134,25 @@
 
         <article class="case-row">
           <code>two_sequential_fail</code>
-          <p>Two obstacles are placed in sequence as a stress case; the short stem is expected to fail its normal clean-transit criteria.</p>
+          <p>Two obstacles are placed in sequence as a stress case; the case passes when the mission observes arrival, two encounters, and one collision.</p>
         </article>
 
 
         <article class="case-row">
           <code>wide_center_fail</code>
-          <p>A wider centered obstacle exceeds what this short corridor stem can safely clear, so the baseline mission criteria are expected to fail.</p>
+          <p>A wider centered obstacle exceeds what this short corridor stem can safely clear; the case passes when the mission observes arrival, one encounter, and one collision.</p>
         </article>
 
 
         <article class="case-row">
           <code>avoid_disabled_fail</code>
-          <p>Obstacle alerts are redirected onto an unused variable instead of OBSTACLE_ALERT, so no avoid behavior spawns and the vehicle is expected to fail the normal mission criteria.</p>
+          <p>Obstacle alerts are redirected onto an unused variable instead of OBSTACLE_ALERT; the case passes when the mission observes arrival, one encounter, and one collision.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_alert_request_fail</code>
-          <p>The obstacle exists in pObstacleMgr, but no OBM_ALERT_REQUEST is sent; without an alert variable, no avoid behavior should spawn and the normal clean-transit criteria should fail.</p>
+          <p>The obstacle exists in pObstacleMgr, but no OBM_ALERT_REQUEST is sent; the case passes when the mission observes arrival, one encounter, and one collision.</p>
         </article>
 
       </div>

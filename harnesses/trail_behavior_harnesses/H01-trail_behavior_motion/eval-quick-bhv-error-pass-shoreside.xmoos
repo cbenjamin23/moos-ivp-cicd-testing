@@ -1,0 +1,48 @@
+//-------------------------------------------------
+// FILE: eval-quick-bhv-error-pass-shoreside.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=TEST_EVAL_READY, val=true, time=20
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+
+  lead_condition = BHV_ERROR_SEEN = true
+  pass_condition = BHV_ERROR_SEEN = true
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = trail_behavior_tests
+  mission_mod  = $(MMOD:=trail_bhv_error_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[BHV_ERROR_SEEN]
+  report_column = expected=bhv_error
+  report_column = dist=$[TRAIL_DISTANCE]
+  report_column = relevance=$[TRAIL_RELEVANCE]
+  report_column = range=$[TRAIL_RANGE]
+  report_column = pursuit=$[PURSUIT]
+  report_column = region=$[REGION]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

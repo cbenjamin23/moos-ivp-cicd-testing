@@ -3,6 +3,8 @@ ProcessConfig = uTimerScript
   AppTick   = 2
   CommsTick = 2
 
+  event = var=HELM_MALCONFIG, val=false, time=1
+  event = var=BHV_ERROR_SEEN, val=false, time=1
   event = var=ARRIVED, val=false, time=1
   event = var=AVOIDING, val=idle, time=1
   event = var=CONTACT_RESOLVED, val=none, time=1
@@ -14,4 +16,32 @@ ProcessConfig = uTimerScript
   event = var=NEAR_MISS_TOTAL, val=0, time=1
   event = var=COLLISION_TOTAL, val=0, time=1
   event = var=TEST_EVAL_READY, val=true, time=18
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (HELM_MALCONFIG = true) or (TEST_EVAL_READY = true)
+  pass_condition = HELM_MALCONFIG = true
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = collision_behavior_motion_tests
+  mission_mod  = $(MMOD:=bad_config_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[HELM_MALCONFIG]
+  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
 }

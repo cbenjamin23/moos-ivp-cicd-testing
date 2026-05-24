@@ -51,29 +51,41 @@ the end of the line.
   Starts busy with `period_speed=0`, proving zero is accepted and the vehicle
   remains effectively stopped while the behavior is active.
 - `bad_period_lazy_fail`
-  Expected fail for `period_lazy=0`.
+  Expected negative for `period_lazy=0`. Passes only when the helm reports
+  `HELM_MALCONFIG=true`.
 - `bad_period_lazy_nonnumeric_fail`
-  Expected fail for a nonnumeric `period_lazy` value.
+  Expected negative for a nonnumeric `period_lazy` value. Passes only when the
+  helm reports `HELM_MALCONFIG=true`.
 - `bad_period_busy_fail`
-  Expected fail for `period_busy=0`.
+  Expected negative for `period_busy=0`. Passes only when the helm reports
+  `HELM_MALCONFIG=true`.
 - `bad_period_speed_fail`
-  Expected fail for negative `period_speed`.
+  Expected negative for negative `period_speed`. Passes only when the helm
+  reports `HELM_MALCONFIG=true`.
 - `bad_initially_busy_fail`
-  Expected fail for a non-boolean `initially_busy` value.
+  Expected negative for a non-boolean `initially_busy` value. Passes only when
+  the helm reports `HELM_MALCONFIG=true`.
 - `bad_reset_upon_running_fail`
-  Expected fail for a non-boolean `reset_upon_running` value.
+  Expected negative for a non-boolean `reset_upon_running` value. Passes only
+  when the helm reports `HELM_MALCONFIG=true`.
 - `bad_basewidth_fail`
-  Expected fail for negative `basewidth`.
+  Expected negative for negative `basewidth`. Passes only when the helm reports
+  `HELM_MALCONFIG=true`.
 - `bad_zaic_basewidth_fail`
-  Expected fail for negative `zaic_basewidth`.
+  Expected negative for negative `zaic_basewidth`. Passes only when the helm
+  reports `HELM_MALCONFIG=true`.
 - `bad_peakwidth_fail`
-  Expected fail for negative `peakwidth`.
+  Expected negative for negative `peakwidth`. Passes only when the helm reports
+  `HELM_MALCONFIG=true`.
 - `bad_period_peakwidth_fail`
-  Expected fail for negative `period_peakwidth`.
+  Expected negative for negative `period_peakwidth`. Passes only when the helm
+  reports `HELM_MALCONFIG=true`.
 - `bad_summit_delta_fail`
-  Expected fail for negative `summit_delta`.
+  Expected negative for negative `summit_delta`. Passes only when the helm
+  reports `HELM_MALCONFIG=true`.
 - `bad_zaic_summit_delta_fail`
-  Expected fail for negative `zaic_summit_delta`.
+  Expected negative for negative `zaic_summit_delta`. Passes only when the helm
+  reports `HELM_MALCONFIG=true`.
 
 ## Manual Inspection
 
@@ -88,5 +100,5 @@ the end of the line.
 ./zlaunch.sh --case=baseline_cycle_pass --port_base=15000 10
 ./zlaunch.sh --case=initially_busy_pass --gui --port_base=15000 10
 ./zlaunch.sh --case=reset_false_visual_pass --gui --port_base=15000 1
-./zlaunch.sh --jobs=3 --port_base=15000 10
+./zlaunch.sh --jobs=4 --port_base=34000 --port_stride=12 10
 ```

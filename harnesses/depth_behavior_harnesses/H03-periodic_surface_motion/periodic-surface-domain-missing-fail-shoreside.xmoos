@@ -21,10 +21,8 @@ ProcessConfig = pMissionEval
 
   mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = ABE_NAV_DEPTH >= 10
-  pass_condition = ABE_NAV_DEPTH <= 14
-  pass_condition = BHV_ERROR_SEEN = false
+  lead_condition = BHV_ERROR_SEEN = true
+  pass_condition = BHV_ERROR_SEEN = true
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -37,7 +35,8 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = eval=$[BHV_ERROR_SEEN]
+  report_column = expected=bhv_error
   report_column = depth=$[ABE_NAV_DEPTH]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]

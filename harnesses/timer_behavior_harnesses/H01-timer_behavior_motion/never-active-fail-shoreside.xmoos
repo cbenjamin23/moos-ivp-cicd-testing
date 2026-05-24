@@ -8,7 +8,7 @@ ProcessConfig = pMissionEval
   lead_condition = (TEST_EVAL_READY = true) or (MISSION_TIMEOUT = true)
   pass_condition = TEST_EVAL_READY = true
   pass_condition = TIMER_IDLE_SECONDS_base > 6
-  pass_condition = TIMER_RUNNING_SECONDS_base > 1
+  pass_condition = TIMER_RUNNING_SECONDS_base = 0
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -23,6 +23,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=idle_only_no_running
   report_column = active=$[TIMER_ACTIVE]
   report_column = idle=$[TIMER_IDLE_SECONDS_base]
   report_column = running=$[TIMER_RUNNING_SECONDS_base]
