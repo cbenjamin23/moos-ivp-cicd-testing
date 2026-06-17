@@ -1379,7 +1379,7 @@ FAMILIES: tuple[Family, ...] = (
     Family(
         name="uTimerScript",
         label="uTimerScript",
-        summary="Checks live timer-script event publication, runtime control mail, reset/repeat behavior, status reporting, macro expansion, random-value outputs, custom controls, timer warp, awake policies, shuffle, and quit behavior.",
+        summary="Checks timer events, runtime controls, reset/repeat paths, macro expansion, shuffle, awake policies, and quit behavior.",
         slugs=("utimerscript-unit",),
     ),
     Family(
@@ -1433,19 +1433,19 @@ FAMILIES: tuple[Family, ...] = (
     Family(
         name="uFldBeaconRangeSensor",
         label="uFldBeaconRangeSensor",
-        summary="Checks beacon range requests, report variable modes, ground-truth output, request/reply range gates, malformed request rejection, ping waits, ping-payment policies, marker styling, and frequency reports.",
+        summary="Checks beacon range requests, report modes, ground-truth output, range gates, ping policies, markers, and malformed requests.",
         slugs=("ufld-beacon-range-sensor-unit",),
     ),
     Family(
         name="uFldCollisionDetect",
         label="uFldCollisionDetect",
-        summary="Checks contact encounter ranking, collision and near-miss thresholds, clear-report controls, encounter-range blocking, group and condition gates, closest-range mail controls, and flag outputs.",
+        summary="Checks encounter ranking, collision and near-miss thresholds, clear-report controls, range gates, filters, and flag outputs.",
         slugs=("ufld-collision-detect-unit",),
     ),
     Family(
         name="uFldCollObDetect",
         label="uFldCollObDetect",
-        summary="Checks vehicle-to-obstacle collision, near-miss, encounter, strict threshold boundaries, global-minimum-distance, obstacle clearing age/name gates, numeric flags, and macro flag behavior.",
+        summary="Checks vehicle-obstacle collisions, near misses, encounter thresholds, minimum-distance tracking, clearing gates, and flags.",
         slugs=("ufld-collob-detect-unit",),
     ),
     Family(
@@ -1481,7 +1481,7 @@ FAMILIES: tuple[Family, ...] = (
     Family(
         name="BHV_MinAltitude",
         label="Depth Behavior",
-        summary="Checks bottom-clearance guarding, shallow-bottom response, boundary behavior, bad config, and missing altitude inputs. H05, not H01, in shared depth behavior group.",
+        summary="Checks bottom-clearance guarding, shallow-bottom response, boundary behavior, bad config, and missing altitude inputs.",
         slugs=("min-altitude-motion",),
     ),
     Family(
