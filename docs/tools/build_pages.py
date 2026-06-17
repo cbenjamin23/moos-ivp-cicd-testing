@@ -51,6 +51,13 @@ VISUAL_NOTES = {
 }
 
 
+def published_media_name(filename: str) -> str:
+    """Return the static-site media asset generated from a source GIF name."""
+    if filename.endswith(".gif"):
+        return f"{filename[:-4]}.mp4"
+    return filename
+
+
 @dataclass(frozen=True)
 class Harness:
     slug: str
@@ -1592,7 +1599,7 @@ FAMILIES: tuple[Family, ...] = (
     Family(
         name="pShare",
         label="pShare",
-        summary="Checks direct and renamed routed mail, max-share limiting, wildcard matching, source-qualified wildcards, multicast aliases, wildcard renaming, duration expiry, shorthand routes, fanout, command-line output routes, frequency throttling, multi-sender topology, multi-port input, input route-list parsing, multicast listeners, custom multicast channels, relay proof, and runtime route insertion.",
+        summary="Checks routed mail, wildcard routes, multicast topology, throttling, route-list parsing, and runtime route insertion.",
         slugs=("pshare-unit", "pshare-topology"),
     ),
     Family(
@@ -2080,7 +2087,6 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
       <nav>
         <a href="{prefix}index.html#families">Harnesses</a>
         <a href="{prefix}ctest-coverage.html">CTest Coverage</a>
-        <a href="{prefix}user-guide.html">Run Tests</a>
         <a href="{prefix}technical.html">Technical</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
@@ -2444,10 +2450,15 @@ def gif_card(gif: tuple[str, str, str], descriptions: dict[str, str], prefix: st
         frame_class = "gif-frame gif-frame--pending"
         media = ""
     else:
-        asset = f"{prefix}assets/gifs/{filename}?v={ASSET_VERSION}"
-        data_file = filename
+        media_filename = published_media_name(filename)
+        asset = f"{prefix}assets/gifs/{media_filename}?v={ASSET_VERSION}"
+        data_file = media_filename
         frame_class = "gif-frame"
-        media = f'\n          <img src="{asset}" alt="{escape(title)} GIF" onerror="this.style.display=\'none\'">'
+        media = (
+            f'\n          <video src="{asset}" aria-label="{escape(title)} animation" '
+            'autoplay muted loop playsinline controls preload="metadata" '
+            'onerror="this.style.display=\'none\'"></video>'
+        )
     return f"""
       <article class="gif-card">
         <div class="{frame_class}" data-file="{escape(data_file)}">{media}
@@ -2952,7 +2963,6 @@ def render_index() -> str:
         <div class="hero-actions">
           <a class="button primary" href="#families">Browse catalog</a>
           <a class="button secondary" href="ctest-coverage.html">CTest coverage</a>
-          <a class="button secondary" href="user-guide.html">Run tests</a>
           <a class="button secondary" href="technical.html">Technical overview</a>
         </div>
       </div>
@@ -3017,7 +3027,6 @@ def render_index() -> str:
         <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact result lines.</li>
       </ol>
       <div class="workflow-actions">
-        <a class="text-link" href="user-guide.html">Run harnesses manually</a>
         <a class="text-link" href="technical.html">Read the technical architecture</a>
       </div>
     </section>
@@ -3282,10 +3291,12 @@ def write(path: Path, content: str) -> None:
 
 def render_gif_manifest() -> str:
     lines = [
-        "# GIF Asset Manifest",
+        "# Visual Asset Manifest",
         "",
-        "Place captured presentation clips in this directory using the filenames below.",
-        "Each harness page already references these paths.",
+        "Source render scripts produce GIFs using the filenames below.",
+        "Run `python3 docs/tools/convert_gifs_to_mp4.py --delete-source-gifs` after",
+        "regenerating visuals so the published GitHub Pages assets are CRF-18 MP4s.",
+        "Each harness page references the `.mp4` filename derived from the listed GIF.",
         "",
         "Maintainer note: use the harness wrapper command for capture because it applies",
         "case overlays before delegating to shared `xlaunch.sh`. Calling `xlaunch.sh`",
@@ -3293,7 +3304,7 @@ def render_gif_manifest() -> str:
         "entry point for the harness pages.",
         "",
         "Generated visual standard: app-level unit, classification, and variable-heavy motion pages may use 16:9,",
-        "map-style explanatory GIFs when a raw `pMarineViewer` capture would not make",
+        "map-style explanatory animations when a raw `pMarineViewer` capture would not make",
         "the pass condition legible. Keep the look close to the PMV captures: dark chart",
         "background, simple ownship/contact/obstacle geometry, compact labels, and one",
         "small pass-condition callout. The callout should name the MOOS publication being",
@@ -3316,7 +3327,7 @@ def render_gif_manifest() -> str:
         "Generated uFldObstacleSim visuals live in `docs/tools/render_ufld_obstacle_sim_gifs.py`.",
         "Generated uField app visuals live in `docs/tools/render_ufield_app_gifs.py`.",
         "Headless harness runs remain the source of truth for the case behavior; the",
-        "generated GIFs are documentation views of that same geometry and variable-level",
+        "generated visuals are documentation views of that same geometry and variable-level",
         "evidence.",
         "",
     ]
@@ -3332,9 +3343,12 @@ def render_gif_manifest() -> str:
         )
         for title, case_name, filename in harness.gifs:
             if filename == PENDING_GIF:
-                lines.append(f"- GIF pending - {title}; representative case `{case_name}`")
+                lines.append(f"- Visual pending - {title}; representative case `{case_name}`")
             else:
-                lines.append(f"- `{filename}` - {title}; representative case `{case_name}`")
+                lines.append(
+                    f"- source `{filename}` -> published `{published_media_name(filename)}` - "
+                    f"{title}; representative case `{case_name}`"
+                )
         lines.append("")
     return "\n".join(lines)
 
@@ -3342,7 +3356,6 @@ def render_gif_manifest() -> str:
 def main() -> None:
     write(ROOT / "index.html", render_index())
     write(ROOT / "ctest-coverage.html", render_ctest_coverage())
-    write(ROOT / "user-guide.html", render_user_guide())
     write(ROOT / "technical.html", render_technical())
     for harness in HARNESSES:
         write(ROOT / "harnesses" / f"{harness.slug}.html", render_harness(harness))
