@@ -141,9 +141,16 @@
 
 
           <tr>
-            <th>uSimMarineV22 + pNodeReporter</th>
-            <td>Checks simulator motion and node-report publication before higher-level behavior suites depend on their navigation and reporting infrastructure.</td>
-            <td>2</td>
+            <th>uSimMarineV22</th>
+            <td>Checks simulator motion, actuator response, limits, drift/current inputs, reset, pause, and navigation-state publication.</td>
+            <td>1</td>
+          </tr>
+
+
+          <tr>
+            <th>pNodeReporter</th>
+            <td>Checks node-report construction, platform metadata, alternate nav streams, runtime updates, pause/resume, and odometry metrics.</td>
+            <td>1</td>
           </tr>
 
 
@@ -211,7 +218,7 @@
 
 
           <tr>
-            <th>uFldNodeComms + uField Brokers</th>
+            <th>uField Communications</th>
             <td>Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.</td>
             <td>3</td>
           </tr>

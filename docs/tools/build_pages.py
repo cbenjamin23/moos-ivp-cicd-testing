@@ -207,7 +207,7 @@ HARNESSES: tuple[Harness, ...] = (
     Harness(
         slug="usim-marine-motion",
         title="H01 uSimMarineV22 Motion",
-        family="Simulator Infrastructure",
+        family="Marine Simulation",
         path="harnesses/usim_marine_harnesses/H01-usim_marine_motion",
         mission="missions/usim_marine_missions/usim_marine_motion",
         summary="App-level simulator harness for uSimMarineV22 actuator response, embedded PID coupling, limits, drift/current inputs, water-depth altitude, pause, reset, disabled-state nav seeding, and stop controls.",
@@ -225,7 +225,7 @@ HARNESSES: tuple[Harness, ...] = (
     Harness(
         slug="pnodereporter-unit",
         title="H01 pNodeReporter Unit",
-        family="Simulator Infrastructure",
+        family="Node Reporting",
         path="harnesses/pnodereporter_harnesses/H01-pnodereporter_unit",
         mission="missions/pnodereporter_missions/pnodereporter_unit",
         summary="Headless pNodeReporter matrix for node-report construction, platform metadata, helm mode, JSON output, alternate nav streams, coordinate cross-fill, runtime updates, pause/resume, and odometry metrics.",
@@ -1341,10 +1341,16 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("pid-unit", "pid-motion"),
     ),
     Family(
-        name="uSimMarineV22 + pNodeReporter",
-        label="Simulator Infrastructure",
-        summary="Checks simulator motion and node-report publication before higher-level behavior suites depend on their navigation and reporting infrastructure.",
-        slugs=("usim-marine-motion", "pnodereporter-unit"),
+        name="uSimMarineV22",
+        label="Marine Simulation",
+        summary="Checks simulator motion, actuator response, limits, drift/current inputs, reset, pause, and navigation-state publication.",
+        slugs=("usim-marine-motion",),
+    ),
+    Family(
+        name="pNodeReporter",
+        label="Node Reporting",
+        summary="Checks node-report construction, platform metadata, alternate nav streams, runtime updates, pause/resume, and odometry metrics.",
+        slugs=("pnodereporter-unit",),
     ),
     Family(
         name="uPokeDB",
@@ -1401,8 +1407,8 @@ FAMILIES: tuple[Family, ...] = (
         slugs=("psearchgrid-unit",),
     ),
     Family(
-        name="uFldNodeComms + uField Brokers",
-        label="uField Communications",
+        name="uField Communications",
+        label="Field Messaging",
         summary="Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.",
         slugs=("ufield-comms-unit", "ufield-broker-bridge", "ufield-route-resilience"),
     ),

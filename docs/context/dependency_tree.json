@@ -1227,7 +1227,7 @@
     {
       "artifact": "manual-usim-marine-h01-results",
       "docs": {
-        "family_label": "Simulator Infrastructure",
+        "family_label": "Marine Simulation",
         "generated_page": "docs/harnesses/usim-marine-motion.html",
         "mission": "missions/usim_marine_missions/usim_marine_motion",
         "slug": "usim-marine-motion",
@@ -1309,7 +1309,7 @@
     {
       "artifact": "manual-pnodereporter-h01-results",
       "docs": {
-        "family_label": "Simulator Infrastructure",
+        "family_label": "Node Reporting",
         "generated_page": "docs/harnesses/pnodereporter-unit.html",
         "mission": "missions/pnodereporter_missions/pnodereporter_unit",
         "slug": "pnodereporter-unit",

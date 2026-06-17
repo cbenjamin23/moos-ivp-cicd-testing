@@ -193,22 +193,34 @@
 
       <details class="family-panel">
         <summary>
-          <span class="family-label">Simulator Infrastructure</span>
-          <span class="family-name">uSimMarineV22 + pNodeReporter</span>
-          <span class="family-summary">Checks simulator motion and node-report publication before higher-level behavior suites depend on their navigation and reporting infrastructure.</span>
-          <span class="family-count">2 harnesses</span>
+          <span class="family-label">Marine Simulation</span>
+          <span class="family-name">uSimMarineV22</span>
+          <span class="family-summary">Checks simulator motion, actuator response, limits, drift/current inputs, reset, pause, and navigation-state publication.</span>
+          <span class="family-count">1 harness</span>
         </summary>
         <div class="family-harnesses">
 
       <a class="harness-card" href="harnesses/usim-marine-motion.html">
-        <span class="eyebrow">Simulator Infrastructure</span>
+        <span class="eyebrow">Marine Simulation</span>
         <h3>H01 uSimMarineV22 Motion</h3>
         <p>App-level simulator harness for uSimMarineV22 actuator response, embedded PID coupling, limits, drift/current inputs, water-depth altitude, pause, reset, disabled-state nav seeding, and stop controls.</p>
       </a>
 
+        </div>
+      </details>
+
+
+      <details class="family-panel">
+        <summary>
+          <span class="family-label">Node Reporting</span>
+          <span class="family-name">pNodeReporter</span>
+          <span class="family-summary">Checks node-report construction, platform metadata, alternate nav streams, runtime updates, pause/resume, and odometry metrics.</span>
+          <span class="family-count">1 harness</span>
+        </summary>
+        <div class="family-harnesses">
 
       <a class="harness-card" href="harnesses/pnodereporter-unit.html">
-        <span class="eyebrow">Simulator Infrastructure</span>
+        <span class="eyebrow">Node Reporting</span>
         <h3>H01 pNodeReporter Unit</h3>
         <p>Headless pNodeReporter matrix for node-report construction, platform metadata, helm mode, JSON output, alternate nav streams, coordinate cross-fill, runtime updates, pause/resume, and odometry metrics.</p>
       </a>
@@ -390,8 +402,8 @@
 
       <details class="family-panel">
         <summary>
-          <span class="family-label">uField Communications</span>
-          <span class="family-name">uFldNodeComms + uField Brokers</span>
+          <span class="family-label">Field Messaging</span>
+          <span class="family-name">uField Communications</span>
           <span class="family-summary">Checks field communications delivery, broker bridge setup, and route recovery paths that connect vehicle and shoreside pShare communities.</span>
           <span class="family-count">3 harnesses</span>
         </summary>
