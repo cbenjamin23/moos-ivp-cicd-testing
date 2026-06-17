@@ -207,7 +207,7 @@ HARNESSES: tuple[Harness, ...] = (
     Harness(
         slug="usim-marine-motion",
         title="H01 uSimMarineV22 Motion",
-        family="Marine Simulation",
+        family="uSimMarineV22",
         path="harnesses/usim_marine_harnesses/H01-usim_marine_motion",
         mission="missions/usim_marine_missions/usim_marine_motion",
         summary="App-level simulator harness for uSimMarineV22 actuator response, embedded PID coupling, limits, drift/current inputs, water-depth altitude, pause, reset, disabled-state nav seeding, and stop controls.",
@@ -225,7 +225,7 @@ HARNESSES: tuple[Harness, ...] = (
     Harness(
         slug="pnodereporter-unit",
         title="H01 pNodeReporter Unit",
-        family="Node Reporting",
+        family="pNodeReporter",
         path="harnesses/pnodereporter_harnesses/H01-pnodereporter_unit",
         mission="missions/pnodereporter_missions/pnodereporter_unit",
         summary="Headless pNodeReporter matrix for node-report construction, platform metadata, helm mode, JSON output, alternate nav streams, coordinate cross-fill, runtime updates, pause/resume, and odometry metrics.",
@@ -1342,13 +1342,13 @@ FAMILIES: tuple[Family, ...] = (
     ),
     Family(
         name="uSimMarineV22",
-        label="Marine Simulation",
+        label="uSimMarineV22",
         summary="Checks simulator motion, actuator response, limits, drift/current inputs, reset, pause, and navigation-state publication.",
         slugs=("usim-marine-motion",),
     ),
     Family(
         name="pNodeReporter",
-        label="Node Reporting",
+        label="pNodeReporter",
         summary="Checks node-report construction, platform metadata, alternate nav streams, runtime updates, pause/resume, and odometry metrics.",
         slugs=("pnodereporter-unit",),
     ),
