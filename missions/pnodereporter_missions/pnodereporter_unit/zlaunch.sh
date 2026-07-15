@@ -1,7 +1,7 @@
 #!/bin/bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
-#  Mission: hostinfo_unit
+#  Mission: pnodereporter_unit
 #   Author: Charles Benjamin
 #   LastEd: Jul 2026
 #------------------------------------------------------------
@@ -10,7 +10,7 @@ set -u
 
 ME=$(basename "$0")
 TIME_WARP=10
-MAX_TIME=20
+MAX_TIME=35
 VERBOSE=no
 JUST_MAKE=no
 DISPLAY_ARGS=(--nogui)
@@ -28,7 +28,7 @@ Options:
   --gui                Accepted for wrapper parity
   --max_time=<secs>    Maximum time passed to xlaunch
   --shore_mport=<n>    Shoreside MOOSDB port
-  --shore_pshare=<n>   Shoreside pShare port
+  --shore_pshare=<n>   Reserved shoreside pShare port
   --mmod=<name>        Mission modification label
 EOF
 }
@@ -61,10 +61,8 @@ for arg in "$@"; do
     esac
 done
 
-is_uint "$TIME_WARP" && [ "$TIME_WARP" -gt 0 ] || \
-    die "time warp must be a positive integer"
-is_uint "$MAX_TIME" && [ "$MAX_TIME" -gt 0 ] || \
-    die "--max_time must be a positive integer"
+is_uint "$TIME_WARP" || die "time warp must be an integer"
+is_uint "$MAX_TIME" || die "--max_time must be an integer"
 
 REPO_DIR=$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null) || \
     die "unable to locate repository root from $PWD"

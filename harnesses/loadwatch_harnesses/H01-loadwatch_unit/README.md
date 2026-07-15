@@ -25,6 +25,10 @@ It isolates `uLoadWatch` threshold handling with scripted `DB_UPTIME` mail.
 ./zlaunch.sh --jobs=3 --port_base=11200 --max_time=40 10
 ```
 
+`--jobs` uses rolling scheduling. Every selected case runs from its own mission
+copy and port block; add `--keep_workdirs` to retain those copies for target,
+sidecar, result, and log inspection.
+
 Run one inspectable case:
 
 ```sh

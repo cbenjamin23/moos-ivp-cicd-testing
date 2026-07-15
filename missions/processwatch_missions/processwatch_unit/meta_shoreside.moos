@@ -106,8 +106,8 @@ ProcessConfig = pMissionEval
   mission_form = processwatch_unit
   mission_mod  = $(MMOD:=processwatch_all_present_pass)
 
-  prereport_column = form=$[MISSION_FORM]
-  prereport_column = mmod=$[MMOD]
+  report_column    = form=$[MISSION_FORM]
+  report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
