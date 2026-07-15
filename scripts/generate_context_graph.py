@@ -41,6 +41,15 @@ COMMON_INFRA_APPS = {
 }
 
 
+def is_generated_runtime_artifact(path: Path) -> bool:
+    """Return true for generated mission logs and harness case-copy trees."""
+    runtime_prefixes = (".parallel_", "LOG_", "MOOSLog_", "XLOG_")
+    return path.name == ".LastOpenedMOOSLogDirectory" or any(
+        part == ".harness_runs" or part.startswith(runtime_prefixes)
+        for part in path.parts
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate docs/context dependency maps for coding-agent orientation."
@@ -294,6 +303,7 @@ def build_graph() -> dict[str, Any]:
         if path.is_file()
         and path.suffix != ".pyc"
         and "__pycache__" not in path.parts
+        and not is_generated_runtime_artifact(path)
     )
 
     return {
@@ -302,7 +312,13 @@ def build_graph() -> dict[str, Any]:
         "repo": {
             "root": rel(REPO_ROOT),
             "harness_target_count": len(harnesses),
-            "harness_zlaunch_count": len(list((REPO_ROOT / "harnesses").rglob("zlaunch.sh"))),
+            "harness_zlaunch_count": len(
+                [
+                    path
+                    for path in (REPO_ROOT / "harnesses").rglob("zlaunch.sh")
+                    if not is_generated_runtime_artifact(path)
+                ]
+            ),
             "mission_config_count": len(
                 [
                     path

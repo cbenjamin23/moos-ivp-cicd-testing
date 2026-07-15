@@ -48,6 +48,10 @@
 .LastOpenedMOOSLogDirectory
 MOOSLog*/
 
+# Harness-generated mission copies and retained run evidence
+.harness_runs/
+.parallel_*/
+
 # Build dirs
 build/
 bin/

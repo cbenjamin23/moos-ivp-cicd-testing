@@ -79,7 +79,33 @@ class HarnessCaseCountTests(unittest.TestCase):
 
         self.assertEqual(derive_case_count(path), 3)
 
-    def test_requires_all_cases_array(self) -> None:
+    def test_modern_cases_array(self) -> None:
+        path = self.write_zlaunch(
+            '\n'.join(
+                [
+                    "CASES=(",
+                    "    alpha_pass",
+                    "    beta_pass",
+                    ")",
+                ]
+            )
+        )
+
+        self.assertEqual(derive_case_order(path), ["alpha_pass", "beta_pass"])
+
+    def test_all_cases_remains_preferred_when_both_arrays_exist(self) -> None:
+        path = self.write_zlaunch(
+            '\n'.join(
+                [
+                    "CASES=(modern_probe)",
+                    "ALL_CASES=(legacy_contract)",
+                ]
+            )
+        )
+
+        self.assertEqual(derive_case_order(path), ["legacy_contract"])
+
+    def test_requires_supported_case_array(self) -> None:
         path = self.write_zlaunch(
             '\n'.join(
                 [
