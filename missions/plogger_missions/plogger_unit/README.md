@@ -2,7 +2,10 @@
 
 This mission publishes controlled MOOS mail and uses `pLogger` to create log
 artifacts. `pMissionEval` owns the live mission grade; the harness additionally
-checks the generated `.alog` contents after shutdown.
+checks the generated logger files after shutdown. The mission wrapper forwards
+the requested ports, mission label, display mode, time warp, and maximum time,
+requires exactly one valid pMissionEval result row, and applies scoped cleanup
+when run directly.
 
 Typical commands:
 
