@@ -1,89 +1,117 @@
 # NSPatch Notes For H01-obmgr_unit
 
-This harness uses `nspatch` to turn one obstacle-manager stem mission into a
-matrix of short `pObstacleMgr` tests without copying the whole mission.
+This harness uses `nspatch` to turn one obstacle-manager source stem into 30
+short `pObstacleMgr` cases. Every case first receives its own stem copy, so
+neither serial nor rolling runs patch the source mission in place.
 
-## Stem And Overlays
+## Stem And Generated Sidecars
 
-The shared stem mission is:
+The source templates are:
 
 - `missions/obmgr_missions/obmgr_unit/meta_vehicle.moos`
 - `missions/obmgr_missions/obmgr_unit/meta_shoreside.moos`
 
-For each harness case, `nspatch` may generate:
+Within each isolated case copy, `nspatch` may generate:
 
-- `missions/obmgr_missions/obmgr_unit/meta_vehicle.moosx`
-- `missions/obmgr_missions/obmgr_unit/meta_shoreside.moosx`
-- `missions/obmgr_missions/obmgr_unit/meta_vehicle.bhvx`
+- `meta_vehicle.moosx`
+- `meta_shoreside.moosx`
 
-The launchers already use `nsplug -x`, so if these overlay files exist they are
-folded into the generated `targ_*` files for that case.
+This matrix currently has no behavior overlays, so it does not generate a
+`meta_vehicle.bhvx`. The copied launchers use `nsplug -x`, which folds any
+generated sidecars into that case's `targ_*` files.
 
 ## What Gets Patched
 
-Typical patch targets in this harness:
+Typical patch targets are:
 
 - `ProcessConfig = pObstacleMgr`
   For alert ranges, general-alert configuration, lasso mode, ignore range,
   point aging, duration limits, or enable/disable/expunge variables.
 - `ProcessConfig = uTimerScript`
-  For obstacle injection timing and the actual obstacle or point messages sent
-  into `pObstacleMgr`.
+  For obstacle injection timing and the obstacle or point messages sent into
+  `pObstacleMgr`.
 - `ProcessConfig = pMissionEval`
-  For case-specific grading rules such as accepted/not accepted, alerted/not
-  alerted, resolved obstacle, distance-band checks, or filter-message checks.
+  For case-specific accepted/rejected, alerted/not-alerted, resolution,
+  distance-band, payload, or filter-message grading.
 - `ProcessConfig = uFldNodeBroker`
-  Only when a case needs an extra bridged variable on shoreside.
+  Only when a case needs an additional bridged variable on shoreside.
 
-In simple terms:
+Vehicle-side patches usually change what obstacle manager sees. Shoreside
+patches usually change the evaluation checkpoint, mission-owned conditions,
+and the columns written to `results.txt`.
 
-- vehicle-side patches usually change what obstacle manager sees
-- shoreside patches usually change when the case is graded and what gets
-  written to `results.txt`
+## Per-Case Flow
 
-## Harness Flow
+For each selected case, the harness:
 
-For each case:
+1. Copies the source stem beneath a harness-owned run root and runs the copied
+   `clean.sh`.
+2. Looks up the case's explicit shoreside and vehicle patch paths in
+   `zlaunch.sh`.
+3. Applies those patches to sidecars inside the copy.
+4. Calls the copy's `zlaunch.sh` with the case token and its distinct ports.
+5. Requires exactly one valid mission-owned `pMissionEval` result row.
+6. Stops processes scoped to that case root and later publishes rows in
+   selected-case order.
 
-1. Run `clean.sh` and scoped harness teardown in the stem mission directory.
-2. Apply the selected case patches with `nspatch`.
-3. Run the mission through the harness-controlled `xlaunch.sh` path.
-4. Read the mission-local `results.txt`.
-5. Compare the observed mission result against the harness expectation.
+The source stem is read-only during this flow. `--keep_workdirs` preserves the
+copies, sidecars, generated targets, result rows, and logs for inspection.
 
-For the two general-alert name cases, the harness also checks that the final
-results line contains the exact expected `GEN_OBSTACLE_ALERT` token. This is a
-small exception to the normal pattern because `pMissionEval` cannot directly
-compare strings that contain their own `=` assignments. The filter-message
-cases now grade on mission-side confirmation flags instead.
+## Structured Payload Conditions
 
-## Cleanup And Safety
+Four cases compare structured strings containing their own `=` assignments:
 
-The harness treats the stem overlay files as normal mission workspace files.
-`clean.sh` already removes `meta_*.moosx` and `meta_*.bhvx`, so the harness
-relies on `clean.sh` before each case and one final `clean.sh` on exit.
+- `given_general_alert_pass`
+- `general_alert_default_name_pass`
+- `point_vsource_alert_pass`
+- `disable_vsource_pass`
 
-That means:
+Embedding those complete literals directly in a condition is ambiguous to the
+condition parser. Each shoreside patch therefore uses the existing
+`uTimerScript` to publish the expected string as `OBM_EXPECTED_PAYLOAD`, then
+uses that variable as the runtime right-hand side of a `pMissionEval`
+condition. The same variable name is reused in all four cases. No new app and
+no shell-side token check are involved.
 
-- one case should not leak patches into the next case
-- the harness assumes this repo is being used in the normal harness-driven way
-- do not run two live harness invocations in parallel against this same stem
-  mission directory, because they will race on the temporary overlay files
+The two general-alert comparisons preserve the same complete payloads checked
+by the legacy launcher. The point-vsource and vsource-disable cases now use
+complete whole-field equality, which is deliberately stricter than their
+legacy substring checks. This is the mission-owned form of the existing
+payload cases, not a redesign of the wider coverage strategy.
+
+Seven expected-absence patches use:
+
+```text
+fail_condition = OBSTACLE_ALERT != ""
+```
+
+Those cases are `no_alert_request_absent_pass`,
+`bad_alert_request_absent_pass`, `given_far_absent_pass`,
+`given_max_duration_reject_absent_pass`,
+`invalid_given_nonconvex_absent_pass`,
+`invalid_point_missing_key_absent_pass`, and
+`points_ignore_range_absent_pass`. This expresses the absence rule directly in
+`pMissionEval` without placing a structured alert literal in the condition.
+
+## Cleanup And Concurrency
+
+Each case copy has its own port block and sidecars, so cases cannot overwrite
+one another's generated mission. The canonical scoped teardown helper only
+stops MOOS processes rooted in the case copy. The harness also holds one safety
+lock for the invocation; do not start another invocation of this same harness
+until the first has finished and released that lock.
 
 ## Adding A New Case
 
-Typical pattern:
-
-1. Decide whether the case changes:
-   - obstacle inputs only
-   - evaluation only
-   - or both
-2. Add a new `*.xmoos` patch file in this directory.
-3. Update `zlaunch.sh` case mapping:
-   - case name
-   - expected result
-   - shoreside patch path
-   - vehicle patch path if needed
-4. Add the case to the `ALL_CASES=(...)` array if it should run in the full
-   matrix.
-5. Update `README.md` so the case intent is documented in plain language.
+1. Decide whether the case changes obstacle input, app configuration,
+   evaluation, or a combination of them.
+2. Add the required `*.xmoos` patches in this harness directory. Prefer full
+   `ProcessConfig` replacement when editing repeated keys such as `event`,
+   `pass_condition`, `fail_condition`, or `report_column`.
+3. Add the exact case token to the `CASES=(...)` list and its explicit patch
+   paths to `get_case_config()` in `zlaunch.sh`.
+4. Make the copied stem's `pMissionEval` produce `grade=pass` when the intended
+   behavior is observed, including expected-negative behavior.
+5. Add the exact token and intent to the `Current Matrix` in `README.md`.
+6. Validate the case alone, then in serial and rolling execution with fresh
+   port ranges.

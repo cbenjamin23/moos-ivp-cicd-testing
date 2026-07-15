@@ -40,11 +40,11 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   obstacle alert.
 - `given_general_alert_pass`
   A broader `general_alert` variable should post even when the main alert range
-  is too tight for the obstacle. The mission grades only when the obstacle is
-  accepted and the general-alert publication is present at the checkpoint.
+  is too tight for the obstacle. The mission requires the obstacle to be
+  accepted and the complete named general-alert payload to match.
 - `general_alert_default_name_pass`
   The same general-alert configuration should work without an explicit `name=`
-  field, using the default `gen_alert_` prefix.
+  field, using the default `gen_alert_` prefix in the complete payload.
 - `given_duration_resolve_pass`
   A short-lived given obstacle should age out and post `OBM_RESOLVED`.
 - `given_max_duration_reject_absent_pass`
@@ -103,9 +103,8 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   those counters to `now_1_ever_1`.
 - `point_vsource_alert_pass`
   Point inputs may include `vsource=...`, and the alert payload should preserve
-  that source tag when a hull update is posted. The mission grades on alert and
-  distance, while the harness verifies the `vsource=radar` token in the result
-  line.
+  that source tag when a hull update is posted. `pMissionEval` requires the
+  expected distance and the complete obstacle-alert payload.
 - `given_after_points_same_key_reject_pass`
   If a point-cluster obstacle already owns a key, a later mailed-in
   `GIVEN_OBSTACLE` with the same label should be rejected. The point cluster
@@ -118,8 +117,8 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   confirming that obstacle-disable mail is generated for the named obstacle.
 - `disable_vsource_pass`
   The modification parser also accepts `vsource=...` selectors, not only bare
-  obstacle IDs. This case sends a vsource disable command and checks that the
-  resulting filter message preserves `vsource=radar,action=disable`.
+  obstacle IDs. This case sends a vsource disable command, and `pMissionEval`
+  requires the complete `vsource=radar,action=disable` filter message.
 - `enable_obstacle_pass`
   `enable_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=enable`,
   confirming that obstacle-enable mail is generated for the named obstacle.
@@ -131,73 +130,128 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ```bash
 ./zlaunch.sh
-./zlaunch.sh --jobs=4 --port_base=15000 10
+./zlaunch.sh --jobs=2 --port_base=15000 10
 ./zlaunch.sh --case=given_baseline_pass 10
 ./zlaunch.sh --case=points_cluster_dist_pass 10
 ./zlaunch.sh --case=new_obs_flag_macros_pass --port_base=15000 10
-./zlaunch.sh --just_make 10
+./zlaunch.sh --just_make --keep_workdirs 10
 ./zlaunch.sh --max_time=90 10
 ```
 
-Wave mode notes:
+The launcher requires Bash 5.1 or newer because `--jobs` is a rolling
+scheduler. On macOS it will try a known Homebrew/Linuxbrew Bash before printing
+a clear version error. `--gui` is limited to one explicit `--case`; full-matrix
+runs are headless.
 
-- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
-- each live case in a wave gets its own temp mission directory and unique port
-  block
-- the harness uses scoped mission teardown between waves rather than global
-  `ktm`
-- this mode is intended for CI wall-clock reduction, not for interactive use
-  alongside other MOOS missions
+## Execution Contract
+
+Every selected case, including a serial or single-case run, uses its own copy of
+the stem beneath this harness's `.harness_runs/` directory. The source stem is
+never patched or launched in place. `--keep_workdirs` preserves that run tree
+for inspection; otherwise the canonical repository helper performs
+root-scoped teardown and the tree is removed.
+
+Each case index receives a distinct port block with stride `30`:
+
+- shoreside MOOSDB: case base `+0`
+- vehicle MOOSDB: case base `+1`
+- shoreside pShare: case base `+15`
+- vehicle pShare: case base `+16`
+
+With `--jobs=N`, the launcher starts up to `N` copies and starts the next
+pending case as soon as any active case finishes. It does not wait for a whole
+wave. Selected-case order is preserved in the final `results.txt` even when
+completion order differs.
+
+The stem mission owns ordinary grading. Each live case must produce exactly one
+nonempty `pMissionEval` row containing exactly one valid `grade=pass|fail`
+field. The harness adds `case=<token>` and otherwise preserves the mission row.
+An ordinary mission failure or case preparation/launch failure is recorded, but
+does not prevent the remaining selected cases from running.
+
+Only runner failures are normalized by the harness, for example
+`reason=prepare_error`, `reason=launch_error`, `reason=missing_result_file`,
+`reason=duplicate_results`, or `reason=teardown_error`. When a launch fails
+after the mission wrote evidence, the row keeps that evidence under
+`mission_*` provenance fields. A teardown failure is treated as an
+infrastructure error: scheduler refill stops, pending cases receive explicit
+aborted rows, and the run root and safety lock are kept for diagnosis.
+
+## Mission-Owned Payload Comparisons
+
+Four cases compare structured strings that contain their own `=` characters:
+
+- `given_general_alert_pass`
+- `general_alert_default_name_pass`
+- `point_vsource_alert_pass`
+- `disable_vsource_pass`
+
+Each case uses the existing shoreside `uTimerScript` to publish its expected
+literal under the one reused name `OBM_EXPECTED_PAYLOAD`. `pMissionEval` then
+compares the observed alert or filter variable against that runtime
+right-hand-side value. This avoids embedding a multi-assignment string directly
+in the condition parser. It adds no application and no harness-side verdict.
+
+For the two general-alert cases, the full-string comparisons are equivalent to
+the legacy full-token checks. For `point_vsource_alert_pass` and
+`disable_vsource_pass`, whole-field equality is deliberately stricter than the
+legacy substring checks. That is a migration to a mission-owned expression of
+the existing payload contract, not a broader redesign of the test matrix.
+
+Seven expected-absence cases use the direct mission-side failure condition
+`OBSTACLE_ALERT != ""` so any nonempty alert fails the case:
+
+- `no_alert_request_absent_pass`
+- `bad_alert_request_absent_pass`
+- `given_far_absent_pass`
+- `given_max_duration_reject_absent_pass`
+- `invalid_given_nonconvex_absent_pass`
+- `invalid_point_missing_key_absent_pass`
+- `points_ignore_range_absent_pass`
 
 ## What `./zlaunch.sh` Does Here
 
-When run from this harness directory, `./zlaunch.sh` does not call the stem
-mission's own `zlaunch.sh`. Instead it owns the full run:
+For each selected case, the harness:
 
-1. Choose one case or the full default case list.
-2. Run the stem mission `clean.sh` and scoped harness teardown so the next case
-   starts clean.
-3. Apply the selected `nspatch` overlays to `missions/obmgr_missions/obmgr_unit`.
-4. Call shared `xlaunch.sh`, which in turn calls the stem mission `launch.sh`.
-5. Read the mission-local `results.txt`.
-6. Compare `actual` against `expected`.
-7. Append one summary line to the harness `results.txt`.
-8. On harness exit, run one final `clean.sh` and scoped harness teardown.
-
-In wave mode, those same steps happen inside per-case temporary mission copies.
-The shared stem directory remains the source for patches and the default serial
-execution path.
+1. Copies and cleans the stem into an isolated case directory.
+2. Applies the case's explicit shoreside and vehicle `nspatch` overlays there.
+3. Calls the copied stem's `zlaunch.sh`, forwarding the case token as `--mmod`,
+   all four ports, `--max_time`, display mode, and time warp.
+4. Validates and records the one mission-owned result row, or writes a
+   normalized runner-failure row.
+5. Stops MOOS processes scoped to that case root.
+6. Aggregates all rows in the original selected-case order.
 
 ## Results Lines
 
 Typical baseline line:
 
 ```text
-case=given_baseline_pass grade=pass form=obmgr_tests mmod=given_baseline_pass eval=true new_given=true dist=OB_NEAR,18.0 mindist=18 alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near mhash=[THEN-PONY]
+case=given_baseline_pass form=obmgr_tests_harness mmod=given_baseline_pass grade=pass eval=true new_given=true dist=OB_NEAR,18.0 mindist=18 alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near mhash=[THEN-PONY]
 ```
 
 Typical resolution line:
 
 ```text
-case=points_age_resolve_pass grade=pass form=obmgr_tests mmod=points_age_resolve_pass eval=true resolved=rock_a dist=$[OBM_DIST_TO_OBJ] mhash=[....]
+case=points_age_resolve_pass form=obmgr_tests_harness mmod=points_age_resolve_pass grade=pass eval=true resolved=rock_a dist=$[OBM_DIST_TO_OBJ] mhash=[....]
 ```
 
 Typical modification line:
 
 ```text
-case=disable_obstacle_pass grade=pass form=obmgr_tests mmod=disable_obstacle_pass eval=true filter=obstacle_id=ob_near,action=disable mhash=[....]
+case=disable_obstacle_pass form=obmgr_tests_harness mmod=disable_obstacle_pass grade=pass eval=true filter=obstacle_id=ob_near,action=disable mhash=[....]
 ```
 
 Typical default-name alert line:
 
 ```text
-case=general_alert_default_name_pass grade=pass form=obmgr_tests mmod=general_alert_default_name_pass eval=true new_given=true gen_alert=name=gen_alert_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far mhash=[MERE-NAVY]
+case=general_alert_default_name_pass form=obmgr_tests_harness mmod=general_alert_default_name_pass grade=pass eval=true new_given=true gen_alert=name=gen_alert_ob_far#poly=pts={35,-62:39,-62:39,-58:35,-58},label=ob_far#id=ob_far mhash=[MERE-NAVY]
 ```
 
 Typical reject-before-accept line:
 
 ```text
-case=given_max_duration_missing_absent_pass grade=pass form=obmgr_tests mmod=given_max_duration_missing_absent_pass eval=true new_given=$[OBM_NEW_GIVEN] alert=$[OBSTACLE_ALERT] mhash=[SOFT-HELM]
+case=given_max_duration_missing_absent_pass form=obmgr_tests_harness mmod=given_max_duration_missing_absent_pass grade=pass eval=true new_given=$[OBM_NEW_GIVEN] alert=$[OBSTACLE_ALERT] mhash=[SOFT-HELM]
 ```
 
 Field anatomy:
@@ -210,8 +264,6 @@ Field anatomy:
   Harness or mission family name.
 - `mmod`
   The mission mode written by `pMissionEval` for the selected case.
-- `grade`
-  Pass/fail result written by the mission itself.
 - `eval`
   Whether the case's evaluation checkpoint was reached.
 - `new_given`
@@ -239,7 +291,7 @@ Field anatomy:
   Macro-expanded `new_obs_flag` output for the accepted-obstacle counter case.
 - `alert_seen`
   Mission-side confirmation that an obstacle alert was observed before the
-  harness applies an additional exact-token payload check.
+  mission applies its exact whole-field comparison.
 - `mhash`
   Short mission hash.
 
@@ -247,25 +299,28 @@ As with the contact-manager harness, every current obstacle case is expected to
 end with mission `grade=pass`. Even the absence cases use `grade=pass` when the
 correct outcome is “accepted but not alerted” or “rejected before acceptance”.
 
-Most current obstacle cases are graded fully inside the mission. The remaining
-residual harness-side exact-token checks are limited to payload-format cases:
-the two general-alert name cases plus the point-vsource and vsource-disable
-selectors, where the literal alert or filter payload is the behavior under
-test. For every other case, the harness just compares the expected and actual
-mission grade and preserves the mission's own report columns in the summary
-line.
+All current obstacle cases are graded fully inside the mission. The harness
+does not compare expected and actual case verdicts or inspect payload tokens.
 
 Current matrix size: `30` cases.
 
-## Wall-Clock Efficiency
+## Validation And Wall-Clock Measurements
 
-The stem itself is intentionally short and stationary. Most wall-clock time
-comes from launch and teardown rather than the obstacle logic. Revalidation
-timings:
+All listed full-matrix measurements used warp `10`, completed with `30/30`
+passing rows, and report wall-clock seconds on the same development machine.
 
-- full 30-case matrix passed at warp `10`
-- `--jobs=4 --port_base=15000` passed in grouped validation
-- launch and teardown still dominate the wall-clock cost
+- Legacy batch-wave `--jobs=2`: `123.24`, `121.97`, and `121.55` seconds; mean
+  `122.25`.
+- Legacy shared-stem serial: `182.36` seconds.
+- Migrated isolated serial: `218.18` seconds.
+- Migrated rolling `--jobs=2` with canonical teardown defaults: `115.57`,
+  `108.39`, `142.95`, `123.22`, and `116.98` seconds; mean `121.42`, median
+  `116.98`.
+- One migrated rolling run with the helper's supported one-second grace
+  overrides: `113.88` seconds.
+- A representative default-versus-one-second case comparison measured `7.35`
+  versus `6.96` seconds.
 
-As with the contact-manager harness, launch and teardown overhead is a larger
-wall-clock cost than the obstacle logic itself.
+The measurements show normal run-to-run variation and make the serial isolation
+cost visible; they are operational data, not grading evidence. The canonical
+teardown defaults remain unchanged.

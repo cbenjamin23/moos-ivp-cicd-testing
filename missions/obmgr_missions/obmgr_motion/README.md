@@ -52,4 +52,6 @@ Entry points:
 
 - `./launch.sh` for interactive runs
 - `./launch.sh --just_make --nogui 10` for target generation
-- `./zlaunch.sh` for automated headless runs through shared `xlaunch.sh`
+- `./zlaunch.sh` for one automated headless run through shared `xlaunch.sh`;
+  it accepts explicit shoreside/vehicle MOOSDB and pShare ports, verifies that
+  `pMissionEval` wrote a `grade=`, and performs root-scoped teardown

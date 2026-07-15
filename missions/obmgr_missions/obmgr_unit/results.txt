@@ -1,1 +1,1 @@
-form=obmgr_tests_harness  mmod=expunge_obstacle_pass  grade=pass  eval=true  filter_seen=true  filter=obstacle_id=ob_near,action=expunge  mhash=[ONLY-IZZY]
+form=obmgr_tests  mmod=given_baseline_pass  grade=pass  eval=true  new_given=true  dist=OB_NEAR,18.0  mindist=18  resolved=$[OBM_RESOLVED]  alert=name=avd_ob_near#poly=pts={18,-62:22,-62:22,-58:18,-58},label=ob_near#id=ob_near  mhash=[SORE-LEAF]

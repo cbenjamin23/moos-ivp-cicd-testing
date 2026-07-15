@@ -6,7 +6,7 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
   fail_condition = OBM_DIST_TO_OBJ = GENERIC,18.0
-  fail_condition = OBSTACLE_ALERT = name=avd_generic
+  fail_condition = OBSTACLE_ALERT != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = obmgr_tests_harness
