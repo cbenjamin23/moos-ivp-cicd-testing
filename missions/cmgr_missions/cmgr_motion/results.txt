@@ -1,1 +1,1 @@
-  grade=pass  form=cmgr_motion_tests  mmod=fast_intruder_fail  eval=true  expected=fast_intruder_encounter  arrived=true  detected=true  closest=intruder  range=141  encounters=1  near_misses=0  collisions=0  mhash=[THIN-HYDE]
+  grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=33  encounters=0  near_misses=0  collisions=0  mhash=[RUBY-BULL]
