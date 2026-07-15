@@ -816,7 +816,7 @@
           "alpha_far_bravo_only_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/cmgr_harnesses/H01-cmgr_unit/zlaunch.sh"
       }
@@ -899,7 +899,7 @@
           "fast_intruder_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/cmgr_harnesses/H02-cmgr_motion/zlaunch.sh"
       }
@@ -989,7 +989,7 @@
           "expunge_obstacle_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/obmgr_harnesses/H01-obmgr_unit/zlaunch.sh"
       }
@@ -1065,7 +1065,7 @@
           "no_alert_request_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh"
       }
@@ -1145,7 +1145,7 @@
           "depth_missing_pitch_zero_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pid_harnesses/H01-pid_unit/zlaunch.sh"
       }
@@ -1219,7 +1219,7 @@
           "manual_override_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pid_harnesses/H02-pid_motion/zlaunch.sh"
       }
@@ -1301,7 +1301,7 @@
           "trim_control_report_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/usim_marine_harnesses/H01-usim_marine_motion/zlaunch.sh"
       }
@@ -1379,7 +1379,7 @@
           "extrap_prune_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pnodereporter_harnesses/H01-pnodereporter_unit/zlaunch.sh"
       }
@@ -1447,7 +1447,7 @@
           "cache_cli_mixed_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/upokedb_harnesses/H01-upokedb_unit/zlaunch.sh"
       }
@@ -1523,7 +1523,7 @@
           "clean_shortcut_scope_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/uxms_harnesses/H01-uxms_unit/zlaunch.sh"
       }
@@ -1597,7 +1597,7 @@
           "config_condition_alias_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/uquerydb_harnesses/H01-uquerydb_unit/zlaunch.sh"
       }
@@ -1674,7 +1674,7 @@
           "dual_flip_independent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pechovar_harnesses/H01-pechovar_unit/zlaunch.sh"
       }
@@ -1813,7 +1813,7 @@
           "reset_policy_multiple_reposts_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit/zlaunch.sh"
       }
@@ -1945,7 +1945,7 @@
           "unknown_command_absent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh"
       }
@@ -3750,7 +3750,7 @@
           "hostinfo_pshare_nonudp_route_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/hostinfo_harnesses/H01-hostinfo_unit/zlaunch.sh"
       }
@@ -3807,7 +3807,7 @@
           "loadwatch_near_thresh_clamped_high_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/loadwatch_harnesses/H01-loadwatch_unit/zlaunch.sh"
       }
@@ -3859,7 +3859,7 @@
           "processwatch_missing_awol_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/processwatch_harnesses/H01-processwatch_unit/zlaunch.sh"
       }
@@ -3915,7 +3915,7 @@
           "pshare_wildcard_caret_rename_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pshare_harnesses/H01-pshare_unit/zlaunch.sh"
       }
@@ -4025,7 +4025,7 @@
           "plogger_copy_file_request_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/plogger_harnesses/H01-plogger_unit/zlaunch.sh"
       }
@@ -5811,6 +5811,7 @@
         "ufld_obstacle_sim"
       ],
       "focus_process_apps": [
+        "pEchoVar",
         "uFldObstacleSim"
       ],
       "harness": "H01-ufld_obstacle_sim_unit",
@@ -5825,6 +5826,7 @@
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
+        "pEchoVar",
         "pLogger",
         "pMissionEval",
         "pMissionHash",
@@ -5886,7 +5888,7 @@
           "missing_obstacle_file_absent_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/zlaunch.sh"
       }
@@ -6208,7 +6210,8 @@
         "pdeadmanpost_h01"
       ],
       "pEchoVar": [
-        "pechovar_h01"
+        "pechovar_h01",
+        "ufld_obstacle_sim_h01"
       ],
       "pHelmIvP": [
         "cmgr_h01",
@@ -6960,17 +6963,16 @@
       ".html": 70,
       ".js": 1,
       ".json": 2,
-      ".md": 136,
+      ".md": 142,
       ".mjo": 1,
       ".moos": 155,
       ".moos#": 1,
       ".mp4": 149,
       ".pdf": 1,
       ".png": 4,
-      ".py": 32,
-      ".sh": 309,
-      ".slog": 1,
-      ".txt": 296,
+      ".py": 38,
+      ".sh": 313,
+      ".txt": 300,
       ".xbhv": 518,
       ".xmoos": 1034,
       "[none]": 7
@@ -6978,7 +6980,7 @@
     "harness_patch_count": 1529,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
-    "mission_config_count": 425,
+    "mission_config_count": 427,
     "root": "."
   },
   "schema": "moos-ivp-cicd-context-graph.v1",
