@@ -8,6 +8,8 @@ ProcessConfig = uTimerScript
   AppTick   = 4
   CommsTick = 4
 
+  block_on = pMissionEval, pEchoVar, uFldObstacleSim
+
   event = var=VEHICLE_CONNECT, val=true, time=1.0
   event = var=TEST_EVAL_READY, val=true, time=3.0
 }
@@ -18,7 +20,11 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  pass_condition = VEHICLE_CONNECT = true
+  pass_condition = UFOS_MIN_RNG = 8
+  fail_condition = KNOWN_OBSTACLE != ""
+  fail_condition = GIVEN_OBSTACLE != ""
+  fail_condition = VIEW_POLYGON != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -28,9 +34,8 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
-  report_column    = known=$[KNOWN_OBSTACLE]
-  report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = vehicle_connect=$[VEHICLE_CONNECT]
+  report_column    = min_rng=$[UFOS_MIN_RNG]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

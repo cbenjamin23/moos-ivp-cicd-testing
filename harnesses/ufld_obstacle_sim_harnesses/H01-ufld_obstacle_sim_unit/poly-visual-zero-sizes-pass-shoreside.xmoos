@@ -3,13 +3,25 @@
 // NAME: Charles Benjamin
 //-------------------------------------------------
 
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval, pEchoVar, uFldObstacleSim
+
+  event = var=UFOS_EXPECT_VIEW, val="pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a,label_color=invisible,edge_color=gray50,vertex_color=gray50,fill_color=white,vertex_size=0,edge_size=0,fill_transparency=0", time=0.5
+  event = var=PMV_CONNECT, val=true, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=3.0
+}
+
 ProcessConfig = uFldObstacleSim
 {
   AppTick   = 4
   CommsTick = 4
 
   obstacle_file      = obstacles/fixed_field.txt
-  draw_region        = true
+  draw_region        = false
   post_visuals       = true
   post_points        = false
   poly_vert_size     = 0
@@ -25,7 +37,10 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+
+  pass_condition = UFOS_EVAL_KNOWN_A != ""
+  pass_condition = UFOS_EVAL_GIVEN_A != ""
+  pass_condition = VIEW_POLYGON = $ (UFOS_EXPECT_VIEW)
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -35,9 +50,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
-  report_column    = known=$[KNOWN_OBSTACLE]
-  report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = view=$[VIEW_POLYGON]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

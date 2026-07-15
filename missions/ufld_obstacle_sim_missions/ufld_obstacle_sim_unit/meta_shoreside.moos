@@ -17,13 +17,145 @@ ProcessConfig = ANTLER
   Run = MOOSDB          @ NewConsole = false
   Run = pRealm          @ NewConsole = false
   Run = pLogger         @ NewConsole = false
-  Run = uTimerScript    @ NewConsole = false
-  Run = uFldObstacleSim @ NewConsole = false
   Run = pMissionHash    @ NewConsole = false
   Run = pMissionEval    @ NewConsole = false
+  Run = pEchoVar        @ NewConsole = false
+  Run = uFldObstacleSim @ NewConsole = false
+  Run = uTimerScript    @ NewConsole = false
 }
 
 #include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// pEchoVar Config Block
+//
+// pMissionEval can compare complete current values but cannot select fields
+// from comma-delimited reports or retain two values from one variable. Keep
+// this adapter narrow: normalize dynamic point fields and expose only the
+// filtered history matches required by distinct-value cases. Most filtered
+// destinations are graded for publication or as plain fields. The inactive
+// record below is compared exactly through a runtime expected variable;
+// pMissionEval never embeds pEchoVar's key=value output as a condition literal.
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:point    = source_variable = VIEW_POINT
+  FLIP:point    = dest_variable   = UFOS_EVAL_POINT
+  FLIP:point    = dest_separator  = :
+  FLIP:point    = label         -> label
+  FLIP:point    = vertex_color -> color
+  FLIP:point    = vertex_size  -> size
+
+  FLIP:tracked_beta = source_variable = TRACKED_FEATURE_BETA
+  FLIP:tracked_beta = dest_variable   = UFOS_EVAL_TRACKED_BETA
+  FLIP:tracked_beta = key == ufos_a
+  FLIP:tracked_beta = key -> key
+
+  FLIP:known_a  = source_variable = KNOWN_OBSTACLE
+  FLIP:known_a  = dest_variable   = UFOS_EVAL_KNOWN_A
+  FLIP:known_a  = label == ufos_a
+  FLIP:known_a  = label -> label
+
+  FLIP:known_b  = source_variable = KNOWN_OBSTACLE
+  FLIP:known_b  = dest_variable   = UFOS_EVAL_KNOWN_B
+  FLIP:known_b  = label == ufos_b
+  FLIP:known_b  = label -> label
+
+  FLIP:known_ob1 = source_variable = KNOWN_OBSTACLE
+  FLIP:known_ob1 = dest_variable   = UFOS_EVAL_KNOWN_OB1
+  FLIP:known_ob1 = label == ob_1
+  FLIP:known_ob1 = label -> label
+
+  FLIP:given_a  = source_variable = GIVEN_OBSTACLE
+  FLIP:given_a  = dest_variable   = UFOS_EVAL_GIVEN_A
+  FLIP:given_a  = label == ufos_a
+  FLIP:given_a  = label -> label
+
+  FLIP:given_b  = source_variable = GIVEN_OBSTACLE
+  FLIP:given_b  = dest_variable   = UFOS_EVAL_GIVEN_B
+  FLIP:given_b  = label == ufos_b
+  FLIP:given_b  = label -> label
+
+  FLIP:tracked_a = source_variable = TRACKED_FEATURE_ALPHA
+  FLIP:tracked_a = dest_variable   = UFOS_EVAL_TRACKED_A
+  FLIP:tracked_a = key == ufos_a
+  FLIP:tracked_a = key -> key
+
+  FLIP:tracked_b = source_variable = TRACKED_FEATURE_ALPHA
+  FLIP:tracked_b = dest_variable   = UFOS_EVAL_TRACKED_B
+  FLIP:tracked_b = key == ufos_b
+  FLIP:tracked_b = key -> key
+
+  FLIP:polygon_a = source_variable = VIEW_POLYGON
+  FLIP:polygon_a = dest_variable   = UFOS_EVAL_POLYGON_A
+  FLIP:polygon_a = label == ufos_a
+  FLIP:polygon_a = label -> label
+
+  FLIP:polygon_region = source_variable = VIEW_POLYGON
+  FLIP:polygon_region = dest_variable   = UFOS_EVAL_POLYGON_REGION
+  FLIP:polygon_region = label == obs_region
+  FLIP:polygon_region = label -> label
+
+  // pEchoVar treats a missing filter field as a match. Map both tested fields
+  // so pMissionEval can require the complete active=false:label=ufos_a value;
+  // a partial record cannot satisfy that exact comparison.
+  FLIP:inactive_a = source_variable = KNOWN_OBSTACLE
+  FLIP:inactive_a = dest_variable   = UFOS_EVAL_INACTIVE_A
+  FLIP:inactive_a = dest_separator  = :
+  FLIP:inactive_a = label == ufos_a
+  FLIP:inactive_a = active == false
+  FLIP:inactive_a = active -> active
+  FLIP:inactive_a = label  -> label
+
+  // Split the normalized label on ':' so the randomized point suffix does
+  // not prevent a stable vehicle-name match. pEchoVar filters values without
+  // regard to case, so the mixed-case case uses an exact RHS variable instead.
+  FLIP:point_alpha = source_variable = UFOS_EVAL_POINT
+  FLIP:point_alpha = source_separator = :
+  FLIP:point_alpha = dest_variable   = UFOS_EVAL_POINT_ALPHA
+  FLIP:point_alpha = label == alpha
+  FLIP:point_alpha = label -> label
+
+  FLIP:point_beta = source_variable = UFOS_EVAL_POINT
+  FLIP:point_beta = source_separator = :
+  FLIP:point_beta = dest_variable   = UFOS_EVAL_POINT_BETA
+  FLIP:point_beta = label == beta
+  FLIP:point_beta = label -> label
+
+  FLIP:point_red = source_variable = VIEW_POINT
+  FLIP:point_red = dest_variable   = UFOS_EVAL_POINT_RED
+  FLIP:point_red = vertex_color == red
+  FLIP:point_red = vertex_color -> color
+
+  FLIP:point_size_1 = source_variable = VIEW_POINT
+  FLIP:point_size_1 = dest_variable   = UFOS_EVAL_POINT_SIZE_1
+  FLIP:point_size_1 = vertex_size == 1
+  FLIP:point_size_1 = vertex_size -> size
+
+  FLIP:point_size_2 = source_variable = VIEW_POINT
+  FLIP:point_size_2 = dest_variable   = UFOS_EVAL_POINT_SIZE_2
+  FLIP:point_size_2 = vertex_size == 2
+  FLIP:point_size_2 = vertex_size -> size
+
+  FLIP:point_size_2_5 = source_variable = VIEW_POINT
+  FLIP:point_size_2_5 = dest_variable   = UFOS_EVAL_POINT_SIZE_2_5
+  FLIP:point_size_2_5 = vertex_size == 2.5
+  FLIP:point_size_2_5 = vertex_size -> size
+
+  FLIP:point_size_3 = source_variable = VIEW_POINT
+  FLIP:point_size_3 = dest_variable   = UFOS_EVAL_POINT_SIZE_3
+  FLIP:point_size_3 = vertex_size == 3
+  FLIP:point_size_3 = vertex_size -> size
+
+  FLIP:point_size_5 = source_variable = VIEW_POINT
+  FLIP:point_size_5 = dest_variable   = UFOS_EVAL_POINT_SIZE_5
+  FLIP:point_size_5 = vertex_size == 5
+  FLIP:point_size_5 = vertex_size -> size
+
+}
 
 //----------------------------------------------------
 // uTimerScript Config Block
@@ -33,6 +165,10 @@ ProcessConfig = uTimerScript
   AppTick   = 4
   CommsTick = 4
 
+  block_on = pMissionEval, pEchoVar, uFldObstacleSim
+
+  event = var=UFOS_EXPECT_OBSTACLE, val="pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a", time=0.5
+  event = var=UFOS_EXPECT_REGION_VIEW, val="pts={0,-30:60,-30:60,30:0,30},label=obs_region,edge_color=gray50,vertex_color=white", time=0.5
   event = var=PMV_CONNECT, val=true, time=1.0
   event = var=TEST_EVAL_READY, val=true, time=3.0
 }
@@ -88,9 +224,15 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
-  pass_condition = KNOWN_OBSTACLE = "pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a"
-  pass_condition = GIVEN_OBSTACLE = "pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a"
+
+  pass_condition = KNOWN_OBSTACLE = $ (UFOS_EXPECT_OBSTACLE)
+  pass_condition = GIVEN_OBSTACLE = $ (UFOS_EXPECT_OBSTACLE)
+  pass_condition = UFOS_MIN_RNG = 8
+  pass_condition = UFOS_EVAL_POLYGON_A != ""
+  pass_condition = VIEW_POLYGON = $ (UFOS_EXPECT_REGION_VIEW)
+  pass_condition = VIEW_POLYGON_COUNT = 2
+
+  mailflag = @VIEW_POLYGON#VIEW_POLYGON_COUNT=$[CNT]
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -102,7 +244,9 @@ ProcessConfig = pMissionEval
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = known=$[KNOWN_OBSTACLE]
   report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = min_rng=$[UFOS_MIN_RNG]
+  report_column    = obstacle_view=$[UFOS_EVAL_POLYGON_A]
+  report_column    = view_count=$[VIEW_POLYGON_COUNT]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

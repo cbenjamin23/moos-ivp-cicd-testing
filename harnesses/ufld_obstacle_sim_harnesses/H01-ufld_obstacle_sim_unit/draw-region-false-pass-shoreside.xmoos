@@ -22,7 +22,10 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  pass_condition = UFOS_EVAL_KNOWN_A != ""
+  pass_condition = UFOS_EVAL_GIVEN_A != ""
+  pass_condition = UFOS_EVAL_POLYGON_A != ""
+  fail_condition = UFOS_EVAL_POLYGON_REGION != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -34,7 +37,7 @@ ProcessConfig = pMissionEval
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = known=$[KNOWN_OBSTACLE]
   report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = view_polygon=$[VIEW_POLYGON]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

@@ -6,16 +6,38 @@
 #   LastEd: May 2026
 #------------------------------------------------------------
 #  Part 1: Set convenience functions for producing terminal
-#          debugging output, and catching SIGINT (ctrl-c).
+#          debugging output.
 #------------------------------------------------------------
 vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
-on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
-trap on_exit SIGINT
 
 #------------------------------------------------------------
 #  Part 2: Set global variable default values
 #------------------------------------------------------------
-ME=`basename "$0"`
+ME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_DIR="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"
+TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
+if [ ! -f "$TEARDOWN_HELPER" ]; then
+    echo "launch.sh: Missing scoped teardown helper: $TEARDOWN_HELPER" >&2
+    exit 1
+fi
+# shellcheck source=/dev/null
+. "$TEARDOWN_HELPER"
+
+stop_here() {
+    moos_scoped_teardown_stop_root "$SCRIPT_DIR"
+}
+
+# shellcheck disable=SC2329  # Invoked through signal traps.
+on_signal() {
+    trap - INT TERM
+    echo
+    echo "$ME: Halting scoped mission apps"
+    stop_here || true
+    exit 130
+}
+
+trap on_signal INT TERM
 CMD_ARGS=""
 TIME_WARP=1
 VERBOSE=""
@@ -33,7 +55,7 @@ SHORE_MOOS="meta_shoreside.moos"
 #------------------------------------------------------------
 for ARGI; do
     CMD_ARGS+=" ${ARGI}"
-    if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
+    if [[ "${ARGI}" == "--help" || "${ARGI}" == "-h" ]]; then
         echo "$ME [OPTIONS] [time_warp]"
         echo ""
         echo "Options:"
@@ -49,13 +71,13 @@ for ARGI; do
         echo "  --xlaunched, -x      Launched by xlaunch"
         echo "  --nogui, -ng         Headless launch"
         exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 1 ]; then
+    elif [[ "${ARGI//[^0-9]/}" == "$ARGI" && "$TIME_WARP" == 1 ]]; then
         TIME_WARP=$ARGI
-    elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
+    elif [[ "${ARGI}" == "--verbose" || "${ARGI}" == "-v" ]]; then
         VERBOSE=$ARGI
-    elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
+    elif [[ "${ARGI}" == "--just_make" || "${ARGI}" == "-j" ]]; then
         JUST_MAKE=$ARGI
-    elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
+    elif [[ "${ARGI}" == "--log_clean" || "${ARGI}" == "-lc" ]]; then
         LOG_CLEAN=$ARGI
     elif [ "${ARGI:0:8}" = "--mport=" ]; then
         MOOS_PORT="${ARGI#--mport=*}"
@@ -71,12 +93,12 @@ for ARGI; do
         true
     elif [ "${ARGI:0:7}" = "--mmod=" ]; then
         MMOD="${ARGI#--mmod=*}"
-    elif [ "${ARGI}" = "--xlaunched" -o "${ARGI}" = "-x" ]; then
+    elif [[ "${ARGI}" == "--xlaunched" || "${ARGI}" == "-x" ]]; then
         XLAUNCHED="yes"
-    elif [ "${ARGI}" = "--nogui" -o "${ARGI}" = "-ng" ]; then
+    elif [[ "${ARGI}" == "--nogui" || "${ARGI}" == "-ng" ]]; then
         NOGUI="--nogui"
     else
-        echo "$ME: Bad arg:" $ARGI "Exit Code 1."
+        echo "$ME: Bad arg: $ARGI Exit Code 1."
         exit 1
     fi
 done
@@ -104,24 +126,25 @@ if [ "${VERBOSE}" != "" ]; then
     echo "XLAUNCHED =    [${XLAUNCHED}]"
     echo "NOGUI =        [${NOGUI}]"
     echo -n "Hit any key to continue launch "
-    read ANSWER
+    read -r -n 1 _
 fi
 
 #------------------------------------------------------------
 #  Part 6: Generate target files.
 #------------------------------------------------------------
-NSFLAGS="--strict --force -x"
+NSFLAGS=(--strict --force -x)
 if [ "${XLAUNCHED}" != "yes" ]; then
-    NSFLAGS="--interactive --force -x"
+    NSFLAGS=(--interactive --force -x)
 fi
 
 if [ -f "meta_shoreside.moosx" ]; then
     SHORE_MOOS="meta_shoreside.moosx"
 fi
 
-nsplug "$SHORE_MOOS" targ_shoreside.moos $NSFLAGS \
-       WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT \
-       MMOD=${MMOD:=fixed_field_publish_pass}
+[ -n "$MMOD" ] || MMOD=fixed_field_publish_pass
+nsplug "$SHORE_MOOS" targ_shoreside.moos "${NSFLAGS[@]}" \
+       WARP="$TIME_WARP" MOOS_PORT="$MOOS_PORT" PSHARE_PORT="$PSHARE_PORT" \
+       MMOD="$MMOD"
 
 if [ "${JUST_MAKE}" != "" ]; then
     echo "$ME: Targ files made; exiting without launch."
@@ -136,8 +159,11 @@ pAntler targ_shoreside.moos >& /dev/null &
 
 if [ "${XLAUNCHED}" != "yes" ]; then
     uMAC --paused targ_shoreside.moos || true
-    trap "" SIGINT
-    kill -- -$$
+    trap - INT TERM
+    if ! stop_here; then
+        echo "$ME: Scoped mission teardown failed" >&2
+        exit 1
+    fi
 fi
 
 exit 0

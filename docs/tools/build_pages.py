@@ -22,7 +22,10 @@ REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
 ASSET_VERSION = "20260511-5"
 PENDING_GIF = "GIF_PENDING"
-CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
+CASE_ARRAY_RE = re.compile(
+    r"^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)\)\s*(?:#.*)?$",
+    re.MULTILINE | re.DOTALL,
+)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
 CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
 VISUAL_NOTES = {
@@ -1804,7 +1807,7 @@ STEM_CONTEXT: dict[str, str] = {
     "ufield-comms-unit": "The stem mission runs one shoreside community and two static vehicle communities with uFldNodeComms, uFldNodeBroker, uFldShoreBroker, pShare, uTimerScript, and pMissionEval. Case overlays change communication policy and scripted report/message traffic while the harness verifies payload-level effects.",
     "ufield-broker-bridge": "The stem mission runs the same two-vehicle uField setup but focuses on broker configuration. Case overlays change shore broker bridges, vnode discovery, keywords, mediated node bridging, and auto-bridge settings while the harness verifies broker pShare command output.",
     "ufield-route-resilience": "The stem mission runs the same two static vehicle communities and one shoreside community, but startup and runtime route setup is delayed, invalid, duplicated, partially supplied, or supplied by shore vnode discovery. The mission grade proves communications recovered or intentionally failed, and harness alog checks prove which route path was used.",
-    "ufld-obstacle-sim-unit": "The stem mission runs a single shoreside MOOS community with uFldObstacleSim, uTimerScript, pMissionHash, pMissionEval, and pLogger. Case overlays change only simulator configuration and scripted refresh/reset/node-report mail while the harness verifies source-side obstacle and point publications.",
+    "ufld-obstacle-sim-unit": "The stem mission runs one shoreside community with uFldObstacleSim, uTimerScript, one stock pEchoVar adapter, pMissionEval, pMissionHash, and pLogger. Case overlays own scripted inputs, subject settings, and parser-safe mission-owned grading; the shell only prepares, schedules, and aggregates results.",
     "ufld-pathcheck-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldPathCheck config and scripted node-report mail, then checks path and speed report payloads from the alog.",
     "ufld-message-handler-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldMessageHandler config and scripted NODE_MESSAGE mail, then checks forwarded variables, counters, flags, and expected absence from the alog.",
     "ufld-contact-range-sensor-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness scripts static contact geometry and range requests, then checks range-report, ground-truth, and pulse outputs from the alog.",
@@ -2356,7 +2359,8 @@ def zlaunch_all_cases(text: str) -> list[str]:
         except ValueError:
             arrays[name] = CASE_NAME_RE.findall(body)
 
-    if "ALL_CASES" not in arrays:
+    root_array = "ALL_CASES" if "ALL_CASES" in arrays else "CASES"
+    if root_array not in arrays:
         return []
 
     def expand_array(name: str, stack: tuple[str, ...] = ()) -> list[str]:
@@ -2373,7 +2377,7 @@ def zlaunch_all_cases(text: str) -> list[str]:
 
     names: list[str] = []
     seen: set[str] = set()
-    for token in expand_array("ALL_CASES"):
+    for token in expand_array(root_array):
         if token not in seen:
             names.append(token)
             seen.add(token)
@@ -2513,7 +2517,7 @@ def harness_case_counts() -> dict[str, int]:
         text = zlaunch.read_text()
         all_cases = zlaunch_all_cases(text)
         if not all_cases:
-            raise ValueError(f"No ALL_CASES entries found in {zlaunch}")
+            raise ValueError(f"No ALL_CASES or CASES entries found in {zlaunch}")
         counts[zlaunch.parent.name] = len(all_cases)
     return counts
 

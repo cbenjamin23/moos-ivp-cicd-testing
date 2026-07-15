@@ -3,6 +3,18 @@
 // NAME: Charles Benjamin
 //-------------------------------------------------
 
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval, pEchoVar, uFldObstacleSim
+
+  event = var=UFOS_EXPECT_OBSTACLE, val="pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a,duration=7", time=0.5
+  event = var=PMV_CONNECT, val=true, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=3.0
+}
+
 ProcessConfig = uFldObstacleSim
 {
   AppTick   = 4
@@ -23,7 +35,8 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  pass_condition = KNOWN_OBSTACLE = $ (UFOS_EXPECT_OBSTACLE)
+  pass_condition = GIVEN_OBSTACLE = $ (UFOS_EXPECT_OBSTACLE)
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -35,7 +48,6 @@ ProcessConfig = pMissionEval
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = known=$[KNOWN_OBSTACLE]
   report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

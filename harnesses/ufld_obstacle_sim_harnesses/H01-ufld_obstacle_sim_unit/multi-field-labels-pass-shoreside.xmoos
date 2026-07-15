@@ -22,7 +22,15 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  pass_condition = UFOS_EVAL_KNOWN_A != ""
+  pass_condition = UFOS_EVAL_KNOWN_B != ""
+  pass_condition = UFOS_EVAL_GIVEN_A != ""
+  pass_condition = UFOS_EVAL_GIVEN_B != ""
+  pass_condition = KNOWN_OBSTACLE_COUNT = 2
+  pass_condition = GIVEN_OBSTACLE_COUNT = 2
+
+  mailflag = @KNOWN_OBSTACLE#KNOWN_OBSTACLE_COUNT=$[CNT]
+  mailflag = @GIVEN_OBSTACLE#GIVEN_OBSTACLE_COUNT=$[CNT]
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -32,9 +40,14 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = known_a=$[UFOS_EVAL_KNOWN_A]
+  report_column    = known_b=$[UFOS_EVAL_KNOWN_B]
+  report_column    = given_a=$[UFOS_EVAL_GIVEN_A]
+  report_column    = given_b=$[UFOS_EVAL_GIVEN_B]
   report_column    = known=$[KNOWN_OBSTACLE]
   report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = known_count=$[KNOWN_OBSTACLE_COUNT]
+  report_column    = given_count=$[GIVEN_OBSTACLE_COUNT]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }
