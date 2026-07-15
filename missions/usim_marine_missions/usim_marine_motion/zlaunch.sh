@@ -1,7 +1,7 @@
 #!/bin/bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
-#  Mission: pid_motion
+#  Mission: usim_marine_motion
 #   Author: Charles Benjamin
 #   LastEd: Jul 2026
 #------------------------------------------------------------
@@ -10,7 +10,7 @@ set -u
 
 ME=$(basename "$0")
 TIME_WARP=10
-MAX_TIME=55
+MAX_TIME=45
 VERBOSE=no
 JUST_MAKE=no
 DISPLAY_ARGS=(--nogui)
@@ -25,13 +25,11 @@ Options:
   --verbose, -v        Verbose launch output
   --just_make, -j      Only create targ files
   --nogui, -ng         Headless launch, no gui (default)
-  --gui                Launch with pMarineViewer
+  --gui                Accepted for wrapper parity
   --max_time=<secs>    Maximum time passed to xlaunch
-  --mmod=<mod>         Mission variation/modifier
   --shore_mport=<n>    Shoreside MOOSDB port
-  --veh_mport=<n>      Vehicle MOOSDB port
-  --shore_pshare=<n>   Shoreside pShare port
-  --veh_pshare=<n>     Vehicle pShare port
+  --shore_pshare=<n>   Reserved shoreside pShare port
+  --mmod=<name>        Mission modification label
 EOF
 }
 
@@ -55,9 +53,7 @@ for arg in "$@"; do
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --gui) DISPLAY_ARGS=() ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
-        --mmod=*|--shore_mport=*|--veh_mport=*|--shore_pshare=*|--veh_pshare=*)
-            FLOW_ARGS+=("$arg")
-            ;;
+        --shore_mport=*|--shore_pshare=*|--mmod=*) FLOW_ARGS+=("$arg") ;;
         *)
             is_uint "$arg" || die "bad argument: $arg"
             TIME_WARP="$arg"
@@ -105,7 +101,7 @@ trap on_signal INT TERM
 [ "$VERBOSE" = yes ] && echo "$ME: launching with max_time=$MAX_TIME warp=$TIME_WARP"
 
 if [ "$JUST_MAKE" = yes ]; then
-    rm -f targ_shoreside.moos targ_abe.moos targ_abe.bhv
+    rm -f targ_shoreside.moos
 fi
 
 launch_args=(--max_time="$MAX_TIME")
@@ -122,9 +118,8 @@ launch_rc=0
 xlaunch.sh "${launch_args[@]}" || launch_rc=$?
 
 if [ "$JUST_MAKE" = yes ]; then
-    if [ "$launch_rc" -ne 0 ] || [ ! -s targ_shoreside.moos ] || \
-       [ ! -s targ_abe.moos ] || [ ! -s targ_abe.bhv ]; then
-        echo "$ME: target generation did not produce the expected pid files" >&2
+    if [ "$launch_rc" -ne 0 ] || [ ! -s targ_shoreside.moos ]; then
+        echo "$ME: target generation did not produce targ_shoreside.moos" >&2
         exit 1
     fi
     exit 0
@@ -138,7 +133,7 @@ fi
 
 result_line=$(awk 'NF {print; exit}' results.txt 2>/dev/null)
 result_grade=""
-result_grade_count=0
+grade_count=0
 result_fields=()
 if [ -n "$result_line" ]; then
     read -r -a result_fields <<< "$result_line"
@@ -146,13 +141,13 @@ fi
 for field in "${result_fields[@]}"; do
     case "$field" in
         grade=*)
+            grade_count=$((grade_count + 1))
             result_grade="${field#grade=}"
-            result_grade_count=$((result_grade_count + 1))
             ;;
     esac
 done
 
-if [ "$result_grade_count" -ne 1 ] ||
+if [ "$grade_count" -ne 1 ] || \
    { [ "$result_grade" != pass ] && [ "$result_grade" != fail ]; }; then
     echo "$ME: pMissionEval did not write exactly one grade=pass|fail result" >&2
     exit 1

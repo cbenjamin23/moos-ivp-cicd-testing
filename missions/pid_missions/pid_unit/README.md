@@ -26,6 +26,13 @@ The default case expects a positive rudder command and a thrust command near
 ./zlaunch.sh --just_make 10
 ```
 
+`zlaunch.sh` is the self-evaluating wrapper used by the harness. It accepts
+explicit shoreside MOOSDB and reserved pShare ports, forwards `--max_time` and
+display mode to `xlaunch.sh`, validates `targ_shoreside.moos` in
+`--just_make`, and requires exactly one valid `pMissionEval` result row after
+a live run. It preserves launch failure status and performs canonical
+root-scoped teardown. The mission itself launches no pShare application.
+
 The patch-driven harness at
 [`harnesses/pid_harnesses/H01-pid_unit`](../../../harnesses/pid_harnesses/H01-pid_unit)
 reuses this stem for heading, speed, depth, override, stale-input, and debug

@@ -1,1 +1,1 @@
-  grade=pass  form=pid_motion  mmod=manual_override_fail  eval=true  expected=manual_override_held  arrived=$[ARRIVED]  x=0  y=-60  speed=0  thrust=0  mhash=[EPIC-BALL]
+  grade=pass  form=pid_motion  mmod=baseline_transit_pass  arrived=true  x=67.066  y=-60  speed=2  heading=90  depth=0  thrust=0  rudder=0  mhash=[LIMP-LUIS]

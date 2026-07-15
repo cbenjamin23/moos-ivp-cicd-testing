@@ -1,1 +1,1 @@
-form=pid_unit  mmod=depth_missing_pitch_zero_pass  grade=pass  eval=true  rudder=0  thrust=0  elevator=0  control=true  mhash=[JIMS-RUMP]
+form=pid_unit  mmod=rudder_starboard_pass  grade=pass  eval=true  rudder=90  thrust=40  control=true  mhash=[BLUE-DUTY]
