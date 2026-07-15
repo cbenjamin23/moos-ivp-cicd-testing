@@ -47,3 +47,42 @@ Run one inspectable case:
 ```sh
 ./zlaunch.sh --case=cache_config_pass --port_base=15000 --max_time=30 10
 ```
+
+## Launcher Contract
+
+Every path, including `--jobs=1` and single-case runs, uses an isolated copy of
+the stem. The launcher requires Bash 5.1 or newer and uses rolling refill for
+`--jobs`. Cases receive stride-30 port blocks with MOOSDB at `+0` and a
+reserved shoreside pShare slot at `+15`; this mission does not launch pShare.
+
+The harness writes each case's explicit `pMissionEval` conditions into the
+copied `case_eval.moos`, starts the stem through its `zlaunch.sh`, and invokes
+the case-specific `uPokeDB` command after MOOSDB startup. pMissionEval remains
+the sole owner of ordinary pass/fail grading. The previous `EXPECTED=pass`,
+result-token, absent-token, and numeric-threshold comparisons were removed
+because they duplicated the same pMissionEval conditions.
+
+The copied stem must produce exactly one row with exactly one
+`grade=pass|fail`. Results are aggregated once in declared case order.
+Preparation, stimulus, launch, malformed-result, missing-result, and teardown
+failures use runner-owned failure rows. Ordinary pMissionEval failures remain
+mission-owned. `uPokeDB` stimulus commands are bounded by the existing
+`--max_time` infrastructure ceiling so a missing MOOSDB cannot hang a worker.
+
+`--keep_workdirs` retains the invocation under `.harness_runs` for generated
+target, evaluator config, cache fixture, result, and `.alog` inspection.
+
+## Migration Validation
+
+The legacy batch-wave runner passed three complete two-job matrices in 65.16,
+66.18, and 66.58 seconds, for a 65.97-second mean. Its clean serial baseline
+passed 28/28 in 121.64 seconds. One separate serial attempt interrupted by an
+external `ktm` after twenty passing rows was discarded from all statistics.
+
+The migrated rolling runner passed three complete matrices in 84, 85, and 82
+seconds, for an 83.67-second mean. The isolated serial matrix passed 28/28 in
+163 seconds. A final checkout-state rolling run also passed 28/28 in 82
+seconds after the bounded-stimulus failure path was added. The increase comes
+from using the standard `xlaunch.sh` lifecycle,
+including its two-second shutdown interval, which the legacy harness bypassed.
+The case conditions and `uPokeDB` command contracts are unchanged.

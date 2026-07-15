@@ -1,32 +1,32 @@
-case=scoped_var_pass  grade=pass  form=uxms_unit  mmod=scoped_var_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[HIGH-MICA]  output_checks=2 absent_checks=0
-case=scoped_excludes_noise_pass  grade=pass  form=uxms_unit  mmod=scoped_excludes_noise_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[FAST-DOUG]  output_checks=2 absent_checks=1
-case=all_mode_pass  grade=pass  form=uxms_unit  mmod=all_mode_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[DUAL-DREW]  output_checks=2 absent_checks=0
-case=all_shortcut_pass  grade=pass  form=uxms_unit  mmod=all_shortcut_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[GOLD-TEXT]  output_checks=2 absent_checks=0
-case=show_source_pass  grade=pass  form=uxms_unit  mmod=show_source_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[FIRM-HACK]  output_checks=2 absent_checks=0
-case=show_time_only_pass  grade=pass  form=uxms_unit  mmod=show_time_only_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[HIGH-WEEK]  output_checks=2 absent_checks=0
-case=show_community_only_pass  grade=pass  form=uxms_unit  mmod=show_community_only_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[SLIM-GUTS]  output_checks=2 absent_checks=0
-case=show_time_community_pass  grade=pass  form=uxms_unit  mmod=show_time_community_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[WARY-ODDS]  output_checks=2 absent_checks=0
-case=show_source_community_pass  grade=pass  form=uxms_unit  mmod=show_source_community_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[LIMP-LAND]  output_checks=3 absent_checks=0
-case=history_var_pass  grade=pass  form=uxms_unit  mmod=history_var_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[SEXY-ALDO]  output_checks=2 absent_checks=0
-case=trunc_long_payload_pass  grade=pass  form=uxms_unit  mmod=trunc_long_payload_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[FOXY-NEWS]  output_checks=2 absent_checks=1
-case=clean_cli_scope_pass  grade=pass  form=uxms_unit  mmod=clean_cli_scope_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[]  output_checks=2 absent_checks=1
-case=config_var_pass  grade=pass  form=uxms_unit  mmod=config_var_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[SEXY-MACE]  output_checks=2 absent_checks=0
-case=filter_prefix_pass  grade=pass  form=uxms_unit  mmod=filter_prefix_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[FOND-PREY]  output_checks=2 absent_checks=1
-case=src_timer_pass  grade=pass  form=uxms_unit  mmod=src_timer_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[NICE-DAYS]  output_checks=2 absent_checks=0
-case=novirgins_pass  grade=pass  form=uxms_unit  mmod=novirgins_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[LOUD-FACT]  output_checks=2 absent_checks=2
-case=novirgins_shortcut_pass  grade=pass  form=uxms_unit  mmod=novirgins_shortcut_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[]  output_checks=2 absent_checks=2
-case=shortcut_source_pass  grade=pass  form=uxms_unit  mmod=shortcut_source_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[NEAR-NOEL]  output_checks=2 absent_checks=0
-case=shortcut_source_time_pass  grade=pass  form=uxms_unit  mmod=shortcut_source_time_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[NUDE-ELIO]  output_checks=2 absent_checks=0
-case=filter_specific_pass  grade=pass  form=uxms_unit  mmod=filter_specific_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[LIKE-IAGO]  output_checks=2 absent_checks=2
-case=filter_no_match_absent_pass  grade=pass  form=uxms_unit  mmod=filter_no_match_absent_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[]  output_checks=1 absent_checks=2
-case=colorany_pass  grade=pass  form=uxms_unit  mmod=colorany_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[FREE-ZEUS]  output_checks=2 absent_checks=0
-case=events_mode_pass  grade=pass  form=uxms_unit  mmod=events_mode_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[FLAT-BOSS]  output_checks=2 absent_checks=0
-case=paused_shortcut_pass  grade=pass  form=uxms_unit  mmod=paused_shortcut_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[EPIC-RENE]  output_checks=2 absent_checks=0
-case=shortcut_trunc_pass  grade=pass  form=uxms_unit  mmod=shortcut_trunc_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[]  output_checks=2 absent_checks=1
-case=alll_mode_pass  grade=pass  form=uxms_unit  mmod=alll_mode_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[EPIC-GOAT]  output_checks=2 absent_checks=0
-case=server_underscore_args_pass  grade=pass  form=uxms_unit  mmod=server_underscore_args_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[EASY-SOLO]  output_checks=2 absent_checks=0
-case=moos_alias_args_pass  grade=pass  form=uxms_unit  mmod=moos_alias_args_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[MEAN-ZIGS]  output_checks=2 absent_checks=0
-case=moos_underscore_args_pass  grade=pass  form=uxms_unit  mmod=moos_underscore_args_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[SLIM-JAZZ]  output_checks=2 absent_checks=0
-case=alias_proc_name_pass  grade=pass  form=uxms_unit  mmod=alias_proc_name_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[HAZY-KING]  output_checks=2 absent_checks=0
-case=colormap_pair_pass  grade=pass  form=uxms_unit  mmod=colormap_pair_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[MALT-OLAF]  output_checks=2 absent_checks=0
-case=clean_shortcut_scope_pass  grade=pass  form=uxms_unit  mmod=clean_shortcut_scope_pass  eval=true  xms_alpha=alpha  xms_num=42  xms_hist=third  mhash=[]  output_checks=2 absent_checks=1
+case=scoped_var_pass form=uxms_unit mmod=scoped_var_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[SEXY-GUTS] output_check=pass
+case=scoped_excludes_noise_pass form=uxms_unit mmod=scoped_excludes_noise_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[HALS-BURT] output_check=pass
+case=all_mode_pass form=uxms_unit mmod=all_mode_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[TORY-NOTE] output_check=pass
+case=all_shortcut_pass form=uxms_unit mmod=all_shortcut_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[LOUD-HUCK] output_check=pass
+case=show_source_pass form=uxms_unit mmod=show_source_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[DARK-SITE] output_check=pass
+case=show_time_only_pass form=uxms_unit mmod=show_time_only_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[IRON-STOP] output_check=pass
+case=show_community_only_pass form=uxms_unit mmod=show_community_only_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[EPIC-GULL] output_check=pass
+case=show_time_community_pass form=uxms_unit mmod=show_time_community_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[FULL-HARP] output_check=pass
+case=show_source_community_pass form=uxms_unit mmod=show_source_community_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[MALE-TWIT] output_check=pass
+case=history_var_pass form=uxms_unit mmod=history_var_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[LONG-NICK] output_check=pass
+case=trunc_long_payload_pass form=uxms_unit mmod=trunc_long_payload_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[NEAR-RUST] output_check=pass
+case=clean_cli_scope_pass form=uxms_unit mmod=clean_cli_scope_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[ICED-NEWT] output_check=pass
+case=config_var_pass form=uxms_unit mmod=config_var_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[MAIN-LOCK] output_check=pass
+case=filter_prefix_pass form=uxms_unit mmod=filter_prefix_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[HALF-RUMP] output_check=pass
+case=src_timer_pass form=uxms_unit mmod=src_timer_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[VAIN-BEAU] output_check=pass
+case=novirgins_pass form=uxms_unit mmod=novirgins_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[BOLD-WEEK] output_check=pass
+case=novirgins_shortcut_pass form=uxms_unit mmod=novirgins_shortcut_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[WIDE-CLAW] output_check=pass
+case=shortcut_source_pass form=uxms_unit mmod=shortcut_source_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[PALE-ROOM] output_check=pass
+case=shortcut_source_time_pass form=uxms_unit mmod=shortcut_source_time_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[WAVY-DAYS] output_check=pass
+case=filter_specific_pass form=uxms_unit mmod=filter_specific_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[OILY-NEWT] output_check=pass
+case=filter_no_match_absent_pass form=uxms_unit mmod=filter_no_match_absent_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[CHIC-SOLO] output_check=pass
+case=colorany_pass form=uxms_unit mmod=colorany_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[BLUE-BING] output_check=pass
+case=events_mode_pass form=uxms_unit mmod=events_mode_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[DULL-BLUE] output_check=pass
+case=paused_shortcut_pass form=uxms_unit mmod=paused_shortcut_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[UGLY-RICE] output_check=pass
+case=shortcut_trunc_pass form=uxms_unit mmod=shortcut_trunc_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[EPIC-DAYS] output_check=pass
+case=alll_mode_pass form=uxms_unit mmod=alll_mode_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[SEXY-ALTO] output_check=pass
+case=server_underscore_args_pass form=uxms_unit mmod=server_underscore_args_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[SLIM-CALL] output_check=pass
+case=moos_alias_args_pass form=uxms_unit mmod=moos_alias_args_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[BOLD-CRIB] output_check=pass
+case=moos_underscore_args_pass form=uxms_unit mmod=moos_underscore_args_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[BACK-MINT] output_check=pass
+case=alias_proc_name_pass form=uxms_unit mmod=alias_proc_name_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[BASS-GAME] output_check=pass
+case=colormap_pair_pass form=uxms_unit mmod=colormap_pair_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[NEAR-DUET] output_check=pass
+case=clean_shortcut_scope_pass form=uxms_unit mmod=clean_shortcut_scope_pass grade=pass eval=true xms_alpha=alpha xms_num=42 xms_hist=third mhash=[UGLY-LOOP] output_check=pass

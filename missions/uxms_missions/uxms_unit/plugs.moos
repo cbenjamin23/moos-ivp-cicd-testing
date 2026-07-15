@@ -30,4 +30,3 @@ ProcessConfig = pLogger
   Log = TEST_EVAL_READY @ 0 nosync
   Log = MISSION_EVALUATED @ 0 nosync
 }
-
