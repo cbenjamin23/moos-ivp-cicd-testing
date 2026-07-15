@@ -3,82 +3,126 @@
 #   Script: zlaunch.sh
 #  Mission: pechovar_unit
 #   Author: Charles Benjamin
-#   LastEd: May 2026
+#   LastEd: Jul 2026
 #------------------------------------------------------------
-#  Part 1: Set convenience functions for producing terminal
-#          debugging output, and catching SIGINT (ctrl-c).
-#------------------------------------------------------------
-vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
-on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
-trap on_exit SIGINT
-trap "echo zlaunch.sh has received sigterm" SIGTERM
 
-#------------------------------------------------------------
-#  Part 2: Set global variable default values
-#------------------------------------------------------------
-ME=`basename "$0"`
-CMD_ARGS=""
+set -u
+
+ME=$(basename "$0")
 TIME_WARP=10
-VERBOSE=""
-JUST_MAKE=""
-MAX_TIME="30"
-NOGUI="--nogui"
-MMOD=""
+MAX_TIME=20
+VERBOSE=no
+JUST_MAKE=no
+DISPLAY_ARGS=(--nogui)
+FLOW_ARGS=()
 
-#------------------------------------------------------------
-#  Part 3: Check for and handle command-line arguments
-#------------------------------------------------------------
-for ARGI; do
-    CMD_ARGS+=" ${ARGI}"
-    if [ "${ARGI}" = "--help" ] || [ "${ARGI}" = "-h" ]; then
-        echo "$ME [OPTIONS] [time_warp]"
-        echo ""
-        echo "Options:"
-        echo "  --help, -h         Show this help message"
-        echo "  --verbose, -v      Verbose, confirm launch"
-        echo "  --just_make, -j    Only create targ files"
-        echo "  --nogui, -ng       Headless launch"
-        echo "  --gui              Launch with GUI"
-        echo "  --max_time=<secs>  Max time passed to xlaunch"
-        echo "  --mmod=<mod>       Mission variation/mod"
-        exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" ] && [ "$TIME_WARP" = 10 ]; then
-        TIME_WARP=$ARGI
-    elif [ "${ARGI}" = "--verbose" ] || [ "${ARGI}" = "-v" ]; then
-        VERBOSE="--verbose"
-    elif [ "${ARGI}" = "--just_make" ] || [ "${ARGI}" = "-j" ]; then
-        JUST_MAKE="--just_make"
-    elif [ "${ARGI}" = "--nogui" ] || [ "${ARGI}" = "-ng" ]; then
-        NOGUI="--nogui"
-    elif [ "${ARGI}" = "--gui" ]; then
-        NOGUI=""
-    elif [ "${ARGI:0:11}" = "--max_time=" ]; then
-        MAX_TIME="${ARGI#--max_time=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
-    else
-        echo "$ME: Bad arg:" $ARGI "Exit Code 1."
-        exit 1
-    fi
+usage() {
+    cat <<EOF
+$ME [OPTIONS] [time_warp]
+
+Options:
+  --help, -h           Show this help message
+  --verbose, -v        Verbose launch output
+  --just_make, -j      Only create targ files
+  --nogui, -ng         Headless launch, no gui (default)
+  --gui                Accepted for wrapper parity
+  --max_time=<secs>    Maximum time passed to xlaunch
+  --shore_mport=<n>    Shoreside MOOSDB port
+  --shore_pshare=<n>   Shoreside pShare port
+  --mmod=<name>        Mission modification label
+EOF
+}
+
+die() {
+    echo "$ME: $*" >&2
+    exit 2
+}
+
+is_uint() {
+    case "$1" in ''|*[!0-9]*) return 1 ;; *) return 0 ;; esac
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --help|-h) usage; exit 0 ;;
+        --verbose|-v) VERBOSE=yes; FLOW_ARGS+=(--verbose) ;;
+        --just_make|-j) JUST_MAKE=yes ;;
+        --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
+        --gui) DISPLAY_ARGS=() ;;
+        --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --shore_mport=*|--shore_pshare=*|--mmod=*) FLOW_ARGS+=("$arg") ;;
+        *) is_uint "$arg" || die "bad argument: $arg"; TIME_WARP="$arg" ;;
+    esac
 done
 
-#------------------------------------------------------------
-#  Part 4: Run the mission through shared xlaunch.sh.
-#------------------------------------------------------------
-: > results.txt
-vecho "Launching with max_time=$MAX_TIME"
-xlaunch.sh --max_time=$MAX_TIME $NOGUI $JUST_MAKE $VERBOSE ${MMOD:+--mmod=$MMOD} $TIME_WARP
+is_uint "$TIME_WARP" && [ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
+is_uint "$MAX_TIME" && [ "$MAX_TIME" -gt 0 ] || die "--max_time must be a positive integer"
 
-#------------------------------------------------------------
-#  Part 5: Apply scoped cleanup after non-generation runs.
-#------------------------------------------------------------
-if [ "${JUST_MAKE}" = "" ]; then
-    repo_dir=`git -C "$PWD" rev-parse --show-toplevel 2>/dev/null`
-    if [ "$repo_dir" = "" ] || [ ! -x "$repo_dir/scripts/harness_teardown.sh" ]; then
-        echo "$ME: Missing scoped teardown helper"
+REPO_DIR=$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null) || die "unable to locate repository root from $PWD"
+TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
+[ -f "$TEARDOWN_HELPER" ] || die "missing scoped teardown helper: $TEARDOWN_HELPER"
+# shellcheck source=/dev/null
+. "$TEARDOWN_HELPER"
+
+# shellcheck disable=SC2329  # Reached from the EXIT-trap handler.
+stop_here() {
+    moos_scoped_teardown_stop_root "$PWD" || {
+        echo "$ME: scoped teardown failed for $PWD" >&2
+        return 1
+    }
+}
+
+# shellcheck disable=SC2329  # Invoked through the EXIT trap.
+on_exit() {
+    local exit_rc=$?
+    trap - EXIT
+    if ! stop_here && [ "$exit_rc" -eq 0 ]; then exit_rc=1; fi
+    exit "$exit_rc"
+}
+
+# shellcheck disable=SC2329  # Invoked through the signal traps.
+on_signal() { exit 130; }
+trap on_exit EXIT
+trap on_signal INT TERM
+
+: > results.txt
+[ "$VERBOSE" = yes ] && echo "$ME: launching with max_time=$MAX_TIME warp=$TIME_WARP"
+[ "$JUST_MAKE" = yes ] && rm -f targ_shoreside.moos
+
+launch_args=(--max_time="$MAX_TIME")
+[ "${#DISPLAY_ARGS[@]}" -gt 0 ] && launch_args+=("${DISPLAY_ARGS[@]}")
+[ "${#FLOW_ARGS[@]}" -gt 0 ] && launch_args+=("${FLOW_ARGS[@]}")
+launch_args+=("$TIME_WARP")
+[ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
+
+launch_rc=0
+xlaunch.sh "${launch_args[@]}" || launch_rc=$?
+
+if [ "$JUST_MAKE" = yes ]; then
+    if [ "$launch_rc" -ne 0 ] || [ ! -s targ_shoreside.moos ]; then
+        echo "$ME: target generation did not produce targ_shoreside.moos" >&2
         exit 1
     fi
-    "$repo_dir/scripts/harness_teardown.sh" "$PWD"
+    exit 0
 fi
 
-exit 0
+result_rows=$(awk 'NF {count++} END {print count+0}' results.txt 2>/dev/null)
+if [ "$result_rows" -ne 1 ]; then
+    echo "$ME: expected exactly one pMissionEval result row; found $result_rows" >&2
+    exit 1
+fi
+
+result_line=$(awk 'NF {print; exit}' results.txt 2>/dev/null)
+result_grade=''
+grade_count=0
+result_fields=()
+[ -n "$result_line" ] && read -r -a result_fields <<< "$result_line"
+for field in "${result_fields[@]}"; do
+    case "$field" in grade=*) grade_count=$((grade_count + 1)); result_grade="${field#grade=}" ;; esac
+done
+if [ "$grade_count" -ne 1 ] || { [ "$result_grade" != pass ] && [ "$result_grade" != fail ]; }; then
+    echo "$ME: pMissionEval did not write exactly one grade=pass|fail result" >&2
+    exit 1
+fi
+
+exit "$launch_rc"
