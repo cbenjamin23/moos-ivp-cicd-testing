@@ -3507,16 +3507,72 @@ active-lock behavior, Bash 3.2 rejection, and Homebrew Bash re-execution. Bash
 syntax, ShellCheck, and the harness checker pass. No tested process survived
 cleanup.
 
+### Completed Migration: `shadow_h01`
+
+Shadow H01 baseline evidence was gathered as the only live harness on July 16,
+2026. Its thirty-five cases passed 105/105 rows across three untouched legacy
+`--jobs=4` wave matrices in 127, 127, and 126 seconds, for a 126.67-second
+mean. The untouched serial matrix passed 35/35 in 377 seconds. No baseline
+failure was observed.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling execution, rolling slot refill, deterministic selected-case
+aggregation, three MOOSDB and three pShare ports per two-vehicle case,
+root-scoped cleanup, a harness lock, and strict one-row pMissionEval result
+validation. All thirty-five README tokens, launcher cases, and explicit case
+mappings reconcile exactly. All existing patches, event times, behavior
+parameters, evaluator conditions, grading variables, and coverage claims were
+preserved. The mission wrapper is now a thin single-scenario forwarder rather
+than routing harness arguments back into the harness.
+
+Initial migrated validation exposed two intermittent infrastructure failures:
+`turn_north_shadow_pass` once produced no result during rolling execution, and
+`heading_widths_pass` once did the same during serial execution. The retained
+serial failure showed both vehicle communities operating normally, while the
+shoreside log contained remote vehicle traffic but none of the local evaluator
+state. This means pMissionEval did not reject either case; pAntler launched the
+shoreside only partway through its process list. Both cases then passed 10/10
+focused repetitions with unchanged test inputs and grading.
+
+The faster rolling lifecycle was repeatedly starting twelve shoreside
+processes at the existing 100-millisecond pAntler spacing. The existing
+`MSBetweenLaunches` setting was increased from 100 to 200 milliseconds for the
+shoreside only. This changes wall-clock process startup pacing, not MOOS event
+time, mission behavior, stimulus, or grading. Three valid post-fix rolling
+matrices passed 105/105 rows in 110, 117, and 112 seconds, for a 113.0-second
+mean. That is 13.67 seconds, about 10.8 percent, faster than the legacy wave
+mean. The post-fix isolated serial matrix passed 35/35 in 422 seconds, 45
+seconds or about 11.9 percent slower than legacy due to per-case copies, the
+thin wrapper lifecycle, scoped cleanup, and the additional startup spacing.
+
+One additional rolling attempt was invalidated by a macOS sleep/wake event:
+the shell wall clock jumped to 367 seconds while only about 30 seconds of
+active tool time elapsed. The four cases live across suspension evaluated with
+stale Shadow contact state; all cases launched after wake passed. This run is
+recorded as environmental contamination and excluded from performance and
+repeatability statistics.
+
+Validation covered all-case generation, three clean final rolling matrices,
+one clean final serial matrix, twenty focused repeats, standalone stem
+generation and live execution, exact case order and mapping reconciliation,
+all expected-warning and expected-malconfiguration contracts, one physical
+pMissionEval row per case, 105 unique MOOSDB listeners, 105 unique pShare
+listeners, zero port overlap, intended sidecars, unknown-case and numeric-bound
+rejection, multi-case GUI rejection, active-lock behavior, Bash 3.2 rejection,
+Homebrew Bash re-execution, and a forced missing-result row. Bash syntax,
+ShellCheck, and both skill static checkers pass. No tested process survived
+cleanup.
+
 ## Immediate Next Step
 
-Thirty-five of the sixty-seven registered harnesses are now migrated against skill
-1.4.2: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `hostinfo_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Thirty-six of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `hostinfo_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`timer_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `timer_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Thirty-two registered harnesses remain. Continue with the next ordinary,
+Thirty-one registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
