@@ -3431,16 +3431,59 @@ and numeric-bound rejection, multi-case GUI rejection, active-lock behavior,
 Bash 3.2 rejection, and Homebrew Bash re-execution. Bash syntax, ShellCheck,
 and the harness checker pass. No tested process survived cleanup.
 
+### Completed Migration: `obstacle_behavior_h01`
+
+Obstacle Behavior H01 baseline evidence was gathered as the only live harness
+on July 16, 2026. Three clean legacy `--jobs=4` matrices passed 63/63 rows in
+75.30, 74.89, and 74.85 seconds, for a 75.01-second mean. Two additional
+concurrent legacy matrices each failed only `two_obstacles_clean_pass`, which
+reported a real mission-owned collision. That case then passed 10/10 when run
+alone. The untouched serial matrix passed 21/21 in 208.48 seconds.
+
+The migrated Bash 5.1 launcher uses isolated mission copies, rolling slot
+refill, deterministic selected-case aggregation, configurable minimum-12 port
+spacing, root-scoped cleanup, a harness lock, and strict one-row pMissionEval
+result validation. It preserves all twenty-one case mappings and every
+shoreside, vehicle-MOOS, and behavior overlay. The mission wrapper only
+forwards launch controls, validates the mission-owned row, and applies the
+standalone cleanup backstop. No case patch, geometry, event time, evaluator
+condition, behavior value, grading variable, or coverage claim changed.
+
+Initial migrated rolling validation reproduced the same pre-existing
+`two_obstacles_clean_pass` collision once in five matrices, while the case
+remained 10/10 alone. The final scheduler therefore drains active slots and
+runs that one load-sensitive case alone, then resumes rolling refill. Three
+clean final matrices passed 63/63 rows in 83.83, 83.70, and 83.03 seconds, for
+an 83.52-second mean. This is 8.51 seconds, about 11.3 percent, slower than the
+clean legacy mean; it is an intentional repeatability tradeoff. The migrated
+serial matrix passed 21/21 in 223.51 seconds, 15.03 seconds or about 7.2
+percent slower than legacy.
+
+One final-scheduler matrix also produced a one-off `launch_rc=1` with no
+pMissionEval row for `default_auto_request_pass`. It did not recur in 10
+focused repetitions, the next full matrix, or the retained evidence matrix,
+and no process remained. It is recorded as an isolated runner/startup outlier,
+not hidden or converted into a pass.
+
+Validation covered all-case generation, repeated full rolling and serial
+matrices, the explicitly solo scheduling trace, nominal avoidance, expected
+collision, and helm-malconfiguration verdicts, standalone stem generation and
+live execution, exact case order, distinct MOOSDB and pShare ports, one
+physical pMissionEval row per case, unknown-case and numeric-bound rejection,
+multi-case GUI rejection, active-lock behavior, Bash 3.2 rejection, and
+Homebrew Bash re-execution. Bash syntax, ShellCheck, and the harness checker
+pass. No tested process survived cleanup.
+
 ## Immediate Next Step
 
-Thirty-three of the sixty-seven registered harnesses are now migrated against skill
+Thirty-four of the sixty-seven registered harnesses are now migrated against skill
 1.4.2: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `hostinfo_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
-`obmgr_h02`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
+`obmgr_h02`, `obstacle_behavior_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `timer_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Thirty-four registered harnesses remain. Continue with the next ordinary,
+Thirty-three registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
