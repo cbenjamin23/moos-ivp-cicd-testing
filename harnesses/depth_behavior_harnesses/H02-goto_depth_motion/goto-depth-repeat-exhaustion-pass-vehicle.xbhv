@@ -26,8 +26,9 @@ Behavior = BHV_GoToDepth
   pwt       = 140
   condition = MODE == TRANSITING
 
-  depth         = 4,1:12,1
+  depth         = 6,1:10,1
   arrival_delta = 1.0
   arrival_flag  = LEVEL_HIT
+  endflag       = GTD_DONE = true
   repeat        = 1
 }

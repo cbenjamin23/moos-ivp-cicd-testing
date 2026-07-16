@@ -17,7 +17,7 @@ target-depth crossings, malformed launch-time config, and missing depth inputs.
 - `goto_depth_time_gate_pass` Uses a long first-level dwell time and verifies the behavior does not advance early by time alone.
 - `goto_depth_capture_delta_alias_pass` Uses the `capture_delta` alias while retaining the normal arrival flag evidence.
 - `goto_depth_capture_flag_alias_pass` Uses the `capture_flag` alias while retaining the normal arrival counter evidence.
-- `goto_depth_repeat_exhaustion_pass` Runs one finite repeat and verifies the arrival counter remains at the exhausted sequence count late in the mission.
+- `goto_depth_repeat_exhaustion_pass` Runs one finite repeat and requires both exactly four arrivals and the behavior's own completion flag.
 - `goto_depth_bad_update_preserve_pass` Posts malformed runtime update mail and verifies the original depth sequence remains active.
 - `goto_depth_bad_sequence_fail` Supplies malformed level syntax and expects the normal good-case verdict to fail.
 - `goto_depth_negative_depth_fail` Supplies a negative level target and expects the normal good-case verdict to fail.
@@ -36,7 +36,53 @@ target-depth crossings, malformed launch-time config, and missing depth inputs.
 ./zlaunch.sh --just_make 10
 ```
 
-The wrapper supports `--jobs` and `--port_base` for isolated grouped local and
-CI runs. The vertical target-crossing cases run in solo waves during grouped
-execution because their later crossing hits are timing-sensitive when launched
-beside other UUV depth sequence cases.
+The Bash 5.1 wrapper creates an isolated mission copy for every serial and
+rolling case, refills rolling slots as cases finish, aggregates one strict
+mission-owned result row per selected case, and performs root-scoped cleanup.
+The vertical target-crossing cases retain exclusive solo slots because their
+crossing evidence is sensitive to concurrent local simulation load.
+
+### Migration evidence
+
+Three untouched legacy `--jobs=4` matrices passed 54/54 rows in 90.80, 92.31,
+and 92.18 seconds, for a 91.76-second mean. The legacy serial matrix finished
+in 158.06 seconds but failed both repeat cases with only three of the required
+four arrivals. Focused legacy sweeps reproduced each repeat failure once in
+five attempts, establishing a pre-existing fixed-snapshot race.
+
+The migration retains the original time gates where they carry test meaning
+and adds each case's required arrival count as another lead condition. This
+prevents pMissionEval from grading before the evidence under test exists.
+`goto_depth_repeat_pass` now grades directly after four arrivals and the
+existing `ABE_NAV_X >= 70` checkpoint. Its two target levels were narrowed
+from 4/12 to 6/10 so the test remains a real two-level traversal while avoiding
+unrelated vehicle-dynamics variance.
+
+`goto_depth_repeat_exhaustion_pass` uses the same two levels, still traverses
+them twice, and adds the behavior's standard `endflag` as `GTD_DONE`. A
+case-specific vehicle and shoreside bridge carries that flag to pMissionEval;
+the shared mission is unchanged. The evaluator now proves exactly four
+arrivals, `GTD_DONE=true`, and the original horizontal checkpoint instead of
+sampling the counter at an arbitrary late time. Both corrected repeat cases
+passed 10/10 focused repetitions.
+
+Three migrated rolling matrices passed 54/54 rows in 78, 83, and 79 seconds.
+Their 80.0-second mean is 11.76 seconds, about 12.8 percent, faster than the
+legacy rolling mean. A clean isolated serial matrix passed 18/18 in 179
+seconds. This is 20.94 seconds longer than the 158.06-second legacy serial
+attempt, but the legacy attempt failed two cases and is therefore not an
+equivalent clean timing sample.
+
+The first migrated serial matrix had one `goto_depth_bad_update_preserve_pass`
+mission exit before writing a result. The unchanged case then passed 10/10
+focused repetitions and the complete serial rerun; it had also passed all
+three rolling matrices. This is recorded as an isolated launch/lifecycle
+outlier, not hidden by a timing or coverage change.
+
+Validation covered all-case generation, three complete rolling matrices, two
+serial attempts, focused repeat and runtime-update sweeps, exact case and
+patch-map reconciliation, solo-slot scheduling, 36 unique MOOSDB ports, 36
+unique pShare ports, unknown-case rejection, active-lock behavior, Homebrew
+Bash re-execution, and explicit Bash 3.2 rejection. Bash syntax, ShellCheck,
+the harness checker, and all 18 generated-case evaluator checks pass. No
+tested MOOS process survived cleanup.
