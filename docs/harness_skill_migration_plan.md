@@ -3327,16 +3327,52 @@ syntax, ShellCheck, and the harness checker pass. The evaluator checker has
 only its known false positive for the existing, valid, fully parenthesized OR
 lead conditions. No tested process survived cleanup.
 
+### Completed Migration: `timer_h01`
+
+Timer H01 baseline evidence was gathered as the only live harness on July 16,
+2026. Its eighteen cases passed 54/54 rows across three untouched legacy
+`--jobs=4` wave matrices in 47.97, 47.76, and 47.12 seconds, for a 47.62-second
+mean. The untouched serial matrix passed 18/18 in 125.92 seconds. No baseline
+failure or surviving test process was observed.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling cases, rolling slot refill, deterministic selected-case aggregation,
+the existing configurable minimum-12 port stride, root-scoped cleanup, a
+harness lock, and strict one-row pMissionEval result validation. It preserves
+all eighteen case mappings and every shoreside, vehicle-MOOS, and behavior
+overlay. The mission wrapper forwards launch controls, validates the mission-
+owned pMissionEval row, and provides the normal standalone cleanup backstop.
+No case patch, event time, pass condition, behavior parameter, grading
+variable, or coverage claim changed.
+
+Three migrated `--jobs=4` matrices passed 54/54 rows in 43.19, 43.89, and
+43.98 seconds. Their 43.69-second mean is 3.93 seconds, about 8.3 percent,
+faster than the legacy wave mean. The isolated serial matrix passed 18/18 in
+144.60 seconds, 18.68 seconds or about 14.8 percent slower than legacy. The
+roughly 1.04-second-per-case serial difference comes from the modern mission
+wrapper and scoped-cleanup lifecycle that the legacy harness bypassed; case
+mission timing and evaluator conditions were unchanged.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, all mission-owned expected-absence verdicts, standalone stem
+generation and live execution, exact case order, rolling refill, distinct
+MOOSDB and pShare ports, one physical pMissionEval row per case, unknown-case
+and numeric-bound rejection, multi-case GUI rejection, active-lock behavior,
+Bash 3.2 rejection, and Homebrew Bash re-execution. Bash syntax, ShellCheck,
+and the harness checker pass. The evaluator checker has only its known false
+positive for the existing, valid, fully parenthesized OR lead conditions. No
+tested process survived cleanup.
+
 ## Immediate Next Step
 
-Thirty of the sixty-seven registered harnesses are now migrated against skill
+Thirty-one of the sixty-seven registered harnesses are now migrated against skill
 1.4.2: `cmgr_h01`, `cmgr_h02`, `hostinfo_h01`, `loadwatch_h01`, `obmgr_h01`,
 `obmgr_h02`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
+`timer_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Thirty-seven registered harnesses remain. Continue with the next ordinary,
+Thirty-six registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
