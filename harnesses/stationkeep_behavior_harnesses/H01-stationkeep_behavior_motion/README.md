@@ -100,19 +100,15 @@ From this harness directory:
 ./zlaunch.sh --jobs=4 --port_base=34000 10
 ```
 
-From the paired mission directory, named cases are forwarded to this harness:
-
-```bash
-./zlaunch.sh --case=point_update_retarget_pass --gui 1
-```
-
-The full matrix currently has 34 cases. Wave mode uses isolated temp mission
-copies and deterministic per-case port blocks, so do not overlap it with other
-MOOS harnesses on the same machine.
+The full matrix currently has 34 cases. Serial and rolling modes both use
+isolated mission copies and deterministic per-case port blocks. Rolling mode
+starts the next pending case whenever an active slot finishes. Do not overlap
+this harness with another MOOS harness on the same machine.
 
 Latest validation:
 
-- April 27, 2026
-- generated-file matrix: `34/34` cases completed with `--just_make --jobs=4 --port_base=15000`
-- full wave matrix: `34/34` expected outcomes matched with `--jobs=4 --port_base=15000`
+- July 16, 2026
+- generated-file matrix: `34/34` cases completed with `--just_make --jobs=4`
+- three full rolling matrices: `102/102` mission-owned verdicts passed
+- full serial matrix: `34/34` mission-owned verdicts passed
 - warp: `10`
