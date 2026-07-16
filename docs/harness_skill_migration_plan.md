@@ -2734,19 +2734,563 @@ isolated mission copies, thirty-three targets, thirty-three `.alog` files, and
 one physical pMissionEval row per case. Logs contained no warnings or
 configuration errors, and no tested listener remained.
 
+### Migrated Rollout: `utimerscript_h01`
+
+uTimerScript H01 was audited and migrated as the only live harness on July 15,
+2026. Its thirty-three documented cases, launcher tokens, generated
+uTimerScript and pMissionEval configurations, external control schedules, and
+final result order reconcile exactly.
+
+pMissionEval owns the ordinary current-state verdicts. The launcher no longer
+repeats scalar value checks already enforced by pMissionEval. Narrow bounded
+`.alog` checks remain for exact comma-bearing payloads, status metadata,
+expected status-variable absence, and publication histories that final MOOS
+state cannot express. Every retained history check ends at the first
+`MISSION_EVALUATED=true` timestamp. No application or grading variable was
+added. The space-containing `UTS_STATUS` and custom-status values were removed
+from result columns so each pMissionEval result is one whitespace-parseable row;
+their existing case-specific assertions remain in bounded log evidence.
+
+The migrated launcher uses Bash 5.1 rolling scheduling, isolated copies for
+serial and rolling execution, generated case fixtures, stride-30 port blocks,
+a harness lock, canonical scoped teardown, bounded exact-PID `uPokeDB` control
+calls, exact one-row mission-result validation, deterministic aggregation, and
+normalized runner failures. The new thin mission wrapper only forwards
+execution controls to `xlaunch.sh`, validates the pMissionEval row, and applies
+the standalone cleanup backstop.
+
+Validation exposed three timing/evidence assumptions in the legacy runner:
+
+- `pause_toggle_external_pass` could finish evaluation before its second toggle
+  because the legacy runner delayed `uMayFinish` until after both pokes. Under
+  xlaunch, successful evaluation correctly begins shutdown immediately. The
+  existing output and evaluation times moved from `0.5/0.8` to `10/12`, leaving
+  both toggle pokes, variables, expected output, and grading condition
+  unchanged. Five focused repetitions passed, and retained logs place both
+  toggles before output and evaluation.
+- `reset_time_all_posted_pass` may publish its intermediate counter values too
+  quickly for pLogger to retain every value. Its existing final value is
+  deterministically `2`, so pMissionEval now checks `UTS_REPEAT = 2` directly
+  instead of relying on a shell log-count check.
+- Repeated identical `UTS_AMOUNT=burst` posts may be coalesced in the log. A
+  validation attempt to replace the existing status counter with direct `.alog`
+  row counting was therefore rejected and reverted. The original
+  `posted=4` status assertion remains, bounded by evaluation.
+
+The external-control path keeps the legacy half-second startup allowance.
+An initial readiness-poke experiment was removed because a very short autonomous
+case could evaluate before the readiness client connected. Each actual
+`uPokeDB` call is now time-bounded so an unavailable server cannot leave the
+harness waiting indefinitely. This does not add a mission variable or alter
+case stimulus.
+
+Legacy measurements at warp 10 and `--max_time=40` were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| legacy batch-wave, `--jobs=4` | 3 | 99 / 99 | 99.85, 99.50, 99.65 | clean |
+| legacy isolated serial, `--jobs=1` | 1 | 33 / 33 | 241.62 | clean |
+
+Final migrated measurements were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| migrated rolling, `--jobs=4` | 4 | 132 / 132 | 82.02, 81.15, 84.34, 80.41 | clean |
+| migrated isolated serial, `--jobs=1` | 1 | 33 / 33 | 308.83 | clean |
+
+The migrated rolling mean is 81.98 seconds, 17.69 seconds (about 17.7 percent)
+faster than the 99.67-second legacy mean because rolling refill avoids waiting
+for the slowest case in a fixed wave. Serial increased 67.21 seconds (about
+27.8 percent) because the standard xlaunch lifecycle and independent mission
+and harness cleanup checks cannot overlap at `--jobs=1`.
+
+Validation covered both skill static checkers, Bash syntax, ShellCheck,
+standalone generation and live execution on an explicit port, retained
+all-case generation, four final full rolling matrices, one final full serial
+matrix, five focused pause-toggle repetitions, exact result ordering, distinct
+ports, rolling-refill timestamps, unknown-case, job-bound, port-bound,
+multi-case GUI, lock, Bash 3.2
+rejection, and Homebrew Bash re-execution probes. A retained final matrix had
+thirty-three isolated mission copies, thirty-three targets, thirty-three
+`.alog` files, one physical pMissionEval row per case, no warning-bearing worker
+logs, and no surviving tested listener.
+
+### Migrated Rollout: `pspoofnode_h01`
+
+pSpoofNode H01 was audited and migrated as the only live harness on July 15,
+2026. Its thirty-three documented cases, launcher tokens, generated
+pSpoofNode, uTimerScript, and pMissionEval configurations, structured report
+contracts, and final result order reconcile exactly.
+
+This harness is a narrow structured-log evidence exception. pMissionEval owns
+the evaluation boundary and authoritative mission row. It requires an existing
+`NODE_REPORT` for the twenty-three positive-output cases and uses the same
+existing variable as a fail condition for the ten rejected-request cases, so
+an unexpected report makes the mission itself fail. A final MOOS value still
+cannot express exact `NODE_REPORT` fields, multiple contacts, position changes,
+expiration, or cancellation. The launcher therefore retains those existing
+`.alog` assertions as supplements. Every assertion is bounded by the first
+`MISSION_EVALUATED=true`, so refresh reports produced during shutdown cannot
+alter the case verdict. No application or grading variable was added.
+
+The migrated launcher uses Bash 5.1 rolling scheduling, isolated copies for
+serial and rolling execution, generated case fixtures, stride-30 port blocks,
+a harness lock, canonical scoped teardown, exact one-row mission-result
+validation, deterministic aggregation, and normalized runner failures. The
+thin mission wrapper forwards execution controls to `xlaunch.sh`, validates
+the pMissionEval row, and applies the standalone cleanup backstop. Stable
+`form` and `mmod` fields moved from prereport fragments into the ordinary
+report so pMissionEval writes one complete row at grading time.
+
+Untouched legacy measurements at warp 10 and `--max_time=30` were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| legacy batch-wave, `--jobs=4` | 3 | 99 / 99 | 36.15, 35.39, 35.91 | clean |
+| legacy shared-stem serial, `--jobs=1` | 1 | 33 / 33 | 109.14 | clean |
+
+Final migrated measurements were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| migrated rolling, `--jobs=4` | 5 | 165 / 165 | 54.08, 51.52, 53.76, 54.37, 52.75 | clean |
+| migrated isolated serial, `--jobs=1` | 2 | 66 / 66 | 190.10, 191.85 | clean |
+
+The rolling mean increased from 35.82 to 53.30 seconds, 17.48 seconds (about
+48.8 percent). The serial mean increased from 109.14 to 190.98 seconds, 81.84
+seconds (about 75.0 percent). These
+thirty-three cases are unusually short, so the standard xlaunch lifecycle and
+independent mission and harness cleanup checks form a large share of each
+case's wall time. Rolling execution overlaps that fixed cost only partially;
+serial execution cannot overlap it. No case deadline, source schedule,
+pSpoofNode behavior, or assertion was weakened to improve timing.
+
+Validation covered both skill static checkers, Bash syntax, ShellCheck,
+standalone generation and live execution on explicit ports, retained all-case
+generation, five full rolling matrices, two full serial matrices, representative
+static, moving, expiration, cancellation, and rejected-request cases, rolling
+refill timestamps, exact result ordering, distinct generated ports,
+unknown-case, job-bound, port-bound, multi-case GUI, lock, Bash 3.2 rejection,
+and Homebrew Bash re-execution probes. A retained full matrix contained
+thirty-three isolated mission copies, targets, `.alog` files, and physical
+pMissionEval rows, with no warning-bearing worker logs or surviving tested
+listener. Sampling confirmed that large numbers of normal post-evaluation
+refresh reports were excluded from grading. A targeted injected-report probe
+also proved that pMissionEval, rather than the shell, fails a rejected-request
+case when any unexpected `NODE_REPORT` appears.
+
+### Migrated Rollout: `pantler_h01`
+
+pAntler H01 was audited and migrated as the only live harness on July 15,
+2026. Its six documented cases, launcher tokens, patch files, generated
+pAntler and aliased uTimerScript configurations, pMissionEval conditions, and
+final result order reconcile exactly.
+
+This is an ordinary mission-owned harness. Each graded flag is published only
+by a process that pAntler must successfully launch. The baseline, alias,
+dual-alias, launch-filter, system-path, and extra-process-parameter contracts
+remain in pMissionEval without shell evidence checks or expected-versus-actual
+grading. Stable `form` and `mmod` fields moved from prereport fragments into
+the ordinary report so each verdict is written as one physical row.
+
+The migrated launcher uses Bash 5.1 rolling scheduling, isolated copies for
+serial and rolling execution, explicit case-to-patch mapping, stride-30 port
+blocks, a harness lock, canonical scoped teardown, exact one-row mission-result
+validation, deterministic aggregation, and normalized runner failures. The
+thin mission wrapper forwards execution controls to `xlaunch.sh`, validates
+the pMissionEval row, and applies the standalone cleanup backstop. The ordinary
+`launch.sh` and all case stimuli and pass/fail conditions are unchanged.
+
+Untouched legacy measurements at warp 10 and `--max_time=20` were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| legacy batch-wave, `--jobs=2` | 3 | 18 / 18 | 18.04, 17.61, 16.16 | clean |
+| legacy shared-stem serial, `--jobs=1` | 1 | 6 / 6 | 29.65 | clean |
+
+Final migrated measurements were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| migrated rolling, `--jobs=2` | 5 | 30 / 30 | 18.21, 17.32, 18.61, 17.89, 18.34 | clean |
+| migrated isolated serial, `--jobs=1` | 1 | 6 / 6 | 34.25 | clean |
+
+The rolling mean increased from 17.27 to 18.07 seconds, 0.80 seconds (about
+4.7 percent), which remains within the observed run-to-run range. Serial
+increased 4.60 seconds (about 15.5 percent) because isolated preparation and
+the standard mission and harness cleanup checks cannot overlap at
+`--jobs=1`.
+
+Validation covered both skill static checkers, Bash syntax, ShellCheck,
+standalone generation and live execution, retained all-case generation, five
+full rolling matrices, one full serial matrix, focused alias, dual-alias, and
+filter cases, rolling-refill timestamps, exact result ordering, distinct
+generated ports, unknown-case, job-bound, port-bound, multi-case GUI, lock,
+Bash 3.2 rejection, and Homebrew Bash re-execution probes. A retained full
+matrix contained six isolated mission copies, targets, `.alog` files, and
+physical pMissionEval rows, with no warning-bearing worker logs or surviving
+tested listener.
+
+The first migrated all-case generation attempt failed preparation for the five
+patched cases because the newly composed `nspatch` command contained two shell
+line-continuation backslashes. The baseline case still generated. The typo was
+corrected before any migrated live mission ran; clean regeneration and all
+subsequent validation passed.
+
+### Migrated Rollout: `pshare_h02`
+
+pShare H02 was audited and migrated as the only live harness on July 15,
+2026. Its twelve documented cases, twenty-eight community patch files,
+four-community target topology, pMissionEval conditions, and final result
+order reconcile exactly.
+
+This is an ordinary mission-owned harness. The shore pMissionEval instance
+directly grades fan-in, competing updates, multiple inputs, multicast,
+dynamic routes, custom multicast settings, relay branches, route lists,
+alias commands, and runtime commands from existing mission variables. Relay
+evaluators publish existing proof flags where needed, but the shell performs
+no topology or expected-versus-actual grading. Stable `form` and `mmod`
+fields moved from prereport fragments into the ordinary report so the
+authoritative verdict is written as one physical row. No application,
+grading variable, stimulus, condition, or ordinary `launch.sh` behavior was
+added or changed.
+
+The migrated launcher uses Bash 5.1 rolling scheduling, isolated copies for
+serial and rolling execution, explicit per-community case mapping, stride-50
+port blocks, a harness lock, canonical scoped teardown, exact one-row mission
+result validation, deterministic aggregation, and normalized runner failures.
+Each case receives four MOOSDB ports at offsets 0 through 3 and four pShare
+ports at offsets 10 through 13. The custom multicast base is derived from the
+case's relay pShare port, so it remains inside the isolated block. The thin
+mission wrapper forwards all eight ports to xlaunch, validates all four target
+files in generation mode, validates the live pMissionEval row, and applies the
+standalone cleanup backstop.
+
+Untouched legacy measurements at warp 10 and `--max_time=65` were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| legacy batch-wave, `--jobs=2` | 3 | 36 / 36 | 62.83-63.69 | clean |
+| legacy shared-stem serial, `--jobs=1` | 1 | 12 / 12 | 115.22 | clean |
+
+Final migrated measurements were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| migrated rolling, `--jobs=2` | 4 | 48 / 48 | 63.81, 64.09, 64.00, 63.41 | clean |
+| migrated isolated serial, `--jobs=1` | 1 | 12 / 12 | 125.45 | clean |
+| migrated serial, one-second cleanup-grace control | 1 | 12 / 12 | 110.50 | clean |
+
+The 63.83-second migrated rolling mean is effectively unchanged from the
+observed legacy range. Default serial increased 10.23 seconds (about 8.9
+percent). The controlled serial run with the scoped helper's supported
+one-second interrupt and terminate grace was 14.95 seconds faster than the
+canonical-default run and 4.72 seconds faster than legacy. This isolates the
+serial delta to the conservative shared three-second cleanup policy rather
+than pShare execution, case isolation, or grading. The canonical skill
+defaults remain unchanged.
+
+Validation covered the skill static checker, Bash syntax, ShellCheck,
+standalone generation and live execution on eight explicit ports, retained
+all-case generation, four full rolling matrices, one canonical serial matrix,
+one cleanup-grace control matrix, focused multicast, custom-multicast, relay,
+and runtime-route cases, rolling-refill timestamps, exact result ordering,
+distinct generated port blocks, unknown-case, job-bound, port-bound,
+multi-case GUI, lock, Bash 3.2 rejection, Homebrew Bash re-execution,
+missing-result, and preparation-error probes. A retained full matrix contained
+twelve isolated mission copies, forty-eight targets, forty-eight `.alog`
+files, and one physical shore pMissionEval row per case, with no warning-bearing
+worker logs or surviving tested listener.
+
+### Migrated Rollout: `psearchgrid_h01`
+
+pSearchGrid H01 was audited and migrated as the only live harness on July 15,
+2026. Its twenty-three documented cases, generated pSearchGrid and
+uTimerScript configurations, pMissionEval conditions, structured grid checks,
+and final result order reconcile exactly.
+
+This is an ordinary history-aware harness. pMissionEval directly grades
+whether each required existing grid variable was published, or whether an
+expected-absent variable remained absent. The launcher supplements that
+mission-owned verdict only for contracts that require structured grid payload
+contents, publication counts, or state before and after a reset. Supplemental
+evidence is bounded at the first `MISSION_EVALUATED=true`; there is no
+expected-versus-actual grade comparison and no new MOOS application or grading
+variable.
+
+The migrated launcher uses Bash 5.1 rolling scheduling, isolated copies for
+serial and rolling execution, generated per-case configuration, stride-20
+port blocks, a harness lock, canonical scoped teardown, exact one-row
+mission-result validation, deterministic aggregation, and normalized runner
+failures. The thin mission wrapper forwards execution controls to
+`xlaunch.sh`, validates generation and the pMissionEval row, and applies the
+standalone cleanup backstop.
+
+Two narrowly scoped corrections were required and retain the cases' intended
+test value. The untouched standalone stem claimed `node_local_delta_pass` but
+sent no node report and graded only readiness. Its default is now
+`initial_grid_publish_pass`, using the existing automatic `VIEW_GRID`
+publication as the pMissionEval condition. The harness's separate
+`node_local_delta_pass` case still sends and validates a node report and its
+delta. During rolling validation, `repeated_cell_delta_pass` sometimes split
+its two same-time reports across adjacent 10 Hz pSearchGrid cycles, producing
+two valid `x,1` deltas instead of the case's intended batched `x,2` delta. That
+case alone now uses the existing pSearchGrid `AppTick=1` setting so the two
+same-time reports are deterministically processed in one cycle. The distinct
+`sequential_delta_cleared_pass` case remains at 10 Hz and still proves that
+separated reports produce two cleared `x,1` deltas.
+
+Untouched legacy measurements at warp 10 and `--max_time=30` were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| legacy batch-wave, `--jobs=4` | 3 | 69 / 69 | 25.74, 24.35, 24.71 | clean |
+| legacy shared-stem serial, `--jobs=1` | 1 | 23 / 23 | 76.18 | clean |
+
+Final migrated measurements were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| migrated rolling, `--jobs=4` | 3 | 69 / 69 | 37.75, 38.02, 37.38 | clean |
+| migrated isolated serial, `--jobs=1` | 1 | 23 / 23 | 129.90 | clean |
+
+The rolling mean increased from 24.93 to 37.72 seconds, 12.79 seconds (about
+51.3 percent). Serial increased 53.72 seconds (about 70.5 percent). Both
+deltas are approximately two seconds per case or per rolling wave and align
+with the standard `xlaunch` shutdown lifecycle that the legacy launcher
+bypassed; the cases perform the same stimuli and checks apart from the two
+corrections above.
+
+Validation covered both skill static checkers, Bash syntax, ShellCheck,
+standalone generation and live execution, retained all-case generation, three
+final full rolling matrices, one full serial matrix, five focused repetitions
+of the stabilized same-cell case, focused nominal, expected-absence, reset,
+sequential-history, and custom-variable cases, rolling-refill events, exact
+result ordering, distinct generated ports, unknown-case, job-bound,
+port-bound, multi-case GUI, lock, Bash 3.2 rejection, Homebrew Bash
+re-execution, missing-result, and preparation-error probes. A retained full
+matrix contained twenty-three isolated mission copies, targets, `.alog`
+files, and one physical pMissionEval row per case, with no warning-bearing
+worker logs or surviving tested listener.
+
+### Migrated Rollout: `testfailure_h01`
+
+TestFailure H01 was audited and migrated as the only live harness on July 15,
+2026. Its nine documented cases, eight shoreside patches, eight behavior
+patches, generated evaluator conditions, behavior parameters, and final result
+order reconcile exactly.
+
+This remains an ordinary mission-owned harness even though two subjects are
+expected to crash. pMissionEval directly grades the existing process-health,
+helm-gap, behavior-completion, and load-watch signals. The legacy
+`crash_on_complete_fail` and `unknown_type_default_crash_fail` tokens are
+preserved, but their authoritative mission result is
+`grade=pass expected=process_loss` when uProcessWatch observes the requested
+pHelmIvP loss. The launcher neither compares expected and actual grades nor
+inspects logs for a second verdict.
+
+The migrated launcher uses Bash 5.1 rolling scheduling, isolated copies for
+serial and rolling execution, explicit shoreside-and-behavior patch mapping,
+stride-20 port blocks, a harness lock, canonical scoped teardown, exact
+one-row mission-result validation, deterministic aggregation, and normalized
+runner failures. The thin mission wrapper forwards execution controls to
+`xlaunch.sh`, validates generation and the pMissionEval row, and applies the
+standalone cleanup backstop. No stimulus, evaluator condition, behavior
+parameter, application, or grading variable changed. Stable `form` and `mmod`
+fields moved from prereport fragments into each evaluator's ordinary report
+so the authoritative verdict is written in one physical operation.
+
+Untouched legacy measurements at warp 10 and `--max_time=150` were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| legacy batch-wave, `--jobs=4` | 3 | 23 / 27 | 122.86, 98.49, 92.53 | clean |
+| legacy shared-stem serial, `--jobs=1` | 1 | 9 / 9 | 121.66 | clean |
+
+The first legacy rolling run lacked results for three burn/hang cases, the
+second lacked the default-duration burn result, and the third passed all nine.
+The crash cases were stable in all three. These missing rows and the wide
+timing range are recorded as pre-existing burn/hang sensitivity rather than a
+migration blocker.
+
+Final migrated measurements were:
+
+| configuration | runs | passing rows / rows | wall seconds | cleanup |
+| --- | ---: | ---: | --- | --- |
+| migrated rolling, `--jobs=4` | 5 | 45 / 45 | 36.32, 38.89, 37.95, 38.28, 39.31 | clean |
+| migrated isolated serial, `--jobs=1` | 1 | 9 / 9 | 112.80 | clean |
+
+The rolling mean decreased from 104.63 to 38.15 seconds, 66.48 seconds (about
+63.5 percent), while also eliminating the observed missing rows. Rolling
+refill avoids waiting for every case in a legacy wave, isolated copies prevent
+sidecar and artifact reuse, and the one-write pMissionEval rows remove the
+prereport race. Serial decreased 8.86 seconds (about 7.3 percent), which is
+small relative to the legacy burn/hang variance.
+
+Validation covered both skill static checkers, Bash syntax, ShellCheck,
+standalone generation and live execution, retained all-case generation, five
+full rolling matrices, one full serial matrix, focused burn and expected-crash
+cases, rolling-refill events, exact result ordering, distinct generated ports
+and paired patch overlays, unknown-case, job-bound, port-bound, multi-case GUI,
+lock, Bash 3.2 rejection, Homebrew Bash re-execution, missing-result, and
+preparation-error probes. A retained full matrix contained nine isolated
+mission copies, shoreside targets, behavior targets, `.alog` files, and one
+physical pMissionEval row per case, with no warning-bearing worker logs or
+surviving tested listener.
+
+### Completed Migration: `fixedturn_h01`
+
+FixedTurn H01 baseline evidence was gathered as the only live harness on July
+15, 2026. Its twenty-four cases passed 72/72 rows across three untouched
+legacy `--jobs=4` wave matrices in 84.01, 74.07, and 74.40 seconds. The
+untouched shared-stem serial matrix passed 24/24 in 232.86 seconds. No tested
+listener remained.
+
+The migrated Bash 5.1 launcher uses isolated mission copies, rolling slot
+refill, deterministic selected-case aggregation, root-scoped cleanup, and the
+existing configurable minimum-12 `--port_stride`. It preserves the +0/+1
+MOOSDB and +10/+11 pShare layout and every shore MOOS, vehicle MOOS, and
+vehicle behavior overlay mapping. The mission wrapper remains case-agnostic:
+it forwards launch arguments, requires exactly one pMissionEval row, and does
+not grade or reinterpret that row. No case patch, pass condition, stimulus,
+or coverage claim changed.
+
+The installed evaluator checker reports one known false positive for the
+existing compound `(FT_DONE=true) or (MISSION_TIMEOUT=true)` and
+`(TURN_TWO=true) or (MISSION_TIMEOUT=true)` lead conditions. Local
+`lib_logic` documentation and implementation both accept this fully
+parenthesized syntax and evaluate it as boolean OR, and live runs proved both
+the completion and timeout branches. The expressions were therefore retained
+without adding a helper variable or delaying successful cases to the timeout
+window. The harness static checker, Bash syntax, and ShellCheck pass; the eval
+checker has no other finding.
+
+Three migrated `--jobs=4` timing matrices passed 72/72 rows in 64.02, 65.60,
+and 65.92 seconds. Their 65.18-second mean is 12.31 seconds, about 15.9
+percent, faster than the 77.49-second legacy wave mean. The migrated isolated
+serial matrix passed 24/24 in 233.71 seconds, 0.85 seconds or about 0.4 percent
+slower than the 232.86-second legacy serial result and operationally
+unchanged. A fourth retained rolling matrix passed 24/24 in 65.98 seconds and
+provided artifact evidence rather than another timing sample.
+
+Validation also covered standalone stem generation and live execution; an
+all-case generation matrix; nominal, multi-turn, and expected-invalid focused
+runs; exact case order; rolling refill; one physical pMissionEval row per case;
+distinct generated MOOSDB and pShare ports; 48 intended sidecars with none in
+the shared stem; unknown-case, numeric-bound, multi-case GUI, active-lock,
+Bash 3.2 rejection, Homebrew Bash re-execution, missing-result,
+preparation-error, teardown-error, and 24-row failure-aggregation probes. No
+tested listener survived. Retained logs contained only the unchanged waypoint
+completion advisory and the deliberately malformed update warning in the
+recovery case.
+
+### Completed Migration: `periodic_speed_h01`
+
+PeriodicSpeed H01 baseline evidence was gathered as the only live harness on
+July 15-16, 2026. Its twenty-four cases passed 72/72 rows across three
+untouched legacy `--jobs=4` wave matrices in 60.96, 58.32, and 59.59 seconds.
+The untouched shared-stem serial matrix passed 24/24 in 179.16 seconds. No
+tested listener remained.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling execution, rolling slot refill, deterministic selected-case
+aggregation, the existing configurable minimum-12 port stride, root-scoped
+cleanup, a harness lock, and strict one-row pMissionEval result validation. It
+preserves every shoreside, vehicle, and behavior overlay mapping, including
+the explicit helm-malconfiguration evaluator overlay for the twelve invalid
+configuration cases. The manual visual case remains selectable but outside
+the default twenty-four-case CI matrix. The mission wrapper only forwards
+launch controls, validates the mission-owned result, and applies the normal
+standalone cleanup backstop. No case patch, evaluator condition, stimulus,
+behavior value, grading variable, or coverage claim changed.
+
+The installed evaluator checker reports only its known false positive for the
+existing fully parenthesized boolean-OR lead conditions. Local `lib_logic`
+documentation and source accept that syntax, live runs exercised the
+expressions, and the conditions were retained rather than introducing helper
+variables. The harness static checker, Bash syntax, and ShellCheck pass.
+
+Three migrated `--jobs=4` timing matrices passed 72/72 rows in 53.71, 55.83,
+and 55.14 seconds. Their 54.89-second mean is 4.73 seconds, about 7.9 percent,
+faster than the 59.62-second legacy wave mean. The improvement comes from
+rolling refill; no test timing changed. The migrated isolated serial matrix
+passed 24/24 in 188.16 seconds, 9.00 seconds or about 5.0 percent slower than
+the legacy serial result. That is about 0.38 seconds per case for copying the
+mission, using the thin wrapper, strictly validating its result, and applying
+scoped cleanup.
+
+Validation also covered standalone stem generation and live execution; an
+all-case generation matrix; nominal, reset/reactivation, expected-invalid,
+and manual-visual focused cases; exact case order; rolling refill; one
+physical pMissionEval row per case; distinct generated MOOSDB and pShare
+ports; all 56 intended sidecars with none in the shared stem; unknown-case,
+numeric-bound, multi-case GUI, active-lock, Bash 3.2 rejection, Homebrew Bash
+re-execution, missing-result, preparation-error, teardown-error, and 24-row
+failure-aggregation probes. A retained full rolling matrix passed 24/24 in
+53.54 seconds and confirmed the artifact contract. No tested process or
+listener survived. One listener initially seen inside the broad numeric port
+range was identified as an unrelated Adobe Creative Cloud process, not a
+MOOS or harness process.
+
+### Completed Migration: `zigzag_h01`
+
+ZigZag H01 baseline evidence was gathered as the only live harness on July
+16, 2026. Its thirty-five cases passed 105/105 rows across three untouched
+legacy `--jobs=4` wave matrices in 121.61, 117.98, and 118.44 seconds. Their
+mean was 119.34 seconds. The untouched shared-stem serial matrix passed 35/35
+in 343.96 seconds. No tested listener remained.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for every serial
+and rolling case, rolling slot refill, deterministic selected-case
+aggregation, a configurable minimum-12 port stride, root-scoped cleanup, a
+harness lock, and strict one-row pMissionEval result validation. It preserves
+all thirty-five cases and every shoreside, vehicle-MOOS, and vehicle-behavior
+overlay mapping, including the explicit helm-malconfiguration overlay for the
+ten expected-invalid cases. The mission wrapper only forwards launch
+controls, validates the mission-owned result, and applies the normal
+standalone cleanup backstop. No case patch, evaluator condition, stimulus,
+behavior value, grading variable, or coverage claim changed.
+
+The installed evaluator checker reports only its known false positive for the
+existing fully parenthesized boolean-OR lead conditions. Local `lib_logic`
+documentation and source accept that syntax, and live runs exercised both the
+normal completion family and the intentionally timeout-owned low-speed case.
+The expressions were retained rather than adding helper variables. The
+harness static checker, Bash syntax, and ShellCheck pass.
+
+Three migrated `--jobs=4` timing matrices passed 105/105 rows in 93.75,
+95.24, and 94.11 seconds. Their 94.37-second mean is 24.97 seconds, about 20.9
+percent, faster than the legacy mean. A retained full rolling matrix passed
+35/35 in 93.11 seconds. The improvement comes from rolling refill; no test
+timing changed. The migrated isolated serial matrix passed 35/35 in 353.62
+seconds, 9.66 seconds or about 2.8 percent slower than legacy. That is about
+0.28 seconds per case for copying the mission, using the thin wrapper,
+strictly validating the result, and applying scoped cleanup.
+
+Validation also covered standalone stem generation and live execution; an
+all-case generation matrix; nominal, timeout-owned speed clipping,
+expected-invalid, and GUI focused cases; exact case order; rolling refill;
+one physical pMissionEval row per case; distinct generated MOOSDB and pShare
+ports; all 77 intended sidecars with none in the shared stem; unknown-case,
+numeric-bound, multi-case GUI, active-lock, Bash 3.2 rejection, Homebrew Bash
+re-execution, missing-result, preparation-error, teardown-error, and 35-row
+failure-aggregation probes. The retained live matrix contained 70 `.alog`
+files and 35 mission-owned passing rows. Its only behavior warnings were the
+unchanged completed-approach advisory and the deliberately malformed runtime
+update in the recovery case. No tested process or listener survived.
+
 ## Immediate Next Step
 
-Twenty of the sixty-seven registered harnesses are now migrated against skill
+Twenty-nine of the sixty-seven registered harnesses are now migrated against skill
 1.4.2: `cmgr_h01`, `cmgr_h02`, `hostinfo_h01`, `loadwatch_h01`, `obmgr_h01`,
-`obmgr_h02`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
-`processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`,
-`upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`uxms_h01`, and `ufld_obstacle_sim_h01`. Each has source checks, live serial
+`obmgr_h02`, `fixedturn_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
+`periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
+`psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
+`utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Forty-seven registered harnesses remain. Pause after `pechovar_h01` for review
-of its bounded log-evidence exception, resolved legacy evaluation race, and
-documented xlaunch lifecycle cost before selecting the next single-harness
-target.
+Thirty-eight registered harnesses remain. Continue with the next ordinary,
+independent-stem harness unless its audit exposes a grading, isolation, or
+compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
 targets, and Python cache trees are removed after their useful evidence is
 recorded so they do not inflate source review.
