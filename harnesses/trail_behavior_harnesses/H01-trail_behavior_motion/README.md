@@ -134,12 +134,42 @@ From this harness directory:
 ./zlaunch.sh --jobs=4 --port_base=15000 10
 ```
 
-From the paired mission directory, named cases are forwarded to this harness:
+The paired mission launcher remains a single-scenario launcher. It accepts the
+mission modifier and all six MOOSDB/pShare ports directly:
 
 ```bash
-./zlaunch.sh --case=runtime_angle_update_pass --gui 1
+./zlaunch.sh --mmod=static_trail_pass --shore_mport=15000 \
+  --veh1_mport=15001 --veh2_mport=15002 --shore_pshare=15010 \
+  --veh1_pshare=15011 --veh2_pshare=15012 10
 ```
 
-The full matrix currently has 42 cases. Wave mode uses isolated temp mission
-copies and deterministic two-vehicle port blocks, so do not overlap it with
+The full matrix currently has 42 cases. Serial and rolling modes both use one
+isolated mission copy and one deterministic two-vehicle port block per case.
+The harness requires Bash 5.1 or newer for rolling scheduling and prevents a
+second invocation from starting while one is active. Do not overlap it with
 other MOOS harnesses on the same machine.
+
+## Migration validation
+
+The skill 1.4.3 migration preserved all 42 case mappings, patches, evaluator
+conditions, event times, behavior values, grading variables, and coverage
+claims. Three clean `--jobs=4` matrices passed 126/126 rows in 132.18, 131.90,
+and 131.63 seconds. The isolated serial matrix passed 42/42 in 498.45 seconds.
+The untouched legacy rolling mean was 159.71 seconds and its serial matrix
+took 446.54 seconds.
+
+One additional migrated rolling attempt had a single `bad_decay_fail` mission
+exit before writing a pMissionEval row. The case passed immediately with its
+workdir retained, then passed five of five focused repetitions, the retained
+full matrix, and the final full matrix without any test change. This is
+recorded as an isolated launch/lifecycle outlier rather than converted into a
+passing result.
+
+Validation also covered all-case generation, nominal, warning-only, and
+expected-inactive verdicts, standalone generation and live execution, exact
+case order, rolling refill, 126 unique MOOSDB ports and the paired pShare
+ports, intended sidecars, unknown-case rejection, active-lock behavior, and
+Bash 3.2 rejection. Disposable fault injection verified normalized
+`missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax,
+ShellCheck, and both skill static checkers pass. No tested MOOS process
+survived cleanup.
