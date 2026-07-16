@@ -13,6 +13,9 @@ completion endflags.
 The default stem keeps `BHV_TestFailure` armed but gives it a long duration so
 the mission can prove no false failure occurs before evaluation. Harness cases
 patch the behavior to trigger crash, burn, hang, or immediate-completion paths.
+Crash cases remain self-evaluating missions: process loss is the subject
+behavior, while pMissionEval writes a passing harness verdict only after
+`uProcessWatch` confirms that loss.
 
 ## Running
 

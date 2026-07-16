@@ -17,9 +17,9 @@ ProcessConfig = pMissionEval
   mission_form = testfailure_behavior_unit
   mission_mod  = burn_zero_complete_pass
 
-  prereport_column = form=$[MISSION_FORM]
-  prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
+  report_column    = form=$[MISSION_FORM]
+  report_column    = mmod=$[MMOD]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
   report_column    = helm_present=$[HELM_PRESENT]
@@ -29,3 +29,4 @@ ProcessConfig = pMissionEval
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }
+

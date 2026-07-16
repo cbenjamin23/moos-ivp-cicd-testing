@@ -12,6 +12,13 @@ cases, and `pMissionEval` result rows in `results.txt`. Expected crash cases
 now grade `pass` when process loss is observed, so the harness can report the
 mission result row directly.
 
+The launcher requires Bash 5.1 or newer, gives every selected case an
+isolated mission copy and 20-port block, and refills rolling `--jobs` slots as
+cases finish. It does not reinterpret expected failures: the two legacy case
+tokens ending in `_fail` are retained for compatibility, but their
+pMissionEval contracts produce `grade=pass expected=process_loss` when the
+requested crash is observed.
+
 ## Current Matrix
 
 - `baseline_armed_no_trigger_pass` Baseline case. The behavior is armed but has a long duration, so the mission must evaluate before any failure is triggered.
@@ -29,8 +36,8 @@ mission result row directly.
 ```bash
 ./zlaunch.sh
 ./zlaunch.sh --case=burn_gap_detected_pass 10
-./zlaunch.sh --jobs=4 --port_base=18000 10
-./zlaunch.sh --just_make --jobs=4 --port_base=18000 10
+./zlaunch.sh --jobs=4 --port_base=9000 10
+./zlaunch.sh --just_make --jobs=4 --port_base=9000 10
 ```
 
 Grouped runs use 20-port case blocks from `--port_base`; this unit mission has

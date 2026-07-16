@@ -17,9 +17,9 @@ ProcessConfig = pMissionEval
   mission_form = testfailure_behavior_unit
   mission_mod  = unknown_type_default_crash_fail
 
-  prereport_column = form=$[MISSION_FORM]
-  prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
+  report_column    = form=$[MISSION_FORM]
+  report_column    = mmod=$[MMOD]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = expected=process_loss
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
@@ -30,3 +30,4 @@ ProcessConfig = pMissionEval
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }
+
