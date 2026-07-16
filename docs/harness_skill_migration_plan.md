@@ -3737,16 +3737,57 @@ rejection. Disposable fault injection verified normalized `missing_result`,
 `duplicate_results`, and `prepare_error` rows. Bash syntax, ShellCheck, and
 both skill static checkers pass. No tested MOOS process survived cleanup.
 
+### Completed Migration: `convoy_h01`
+
+Convoy H01 baseline evidence was gathered as the only live harness on July 16,
+2026. Three clean untouched legacy `--jobs=4` wave matrices passed 144/144
+rows in 188.17, 185.39, and 186.20 seconds, for a 186.59-second mean. The
+untouched serial matrix passed 48/48 in 552.52 seconds.
+
+One additional untouched rolling matrix had `lead_s_turn_pass` fail its
+existing `ABE_NAV_SPEED >= 0.35` condition with a measured 0.34. Every other
+condition passed. The unchanged case then passed 5/5 focused legacy
+repetitions with measured speed from 0.35 through 0.46. The failed matrix is
+recorded as a pre-existing timing-sensitive outlier and excluded from the
+clean timing mean; no threshold or event time was changed for migration.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling execution, rolling slot refill, deterministic selected-case
+aggregation, three MOOSDB and three pShare ports per two-vehicle case,
+root-scoped cleanup, a harness lock, and strict one-row pMissionEval result
+validation. All forty-eight README tokens, launcher cases, and explicit case
+mappings reconcile exactly. Every patch, evaluator condition, behavior value,
+grading variable, five custom chaser positions, and the S-turn's existing
+170-second ceiling are preserved. The mission wrapper is now a thin
+single-scenario forwarder rather than routing harness arguments back into the
+harness.
+
+Three migrated rolling matrices passed 144/144 rows in 150.14, 157.45, and
+148.09 seconds. Their 151.89-second mean is 34.70 seconds, about 18.6 percent,
+faster than the clean legacy wave mean. The isolated serial matrix passed
+48/48 in 564.49 seconds, 11.97 seconds or about 2.2 percent slower than
+legacy, roughly 0.25 seconds per case. The unchanged S-turn passed its focused
+migrated run, all three rolling matrices, and serial.
+
+Validation covered all-case generation, nominal, warning-expected,
+helm-malconfiguration-expected, custom-geometry, and S-turn verdicts,
+standalone generation and live execution, exact matrix reconciliation,
+rolling refill, 144 unique MOOSDB ports, 144 non-overlapping pShare ports,
+intended sidecars, unknown-case rejection, active-lock behavior, and Bash 3.2
+rejection. Disposable fault injection verified normalized `missing_result`,
+`duplicate_results`, and `prepare_error` rows. Bash syntax, ShellCheck, and
+both skill static checkers pass. No tested MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Forty of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Forty-one of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Twenty-seven registered harnesses remain. Continue with the next ordinary,
+Twenty-six registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
