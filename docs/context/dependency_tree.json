@@ -1749,7 +1749,7 @@
           "quit_event_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/utimerscript_harnesses/H01-utimerscript_unit/zlaunch.sh"
       }
@@ -1890,7 +1890,7 @@
           "invalid_duration_absent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pspoofnode_harnesses/H01-pspoofnode_unit/zlaunch.sh"
       }
@@ -2012,7 +2012,7 @@
           "malformed_report_absent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/psearchgrid_harnesses/H01-psearchgrid_unit/zlaunch.sh"
       }
@@ -2092,7 +2092,7 @@
           "constant_depth_control_disabled_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H01-constant_depth_motion/zlaunch.sh"
       }
@@ -2125,7 +2125,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 38
+        "file_count": 39
       },
       "path": "harnesses/depth_behavior_harnesses/H02-goto_depth_motion",
       "perf_profile": "",
@@ -2171,7 +2171,7 @@
           "goto_depth_domain_missing_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H02-goto_depth_motion/zlaunch.sh"
       }
@@ -2256,7 +2256,7 @@
           "periodic_surface_domain_missing_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H03-periodic_surface_motion/zlaunch.sh"
       }
@@ -2332,7 +2332,7 @@
           "max_depth_domain_missing_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H04-max_depth_motion/zlaunch.sh"
       }
@@ -2406,7 +2406,7 @@
           "min_altitude_noncritical_missing_altitude_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H05-min_altitude_motion/zlaunch.sh"
       }
@@ -2898,7 +2898,7 @@
           "bad_collision_depth_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh"
       }
@@ -3010,7 +3010,7 @@
           "bad_cruise_speed_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/zlaunch.sh"
       }
@@ -3115,7 +3115,7 @@
           "bad_legacy_util_param_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/zlaunch.sh"
       }
@@ -3201,7 +3201,7 @@
           "bad_schedule_repeat_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/zlaunch.sh"
       }
@@ -3287,7 +3287,7 @@
           "bad_zaic_summit_delta_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion/zlaunch.sh"
       }
@@ -3384,7 +3384,7 @@
           "bad_visual_hint_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion/zlaunch.sh"
       }
@@ -3479,7 +3479,7 @@
           "bad_speed_count_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/zlaunch.sh"
       }
@@ -3562,7 +3562,7 @@
           "missing_turn_range_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion/zlaunch.sh"
       }
@@ -3642,7 +3642,7 @@
           "unknown_param_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/timer_behavior_harnesses/H01-timer_behavior_motion/zlaunch.sh"
       }
@@ -3698,7 +3698,7 @@
           "unknown_type_default_crash_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh"
       }
@@ -3973,7 +3973,7 @@
           "pshare_topology_runtime_route_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pshare_harnesses/H02-pshare_topology/zlaunch.sh"
       }
@@ -4088,7 +4088,7 @@
           "pantler_extra_params_launch_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pantler_harnesses/H01-pantler_unit/zlaunch.sh"
       }
@@ -4338,7 +4338,7 @@
           "patience_high_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion/zlaunch.sh"
       }
@@ -4425,7 +4425,7 @@
           "bad_pwt_grade_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/zlaunch.sh"
       }
@@ -4512,7 +4512,7 @@
           "dynamic_region_halt_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/opregion_harnesses/H01-opregion_safety/zlaunch.sh"
       }
@@ -4682,7 +4682,7 @@
           "bad_post_per_contact_info_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion/zlaunch.sh"
       }
@@ -4778,7 +4778,7 @@
           "bad_swing_time_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion/zlaunch.sh"
       }
@@ -4884,7 +4884,7 @@
           "bad_time_on_leg_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/trail_behavior_harnesses/H01-trail_behavior_motion/zlaunch.sh"
       }
@@ -4989,7 +4989,7 @@
           "bad_efficiency_measure_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion/zlaunch.sh"
       }
@@ -6970,17 +6970,17 @@
       ".mp4": 149,
       ".pdf": 1,
       ".png": 4,
-      ".py": 38,
+      ".py": 36,
       ".sh": 313,
       ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1034,
+      ".xmoos": 1035,
       "[none]": 7
     },
-    "harness_patch_count": 1529,
+    "harness_patch_count": 1530,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
-    "mission_config_count": 427,
+    "mission_config_count": 428,
     "root": "."
   },
   "schema": "moos-ivp-cicd-context-graph.v1",

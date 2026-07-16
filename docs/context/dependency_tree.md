@@ -10,8 +10,8 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1529` under configured targets
-- Mission launch/config files: `427` under `missions/`
+- Harness patch/config files: `1530` under configured targets
+- Mission launch/config files: `428` under `missions/`
 - C++ test sources: `214`
 
 ## Repo Layers
