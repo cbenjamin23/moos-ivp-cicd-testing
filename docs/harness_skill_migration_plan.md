@@ -3279,16 +3279,64 @@ files and 35 mission-owned passing rows. Its only behavior warnings were the
 unchanged completed-approach advisory and the deliberately malformed runtime
 update in the recovery case. No tested process or listener survived.
 
+### Completed Migration: `memoryturnlimit_h01`
+
+MemoryTurnLimit H01 baseline evidence was gathered as the only live harness on
+July 16, 2026. Its twenty-one cases passed 63/63 rows across three untouched
+legacy `--jobs=4` wave matrices in 84.48, 84.74, and 84.24 seconds, for an
+84.49-second mean. The legacy serial matrix passed 21/21 in 181.58 seconds.
+The five existing invalid-configuration cases remained explicitly solo because
+their README contract already requires isolated helm failure observation.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling execution, rolling refill for ordinary cases, deterministic selected-
+case aggregation, distinct port blocks, root-scoped cleanup, a harness lock,
+and strict one-row pMissionEval result validation. Before each of the five solo
+cases, it drains the rolling slots; each solo case runs alone, after which
+rolling refill resumes. All twenty-one case mappings and all mission-owned
+grading conditions were preserved. The mission wrapper only forwards launch
+controls, validates the pMissionEval row, and applies the standalone cleanup
+backstop.
+
+One narrow pre-existing timing edge was found in `short_memory_pass`. One full
+matrix and one of ten focused repetitions sampled `NAV_HEADING` just below its
+unchanged 112-degree lower bound, while all other motion, memory-average,
+mismatch, speed, and health conditions passed. The checked-in legacy result
+was also close to that boundary. The case-specific existing `EVAL_TIME` event
+was moved from mission time 16 to 17; no threshold, stimulus, grading variable,
+or behavior parameter changed. Ten post-fix focused repetitions passed with
+headings from 114.4 through 117.8 degrees, and the full 21-case matrix then
+passed again. This retains the case's test value while removing a sampling
+race rather than weakening its assertion.
+
+Three migrated rolling matrices passed 63/63 rows in 84.13, 86.06, and 86.36
+seconds. Their 85.52-second mean is 1.03 seconds, about 1.2 percent, slower
+than legacy and within the observed run-to-run range. The five serialized
+failure-contract cases dominate completion time, so rolling refill is not
+expected to provide a large gain. The isolated serial matrix passed 21/21 in
+189.77 seconds, 8.19 seconds or about 4.5 percent slower than legacy, roughly
+0.39 seconds per case for copy, wrapper validation, and scoped cleanup.
+
+Validation covered all-case generation and live matrices, nominal and both
+helm-malconfiguration and behavior-warning failure contracts, exact case
+order, solo scheduling, rolling refill, one physical pMissionEval row per
+case, distinct MOOSDB and pShare ports, standalone stem generation and live
+execution, unknown-case and numeric-bound rejection, multi-case GUI rejection,
+active-lock behavior, Bash 3.2 rejection, and Homebrew Bash re-execution. Bash
+syntax, ShellCheck, and the harness checker pass. The evaluator checker has
+only its known false positive for the existing, valid, fully parenthesized OR
+lead conditions. No tested process survived cleanup.
+
 ## Immediate Next Step
 
-Twenty-nine of the sixty-seven registered harnesses are now migrated against skill
+Thirty of the sixty-seven registered harnesses are now migrated against skill
 1.4.2: `cmgr_h01`, `cmgr_h02`, `hostinfo_h01`, `loadwatch_h01`, `obmgr_h01`,
-`obmgr_h02`, `fixedturn_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
+`obmgr_h02`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Thirty-eight registered harnesses remain. Continue with the next ordinary,
+Thirty-seven registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

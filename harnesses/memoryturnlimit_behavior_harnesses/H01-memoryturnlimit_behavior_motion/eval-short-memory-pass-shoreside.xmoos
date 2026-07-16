@@ -1,3 +1,16 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=VIEW_SEGLIST, val="pts={0,-120:0,-80},label=initial_heading,edge_color=white,vertex_color=dodger_blue,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=VIEW_SEGLIST, val="pts={0,-120:-40,-120},label=requested_turn,edge_color=yellow,vertex_color=yellow,vertex_size=5,edge_size=2,duration=9999", time=0.5
+  event = var=EVAL_TIME, val=true, time=17
+  event = var=MISSION_TIMEOUT, val=true, time=35
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
