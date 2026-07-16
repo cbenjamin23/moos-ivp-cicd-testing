@@ -33,5 +33,33 @@ allowed depth boundary.
 ./zlaunch.sh --just_make 10
 ```
 
-The wrapper supports `--jobs` and `--port_base` for isolated grouped local and
-CI runs.
+The Bash 5.1 wrapper creates an isolated mission copy for every serial and
+rolling case, refills rolling slots as cases finish, aggregates one strict
+mission-owned result row per selected case, and performs root-scoped cleanup.
+
+### Migration evidence
+
+Three untouched legacy `--jobs=4` matrices passed 45/45 rows in 49.27, 50.73,
+and 54.56 seconds, for a 51.52-second mean. The untouched serial matrix passed
+15/15 in 131.17 seconds. No baseline outlier occurred.
+
+The migration changed only the harness launcher. All fifteen case overlays,
+stimuli, thresholds, and pMissionEval conditions are unchanged, and the shared
+depth mission stem was not modified. Existing mission-owned verdicts cover the
+nominal boundary guards, aliases, optional telemetry, unconstrained behavior,
+expected helm malconfiguration, missing navigation input, and missing-domain
+behavior error.
+
+Three migrated rolling matrices passed 45/45 rows in 54.58, 45.62, and 49.26
+seconds. Their 49.82-second mean is 1.70 seconds, about 3.3 percent, faster than
+the legacy mean and within normal run-to-run variation. The isolated serial
+matrix passed 15/15 in 158.67 seconds, 27.50 seconds or about 21.0 percent
+slower than legacy, roughly 1.83 seconds per case for isolated copying,
+xlaunch lifecycle, and verified scoped cleanup.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, exact README/case/patch-map reconciliation, rolling refill, 30
+unique MOOSDB ports, 30 unique pShare ports, unknown-case rejection,
+active-lock behavior, Homebrew Bash re-execution, and explicit Bash 3.2
+rejection. Bash syntax, ShellCheck, the harness checker, and all fifteen
+generated-case evaluator checks pass. No tested MOOS process survived cleanup.

@@ -3968,16 +3968,45 @@ re-execution, and explicit Bash 3.2 rejection. Bash syntax, ShellCheck, the
 harness checker, and all twenty-four generated-case evaluator checks pass. No
 tested MOOS process survived cleanup.
 
+### Completed Migration: `depth_max_h04`
+
+MaxDepth H04 baseline evidence was gathered as the only live harness on July
+16, 2026. Three untouched legacy `--jobs=4` matrices passed 45/45 rows in
+49.27, 50.73, and 54.56 seconds, for a 51.52-second mean. The untouched serial
+matrix passed 15/15 in 131.17 seconds. No baseline outlier occurred.
+
+The migrated Bash 5.1 launcher uses isolated mission copies in every mode,
+rolling slot refill, deterministic selected-case aggregation, two MOOSDB and
+two pShare ports per case, root-scoped cleanup, a harness lock, and strict
+one-row pMissionEval result validation. All fifteen README tokens, launcher
+cases, and explicit patch mappings reconcile exactly. No case overlay,
+stimulus, threshold, evaluator condition, or shared-stem file changed.
+
+Three migrated rolling matrices passed 45/45 rows in 54.58, 45.62, and 49.26
+seconds. Their 49.82-second mean is 1.70 seconds, about 3.3 percent, faster than
+legacy and within normal run-to-run variation. The isolated serial matrix
+passed 15/15 in 158.67 seconds, 27.50 seconds or about 21.0 percent slower than
+legacy, roughly 1.83 seconds per case for isolated copying, xlaunch lifecycle,
+and verified scoped cleanup.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, all existing nominal and expected-failure contracts, exact
+matrix and patch-map reconciliation, rolling refill, 30 unique MOOSDB ports,
+30 unique pShare ports, unknown-case rejection, active-lock behavior,
+Homebrew Bash re-execution, and explicit Bash 3.2 rejection. Bash syntax,
+ShellCheck, the harness checker, and all fifteen generated-case evaluator
+checks pass. No tested MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Forty-five of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Forty-six of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Twenty-two registered harnesses remain. Continue one harness at a time with
+Twenty-one registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
