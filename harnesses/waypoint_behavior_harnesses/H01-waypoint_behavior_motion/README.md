@@ -158,18 +158,17 @@ behavior-owned waypoint outputs:
 Results are appended to `results.txt` as `case=<name>` followed by the
 mission-owned row. Expected-negative cases still produce `grade=pass` when their
 specific evidence is observed, using `expected=no_waypoint_completion` or
-`expected=helm_malconfig` plus the supporting fields. Wave mode runs the full
-matrix in isolated temporary mission copies. Each case gets its own MOOSDB and
-pShare port block using `case_base = port_base + case_idx*PORT_STRIDE`, with
-pShare ports starting at `case_base + 10`. The default is serial `--jobs=1`;
-use `--keep_workdirs` when preserving the temporary case folders is useful for
-debugging.
+`expected=helm_malconfig` plus the supporting fields. Serial and rolling modes
+both use isolated mission copies. Rolling mode starts the next pending case as
+soon as an active slot finishes. Each case gets its own MOOSDB and pShare port
+block using `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports
+starting at `case_base + 10`. The default is serial `--jobs=1`; use
+`--keep_workdirs` when preserving the case folders is useful for debugging.
 
 Latest validation:
 
-- May 20, 2026
-- focused expected-negative cases:
-  `no_points_timeout_fail`, `bad_speed_fail`, `bad_xpoints_size_fail`
-- wave matrix: `43/43` cases passed with `--jobs=4 --port_base=20000`
-- serial matrix: `43/43` cases passed with `--port_base=21400`
+- July 16, 2026
+- generated-file matrix: `43/43` cases completed with `--just_make --jobs=4`
+- three full rolling matrices: `129/129` mission-owned verdicts passed
+- full serial matrix: `43/43` mission-owned verdicts passed
 - warp: `10`

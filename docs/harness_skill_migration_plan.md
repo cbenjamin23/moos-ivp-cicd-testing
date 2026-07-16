@@ -3623,16 +3623,49 @@ Bash 3.2 rejection. Disposable fault injection verified normalized
 `missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax
 and both skill static checkers pass. No tested MOOS process survived cleanup.
 
+### Completed Migration: `waypoint_h01`
+
+Waypoint H01 baseline evidence was gathered as the only live harness on July
+16, 2026. Its forty-three cases passed 129/129 rows across three untouched
+legacy `--jobs=4` wave matrices in 145.90, 134.84, and 137.24 seconds, for a
+139.33-second mean. The untouched serial matrix passed 43/43 in 378.15
+seconds. No baseline failure or flaky case was observed.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling execution, rolling slot refill, deterministic selected-case
+aggregation, configurable minimum-12 port spacing, root-scoped cleanup, a
+harness lock, and strict one-row pMissionEval result validation. It preserves
+all forty-three explicit case mappings and every shoreside, vehicle-MOOS, and
+behavior overlay. The mission wrapper is now a thin, case-agnostic launch
+forwarder and result validator. No case patch, evaluator condition, event
+time, behavior value, grading variable, or coverage claim changed.
+
+Three migrated rolling matrices passed 129/129 rows in 107.78, 108.83, and
+106.01 seconds. Their 107.54-second mean is 31.79 seconds, about 22.8 percent,
+faster than the legacy wave mean. The isolated serial matrix passed 43/43 in
+398.52 seconds, 20.37 seconds or about 5.4 percent slower than legacy, roughly
+0.47 seconds per case for isolated copying and the standard lifecycle.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, nominal completion, timed non-completion, runtime updates,
+repeat-cycle, custom-output, and helm-malconfiguration verdicts, standalone
+stem generation and live execution, exact matrix reconciliation, rolling
+refill, distinct generated ports, intended sidecars, unknown-case rejection,
+active-lock behavior, and Bash 3.2 rejection. Disposable fault injection
+verified normalized `missing_result`, `duplicate_results`, and `prepare_error`
+rows. Bash syntax, ShellCheck, and both skill static checkers pass. No tested
+MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Thirty-seven of the sixty-seven registered harnesses are now migrated against skill
+Thirty-eight of the sixty-seven registered harnesses are now migrated against skill
 1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `hostinfo_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Thirty registered harnesses remain. Continue with the next ordinary,
+Twenty-nine registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
