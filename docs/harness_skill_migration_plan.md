@@ -3656,16 +3656,55 @@ verified normalized `missing_result`, `duplicate_results`, and `prepare_error`
 rows. Bash syntax, ShellCheck, and both skill static checkers pass. No tested
 MOOS process survived cleanup.
 
+### Completed Migration: `legrun_h01`
+
+Legrun H01 baseline evidence was gathered as the only live harness on July
+16, 2026. Its thirty-three cases passed 99/99 rows across three untouched
+legacy `--jobs=4` wave matrices in 151.88, 154.83, and 153.62 seconds, for a
+153.44-second mean. The untouched serial matrix passed 33/33 in 525.35
+seconds. No baseline failure or flaky case was observed.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling execution, rolling slot refill, deterministic selected-case
+aggregation, configurable minimum-12 port spacing, root-scoped cleanup, a
+harness lock, and strict one-row pMissionEval result validation. It preserves
+all thirty-three explicit case mappings, the 200-second harness ceiling, the
+15,400 default port base, and every shoreside, vehicle-MOOS, and behavior
+overlay. No case patch, evaluator condition, event time, behavior value,
+grading variable, or coverage claim changed.
+
+Three migrated rolling matrices passed 99/99 rows in 144.85, 148.77, and
+140.21 seconds. Their 144.61-second mean is 8.83 seconds, about 5.8 percent,
+faster than the legacy wave mean. The isolated serial matrix passed 33/33 in
+553.39 seconds, 28.04 seconds or about 5.3 percent slower than legacy, roughly
+0.85 seconds per case for isolated copying and the standard lifecycle.
+
+Strict standalone validation exposed one pre-existing wrapper defect: the
+stem's 70-second default could end before pMissionEval graded the baseline,
+while the legacy wrapper still returned success without checking for a row.
+The stem default now matches the harness's existing 200-second ceiling. No
+mission event, condition, stimulus, or behavior parameter changed. A
+200-second override and two subsequent default standalone runs all passed.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, normal leg/turn completion, flag aliases, runtime updates, and
+expected no-progress timeout verdicts, standalone generation and execution,
+exact matrix reconciliation, rolling refill, distinct generated ports,
+intended sidecars, unknown-case rejection, active-lock behavior, and Bash 3.2
+rejection. Disposable fault injection verified normalized `missing_result`,
+`duplicate_results`, and `prepare_error` rows. Bash syntax, ShellCheck, and
+both skill static checkers pass. No tested MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Thirty-eight of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `hostinfo_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Thirty-nine of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Twenty-nine registered harnesses remain. Continue with the next ordinary,
+Twenty-eight registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
