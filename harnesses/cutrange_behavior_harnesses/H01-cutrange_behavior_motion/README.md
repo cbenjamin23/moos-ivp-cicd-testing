@@ -66,20 +66,26 @@ From this harness directory:
 ./zlaunch.sh --jobs=4 --port_base=25000 10
 ```
 
-From the paired mission directory, named cases are forwarded to this harness:
+The paired mission launcher remains a single-scenario launcher. It accepts the
+mission modifier, both vehicle-start overrides, and all six MOOSDB/pShare ports
+directly:
 
 ```bash
-./zlaunch.sh --case=runtime_pwt_on_pass --gui 1
+./zlaunch.sh --mmod=angled_entry_pass \
+  --vpos1=x=-95,y=-125,heading=45 --vpos2=x=10,y=-80,heading=80 \
+  --shore_mport=25000 --veh1_mport=25001 --veh2_mport=25002 \
+  --shore_pshare=25010 --veh1_pshare=25011 --veh2_pshare=25012 10
 ```
 
 The full matrix currently has 39 cases. Normal expected-pass cases clear the
 known first-active contact warm-up warning before evaluation, then require no
 settled chaser-side behavior warnings or errors; explicitly named `*_warn_pass`
-cases require the expected warning and `BHV_ERROR_SEEN=false`. Wave mode uses
-isolated temp mission copies and deterministic two-vehicle port blocks. Each
-case uses `case_base + 0..2` for MOOSDB and `case_base + 10..12` for pShare
-inside a 30-port stride; keep `--port_base` separated from any other live
-harness on the same machine.
+cases require the expected warning and `BHV_ERROR_SEEN=false`. Serial and
+rolling modes both use one isolated mission copy and one deterministic
+two-vehicle port block per case. Each case uses `case_base + 0..2` for MOOSDB
+and `case_base + 10..12` for pShare inside a 30-port stride. The harness
+requires Bash 5.1 or newer and prevents a second invocation while one is
+active; keep `--port_base` separated from any other live harness.
 
 The dogleg and S-turn geometry cases use evaluator gates on `BEN_NAV_X`,
 `BEN_NAV_Y`, and `BEN_NAV_HEADING`, then grade current range at that moment.
@@ -88,7 +94,28 @@ before the target reached the turn geometry under test.
 
 Latest validation:
 
-- April 26, 2026
-- full matrix: `39/39` expected outcomes matched
-- warp: `10`
-- command: `./zlaunch.sh --jobs=4 --port_base=25000 10`
+- July 16, 2026
+- generated-file matrix: `39/39` isolated cases completed
+- migrated rolling matrices: `117/117` rows passed in 141.66, 138.08, and
+  140.40 seconds
+- migrated isolated serial matrix: `39/39` rows passed in 519.74 seconds
+- untouched legacy rolling mean: 169.91 seconds; legacy serial: 500.78 seconds
+
+The migration preserved all 39 unique case mappings, patches, evaluator
+conditions, event times, behavior values, grading variables, and four custom
+vehicle-start configurations. Strict result handling exposed that the existing
+120-second ceiling ended `right_turn_target_pass` and `s_turn_target_pass`
+before their geometry lead conditions became true. The legacy launcher had
+continued the missions after that nominal timeout while waiting for a late
+row. The existing harness and mission `MAX_TIME` defaults are now 180 seconds;
+no case condition, event, position, stimulus, or behavior value changed, and
+ordinary cases still finish as soon as pMissionEval grades them.
+
+Validation also covered nominal, two-position geometry, turn geometry, and
+expected-inactive verdicts, standalone generation and live execution, exact
+case order, rolling refill, 117 unique MOOSDB ports and 117 non-overlapping
+pShare ports, intended sidecars, unknown-case rejection, active-lock behavior,
+and Bash 3.2 rejection. Disposable fault injection verified normalized
+`missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax,
+ShellCheck, and both skill static checkers pass. No tested MOOS process
+survived cleanup.

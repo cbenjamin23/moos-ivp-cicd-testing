@@ -3778,16 +3778,60 @@ rejection. Disposable fault injection verified normalized `missing_result`,
 `duplicate_results`, and `prepare_error` rows. Bash syntax, ShellCheck, and
 both skill static checkers pass. No tested MOOS process survived cleanup.
 
+### Completed Migration: `cutrange_h01`
+
+CutRange H01 baseline evidence was gathered as the only live harness on July
+16, 2026. Its thirty-nine cases passed 117/117 rows across three untouched
+legacy `--jobs=4` wave matrices in 168.68, 169.94, and 171.12 seconds, for a
+169.91-second mean. The untouched serial matrix passed 39/39 in 500.78
+seconds. No baseline failure or flaky case was observed.
+
+The migrated Bash 5.1 launcher uses isolated mission copies for serial and
+rolling execution, rolling slot refill, deterministic selected-case
+aggregation, three MOOSDB and three pShare ports per two-vehicle case,
+root-scoped cleanup, a harness lock, and strict one-row pMissionEval result
+validation. All thirty-nine unique README tokens, launcher cases, and explicit
+case mappings reconcile exactly. Every patch, evaluator condition, event time,
+behavior value, grading variable, and four custom vehicle-start configurations
+are preserved. The mission wrapper is now a thin single-scenario forwarder
+rather than routing harness arguments back into the harness.
+
+The first migrated matrix correctly reported missing results for
+`right_turn_target_pass` and `s_turn_target_pass`. A retained focused run showed
+the target still approaching the evaluator's turn geometry when the existing
+120-second `uMayFinish` ceiling ended. The legacy harness had allowed the live
+mission to continue after that return while waiting up to fifteen real seconds
+for a late row, so its apparent 120-second ceiling was not enforced. Both cases
+passed with a 180-second override and then passed again with the harness and
+mission's existing `MAX_TIME` defaults changed from 120 to 180. No evaluator
+condition, event time, position, stimulus, or behavior parameter changed;
+ordinary cases still terminate on their earlier pMissionEval result.
+
+Three clean post-fix migrated rolling matrices passed 117/117 rows in 141.66,
+138.08, and 140.40 seconds. Their 140.05-second mean is 29.86 seconds, about
+17.6 percent, faster than the legacy wave mean. The isolated serial matrix
+passed 39/39 in 519.74 seconds, 18.96 seconds or about 3.8 percent slower than
+legacy, roughly 0.49 seconds per case.
+
+Validation covered all-case generation, nominal, two-position geometry, turn
+geometry, and expected-inactive verdicts, standalone generation and live
+execution, exact matrix reconciliation, rolling refill, 117 unique MOOSDB
+ports, 117 non-overlapping pShare ports, intended sidecars, unknown-case
+rejection, active-lock behavior, and Bash 3.2 rejection. Disposable fault
+injection verified normalized `missing_result`, `duplicate_results`, and
+`prepare_error` rows. Bash syntax, ShellCheck, and both skill static checkers
+pass. No tested MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Forty-one of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Forty-two of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `cutrange_h01`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Twenty-six registered harnesses remain. Continue with the next ordinary,
+Twenty-five registered harnesses remain. Continue with the next ordinary,
 independent-stem harness unless its audit exposes a grading, isolation, or
 compatibility decision that needs review.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
