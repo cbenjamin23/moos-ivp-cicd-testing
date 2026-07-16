@@ -3446,18 +3446,17 @@ spacing, root-scoped cleanup, a harness lock, and strict one-row pMissionEval
 result validation. It preserves all twenty-one case mappings and every
 shoreside, vehicle-MOOS, and behavior overlay. The mission wrapper only
 forwards launch controls, validates the mission-owned row, and applies the
-standalone cleanup backstop. No case patch, geometry, event time, evaluator
-condition, behavior value, grading variable, or coverage claim changed.
+standalone cleanup backstop. The initial migration did not change any case
+patch, geometry, event time, evaluator condition, behavior value, grading
+variable, or coverage claim.
 
 Initial migrated rolling validation reproduced the same pre-existing
 `two_obstacles_clean_pass` collision once in five matrices, while the case
-remained 10/10 alone. The final scheduler therefore drains active slots and
-runs that one load-sensitive case alone, then resumes rolling refill. Three
-clean final matrices passed 63/63 rows in 83.83, 83.70, and 83.03 seconds, for
-an 83.52-second mean. This is 8.51 seconds, about 11.3 percent, slower than the
-clean legacy mean; it is an intentional repeatability tradeoff. The migrated
-serial matrix passed 21/21 in 223.51 seconds, 15.03 seconds or about 7.2
-percent slower than legacy.
+remained 10/10 alone. The first conservative scheduler therefore drained
+active slots and ran that one load-sensitive case alone, then resumed rolling
+refill. Three clean matrices passed 63/63 rows in 83.83, 83.70, and 83.03
+seconds, for an 83.52-second mean. The initial migrated serial matrix passed
+21/21 in 223.51 seconds.
 
 One final-scheduler matrix also produced a one-off `launch_rc=1` with no
 pMissionEval row for `default_auto_request_pass`. It did not recur in 10
@@ -3473,6 +3472,34 @@ physical pMissionEval row per case, unknown-case and numeric-bound rejection,
 multi-case GUI rejection, active-lock behavior, Bash 3.2 rejection, and
 Homebrew Bash re-execution. Bash syntax, ShellCheck, and the harness checker
 pass. No tested process survived cleanup.
+
+A July 16 case-quality follow-up removed that temporary solo exception. The
+old two-obstacle evaluator required only one `OBSTACLE_ALERT`, so one spawned
+avoidance instance could satisfy the documented two-obstacle claim. The case
+now uses pMissionEval's existing mail-count support to require at least two
+alerts. `BHV_AvoidObstacleV24` also posts its existing `$[OID]` label through
+a `spawnxflag`; the case-specific node and shore broker overlays carry the one
+new `OBSTACLE_SPAWNED` evidence variable to pMissionEval, which requires the
+later `ob_two` instance. No application was added.
+
+The original case speed of 1.8 still produced one real collision during
+isolated repetition. Reducing only this case's existing transit speed to 1.6
+provided more helm/control margin without changing either obstacle, arrival,
+or zero-collision requirements. Ten focused repeats then passed 10/10. Five
+final ordinary rolling matrices passed 105/105 rows in 62, 62, 62, 61, and 63
+seconds, for a 62.0-second mean. This is 13.01 seconds, about 17.3 percent,
+faster than the clean legacy mean and 21.52 seconds faster than the temporary
+solo scheduler mean. The final serial matrix passed 21/21 in 222 seconds,
+13.52 seconds or about 6.5 percent slower than legacy.
+
+A deliberate mutation removed the `ob_two` vehicle stimulus. The vehicle
+still arrived, but pMissionEval reported `obstacle_alert_count=1`,
+`obstacle_spawned=ob_one`, and `grade=fail`, proving that one obstacle no
+longer satisfies the case. One pre-fix concurrent matrix had two unrelated
+one-obstacle collision failures in an abnormal 141 seconds, and another was
+invalidated by a confirmed macOS sleep/wake interval; neither is included in
+the final performance or repeatability statistics. The original stimulus was
+restored before all final rolling and serial evidence was gathered.
 
 ### Completed Migration: `opregion_h01`
 

@@ -84,19 +84,6 @@ CASES=(
     bad_pwt_grade_fail
 )
 
-SOLO_CASES=(
-    two_obstacles_clean_pass
-)
-
-is_solo_case() {
-    local case_name="$1"
-    local solo_case
-    for solo_case in "${SOLO_CASES[@]}"; do
-        [ "$case_name" = "$solo_case" ] && return 0
-    done
-    return 1
-}
-
 declare -a SELECTED_CASES CASE_RESULT
 declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
 
@@ -751,14 +738,6 @@ scheduler_broken=no
 
 while [ "$next" -lt "$total" ] || [ "$active" -gt 0 ]; do
     while [ "$next" -lt "$total" ] && [ "$active" -lt "$JOBS" ]; do
-        next_case="${SELECTED_CASES[$next]}"
-        if is_solo_case "$next_case"; then
-            [ "$active" -eq 0 ] || break
-            start_case "$next"
-            next=$((next + 1))
-            active=$((active + 1))
-            break
-        fi
         start_case "$next"
         next=$((next + 1))
         active=$((active + 1))
