@@ -32,9 +32,9 @@ ProcessConfig = pMissionEval
   mission_form = pantler_unit
   mission_mod  = pantler_alias_launch_pass
 
-  prereport_column = form=$[MISSION_FORM]
-  prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
+  report_column    = form=$[MISSION_FORM]
+  report_column    = mmod=$[MMOD]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = alias=$[ANTLER_ALIAS_FLAG]
   report_column    = mhash=$[MHASH_SHORT]
