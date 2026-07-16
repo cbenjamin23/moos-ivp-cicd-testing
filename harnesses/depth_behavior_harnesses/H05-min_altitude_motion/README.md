@@ -31,5 +31,49 @@ constant-depth behavior commands unsafe deeper targets.
 ./zlaunch.sh --just_make 10
 ```
 
-The wrapper supports `--jobs`, `--port_base`, and `--port_stride` for isolated
-grouped local and CI runs.
+The Bash 5.1 wrapper creates an isolated mission copy for every serial and
+rolling case, refills rolling slots as cases finish, aggregates one strict
+mission-owned result row per selected case, and performs root-scoped cleanup.
+
+### Migration evidence
+
+Two clean untouched legacy `--jobs=4` matrices passed 26/26 rows in 59.42 and
+52.89 seconds, for a 56.16-second mean. A third untouched matrix finished in
+51.83 seconds but sampled `min_altitude_low_threshold_pass` before its required
+near-bottom state; that unchanged case passed 9/10 focused legacy repetitions.
+The untouched serial matrix passed 13/13 in 118.51 seconds.
+
+Three timing-sensitive positive cases now use existing navigation state as
+their pMissionEval trigger, with the existing timer moved to 75 mission seconds
+as a failure deadline. `zero_min_pass` waits for depth at least 16 and x at
+least 45; `low_threshold_pass` waits for altitude at most 4 and x at least 45;
+and `clearance_boundary_pass` waits for depth at least 10 and x at least 45.
+Their original pass windows, behavior parameters, stimuli, and error checks are
+unchanged. Each final form passed 10/10 focused repetitions.
+
+The simple intermediate idea of moving the low-threshold snapshot from 45 to
+60 seconds was rejected after it passed only 8/10. A depth-only boundary
+trigger was also rejected because it could fire before the original x
+requirement. These failed experiments are not present in the final design.
+
+The unconstrained-deep-bottom case sometimes reports its existing sticky
+`bhv_error=true` field while still passing because that field has never been a
+pass condition for this case. It did so in every legacy baseline matrix but
+not every migrated run. The migration leaves that pre-existing coverage choice
+unchanged for later case-quality review.
+
+After the three repairs, three rolling matrices passed 39/39 rows in 43.86,
+44.24, and 42.76 seconds, for a 43.62-second mean. The final consistency edit
+added the already-required x condition to the low-threshold trigger; an exact
+final-source rolling confirmation passed 13/13 in 43.55 seconds. The exact
+final-source serial matrix passed 13/13 in 132.98 seconds, 14.47 seconds or
+about 12.2 percent slower than legacy, roughly 1.11 seconds per case for
+isolated copying, xlaunch lifecycle, and verified scoped cleanup.
+
+Validation covered final-source generation and live execution, focused sweeps,
+full rolling and serial matrices, exact README/case/patch-map reconciliation,
+rolling refill, 26 unique MOOSDB ports, 26 unique pShare ports, unknown-case
+rejection, active-lock behavior, Homebrew Bash re-execution, and explicit Bash
+3.2 rejection. Bash syntax, ShellCheck, the harness checker, and all thirteen
+generated-case evaluator checks pass. No tested MOOS process survived cleanup,
+and the shared depth stem was not changed.
