@@ -3919,16 +3919,65 @@ Bash re-execution, and explicit Bash 3.2 rejection. Bash syntax, ShellCheck,
 the harness checker, and all eighteen generated-case evaluator checks pass.
 No tested MOOS process survived cleanup.
 
+### Completed Migration: `depth_periodic_surface_h03`
+
+PeriodicSurface H03 baseline evidence was gathered as the only live harness on
+July 16, 2026. Two precisely timed clean untouched legacy `--jobs=4` matrices
+passed 48/48 rows in 77.692 and 77.808 seconds, for a 77.750-second mean. An
+additional untimed console-output matrix passed 24/24, and the untouched
+serial matrix passed 24/24 in 199.477 seconds.
+
+A third precisely timed untouched rolling matrix finished in 77.358 seconds
+but had the long-form status-variable alias case grade before its required
+timeout flag arrived. It had already surfaced, and the unchanged case then
+passed 10/10 focused legacy repetitions. This pre-existing fixed-snapshot
+outlier is excluded from clean timing data.
+
+The migrated Bash 5.1 launcher uses isolated mission copies in every mode,
+rolling slot refill, deterministic selected-case aggregation, two MOOSDB and
+two pShare ports per case, root-scoped cleanup, a harness lock, and strict
+one-row pMissionEval result validation. All twenty-four README tokens,
+launcher cases, and explicit patch mappings reconcile exactly. No shared-stem
+file changed.
+
+Positive surfacing cases retain their existing time gates but also wait for the
+already-required sticky surfacing and timeout evidence. The alias case passed
+10/10 focused migrated runs. The timeout-reset case now has two ordered
+pMissionEval aspects: observe the timeout, then observe `TIME_AT_SURFACE <= 1`.
+Its existing timer is the reset deadline, preserving a mission-owned failure
+if reset never occurs. It passed 10/10 focused runs with `timeout_seen=true`
+and `surface_time=0`. No behavior parameter, stimulus, threshold, or event
+time changed.
+
+The first migrated rolling matrix exposed the same one-iteration sampling
+problem in the timeout-reset case: the timeout flag arrived while
+`TIME_AT_SURFACE` was still two. The ordered evaluator is the correction; no
+test threshold was relaxed.
+
+Three clean migrated rolling matrices passed 72/72 rows in 64, 63, and 63
+seconds. Their 63.33-second mean is 14.42 seconds, about 18.5 percent, faster
+than the legacy wave mean. The isolated serial matrix passed 24/24 in 222
+seconds, 22.52 seconds or about 11.3 percent slower than legacy, roughly 0.94
+seconds per case.
+
+Validation covered all-case generation, focused alias and reset sweeps, three
+clean full rolling matrices, one full serial matrix, exact matrix and patch-map
+reconciliation, rolling refill, 48 unique MOOSDB ports, 48 unique pShare ports,
+intended sidecars, unknown-case rejection, active-lock behavior, Homebrew Bash
+re-execution, and explicit Bash 3.2 rejection. Bash syntax, ShellCheck, the
+harness checker, and all twenty-four generated-case evaluator checks pass. No
+tested MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Forty-four of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Forty-five of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Twenty-three registered harnesses remain. Continue one harness at a time with
+Twenty-two registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

@@ -23,8 +23,10 @@ ProcessConfig = pMissionEval
   mailflag = @PSF_AT_SURFACE_TIMEOUT#SURFACE_TIMEOUT_SEEN=true
   mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
+  lead_condition = SURFACE_TIMEOUT_SEEN = true
   pass_condition = SURFACE_TIMEOUT_SEEN = true
+
+  lead_condition = (TIME_AT_SURFACE <= 1) or (TEST_EVAL_READY = true)
   pass_condition = TIME_AT_SURFACE <= 1
   pass_condition = BHV_ERROR_SEEN = false
 
@@ -39,7 +41,7 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = eval=$[SURFACE_TIMEOUT_SEEN]
   report_column = depth=$[ABE_NAV_DEPTH]
   report_column = periodic=$[PERIODIC_ASCEND]
   report_column = timeout_seen=$[SURFACE_TIMEOUT_SEEN]
