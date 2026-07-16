@@ -23,3 +23,9 @@ Current repo-specific helpers:
 - `repeatability_sweep.py` reruns one harness multiple times at a fixed
   configuration, saves raw logs/results, and writes a per-case stability
   summary under `time_benchmarking/`.
+- `moos_ivp_build_matrix.py` validates and selects standalone MOOS-IvP build
+  portability targets and build-profile compatibility from
+  `config/moos_ivp_build_targets.json`.
+- `build_moos_ivp_target.sh` installs build dependencies for the current
+  Linux target, clones a selected MOOS-IvP ref, and runs either the full or
+  headless MOOS-IvP build without invoking this repo's tests or missions.

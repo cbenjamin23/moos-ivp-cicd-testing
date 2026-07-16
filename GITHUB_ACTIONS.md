@@ -1,10 +1,13 @@
 # GitHub Actions
 
-This repo has two active workflows:
+This repo has three active workflows:
 
 - [Build And Check Active Harnesses](./.github/workflows/build_extend.yml)
   builds a selected MOOS-IvP ref, builds this repo against it, then runs the
   selected CTest families and/or runtime harnesses.
+- [Build MOOS-IvP Portability Matrix](./.github/workflows/moos_ivp_build_matrix.yml)
+  builds a selected MOOS-IvP ref across standalone OS/compiler targets without
+  running CTests or runtime harnesses.
 - [Publish GitHub Pages](./.github/workflows/pages.yml) publishes `docs/` to
   the project website.
 
@@ -109,6 +112,72 @@ List valid local harness keys with:
 
 ```bash
 python3 scripts/list_harness_targets.py list
+```
+
+## Build MOOS-IvP Portability Matrix
+
+This workflow is manual-only and intentionally independent from the harness and
+CTest workflow. It answers whether a requested MOOS-IvP ref compiles on the
+configured OS/compiler targets.
+
+Main inputs:
+
+- `moos_ivp_repo`: MOOS-IvP git repository URL to clone. Defaults to
+  `https://github.com/moos-ivp/moos-ivp.git`; set this to a fork URL to test a
+  branch from a developer fork.
+- `moos_ivp_ref`: MOOS-IvP branch, tag, or commit SHA to clone and build.
+- `build_profile`: `full` builds upstream's general/full MOOS-IvP target,
+  including GUI apps; `headless` builds the smaller nogui/minrobot profile used
+  by CI harness work.
+- `target_set`: target family from `config/moos_ivp_build_targets.json`, such
+  as `modern`, `current`, `compat`, `gcc`, `clang`, `ubuntu`, `debian`,
+  `rocky`, `all`, or `specific_targets`.
+- `targets`: comma-separated target keys used only with
+  `target_set = specific_targets`.
+
+The workflow clones `moos_ivp_repo` inside each target container and checks out
+`moos_ivp_ref`. For the default `full` profile it runs:
+
+```bash
+./build.sh -mx
+```
+
+For the optional `headless` profile it runs:
+
+```bash
+./build-moos.sh --minrobot --release
+./build-ivp.sh --nogui
+```
+
+It uploads the build log for each target. It does not build this extension repo,
+and does not run CTests or missions.
+
+Example fork-branch run:
+
+```text
+moos_ivp_repo = https://github.com/myname/moos-ivp.git
+moos_ivp_ref = my-feature-branch
+build_profile = full
+target_set = modern
+```
+
+Targets declare which build profiles they support. Family selections skip targets
+that do not support the requested profile; explicit `specific_targets` requests
+fail clearly when a requested target does not support the selected profile. Rocky
+9 is retained for `headless` compatibility coverage, but not for `full`, because
+the standard Rocky 9 CRB/EPEL package set does not provide FLTK Fluid.
+
+The current configured target generations are:
+
+- `current`: `ubuntu_2604_gcc`, `ubuntu_2604_clang`, `debian_13_gcc`,
+  `rocky_10_gcc`
+- `compat`: `ubuntu_2404_gcc`, `ubuntu_2404_clang`, `debian_12_gcc`,
+  `rocky_9_gcc`
+
+List configured build targets locally with:
+
+```bash
+python3 scripts/moos_ivp_build_matrix.py list
 ```
 
 ## Local Equivalent
