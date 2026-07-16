@@ -22,6 +22,13 @@ evaluator, two sender peers, and one relay/listener peer.
 Typical commands:
 
 ```sh
-./zlaunch.sh --jobs=2 --port_base=11000 --max_time=65 10
-./zlaunch.sh --case=pshare_topology_fanin_pass --port_base=11000 --max_time=65 10
+./zlaunch.sh --jobs=2 --port_base=9000 --max_time=65 10
+./zlaunch.sh --case=pshare_topology_fanin_pass --port_base=9000 --max_time=65 10
 ```
+
+The launcher requires Bash 5.1 or newer for rolling scheduling. Every case,
+including serial runs, executes in its own mission copy and stride-50 port
+block. The four MOOSDB ports use offsets 0 through 3 and the four pShare ports
+use offsets 10 through 13. pMissionEval owns every topology verdict; the
+harness only applies the explicit community patches, validates one mission
+row, aggregates results in case order, and performs scoped cleanup.
