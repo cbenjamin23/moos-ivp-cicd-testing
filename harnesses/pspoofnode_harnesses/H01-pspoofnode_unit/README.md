@@ -3,9 +3,21 @@
 Live `pSpoofNode` harness for structured `NODE_REPORT` publication.
 
 ```sh
-./zlaunch.sh --jobs=4 --port_base=16000 10
-./zlaunch.sh --case=config_static_report_pass --port_base=16000 10
+./zlaunch.sh --jobs=4 --port_base=9000 10
+./zlaunch.sh --case=config_static_report_pass --port_base=9000 10
 ```
+
+The launcher requires Bash 5.1 or newer for rolling scheduling. Every case,
+including serial runs, executes in its own mission copy and port block.
+pMissionEval defines the evaluation boundary and writes the authoritative
+mission row. It requires a `NODE_REPORT` in the twenty-three positive-output
+cases and requires no `NODE_REPORT` in the ten rejected-request cases. Because
+the remaining assertions test exact structured fields or publication history
+rather than only the final MOOS value, the launcher supplements that grade with
+the existing field, movement, expiration, and cancellation checks from the
+`.alog`. Those checks consider only reports at or before the first
+`MISSION_EVALUATED=true`; later shutdown traffic cannot change the verdict. No
+extra test application or grading variable is used.
 
 ## Cases
 
