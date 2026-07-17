@@ -1,0 +1,33 @@
+ProcessConfig = uFldContactRangeSensor
+{
+  AppTick = 4
+  CommsTick = 4
+  ping_wait = default=30
+  report_vars = short
+
+}
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldContactRangeSensor
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=50,Y=0,LAT=43.825300,LON=-70.329778,SPD=0,HDG=180", time=0.7
+  event = var=CRS_RANGE_REQUEST, val="name=alpha", time=1.5
+  event = var=CRS_RANGE_REQUEST, val="name=alpha", time=2.5
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @CRS_RANGE_REPORT#CRS_REPORT_COUNT=$[CNT]
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = CRS_REPORT_COUNT = 1
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = report_count=$[CRS_REPORT_COUNT]
+  report_file = results.txt
+}

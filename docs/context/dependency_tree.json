@@ -5289,14 +5289,16 @@
       "families": [
         "ufld_contact_range_sensor"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldContactRangeSensor"
+      ],
       "harness": "H01-ufld_contact_range_sensor_unit",
       "key": "ufld_contact_range_sensor_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 35
       },
       "path": "harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit",
       "perf_profile": "",
@@ -5304,6 +5306,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldContactRangeSensor",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5346,7 +5349,7 @@
           "reciprocal_request_report_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/zlaunch.sh"
       }
@@ -6648,6 +6651,9 @@
         "p03_colregs",
         "ufld_collision_detect_h01"
       ],
+      "uFldContactRangeSensor": [
+        "ufld_contact_range_sensor_h01"
+      ],
       "uFldMessageHandler": [
         "ufld_message_handler_h01"
       ],
@@ -7011,10 +7017,10 @@
       ".sh": 314,
       ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1136,
+      ".xmoos": 1171,
       "[none]": 7
     },
-    "harness_patch_count": 1631,
+    "harness_patch_count": 1666,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 429,

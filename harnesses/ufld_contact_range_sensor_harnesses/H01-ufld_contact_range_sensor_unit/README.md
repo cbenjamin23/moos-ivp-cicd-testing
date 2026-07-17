@@ -1,9 +1,10 @@
 # H01-uFldContactRangeSensor Unit Harness
 
 This harness tests `uFldContactRangeSensor` as a deterministic field-contact
-range reporter. Cases script contact reports and `CRS_RANGE_REQUEST` mail, then
-check range report variables, pulse publication, report mode, ping timing, echo
-type filtering, and sensor-arc gating from the mission `.alog`.
+range reporter. Cases script contact reports and `CRS_RANGE_REQUEST` mail;
+mission-owned `pMissionEval` conditions then check range report variables,
+pulse publication, report mode, ping timing, echo type filtering, and
+sensor-arc gating.
 
 ## Current Matrix
 
