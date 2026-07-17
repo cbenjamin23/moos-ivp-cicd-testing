@@ -5620,7 +5620,7 @@
         "path": "missions/ufield_comms_missions/ufield_comms_unit"
       },
       "patches": {
-        "file_count": 31
+        "file_count": 46
       },
       "path": "harnesses/ufield_comms_harnesses/H01-ufield_comms_unit",
       "perf_profile": "",
@@ -5678,7 +5678,7 @@
           "critical_group_override_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufield_comms_harnesses/H01-ufield_comms_unit/zlaunch.sh"
       }
@@ -7015,18 +7015,17 @@
       ".md": 142,
       ".mjo": 1,
       ".moos": 155,
-      ".moos#": 1,
       ".mp4": 149,
       ".pdf": 1,
       ".png": 4,
       ".py": 36,
-      ".sh": 314,
-      ".txt": 300,
+      ".sh": 316,
+      ".txt": 301,
       ".xbhv": 518,
-      ".xmoos": 1180,
+      ".xmoos": 1195,
       "[none]": 7
     },
-    "harness_patch_count": 1675,
+    "harness_patch_count": 1690,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 429,

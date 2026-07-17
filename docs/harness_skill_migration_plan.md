@@ -4700,17 +4700,69 @@ grade passing but produced the required `appcast_evidence_mismatch`; restoring
 the stimulus restored a clean pass. No tested process, run directory, or lock
 survived final cleanup.
 
+### Completed Migration: `ufield_comms_h01`
+
+The first uField Comms harness now uses the Bash 5.1 rolling launcher and an
+isolated copy of the shared three-community stem for every case. All thirty-five
+README cases map explicitly to shoreside overlays, vehicle overlays, and the
+two alternate field fixtures they need. Each case receives a distinct
+thirty-port block containing three MOOSDB ports and three pShare ports. The
+launcher refills open slots immediately, aggregates in selected-case order,
+holds a harness lock, uses canonical root-scoped teardown, and requires exactly
+one valid pMissionEval result. Procedural Perl rewrites and shell-owned `.alog`
+grading are gone. The shared stem's mission content was not changed; only its
+wrapper was brought onto the standard `xlaunch` interface with all six ports
+forwarded and strict result validation.
+
+pMissionEval now owns the substantive verdict for every H01 case. Existing
+broker, message, acknowledgement, report, pulse, and shared-report mail is
+checked directly. Structured payload cases compare the final publication with
+the exact expected value. Rate-limit and runtime-transition cases use
+pMissionEval's native mail counters so the mission proves the required number
+of deliveries rather than merely seeing one. The runtime pulse-disable case
+resets one narrowly scoped `LATE_PULSE_SEEN` flag after the existing runtime
+update, then requires later reports to keep flowing without another pulse. No
+application or normalizer was added, and empty case-derived `mmod` columns were
+removed from the H01 overlays.
+
+One validation mismatch was in the new grading, not in `uFldNodeComms`.
+Acknowledgement publications include presentation spaces, while uTimerScript
+normalizes those spaces out of an expected-value post. Exact comparison would
+therefore reject two logically identical acknowledgements. The final runtime
+contracts avoid formatting-dependent evidence: stealth requires exactly one
+outbound message and two reverse acknowledgements across the update, while
+drop-all requires exactly one of each before the update. Five consecutive
+stealth runs produced those counts. This preserves the original before/after
+behavioral tests and is stronger than checking only the final formatted text.
+
+The untouched legacy `--jobs=2`, warp-20 matrix passed 35/35 in 224.27 seconds.
+The final migrated rolling matrix passed 35/35 in 224 seconds, effectively no
+performance change. The migrated serial matrix passed 35/35 in 434 seconds;
+there is no untouched serial timing for a direct comparison. The other
+untouched family baselines remain 12/12 in 75.67 seconds for H02 and 25/25 in
+163.09 seconds for H03.
+
+Validation covered Bash syntax, ShellCheck, both skill-1.4.5 static checkers,
+all-case generation, exact six-port forwarding, focused message, absence,
+rate-limit, and runtime-update cases, five repeated stealth runs, the complete
+rolling and serial matrices, deterministic ordering, thirty-five retained
+physical pMissionEval rows, unknown-case and port-bound failures, Apple Bash
+3.2 re-execution, and a forced missing-result timeout. Deliberately changing an
+expected payload, requiring the wrong delivery count, and leaving runtime
+pulses enabled each produced a mission-owned failure. No tested process
+survived the final rolling or serial run.
+
 ## Immediate Next Step
 
-Fifty-eight of the sixty-seven registered harnesses are now migrated. The
+Fifty-nine of the sixty-seven registered harnesses are now migrated. The
 uField pilots additionally incorporate the clarified case-identity contract
 from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufield_comms_h01`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Nine registered harnesses remain. Continue one harness at a time with
+Eight registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

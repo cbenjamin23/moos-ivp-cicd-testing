@@ -25,12 +25,10 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = ufield_comms_tests
-  mission_mod  = $(MMOD:=invalid_ack_block_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = node_count=$[UFSB_NODE_COUNT]
   report_column = direct=$[DIRECT_MSG_DELIVERED]
   report_column = ack=$[ACK_DELIVERED]

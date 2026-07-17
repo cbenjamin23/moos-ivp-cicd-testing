@@ -18,14 +18,12 @@ ProcessConfig = uFldNodeComms
 
 ProcessConfig = uTimerScript
 {
-  AppTick   = 4
+  AppTick = 4
   CommsTick = 4
-
-  time_warp   = $(WARP)
-  script_name = shoreside_runtime_stealth
-  reset_max   = 0
-  verbose     = false
-
+  time_warp = $(WARP)
+  script_name = shoreside_ufield_comms
+  reset_max = 0
+  verbose = false
   event = var=DIRECT_MSG_DELIVERED, val=false, time=0.5
   event = var=ACK_DELIVERED, val=false, time=0.5
   event = var=REPORT_ABE_TO_BEN, val=false, time=0.5
@@ -33,7 +31,52 @@ ProcessConfig = uTimerScript
   event = var=VIEW_COMMS_PULSE_SEEN, val=false, time=0.5
   event = var=SHARED_REPORT_SEEN, val=false, time=0.5
   event = var=MISSION_TIMEOUT, val=false, time=0.5
+  event = var=EXPECT_MESSAGE, val="ack_id=before_1,src_node=abe,dest_node=all,src_app=uTimerScript,var_name=UFC_BEFORE,string_val=before_runtime", time=0.5
   event = var=UNC_STEALTH, val="vname=abe,stealth=0.4", time=1300
   event = var=MISSION_TIMEOUT, val=true, time=3200
   event = var=MISSION_DONE, val=true, time=2600
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 10
+  CommsTick = 10
+  mailflag = @NODE_MESSAGE_BEN#DIRECT_MSG_DELIVERED=true
+  mailflag = @ACK_MESSAGE_abe#ACK_DELIVERED=true
+  mailflag = @NODE_REPORT_BEN#REPORT_ABE_TO_BEN=true
+  mailflag = @NODE_REPORT_ABE#REPORT_BEN_TO_ABE=true
+  mailflag = @VIEW_COMMS_PULSE#VIEW_COMMS_PULSE_SEEN=true
+  mailflag = @NODE_REPORT_UNC#SHARED_REPORT_SEEN=true
+  mailflag = @NODE_MESSAGE_BEN#DIRECT_MSG_COUNT=$[CNT]
+  mailflag = @ACK_MESSAGE_abe#ACK_COUNT=$[CNT]
+  lead_condition = MISSION_DONE = true
+  pass_condition = UFSB_NODE_COUNT >= 2
+  pass_condition = DIRECT_MSG_DELIVERED = true
+  pass_condition = ACK_DELIVERED = true
+  pass_condition = REPORT_ABE_TO_BEN = true
+  pass_condition = REPORT_BEN_TO_ABE = true
+  pass_condition = VIEW_COMMS_PULSE_SEEN = true
+  pass_condition = SHARED_REPORT_SEEN = false
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = DIRECT_MSG_COUNT = 1
+  pass_condition = ACK_COUNT = 2
+  pass_condition = NODE_MESSAGE_BEN = $ (EXPECT_MESSAGE)
+  result_flag = MISSION_EVALUATED = true
+  pass_flag = SAY_MOOS = pass
+  fail_flag = SAY_MOOS = fail
+  mission_form = ufield_comms_tests
+  report_file = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = node_count=$[UFSB_NODE_COUNT]
+  report_column = direct=$[DIRECT_MSG_DELIVERED]
+  report_column = ack=$[ACK_DELIVERED]
+  report_column = rpt_ab=$[REPORT_ABE_TO_BEN]
+  report_column = rpt_ba=$[REPORT_BEN_TO_ABE]
+  report_column = pulse=$[VIEW_COMMS_PULSE_SEEN]
+  report_column = shared=$[SHARED_REPORT_SEEN]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = direct_count=$[DIRECT_MSG_COUNT]
+  report_column = ack_count=$[ACK_COUNT]
+  report_column = mhash=$[MHASH_SHORT]
 }
