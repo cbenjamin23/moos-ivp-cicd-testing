@@ -2,6 +2,11 @@
 
 Live `uFldScope` harness for appcast table construction from scoped MOOS variables.
 
+Each mission records its normal pMissionEval result. Because `uFldScope` exposes
+the rendered table only in its AppCast report, the harness supplements that
+result by checking the final `uFldScope` AppCast snapshot for the documented
+table contract.
+
 ```sh
 ./zlaunch.sh --jobs=4 --port_base=5000 10
 ./zlaunch.sh --case=appcast_table_pass --port_base=5000 10

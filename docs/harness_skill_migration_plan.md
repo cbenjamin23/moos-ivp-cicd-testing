@@ -4653,17 +4653,64 @@ pulse, and removing the existing cooldown each caused a mission-owned failure;
 a missing overlay produced the expected runner-owned `prepare_error`. Every
 temporary mutation was restored before the final full matrix.
 
+### Completed Migration: `ufld_scope_h01`
+
+Scope now uses the established Bash 5.1 rolling launcher and an isolated copy
+of the shared `ufield_app_unit` stem for every case. Its eight README cases map
+explicitly to one common shoreside overlay and eight case overlays, use
+thirty-port blocks, refill slots immediately, aggregate in selected-case
+order, hold a harness lock, use canonical root-scoped teardown, and require
+exactly one valid pMissionEval row. The shared stem was not changed.
+
+This harness retains one deliberate verdict-boundary exception. `uFldScope`
+constructs its scoped-variable table only inside the textual `APPCAST`
+payload; it publishes no ordinary table value that pMissionEval can compare,
+and pMissionEval conditions cannot search within that payload. The mission
+therefore grades its existing driver-completion contract, while the harness
+selects the final real `APPCAST` record published by `uFldScope` and checks the
+case's table contract within that one snapshot. This preserves the product
+being tested without adding an application, a normalizer, or a new MOOS
+variable. It also fixes the legacy implementation's tendency to combine
+words found in different transient AppCast snapshots. A supplemental mismatch
+is reported as a harness failure with the passing mission grade retained as
+provenance.
+
+Case inputs, scope configuration, and intended positive and negative table
+checks remain unchanged. The only execution change is startup gating:
+uTimerScript waits for pMissionEval and uFldScope before sending the existing
+traffic. The first focused migrated run exposed an overly broad log selector
+that accepted MOOSDB summary rows mentioning APPCAST; narrowing it to actual
+`APPCAST uFldScope` records corrected the implementation before the validation
+matrices. This was not a case or grading-policy change.
+
+The legacy harness produced no valid performance baseline: all three rolling
+matrices and its serial matrix failed because of transient AppCast sampling
+and incomplete pMissionEval rows. Three final migrated rolling matrices passed
+24/24 rows in 14, 14, and 16 seconds, for a 14.67-second mean. The isolated
+serial matrix passed 8/8 in 48 seconds. A retained final rolling matrix passed
+8/8 in 14 seconds and contained eight distinct targets, ports, `.alog` files,
+physical mission rows, and final table snapshots.
+
+Validation covered Bash syntax, ShellCheck, both skill-1.4.5 static checkers,
+all-case generation, a focused retained run, three ordinary rolling matrices,
+one serial matrix, a retained final matrix, deterministic result ordering,
+distinct generated ports, warning inspection, and cleanup. Deliberately
+changing the expected baseline mode from `survey` to `patrol` left the mission
+grade passing but produced the required `appcast_evidence_mismatch`; restoring
+the stimulus restored a clean pass. No tested process, run directory, or lock
+survived final cleanup.
+
 ## Immediate Next Step
 
-Fifty-seven of the sixty-seven registered harnesses are now migrated. The
+Fifty-eight of the sixty-seven registered harnesses are now migrated. The
 uField pilots additionally incorporate the clarified case-identity contract
 from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Ten registered harnesses remain. Continue one harness at a time with
+Nine registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

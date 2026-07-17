@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1666` under configured targets
+- Harness patch/config files: `1675` under configured targets
 - Mission launch/config files: `429` under `missions/`
 - C++ test sources: `214`
 
@@ -143,7 +143,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `ufld_beacon_range_sensor_h01` | `ufld_beacon_range_sensor` | `harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `uFldBeaconRangeSensor`, `pMissionEvalAlpha` | `ufld-beacon-range-sensor-unit` |
 | `ufld_collision_detect_h01` | `ufld_collision_detect` | `harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `pMissionEvalAlpha`, `uFldCollisionDetect` | `ufld-collision-detect-unit` |
 | `ufld_collob_detect_h01` | `ufld_collob_detect` | `harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 14 | `uFldCollObDetect` | `ufld-collob-detect-unit` |
-| `ufld_scope_h01` | `ufld_scope` | `harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 8 | - | `ufld-scope-unit` |
+| `ufld_scope_h01` | `ufld_scope` | `harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 8 | `uFldScope` | `ufld-scope-unit` |
 | `ufield_comms_h01` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H01-ufield_comms_unit/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 35 | - | `ufield-comms-unit` |
 | `ufield_comms_h02` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 12 | - | `ufield-broker-bridge` |
 | `ufield_comms_h03` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H03-ufield_route_resilience/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 25 | - | `ufield-route-resilience` |
@@ -184,6 +184,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `uFldMessageHandler`: `ufld_message_handler_h01`
 - `uFldObstacleSim`: `p01_obstacle`, `ufld_obstacle_sim_h01`
 - `uFldPathCheck`: `ufld_pathcheck_h01`
+- `uFldScope`: `ufld_scope_h01`
 - `uMemWatch`: `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`
 - `uQueryDB`: `uquerydb_h01`
 - `uTimerAlias`: `pantler_h01`

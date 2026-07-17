@@ -1,0 +1,7 @@
+ProcessConfig = uFldScope
+{
+  AppTick = 4
+  CommsTick = 4
+  scope = var=NODE_REPORT,key=NAME
+  scope = var=NODE_REPORT,key=NAME,fld=MODE
+}

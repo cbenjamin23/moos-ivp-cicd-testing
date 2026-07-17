@@ -1,0 +1,10 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldScope
+  event = var=NODE_REPORT, val="NAME=alpha,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+  event = var=TEST_DRIVER_DONE, val=true, time=4.0
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}

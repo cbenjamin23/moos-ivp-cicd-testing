@@ -5557,14 +5557,16 @@
       "families": [
         "ufld_scope"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldScope"
+      ],
       "harness": "H01-ufld_scope_unit",
       "key": "ufld_scope_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 9
       },
       "path": "harnesses/ufld_scope_harnesses/H01-ufld_scope_unit",
       "perf_profile": "",
@@ -5572,6 +5574,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldScope",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5588,7 +5591,7 @@
           "later_missing_field_replaces_value_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh"
       }
@@ -6740,6 +6743,9 @@
       "uFldPathCheck": [
         "ufld_pathcheck_h01"
       ],
+      "uFldScope": [
+        "ufld_scope_h01"
+      ],
       "uFldShoreBroker": [
         "cmgr_h01",
         "cmgr_h02",
@@ -7017,10 +7023,10 @@
       ".sh": 314,
       ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1171,
+      ".xmoos": 1180,
       "[none]": 7
     },
-    "harness_patch_count": 1666,
+    "harness_patch_count": 1675,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 429,
