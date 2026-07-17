@@ -4368,6 +4368,14 @@ produced a mission-owned failure, changing the invalid obstacle to a valid one
 failed the absence contract, and removing pMissionEval caused the wrapper to
 reject zero result rows. No tested MOOS process survived cleanup.
 
+After the local skill update to 1.4.5, the launcher and overlays were aligned
+with its clarified identity contract: `case=` is the harness variation
+identity, while `mission_mod` is reserved for a genuine standalone mission
+mode. The harness no longer forwards the case name as `--mmod`, and the
+case-specific evaluator blocks no longer duplicate it as `mission_mod`. A
+focused live case and the 1.4.5 static checker passed; grading conditions and
+result semantics are unchanged.
+
 ### Completed Migration: `ufld_pathcheck_h01`
 
 Pathcheck now uses the same standalone Bash 5.1 rolling launcher and shared
@@ -4412,10 +4420,18 @@ fails both seen conditions; and changing alpha's final geometry makes the
 intermediate and primary multi-node evaluators fail. No tested MOOS process
 survived cleanup.
 
+The same skill-1.4.5 identity alignment was applied after migration: the
+harness case remains solely in the normalized `case=` field, and neither the
+launcher nor its evaluator overlays repurpose `mission_mod`. A focused live
+case and the 1.4.5 static checker passed after the removal. This is metadata
+cleanup only; it does not change any pathcheck stimulus, evaluator condition,
+or timing.
+
 ## Immediate Next Step
 
-Fifty-three of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Fifty-three of the sixty-seven registered harnesses are now migrated. The
+uField pilots additionally incorporate the clarified case-identity contract
+from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,

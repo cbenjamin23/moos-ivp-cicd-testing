@@ -43,7 +43,6 @@ ProcessConfig = pMissionEval
   pass_condition = COD_ENCOUNTER = alpha:obs:0.5:1
   result_flag = MISSION_EVALUATED = true
   mission_form = ufield_app_unit
-  mission_mod = $(MMOD:=fresh_clear_keeps_obstacle_pass)
   report_column = grade=$[GRADE]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = collision=$[COD_COLLISION]

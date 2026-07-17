@@ -20,7 +20,6 @@ ProcessConfig = pMissionEval
   pass_condition = UPC_ODOM_SEEN = false
   result_flag = MISSION_EVALUATED = true
   mission_form = ufield_app_unit
-  mission_mod = $(MMOD:=two_reports_speed_only_pass)
   report_column = grade=$[GRADE]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = odom=$[UPC_ODOMETRY_REPORT]

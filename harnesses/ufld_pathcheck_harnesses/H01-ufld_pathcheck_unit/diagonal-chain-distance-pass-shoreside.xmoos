@@ -19,7 +19,6 @@ ProcessConfig = pMissionEval
   pass_condition = UPC_ODOMETRY_REPORT = $ (EXPECT_ODOM)
   result_flag = MISSION_EVALUATED = true
   mission_form = ufield_app_unit
-  mission_mod = $(MMOD:=diagonal_chain_distance_pass)
   report_column = grade=$[GRADE]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = odom=$[UPC_ODOMETRY_REPORT]

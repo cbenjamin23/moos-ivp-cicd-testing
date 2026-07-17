@@ -19,7 +19,6 @@ ProcessConfig = pMissionEvalAlpha
   pass_flag = PATH_ALPHA_OK=true
   result_flag = PATH_ALPHA_EVALUATED=true
   mission_form = ufield_app_unit_intermediate
-  mission_mod = multi_node_independent_pass_alpha
   report_column = grade=$[GRADE]
   report_file = alpha_result.txt
 }
@@ -50,7 +49,6 @@ ProcessConfig = pMissionEval
   pass_condition = UPC_ODOMETRY_REPORT = $ (EXPECT_BRAVO_ODOM)
   result_flag = MISSION_EVALUATED = true
   mission_form = ufield_app_unit
-  mission_mod = $(MMOD:=multi_node_independent_pass)
   report_column = grade=$[GRADE]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = odom=$[UPC_ODOMETRY_REPORT]

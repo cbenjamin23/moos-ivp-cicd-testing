@@ -47,7 +47,6 @@ ProcessConfig = pMissionEval
   pass_condition = COD_COLLISION_SEEN = false
   result_flag = MISSION_EVALUATED = true
   mission_form = ufield_app_unit
-  mission_mod = $(MMOD:=near_boundary_counts_encounter_pass)
   report_column = grade=$[GRADE]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = encounter=$[COD_ENCOUNTER]

@@ -39,7 +39,6 @@ ProcessConfig = pMissionEval
   pass_condition = COD_NEAR_ALPHA = obs:1
   result_flag = MISSION_EVALUATED = true
   mission_form = ufield_app_unit
-  mission_mod = $(MMOD:=near_miss_upper_macro_flag_pass)
   report_column = grade=$[GRADE]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = near=$[COD_NEAR_ALPHA]

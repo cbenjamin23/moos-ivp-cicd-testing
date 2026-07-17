@@ -39,7 +39,6 @@ ProcessConfig = pMissionEval
   pass_condition = COD_ENCOUNTER_DIST = 9
   result_flag = MISSION_EVALUATED = true
   mission_form = ufield_app_unit
-  mission_mod = $(MMOD:=encounter_double_flag_pass)
   report_column = grade=$[GRADE]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = encounter_dist=$[COD_ENCOUNTER_DIST]

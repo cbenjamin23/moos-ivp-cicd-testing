@@ -387,7 +387,6 @@ run_case() {
         : > results.txt
         launch_args=(
             --max_time="$MAX_TIME"
-            --mmod="$case_name"
             --shore_mport="$case_base"
             --veh_mport="$((case_base + 1))"
             --shore_pshare="$((case_base + PSHARE_OFFSET))"
