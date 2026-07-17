@@ -1,9 +1,9 @@
 # H01-uFldPathCheck Unit Harness
 
 This harness tests `uFldPathCheck` as a single-community app-level MOOS mail
-contract. Each case scripts `NODE_REPORT` or `NODE_REPORT_LOCAL` mail and checks
-the resulting `UPC_ODOMETRY_REPORT` and `UPC_SPEED_REPORT` evidence in the
-mission `.alog`.
+contract. Each case scripts `NODE_REPORT` or `NODE_REPORT_LOCAL` mail, and
+`pMissionEval` grades the resulting `UPC_ODOMETRY_REPORT` and
+`UPC_SPEED_REPORT` evidence.
 
 ## Current Matrix
 

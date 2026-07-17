@@ -4368,16 +4368,60 @@ produced a mission-owned failure, changing the invalid obstacle to a valid one
 failed the absence contract, and removing pMissionEval caused the wrapper to
 reject zero result rows. No tested MOOS process survived cleanup.
 
+### Completed Migration: `ufld_pathcheck_h01`
+
+Pathcheck now uses the same standalone Bash 5.1 rolling launcher and shared
+mission wrapper established by the collob pilot. Its seventeen cases have
+explicit case overlays, isolated copies in serial and rolling modes,
+thirty-port blocks, immediate refill, deterministic aggregation, a lock,
+root-scoped cleanup, and strict one-row validation. Startup traffic begins only
+after `uFldPathCheck` and the evaluator are connected, fixing the two early-mail
+losses observed in the untouched legacy baseline without changing the expected
+distance, speed, reset, or history-window values.
+
+The app publishes comma-delimited reports containing embedded equals signs.
+Adversarial validation showed that placing those literals directly in quoted
+pMissionEval conditions was too permissive, while placing them unquoted was
+parsed as an expression rather than one string. Final overlays therefore
+initialize case-local `EXPECT_ODOM` and `EXPECT_SPEED` values and compare the
+existing app publications with `$ (EXPECT_*)`, following the established
+pMissionEval macro pattern. Expected-absence cases use initialized seen flags.
+No new app or behavior publication was added.
+
+The multi-node case must prove alpha and bravo reports published sequentially
+on the same MOOS variable. It uses a second pMissionEval instance at an
+independent timed alpha checkpoint to post `PATH_ALPHA_OK`, then the primary
+evaluator requires that flag and the final exact bravo report. Bravo's final
+event was moved from mission time 2.7 to 4.0 so the alpha checkpoint has a
+deterministic observation window. Vehicle paths, distances, history settings,
+and both substantive expected reports are unchanged.
+
+Three final rolling matrices passed 51/51 rows in 30.83, 30.10, and 28.81
+seconds, for a 29.91-second mean. That is 8.24 seconds, about 38.0 percent,
+slower than the 21.67-second legacy rolling mean. Final serial passed 17/17 in
+102.43 seconds, 44.43 seconds or about 76.6 percent slower than legacy. As with
+collob, the increase is the standard per-case `xlaunch` lifecycle and verified
+cleanup; the case workload and grading thresholds did not grow.
+
+Validation covered Bash syntax, ShellCheck, both skill checkers, strict
+generation and evaluator checks for all seventeen cases, three final rolling
+matrices, one final serial matrix, unknown-case rejection, Apple Bash 3.2
+re-execution, and cleanup. A deliberately wrong expected odometry value now
+produces `grade=fail`; changing the invalid-report case to three valid reports
+fails both seen conditions; and changing alpha's final geometry makes the
+intermediate and primary multi-node evaluators fail. No tested MOOS process
+survived cleanup.
+
 ## Immediate Next Step
 
-Fifty-two of the sixty-seven registered harnesses are now migrated against skill
+Fifty-three of the sixty-seven registered harnesses are now migrated against skill
 1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collob_detect_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collob_detect_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Fifteen registered harnesses remain. Continue one harness at a time with
+Fourteen registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

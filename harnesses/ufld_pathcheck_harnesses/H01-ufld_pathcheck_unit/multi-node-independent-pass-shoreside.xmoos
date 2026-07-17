@@ -1,0 +1,59 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+  Run = MOOSDB @ NewConsole = false
+  Run = pRealm @ NewConsole = false
+  Run = pLogger @ NewConsole = false
+  Run = uFldPathCheck @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false ~ pMissionEvalAlpha
+  Run = pMissionEval @ NewConsole = false
+}
+
+ProcessConfig = pMissionEvalAlpha
+{
+  AppTick = 10
+  CommsTick = 10
+  lead_condition = PATH_ALPHA_CHECK = true
+  pass_condition = UPC_ODOMETRY_REPORT = $ (EXPECT_ALPHA_ODOM)
+  pass_flag = PATH_ALPHA_OK=true
+  result_flag = PATH_ALPHA_EVALUATED=true
+  mission_form = ufield_app_unit_intermediate
+  mission_mod = multi_node_independent_pass_alpha
+  report_column = grade=$[GRADE]
+  report_file = alpha_result.txt
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldPathCheck, pMissionEvalAlpha
+  event = var=EXPECT_ALPHA_ODOM, val="vname=alpha,total_dist=5.0,trip_dist=5.0", time=0.1
+  event = var=EXPECT_BRAVO_ODOM, val="vname=bravo,total_dist=12.0,trip_dist=12.0", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=101,X=3,Y=4,LAT=43.825336,LON=-70.330363,SPD=5,HDG=53", time=1.5
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=102,X=6,Y=8,LAT=43.825372,LON=-70.330326,SPD=5,HDG=53", time=2.5
+  event = var=PATH_ALPHA_CHECK, val=true, time=3.2
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=100,Y=0,LAT=43.825300,LON=-70.329156,SPD=0,HDG=0", time=1
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=101,X=100,Y=12,LAT=43.825408,LON=-70.329156,SPD=12,HDG=0", time=2
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=102,X=100,Y=24,LAT=43.825516,LON=-70.329156,SPD=12,HDG=0", time=4
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = PATH_ALPHA_OK = true
+  pass_condition = UPC_ODOMETRY_REPORT = $ (EXPECT_BRAVO_ODOM)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  mission_mod = $(MMOD:=multi_node_independent_pass)
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = odom=$[UPC_ODOMETRY_REPORT]
+  report_column = speed=$[UPC_SPEED_REPORT]
+  report_file = results.txt
+}

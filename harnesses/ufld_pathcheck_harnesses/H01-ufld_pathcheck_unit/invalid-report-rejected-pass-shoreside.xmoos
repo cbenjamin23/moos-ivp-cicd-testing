@@ -1,0 +1,32 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldPathCheck
+  event = var=UPC_ODOM_SEEN, val="false", time=0.1
+  event = var=UPC_SPEED_SEEN, val="false", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,X=bad,Y=0", time=1
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @UPC_ODOMETRY_REPORT#UPC_ODOM_SEEN=true
+  mailflag = @UPC_SPEED_REPORT#UPC_SPEED_SEEN=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = UPC_ODOM_SEEN = false
+  pass_condition = UPC_SPEED_SEEN = false
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  mission_mod = $(MMOD:=invalid_report_rejected_pass)
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = odom=$[UPC_ODOMETRY_REPORT]
+  report_column = speed=$[UPC_SPEED_REPORT]
+  report_column = odom_seen=$[UPC_ODOM_SEEN]
+  report_column = speed_seen=$[UPC_SPEED_SEEN]
+  report_file = results.txt
+}
+

@@ -5156,14 +5156,17 @@
       "families": [
         "ufld_pathcheck"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "pMissionEvalAlpha",
+        "uFldPathCheck"
+      ],
       "harness": "H01-ufld_pathcheck_unit",
       "key": "ufld_pathcheck_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 18
       },
       "path": "harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit",
       "perf_profile": "",
@@ -5171,6 +5174,8 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "pMissionEvalAlpha",
+        "uFldPathCheck",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5196,7 +5201,7 @@
           "bad_then_good_recovery_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/zlaunch.sh"
       }
@@ -6503,6 +6508,9 @@
         "waypoint_h01",
         "zigzag_h01"
       ],
+      "pMissionEvalAlpha": [
+        "ufld_pathcheck_h01"
+      ],
       "pMissionHash": [
         "pmissioneval_h01",
         "pmissionhash_h01",
@@ -6700,6 +6708,9 @@
       "uFldObstacleSim": [
         "p01_obstacle",
         "ufld_obstacle_sim_h01"
+      ],
+      "uFldPathCheck": [
+        "ufld_pathcheck_h01"
       ],
       "uFldShoreBroker": [
         "cmgr_h01",
@@ -6978,10 +6989,10 @@
       ".sh": 314,
       ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1049,
+      ".xmoos": 1067,
       "[none]": 7
     },
-    "harness_patch_count": 1544,
+    "harness_patch_count": 1562,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 429,
