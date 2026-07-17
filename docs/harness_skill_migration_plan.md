@@ -4095,6 +4095,11 @@ cases remain available only through explicit `--case`, so migration does not
 promote them into the supported matrix or remove their manual value. Every
 case-to-patch mapping and every `pMissionEval` assertion is unchanged.
 
+A July 16 family cleanup removed the unused empty solo array, lookup function,
+and unreachable exclusive-slot scheduler branch. No case selection, mission,
+or runtime behavior changed; the simplified final launcher passed a fresh
+22/22 `--jobs=4` matrix in 66 seconds.
+
 Three migrated rolling matrices passed 66/66 rows in 66.45, 66.86, and 67.41
 seconds. Their 66.91-second mean is 9.82 seconds, about 12.8 percent, faster
 than the legacy wave mean. Isolated serial passed 22/22 in 231.38 seconds,
