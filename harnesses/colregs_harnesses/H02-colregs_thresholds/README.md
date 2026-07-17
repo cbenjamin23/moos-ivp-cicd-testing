@@ -27,15 +27,13 @@ Why a separate suite:
   staged deploy, or tighter telemetry inspection
 
 Developer note:
-- use `./zlaunch.sh --group=headon 10`, `--group=overtaking`,
+- use `./zlaunch.sh --group=headon 5`, `--group=overtaking`,
   `--group=overtaken`, `--group=overtaken_mirror`, `--group=giveway`,
   `--group=turngap`, or `--group=standon` to iterate on one family without
   running the full H02 gate
-- `./zlaunch.sh --jobs=2 --port_base=23000 10` runs a rolling scheduler with
+- `./zlaunch.sh --jobs=2 --port_base=23000 5` runs a rolling scheduler with
   isolated mission copies and unique compact case blocks
-  (`case_base = port_base + case_idx*PORT_STRIDE`);
-  known load-sensitive supported edge cases receive exclusive slots to keep
-  the stock geometry honest instead of retuning it into different scenarios
+  (`case_base = port_base + case_idx*PORT_STRIDE`)
 
 ## How To Read Case Names
 
@@ -1103,7 +1101,7 @@ Reason:
 Typical runs:
 
 ```bash
-./zlaunch.sh 10
-./zlaunch.sh --jobs=2 --port_base=23000 10
-./zlaunch.sh --case=head_on_thresh_edge_pass 10
+./zlaunch.sh 5
+./zlaunch.sh --jobs=2 --port_base=23000 5
+./zlaunch.sh --case=head_on_thresh_edge_pass 5
 ```

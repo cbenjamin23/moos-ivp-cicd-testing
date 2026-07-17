@@ -54,6 +54,8 @@ ProcessConfig = pMissionEval
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
   pass_condition = COLREGS_AVOID_IX_BEN = 20
+  pass_condition = XCN_BOW_DIST_BEN < 10
+  pass_condition = XCN_BOW_TURN_GAP_BEN > 10
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass

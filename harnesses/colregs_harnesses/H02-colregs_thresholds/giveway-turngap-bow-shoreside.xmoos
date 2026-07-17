@@ -41,8 +41,8 @@ ProcessConfig = uTimerScript
   AppTick   = 2
   CommsTick = 2
 
-  event = var=DEPLOY_ALL, val=true, time=4
-  event = var=MISSION_TIMEOUT, val=true, time=79
+  event = var=DEPLOY_ALL, val=true, time=25
+  event = var=MISSION_TIMEOUT, val=true, time=120
 }
 
 ProcessConfig = pMissionEval
@@ -54,6 +54,8 @@ ProcessConfig = pMissionEval
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
   pass_condition = COLREGS_AVOID_IX_BEN = 22
+  pass_condition = XCN_BOW_DIST_BEN < 10
+  pass_condition = XCN_BOW_TURN_GAP_BEN < 10
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass

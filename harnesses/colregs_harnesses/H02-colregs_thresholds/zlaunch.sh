@@ -44,7 +44,7 @@ RUNS_DIR="$HARNESS_DIR/.harness_runs"
 LOCK_DIR="$HARNESS_DIR/.harness_runs.lock"
 RUN_ROOT=""
 
-TIME_WARP=10
+TIME_WARP=5
 MAX_TIME=160
 JOBS=1
 PORT_BASE=9000
@@ -163,28 +163,6 @@ EXPLORATORY_CASES=(
     standon_neither_edge_pass
     standon_neither_above_pass
 )
-
-SOLO_CASES=(
-    overtaken_thresh_edge_mirror_pass
-    overtaken_thresh_above_mirror_pass
-    giveway_bowdist_below_pass
-    giveway_bowdist_edge_pass
-    giveway_bowdist_edge_mirror_pass
-    giveway_turngap_edge_pass
-    giveway_turngap_above_pass
-    giveway_turngap_edge_mirror_pass
-    giveway_turngap_above_mirror_pass
-    standon_band315_unsure_bow_pass
-)
-
-is_solo_case() {
-    local case_name="$1"
-    local solo_case
-    for solo_case in "${SOLO_CASES[@]}"; do
-        [ "$case_name" = "$solo_case" ] && return 0
-    done
-    return 1
-}
 
 declare -a SELECTED_CASES CASE_RESULT
 declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
@@ -940,14 +918,6 @@ scheduler_broken=no
 
 while [ "$next" -lt "$total" ] || [ "$active" -gt 0 ]; do
     while [ "$next" -lt "$total" ] && [ "$active" -lt "$JOBS" ]; do
-        next_case="${SELECTED_CASES[$next]}"
-        if is_solo_case "$next_case"; then
-            [ "$active" -eq 0 ] || break
-            start_case "$next"
-            next=$((next + 1))
-            active=$((active + 1))
-            break
-        fi
         start_case "$next"
         next=$((next + 1))
         active=$((active + 1))

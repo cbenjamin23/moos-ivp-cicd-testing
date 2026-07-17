@@ -4118,30 +4118,60 @@ mission-modifier mapping. The Bash 5.1 launcher uses isolated copies in every
 mode, rolling refill, deterministic aggregation, three MOOSDB and three pShare
 ports per case, root-scoped cleanup, a lock, strict one-row result validation,
 and mission-owned `grade=` rows. The redundant universal `EXPECTED=pass`
-comparison and H02's custom early runtime-stop machinery are gone.
+comparison and H02's custom early runtime-stop machinery are gone. A July 16
+case-quality follow-up also removed the entire solo-slot list and its scheduler
+branch. Every supported case now follows the same rolling contract.
 
-The first migrated matrix had one isolated missing-result lifecycle outlier in
-`standon_southwest_unsurebow_pass`; the unchanged case passed 5/5 focused
-runs. A later full matrix exposed four mission-owned timeouts under rolling
-load. All four unchanged cases passed 5/5 alone. Three were therefore added to
-H02's existing solo-slot set; the fourth was already solo and remained under
-observation. No threshold, geometry, pMissionEval condition, stimulus, or
-reported evidence changed.
+The no-solo audit first reproduced the actual timing problem instead of
+preserving the workaround. One full `--jobs=4` matrix passed at warp 10, but a
+second failed only `standon_ot_inextremis_range_edge_pass`. The unchanged case
+then passed only 3/5 focused warp-10 repetitions even while alone, proving that
+exclusive scheduling was not a fix. It passed 10/10 at warp 5 with its original
+mission-time deadline, geometry, stimulus, and evaluator conditions. H02's
+default warp is therefore 5. This gives the same cases more real CPU time; it
+does not change simulated mission time or what any case grades.
 
-With the final solo-slot set, three consecutive rolling matrices passed
-174/174 rows in 280.54, 288.85, and 277.53 seconds, for a 282.31-second mean.
-This is 46.87 seconds, about 19.9 percent, slower than the 235.44-second legacy
-wave mean. Isolated serial passed 58/58 in 606.71 seconds, 126.50 seconds or
-about 26.3 percent slower than the 480.21-second legacy serial run, roughly
-2.18 seconds per case. H02's short classification snapshots make the standard
-per-case wrapper and verified-cleanup costs prominent, and the extra exclusive
-slots trade throughput for stable unchanged geometry.
+Source review of the give-way turn-gap split found a separate case-integrity
+gap. `BHV_AvdColregsV22` chooses the bow branch when either bow-crossing distance
+is above 10 or turn gap is below 10. The old evaluators checked only the final
+mode, so a nominal turn-gap case could reach the expected mode for the other
+reason. Both final evaluators now also require `XCN_BOW_DIST_BEN < 10`; the
+stern evaluator requires `XCN_BOW_TURN_GAP_BEN > 10`, while the bow evaluator
+requires it below 10. These are existing behavior diagnostics, not new grading
+variables.
 
-Validation covered nominal and named-group execution, all fifty-eight live
-case mappings, focused load-sensitive sweeps, three clean final rolling
-matrices, one clean isolated serial matrix, explicit two-vehicle port
-forwarding, intended sidecars, and both skill static checkers. No tested MOOS
-process survived cleanup.
+The bow-side overlay now holds deployment until mission time 25 and allows a
+120-mission-second timeout, matching the existing stern-side overlay so both
+vehicles and contact exchange settle before the probe. Final base and mirrored
+edge cases move the B track endpoints from `41.529,-50.552` /
+`-18.471,53.371` to `41.600,-50.480` / `-18.400,53.443` (with exact
+180-degree mirrors), and B speed changes from 1.3 to 1.4. Final base and
+mirrored above-edge cases move the B track endpoints from `41.26,-50.827` /
+`-18.74,53.096` to `39.46,-52.627` / `-20.54,51.296` (again with exact
+mirrors), with A/B speeds changing from 1.4/1.3 to 1.2/1.4. These changes
+preserve the same straight-track give-way comparison while creating measured
+margin on both source inputs. Across five final rolling turn-gap matrices, the
+edge cases remained on the stern branch with bow distance below 10 and turn
+gap about 10.59-11.27; the above-edge cases remained on the bow branch with
+bow distance about 5.91-7.83 and turn gap about 9.03-9.50. Earlier exploratory
+geometry-only and single-speed adjustments were rejected because repeated
+runs showed one of the two diagnostics still balancing too close to 10.
+
+Three consecutive final no-solo rolling matrices passed 174/174 rows in 199,
+202, and 200 seconds, for a 200.33-second mean. This is 35.11 seconds, about
+14.9 percent, faster than the 235.44-second untouched legacy wave mean, and
+81.98 seconds, about 29.0 percent, faster than the first migrated solo-slot
+mean. The final isolated serial matrix passed 58/58 in 771 seconds. That is
+290.79 seconds, about 60.6 percent, slower than legacy serial because halving
+the warp approximately doubles the real execution portion when there is no
+parallelism; rolling mode recovers that cost by keeping all four standard slots
+available.
+
+Validation covered the two skill static checkers, Bash syntax, five focused
+final turn-gap matrices, three clean full rolling matrices on independent port
+ranges, one clean isolated serial matrix, exact 58-row aggregation, and all ten
+formerly exclusive cases under ordinary concurrent load. No tested MOOS
+process survived cleanup and no diagnostic workdir or harness lock remained.
 
 ### Completed Migration: `colregs_h03`
 
