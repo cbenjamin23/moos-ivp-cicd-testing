@@ -4478,17 +4478,75 @@ summary conditions. The retained final matrix contained twenty-six isolated
 missions, targets, `.alog` files, and physical pMissionEval rows, with no
 warning-bearing worker logs and no surviving tested process.
 
+### Completed Migration: `ufld_collision_detect_h01`
+
+CollisionDetect now uses the established Bash 5.1 rolling launcher and an
+isolated shared-stem copy for every case. Its twenty README cases map to one
+common application overlay and twenty explicit case overlays, with thirty-port
+blocks, immediate slot refill, deterministic aggregation, a lock, canonical
+root-scoped teardown, strict one-row validation, and no case-derived
+`mission_mod`. The shared stem itself was not changed.
+
+pMissionEval now owns every substantive verdict from existing detector mail:
+exact `UCD_REPORT` values, collision/near/encounter totals, closest-range
+values, configured flag outputs, parameter-summary publication, and visual
+mail. Expected-absence cases initialize narrowly scoped seen flags. Exact
+comma-delimited reports use `EXPECT_REPORT` values because they contain
+embedded equals signs. No shell log evidence, new application, or alternate
+grade remains.
+
+Two cases needed careful history handling. The ring-positive case still proves
+both `alpharng` and `bravorng`, not merely that some `VIEW_CIRCLE` appeared. It
+now posts alpha first, evaluates its exact circle at a one-second checkpoint,
+then posts bravo at 1.5 seconds and requires bravo's exact circle in the final
+grade. A deliberately wrong alpha position failed the final mission grade.
+The ring-negative case uses a seen flag and still requires no `VIEW_CIRCLE` at
+all.
+
+The old range-normalization case only searched for the startup text
+`collision_range=6, near_miss_range=6, encounter_range=6`. pMissionEval cannot
+safely compare that space-bearing, comma/equal-delimited literal: a quoted
+condition also accepted a deliberately wrong collision range, while
+uTimerScript removed the spaces from an expected-value post. The final case
+therefore keeps the existing invalid 6/3/4 configuration, confirms that
+`COLLISION_DETECT_PARAMS` was published, and drives an 8-to-7-to-5-to-8 meter
+closing/opening sequence. It requires the five-meter CPA to produce an exact
+collision report and increment `COLLISION_TOTAL`. Changing the configured
+collision range from six to four made the case fail, proving that the revised
+behavioral assertion actually tests the normalized threshold. pMissionEval is
+started before the detector so it observes the one-time startup parameter
+publication.
+
+Untouched legacy measurements at warp 10 were three rolling matrices of 26,
+25, and 23 seconds and one 71-second serial matrix, all 20/20. Four final
+migrated rolling matrices passed 80/80 in 32.32, 31.71, 31.34, and 31.56
+seconds, for a 31.73-second mean. That is 7.06 seconds, about 28.6 percent,
+slower than the 24.67-second legacy mean. Migrated isolated serial passed
+20/20 in 113.20 seconds, 42.20 seconds or about 59.4 percent slower than
+legacy. The increase is the same fixed standard mission lifecycle and verified
+cleanup cost observed in the other short uField harnesses.
+
+Validation covered Bash syntax, ShellCheck, the skill-1.4.5 harness checker,
+all-case generation, three final rolling matrices plus a retained final matrix,
+one serial matrix, rolling refill, exact ordering, distinct ports, and cleanup.
+Changing `ignore_group` so the supposedly blocked pair was evaluated produced
+`report_seen=true` and a mission failure; changing the normalized collision
+range to four failed the five-meter case; and changing alpha's expected ring
+position failed the two-ring case. The retained matrix had twenty isolated
+missions, targets, `.alog` files, and physical pMissionEval rows, with no
+warning-bearing worker logs or surviving tested process.
+
 ## Immediate Next Step
 
-Fifty-four of the sixty-seven registered harnesses are now migrated. The
+Fifty-five of the sixty-seven registered harnesses are now migrated. The
 uField pilots additionally incorporate the clarified case-identity contract
 from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collob_detect_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Thirteen registered harnesses remain. Continue one harness at a time with
+Twelve registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

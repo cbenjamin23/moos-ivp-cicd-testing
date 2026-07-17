@@ -1,0 +1,48 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+  Run = MOOSDB @ NewConsole = false
+  Run = pRealm @ NewConsole = false
+  Run = pLogger @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false ~ pMissionEvalAlpha
+  Run = pMissionEval @ NewConsole = false
+  Run = uFldCollisionDetect @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, pMissionEvalAlpha, uFldCollisionDetect
+  event = var=EXPECT_ALPHA_RING, val="x=0,y=0,radius=20,label=alpharng,label_color=invisible,edge_color=white", time=0.1
+  event = var=EXPECT_BRAVO_RING, val="x=10,y=0,radius=20,label=bravorng,label_color=invisible,edge_color=white", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=90", time=0.4
+  event = var=RING_ALPHA_CHECK, val=true, time=1.0
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=10,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=3.0
+}
+
+ProcessConfig = pMissionEvalAlpha
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = RING_ALPHA_CHECK = true
+  pass_condition = VIEW_CIRCLE = $ (EXPECT_ALPHA_RING)
+  pass_flag = UCD_ALPHA_RING_OK=true
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = UCD_ALPHA_RING_OK = true
+  pass_condition = VIEW_CIRCLE = $ (EXPECT_BRAVO_RING)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = alpha_ring=$[UCD_ALPHA_RING_OK]
+  report_file = results.txt
+}

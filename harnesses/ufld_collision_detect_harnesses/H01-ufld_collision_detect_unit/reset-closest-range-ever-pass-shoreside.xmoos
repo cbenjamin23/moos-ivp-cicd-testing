@@ -1,0 +1,26 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldCollisionDetect
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=90", time=0.4
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=8,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=0.5
+  event = var=UCD_RESET, val=true, time=1.4
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=12,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=1.8
+  event = var=TEST_EVAL_READY, val=true, time=3.5
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = UCD_CLOSEST_RANGE_EVER = 12
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = closest_ever=$[UCD_CLOSEST_RANGE_EVER]
+  report_file = results.txt
+}
+
