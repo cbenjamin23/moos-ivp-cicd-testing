@@ -1,0 +1,22 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldMessageHandler
+  event = var=NODE_MESSAGE, val="src_node=alpha,dest_node=shoreside,var_name=HANDLED_NUMERIC,double_val=42.5", time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = HANDLED_NUMERIC = 42.5
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = numeric=$[HANDLED_NUMERIC]
+  report_file = results.txt
+}

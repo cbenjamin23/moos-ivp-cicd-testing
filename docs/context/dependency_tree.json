@@ -5219,14 +5219,16 @@
       "families": [
         "ufld_message_handler"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldMessageHandler"
+      ],
       "harness": "H01-ufld_message_handler_unit",
       "key": "ufld_message_handler_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 27
       },
       "path": "harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit",
       "perf_profile": "",
@@ -5234,6 +5236,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldMessageHandler",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5268,7 +5271,7 @@
           "mixed_valid_rejected_summary_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/zlaunch.sh"
       }
@@ -6629,6 +6632,9 @@
         "p02_colregs",
         "p03_colregs"
       ],
+      "uFldMessageHandler": [
+        "ufld_message_handler_h01"
+      ],
       "uFldNodeBroker": [
         "cmgr_h01",
         "cmgr_h02",
@@ -6989,10 +6995,10 @@
       ".sh": 314,
       ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1067,
+      ".xmoos": 1094,
       "[none]": 7
     },
-    "harness_patch_count": 1562,
+    "harness_patch_count": 1589,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 429,

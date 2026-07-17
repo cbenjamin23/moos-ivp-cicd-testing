@@ -4427,17 +4427,68 @@ case and the 1.4.5 static checker passed after the removal. This is metadata
 cleanup only; it does not change any pathcheck stimulus, evaluator condition,
 or timing.
 
+### Completed Migration: `ufld_message_handler_h01`
+
+MessageHandler now uses the same Bash 5.1 rolling launcher and isolated shared
+stem copies as the first two uField harnesses. All twenty-six README cases map
+explicitly to readable case overlays, use thirty-port blocks, refill a slot as
+soon as any worker finishes, aggregate in selected-case order, hold a harness
+lock, use canonical root-scoped teardown, and require exactly one valid
+mission result. The harness case identity appears only as `case=`; it is not
+repurposed as `mission_mod`.
+
+The legacy launcher treated pMissionEval's generic `TEST_DRIVER_DONE=true`
+grade as provisional and then made the real decision by searching `.alog`
+files. The migrated overlays instead express every existing contract through
+variables already published by uFldMessageHandler. Accepted string and numeric
+messages are compared directly, configured good/bad flags retain their exact
+value checks, and comma-delimited `UMH_SUMMARY_MSGS` values are compared through
+case-local `EXPECT_SUMMARY` inputs so pMissionEval parses the whole string as
+one value. Rejection and invalid-message cases initialize narrowly scoped
+`*_SEEN=false` flags and let pMissionEval set them on any forbidden output. No
+new app, application publication, shell evidence parser, or independent grade
+was added.
+
+`uTimerScript block_on` now waits for pMissionEval and uFldMessageHandler before
+posting each existing message sequence. This prevents startup mail loss while
+leaving the message payloads, one- and two-message schedules, strict-addressing
+settings, and six-second evaluation boundary unchanged. The quoted-string case
+now compares the exact legacy-normalized value `\"quotedok\"`; the old shell
+check accepted any logged value containing `quotedok`. This makes that existing
+assertion precise without changing its stimulus or intended parser contract.
+
+Untouched legacy measurements at warp 10 were three rolling matrices of 32,
+31, and 33 seconds and one 90-second serial matrix, all 26/26. Four final
+migrated rolling matrices passed 104/104 rows in 42.79, 43.25, 45.51, and
+41.86 seconds, for a 43.35-second mean. That is 11.35 seconds, about 35.5
+percent, slower than the 32.00-second legacy mean. Migrated isolated serial
+passed 26/26 in 145.40 seconds, 55.40 seconds or about 61.6 percent slower than
+legacy. As with the other short uField cases, the difference is fixed per-case
+`xlaunch` and verified cleanup overhead; application work, evaluator timing,
+and grading thresholds did not grow.
+
+Validation covered Bash syntax, ShellCheck, the skill-1.4.5 harness checker,
+all-case generation, twenty-six generated targets, four full rolling matrices,
+one full serial matrix, deterministic result ordering, immediate rolling
+refill, distinct generated ports, unknown-case, job-bound, port-bound, lock,
+Bash 3.2 rejection, and Homebrew Bash re-execution probes. A wrong accepted
+payload expectation produced a mission-owned failure, and changing a rejected
+destination into the local community failed both the forbidden-output and
+summary conditions. The retained final matrix contained twenty-six isolated
+missions, targets, `.alog` files, and physical pMissionEval rows, with no
+warning-bearing worker logs and no surviving tested process.
+
 ## Immediate Next Step
 
-Fifty-three of the sixty-seven registered harnesses are now migrated. The
+Fifty-four of the sixty-seven registered harnesses are now migrated. The
 uField pilots additionally incorporate the clarified case-identity contract
 from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collob_detect_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collob_detect_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Fourteen registered harnesses remain. Continue one harness at a time with
+Thirteen registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
