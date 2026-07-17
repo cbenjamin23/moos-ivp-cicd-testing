@@ -4831,6 +4831,54 @@ invalid-route families, deterministic ordering, Apple Bash and unknown-case
 errors, a supplemental-evidence mutation, and scoped cleanup. No tested
 process survived final cleanup.
 
+### Post-interruption quality audit: regular uFld application harnesses
+
+A fresh July 17 audit rechecked all eight regular uFld application harnesses
+after the uField communications family was closed. The seven shared-stem
+launchers and the dedicated uFldObstacleSim launcher all pass Bash syntax,
+ShellCheck, and the skill-1.4.5 harness checker; both evaluator stems pass the
+eval checker with only the expected unit-style pAutoPoke warning. Source review
+confirmed Bash 5.1 rolling scheduling, isolated copies in every mode,
+thirty-port blocks, explicit case mappings, deterministic one-row aggregation,
+canonical scoped teardown, and no solo-slot machinery.
+
+Seven harnesses keep their substantive verdict entirely in pMissionEval.
+uFldScope remains the one documented exception because its tested table exists
+only in the final textual APPCAST payload; the shell checks one actual final
+uFldScope snapshot and retains the mission row as provenance on mismatch. No
+new grading app or application publication was introduced. Exact result order
+matched each launcher for all 188 selected cases, and every final row passed:
+
+| harness | rows | audit rolling seconds | cleanup |
+| --- | ---: | ---: | --- |
+| `ufld_collob_detect_h01` | 14 / 14 | 43 | clean |
+| `ufld_pathcheck_h01` | 17 / 17 | 53 | clean |
+| `ufld_message_handler_h01` | 26 / 26 | 77 | clean |
+| `ufld_collision_detect_h01` | 20 / 20 | 59 | clean |
+| `ufld_beacon_range_sensor_h01` | 20 / 20 | 58 | clean |
+| `ufld_contact_range_sensor_h01` | 34 / 34 | 96 | clean |
+| `ufld_scope_h01` | 8 / 8 | 24 | clean |
+| `ufld_obstacle_sim_h01` | 49 / 49 | 149 | clean |
+
+The current machine ran several short families more slowly than their original
+migration samples, but this single sequential audit is correctness evidence,
+not a replacement performance benchmark. It exposed one concrete launcher
+issue: macOS Control Center currently owns TCP port 5000. The old default
+allocations assigned MessageHandler case 20, BeaconRangeSensor case 10, and
+Scope case 0 to that listener. The first MessageHandler audit therefore lost
+MOOSDB during startup and produced one runner-owned missing-result row while
+all other cases completed. Moving only those three default bases from
+4400/4700/5000 to 4410/4710/5010 removes the collision; user-provided bases,
+case spacing, stimuli, and grading are unchanged. The complete MessageHandler,
+BeaconRangeSensor, and Scope matrices then passed on the corrected defaults,
+with no surviving tested process. Generated audit results were removed after
+their counts, ordering, and grades were verified.
+
+The quality conclusion is affirmative: the regular uFld migrations conform to
+the standard launcher architecture, preserve or strengthen their substantive
+contracts, and have fresh complete live evidence. The only non-pMissionEval
+verdict boundary is the narrow uFldScope APPCAST case already justified above.
+
 ## Immediate Next Step
 
 Sixty-one of the sixty-seven registered harnesses are now migrated. The
