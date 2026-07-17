@@ -1,0 +1,15 @@
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  auto_bridge_realmcast   = false
+  auto_bridge_appcast     = false
+  auto_bridge_pshare_vars = false
+
+  try_shore_host = pshare_route=localhost:$(SHORE_PSHARE)
+
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+  bridge = src=ACK_MESSAGE_LOCAL,  alias=ACK_MESSAGE
+}

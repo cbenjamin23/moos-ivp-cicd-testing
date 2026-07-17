@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1690` under configured targets
+- Harness patch/config files: `1737` under configured targets
 - Mission launch/config files: `429` under `missions/`
 - C++ test sources: `214`
 
@@ -145,7 +145,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `ufld_collob_detect_h01` | `ufld_collob_detect` | `harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 14 | `uFldCollObDetect` | `ufld-collob-detect-unit` |
 | `ufld_scope_h01` | `ufld_scope` | `harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 8 | `uFldScope` | `ufld-scope-unit` |
 | `ufield_comms_h01` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H01-ufield_comms_unit/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 35 | - | `ufield-comms-unit` |
-| `ufield_comms_h02` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 12 | - | `ufield-broker-bridge` |
+| `ufield_comms_h02` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 12 | `pMediator` | `ufield-broker-bridge` |
 | `ufield_comms_h03` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H03-ufield_route_resilience/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 25 | - | `ufield-route-resilience` |
 | `ufld_obstacle_sim_h01` | `ufld_obstacle_sim` | `harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/zlaunch.sh` | `missions/ufld_obstacle_sim_missions/ufld_obstacle_sim_unit` | 49 | `pEchoVar`, `uFldObstacleSim` | `ufld-obstacle-sim-unit` |
 
@@ -172,6 +172,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
 - `pEchoVar`: `pechovar_h01`, `ufld_obstacle_sim_h01`
+- `pMediator`: `ufield_comms_h02`
 - `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`
 - `pObstacleMgr`: `obmgr_h01`, `obmgr_h02`, `obstacle_behavior_h01`, `p01_obstacle`
 - `pSearchGrid`: `psearchgrid_h01`

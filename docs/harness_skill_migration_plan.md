@@ -4752,17 +4752,96 @@ expected payload, requiring the wrong delivery count, and leaving runtime
 pulses enabled each produced a mission-owned failure. No tested process
 survived the final rolling or serial run.
 
+### Completed Migration: `ufield_comms_h02`
+
+The broker/bridge harness now uses the Bash 5.1 rolling launcher, harness-owned
+isolated mission copies, deterministic selected-case aggregation, thirty-port
+blocks with all three MOOSDB and pShare communities separated, the harness
+lock, and canonical root-scoped teardown. Its twelve cases map explicitly to
+shoreside evaluator/configuration overlays and vehicle overlays. The former
+procedural Perl changes for custom, mediated, and minimal node bridges are
+gone. No application or shared-stem mission behavior was added.
+
+pMissionEval now grades every stable broker fact available at shoreside. This
+includes the complete final `UFSB_QBRIDGE_VARS`, `UFSB_BRIDGE_VARS`, and
+`NODE_PSHARE_VARS` lists for the applicable case, ordinary two-node delivery,
+and the vnode's local `TRY_SHORE_HOST` advertisement. Exact route-command
+history, per-vehicle acknowledgement payloads, and expected absence of an
+invalid or unmediated `PSHARE_CMD` remain a narrow supplemental alog check.
+Those values overwrite one another on the same MOOS variable, so a standard
+pMissionEval InfoBuffer cannot prove all historical commands or their absence
+from final state. A supplemental mismatch produces a normalized harness
+failure while preserving the mission row as `mission_*` provenance.
+
+The untouched legacy warp-20, `--jobs=2` matrix passed 12/12 in 75.67 seconds.
+The final migrated rolling matrix passed 12/12 in 77 seconds, and the isolated
+serial matrix passed 12/12 in 149 seconds. All-case generation, Bash syntax,
+the skill-1.4.5 harness checker, selected cases, ordered result counts, Apple
+Bash rejection, and cleanup passed. Deliberately requiring a nonexistent
+qbridge summary made pMissionEval grade fail; restoring the condition restored
+the clean result. No tested process survived final cleanup.
+
+### Completed Migration: `ufield_comms_h03`
+
+The route-resilience harness now uses the same standard rolling launcher and
+isolation contract for all twenty-five cases. Thirty-six explicit case-named
+vehicle and shoreside overlays replace the former procedural mission rewrites.
+Ten overlays contain only clearly marked dead/listener-port placeholders; the
+launcher renders those three numeric values inside the isolated case copy
+before applying the overlay. The shared stem was not given route-mode switches
+or case-derived mission modifiers.
+
+pMissionEval continues to own normal recovery and expected-negative verdicts.
+Positive cases require both nodes and the complete delivery contract. Blocked,
+one-node, and late-route scenarios produce `grade=pass` only when their
+negative behavior is observed. Exact runtime route mail, pShare command
+history, acknowledgement keys, and invalid-route absence remain the same
+narrow historical-evidence exception used by H02. A deliberately impossible
+vnode route assertion produced `supplemental_route_check_failed` while
+retaining `mission_grade=pass`, proving the exception is active rather than
+decorative.
+
+Migration validation exposed two legacy timing races, both corrected without
+weakening the intended behavior. The late-route case could forward a retained
+pre-route direct message after route installation. It now overwrites that
+retained bridge value with the same `UFC_DIRECT` payload addressed to a ghost
+node before installing the late route; pMissionEval directly requires that the
+original ABE-to-BEN delivery remain false. This passed ten focused repetitions.
+The three invalid-runtime recovery cases posted their invalid and valid routes
+too early for reliable broker subscription under concurrent load. Their
+existing posts now occur at 300 and 600 mission seconds, the valid recovery is
+repeated at 800, and their existing direct/ack traffic occurs at 1600/1800.
+One later serial audit missed the single acknowledgement while every other
+recovery and delivery condition passed. Because the contract is route recovery
+rather than single-datagram reliability, the same acknowledgement is repeated
+once at 2000 in all three equivalent cases; pMissionEval still requires actual
+reverse-path delivery.
+The invalid input still must create no pShare route, while pMissionEval still
+requires complete two-node recovery and delivery. No case uses a solo slot.
+
+The untouched legacy warp-20, `--jobs=2` matrix passed 25/25 in 163.09 seconds.
+The final migrated rolling matrices passed 25/25 in 163, 162, and 160 seconds,
+and the original final serial matrix passed 25/25 in 308 seconds. A subsequent
+serial audit exposed the one-shot acknowledgement loss described above; after
+the correction, the three equivalent recovery cases passed 15/15 focused
+repetitions. Validation also covered
+all-case generation, Bash syntax, both skill-1.4.5 static checkers, explicit
+case mapping, selected-case runs, ten focused late-route repetitions, repeated
+invalid-route families, deterministic ordering, Apple Bash and unknown-case
+errors, a supplemental-evidence mutation, and scoped cleanup. No tested
+process survived final cleanup.
+
 ## Immediate Next Step
 
-Fifty-nine of the sixty-seven registered harnesses are now migrated. The
+Sixty-one of the sixty-seven registered harnesses are now migrated. The
 uField pilots additionally incorporate the clarified case-identity contract
 from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufield_comms_h01`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufield_comms_h01`, `ufield_comms_h02`, `ufield_comms_h03`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Eight registered harnesses remain. Continue one harness at a time with
+Six registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

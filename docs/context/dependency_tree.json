@@ -5697,6 +5697,7 @@
         "ufield_comms"
       ],
       "focus_process_apps": [
+        "pMediator",
         "uFldNodeBroker",
         "uFldNodeComms",
         "uFldShoreBroker"
@@ -5707,7 +5708,7 @@
         "path": "missions/ufield_comms_missions/ufield_comms_unit"
       },
       "patches": {
-        "file_count": 8
+        "file_count": 19
       },
       "path": "harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge",
       "perf_profile": "",
@@ -5716,6 +5717,7 @@
         "pHostInfo",
         "pLogger",
         "pMarineViewer",
+        "pMediator",
         "pMissionEval",
         "pShare",
         "uFldNodeBroker",
@@ -5742,7 +5744,7 @@
           "shore_try_vnode_default_port_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh"
       }
@@ -5771,7 +5773,7 @@
         "path": "missions/ufield_comms_missions/ufield_comms_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 36
       },
       "path": "harnesses/ufield_comms_harnesses/H03-ufield_route_resilience",
       "perf_profile": "",
@@ -5819,7 +5821,7 @@
           "shore_vnode_duplicate_ignored_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufield_comms_harnesses/H03-ufield_route_resilience/zlaunch.sh"
       }
@@ -6458,6 +6460,9 @@
         "waypoint_h01",
         "zigzag_h01"
       ],
+      "pMediator": [
+        "ufield_comms_h02"
+      ],
       "pMissionEval": [
         "cmgr_h01",
         "cmgr_h02",
@@ -7020,12 +7025,12 @@
       ".png": 4,
       ".py": 36,
       ".sh": 316,
-      ".txt": 301,
+      ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1195,
+      ".xmoos": 1242,
       "[none]": 7
     },
-    "harness_patch_count": 1690,
+    "harness_patch_count": 1737,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 429,
