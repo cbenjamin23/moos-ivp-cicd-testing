@@ -8,7 +8,6 @@ ProcessConfig = uTimerScript
   event = var=NODE_REPORT, val="NAME=alpha,X=bad,Y=0", time=1
   event = var=TEST_EVAL_READY, val=true, time=6.0
 }
-
 ProcessConfig = pMissionEval
 {
   AppTick = 4
@@ -29,4 +28,3 @@ ProcessConfig = pMissionEval
   report_column = speed_seen=$[UPC_SPEED_SEEN]
   report_file = results.txt
 }
-
