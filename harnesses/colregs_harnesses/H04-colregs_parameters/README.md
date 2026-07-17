@@ -8,8 +8,8 @@ TLDR:
   `pwt_outer_dist`, `pwt_inner_dist`, `pwt_grade`, `pts_port_turns_ok`,
   `turn_radius`, `check_plateaus`, `completed_dist`, and `use_refinery`
 - current supported gate: 32 cases
-- migration signoff: the modern launcher is validated; the two
-  `pts_port_turns_ok` cases retain a documented pre-existing geometry flake
+- migration signoff: the modern launcher and all 32 ordinary rolling cases
+  are validated without exclusive scheduling
 - intended long-term pattern: keep geometry fixed and change one behavior knob
   at a time
 
@@ -249,10 +249,10 @@ Implemented expectations:
   the posted `COLREGS_AVOID_PWT_BEN` should separate into low / default /
   saturated bands
 - `pwt_grade_linear_pass` / `pwt_grade_quasi_pass` /
-  `pwt_grade_quadratic_pass`: the same fixed geometry and fixed range gate
-  should stay in `standon:stern` (`colregs_ix=30`) while the posted
-  `COLREGS_AVOID_PWT_BEN` follows the linear / quasi / quadratic relevance
-  curve ordering
+  `pwt_grade_quadratic_pass`: the same fixed geometry and source-derived
+  range checkpoints should stay in `standon:stern` (`colregs_ix=30`) while
+  the posted `COLREGS_AVOID_PWT_BEN` follows the selected linear, quasi, or
+  quadratic relevance curve
 - `pts_port_turns_ok_true_pass` / `pts_port_turns_ok_false_pass`: fixed
   `giveway_turngap_edge_pass` geometry should be checked at an early
   active-give-way gate, `AVDCOL_RANGE_BEN <= 20` while still in
@@ -411,15 +411,14 @@ Notes on the implemented `pwt_inner_dist` group:
 
 Notes on the implemented `pwt_grade` group:
 - `pwt_grade` also changes only the relevance curve in `getRelevance()`
-- H04 uses the same fixed geometry as the `pwt_inner_dist` family, but an
-  earlier fixed range gate, `AVDCOL_RANGE_BEN <= 35`, so the three curve
-  shapes stay well separated under repeated runs
-- at that gate, the same `standon:stern` case produces the expected weight ordering:
-  `quadratic < quasi < linear`
-- the quadratic case waits for both the fixed range/mode gate and its unchanged
-  weight band, with the existing mission timeout as the failure deadline; this
-  avoids grading at a correct `9.97` just before the quadratic curve reaches
-  the asserted `10-16.5` window
+- H04 uses the same fixed geometry as the `pwt_inner_dist` family; linear and
+  quasi grade at `AVDCOL_RANGE_BEN <= 35`, while quadratic grades at the
+  independent later checkpoint `AVDCOL_RANGE_BEN <= 33`
+- the quadratic checkpoint also requires the observed range to remain between
+  30 and 33 and its priority weight between 15 and 30
+- at any common normalized distance the source formulas have the ordering
+  `quadratic < quasi < linear`; each case checks its selected formula at a
+  stable independent checkpoint rather than comparing asynchronous samples
 - this is a better H04 fit than the earlier attempted mode-split approach,
   because it tests the exact source-visible effect of the knob
 
@@ -448,16 +447,13 @@ Notes on the implemented `pts_port_turns_ok` group:
   ship on port (`cn_port=1`), while `pts_port_turns_ok=false` keeps the same
   `giveway:stern` mode but flips the early side state to starboard
   (`cn_port=0`)
-- room for improvement: this family still infers maneuver choice from early
-  relative-side state, not from a direct helm-direction signal; a stronger
-  future version would expose a clean mission-visible turn-direction metric
-- this is a known pre-existing repeatability limitation: `true` permits but
-  does not require a port turn, so the competing helm objectives do not always
-  choose it, and the edge geometry can occasionally miss the expected early
-  side checkpoint (or, for `false`, follow an unsafe path). Migration leaves
-  both cases and all of their assertions intact; redesigning this mini-suite
-  requires a geometry where the allowed-port option is deterministically
-  preferred, or an agreed existing direct turn-direction signal
+- both cases also require closest range above the configured 10-meter safety
+  boundary,
+  zero near misses, zero collisions, the contact still forward, and no
+  port/starboard crossing before the checkpoint
+- the family uses the existing relative-side diagnostics as the
+  mission-visible consequence of the parameter; it does not introduce a
+  harness-only turn-direction signal
 
 ## Parameter Inventory
 

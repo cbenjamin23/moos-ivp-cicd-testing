@@ -4213,51 +4213,60 @@ MOOS process survived cleanup.
 
 ### Completed Migration: `colregs_h04`
 
-H04 preserves all thirty-two parameter cases, fourteen parameter groups, the
-existing solo designation for `pts_port_turns_ok_true_pass`, every explicit
-mission modifier, and all shoreside/behavior overlay mappings. Its Bash 5.1
-launcher now uses isolated copies in every mode, rolling refill, deterministic
-aggregation, three MOOSDB and three pShare ports per case, root-scoped cleanup,
-a lock, strict one-row mission-grade validation, and the same dual-overlay
-preparation path in serial and rolling execution.
+H04 preserves all thirty-two parameter cases, fourteen parameter groups, every
+explicit mission modifier, and all shoreside/behavior overlay mappings. Its
+Bash 5.1 launcher uses isolated copies in every mode, rolling refill,
+deterministic aggregation, three MOOSDB and three pShare ports per case,
+root-scoped cleanup, a lock, strict one-row mission-grade validation, and the
+same dual-overlay preparation path in serial and rolling execution. A July 16
+case-quality follow-up removed the last solo designation and the scheduler's
+exclusive-slot branch, so all thirty-two cases now use the same rolling path.
 
-The quadratic priority-weight baseline exposed a real evaluator-boundary
-defect. At the original `AVDCOL_RANGE_BEN <= 35` trigger, the correct quadratic
-formula can produce `9.97`, just below the unchanged required band of
-`10-16.5`; a focused untouched probe reproduced this. The evaluator now also
-waits for that existing weight band, with the existing mission timeout as the
-failure deadline. No formula, range gate, behavior parameter, or pass
-threshold changed. The repaired case passed 10/10 focused repetitions with
-weights spanning the original band.
+The quadratic priority-weight case no longer uses a second lead condition that
+waits for the weight band it later grades. Source inspection confirmed that
+`getRelevance()` squares the normalized distance fraction for
+`pwt_grade=quadratic`; with outer/inner distances 40/20 and behavior priority
+150, the old range-35 checkpoint sits near the lower edge of the old weight
+band. The final evaluator uses only the independent range/mode checkpoint
+`AVDCOL_RANGE_BEN <= 33` with `standon:stern`, then requires the observed range
+to be 30-33 and the quadratic weight to be 15-30. No new variable or behavior
+parameter was introduced. Ten focused repetitions passed 10/10 with observed
+ranges 31.978-32.974 and weights 18.513-24.129, keeping the result clearly
+below the quasi and linear curves.
 
-The two `pts_port_turns_ok` cases remain a recorded case-quality limitation.
-Untouched baselines had already shown both cases failing intermittently. With
-their original edge geometry, focused migrated probes passed 9/10 for `true`
-and 8/10 for `false`; one false run produced a real collision. Additional
-readiness leads, warp five, and the nearby below-edge geometry did not remove
-the variation and were rejected. Source inspection explains why: `true`
-permits a port turn that still passes astern but does not require the helm to
-choose it against its other objectives. Those experimental changes were fully
-removed. Both cases, their original geometry, and all assertions remain in
-the supported matrix for a later deliberate case redesign rather than being
-weakened or silently dropped.
+The shared H02 turn-gap repair changed the trusted geometry used by both
+`pts_port_turns_ok` cases, so they were re-baselined before H04 edits. On the
+current committed stem, `true` produced `cn_port=1` in 5/5 runs and `false`
+produced `cn_port=0` in 5/5 runs; every run retained `giveway:stern`, contact
+forward, no side crossing, no near miss, and no collision. The old focused
+grades were only 3/5 and 4/5 because their narrow closest-range windows rejected
+otherwise correct snapshots such as 17.931 against an 18.0 floor. Those
+18-20-meter bands were sampling checkpoints, not an effect of
+`pts_port_turns_ok`.
 
-The three migrated rolling matrices completed in 108.11, 111.02, and 109.23
-seconds with 32/32, 31/32, and 32/32 passing rows. Their 109.45-second mean is
-35.85 seconds, about 24.7 percent, faster than the 145.30-second legacy mean;
-the sole migrated matrix failure was the known unchanged
-`pts_port_turns_ok_false_pass` case. Isolated serial passed 32/32 in 339.96
-seconds, 37.18 seconds or about 12.3 percent slower than the 302.78-second
-legacy serial run, roughly 1.16 seconds per case.
+Both final evaluators therefore grade the parameter's existing side-state
+effect directly while requiring `UCD_CLOSEST_RANGE_EVER > 10`, the configured
+10-meter near-miss boundary. They retain the expected opposite `cn_port`
+values, `giveway:stern`, contact-forward, no-crossing, and collision conditions,
+and add `NEAR_MISS_TOTAL = 0`. This removes the incidental timing band while
+preserving and slightly strengthening the safety contract. No new mission
+variable, geometry, behavior parameter, or shell-owned verdict was added. The
+final `true` and `false` cases each passed 10/10 focused repetitions.
 
-Validation covered all-case generation, three full rolling matrices, one full
-serial matrix, focused quadratic and turn-policy sweeps, 96 unique MOOSDB
-ports, 96 unique pShare route ports, 32 shoreside sidecars, 20 behavior
-sidecars, unknown-case rejection, active-lock behavior, Homebrew Bash
-re-execution, and explicit Bash 3.2 rejection. A forced one-second matrix
-still wrote all thirty-two ordered rows and reported seven ordinary failures.
-Bash syntax, ShellCheck, the harness checker, and the shared eval-mission
-checker pass. No tested MOOS process survived migrated cleanup.
+Three consecutive final no-solo rolling matrices passed 96/96 rows in 91, 89,
+and 89 seconds, for an 89.67-second mean. This is 55.63 seconds, about 38.3
+percent, faster than the 145.30-second untouched legacy mean and 19.78 seconds,
+about 18.1 percent, faster than the first migrated solo-enabled mean. Isolated
+serial passed 32/32 in 336 seconds, 33.22 seconds or about 11.0 percent slower
+than legacy serial and 3.96 seconds faster than the prior migrated serial run.
+A six-slot stress matrix also passed 32/32 in 67 seconds.
+
+Validation covered Bash syntax, ShellCheck, both skill static checkers, 30/30
+focused repaired-case repetitions, three full ordinary rolling matrices on
+independent port ranges, one full isolated serial matrix, one six-slot stress
+matrix, and exact ordered 32-row aggregation. The formerly solo case passed
+under both ordinary and elevated concurrent load. No tested MOOS process
+survived cleanup and no workdir or harness lock remained.
 
 ## Immediate Next Step
 
