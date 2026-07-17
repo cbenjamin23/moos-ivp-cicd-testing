@@ -4295,16 +4295,89 @@ matrix, and exact ordered 32-row aggregation. The formerly solo case passed
 under both ordinary and elevated concurrent load. No tested MOOS process
 survived cleanup and no workdir or harness lock remained.
 
+### Shared `ufield_app_unit` Family Baseline
+
+The seven remaining uField app harnesses share
+`missions/ufield_app_missions/ufield_app_unit`, so they were baselined
+sequentially before any shared-stem edit. No two live harness invocations
+overlapped. `ufld_collob_detect_h01` passed three 14-case legacy rolling
+matrices in 19.60, 18.99, and 18.54 seconds and its serial matrix in 49.02
+seconds. `ufld_message_handler_h01`, `ufld_collision_detect_h01`, and
+`ufld_beacon_range_sensor_h01` were also clean in all three rolling matrices
+and serial, with respective rolling means of 32.00, 24.67, and 21.49 seconds
+and serial times of 90, 71, and 68.06 seconds.
+
+The baseline also captured pre-existing instability for later repair.
+`ufld_pathcheck_h01` passed two of three rolling matrices and serial; the
+failed matrix lost early node reports in two cases, while a repeat passed
+17/17. `ufld_contact_range_sensor_h01` passed one 34-case rolling matrix and
+the 117.23-second serial matrix, while two rolling matrices lost different
+early request/report sequences or reached `uMayFinish`; the failed matrix
+timing is not used as a performance baseline. `ufld_scope_h01` failed all
+three rolling matrices and serial because its legacy shell grading samples
+transient APPCAST text and several pMissionEval rows were written before
+`grade=` resolved. Pathcheck and contact-range remain ordinary migrations
+with startup gating to repair in their turns. Scope remains last because its
+APPCAST-only evidence requires a separate verdict-boundary decision.
+
+### Completed Migration: `ufld_collob_detect_h01`
+
+The shared `ufield_app_unit` stem now has the standard thin `zlaunch.sh` wrapper:
+it forwards ports, mission modifier, warp, and maximum time through `xlaunch`,
+uses canonical root-scoped teardown, and requires exactly one valid
+`grade=pass|fail` row. The base mission configuration and generic evaluator
+conditions were not changed. The README now accurately lists all seven
+consumers and states that app-specific sidecars own their evaluator contracts.
+
+The collob launcher no longer sources the 2,591-line legacy shared runner. It
+uses Bash 5.1 rolling scheduling, an isolated stem copy for every case in every
+mode, explicit case-to-sidecar mappings, thirty-port case blocks, immediate
+slot refill, deterministic selected-case aggregation, a harness lock,
+root-scoped cleanup, and strict one-row mission-result validation. All fourteen
+cases now put their app configuration, scripted traffic, and substantive
+conditions in readable shoreside overlays. Nine cases grade directly from the
+existing application publications. Five expected-absence or boundary cases
+use only narrowly scoped initialized `*_SEEN` booleans because an unset MOOS
+value cannot itself prove that no publication occurred. No application, log
+parser, generic evidence layer, or unrelated report variables were added.
+
+Case geometry, app parameters, event timing, and intended comparisons remain
+the same. `uTimerScript block_on` now waits for `pMissionEval` and
+`uFldCollObDetect` before starting each existing event sequence, preventing
+startup mail loss without adding real-time sleeps or weakening a condition.
+The inherited `named_clear_only_removes_target_pass` contract remains at its
+legacy coverage depth: it proves that clearing `obs1` leaves `obs2` active,
+but its trajectory does not separately challenge the removed `obs1` after the
+clear. Strengthening that distinction would require bounded/intermediate
+evidence and is left for the later case-quality pass rather than silently
+expanding migration scope.
+
+Three migrated rolling matrices passed 42/42 rows in 26.49, 25.74, and 25.91
+seconds, for a 26.05-second mean. That is 7.01 seconds, about 36.8 percent,
+slower than the 19.04-second legacy mean. Migrated serial passed 14/14 in
+81.65 seconds, 32.63 seconds or about 66.6 percent slower than legacy. The
+roughly 2.3-second per-case serial increase is the standard `xlaunch` mission
+lifecycle and verified cleanup cost; grading and case workload did not grow.
+
+Validation covered the stem and harness static checkers, Bash syntax,
+ShellCheck, all-case generation, strict `nsplug` generation and evaluator
+checking for every isolated case, three rolling matrices, one serial matrix,
+unknown-case rejection, Homebrew Bash re-execution from Apple Bash 3.2,
+deterministic fourteen-row aggregation, and cleanup. A wrong collision value
+produced a mission-owned failure, changing the invalid obstacle to a valid one
+failed the absence contract, and removing pMissionEval caused the wrapper to
+reject zero result rows. No tested MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Fifty-one of the sixty-seven registered harnesses are now migrated against skill
+Fifty-two of the sixty-seven registered harnesses are now migrated against skill
 1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collob_detect_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Sixteen registered harnesses remain. Continue one harness at a time with
+Fifteen registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

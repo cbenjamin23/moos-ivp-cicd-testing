@@ -1,0 +1,55 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+  Run = MOOSDB @ NewConsole = false
+  Run = pRealm @ NewConsole = false
+  Run = pLogger @ NewConsole = false
+  Run = uFldCollObDetect @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false
+}
+
+ProcessConfig = uFldCollObDetect
+{
+  AppTick = 10
+  CommsTick = 10
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 15
+  encounter_flag = COD_ENCOUNTER=$VNAME:$ID:$DIST:$ENC_CNT
+  near_miss_flag = COD_NEAR=$VNAME:$ID:$DIST:$MISS_CNT
+  collision_flag = COD_COLLISION=$VNAME:$ID:$DIST:$COLL_CNT
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldCollObDetect
+  event = var=COD_COLLISION_SEEN, val=false, time=0.1
+  event = var=KNOWN_OBSTACLE, val="pts={-5,-5:5,-5:5,5:-5,5},label=obs", time=0.4
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=25,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.7
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=6,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=1.2
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=25,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=1.8
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @COD_COLLISION#COD_COLLISION_SEEN=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = COD_NEAR = alpha:obs:1:1
+  pass_condition = COD_ENCOUNTER = alpha:obs:1:1
+  pass_condition = COD_COLLISION_SEEN = false
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  mission_mod = $(MMOD:=collision_boundary_counts_near_pass)
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = near=$[COD_NEAR]
+  report_column = encounter=$[COD_ENCOUNTER]
+  report_column = collision_seen=$[COD_COLLISION_SEEN]
+  report_file = results.txt
+}

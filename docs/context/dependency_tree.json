@@ -5478,14 +5478,16 @@
       "families": [
         "ufld_collob_detect"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldCollObDetect"
+      ],
       "harness": "H01-ufld_collob_detect_unit",
       "key": "ufld_collob_detect_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 14
       },
       "path": "harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit",
       "perf_profile": "",
@@ -5493,6 +5495,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldCollObDetect",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5515,7 +5518,7 @@
           "range_normalization_collision_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh"
       }
@@ -6604,7 +6607,8 @@
       "uFldCollObDetect": [
         "obmgr_h02",
         "obstacle_behavior_h01",
-        "p01_obstacle"
+        "p01_obstacle",
+        "ufld_collob_detect_h01"
       ],
       "uFldCollisionDetect": [
         "cmgr_h02",
@@ -6971,16 +6975,16 @@
       ".pdf": 1,
       ".png": 4,
       ".py": 36,
-      ".sh": 313,
+      ".sh": 314,
       ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1035,
+      ".xmoos": 1049,
       "[none]": 7
     },
-    "harness_patch_count": 1530,
+    "harness_patch_count": 1544,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
-    "mission_config_count": 428,
+    "mission_config_count": 429,
     "root": "."
   },
   "schema": "moos-ivp-cicd-context-graph.v1",
