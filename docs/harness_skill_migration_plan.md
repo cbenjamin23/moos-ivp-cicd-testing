@@ -4044,16 +4044,82 @@ explicit Bash 3.2 rejection. Bash syntax, ShellCheck, the harness checker, and
 all thirteen generated-case evaluator checks pass. No tested MOOS process
 survived cleanup.
 
+### Legacy Shared-Family Baseline: `colregs_h01` through `colregs_h04`
+
+The four COLREGS consumers were measured sequentially as the only live harness
+before the shared `colregs_unit` stem changed. H01's twenty-two default cases
+passed 66/66 rows across three untouched legacy `--jobs=4` wave matrices in
+77.97, 78.20, and 74.03 seconds, for a 76.73-second mean. Its untouched serial
+matrix passed 22/22 in 206.20 seconds.
+
+H02's fifty-eight default cases passed 174/174 rows across three untouched
+legacy `--jobs=4` wave matrices in 230.22, 232.47, and 243.62 seconds, for a
+235.44-second mean. Its untouched serial matrix passed 58/58 in 480.21 seconds.
+The seven existing solo-wave cases passed throughout; no H02 baseline outlier
+occurred.
+
+H03's twenty-three default cases passed 69/69 rows across three untouched
+legacy `--jobs=4` wave matrices in 120.20, 123.81, and 120.63 seconds, for a
+121.55-second mean. Its untouched serial matrix passed 23/23 in 361.81 seconds.
+Every existing shell-owned `wall_time` ceiling passed in all four matrices.
+
+H04's thirty-two-case parameter matrix exposed pre-existing case races. Its
+three untouched legacy `--jobs=4` wave matrices completed in 151.45, 145.24,
+and 139.20 seconds, but each failed one or two cases from
+`pwt_grade_quadratic_pass`, `pts_port_turns_ok_true_pass`, and
+`pts_port_turns_ok_false_pass`. The other twenty-nine cases passed every
+matrix. The untouched serial matrix passed 32/32 in 302.78 seconds. Focused
+unchanged solo runs showed the quadratic case passing 2/5 and the
+`pts_port_turns_ok_true_pass` case passing 2/5. These are recorded as legacy
+evaluation/geometry races to repair without weakening the parameter
+comparisons; they are not migration regressions.
+
+### Completed Migration: `colregs_h01`
+
+The shared `colregs_unit` wrapper is now a thin, case-agnostic forwarder for
+the existing mission modifier, two-vehicle MOOSDB and pShare ports, and utility
+CPA arguments. It requires exactly one valid `grade=pass|fail` row written by
+`pMissionEval`, uses the canonical root-scoped teardown helper, and retains a
+bounded three-second grace for the evaluator's existing report write after
+`xlaunch` observes mission completion. Standalone target generation proved
+ports 21400-21402 and 21415-21417 landed in the three generated communities;
+standalone live execution then passed with the original mission-owned grade.
+No stem mission condition, stimulus, or result column changed.
+
+H01 now uses the Bash 5.1 rolling launcher pattern with isolated mission copies
+in every mode, immediate slot refill, deterministic selected-case aggregation,
+three MOOSDB and three pShare ports per case, root-scoped cleanup, a harness
+lock, and strict one-row mission-result validation. Its twenty-two default
+cases remain the default gate. The two documented timing-sensitive exploratory
+cases remain available only through explicit `--case`, so migration does not
+promote them into the supported matrix or remove their manual value. Every
+case-to-patch mapping and every `pMissionEval` assertion is unchanged.
+
+Three migrated rolling matrices passed 66/66 rows in 66.45, 66.86, and 67.41
+seconds. Their 66.91-second mean is 9.82 seconds, about 12.8 percent, faster
+than the legacy wave mean. Isolated serial passed 22/22 in 231.38 seconds,
+25.18 seconds or about 12.2 percent slower than legacy, roughly 1.14 seconds
+per case for isolated copying, the standard mission-wrapper lifecycle, and
+verified scoped cleanup.
+
+Validation covered standalone generation and live execution, all-case target
+generation, nominal live execution, three full rolling matrices, one full
+serial matrix, exact default/exploratory selection, 66 unique MOOSDB listener
+ports, intended shoreside sidecars, unknown-case rejection, active-lock
+behavior, Homebrew Bash re-execution, and explicit Bash 3.2 rejection. Bash
+syntax, ShellCheck, the harness checker, and the eval-mission checker pass. No
+tested MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Forty-seven of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Forty-eight of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Twenty registered harnesses remain. Continue one harness at a time with
+Nineteen registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

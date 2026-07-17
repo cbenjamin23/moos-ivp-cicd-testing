@@ -2495,7 +2495,7 @@
           "overtaken_starboard_standon_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H01-colregs_classification/zlaunch.sh"
       }

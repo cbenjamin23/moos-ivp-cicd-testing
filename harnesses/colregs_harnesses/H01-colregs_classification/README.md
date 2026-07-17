@@ -34,7 +34,9 @@ Status:
   - `overtaken_port_standon_pass`
   - `overtaken_starboard_standon_pass`
 - current harness model: case-owned shoreside `nspatch` overlays
-- current wrapper support: serial or wave-batched execution with `--jobs=<n>`
+- current wrapper support: isolated serial execution or Bash 5.1 rolling
+  execution with `--jobs=<n>`, distinct two-vehicle port blocks, and
+  root-scoped teardown
 - long-term role: canonical classification suite for `BHV_AvdColregsV22`
 
 ## Cases
