@@ -2809,7 +2809,7 @@
           "refinery_off_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H04-colregs_parameters/zlaunch.sh"
       }

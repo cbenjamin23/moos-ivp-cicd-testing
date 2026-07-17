@@ -4181,16 +4181,64 @@ twenty-three failure rows without stopping scheduler refill. Bash syntax,
 ShellCheck, the harness checker, and the eval-mission checker pass. No tested
 MOOS process survived cleanup.
 
+### Completed Migration: `colregs_h04`
+
+H04 preserves all thirty-two parameter cases, fourteen parameter groups, the
+existing solo designation for `pts_port_turns_ok_true_pass`, every explicit
+mission modifier, and all shoreside/behavior overlay mappings. Its Bash 5.1
+launcher now uses isolated copies in every mode, rolling refill, deterministic
+aggregation, three MOOSDB and three pShare ports per case, root-scoped cleanup,
+a lock, strict one-row mission-grade validation, and the same dual-overlay
+preparation path in serial and rolling execution.
+
+The quadratic priority-weight baseline exposed a real evaluator-boundary
+defect. At the original `AVDCOL_RANGE_BEN <= 35` trigger, the correct quadratic
+formula can produce `9.97`, just below the unchanged required band of
+`10-16.5`; a focused untouched probe reproduced this. The evaluator now also
+waits for that existing weight band, with the existing mission timeout as the
+failure deadline. No formula, range gate, behavior parameter, or pass
+threshold changed. The repaired case passed 10/10 focused repetitions with
+weights spanning the original band.
+
+The two `pts_port_turns_ok` cases remain a recorded case-quality limitation.
+Untouched baselines had already shown both cases failing intermittently. With
+their original edge geometry, focused migrated probes passed 9/10 for `true`
+and 8/10 for `false`; one false run produced a real collision. Additional
+readiness leads, warp five, and the nearby below-edge geometry did not remove
+the variation and were rejected. Source inspection explains why: `true`
+permits a port turn that still passes astern but does not require the helm to
+choose it against its other objectives. Those experimental changes were fully
+removed. Both cases, their original geometry, and all assertions remain in
+the supported matrix for a later deliberate case redesign rather than being
+weakened or silently dropped.
+
+The three migrated rolling matrices completed in 108.11, 111.02, and 109.23
+seconds with 32/32, 31/32, and 32/32 passing rows. Their 109.45-second mean is
+35.85 seconds, about 24.7 percent, faster than the 145.30-second legacy mean;
+the sole migrated matrix failure was the known unchanged
+`pts_port_turns_ok_false_pass` case. Isolated serial passed 32/32 in 339.96
+seconds, 37.18 seconds or about 12.3 percent slower than the 302.78-second
+legacy serial run, roughly 1.16 seconds per case.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, focused quadratic and turn-policy sweeps, 96 unique MOOSDB
+ports, 96 unique pShare route ports, 32 shoreside sidecars, 20 behavior
+sidecars, unknown-case rejection, active-lock behavior, Homebrew Bash
+re-execution, and explicit Bash 3.2 rejection. A forced one-second matrix
+still wrote all thirty-two ordered rows and reported seven ordinary failures.
+Bash syntax, ShellCheck, the harness checker, and the shared eval-mission
+checker pass. No tested MOOS process survived migrated cleanup.
+
 ## Immediate Next Step
 
-Fifty of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Fifty-one of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Seventeen registered harnesses remain. Continue one harness at a time with
+Sixteen registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

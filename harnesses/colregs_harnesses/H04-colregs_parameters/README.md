@@ -8,6 +8,8 @@ TLDR:
   `pwt_outer_dist`, `pwt_inner_dist`, `pwt_grade`, `pts_port_turns_ok`,
   `turn_radius`, `check_plateaus`, `completed_dist`, and `use_refinery`
 - current supported gate: 32 cases
+- migration signoff: the modern launcher is validated; the two
+  `pts_port_turns_ok` cases retain a documented pre-existing geometry flake
 - intended long-term pattern: keep geometry fixed and change one behavior knob
   at a time
 
@@ -66,6 +68,12 @@ Current case structure:
 - allow execution-style or timeout-snapshot families when that is the real
   parameter effect
 
+The migrated launcher requires Bash 5.1 or newer, uses isolated mission copies
+in serial and rolling modes, refills open job slots immediately, assigns a
+distinct three-MOOSDB/three-pShare port block to every case, applies shoreside
+and optional behavior overlays inside each copy, aggregates rows in selected
+order, and performs root-scoped cleanup.
+
 ## Running
 
 ```bash
@@ -75,9 +83,9 @@ Current case structure:
 ./zlaunch.sh --just_make --jobs=2 --port_base=24500 10
 ```
 
-Wave mode uses isolated temp mission copies and compact per-case port blocks:
+Every mode uses isolated mission copies and compact per-case port blocks:
 `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
-`case_base + 10`.
+`case_base + 15`.
 
 ## Cases
 
@@ -408,6 +416,10 @@ Notes on the implemented `pwt_grade` group:
   shapes stay well separated under repeated runs
 - at that gate, the same `standon:stern` case produces the expected weight ordering:
   `quadratic < quasi < linear`
+- the quadratic case waits for both the fixed range/mode gate and its unchanged
+  weight band, with the existing mission timeout as the failure deadline; this
+  avoids grading at a correct `9.97` just before the quadratic curve reaches
+  the asserted `10-16.5` window
 - this is a better H04 fit than the earlier attempted mode-split approach,
   because it tests the exact source-visible effect of the knob
 
@@ -439,6 +451,13 @@ Notes on the implemented `pts_port_turns_ok` group:
 - room for improvement: this family still infers maneuver choice from early
   relative-side state, not from a direct helm-direction signal; a stronger
   future version would expose a clean mission-visible turn-direction metric
+- this is a known pre-existing repeatability limitation: `true` permits but
+  does not require a port turn, so the competing helm objectives do not always
+  choose it, and the edge geometry can occasionally miss the expected early
+  side checkpoint (or, for `false`, follow an unsafe path). Migration leaves
+  both cases and all of their assertions intact; redesigning this mini-suite
+  requires a geometry where the allowed-port option is deterministically
+  preferred, or an agreed existing direct turn-direction signal
 
 ## Parameter Inventory
 
