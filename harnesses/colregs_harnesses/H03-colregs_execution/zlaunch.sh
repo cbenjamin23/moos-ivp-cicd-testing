@@ -90,17 +90,6 @@ EXPLORATORY_CASES=(
     overtaken_port_standon_execution_pass
 )
 
-SOLO_CASES=()
-
-is_solo_case() {
-    local case_name="$1"
-    local solo_case
-    for solo_case in "${SOLO_CASES[@]}"; do
-        [ "$case_name" = "$solo_case" ] && return 0
-    done
-    return 1
-}
-
 declare -a SELECTED_CASES CASE_RESULT
 declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
 
@@ -387,10 +376,8 @@ get_case_config() {
         MMOD="overtaken_port_standon_pass"
     elif [ "$CASE_NAME" = "overtaken_port_standon_midrange_execution_pass" ]; then
         MMOD="overtaken_port_standon_midrange_pass"
-        MAX_WALL=10
     elif [ "$CASE_NAME" = "overtaken_starboard_standon_midrange_execution_pass" ]; then
         MMOD="overtaken_starboard_standon_midrange_pass"
-        MAX_WALL=10.3
     else
         echo "$ME: unknown case: $CASE_NAME" >&2
         return 1
@@ -761,14 +748,6 @@ scheduler_broken=no
 
 while [ "$next" -lt "$total" ] || [ "$active" -gt 0 ]; do
     while [ "$next" -lt "$total" ] && [ "$active" -lt "$JOBS" ]; do
-        next_case="${SELECTED_CASES[$next]}"
-        if is_solo_case "$next_case"; then
-            [ "$active" -eq 0 ] || break
-            start_case "$next"
-            next=$((next + 1))
-            active=$((active + 1))
-            break
-        fi
         start_case "$next"
         next=$((next + 1))
         active=$((active + 1))

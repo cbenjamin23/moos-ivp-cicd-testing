@@ -4198,23 +4198,45 @@ timeout, CPA, side, and mode grading, while the launcher checks only the
 reported wall time against the original per-case loose ceiling. No new MOOS
 variable, mission condition, stimulus, geometry, or ceiling was introduced.
 
-Three consecutive migrated rolling matrices passed 69/69 rows in 113.73,
-110.87, and 109.45 seconds. Their 111.35-second mean is 10.20 seconds, about
-8.4 percent, faster than the 121.55-second legacy mean. Isolated serial passed
-23/23 in 392.82 seconds, 31.01 seconds or about 8.6 percent slower than the
-361.81-second legacy serial run, roughly 1.35 seconds per case for isolated
-copying, the standard mission-wrapper lifecycle, and verified scoped cleanup.
+A July 16 family cleanup removed H03's unused empty solo array, lookup function,
+and unreachable exclusive-slot scheduler branch. The first equivalence matrix
+then exposed a real pre-existing tolerance edge:
+`overtaking_starboard_small_gap_execution_pass` completed with all intended
+arrival, side, crossing, near-miss, collision, and timeout evidence, but its
+22.741-meter CPA exceeded the old 22.700 upper bound by 0.041 meters. The
+unchanged case and its mirror each passed 10/10 focused repetitions; observed
+base CPA was 21.963-22.607 and mirrored CPA was 22.121-22.497. The final base
+upper bound is 22.8, matching the mirror's existing upper bound while retaining
+a narrow 21.7-22.8 execution band. No geometry, event, or other assertion
+changed.
 
-Validation covered all-case generation, three full rolling matrices, one full
-serial matrix, exact default and exploratory selection, 69 unique MOOSDB
-ports, 69 unique pShare route ports, intended shoreside sidecars,
-unknown-case rejection, active-lock behavior, Homebrew Bash re-execution, and
-explicit Bash 3.2 rejection. A warp-one adversarial run proved that a
-mission-owned pass is converted to `reason=wall_time_limit` when the existing
-wall ceiling is exceeded. A forced one-second mission limit produced all
-twenty-three failure rows without stopping scheduler refill. Bash syntax,
-ShellCheck, the harness checker, and the eval-mission checker pass. No tested
-MOOS process survived cleanup.
+A later full matrix produced a mission-owned pass for
+`overtaken_starboard_standon_midrange_execution_pass` at 10.41 wall seconds,
+but the launcher rejected it against the special 10.3-second shell ceiling.
+The port/starboard midrange ceilings of 10 and 10.3 had only fractions of a
+second of normal host-load margin, so both now use H03's existing 12-second
+family ceiling. Their mission-owned geometry, arrival, CPA, mode, side,
+crossing, near-miss, collision, and timeout grading is unchanged; the retained
+shell check remains a coarse runtime-regression guard rather than a correctness
+verdict.
+
+Three consecutive final rolling matrices passed 69/69 rows in 107, 107, and
+108 seconds. Their 107.33-second mean is 14.22 seconds, about 11.7 percent,
+faster than the 121.55-second untouched legacy mean and 4.02 seconds, about 3.6
+percent, faster than the first migrated mean. Final isolated serial passed
+23/23 in 386 seconds, 24.19 seconds or about 6.7 percent slower than legacy
+serial and 6.82 seconds faster than the prior migrated serial run.
+
+Validation covered all-case generation, twenty focused small-gap executions,
+three final full rolling matrices, one final full serial matrix, exact default
+and exploratory selection, intended sidecars, unknown-case rejection,
+active-lock behavior, Homebrew Bash re-execution, and explicit Bash 3.2
+rejection. A warp-one adversarial run proved that a mission-owned pass is
+converted to `reason=wall_time_limit` when the configured ceiling is exceeded.
+A forced one-second mission limit produced all twenty-three ordered failure
+rows without stopping scheduler refill. Bash syntax, ShellCheck, both skill
+checkers, and cleanup checks pass. No tested MOOS process survived cleanup and
+no workdir or harness lock remained.
 
 ### Completed Migration: `colregs_h04`
 

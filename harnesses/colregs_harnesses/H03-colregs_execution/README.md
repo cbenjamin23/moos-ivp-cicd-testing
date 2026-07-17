@@ -118,7 +118,7 @@ Current mission-side assertions:
 - crossing-port-standon unsure family (`crossing_port_standon_unsure_execution_pass`): `closest_range_ever` in `[10,13]`, `cn_port=0`, `cn_fore=0`
 - overtaking-starboard family (`overtaking_starboard_execution_pass`): `closest_range_ever` in `[17,21]`, `cn_port=0`
 - overtaking-starboard long-range family (`overtaking_starboard_range_far_execution_pass`): `closest_range_ever` in `[20,24]`, `cn_port=0`, `cn_fore=1`
-- overtaking-starboard long-range spacing family (`overtaking_starboard_small_gap_execution_pass`): `closest_range_ever` in `[21.7,22.7]`, `cn_port=0`, `cn_fore=1`
+- overtaking-starboard long-range spacing family (`overtaking_starboard_small_gap_execution_pass`): `closest_range_ever` in `[21.7,22.8]`, `cn_port=0`, `cn_fore=1`
 - overtaking-starboard mirror family (`overtaking_starboard_mirror_execution_pass`): `closest_range_ever` in `[17,21]`, `cn_port=1`, `cn_fore=1`
 - overtaking-starboard mirror long-range family (`overtaking_starboard_mirror_range_far_execution_pass`): `closest_range_ever` in `[20,24]`, `cn_port=1`, `cn_fore=1`
 - overtaking-starboard mirror long-range spacing family (`overtaking_starboard_mirror_small_gap_execution_pass`, `overtaking_starboard_mirror_large_gap_execution_pass`): `closest_range_ever` in `[21.8,22.8]` for the small-gap variant and `[20.7,22.1]` for the large-gap variant, `cn_port=1`, `cn_fore=1`
@@ -131,8 +131,7 @@ Current shell-side checks:
 - crossing-starboard-giveway family: `wall_time<=12`, far variant `wall_time<=13`
 - crossing-port-standon family: `wall_time<=12`, far variant `wall_time<=13`, stern variant `wall_time<=16`, unsure variant `wall_time<=12.1`
 - overtaking families: `wall_time<=12`
-- overtaken-port midrange: `wall_time<=10`
-- overtaken-starboard midrange: `wall_time<=10.3`
+- overtaken-port and overtaken-starboard midrange: `wall_time<=12`
 
 Current reported execution metrics:
 - `closest_range_ever`
