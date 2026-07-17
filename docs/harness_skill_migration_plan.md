@@ -4143,16 +4143,54 @@ matrices, one clean isolated serial matrix, explicit two-vehicle port
 forwarding, intended sidecars, and both skill static checkers. No tested MOOS
 process survived cleanup.
 
+### Completed Migration: `colregs_h03`
+
+H03 preserves its twenty-three supported default execution cases, one manual
+exploratory case, every case-to-patch mapping, and all existing CPA, relative
+side, mode, and completion assertions. Its Bash 5.1 launcher now uses isolated
+mission copies in every mode, rolling refill, deterministic aggregation, three
+MOOSDB and three pShare ports per case, root-scoped cleanup, a lock, and strict
+one-row mission-result validation.
+
+The family audit confirmed that `WALL_TIME` is generated internally by
+`pMissionEval` only while expanding report macros; it is not a MOOS logic
+variable and cannot be used in a `lead_condition` or `pass_condition`. An
+attempt to express the legacy wall-clock ceilings directly in the evaluator
+therefore produced an early false grade and then a non-evaluating mission when
+readiness was added. Those experimental lines were removed. H03 retains its
+already-documented narrow exception: pMissionEval owns arrival, collision,
+timeout, CPA, side, and mode grading, while the launcher checks only the
+reported wall time against the original per-case loose ceiling. No new MOOS
+variable, mission condition, stimulus, geometry, or ceiling was introduced.
+
+Three consecutive migrated rolling matrices passed 69/69 rows in 113.73,
+110.87, and 109.45 seconds. Their 111.35-second mean is 10.20 seconds, about
+8.4 percent, faster than the 121.55-second legacy mean. Isolated serial passed
+23/23 in 392.82 seconds, 31.01 seconds or about 8.6 percent slower than the
+361.81-second legacy serial run, roughly 1.35 seconds per case for isolated
+copying, the standard mission-wrapper lifecycle, and verified scoped cleanup.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, exact default and exploratory selection, 69 unique MOOSDB
+ports, 69 unique pShare route ports, intended shoreside sidecars,
+unknown-case rejection, active-lock behavior, Homebrew Bash re-execution, and
+explicit Bash 3.2 rejection. A warp-one adversarial run proved that a
+mission-owned pass is converted to `reason=wall_time_limit` when the existing
+wall ceiling is exceeded. A forced one-second mission limit produced all
+twenty-three failure rows without stopping scheduler refill. Bash syntax,
+ShellCheck, the harness checker, and the eval-mission checker pass. No tested
+MOOS process survived cleanup.
+
 ## Immediate Next Step
 
-Forty-nine of the sixty-seven registered harnesses are now migrated against skill
-1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
+Fifty of the sixty-seven registered harnesses are now migrated against skill
+1.4.3: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
 `shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_obstacle_sim_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Eighteen registered harnesses remain. Continue one harness at a time with
+Seventeen registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

@@ -2710,7 +2710,7 @@
           "overtaken_starboard_standon_midrange_execution_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H03-colregs_execution/zlaunch.sh"
       }

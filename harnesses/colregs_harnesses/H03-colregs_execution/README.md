@@ -5,7 +5,7 @@ TLDR:
 - checks realized CPA band, relative side outcome, and loose completion time per canonical case
 - sits after `H01/H02`: mode selection is already assumed correct and now we check maneuver quality
 - current implemented cases: 23 default execution cases covering most H01 canonicals plus the better-fit spacing siblings
-- current signoff status: 5/5 repeatability pass on the supported 23-case default gate, most recently rerun on April 11, 2026 with `scripts/repeatability_sweep.py`
+- migration signoff: three rolling 23/23 matrices and one serial 23/23 matrix passed on July 16, 2026
 
 Execution-quality harness built on the shared `colregs_unit` stem mission.
 
@@ -26,6 +26,12 @@ Primary intent:
   - relative side outcome (`cn_port`, selective `cn_fore`, `cn_crossed=0`)
   - final `colregs_mode` where the case identity should persist through completion
 - keep only loose completion time in the shell harness, because `WALL_TIME` is available to `pMissionEval` only as a report macro and not as a logic-test variable
+
+The migrated launcher requires Bash 5.1 or newer, uses isolated mission copies
+in serial and rolling modes, refills open job slots immediately, assigns a
+distinct three-MOOSDB/three-pShare port block to every case, aggregates rows
+in selected-case order, and performs root-scoped cleanup. It does not alter
+any case geometry, stimulus, evaluator condition, or timing ceiling.
 
 ## Cases
 
@@ -146,9 +152,9 @@ Current reported execution metrics:
 ./zlaunch.sh --just_make --jobs=2 --port_base=24000 10
 ```
 
-Wave mode uses isolated temp mission copies and compact per-case port blocks:
+Every mode uses isolated mission copies and compact per-case port blocks:
 `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
-`case_base + 10`.
+`case_base + 15`.
 
 This harness now stays on realized execution quality while still preserving the
 case identity where that matters. In practice that means family-level CPA/side
