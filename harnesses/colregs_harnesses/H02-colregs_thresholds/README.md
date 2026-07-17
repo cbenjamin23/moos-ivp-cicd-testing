@@ -4,7 +4,8 @@ TLDR:
 - threshold-edge harness on the shared `colregs_unit` stem
 - proves that small geometry changes flip classification where the source says they should
 - intended to absorb the unstable edge-space that does not belong in `H01`
-- current active gate is a geometry-first 58-case threshold sweep with wave-mode support
+- current active gate is a geometry-first 58-case threshold sweep with
+  isolated serial and Bash 5.1 rolling execution
 
 This harness uses the shared `colregs_unit` stem mission to probe the exact
 geometry boundaries that decide COLREGS classification in
@@ -30,12 +31,11 @@ Developer note:
   `--group=overtaken`, `--group=overtaken_mirror`, `--group=giveway`,
   `--group=turngap`, or `--group=standon` to iterate on one family without
   running the full H02 gate
-- `./zlaunch.sh --jobs=2 --port_base=23000 10` runs isolated wave batches with
-  unique compact case blocks
+- `./zlaunch.sh --jobs=2 --port_base=23000 10` runs a rolling scheduler with
+  isolated mission copies and unique compact case blocks
   (`case_base = port_base + case_idx*PORT_STRIDE`);
-  a small set of known-sensitive supported edge cases currently run as solo
-  waves, with a short settle pause between waves, to keep the stock geometry
-  honest instead of retuning it into different scenarios
+  known load-sensitive supported edge cases receive exclusive slots to keep
+  the stock geometry honest instead of retuning it into different scenarios
 
 ## How To Read Case Names
 
@@ -1077,7 +1077,7 @@ Implemented and supported families:
 ## Coverage Priorities
 
 Recommended next implementation order:
-1. keep the supported geometry-first gate stable under both serial and wave-mode runs
+1. keep the supported geometry-first gate stable under both isolated serial and rolling runs
 2. only promote a deferred activation/release or CPA-utility family if it can be kept geometry-first and stock-parameter honest
 3. otherwise move effort to `H03`, where the next useful question is maneuver quality after correct classification
 

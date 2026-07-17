@@ -2620,7 +2620,7 @@
           "standon_ot_inextremis_cpa_above_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh"
       }
