@@ -1,0 +1,23 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldBeaconRangeSensor
+  event = var=EXPECT_MARKER_MIN, val="x=30,y=40,", time=0.1
+  event = var=EXPECT_MARKER_MAX, val="x=30,y=40,~", time=0.1
+  event = var=TEST_EVAL_READY, val=true, time=2.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = VIEW_MARKER >= $ (EXPECT_MARKER_MIN)
+  pass_condition = VIEW_MARKER < $ (EXPECT_MARKER_MAX)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_file = results.txt
+}

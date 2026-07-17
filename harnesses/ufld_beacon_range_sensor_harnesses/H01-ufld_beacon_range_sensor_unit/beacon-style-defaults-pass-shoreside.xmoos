@@ -1,0 +1,33 @@
+ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick = 4
+  CommsTick = 4
+  default_beacon_color = green
+  default_beacon_shape = square
+  default_beacon_width = 7
+  ping_wait = default=0
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldBeaconRangeSensor
+  event = var=EXPECT_MARKER, val="x=30,y=40,width=7,primary_color=green,type=square", time=0.1
+  event = var=TEST_EVAL_READY, val=true, time=2.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = VIEW_MARKER = $ (EXPECT_MARKER)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_file = results.txt
+}

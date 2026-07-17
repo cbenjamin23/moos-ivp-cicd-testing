@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1610` under configured targets
+- Harness patch/config files: `1631` under configured targets
 - Mission launch/config files: `429` under `missions/`
 - C++ test sources: `214`
 
@@ -140,7 +140,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `ufld_pathcheck_h01` | `ufld_pathcheck` | `harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 17 | `uFldPathCheck`, `pMissionEvalAlpha` | `ufld-pathcheck-unit` |
 | `ufld_message_handler_h01` | `ufld_message_handler` | `harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 26 | `uFldMessageHandler` | `ufld-message-handler-unit` |
 | `ufld_contact_range_sensor_h01` | `ufld_contact_range_sensor` | `harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 34 | - | `ufld-contact-range-sensor-unit` |
-| `ufld_beacon_range_sensor_h01` | `ufld_beacon_range_sensor` | `harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | - | `ufld-beacon-range-sensor-unit` |
+| `ufld_beacon_range_sensor_h01` | `ufld_beacon_range_sensor` | `harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `uFldBeaconRangeSensor`, `pMissionEvalAlpha` | `ufld-beacon-range-sensor-unit` |
 | `ufld_collision_detect_h01` | `ufld_collision_detect` | `harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `pMissionEvalAlpha`, `uFldCollisionDetect` | `ufld-collision-detect-unit` |
 | `ufld_collob_detect_h01` | `ufld_collob_detect` | `harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 14 | `uFldCollObDetect` | `ufld-collob-detect-unit` |
 | `ufld_scope_h01` | `ufld_scope` | `harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 8 | - | `ufld-scope-unit` |
@@ -172,11 +172,12 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
 - `pEchoVar`: `pechovar_h01`, `ufld_obstacle_sim_h01`
-- `pMissionEvalAlpha`: `ufld_collision_detect_h01`, `ufld_pathcheck_h01`
+- `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`
 - `pObstacleMgr`: `obmgr_h01`, `obmgr_h02`, `obstacle_behavior_h01`, `p01_obstacle`
 - `pSearchGrid`: `psearchgrid_h01`
 - `pSpoofNode`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `pspoofnode_h01`
 - `pTrafficManager`: `p03_colregs`
+- `uFldBeaconRangeSensor`: `ufld_beacon_range_sensor_h01`
 - `uFldCollObDetect`: `obmgr_h02`, `obstacle_behavior_h01`, `p01_obstacle`, `ufld_collob_detect_h01`
 - `uFldCollisionDetect`: `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `ufld_collision_detect_h01`
 - `uFldMessageHandler`: `ufld_message_handler_h01`

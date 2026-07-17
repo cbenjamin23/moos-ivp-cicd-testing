@@ -1,6 +1,9 @@
 # H01-ufld_beacon_range_sensor_unit
 
 Live `uFldBeaconRangeSensor` harness for beacon range-report publication.
+Each case runs in an isolated mission copy, and `pMissionEval` owns the
+substantive grade from the sensor's existing reports, pulses, markers, and
+publication counts.
 
 ```sh
 ./zlaunch.sh --jobs=4 --port_base=4700 10

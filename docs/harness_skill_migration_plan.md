@@ -4536,17 +4536,82 @@ position failed the two-ring case. The retained matrix had twenty isolated
 missions, targets, `.alog` files, and physical pMissionEval rows, with no
 warning-bearing worker logs or surviving tested process.
 
+### Completed Migration: `ufld_beacon_range_sensor_h01`
+
+BeaconRangeSensor now uses the established Bash 5.1 rolling launcher and an
+isolated copy of the shared `ufield_app_unit` stem for every case. All twenty
+README cases map explicitly to readable shoreside overlays, use thirty-port
+blocks, refill open slots immediately, aggregate in selected-case order, hold
+a harness lock, use canonical root-scoped teardown, require exactly one valid
+mission result, and leave case identity solely in the harness-owned `case=`
+field. The shared stem itself was not changed.
+
+The legacy harness treated pMissionEval's generic driver grade as provisional
+and then searched `.alog` history for the real verdict. The migrated overlays
+instead grade the existing `BRS_RANGE_REPORT*`, `VIEW_RANGE_PULSE`, and
+`VIEW_MARKER` publications directly. Report and pulse strings end in a
+runtime timestamp, so exact equality is impossible. Each affected case posts
+only the necessary expected lower and upper string bounds and requires the
+actual value to fall between them. This verifies the fixed vehicle, range,
+beacon ID, geometry, label, and color prefix while ignoring only the dynamic
+timestamp suffix that the legacy regular expressions also ignored. Expected
+absence uses initialized seen flags, and cooldown/payment cases use
+pMissionEval's existing `$[CNT]` mail counter. No application, parser,
+application publication, or shell-owned grade was added.
+
+The named ping-wait case still proves all three parts of its original contract:
+alpha's first request succeeds, alpha's immediate retry is blocked, and
+bravo's request remains independent. A second pMissionEval instance records
+the exact alpha report at an intermediate checkpoint; the primary evaluator
+then requires that checkpoint, exactly two total reports, and the final exact
+bravo report. The second alpha request moved from mission time 2.0 to 2.2 and
+the bravo request from 2.2 to 3.0 to give the checkpoint a deterministic
+window. Geometry, cooldown values, requested vehicles, and substantive
+evidence are unchanged. Starting pMissionEval before the sensor also ensures
+that one-time startup marker publications are observed.
+
+Untouched legacy measurements at warp 10 had a 21.49-second rolling mean and a
+68.06-second serial run, all 20/20. Seven final migrated rolling matrices
+passed 140/140 rows in 31, 32, 33, 32, 33, 34, and 32 seconds, for a
+32.43-second mean. That is 10.94 seconds, about 50.9 percent, slower than
+legacy. Migrated serial passed 20/20 in 114 seconds, 45.94 seconds or about
+67.5 percent slower. The legacy shared runner called `pAntler` and
+`uMayFinish` directly; the migrated path uses standard `xlaunch`, including
+its unconditional two-second shutdown wait per case. Rolling overlaps most of
+that fixed lifecycle cost, while serial pays it twenty times. Case event
+windows and grading thresholds did not grow except for the named checkpoint
+spacing described above.
+
+Validation covered Bash syntax, ShellCheck, both skill-1.4.5 static checkers,
+all-case generation, focused ordinary/absence/count/marker cases, seven full
+rolling matrices, one serial matrix, three stdin-disconnected and
+output-redirected CI-like matrices, deterministic ordering, distinct ports,
+retained mission results/logs, unknown-case, job-bound, port-bound, lock,
+Bash-3.2 rejection, and Homebrew Bash re-execution probes. Deliberately
+changing the expected range, injecting a forbidden report, requiring the
+wrong publication count, and changing the expected marker color each produced
+a mission-owned failure.
+
+One additional validation invocation was detached prematurely by the command
+transport. Nineteen case rows completed, while a mission that had already
+graded pass lost its MOOSDB connection during shutdown and `uMayFinish`
+continued reconnecting. The scoped run was stopped and that measurement was
+discarded. The condition did not recur in four attached rolling matrices or
+three CI-like matrices, including repeated execution of the affected case, so
+no harness-only supervision extension was introduced. This anomaly remains
+recorded here rather than hidden or treated as a case failure.
+
 ## Immediate Next Step
 
-Fifty-five of the sixty-seven registered harnesses are now migrated. The
+Fifty-six of the sixty-seven registered harnesses are now migrated. The
 uField pilots additionally incorporate the clarified case-identity contract
 from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Twelve registered harnesses remain. Continue one harness at a time with
+Eleven registered harnesses remain. Continue one harness at a time with
 the remaining shared-stem families, changing shared stem content only when a
 contract violation is demonstrated and validating every affected consumer.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,

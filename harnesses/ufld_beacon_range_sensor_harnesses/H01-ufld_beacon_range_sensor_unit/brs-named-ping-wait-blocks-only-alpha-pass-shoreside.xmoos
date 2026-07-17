@@ -1,0 +1,68 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+  Run = MOOSDB @ NewConsole = false
+  Run = pRealm @ NewConsole = false
+  Run = pLogger @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false ~ pMissionEvalAlpha
+  Run = pMissionEval @ NewConsole = false
+  Run = uFldBeaconRangeSensor @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+}
+
+ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick = 4
+  CommsTick = 4
+  ping_wait = default=0
+  ping_wait = alpha=30
+  report_vars = short
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, pMissionEvalAlpha, uFldBeaconRangeSensor
+  event = var=EXPECT_ALPHA_MIN, val="vname=alpha,range=50,id=beacon,time=", time=0.1
+  event = var=EXPECT_ALPHA_MAX, val="vname=alpha,range=50,id=beacon,time=~", time=0.1
+  event = var=EXPECT_BRAVO_MIN, val="vname=bravo,range=50,id=beacon,time=", time=0.1
+  event = var=EXPECT_BRAVO_MAX, val="vname=bravo,range=50,id=beacon,time=~", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.6
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+  event = var=ALPHA_CHECK_READY, val=true, time=1.8
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=2.2
+  event = var=BRS_RANGE_REQUEST, val="name=bravo", time=3.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEvalAlpha
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = ALPHA_CHECK_READY = true
+  pass_condition = BRS_RANGE_REPORT >= $ (EXPECT_ALPHA_MIN)
+  pass_condition = BRS_RANGE_REPORT < $ (EXPECT_ALPHA_MAX)
+  pass_flag = BRS_ALPHA_OK=true
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @BRS_RANGE_REPORT#BRS_REPORT_COUNT=$[CNT]
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = BRS_ALPHA_OK = true
+  pass_condition = BRS_REPORT_COUNT = 2
+  pass_condition = BRS_RANGE_REPORT >= $ (EXPECT_BRAVO_MIN)
+  pass_condition = BRS_RANGE_REPORT < $ (EXPECT_BRAVO_MAX)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = alpha_ok=$[BRS_ALPHA_OK]
+  report_column = report_count=$[BRS_REPORT_COUNT]
+  report_file = results.txt
+}
