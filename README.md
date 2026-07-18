@@ -1,18 +1,15 @@
-# moos-ivp-cicd-testing
+# MOOS-IvP Testing
 
-CI/CD test workspace for MOOS-IvP. This repo contains two complementary test
-layers:
+Local development and regression testing for MOOS-IvP.
 
-- mission harnesses that launch MOOS-IvP apps and behaviors in controlled
-  scenarios
-- C++ tests that exercise library-level tools without launching missions
+This repository runs three complementary test layers against your local
+MOOS-IvP checkout:
 
-Use this repo to validate a MOOS-IvP checkout, reproduce app/behavior
-regressions, and grow repeatable coverage around important upstream tools.
+- focused CTests for app, library, and behavior logic
+- full mission harnesses for controlled end-to-end scenarios
+- native macOS and containerized Linux build checks
 
-Website: [MOOS-IvP Harnesses](https://cbenjamin23.github.io/moos-ivp-cicd-testing/)
-
-Developer guide: [Quick Start](https://cbenjamin23.github.io/moos-ivp-cicd-testing/quick-start.html)
+Explore the [MOOS-IvP testing website](https://cbenjamin23.github.io/moos-ivp-cicd-testing/).
 
 ## Quick Start
 
