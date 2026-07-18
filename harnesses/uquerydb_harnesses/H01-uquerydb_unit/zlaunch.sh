@@ -662,7 +662,6 @@ run_case() {
                 "${DISPLAY_ARGS[@]}"
                 --shore_mport="$((case_base + 0))"
                 --shore_pshare="$((case_base + PSHARE_OFFSET))"
-                --mmod="$case_name"
                 "$TIME_WARP"
             )
             ./zlaunch.sh "${launch_args[@]}"
@@ -677,7 +676,6 @@ run_case() {
                 "${DISPLAY_ARGS[@]}"
                 --shore_mport="$((case_base + 0))"
                 --shore_pshare="$((case_base + PSHARE_OFFSET))"
-                --mmod="$case_name"
                 "$TIME_WARP"
             )
             ./zlaunch.sh "${launch_args[@]}"

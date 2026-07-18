@@ -623,7 +623,6 @@ run_case() {
         : > results.txt
         launch_args=(
             --max_time="$effective_max_time"
-            --mmod="$case_name"
             "${case_extra_args[@]}"
             "${DISPLAY_ARGS[@]}"
             --shore_mport="$((case_base + 0))"

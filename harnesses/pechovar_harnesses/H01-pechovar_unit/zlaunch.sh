@@ -698,7 +698,7 @@ run_case() {
     (
         cd "$workdir" || exit 1
         : > results.txt
-        launch_args=(--max_time="$MAX_TIME" --mmod="$case_name" "${DISPLAY_ARGS[@]}"
+        launch_args=(--max_time="$MAX_TIME" "${DISPLAY_ARGS[@]}"
             --shore_mport="$case_base" --shore_pshare="$((case_base + PSHARE_OFFSET))" "$TIME_WARP")
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
         ./zlaunch.sh "${launch_args[@]}"

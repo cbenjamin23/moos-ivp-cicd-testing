@@ -5011,14 +5011,123 @@ checker reports only its expected advisory that serial-only harnesses omit
 `--jobs`. Temporary workdirs, interrupted legacy roots, generated targets, and
 run results were removed after their evidence was recorded.
 
-## Immediate Next Step
+## Final Aggregate Statistics
 
-All sixty-seven registered harnesses are now migrated. The next step is a
-final source-diff and repository-hygiene audit, followed by an intentional
-performance-family commit and push. Preserve the settled verdict boundary: a
-clean wrapper preserves the mission-owned row, while a nonzero wrapper,
-missing or malformed result, preparation failure, teardown failure, timing
-mismatch, or disallowed warning is a normalized runner failure with available
-mission evidence retained as provenance. Do not add an independent watchdog or
-process-tree supervisor without a separate skill-level decision, and do not
-overlap live harness processes even when nominal port ranges differ.
+The completed migration contains sixty-seven registered harnesses and 1,543
+parsed cases with no case-parser errors. A strict aggregate can be formed from
+sixty-two harnesses that have clean, directly comparable legacy and final
+benchmark samples in their standard execution mode. The sum of those benchmark
+means changed from 5,527.86 to 5,177.71 wall seconds, a reduction of 350.15
+seconds or 6.3 percent. The median harness improved by 4.4 percent. Giving each
+harness's percentage change equal weight produces a 0.3-percent slowdown,
+effectively unchanged; the difference is explained by large percentage but
+small absolute lifecycle costs in several short uField matrices. By exact
+direction, thirty-nine harnesses were faster and twenty-three slower. With a
+plus-or-minus 0.5-percent noise band, thirty-seven were faster, twenty-two
+slower, and three unchanged.
+
+Five harnesses are excluded from this aggregate rather than estimated:
+`pshare_h02` has only a legacy timing range, `ufld_contact_range_sensor_h01`
+has no stable legacy rolling series, `ufld_scope_h01` has no valid legacy
+baseline, `pmissioneval_h01` lacks recorded legacy rolling durations, and
+performance P03 has no trustworthy legacy sample. Performance P01 and P02
+changed from 431.74 to 438.48 seconds combined, a 1.6-percent increase. These
+figures summarize recorded harness-by-harness runs; they are not one
+simultaneous all-repository execution.
+
+## Post-Migration `MMOD` Alignment
+
+Skill 1.4.5 arrived late in the migration and distinguishes harness-owned
+`case=` identity from mission-owned `mmod=` provenance. The repository policy
+for this follow-up is narrower than the skill's absolute wording: remove
+mechanical `--mmod="$case_name"` forwarding when it is only a duplicate label,
+but retain an explicit mission modifier when it is the mission's established
+scenario or configuration selector. The four COLREGS harnesses therefore keep
+their explicit geometry modifiers, Pantler keeps its filtered-launch selector,
+pLogger keeps its modifier because that value constructs the log directory and
+filename under test, mission-utility subject tests keep mission-owned modifier
+evidence, and the already completed performance `--scenario` interfaces are
+not renamed.
+
+The source-audited removal-only set contains forty-three harnesses and 1,079
+cases. Each
+harness is edited without changing patches, stimuli, evaluator conditions,
+timing, ports, or grading. Validation is one complete ordinary rolling matrix
+at `--jobs=4` on a safe port base, run one harness at a time, plus static,
+result-count, and cleanup checks. Repetition or deeper diagnosis is required
+only if that proportionate pass exposes an anomaly.
+
+| target | cases | edit | rolling validation | wall seconds | notes |
+| --- | ---: | --- | --- | ---: | --- |
+| `cmgr_h02` | 15 | done | 15/15 pass | 53 | clean; no listener |
+| `collision_h01` | 21 | done | 21/21 pass | 61 | clean; no listener |
+| `convoy_h01` | 48 | done | 48/48 pass | 152 | clean; no listener |
+| `cutrange_h01` | 39 | done | 39/39 pass | 141 | clean; no listener |
+| `depth_constant_h01` | 19 | done | 19/19 pass | 119 | clean; no listener |
+| `depth_goto_h02` | 18 | done | 18/18 pass | 78 | clean; no listener |
+| `depth_periodic_surface_h03` | 24 | done | 24/24 pass | 65 | clean; no listener |
+| `depth_max_h04` | 15 | done | 15/15 repeat pass; focused 5/5 | 46 | first matrix was 14/15 when `max_depth_zero_tolerance_pass` missed its existing depth/slack band; correct mission-owned `mmod`; clean teardown |
+| `depth_min_altitude_h05` | 13 | done | 13/13 repeat pass; focused 5/5 | 41 | first matrix was 12/13 when `min_altitude_zero_min_pass` crossed its depth lead before the existing altitude bound; correct mission-owned `mmod`; clean teardown |
+| `fixedturn_h01` | 24 | done | 24/24 pass | 65 | clean; no listener |
+| `hostinfo_h01` | 7 | done | 7/7 pass | 13 | clean; no listener |
+| `legrun_h01` | 33 | done | 33/33 pass | 148 | clean; no listener |
+| `loadwatch_h01` | 12 | done | 12/12 pass | 21 | clean; no listener |
+| `loiter_h01` | 34 | done | 34/34 pass | 91 | clean; no listener |
+| `memoryturnlimit_h01` | 21 | done | 21/21 pass | 88 | clean; no listener |
+| `obmgr_h01` | 30 | done | 30/30 pass | 69 | clean; no listener; validation-only jobs=4 timing |
+| `obmgr_h02` | 10 | done | 10/10 pass | 37 | clean; no listener; validation-only jobs=4 timing |
+| `obstacle_behavior_h01` | 21 | done | 21/21 pass | 62 | clean; no listener |
+| `opregion_h01` | 25 | done | 25/25 pass | 64 | clean; no listener |
+| `pdeadmanpost_h01` | 20 | done | 20/20 pass | 32 | clean; no listener |
+| `pechovar_h01` | 33 | done | 33/33 pass | 54 | clean; no listener; mission-owned modifier preserved |
+| `periodic_speed_h01` | 24 | done | 24/24 pass | 54 | clean; no listener |
+| `pid_h02` | 13 | done | 13/13 pass | 46 | clean; no listener |
+| `plogger_h01` | 10 | retained selector | 10/10 pass | 18 | pLogger uses `MMOD` in the log path under test; the absent-selector diagnostic was 9/10 and correctly failed artifact validation |
+| `pnodereporter_h01` | 33 | done | 33/33 pass | 55 | clean; no listener; validation-only jobs=4 timing |
+| `processwatch_h01` | 7 | done | 7/7 pass | 25 | clean; no listener |
+| `psearchgrid_h01` | 23 | done | 23/23 pass | 37 | clean; no listener |
+| `pshare_h01` | 13 | done | 13/13 pass | 27 | clean; no listener; validation-only jobs=4 timing |
+| `pshare_h02` | 12 | done | 12/12 pass | 35 | clean; no listener; validation-only jobs=4 timing |
+| `pspoofnode_h01` | 33 | done | 33/33 pass | 53 | clean; no listener |
+| `shadow_h01` | 35 | done | 35/35 pass | 107 | clean; no listener |
+| `stationkeep_h01` | 34 | done | 34/34 pass | 92 | clean; no listener |
+| `testfailure_h01` | 9 | done | 9/9 pass | 36 | clean; expected failure-contract cases preserved |
+| `timer_h01` | 18 | done | 18/18 pass | 45 | clean; no listener |
+| `trail_h01` | 42 | done | 42/42 pass | 132 | clean; no listener |
+| `ufld_obstacle_sim_h01` | 49 | done | 49/49 pass | 76 | clean; no listener; validation-only jobs=4 timing |
+| `upokedb_h01` | 28 | done | 28/28 pass | 45 | clean; no listener; mission defaults supply provenance |
+| `uquerydb_h01` | 30 | done | 30/30 pass | 59 | clean; no listener; mission defaults supply provenance |
+| `usim_marine_h01` | 36 | done | 36/36 repeat pass; focused 5/5 | 57 | first matrix was 35/36 when `dual_state_reset_nav_pass` evaluated after drift moved `NAV_X` above its existing upper band; modifier was opaque stem provenance; clean teardown |
+| `utermcommand_h01` | 15 | done | 15/15 pass | 45 | clean; no listener; mission defaults supply provenance |
+| `utimerscript_h01` | 33 | done | 33/33 pass | 83 | clean; no listener; mission defaults supply provenance |
+| `uxms_h01` | 32 | done | 32/32 pass | 65 | clean; no listener; output exception preserved |
+| `waypoint_h01` | 43 | done | 43/43 pass | 106 | clean; no listener |
+| `zigzag_h01` | 35 | done | 35/35 pass | 95 | clean; no listener |
+
+The final removal-only matrices passed 1,079/1,079 rows across forty-three
+harnesses. The reclassified pLogger selector passed 10/10 after an intentional
+absent-selector diagnostic failed only its log-artifact check while preserving
+`mission_grade=pass`. Together, the ledger contains 1,089/1,089 passing final
+rows and 2,893 wall seconds of validation-only jobs-4 execution. Every final
+row retained an `mmod=` field produced by the mission, and every matrix left the
+assigned port range without a listener.
+
+Three first matrices exposed isolated pre-existing dynamic checkpoints:
+`max_depth_zero_tolerance_pass`, `min_altitude_zero_min_pass`, and
+`dual_state_reset_nav_pass`. Each retained the expected mission evidence,
+passed 5/5 focused unchanged repetitions, and passed its complete repeated
+matrix. No timing, stimulus, evaluator, or case patch changed. An initial
+`cmgr_h02` diagnostic in the disposable validation copy is excluded because
+that copy had not yet been initialized as a Git worktree, which prevented the
+mission wrapper from locating the repository root before any mission started.
+
+The only remaining harness-side `--mmod` arguments are the four explicit
+COLREGS geometry selectors, Pantler's filtered-launch selector, and pLogger's
+log-path selector. No harness mechanically forwards `case_name` as a modifier
+unless that value is part of one of those established setup interfaces.
+
+Preserve the settled verdict boundary throughout this pass: a clean wrapper
+preserves the mission-owned row, while a nonzero wrapper, missing or malformed
+result, preparation failure, or teardown failure is a normalized runner
+failure with available mission evidence retained as provenance. Do not add
+new grading logic, timing changes, process supervision, or global cleanup.

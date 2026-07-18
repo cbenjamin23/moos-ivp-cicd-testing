@@ -444,7 +444,6 @@ run_case() {
         : > results.txt
         launch_args=(
             --max_time="$MAX_TIME"
-            --mmod="$case_name"
             "${DISPLAY_ARGS[@]}"
             --shore_mport="$((case_base + 0))"
             --shore_pshare="$((case_base + PSHARE_OFFSET))"
@@ -700,4 +699,3 @@ printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workd
     "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]
-
