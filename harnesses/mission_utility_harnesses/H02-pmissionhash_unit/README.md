@@ -2,10 +2,12 @@
 
 Patch-driven unit harness for `pMissionHash`.
 
-The harness uses the stem mission at
-`missions/mission_utility_missions/mission_utility_unit`. Cases patch the hash
-publication settings and use `pMissionEval` only as the mission-owned grading
-consumer for hash mail and report rows.
+The harness uses isolated copies of the stem mission at
+`missions/mission_utility_missions/mission_utility_unit`. Cases explicitly
+patch the hash publication settings, run through the standard `xlaunch`
+lifecycle, and use `pMissionEval` as the grading consumer for hash mail and
+report rows. Publication-history and expected-absence checks remain
+supplemental evidence because they cannot be proven from one final MOOS value.
 
 Exported harness rows use `grade=<pass|fail>` for the harness verdict and
 `subject=pMissionHash` to identify the utility under test. The evaluator row is
@@ -21,10 +23,10 @@ preserved as `subject_grade=pass` plus the hash evidence fields.
 ## Running
 
 ```bash
-./zlaunch.sh --case=hash_custom_vars_pass --port_base=7300 10
-./zlaunch.sh --jobs=3 --port_base=7300 10
-./zlaunch.sh --just_make --jobs=3 --port_base=7300 10
+./zlaunch.sh --case=hash_custom_vars_pass --port_base=9000 10
+./zlaunch.sh --jobs=3 --port_base=9000 10
+./zlaunch.sh --just_make --jobs=3 --port_base=9000 10
 ```
 
-Grouped runs use 10-port case blocks from `--port_base`. The default starts at
-`7300`.
+Serial and rolling runs use the same isolated-case path. Grouped runs use
+30-port case blocks from `--port_base`; the default starts at `9000`.

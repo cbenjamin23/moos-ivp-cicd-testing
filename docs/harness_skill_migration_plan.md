@@ -4831,6 +4831,64 @@ invalid-route families, deterministic ordering, Apple Bash and unknown-case
 errors, a supplemental-evidence mutation, and scoped cleanup. No tested
 process survived final cleanup.
 
+### Completed Migration: mission utility family
+
+The three mission-utility harnesses are migrated as one deliberately
+exception-oriented family. They share one Bash 5.1 runner, harness-owned
+isolated copies in both serial and rolling modes, deterministic selected-order
+aggregation, thirty-port blocks, the default base of 9000, an invocation lock,
+preserved failure workdirs, and the canonical root-scoped teardown helper. The
+shared runner uses rolling `wait -p ... -n` refill and stops refill only after
+an infrastructure teardown or scheduler failure. No application or new
+mission publication was added.
+
+The verdict boundary remains intentionally different from an ordinary
+self-grading harness. `pmissioneval_h01` compares the actual evaluator row to
+the requested subject outcome, so all six intentional evaluator failures
+produce a passing harness row only when `subject_grade=fail` is observed.
+`pmissionhash_h01` preserves the evaluator row as subject evidence and retains
+narrow supplemental alog checks for publication history and expected absence,
+which one final InfoBuffer value cannot prove. `umayfinish_h01` continues to
+grade the utility's direct exit code, including the two expected return-code-1
+timeouts. The first two harnesses now use the standard `xlaunch` lifecycle;
+the direct `uMayFinish` path remains the CLI-subject exception because another
+completion watcher would invalidate the timeout contract.
+
+The launcher no longer derives `MMOD` mechanically from every case token.
+Cases that actually exercise mission-mod reporting retain their explicit
+overlay default; cases for which the value is only incidental use the stem
+baseline. No lead, pass, fail, stimulus, publication, or timeout contract was
+weakened. One live validation defect was limited to the new stem validator:
+the legal CSP report format writes `grade=pass,` with a trailing comma. The
+validator now normalizes that separator before accepting exactly one
+`grade=pass|fail` row.
+
+Untouched pMissionEval rolling matrices passed 17/17 three times; the legacy
+serial matrix passed 17/17 in 99.96 seconds. The final rolling matrix passed
+17/17 in 40 seconds and the final serial matrix passed 17/17 in 115 seconds.
+The serial increase is the roughly one-second-per-case cost of replacing the
+hand-launched completion path with standard `xlaunch`; that cost overlaps in
+rolling mode. Untouched pMissionHash rolling runs passed 4/4 in 17, 16, and 16
+seconds and serial passed in 28 seconds; final rolling and serial runs passed
+in 16 and 31 seconds. Untouched uMayFinish rolling runs passed 4/4 in 11, 12,
+and 12 seconds and serial passed in 21 seconds; final rolling and serial runs
+passed in 11 and 21 seconds.
+
+Validation also covered Bash syntax, ShellCheck, the evaluator checker, exact
+README/launcher/setup reconciliation for all twenty-five cases, all-case
+generation, retained-copy port and sidecar inspection, unknown-case and port
+bounds, harness locking, Apple Bash 3.2 rejection and Homebrew re-execution,
+ordered result counts, and final cleanup. With a live MOOSDB but a deliberately
+absent evaluator, all four selected pMissionHash cases emitted
+`reason=missing_result`; forced patch failure produced four
+`reason=prepare_error` rows. The skill's static checker does not follow sourced
+shell files, so each intentionally small family wrapper reports structural
+false negatives by itself; the exact shared runner it sources passes the full
+harness checker. A deliberately absent MOOSDB reproduced the previously
+accepted simple-baseline limitation that `uPokeDB` can wait during pre-database
+startup failure. The probe was interrupted, signal cleanup succeeded, and no
+process or lock survived; no process-tree supervision was added.
+
 ### Post-interruption quality audit: regular uFld application harnesses
 
 A fresh July 17 audit rechecked all eight regular uFld application harnesses
@@ -4881,17 +4939,16 @@ verdict boundary is the narrow uFldScope APPCAST case already justified above.
 
 ## Immediate Next Step
 
-Sixty-one of the sixty-seven registered harnesses are now migrated. The
+Sixty-four of the sixty-seven registered harnesses are now migrated. The
 uField pilots additionally incorporate the clarified case-identity contract
 from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
 `obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
 `periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
 `psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `ufield_comms_h01`, `ufield_comms_h02`, `ufield_comms_h03`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
+`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `pmissioneval_h01`, `pmissionhash_h01`, `umayfinish_h01`, `ufield_comms_h01`, `ufield_comms_h02`, `ufield_comms_h03`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
 and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Six registered harnesses remain. Continue one harness at a time with
-the remaining shared-stem families, changing shared stem content only when a
-contract violation is demonstrated and validating every affected consumer.
+Three registered performance harnesses remain. Continue one harness at a time,
+preserving their benchmark meaning while migrating the launcher architecture.
 Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
 targets, and Python cache trees are removed after their useful evidence is
 recorded so they do not inflate source review.

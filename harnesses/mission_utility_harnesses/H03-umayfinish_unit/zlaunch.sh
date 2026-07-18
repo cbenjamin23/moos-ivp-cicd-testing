@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
 #  Harness: H03-umayfinish_unit
@@ -6,8 +6,7 @@
 #   LastEd: May 2026
 #------------------------------------------------------------
 
-PORT_BASE=${PORT_BASE:-7400}
-RUN_ROOT_PREFIX=umayfinish
+PORT_BASE=${PORT_BASE:-9000}
 
 ALL_CASES=(
     mayfinish_default_exit_pass
