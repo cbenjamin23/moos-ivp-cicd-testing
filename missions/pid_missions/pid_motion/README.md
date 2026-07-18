@@ -53,3 +53,6 @@ The July 14, 2026 migration validation passed all thirteen cases in one
 isolated serial matrix and three rolling two-worker matrices. No mission
 condition, PID setting, behavior patch, or expected-degraded contract was
 changed beyond the equivalent simple-lead normalization described above.
+
+Logging is minimal by default and does not launch `pLogger`. Use `--log=full`
+with `launch.sh` or `zlaunch.sh` to restore the pre-migration logging topology.

@@ -20,3 +20,7 @@ Typical runs:
 The harnesses under `harnesses/depth_behavior_harnesses/` apply
 behavior-specific patches and evaluator checks used in CI. Each behavior has its
 own harness, while all five share this mission stem.
+
+Logging is minimal by default and does not launch `pLogger`. Use `--log=full`
+with `launch.sh` or `zlaunch.sh` to restore the pre-migration logging topology
+for every consumer of this shared stem.

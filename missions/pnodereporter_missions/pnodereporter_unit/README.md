@@ -26,3 +26,8 @@ reserved shoreside pShare port, time warp, display mode, and `--max_time` to
 `xlaunch.sh`. It validates target generation under `--just_make`, requires
 exactly one valid pMissionEval result row during live runs, and uses the
 repository's canonical root-scoped teardown helper.
+
+Logging is minimal by default. It retains only asynchronous
+`NODE_REPORT_LOCAL` evidence needed by the history-sensitive harness cases.
+Use `--log=full` with `launch.sh` or `zlaunch.sh` to restore the complete
+pre-migration explicit logger configuration.

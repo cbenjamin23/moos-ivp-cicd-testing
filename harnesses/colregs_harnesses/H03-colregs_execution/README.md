@@ -179,3 +179,6 @@ Side-check strength is not uniform across the suite:
 - the admitted `overtaken_starboard_standon_midrange_execution_pass` depends on a deeper/wider sibling, not the compact canonical geometry. Endpoint-only tuning was not enough; the stable version required both a one-meter wider starboard lane and a deeper start for the overtaking contact before the final mode stopped drifting at completion.
 - `overtaken_port_standon_range_far_pass` remains outside H03 because its longer-range stem no longer preserves the stand-on identity through completion. In a preserved H03-style run it finished `grade=pass` with `closest_range_ever=16.503`, `cn_port=1`, and `wall_time=12.72`, but the final mode had already degraded to `cpa`.
 - `overtaken_starboard_standon_range_far_pass` remains outside H03 because it still does not produce a clean completion-grade path under the current H03 overlay, so it is not yet a stable completion-style execution case.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

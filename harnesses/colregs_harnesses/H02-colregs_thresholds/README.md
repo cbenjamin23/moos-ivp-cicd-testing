@@ -557,7 +557,7 @@ calibration.
 
 Why this section exists:
 - the upstream stand-on logic is explicitly split by relative-bearing band in
-  [BHV_AvdColregsV22.cpp](/Users/charlesbenjamin/moos-ivp/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp#L1008)
+  [BHV_AvdColregsV22.cpp](https://github.com/moos-ivp/moos-ivp/blob/main/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp#L1008)
 - future chats or models should not have to reconstruct those bands from
   source before continuing the harness
 - some of the cases below will likely collapse or be pruned later, but the
@@ -1098,3 +1098,10 @@ Typical runs:
 ./zlaunch.sh --jobs=2 --port_base=23000 5
 ./zlaunch.sh --case=head_on_thresh_edge_pass 5
 ```
+
+H02 temporarily defaults to `--log=full`. Two jobs=4 minimal validation runs
+produced different sets of motion-threshold timeouts, while the full-mode
+control passed 58/58. This makes H02 a logging-sensitive exception until its
+deployment/readiness timing is made deterministic. `--log=minimal` remains
+available for focused diagnostics; combine either mode with `--case=NAME` for
+one case.

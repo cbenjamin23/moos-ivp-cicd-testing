@@ -53,6 +53,7 @@ PSHARE_OFFSET=15
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 CASE=""
 HAVE_LOCK=no
@@ -102,6 +103,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show rolling scheduler events
   --just_make, -j    Prepare each case without launching it
+  --log=<mode>       Logging mode: minimal (default) or full
   --max_time=<secs>  Maximum time passed to each stem mission
   --case=<name>      Run one named case
   --jobs=<n>         Run up to n cases concurrently with rolling scheduling
@@ -152,6 +154,7 @@ for arg in "$@"; do
         --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
         --port_stride=*) PORT_STRIDE="${arg#--port_stride=}" ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
@@ -162,6 +165,11 @@ for arg in "$@"; do
         *) TIME_WARP="$arg" ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
 is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
@@ -398,11 +406,20 @@ get_case_config() {
 apply_case_overlays() {
     local case_name="$1"
     local workdir="$2"
+    local patch
+    local -a shore_patches=()
 
     get_case_config "$case_name" || return 1
-    [ -f "$SHORE_PATCH" ] || return 1
+    if [ "$LOG_MODE" = full ]; then
+        shore_patches+=("$workdir/full-logging-shoreside.xmoos")
+        [ -f "$workdir/full-logging-vehicle.xmoos" ] || return 1
+        nspatch --stem="$workdir/meta_vehicle.moos" \
+            "$workdir/full-logging-vehicle.xmoos" --targ="$workdir/meta_vehicle.moosx" || return 1
+    fi
+    shore_patches+=("$SHORE_PATCH")
+    for patch in "${shore_patches[@]}"; do [ -f "$patch" ] || return 1; done
     nspatch --stem="$workdir/meta_shoreside.moos" \
-        "$SHORE_PATCH" --targ="$workdir/meta_shoreside.moosx"
+        "${shore_patches[@]}" --targ="$workdir/meta_shoreside.moosx"
 }
 
 prepare_case() {
@@ -547,7 +564,7 @@ run_case() {
             "$TIME_WARP"
         )
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
-        ./zlaunch.sh "${launch_args[@]}"
+        LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
     ) || launch_rc=$?
 
     write_result "$case_name" "$result_file" "$launch_rc" "$workdir"
@@ -792,7 +809,7 @@ if [ "$CLEANUP_FAILED" = yes ]; then
 fi
 trap - EXIT INT TERM PIPE
 
-printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
-    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]

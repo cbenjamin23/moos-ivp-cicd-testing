@@ -147,3 +147,11 @@ the transit behavior. Two depth cases also emitted
 `MissingDecVars:speed,course` only after their passing verdict, when a later
 waypoint completed during the legacy shutdown tail. These are recorded for
 later lifecycle or case-quality work and are not part of grading.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.
+
+`runtime_speed_factor_update_pass` replaces the vehicle ANTLER block to launch
+its case-only `uTimerScript`. Minimal mode keeps that stimulus without
+`pLogger`; a separate full-only case patch restores the original logged
+topology.

@@ -231,7 +231,7 @@ Implemented expectations:
   thresholds during evaluation
 - `eval_tol_default_pass`: fixed `overtaking_starboard_range_far_pass`
   geometry should finish with the stable overtaking-port execution shape and a
-  realized CPA in the default band around `20.7-21.8`
+  realized CPA in the default band around `20.7-22.1`
 - `eval_tol_short_pass`: the same geometry with `eval_tol=30` should keep the
   same overtaking classification but widen the realized CPA into the higher
   `23.5-24.8` band
@@ -419,6 +419,10 @@ Notes on the implemented `pwt_grade` group:
 - at any common normalized distance the source formulas have the ordering
   `quadratic < quasi < linear`; each case checks its selected formula at a
   stable independent checkpoint rather than comparing asynchronous samples
+- the quasi evaluator accepts priority weights through `36` because a loaded
+  jobs=4 scheduler may observe the first post-checkpoint sample slightly after
+  `AVDCOL_RANGE_BEN` crosses `35`; the band remains below the linear result and
+  above the quadratic band
 - this is a better H04 fit than the earlier attempted mode-split approach,
   because it tests the exact source-visible effect of the knob
 
@@ -607,3 +611,6 @@ Recommended test style per parameter:
   - same geometry, same classification, but bounded difference in safe outcome
 - diagnostic/integration knobs:
   - usually do not belong in H04 unless they materially affect behavior
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

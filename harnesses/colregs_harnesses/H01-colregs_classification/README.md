@@ -93,7 +93,7 @@ For example:
 
 Those numbers come directly from the upstream `BHV_AvdColregsV22` source
 mapping, documented in the shared
-[colregs_unit README](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/colregs_missions/colregs_unit/README.md).
+[colregs_unit README](../../../missions/colregs_missions/colregs_unit/README.md).
 
 Current assertions:
 - `COLREGS_AVOID_MODE_<CONTACT>`
@@ -161,3 +161,6 @@ Typical runs:
 ./zlaunch.sh --case=head_on_cpa_fallback_pass 10
 ./zlaunch.sh --case=overtaking_starboard_mirror_pass 10
 ```
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

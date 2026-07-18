@@ -86,7 +86,7 @@ Add a new `--mmod` when:
 
 This is the right interpretation for `standon:unsure_stern`. The source branch
 exists in
-[BHV_AvdColregsV22.cpp](/Users/charlesbenjamin/moos-ivp/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp#L1009),
+[BHV_AvdColregsV22.cpp](https://github.com/moos-ivp/moos-ivp/blob/main/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp#L1009),
 but the original reused horizontal stem mode has not proven to be the right
 shared source. That family needs a dedicated stern-side trajectory mode rather
 than more attempts to force the old one.
@@ -96,7 +96,7 @@ than more attempts to force the old one.
 `BHV_AvdColregsV22` posts `COLREGS_AVOID_IX_<CONTACT>` as a compact numeric
 classification code. The harnesses use these values because they come directly
 from the upstream source in
-[BHV_AvdColregsV22.cpp](/Users/charlesbenjamin/moos-ivp/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp).
+[BHV_AvdColregsV22.cpp](https://github.com/moos-ivp/moos-ivp/blob/main/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp).
 
 The main values currently used in this repo are:
 
@@ -330,7 +330,7 @@ Notes:
   those modes as terminal end states
 - `giveway:bow_must` appears unreachable in the current upstream source:
   `bow_must` is indexed in
-  [BHV_AvdColregsV22.cpp](/Users/charlesbenjamin/moos-ivp/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp)
+  [BHV_AvdColregsV22.cpp](https://github.com/moos-ivp/moos-ivp/blob/main/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp)
   but is not assigned anywhere in the mode-selection logic
 - `standon_ot` is a real source-defined mode family, but it does not currently
   receive a dedicated nonzero `COLREGS_AVOID_IX`; harnesses should assert on
@@ -344,3 +344,7 @@ Typical runs:
 ./launch.sh --mmod=crossing_starboard_giveway_pass --nogui 10
 ./zlaunch.sh 10
 ```
+
+Logging is minimal by default and does not launch `pLogger`. Use `--log=full`
+with `launch.sh` or `zlaunch.sh` to restore the pre-migration logging topology
+for every consumer of this shared stem.

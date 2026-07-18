@@ -86,3 +86,6 @@ active-lock behavior, and Bash 3.2 rejection. Failure probes verified
 normalized `missing_result`, `duplicate_results`, and `prepare_error` rows.
 Bash syntax, ShellCheck, and both skill static checkers pass. No tested MOOS
 process survived cleanup.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

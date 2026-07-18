@@ -1,8 +1,3 @@
-//-------------------------------------------------
-// FILE: runtime-speed-factor-update-pass-vehicle.xmoos
-// NAME: Charles Benjamin
-//-------------------------------------------------
-
 ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 50
@@ -10,6 +5,7 @@ ProcessConfig = ANTLER
   Run = MOOSDB         @ NewConsole = false
   Run = uProcessWatch  @ NewConsole = false
   Run = pShare         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
   Run = pNodeReporter  @ NewConsole = false
   Run = pMarinePIDV22  @ NewConsole = false
   Run = pHelmIvP       @ NewConsole = false

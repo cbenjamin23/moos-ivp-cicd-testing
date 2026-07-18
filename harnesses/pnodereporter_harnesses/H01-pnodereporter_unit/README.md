@@ -95,3 +95,8 @@ migrated serial time to 178 seconds; canonical defaults remain unchanged.
 Focused repetition and retained-log inspection verified the three
 history-sensitive report cases. A real warp-1 timeout also produced the
 required single `missing_result` failure row and left no process or listener.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case. The three
+history-sensitive cases use their mission result payload as the primary grade;
+minimal mode retains only `NODE_REPORT_LOCAL` for their historical fallback.

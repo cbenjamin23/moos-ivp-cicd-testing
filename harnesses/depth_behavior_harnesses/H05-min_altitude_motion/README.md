@@ -77,3 +77,6 @@ rejection, active-lock behavior, Homebrew Bash re-execution, and explicit Bash
 3.2 rejection. Bash syntax, ShellCheck, the harness checker, and all thirteen
 generated-case evaluator checks pass. No tested MOOS process survived cleanup,
 and the shared depth stem was not changed.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

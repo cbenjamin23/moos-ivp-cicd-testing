@@ -1,0 +1,39 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+
+  Run = MOOSDB        @ NewConsole = false
+  Run = pRealm        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
+  Run = pNodeReporter @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
+  Run = pAutoPoke     @ NewConsole = false
+  Run = pMissionHash  @ NewConsole = false
+}
+
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = LOG_$(MMOD)
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = NODE_REPORT_LOCAL @ 0 nosync
+  Log = NODE_REPORT_LOCAL_FIRST @ 0 nosync
+  Log = MY_NODE_REPORT @ 0 nosync
+  Log = MY_NODE_REPORT_FIRST @ 0 nosync
+  Log = NODE_REPORT_JSON @ 0 nosync
+  Log = NODE_REPORT_JSON_FIRST @ 0 nosync
+  Log = PLATFORM_REPORT_LOCAL @ 0 nosync
+  Log = PNR_POST_GAP @ 0 nosync
+  Log = PNR_EXTRAP_POS_GAP @ 0 nosync
+  Log = PNR_EXTRAP_HDG_GAP @ 0 nosync
+  Log = PNR_MHASH @ 0 nosync
+  Log = PNODEREPORTER_PID @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = MISSION_RESULT @ 0 nosync
+}

@@ -63,3 +63,6 @@ unique MOOSDB ports, 30 unique pShare ports, unknown-case rejection,
 active-lock behavior, Homebrew Bash re-execution, and explicit Bash 3.2
 rejection. Bash syntax, ShellCheck, the harness checker, and all fifteen
 generated-case evaluator checks pass. No tested MOOS process survived cleanup.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

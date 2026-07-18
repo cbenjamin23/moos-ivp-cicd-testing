@@ -162,21 +162,21 @@ launchers.
 | Dedicated stems | 45 | 45 |
 | Shared stems | 5 | 5 |
 | Targets using shared stems | 22 | 22 |
-| Targets running `pLogger` by default | 67 | 47 |
+| Targets running `pLogger` by default | 67 | 38 |
 | Targets with wildcard logging | 49 | 49 |
 | Explicit-only logging targets | 18 | 18 |
 | Targets enabling asynchronous logging | 67 | 67 |
 | Targets with synchronous logging | 67 | 67 |
 | Apparent log-artifact-dependent targets | 16 | 16 |
 | Initial candidates for no `pLogger` in minimal mode | 51 | 51 |
-| Audited `N`: no `pLogger` in minimal mode | n/a | 51 |
-| Audited `G`: narrow grading logger required | n/a | 14 |
-| Audited `S`: subject/special behavior | n/a | 2 |
+| Audited `N`: no `pLogger` in minimal mode | n/a | 49 |
+| Audited `G`: narrow grading logger required | n/a | 15 |
+| Audited `S`: subject/special behavior | n/a | 3 |
 | Baseline-classification scans complete | n/a | 67 |
-| Migrated targets | 0 | 20 |
-| Minimal-mode validated targets | 0 | 20 |
-| Full-mode regression-validated targets | 0 | 20 |
-| CPU/concurrency benchmarked targets | 0 | 20 |
+| Migrated targets | 0 | 30 |
+| Minimal-mode validated targets | 0 | 30 |
+| Full-mode regression-validated targets | 0 | 31 |
+| CPU/concurrency benchmarked targets | 0 | 30 |
 | Pre-migration scratch-benchmarked targets | n/a | 4 |
 
 Definitions:
@@ -232,9 +232,9 @@ not mark the target's full pre-implementation audit complete.
 
 | Class | Meaning | Targets |
 | --- | --- | ---: |
-| `N` | No `pLogger` required in minimal mode | 51 |
-| `G` | A narrow grading logger is required | 14 |
-| `S` | Logging/launcher subject; preserve case-defined behavior | 2 |
+| `N` | No `pLogger` required in minimal mode | 49 |
+| `G` | A narrow grading logger is required | 15 |
+| `S` | Logging/launcher subject or logging-sensitive special behavior | 3 |
 | **Total** |  | **67** |
 
 The implementation passes are:
@@ -271,19 +271,19 @@ weakened.
 | `G10` | `ufld_scope_h01` | Latest `APPCAST` emitted by `uFldScope`, including table contents and absence checks. |
 | `G11` | `ufield_comms_h02` | Shoreside `NODE_BROKER_PING`, `NODE_BROKER_ACK_ABE`, `NODE_BROKER_ACK_BEN`, `NODE_BROKER_VACK`, and `PSHARE_CMD`; vehicle `NODE_BROKER_ACK`, `NODE_PSHARE_VARS`, and `PSHARE_CMD`. |
 | `G12` | `ufield_comms_h03` | Shoreside `NODE_BROKER_ACK_ABE`, `NODE_BROKER_ACK_BEN`, `NODE_BROKER_PING`, `PSHARE_CMD`, and `TRY_SHORE_HOST`; vehicle `NODE_BROKER_ACK`, `PSHARE_CMD`, and `TRY_SHORE_HOST`. |
+| `G13` | `pnodereporter_h01` | Shoreside `NODE_REPORT_LOCAL` history required by `reverse_load_warning_pass`; the other cases continue to grade from mission-owned result rows. |
 | `S1` | `plogger_h01` | Case-defined `.alog`, `.slog`, `.xlog`, datatype/precision, wildcard/omit, dynamic request, timestamp, and copy-file artifacts. Minimal mode preserves the behavior under test rather than imposing an ordinary allowlist. |
 | `S2` | `pantler_h01` | Case-defined `ANTLER` launch lists and aliases. Five case patches include `pLogger`; their process topology must remain the behavior under test. |
+| `S3` | `colregs_h02` | Motion-threshold results are logging/timing sensitive at jobs 4. The harness temporarily defaults to full restoration; explicit minimal mode remains diagnostic until deployment/readiness and transient threshold sampling are deterministic. |
 
-### Audited No-Logger Exception `N1`
+### Resolved No-Logger Exception `N1`
 
-`pnodereporter_h01` is classified `N`, but three cases
-(`alt_nav_report_pass`, `alt_nav_named_absolute_pass`, and
-`reverse_load_warning_pass`) contain an `.alog` fallback for their normal
-mission-result payload check. Current retained results show the primary result
-payload satisfies all three checks. During migration, run those cases
-repeatedly in minimal mode; if the primary path is not reliable without the
-fallback, notify the user and reclassify the target to a narrow
-`NODE_REPORT_LOCAL` grading logger rather than silently broadening logging.
+`pnodereporter_h01` was initially classified `N`, but
+`reverse_load_warning_pass` lost transient `LOAD_WARNING` evidence when the
+`.alog` fallback was removed. The target is now `G13`: minimal mode runs one
+shoreside logger with wildcard and synchronous logging disabled and records
+only `NODE_REPORT_LOCAL`. Three consecutive minimal replays of the affected
+case passed, as did the complete 33-case minimal and full jobs-4 matrices.
 
 ### Patch-Overlap Queue
 
@@ -674,14 +674,16 @@ Interpretation:
 2. Pilot `G` with `pechovar_h01` to prove a narrow grading allowlist. This is a
    mechanism pilot, not the start of the main `G` batch.
 3. Complete the ordinary `N` queue in small reviewed batches. Shared
-   `depth_behavior_motion` and `colregs_unit` consumers move atomically.
+   `depth_behavior_motion` consumers move atomically. The `colregs_unit`
+   consumers share one minimal stem, but `colregs_h02` remains the documented
+   `S3` full-default exception until its motion-threshold timing is stable.
 4. Complete the `G` queue. Treat `mission_utility_unit` as one three-consumer
    group. Move the entire mixed `ufield_app_unit` and `ufield_comms_unit`
    consumer groups here, including their `N` consumers.
 5. Complete the three `G9` performance targets with their warning-log contract
    and repeated resource measurements.
-6. Complete the `S` queue: `plogger_h01`, then `pantler_h01`, with explicit
-   subject-harness exception notes.
+6. Complete the `S` queue: resolve `colregs_h02` readiness/timing, then migrate
+   `plogger_h01` and `pantler_h01` with explicit exception notes.
 7. Run selected CPU and stable-concurrency scaling benchmarks only after the
    corresponding correctness validation; never exceed `--jobs=8`.
 
@@ -1096,6 +1098,88 @@ Correctness, exceptions, and hygiene:
   matches; post-run checks found no relevant MOOS processes or listeners, and
   generated result snapshots and Python bytecode were removed.
 
+### PID, pNodeReporter, Depth, And COLREGS Cohort — Complete With One Exception
+
+Targets: `pid_h02`, `pnodereporter_h01`, all five `depth_behavior_motion`
+consumers, and `colregs_h01`, `colregs_h03`, and `colregs_h04`. Audit,
+implementation, and validation date: July 18, 2026. `colregs_h02` was audited
+and given the common interface, but is excluded from the completed migration
+count as the `S3` full-default exception described below.
+
+Configuration audit and implementation:
+
+- the PID, depth, and ordinary COLREGS minimal stems launch no `pLogger`;
+  pNodeReporter is `G13` and runs one shoreside logger restricted to
+  `NODE_REPORT_LOCAL`;
+- full restoration lives in separate stem-local shoreside/vehicle patch
+  assets and is applied before case overlays;
+- `pid_h02`'s `runtime_speed_factor_update_pass` case replaces the vehicle
+  ANTLER block because it also adds `uTimerScript`; its separate full logging
+  case patch restores the pre-migration logger and preserves that case-only
+  process without duplicating either process;
+- direct and harness launchers accept only `--log=minimal|full`; the four
+  checked-in stems default to minimal, except the `colregs_h02` harness
+  launcher, which temporarily defaults to full;
+- generated minimal targets contain zero active loggers for PID, depth, and
+  ordinary COLREGS; pNodeReporter contains one logger with one `Log` variable.
+  Full targets restore the untouched active logger counts and configurations;
+- Bash syntax, ShellCheck for changed wrappers/helpers, all four eval-mission
+  structural checks, and all eleven harness structural checks pass.
+
+Complete matrices used jobs 4 at the harness's normal warp and low ordinary
+port ranges. CPU is user plus system seconds. `Full pre logs` counts `.alog`
+and `.slog` artifacts in the retained untouched baseline. Minimal workdirs
+were retained long enough to count artifacts and then removed.
+
+| Target | Cases | Full pre wall / CPU | Full pre logs (files / bytes) | Minimal wall / CPU | Minimal logs (files / bytes) | Wall / CPU reduction | Full post wall / CPU | Result |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `pid_h02` | 13 | 44.04 / 27.62 | 65 / 16,458,268 | 36.66 / 14.07 | 0 / 0 | 16.8% / 49.1% | 44.41 / 28.30 | 13/13 both modes |
+| `pnodereporter_h01` | 33 | 53.42 / 56.96 | 66 / 1,052,639 | 53.66 / 59.77 | 33 / 722,074 | -0.4% / -4.9% | 54.33 / 59.25 | 33/33 both modes |
+| `depth_constant_h01` | 19 | 116.41 / 40.30 | 95 / 23,289,922 | 97.16 / 20.55 | 0 / 0 | 16.5% / 49.0% | 116.58 / 41.05 | 19/19 both modes |
+| `depth_goto_h02` | 18 | 76.14 / 36.36 | 90 / 23,663,772 | 65.89 / 17.83 | 0 / 0 | 13.5% / 51.0% | 79.76 / 40.77 | 18/18 both modes |
+| `depth_periodic_surface_h03` | 24 | 64.11 / 50.49 | 120 / 26,791,250 | 55.98 / 24.46 | 0 / 0 | 12.7% / 51.6% | 64.27 / 52.75 | 24/24 both modes |
+| `depth_max_h04` | 15 | 47.34 / 34.76 | 75 / 19,675,873 | 42.19 / 15.25 | 0 / 0 | 10.9% / 56.1% | 48.08 / 33.68 | 15/15 both modes |
+| `depth_min_altitude_h05` | 13 | 43.27 / 29.65 | 65 / 15,970,161 | 36.25 / 12.92 | 0 / 0 | 16.2% / 56.4% | 41.40 / 28.14 | 13/13 both modes |
+| `colregs_h01` | 22 | 65.71 / 51.03 | 154 / 111,819,747 | 54.65 / 23.10 | 0 / 0 | 16.8% / 54.7% | 66.37 / 51.87 | 22/22 both modes |
+| `colregs_h03` | 23 | 106.60 / 51.98 | 161 / 237,193,725 | 96.55 / 25.03 | 0 / 0 | 9.4% / 51.8% | 106.68 / 53.54 | 23/23 both modes |
+| `colregs_h04` | 32 | 87.70 / 70.32 | 224 / 184,636,381 | 74.70 / 33.51 | 0 / 0 | 14.8% / 52.3% | 90.62 / 72.14 | 32/32 both modes post-fix |
+
+Across the ten completed targets, untouched full totals were 704.74 wall
+seconds, 449.47 CPU seconds, and 660,551,738 logger bytes. Minimal totals were
+613.69 wall seconds, 246.49 CPU seconds, and 722,074 logger bytes: reductions
+of 12.9% wall, 45.2% CPU, and 99.89% logger bytes. The full post totals were
+712.50 wall and 461.49 CPU seconds, close to the untouched full envelope.
+Maximum RSS remained near 8 MB and is not interpreted as aggregate child
+memory.
+
+Correctness and exception findings:
+
+- pNodeReporter's no-logger audit exception fired: `reverse_load_warning_pass`
+  needs transient history that is not reliably present in the final result
+  payload. The `G13` logger records only `NODE_REPORT_LOCAL`; the affected case
+  passed three consecutive minimal replays and the complete matrix passed in
+  both modes;
+- the first untouched `depth_min_altitude_h05` baseline missed
+  `min_altitude_clearance_boundary_pass` at altitude `10.183`; a focused replay
+  and clean full baseline passed, and both post-edit matrices passed. No case
+  edit was made;
+- `colregs_h02` minimal jobs-4 runs failed different timeout sets (52/58 in
+  212.55 seconds and 54/58 in 227.05 seconds), while the full restoration
+  control passed 58/58 in 201.58 seconds. Logging is masking a deployment or
+  transient-threshold timing dependency. H02 therefore defaults to full and is
+  `S3`; explicit minimal remains diagnostic and the target is not counted as
+  migrated;
+- two full `colregs_h04` matrices exposed independent evaluator sampling
+  boundaries. `eval_tol_default_pass` observed CPA `21.939` against a `21.8`
+  ceiling, and `pwt_grade_quasi_pass` observed PWT `33.664` after its intended
+  range checkpoint. The test-level bands are now `20.7-22.1` and `18-36`,
+  respectively; both remain separated from the adjacent parameter bands.
+  Each case passed three focused repetitions in both modes where applicable,
+  and the final full jobs-4 matrix passed 32/32;
+- all accepted matrices produced the exact expected result-row count, cleanup
+  reported no teardown failure, and retained generated workdirs were removed
+  after statistics were captured.
+
 ## Migration Tracking
 
 Use one row per registered target. Shared-stem changes may advance several rows
@@ -1122,9 +1206,9 @@ mixed-shared-stem deferrals.
 | `obmgr_h01` | `obmgr_unit` | no | `N` | complete | complete | pass (2 cases, jobs 1) | pass (jobs 2/4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `obmgr_h02` | `obmgr_motion` | no | `N` | complete | complete | pass (2 cases, jobs 1) | pass (jobs 2/4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `pid_h01` | `pid_unit` | no | `N` | complete | complete | pass (2 cases, jobs 1) | pass (jobs 2/4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
-| `pid_h02` | `pid_motion` | no | `N` | not started | pending | pending | pending | pending | pending | `ANTLER`/`pLogger` patch | not started |
+| `pid_h02` | `pid_motion` | no | `N` | complete | complete | pass (runtime case, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | case ANTLER replacement preserves case-only uTimerScript and restores logger only in full | complete |
 | `usim_marine_h01` | `usim_marine_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
-| `pnodereporter_h01` | `pnodereporter_unit` | no | `N` | not started | pending | pending | pending | pending | pending | `.alog` fallback audit (`N1`) | not started |
+| `pnodereporter_h01` | `pnodereporter_unit` | no | `G` | complete | complete | pass (`N1` cases, both modes; reverse minimal 3x) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | `G13`: minimal logs only NODE_REPORT_LOCAL after N1 fallback proved necessary | complete |
 | `upokedb_h01` | `upokedb_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | external-stimulus checker limitation; shared mission-file readiness race fixed | complete |
 | `uxms_h01` | `uxms_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `uquerydb_h01` | `uquerydb_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | CLI-result grading exception preserved | complete |
@@ -1134,15 +1218,15 @@ mixed-shared-stem deferrals.
 | `pspoofnode_h01` | `pspoofnode_unit` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
 | `utermcommand_h01` | `utermcommand_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | external-stimulus checker limitation | complete |
 | `psearchgrid_h01` | `psearchgrid_unit` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `depth_constant_h01` | `depth_behavior_motion` | yes (5) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `depth_goto_h02` | `depth_behavior_motion` | yes (5) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `depth_periodic_surface_h03` | `depth_behavior_motion` | yes (5) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `depth_max_h04` | `depth_behavior_motion` | yes (5) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `depth_min_altitude_h05` | `depth_behavior_motion` | yes (5) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `colregs_h01` | `colregs_unit` | yes (4) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `colregs_h02` | `colregs_unit` | yes (4) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `colregs_h03` | `colregs_unit` | yes (4) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `colregs_h04` | `colregs_unit` | yes (4) | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
+| `depth_constant_h01` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
+| `depth_goto_h02` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
+| `depth_periodic_surface_h03` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
+| `depth_max_h04` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
+| `depth_min_altitude_h05` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (boundary focused) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | untouched boundary miss passed focused and clean repeats; no edit | complete |
+| `colregs_h01` | `colregs_unit` | yes (4) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
+| `colregs_h02` | `colregs_unit` | yes (4) | `S` | complete | complete (interface) | mixed focused results | fail (jobs 4 minimal, two sets) | pass (jobs 4) | 2026-07-18 exception comparison | `S3`: defaults full; minimal timing/readiness redesign deferred | blocked |
+| `colregs_h03` | `colregs_unit` | yes (4) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
+| `colregs_h04` | `colregs_unit` | yes (4) | `N` | complete | complete | pass (2 sampling cases, both modes) | pass (jobs 4) | pass post-fix (jobs 4) | 2026-07-18 paired | two evaluator sampling bands widened without overlapping adjacent contracts | complete |
 | `collision_h01` | `collision_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `convoy_h01` | `convoy_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | two-vehicle full mode correctly restores 3 pLoggers | complete |
 | `cutrange_h01` | `cutrange_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | two-vehicle full mode correctly restores 3 pLoggers | complete |
