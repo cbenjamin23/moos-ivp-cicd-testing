@@ -9,6 +9,7 @@ add_moos_cpp_test(test_evalutil_logic_sequence
   LABELS
     evalutil
     pMissionEval
+    pmissioneval
   SUITE_LABELS
     LogicAspectTest=LogicAspect
     LogicTestSequenceTest=LogicTestSequence

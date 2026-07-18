@@ -261,12 +261,26 @@ Rules:
 
 - every CTest case must have at least one useful label
 - no duplicate labels on a case
+- public family selectors must be unique even when compared without case;
+  selectors that differ only by capitalization would map to the same focused
+  build target on case-insensitive filesystems
+- canonical public family selectors use only lowercase letters, numbers, `_`,
+  and `-`; selector matching is strict, so mixed-case spellings are rejected
 - concrete class/tool labels should not spill across unrelated suites
 - family labels may be broad when the whole executable is the family
 - app-impact labels mean the test protects behavior used by that app; they do
   not mean the app itself is launched
 - prefer canonical MOOS-IvP names, including existing capitalization such as
   `XYPolygon`, `ZAIC_PEAK`, `BHV_Waypoint`, or `VIEW_POLYGON`
+
+Public selectors and descriptive component labels serve different purposes.
+For example, the lowercase `pnodereporter` family and canonical
+`pNodeReporter` component label may both be attached to a test. CTest retains
+their original, case-sensitive spellings for filtering and reporting. The
+internal focused-build target key is always lowercase, so both labels safely
+contribute dependencies to `ctest-family-pnodereporter` on macOS, Linux, and
+other build hosts. Use `ctests.sh` as the public interface rather than relying
+on a mixed-case internal CMake target name.
 
 ## Test Quality Standard
 

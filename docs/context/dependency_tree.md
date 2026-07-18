@@ -12,7 +12,7 @@ repo files should be opened next?
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
 - Harness patch/config files: `1733` under configured targets
 - Mission launch/config files: `449` under `missions/`
-- C++ test sources: `214`
+- C++ test sources: `215`
 
 ## Repo Layers
 
@@ -43,7 +43,8 @@ repo files should be opened next?
 - Docs page edits: edit `docs/tools/build_pages.py`; treat
   `docs/harnesses/<slug>.html` as generated output.
 - C++ work: CTest family in `scripts/ci_cpp_test_targets.py` ->
-  `tests/cpp/<family>` -> focused `ctest -L <family>` run.
+  matching labels under `tests/cpp/` -> focused
+  `./tests/cpp/ctests.sh --<family>` run.
 
 ## Detailed Lookup
 

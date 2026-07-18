@@ -35,6 +35,12 @@ is_selected() {
     return 1
 }
 
+focused_build_target() {
+    # Keep public CTest labels case-sensitive while matching CMake's
+    # filesystem-safe lowercase target key.
+    printf 'ctest-family-%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
 usage() {
     local family
     cat <<EOF
@@ -108,7 +114,7 @@ if [ "$DO_BUILD" = yes ]; then
     build_targets=()
     if [ "${#SELECTED[@]}" -gt 0 ]; then
         for family in "${SELECTED[@]}"; do
-            build_targets+=("ctest-family-$family")
+            build_targets+=("$(focused_build_target "$family")")
         done
     fi
 
@@ -142,13 +148,7 @@ ctest_args=(
 if [ "${#SELECTED[@]}" -eq 0 ]; then
     echo "$ME: running all CTest families"
 else
-    label_regex="^("
-    separator=""
-    for family in "${SELECTED[@]}"; do
-        label_regex="${label_regex}${separator}${family}"
-        separator="|"
-    done
-    label_regex="${label_regex})$"
+    label_regex=$(python3 "$FAMILY_TOOL" label-regex "${SELECTED[@]}") || exit $?
     ctest_args+=( -L "$label_regex" )
     echo "$ME: running CTest families: ${SELECTED[*]}"
 fi

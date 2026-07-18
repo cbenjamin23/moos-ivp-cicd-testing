@@ -315,6 +315,10 @@ def check_cpp_test_tree(_targets: list[dict[str, object]]) -> list[CheckFailure]
         CheckFailure(failure.label, failure.detail)
         for failure in check_cpp_tests.check_static()
     ]
+    for issue in ci_cpp_test_targets.family_name_issues(
+        list(ci_cpp_test_targets.CPP_FAMILIES)
+    ):
+        failures.append(CheckFailure("CTest family selector naming", issue))
     declared_labels = check_cpp_tests.declared_labels()
     for family in sorted(set(ci_cpp_test_targets.CPP_FAMILIES) - declared_labels):
         failures.append(

@@ -16,6 +16,6 @@ add_moos_cpp_test(test_mission_utility_apps
   LABELS
     mission_utility
   SUITE_LABELS
-    MissionHashAppTest=pMissionHash
-    MayFinishConfigTest=uMayFinish
+    MissionHashAppTest=pMissionHash,pmissionhash
+    MayFinishConfigTest=uMayFinish,umayfinish
 )

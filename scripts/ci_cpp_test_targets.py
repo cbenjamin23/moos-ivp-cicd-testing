@@ -58,9 +58,10 @@ CPP_FAMILIES = (
     "logutils",
     "manifest",
     "marine_pid",
-    "pMissionEval",
-    "pMissionHash",
-    "uMayFinish",
+    "moosgeodesy",
+    "pmissioneval",
+    "pmissionhash",
+    "umayfinish",
     "pnodereporter",
     "marineview",
     "mbutil",
@@ -87,6 +88,8 @@ CPP_FAMILIES = (
     "utimerscript",
     "zaicview",
 )
+
+PUBLIC_FAMILY_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 
 
 @dataclass(frozen=True)
@@ -181,6 +184,11 @@ def parse_args() -> argparse.Namespace:
         "list",
         help="List the public CTest family selectors.",
     )
+    regex_parser = subparsers.add_parser(
+        "label-regex",
+        help="Build an anchored CTest label regex from literal family names.",
+    )
+    regex_parser.add_argument("families", nargs="+")
     return parser.parse_args()
 
 
@@ -191,6 +199,39 @@ def selected_targets(raw: str) -> list[str]:
 
 def comma_list(raw: str) -> list[str]:
     return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+def exact_label_regex(families: list[str]) -> str:
+    """Return one anchored ERE that treats every family name literally."""
+    return "^(" + "|".join(re.escape(family) for family in families) + ")$"
+
+
+def family_name_issues(families: tuple[str, ...] | list[str]) -> list[str]:
+    """Return selector-name problems that would make focused builds ambiguous."""
+    issues: list[str] = []
+    seen_exact: set[str] = set()
+    by_build_key: dict[str, list[str]] = {}
+
+    for family in families:
+        if not PUBLIC_FAMILY_PATTERN.fullmatch(family):
+            issues.append(
+                "public selectors must be lowercase and contain only letters, "
+                f"numbers, _, or -: {family}"
+            )
+        if family in seen_exact:
+            issues.append(f"duplicate selector: {family}")
+        seen_exact.add(family)
+        by_build_key.setdefault(family.lower(), []).append(family)
+
+    for build_key, names in sorted(by_build_key.items()):
+        distinct_names = sorted(set(names))
+        if len(distinct_names) > 1:
+            issues.append(
+                "case-insensitive selector collision for "
+                f"ctest-family-{build_key}: {', '.join(distinct_names)}"
+            )
+
+    return issues
 
 
 def select_targets_for_mode(
@@ -324,7 +365,7 @@ def ctest_command(build_dir: Path, target: str, report_path: Path) -> list[str]:
         str(report_path),
     ]
     if target != "all":
-        command[4:4] = ["-L", f"^{re.escape(target)}$"]
+        command[4:4] = ["-L", exact_label_regex([target])]
     return command
 
 
@@ -432,6 +473,10 @@ def main() -> int:
 
     if args.command == "list":
         print("\n".join(CPP_FAMILIES))
+        return 0
+
+    if args.command == "label-regex":
+        print(exact_label_regex(args.families))
         return 0
 
     if args.command != "run":

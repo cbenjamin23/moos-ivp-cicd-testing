@@ -112,12 +112,24 @@ function(add_moos_cpp_test target)
     set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES "${test_properties_script}")
   endif()
 
+  # CTest labels are case-sensitive, but generated build-system paths may not
+  # be.  In particular, the default macOS filesystem aliases targets such as
+  # ctest-family-pnodereporter and ctest-family-pNodeReporter.  Preserve the
+  # original labels on the tests and use a lowercase key only for focused
+  # build targets.
+  set(moos_build_target_keys)
   list(REMOVE_DUPLICATES moos_build_labels)
   foreach(build_label IN LISTS moos_build_labels)
     if(NOT build_label MATCHES "^[A-Za-z0-9_.+-]+$")
       message(FATAL_ERROR "CTest labels used for focused builds must contain only letters, numbers, _, ., +, or -: ${build_label}")
     endif()
-    set(family_target "ctest-family-${build_label}")
+    string(TOLOWER "${build_label}" build_target_key)
+    list(APPEND moos_build_target_keys "${build_target_key}")
+  endforeach()
+
+  list(REMOVE_DUPLICATES moos_build_target_keys)
+  foreach(build_target_key IN LISTS moos_build_target_keys)
+    set(family_target "ctest-family-${build_target_key}")
     if(NOT TARGET ${family_target})
       add_custom_target(${family_target})
     endif()
@@ -179,6 +191,7 @@ add_subdirectory(survey)
 add_subdirectory(realm)
 add_subdirectory(encounters)
 add_subdirectory(marine_pid)
+add_subdirectory(moosgeodesy)
 add_subdirectory(usim_marine)
 add_subdirectory(pnodereporter)
 add_subdirectory(helmivp)

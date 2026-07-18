@@ -140,9 +140,10 @@ on:
           - logutils
           - manifest
           - marine_pid
-          - pMissionEval
-          - pMissionHash
-          - uMayFinish
+          - moosgeodesy
+          - pmissioneval
+          - pmissionhash
+          - umayfinish
           - pnodereporter
           - marineview
           - mbutil

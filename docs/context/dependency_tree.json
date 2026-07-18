@@ -380,6 +380,13 @@
           "VarDataPair"
         ]
       },
+      "moosgeodesy": {
+        "path": "tests/cpp/moosgeodesy",
+        "source_count": 1,
+        "subareas": [
+          "Core"
+        ]
+      },
       "nspatch": {
         "path": "tests/cpp/nspatch",
         "source_count": 1,
@@ -400,16 +407,6 @@
         "subareas": [
           "Obstacle"
         ]
-      },
-      "pMissionEval": {
-        "path": "tests/cpp/pMissionEval",
-        "source_count": 0,
-        "subareas": []
-      },
-      "pMissionHash": {
-        "path": "tests/cpp/pMissionHash",
-        "source_count": 0,
-        "subareas": []
       },
       "pechovar": {
         "path": "tests/cpp/pechovar",
@@ -432,6 +429,16 @@
         "subareas": [
           "Plucker"
         ]
+      },
+      "pmissioneval": {
+        "path": "tests/cpp/pmissioneval",
+        "source_count": 0,
+        "subareas": []
+      },
+      "pmissionhash": {
+        "path": "tests/cpp/pmissionhash",
+        "source_count": 0,
+        "subareas": []
       },
       "pnodereporter": {
         "path": "tests/cpp/pnodereporter",
@@ -489,11 +496,6 @@
           "TurnGenerator"
         ]
       },
-      "uMayFinish": {
-        "path": "tests/cpp/uMayFinish",
-        "source_count": 0,
-        "subareas": []
-      },
       "ucommand": {
         "path": "tests/cpp/ucommand",
         "source_count": 2,
@@ -536,6 +538,11 @@
         "subareas": [
           "HelmRecords"
         ]
+      },
+      "umayfinish": {
+        "path": "tests/cpp/umayfinish",
+        "source_count": 0,
+        "subareas": []
       },
       "uplotviewer": {
         "path": "tests/cpp/uplotviewer",
@@ -612,9 +619,10 @@
       "logutils",
       "manifest",
       "marine_pid",
-      "pMissionEval",
-      "pMissionHash",
-      "uMayFinish",
+      "moosgeodesy",
+      "pmissioneval",
+      "pmissionhash",
+      "umayfinish",
       "pnodereporter",
       "marineview",
       "mbutil",
@@ -642,7 +650,7 @@
       "zaicview"
     ],
     "path": "tests/cpp",
-    "source_count": 214,
+    "source_count": 215,
     "source_count_by_family": {
       "alogavg": 1,
       "alogbin": 1,
@@ -688,6 +696,7 @@
       "marine_pid": 3,
       "marineview": 3,
       "mbutil": 19,
+      "moosgeodesy": 1,
       "nspatch": 1,
       "nsplug": 1,
       "obstacles": 2,
@@ -7004,14 +7013,14 @@
   "repo": {
     "file_counts_by_suffix": {
       ".bhv": 32,
-      ".cpp": 220,
+      ".cpp": 221,
       ".css": 3,
       ".gif": 1,
       ".h": 13,
       ".html": 71,
       ".js": 1,
       ".json": 2,
-      ".md": 143,
+      ".md": 144,
       ".mjo": 1,
       ".moos": 155,
       ".mp4": 149,
@@ -7019,7 +7028,7 @@
       ".png": 4,
       ".py": 36,
       ".sh": 337,
-      ".txt": 300,
+      ".txt": 302,
       ".xbhv": 518,
       ".xmoos": 1271,
       "[none]": 7
