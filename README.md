@@ -36,8 +36,8 @@ cd tests/cpp
 ```
 
 Run `./ctests.sh` without a family option to test everything, or use `--help`
-to list all family options. The first run may configure and build the CTest
-executables before testing; later runs rebuild incrementally.
+to list all family options. The first focused run may configure and build the
+selected CTest executables before testing; later runs rebuild incrementally.
 
 From the test repository root, run the full pEchoVar mission harness:
 

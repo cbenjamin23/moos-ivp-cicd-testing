@@ -2687,7 +2687,7 @@ cd /path/to/moos-ivp-cicd-testing
           <pre><code>cd tests/cpp
 ./ctests.sh --pechovar</code></pre>
           <p>Run <code>./ctests.sh</code> with no family option to test everything, or use <code>--help</code> to list the available families.</p>
-          <p>The first run may configure and build the CTest executables before testing. Later runs rebuild incrementally.</p>
+          <p>The first focused run may configure and build the selected CTest executables before testing. Later runs rebuild incrementally.</p>
           <p><strong>Example success output</strong></p>
           <pre><code>100% tests passed, 0 tests failed out of 31</code></pre>
         </article>

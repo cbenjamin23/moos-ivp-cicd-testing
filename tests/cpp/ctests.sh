@@ -40,7 +40,8 @@ usage() {
     cat <<EOF
 $ME [OPTIONS]
 
-Build and run the repository's C++ tests. With no family options, all tests run.
+Build and run the repository's C++ tests. Family options build and run only
+the selected families; with no family options, all tests run.
 
 Options:
   --all             Run all CTest families (default)
@@ -104,12 +105,27 @@ if [ "$EXPLICIT_ALL" = yes ] && [ "${#SELECTED[@]}" -gt 0 ]; then
 fi
 
 if [ "$DO_BUILD" = yes ]; then
+    build_targets=()
+    if [ "${#SELECTED[@]}" -gt 0 ]; then
+        for family in "${SELECTED[@]}"; do
+            build_targets+=("ctest-family-$family")
+        done
+    fi
+
     if [ ! -f "$BUILD_DIR/CMakeCache.txt" ]; then
-        echo "$ME: configuring and building the C++ tests"
-        (cd "$REPO_ROOT" && ./build.sh "-j$JOBS") || exit $?
-    else
-        echo "$ME: incrementally building C++ tests"
+        if [ "${#build_targets[@]}" -eq 0 ]; then
+            echo "$ME: configuring and building all C++ tests"
+            (cd "$REPO_ROOT" && ./build.sh "-j$JOBS") || exit $?
+        else
+            echo "$ME: configuring and building CTest families: ${SELECTED[*]}"
+            (cd "$REPO_ROOT" && ./build.sh "-j$JOBS" "${build_targets[@]}") || exit $?
+        fi
+    elif [ "${#build_targets[@]}" -eq 0 ]; then
+        echo "$ME: incrementally building all C++ tests"
         cmake --build "$BUILD_DIR" --parallel "$JOBS" || exit $?
+    else
+        echo "$ME: incrementally building CTest families: ${SELECTED[*]}"
+        cmake --build "$BUILD_DIR" --parallel "$JOBS" --target "${build_targets[@]}" || exit $?
     fi
 elif [ ! -f "$BUILD_DIR/CMakeCache.txt" ]; then
     echo "$ME: test build is not configured; omit --no-build or run $REPO_ROOT/build.sh" >&2
@@ -137,4 +153,28 @@ else
     echo "$ME: running CTest families: ${SELECTED[*]}"
 fi
 
-ctest "${ctest_args[@]}"
+summary_file=$(mktemp "${TMPDIR:-/tmp}/${ME}.summary.XXXXXX") || exit 1
+trap 'rm -f "$summary_file"' EXIT
+
+ctest "${ctest_args[@]}" 2>&1 | awk -v summary_file="$summary_file" '
+    /tests passed, [0-9]+ tests failed out of [0-9]+/ {
+        print > summary_file
+        close(summary_file)
+        next
+    }
+    {
+        print
+        fflush()
+    }
+'
+pipeline_status=("${PIPESTATUS[@]}")
+
+if [ -s "$summary_file" ]; then
+    printf '\n'
+    cat "$summary_file"
+fi
+
+if [ "${pipeline_status[0]}" -ne 0 ]; then
+    exit "${pipeline_status[0]}"
+fi
+exit "${pipeline_status[1]}"

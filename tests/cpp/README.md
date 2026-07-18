@@ -104,7 +104,9 @@ Build incrementally and run everything:
 
 The first run configures the test build when needed. Use `--jobs=N` for
 parallel building and testing, or `--no-build` when the test executables are
-already current. Run `./tests/cpp/ctests.sh --help` to list every family.
+already current. Focused family runs build only the selected families and their
+dependencies; a run without family options builds everything. Run
+`./tests/cpp/ctests.sh --help` to list every family.
 
 If the build cache points at the wrong MOOS-IvP checkout, reconfigure once:
 

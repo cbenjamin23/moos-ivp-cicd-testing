@@ -20,6 +20,8 @@ function(add_moos_cpp_test target)
   set(multi_value_args SOURCES LIBS LABELS SUITE_LABELS INCLUDES DEFINES ENVIRONMENT)
   cmake_parse_arguments(MOOS_TEST "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
+  set(moos_build_labels ${MOOS_TEST_LABELS})
+
   add_executable(${target} ${MOOS_TEST_SOURCES})
   target_link_libraries(${target}
     PRIVATE
@@ -70,6 +72,7 @@ function(add_moos_cpp_test target)
         math(EXPR suite_label_values_start "${suite_label_separator} + 1")
         string(SUBSTRING "${suite_label}" ${suite_label_values_start} -1 suite_label_values)
         string(REPLACE "," ";" suite_labels "${suite_label_values}")
+        list(APPEND moos_build_labels ${suite_labels})
         string(APPEND test_properties_content
           "    if(_moos_test MATCHES [=[\\.${suite_label_suite}\\.]=])\n"
         )
@@ -108,6 +111,18 @@ function(add_moos_cpp_test target)
   if(MOOS_TEST_LABELS OR MOOS_TEST_SUITE_LABELS OR MOOS_TEST_ENVIRONMENT)
     set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES "${test_properties_script}")
   endif()
+
+  list(REMOVE_DUPLICATES moos_build_labels)
+  foreach(build_label IN LISTS moos_build_labels)
+    if(NOT build_label MATCHES "^[A-Za-z0-9_.+-]+$")
+      message(FATAL_ERROR "CTest labels used for focused builds must contain only letters, numbers, _, ., +, or -: ${build_label}")
+    endif()
+    set(family_target "ctest-family-${build_label}")
+    if(NOT TARGET ${family_target})
+      add_custom_target(${family_target})
+    endif()
+    add_dependencies(${family_target} ${target})
+  endforeach()
 endfunction()
 
 add_subdirectory(geometry)
