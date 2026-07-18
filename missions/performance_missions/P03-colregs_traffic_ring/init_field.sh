@@ -5,14 +5,14 @@
 #------------------------------------------------------------
 
 ME=$(basename "$0")
-MMOD="baseline_circle_pass"
+SCENARIO="baseline_circle"
 CENTER_X="23"
 CENTER_Y="-82"
 RADIUS="34"
 
 for ARGI; do
-  if [ "${ARGI:0:7}" = "--mmod=" ]; then
-    MMOD="${ARGI#--mmod=*}"
+  if [ "${ARGI:0:11}" = "--scenario=" ]; then
+    SCENARIO="${ARGI#--scenario=*}"
   elif [ "${ARGI:0:11}" = "--center_x=" ]; then
     CENTER_X="${ARGI#--center_x=*}"
   elif [ "${ARGI:0:11}" = "--center_y=" ]; then
@@ -20,7 +20,7 @@ for ARGI; do
   elif [ "${ARGI:0:9}" = "--radius=" ]; then
     RADIUS="${ARGI#--radius=*}"
   elif [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
-    echo "$ME [--mmod=<mode>] [--center_x=<x>] [--center_y=<y>] [--radius=<r>]"
+    echo "$ME [--scenario=<name>] [--center_x=<x>] [--center_y=<y>] [--radius=<r>]"
     exit 0
   fi
 done
@@ -29,18 +29,18 @@ NAMES=(abe ben cal deb eve)
 COLORS=(yellow red dodger_blue green orange)
 ANGLES=(90 18 -54 -126 -198)
 
-case "$MMOD" in
-  baseline_circle_pass)
+case "$SCENARIO" in
+  baseline_circle)
     SPEEDS=(1.75 1.75 1.75 1.75 1.75)
     ;;
-  noncoop_circle_pass)
+  noncoop_circle)
     SPEEDS=(1.50 1.50 1.50 1.50 1.50)
     ;;
-  mixed_speed_circle_pass|endurance_circle_pass)
+  mixed_speed_circle|endurance_circle)
     SPEEDS=(1.55 1.67 1.79 1.91 2.03)
     ;;
   *)
-    echo "$ME: Unknown mission mode [$MMOD]"
+    echo "$ME: Unknown mission scenario [$SCENARIO]"
     exit 1
     ;;
 esac

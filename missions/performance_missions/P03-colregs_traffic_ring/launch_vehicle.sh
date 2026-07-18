@@ -64,12 +64,15 @@ for ARGI; do
     MAX_SPD="${ARGI#--max_spd=*}"
   elif [ "${ARGI:0:8}" = "--avoid=" ]; then
     AVOID_INITIAL="${ARGI#--avoid=*}"
+  else
+    echo "$ME: Bad arg: $ARGI"
+    exit 1
   fi
 done
 
-NSFLAGS="--strict --force"
+NSFLAGS="--strict --force -x"
 if [ "${AUTO_LAUNCHED}" = "no" ]; then
-  NSFLAGS="--interactive --force"
+  NSFLAGS="--interactive --force -x"
 fi
 
 nsplug meta_vehicle.moos targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \

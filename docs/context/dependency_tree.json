@@ -4583,7 +4583,7 @@
           "endurance_random_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/performance_harnesses/P01-obstacle_gauntlet/zlaunch.sh"
       }
@@ -5062,7 +5062,7 @@
           "endurance_colregs_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/performance_harnesses/P02-colregs_joust/zlaunch.sh"
       }
@@ -5138,7 +5138,7 @@
           "noncoop_circle_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/performance_harnesses/P03-colregs_traffic_ring/zlaunch.sh"
       }

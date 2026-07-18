@@ -36,7 +36,7 @@ CIRCLE="x=23,y=-82,rad=32"
 START=""
 COLAVD=""
 NOLEGS=""
-MMOD="baseline_colregs_pass"
+SCENARIO="baseline_colregs"
 JOUST_FILE=""
 EVAL_TIME_SECS="40"
 MISSION_TIMEOUT_SECS="55"
@@ -64,10 +64,10 @@ for ARGI; do
 	echo "  --amt=N            Num vehicles to launch    "
 	echo "  --rand, -r         Rand vehicle positions    "
 	echo "  --max_spd=N        Max helm/sim speed        "
-	echo "  --mmod=<mod>       Mission variation/mod:    "
-	echo "                     baseline_colregs_pass     "
-	echo "                     dense_colregs_pass        "
-	echo "                     endurance_colregs_pass    "
+	echo "  --scenario=<name>  Mission scenario:         "
+	echo "                     baseline_colregs          "
+	echo "                     dense_colregs             "
+	echo "                     endurance_colregs         "
 	echo "  --shore_mport=N    Shoreside MOOSDB port    "
 	echo "  --veh_mport=N      Base vehicle MOOSDB port "
 	echo "  --shore_pshare=N   Shoreside pShare port    "
@@ -118,8 +118,8 @@ for ARGI; do
 	COLAVD=$ARGI
     elif [ "${ARGI}" = "--cpa" -o "${ARGI}" = "-cpa" ]; then
 	COLAVD=$ARGI
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
+    elif [ "${ARGI:0:11}" = "--scenario=" ]; then
+        SCENARIO="${ARGI#--scenario=*}"
     elif [ "${ARGI:0:14}" = "--shore_mport=" ]; then
         SHORE_MPORT="${ARGI#--shore_mport=*}"
     elif [ "${ARGI:0:12}" = "--veh_mport=" ]; then
@@ -137,22 +137,22 @@ done
 #------------------------------------------------------------
 #  Part 3A: Mission-mode specific defaults
 #------------------------------------------------------------
-case "$MMOD" in
-    baseline_colregs_pass)
+case "$SCENARIO" in
+    baseline_colregs)
         JOUST_FILE="$PWD/jousts/baseline_2v.txt"
         VAMT="2"
         EVAL_TIME_SECS="280"
         MISSION_TIMEOUT_SECS="400"
         CLOSEST_MAX="45"
         ;;
-    dense_colregs_pass)
+    dense_colregs)
         JOUST_FILE="$PWD/jousts/dense_3v.txt"
         VAMT="3"
         EVAL_TIME_SECS="420"
         MISSION_TIMEOUT_SECS="560"
         CLOSEST_MAX="40"
         ;;
-    endurance_colregs_pass)
+    endurance_colregs)
         JOUST_FILE="$PWD/jousts/endurance_3v.txt"
         VAMT="3"
         EVAL_TIME_SECS="1200"
@@ -160,7 +160,7 @@ case "$MMOD" in
         CLOSEST_MAX="40"
         ;;
     *)
-        echo "$ME: Unknown mission mode [$MMOD]"
+        echo "$ME: Unknown mission scenario [$SCENARIO]"
         exit 1
         ;;
 esac
@@ -200,6 +200,7 @@ if [ "${VERBOSE}" != "" ]; then
     echo "CIRCLE =        [${CIRCLE}]                 "
     echo "START =         [${START}]                  "
     echo "COLAVD =        [${COLAVD}]                 "
+    echo "SCENARIO =      [${SCENARIO}]               "
     echo "SHORE_MPORT =   [${SHORE_MPORT}]            "
     echo "VEH_MPORT =     [${VEH_MPORT}]              "
     echo "SHORE_PSHARE =  [${SHORE_PSHARE}]           "
@@ -269,7 +270,7 @@ done
 #  Part 7: Launch the Shoreside mission file
 #------------------------------------------------------------
 SARGS=" --auto --mport=$SHORE_MPORT --pshare=$SHORE_PSHARE $NOGUI "
-SARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE --vnames=$VNAMES --mmod=$MMOD"
+SARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE --vnames=$VNAMES --scenario=$SCENARIO"
 SARGS+=" --required_nodes=$VAMT"
 SARGS+=" --eval_time=$EVAL_TIME_SECS"
 SARGS+=" --mission_timeout=$MISSION_TIMEOUT_SECS"

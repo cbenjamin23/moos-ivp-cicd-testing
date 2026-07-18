@@ -28,7 +28,7 @@ MOOS_PORT="9000"
 PSHARE_PORT="9200"
 
 VNAMES=""
-MMOD="baseline_colregs_pass"
+SCENARIO="baseline_colregs"
 REQUIRED_NODES="4"
 EVAL_TIME_SECS="40"
 MISSION_TIMEOUT_SECS="55"
@@ -64,8 +64,8 @@ for ARGI; do
 	echo "                                               "
         echo "  --vnames=<vnames>                            "
         echo "    Colon-separate list of all vehicle names   "
-        echo "  --mmod=<mod>                                 "
-        echo "    Identify a mission variation/mod           "
+        echo "  --scenario=<name>                            "
+        echo "    Identify the mission scenario              "
         echo "  --required_nodes=<n>                         "
         echo "  --eval_time=<secs>                           "
         echo "  --mission_timeout=<secs>                     "
@@ -92,8 +92,8 @@ for ARGI; do
         PSHARE_PORT="${ARGI#--pshare=*}"
     elif [ "${ARGI:0:9}" = "--vnames=" ]; then
         VNAMES="${ARGI#--vnames=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
+    elif [ "${ARGI:0:11}" = "--scenario=" ]; then
+        SCENARIO="${ARGI#--scenario=*}"
     elif [ "${ARGI:0:17}" = "--required_nodes=" ]; then
         REQUIRED_NODES="${ARGI#--required_nodes=*}"
     elif [ "${ARGI:0:12}" = "--eval_time=" ]; then
@@ -151,15 +151,15 @@ fi
 #------------------------------------------------------------ 
 #  Part 6: Create the shoreside mission file
 #------------------------------------------------------------ 
-NSFLAGS="--strict --force"
+NSFLAGS="--strict --force -x"
 if [ "${AUTO_LAUNCHED}" = "no" ]; then
-    NSFLAGS="--interactive --force"
+    NSFLAGS="--interactive --force -x"
 fi
 
 nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT    \
        PSHARE_PORT=$PSHARE_PORT     LAUNCH_GUI=$LAUNCH_GUI  \
-       VNAMES=$VNAMES               MMOD=$MMOD              \
+       VNAMES=$VNAMES               MMOD=$SCENARIO          \
        REQUIRED_NODES=$REQUIRED_NODES                       \
        EVAL_TIME_SECS=$EVAL_TIME_SECS                       \
        MISSION_TIMEOUT_SECS=$MISSION_TIMEOUT_SECS           \

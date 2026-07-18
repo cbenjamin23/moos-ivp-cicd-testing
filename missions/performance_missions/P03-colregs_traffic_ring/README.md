@@ -5,18 +5,18 @@ Seeded five-vehicle COLREGS traffic-ring mission.
 Purpose:
 - broader multi-vessel integration pressure than `P02-colregs_joust`
 - repeated reassignment of fresh waypoint targets on a ring
-- deterministic replay through checked-in seeds and mission modes
+- fixed scenario parameters and RNG seeds for comparable repeated runs
 
-Mission modes:
-- `baseline_circle_pass`
+Mission scenarios:
+- `baseline_circle`
   - five vehicles
   - equal speeds
   - medium runtime
-- `mixed_speed_circle_pass`
+- `mixed_speed_circle`
   - five vehicles
   - fixed mixed speeds
   - medium runtime
-- `endurance_circle_pass`
+- `endurance_circle`
   - five vehicles
   - fixed mixed speeds
   - longer runtime
@@ -38,12 +38,14 @@ Pass contract:
 Notes:
 - `TRAFFIC_ASSIGN_FAILS` is reported as coordinator health but is not a mission fail on its own.
 - `NEAR_MISS_TOTAL` and `closest_range_ever` are reported for analysis, but the primary soak gate is collision-free sustained activity.
-- The supported modes are tuned for replayable seeded traffic pressure, not exact deterministic geometry.
+- The supported scenarios use fixed RNG seeds, but asynchronous vehicle
+  completion can change the order in which assignments consume that stream.
+  Runs are comparable traffic samples, not exact event-by-event replays.
 
 Typical runs:
 
 ```bash
-./launch.sh --mmod=baseline_circle_pass --nogui 10
-./launch.sh --mmod=mixed_speed_circle_pass --nogui 10
-./launch.sh --mmod=endurance_circle_pass --nogui 10
+./launch.sh --scenario=baseline_circle --nogui 10
+./launch.sh --scenario=mixed_speed_circle --nogui 10
+./launch.sh --scenario=endurance_circle --nogui 10
 ```

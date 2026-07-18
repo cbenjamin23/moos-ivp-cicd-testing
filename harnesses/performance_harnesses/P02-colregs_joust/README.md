@@ -19,7 +19,7 @@ Initial performance harness for the COLREGS joust stem.
 The harness checks:
 - mission `grade`
 - mission-side thresholds for MOOS-visible metrics in the selected case
-- disallowed planner/runtime warning text in the newest vehicle `.alog`
+- disallowed planner/runtime warning text across every vehicle `.alog`
 
 For these joust cases, the main pressure metric is
 `closest_range_ever`, derived from `UCD_CLOSEST_RANGE_EVER`. That is more
@@ -31,7 +31,7 @@ Current split:
   launch
 - shell still checks only:
   - `wall_time` bands
-  - disallowed warning text in the newest `.alog`
+  - disallowed warning text across every vehicle `.alog`
 
 Current mission-side case checks:
 - `baseline_colregs_pass`
@@ -62,17 +62,19 @@ Typical runs:
 
 ```bash
 ./zlaunch.sh 10
-./zlaunch.sh --jobs=2 --port_base=31000 10
+./zlaunch.sh --port_base=31000 10
 ./zlaunch.sh --case=baseline_colregs_pass 10
 ./zlaunch.sh --case=dense_colregs_pass 10
 ./zlaunch.sh --case=endurance_colregs_pass 10
 ```
 
-Wave-mode notes:
-- The harness supports `--jobs=<n>` with the same wave-batch model used by the
-  other parallelized harnesses in this repo.
-- Each live case gets its own temp mission copy plus its own MOOSDB and pShare
-  port block (`case_base = port_base + case_idx*PORT_STRIDE`, pShare at
-  `case_base + 10`), and the harness waits once between waves with `ktm`.
-- Use `--keep_workdirs` if you want to inspect the isolated temp mission copies
-  after a parallel run.
+Execution notes:
+- Performance cases run serially so concurrent load cannot distort their
+  wall-clock gates.
+- Each case uses an isolated mission copy and its own MOOSDB/pShare block
+  (`case_base = port_base + case_idx*30`, pShare at `case_base + 15`).
+- The harness explicitly maps each case to a human-facing mission `--scenario`
+  and a shoreside evaluator patch.
+- A performance-family lock prevents P01, P02, and P03 from overlapping in the
+  same checkout.
+- Use `--keep_workdirs` to inspect isolated copies and generated targets.

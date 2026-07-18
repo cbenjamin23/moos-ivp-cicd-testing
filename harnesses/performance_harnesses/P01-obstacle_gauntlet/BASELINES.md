@@ -7,7 +7,7 @@ Current split:
 - `pMissionEval` owns the MOOS-visible case verdict
 - shell owns only:
   - `wall_time` bands
-  - disallowed warning text in the newest vehicle `.alog`
+  - disallowed warning text across every vehicle `.alog`
 
 The mission-side checks now cover:
 

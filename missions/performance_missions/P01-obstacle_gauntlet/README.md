@@ -19,14 +19,14 @@ The stem mission currently supports two evaluation modes:
 - fixed-field modes: complete one loop before timeout
 - endurance mode: complete 10 loops before a fail-safe timeout
 
-Manual pass conditions can depend on `mmod`:
+Manual pass conditions can depend on the selected scenario:
 
-- `baseline_field_pass` / `dense_field_pass`
+- `baseline_field` / `dense_field`
   - `WPT_CYCLES >= 1`
   - `OB_TOTAL_COLLISIONS = 0`
   - `OB_TOTAL_ENCOUNTERS >= 1`
   - `MISSION_TIMEOUT = false`
-- `endurance_random_pass`
+- `endurance_random`
   - `WPT_CYCLES >= 10`
   - `OB_TOTAL_COLLISIONS = 0`
   - `MISSION_TIMEOUT = false`
@@ -49,7 +49,7 @@ after `MISSION_EVALUATED=true` before teardown finishes.
 
 ```bash
 ./launch.sh 10
-./zlaunch.sh 10
+./zlaunch.sh --scenario=baseline_field 10
 ./zlaunch.sh --just_make 10
 ```
 
@@ -57,8 +57,9 @@ after `MISSION_EVALUATED=true` before teardown finishes.
 
 - The course layout and viewer framing are derived from `missions-auto/02-obavoid`.
 - The fixed field layouts now live in [obstacles/](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/performance_missions/P01-obstacle_gauntlet/obstacles/README.md), and `init_field.sh` stages the selected one into the mission root as `obstacles.txt`.
-- `endurance_random_pass` generates a fresh random `obstacles.txt` at launch and enables obstacle reset behavior in `uFldObstacleSim`.
-- Mission `zlaunch.sh` automatically raises its default `--max_time` for `endurance_random_pass` so `uMayFinish` does not cut the run off at the short fixed-case budget.
-- The current named mission modes are `baseline_field_pass`, `dense_field_pass`, and `endurance_random_pass`.
-- The companion harness now treats the stem as the default one-loop gauntlet and uses `nspatch` only for the endurance case, so harness-owned mission semantics stay explicit without losing manual `--mmod` launches.
+- `endurance_random` generates a fresh random `obstacles.txt` at launch and enables obstacle reset behavior in `uFldObstacleSim`.
+- Mission `zlaunch.sh` automatically raises its default `--max_time` for `endurance_random` so `uMayFinish` does not cut the run off at the short fixed-case budget.
+- The current named mission scenarios are `baseline_field`, `dense_field`, and `endurance_random`.
+- The companion harness maps its cases to these mission scenarios and applies
+  explicit evaluator patches with `nspatch`.
 - This is the first performance-style example in the repo and is intended to grow into additional fixed-field variants later.

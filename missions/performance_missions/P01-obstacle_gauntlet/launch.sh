@@ -23,7 +23,7 @@ JUST_MAKE=""
 LOG_CLEAN=""
 MAX_SPD="3.0"
 MODEL_RADIUS="5"
-MMOD="baseline_field_pass"
+SCENARIO="baseline_field"
 SHORE_MPORT="9000"
 VEH_MPORT="9001"
 SHORE_PSHARE="9200"
@@ -48,10 +48,10 @@ for ARGI; do
         echo "  --log_clean, -lc   Run clean.sh bef launch"
         echo "  --max_spd=N        Max helm/sim speed"
         echo "  --model_radius=N   Dubins turn radius"
-        echo "  --mmod=<mod>       Mission variation/mod:"
-        echo "                     baseline_field_pass"
-        echo "                     dense_field_pass"
-        echo "                     endurance_random_pass"
+        echo "  --scenario=<name>  Mission scenario:"
+        echo "                     baseline_field"
+        echo "                     dense_field"
+        echo "                     endurance_random"
         echo "  --shore_mport=N    Shoreside MOOSDB port"
         echo "  --veh_mport=N      Vehicle MOOSDB port"
         echo "  --shore_pshare=N   Shoreside pShare port"
@@ -74,8 +74,8 @@ for ARGI; do
         MAX_SPD="${ARGI#--max_spd=*}"
     elif [ "${ARGI:0:15}" = "--model_radius=" ]; then
         MODEL_RADIUS="${ARGI#--model_radius=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
+    elif [ "${ARGI:0:11}" = "--scenario=" ]; then
+        SCENARIO="${ARGI#--scenario=*}"
     elif [ "${ARGI:0:14}" = "--shore_mport=" ]; then
         SHORE_MPORT="${ARGI#--shore_mport=*}"
     elif [ "${ARGI:0:12}" = "--veh_mport=" ]; then
@@ -103,7 +103,7 @@ if [ "${LOG_CLEAN}" != "" -a -f "clean.sh" ]; then
     ./clean.sh >/dev/null 2>&1 || true
 fi
 
-INIT_VARS=" $VERBOSE --mmod=$MMOD "
+INIT_VARS=" $VERBOSE --scenario=$SCENARIO "
 ./init_field.sh $INIT_VARS
 
 VEHPOS=(`cat vpositions.txt`)
@@ -125,7 +125,7 @@ if [ "${VERBOSE}" != "" ]; then
     echo "LOG_CLEAN =     [${LOG_CLEAN}]"
     echo "MAX_SPD =       [${MAX_SPD}]"
     echo "MODEL_RADIUS =  [${MODEL_RADIUS}]"
-    echo "MMOD =          [${MMOD}]"
+    echo "SCENARIO =      [${SCENARIO}]"
     echo "SHORE_MPORT =   [${SHORE_MPORT}]"
     echo "VEH_MPORT =     [${VEH_MPORT}]"
     echo "SHORE_PSHARE =  [${SHORE_PSHARE}]"
@@ -156,7 +156,6 @@ VARGS+=" --color=${VCOLOR[0]} "
 VARGS+=" --shore_pshare=$SHORE_PSHARE "
 VARGS+=" --destpos=${DESTPOS[0]} "
 VARGS+=" --model_rad=${MODEL_RADIUS} "
-VARGS+=" --mmod=${MMOD} "
 vecho "Launching vehicle: $VARGS"
 ./launch_vehicle.sh $VARGS
 sleep 0.5
@@ -167,7 +166,7 @@ sleep 0.5
 SARGS=" --auto --mport=$SHORE_MPORT --pshare=$SHORE_PSHARE $NOGUI "
 SARGS+=" --vnames=${VNAMES[0]} "
 SARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE "
-SARGS+=" --mmod=${MMOD} "
+SARGS+=" --scenario=${SCENARIO} "
 vecho "Launching shoreside: $SARGS"
 ./launch_shoreside.sh $SARGS
 

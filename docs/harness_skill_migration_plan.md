@@ -4937,26 +4937,88 @@ the standard launcher architecture, preserve or strengthen their substantive
 contracts, and have fresh complete live evidence. The only non-pMissionEval
 verdict boundary is the narrow uFldScope APPCAST case already justified above.
 
+### Completed Migration: performance harness family
+
+All three performance harnesses now use one deliberately serial architecture.
+They omit `--jobs` because concurrent missions would invalidate their wall-time
+gates, but otherwise follow the same skill-1.4.5 contract: every case runs in a
+separate harness-owned mission copy with a distinct thirty-port block, one
+family lock prevents P01/P02/P03 overlap, the canonical root-scoped teardown
+helper owns cleanup, selected-order aggregation writes exactly one normalized
+row per case, and ordinary failures do not suppress later selected cases.
+
+The verdict boundary is the documented performance exception. pMissionEval
+still owns the functional mission verdict. The runner preserves that as
+`mission_grade`, scans every applicable vehicle alog for the established
+warning patterns, checks the selected profile's existing wall-time band, and
+sets the final composite grade to fail when either supplemental performance
+gate fails. No new app, grading variable, behavior, or process supervision was
+introduced. Harness launchers no longer set or interpret `MMOD`; each case maps
+explicitly to a mission `--scenario`, and the mission uses that opaque scenario
+name only as its reported mission-mod provenance.
+
+P01's untouched legacy serial matrix passed 3/3 in 217.79 seconds, with case
+wall times of 17.90, 17.95, and 164.65 seconds. A second endurance sample passed
+in 163.87 seconds; differing encounter totals confirmed that this case is
+randomized rather than exactly seeded. The final migrated matrix passed 3/3 in
+220.14 seconds with wall times of 18.03, 17.88, and 163.91 seconds. All vehicle
+logs were scanned and contained zero disallowed warnings. A deliberately wrong
+timing profile produced `grade=fail mission_grade=pass perf_status=mismatch`,
+and a one-second launch ceiling produced `reason=missing_result`.
+
+P02's untouched legacy matrix passed 3/3 in 213.95 seconds, with case wall
+times of 28.91, 42.84, and 120.87 seconds. Its final migrated matrix passed 3/3
+in 218.34 seconds with wall times of 28.78, 42.94, and 120.86 seconds; all eight
+vehicle logs were warning-free. One attempted legacy endurance repeat ran
+during a host load average of roughly 77 and timed out after 371.65 seconds;
+that environmental sample is recorded but excluded from clean performance
+statistics. Migration also exposed that P02 and P03 launchers omitted
+`nsplug -x`, so their prepared `.moosx` evaluator overlays were not guaranteed
+to be consumed. Adding the standard flag made the existing case-specific
+conditions land in every generated mission. Forced timeout and unknown-case
+paths normalized correctly and left no tested processes.
+
+P03 had no trustworthy fresh legacy timing sample: the existing
+`pTrafficManager` binary had not been built in this checkout, and the attempted
+legacy baseline coincided with macOS media/indexing load before its broken
+signal handler began later cases during interruption. Exact-PID teardown
+removed that legacy run, and no result from it is used as a benchmark. The
+existing source target was then built normally; no application code changed.
+The first migrated local matrix passed 4/4 in 225.48 seconds with mission wall
+times of 30.92, 30.93, 90.79, and 30.88 seconds. The final CI-profile matrix at
+warp 5 passed 4/4 in 407.62 seconds with wall times of 60.97, 60.67, 180.69,
+and 60.99 seconds, and all twenty vehicle logs were warning-free.
+
+P03's CI validation exposed two genuine scheduler-sensitive collision cases.
+The original baseline failed 2/4 warp-5 samples, and the original
+noncooperative case failed in the first full CI matrix. Both retained their
+five vehicles, speeds, durations, ring geometry, activity floors, collision
+gate, and, for the latter, `eve` with avoidance disabled. Only their existing
+predicted-CPA assignment filter changed from 10 to 14, the value already used
+by the endurance case. Afterward baseline and noncooperative each passed 5/5
+focused CI repetitions plus one local-warp run. They still recorded 54--67 and
+35--46 encounters respectively, with near misses in nearly every sample, so
+the change rejects the most dangerous random target combinations without
+removing substantive traffic pressure. No solo slot, speed reduction, or
+grading relaxation was used. The final all-case CI matrix then passed cleanly.
+
+Family validation also covered Bash syntax, ShellCheck, the skill's harness
+checker, all-case generation, exact case-to-scenario mapping, generated target
+counts and ports, profile time-warp forwarding, deterministic result order,
+warning scans across all vehicle logs, unknown cases, forced missing results,
+performance mismatches, family locking, and final process/lock cleanup. The
+checker reports only its expected advisory that serial-only harnesses omit
+`--jobs`. Temporary workdirs, interrupted legacy roots, generated targets, and
+run results were removed after their evidence was recorded.
+
 ## Immediate Next Step
 
-Sixty-four of the sixty-seven registered harnesses are now migrated. The
-uField pilots additionally incorporate the clarified case-identity contract
-from skill 1.4.5: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `depth_constant_h01`, `depth_goto_h02`, `depth_max_h04`, `depth_min_altitude_h05`, `depth_periodic_surface_h03`, `hostinfo_h01`, `legrun_h01`, `loadwatch_h01`, `loiter_h01`, `obmgr_h01`,
-`obmgr_h02`, `obstacle_behavior_h01`, `opregion_h01`, `fixedturn_h01`, `memoryturnlimit_h01`, `pantler_h01`, `pechovar_h01`, `pid_h01`, `pid_h02`, `pnodereporter_h01`,
-`periodic_speed_h01`, `processwatch_h01`, `pdeadmanpost_h01`, `plogger_h01`, `pshare_h01`, `pshare_h02`, `pspoofnode_h01`,
-`psearchgrid_h01`, `testfailure_h01`, `upokedb_h01`, `uquerydb_h01`, `usim_marine_h01`, `utermcommand_h01`,
-`shadow_h01`, `stationkeep_h01`, `timer_h01`, `trail_h01`, `utimerscript_h01`, `uxms_h01`, `pmissioneval_h01`, `pmissionhash_h01`, `umayfinish_h01`, `ufield_comms_h01`, `ufield_comms_h02`, `ufield_comms_h03`, `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_collob_detect_h01`, `ufld_contact_range_sensor_h01`, `ufld_message_handler_h01`, `ufld_obstacle_sim_h01`, `ufld_pathcheck_h01`, `ufld_scope_h01`, `waypoint_h01`, and `zigzag_h01`. Each has source checks, live serial
-and rolling evidence, cleanup checks, failure-path probes, and timing records.
-Three registered performance harnesses remain. Continue one harness at a time,
-preserving their benchmark meaning while migrating the launcher architecture.
-Temporary `.parallel_*`, `.harness_runs`, generated MOOS logs, result files,
-targets, and Python cache trees are removed after their useful evidence is
-recorded so they do not inflate source review.
-
-Preserve the settled verdict boundary: a clean wrapper preserves the
-mission-owned row unchanged, while a nonzero wrapper, missing result, malformed
-result, preparation failure, or teardown failure is a runner failure with
-available mission grade and return-code evidence retained as provenance. Do
-not add an independent watchdog or process-tree supervisor without a separate
-skill-level decision, and do not overlap live harness processes even when
-nominal port ranges differ.
+All sixty-seven registered harnesses are now migrated. The next step is a
+final source-diff and repository-hygiene audit, followed by an intentional
+performance-family commit and push. Preserve the settled verdict boundary: a
+clean wrapper preserves the mission-owned row, while a nonzero wrapper,
+missing or malformed result, preparation failure, teardown failure, timing
+mismatch, or disallowed warning is a normalized runner failure with available
+mission evidence retained as provenance. Do not add an independent watchdog or
+process-tree supervisor without a separate skill-level decision, and do not
+overlap live harness processes even when nominal port ranges differ.

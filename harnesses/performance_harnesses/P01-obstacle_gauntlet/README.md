@@ -12,7 +12,7 @@ Performance harness for the first deterministic gauntlet mission family.
   Denser fixed-field traversal. The vehicle should still complete one full loop
   with zero collisions and clean logs under heavier obstacle pressure.
 - `endurance_random_pass`
-  Longer seeded-random obstacle-field run. The vehicle should complete 10 full
+  Longer randomized obstacle-field run. The vehicle should complete 10 full
   loops with zero collisions and bounded encounter/near-miss totals before the
   fail-safe timeout.
 
@@ -39,19 +39,23 @@ It preserves the mission-owned report columns and wraps them in the usual harnes
 ./zlaunch.sh 10
 PERF_PROFILE=ci ./zlaunch.sh
 ./zlaunch.sh --profile=ci
-./zlaunch.sh --jobs=2 --port_base=30000 10
+./zlaunch.sh --port_base=30000 10
 ./zlaunch.sh --case=baseline_field_pass 10
 ./zlaunch.sh --just_make 10
 ```
 
 ## Notes
 
-- All cases run the same loop-course mission and select obstacle source through `--mmod`.
+- All cases run the same loop-course mission. The harness explicitly maps each
+  case to a mission `--scenario` and a shoreside evaluator patch.
 - Each case now launches with one shoreside patch, and `pMissionEval` owns the MOOS-visible verdict.
 - Two cases are deterministic comparison runs, and one case is a longer randomized endurance run.
-- The harness supports wave-batch execution with `--jobs=<n>` using isolated
-  temp mission copies and unique per-case port blocks
-  (`case_base = port_base + case_idx*PORT_STRIDE`, pShare at `case_base + 10`).
+- Performance cases run serially so concurrent system load cannot distort their
+  wall-clock gates. Every case still uses an isolated mission copy and unique
+  port block (`case_base = port_base + case_idx*30`, pShare at
+  `case_base + 15`).
+- A performance-family lock prevents P01, P02, and P03 from overlapping in the
+  same checkout.
 - The endurance case automatically uses a larger launcher `--max_time` budget than the fixed-field cases.
 - The harness has two timing profiles:
   - `local` is the default and keeps the original warp `10` timing bands.

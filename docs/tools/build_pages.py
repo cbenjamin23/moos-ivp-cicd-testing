@@ -1307,8 +1307,8 @@ HARNESSES: tuple[Harness, ...] = (
         family="Performance",
         path="harnesses/performance_harnesses/P03-colregs_traffic_ring",
         mission="missions/performance_missions/P03-colregs_traffic_ring",
-        summary="Seeded five-vehicle traffic-ring harness with repeated reassignment pressure.",
-        proof="Checks zero collisions, assignment activity floors, fixed runtime windows, warning-free logs, and reproducible seeded random behavior.",
+        summary="Fixed-seed five-vehicle traffic-ring harness with repeated reassignment pressure.",
+        proof="Checks zero collisions, assignment activity floors, fixed runtime windows, warning-free logs, and sustained randomized traffic pressure.",
         gifs=(
             ("Baseline Traffic Ring", "baseline_circle_pass", "performance-traffic-ring-baseline.gif"),
             ("Mixed-Speed Traffic Ring", "mixed_speed_circle_pass", "performance-traffic-ring-mixed-speed.gif"),
@@ -1316,7 +1316,7 @@ HARNESSES: tuple[Harness, ...] = (
         ),
         run="./zlaunch.sh --case=baseline_circle_pass --gui 10",
         notes=(
-            "This harness uses seeded randomization so traffic pressure is repeatable enough for CI.",
+            "Fixed RNG seeds keep runs comparable, while asynchronous completion may change the exact assignment order.",
             "Assignment activity and zero-collision checks are the primary health signals.",
         ),
     ),
@@ -1822,7 +1822,7 @@ STEM_CONTEXT: dict[str, str] = {
     "shadow-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Shadow while `ben` provides controlled contact headings and speeds. Case overlays vary target motion, relevance distance, runtime updates, and missing-contact behavior.",
     "performance-obstacle-gauntlet": "The stem mission is a repeatable obstacle-field loop. Individual cases change field density or duration so the same avoidance stack can be tested under baseline, dense, and longer-running pressure.",
     "performance-colregs-joust": "The stem mission creates sustained two- or three-vehicle COLREGS encounters. Cases adjust traffic density and duration to test whether safe spacing holds beyond a single isolated encounter.",
-    "performance-traffic-ring": "The stem mission keeps five vehicles moving through a seeded traffic-ring assignment pattern. The seed makes the pressure replayable enough for CI while still exercising repeated COLREGS interactions.",
+    "performance-traffic-ring": "The stem mission keeps five vehicles moving through a fixed-seed traffic-ring assignment pattern. Runs remain comparable for CI while asynchronous completion can change the exact assignment order.",
 }
 
 
@@ -2275,7 +2275,7 @@ def phrase_performance_case(slug: str, case_name: str) -> str:
         return {
             "baseline_field_pass": "Baseline obstacle-field traversal; expected to complete the loop with zero collisions and clean warning logs.",
             "dense_field_pass": "Denser obstacle-field traversal; expected to preserve clean completion under heavier obstacle pressure.",
-            "endurance_random_pass": "Longer seeded obstacle-field run; expected to preserve completion and safety over an extended randomized field.",
+            "endurance_random_pass": "Longer randomized obstacle-field run; expected to preserve completion and safety over an extended field.",
         }.get(case_name, "")
     if slug == "performance-colregs-joust":
         return {
@@ -2285,7 +2285,7 @@ def phrase_performance_case(slug: str, case_name: str) -> str:
         }.get(case_name, "")
     if slug == "performance-traffic-ring":
         return {
-            "baseline_circle_pass": "Baseline seeded five-vehicle traffic ring; expected to maintain assignment activity with zero collisions.",
+            "baseline_circle_pass": "Baseline fixed-seed five-vehicle traffic ring; expected to maintain assignment activity with zero collisions.",
             "mixed_speed_circle_pass": "Traffic ring with mixed vehicle speeds; expected to keep assignment pressure active while remaining collision-free.",
             "endurance_circle_pass": "Longer traffic-ring run; expected to sustain repeated assignments over the endurance window with zero collisions.",
             "noncoop_circle_pass": "Traffic ring with one non-cooperative vehicle; expected to remain collision-free while `eve` runs with avoidance disabled.",

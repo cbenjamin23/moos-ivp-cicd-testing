@@ -1,80 +1,162 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
+#  Mission: P02-colregs_joust
 #   Author: Charles Benjamin
-#   LastEd: Mar 2026
+#   LastEd: Jul 2026
 #------------------------------------------------------------
-vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
-on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
-trap on_exit SIGINT
-trap "echo zlaunch.sh has received sigterm" SIGTERM
 
-ME=`basename "$0"`
-CMD_ARGS=""
+set -u
+
+ME=$(basename "$0")
 TIME_WARP=10
-VERBOSE=""
-JUST_MAKE=""
-MAX_TIME="650"
-ENDURANCE_MAX_TIME="1800"
-NOGUI="--nogui"
-MMOD=""
-COLAVD="--colregs"
+MAX_TIME=""
+VERBOSE=no
+JUST_MAKE=no
+DISPLAY_ARGS=(--nogui)
+FLOW_ARGS=()
+COLAVD=--colregs
+SCENARIO=baseline_colregs
 
-for ARGI; do
-    CMD_ARGS+=" ${ARGI}"
-    if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
-        echo "$ME [OPTIONS] [time_warp]"
-        echo ""
-        echo "Options:"
-        echo "  --help, -h         Show this help message"
-        echo "  --verbose, -v      Verbose, confirm launch"
-        echo "  --just_make, -j    Only create targ files"
-        echo "  --nogui, -ng       Headless launch, no gui"
-        echo "  --gui              Launch with pMarineViewer"
-        echo "  --max_time=<secs>  Max time passed to xlaunch"
-        echo "  --mmod=<mod>       Mission variation/mod"
-        echo "  --colregs, -c      Use COLREGS avoidance"
-        echo "  --cpa, -cpa        Use CPA avoidance"
-        exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
-        TIME_WARP=$ARGI
-    elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
-        VERBOSE="--verbose"
-    elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
-        JUST_MAKE="--just_make"
-    elif [ "${ARGI}" = "--nogui" -o "${ARGI}" = "-ng" ]; then
-        NOGUI="--nogui"
-    elif [ "${ARGI}" = "--gui" ]; then
-        NOGUI=""
-    elif [ "${ARGI:0:11}" = "--max_time=" ]; then
-        MAX_TIME="${ARGI#--max_time=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
-    elif [ "${ARGI}" = "--colregs" -o "${ARGI}" = "-c" ]; then
-        COLAVD="--colregs"
-    elif [ "${ARGI}" = "--cpa" -o "${ARGI}" = "-cpa" ]; then
-        COLAVD="--cpa"
-    else
-        echo "$ME: Bad arg:" $ARGI "Exit Code 1."
-        exit 1
-    fi
+usage() {
+    cat <<EOF
+$ME [OPTIONS] [time_warp]
+
+Options:
+  --help, -h           Show this help message
+  --verbose, -v        Verbose launch output
+  --just_make, -j      Only create target files
+  --nogui, -ng         Headless launch (default)
+  --gui                Launch with pMarineViewer
+  --max_time=<secs>    Maximum time passed to xlaunch
+  --scenario=<name>    baseline_colregs | dense_colregs | endurance_colregs
+  --colregs, -c        Use COLREGS avoidance (default)
+  --cpa, -cpa          Use CPA avoidance
+  --shore_mport=<n>    Shoreside MOOSDB port
+  --veh_mport=<n>      Base vehicle MOOSDB port
+  --shore_pshare=<n>   Shoreside pShare port
+  --veh_pshare=<n>     Base vehicle pShare port
+EOF
+}
+
+die() {
+    echo "$ME: $*" >&2
+    exit 2
+}
+
+is_uint() {
+    case "$1" in
+        ''|*[!0-9]*) return 1 ;;
+        *) return 0 ;;
+    esac
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --help|-h) usage; exit 0 ;;
+        --verbose|-v) VERBOSE=yes ;;
+        --just_make|-j) JUST_MAKE=yes ;;
+        --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
+        --gui) DISPLAY_ARGS=() ;;
+        --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --scenario=*) SCENARIO="${arg#--scenario=}" ;;
+        --colregs|-c) COLAVD=--colregs ;;
+        --cpa|-cpa) COLAVD=--cpa ;;
+        --shore_mport=*|--veh_mport=*|--shore_pshare=*|--veh_pshare=*)
+            FLOW_ARGS+=("$arg")
+            ;;
+        *)
+            is_uint "$arg" || die "bad argument: $arg"
+            TIME_WARP="$arg"
+            ;;
+    esac
 done
 
-: > results.txt
-if [ "$MMOD" = "endurance_colregs_pass" ] && [ "$MAX_TIME" = "650" ]; then
-    MAX_TIME="$ENDURANCE_MAX_TIME"
-fi
-xlaunch.sh --max_time=$MAX_TIME $COLAVD $NOGUI $JUST_MAKE $VERBOSE ${MMOD:+--mmod=$MMOD} $TIME_WARP
+case "$SCENARIO" in
+    baseline_colregs|dense_colregs) [ -n "$MAX_TIME" ] || MAX_TIME=650 ;;
+    endurance_colregs) [ -n "$MAX_TIME" ] || MAX_TIME=1800 ;;
+    *) die "unknown scenario: $SCENARIO" ;;
+esac
+is_uint "$TIME_WARP" || die "time warp must be an integer"
+is_uint "$MAX_TIME" || die "--max_time must be an integer"
 
-if [ "${JUST_MAKE}" = "" ]; then
-    sleep 0.5
-    repo_dir=`git -C "$PWD" rev-parse --show-toplevel 2>/dev/null`
-    if [ "$repo_dir" = "" ] || [ ! -x "$repo_dir/scripts/harness_teardown.sh" ]; then
-        echo "$ME: Missing scoped teardown helper"
+REPO_DIR=$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null) || \
+    die "unable to locate repository root from $PWD"
+TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
+[ -f "$TEARDOWN_HELPER" ] || die "missing scoped teardown helper: $TEARDOWN_HELPER"
+# shellcheck source=/dev/null
+. "$TEARDOWN_HELPER"
+
+# shellcheck disable=SC2329  # Invoked by the EXIT trap below.
+on_exit() {
+    local exit_rc=$?
+    trap - EXIT
+    if ! moos_scoped_teardown_stop_root "$PWD" && [ "$exit_rc" -eq 0 ]; then
+        exit_rc=1
+    fi
+    exit "$exit_rc"
+}
+
+# shellcheck disable=SC2329  # Invoked by the INT/TERM traps below.
+on_signal() {
+    exit 130
+}
+
+trap on_exit EXIT
+trap on_signal INT TERM
+
+: > results.txt
+launch_args=(--max_time="$MAX_TIME" --scenario="$SCENARIO" "$COLAVD")
+if [ "${#DISPLAY_ARGS[@]}" -gt 0 ]; then
+    launch_args+=("${DISPLAY_ARGS[@]}")
+fi
+if [ "${#FLOW_ARGS[@]}" -gt 0 ]; then
+    launch_args+=("${FLOW_ARGS[@]}")
+fi
+[ "$VERBOSE" = yes ] && launch_args+=(--verbose)
+launch_args+=("$TIME_WARP")
+[ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
+
+[ "$VERBOSE" = yes ] && \
+    echo "$ME: scenario=$SCENARIO max_time=$MAX_TIME warp=$TIME_WARP"
+
+launch_rc=0
+xlaunch.sh "${launch_args[@]}" || launch_rc=$?
+
+if [ "$JUST_MAKE" = yes ]; then
+    expected_vehicles=2
+    [ "$SCENARIO" = baseline_colregs ] || expected_vehicles=3
+    vehicle_moos=$(find . -maxdepth 1 -type f -name 'targ_*.moos' ! -name 'targ_shoreside.moos' | wc -l | tr -d ' ')
+    vehicle_bhv=$(find . -maxdepth 1 -type f -name 'targ_*.bhv' | wc -l | tr -d ' ')
+    if [ "$launch_rc" -ne 0 ] || [ ! -s targ_shoreside.moos ] || \
+       [ "$vehicle_moos" -ne "$expected_vehicles" ] || \
+       [ "$vehicle_bhv" -ne "$expected_vehicles" ]; then
+        echo "$ME: target generation did not produce the expected files" >&2
         exit 1
     fi
-    "$repo_dir/scripts/harness_teardown.sh" "$PWD"
-    sleep 0.5
+    exit 0
 fi
 
-exit 0
+result_rows=$(awk 'NF {count++} END {print count+0}' results.txt 2>/dev/null)
+if [ "$result_rows" -ne 1 ]; then
+    echo "$ME: expected exactly one pMissionEval result row; found $result_rows" >&2
+    exit 1
+fi
+result_line=$(awk 'NF {print; exit}' results.txt 2>/dev/null)
+result_grade=""
+result_grade_count=0
+for field in $result_line; do
+    case "$field" in
+        grade=*)
+            result_grade="${field#grade=}"
+            result_grade_count=$((result_grade_count + 1))
+            ;;
+    esac
+done
+if [ "$result_grade_count" -ne 1 ] || \
+   { [ "$result_grade" != pass ] && [ "$result_grade" != fail ]; }; then
+    echo "$ME: pMissionEval did not write exactly one grade=pass|fail result" >&2
+    exit 1
+fi
+
+exit "$launch_rc"

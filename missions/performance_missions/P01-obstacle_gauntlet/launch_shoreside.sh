@@ -26,7 +26,7 @@ LAUNCH_GUI="yes"
 IP_ADDR="localhost"
 MOOS_PORT="9000"
 PSHARE_PORT="9200"
-MMOD=""
+SCENARIO="baseline_field"
 VNAMES="abe"
 ENDURANCE_MODE="false"
 DRESET="false"
@@ -52,7 +52,7 @@ for ARGI; do
         echo "  --ip=<localhost>   Force pHostInfo IP address"
         echo "  --mport=<9000>     Shoreside MOOSDB port"
         echo "  --pshare=<9200>    Shoreside pShare port"
-        echo "  --mmod=<mod>       Mission variation/mod"
+        echo "  --scenario=<name>  Mission scenario"
         echo "  --vnames=<vnames>  Colon-separated vehicle names"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 1 ]; then
@@ -71,8 +71,8 @@ for ARGI; do
         MOOS_PORT="${ARGI#--mport=*}"
     elif [ "${ARGI:0:9}" = "--pshare=" ]; then
         PSHARE_PORT="${ARGI#--pshare=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
+    elif [ "${ARGI:0:11}" = "--scenario=" ]; then
+        SCENARIO="${ARGI#--scenario=*}"
     elif [ "${ARGI:0:9}" = "--vnames=" ]; then
         VNAMES="${ARGI#--vnames=*}"
     else
@@ -81,10 +81,17 @@ for ARGI; do
     fi
 done
 
-if [ "${MMOD}" = "endurance_random_pass" ]; then
-    ENDURANCE_MODE="true"
-    DRESET="true"
-fi
+case "$SCENARIO" in
+    baseline_field|dense_field) ;;
+    endurance_random)
+        ENDURANCE_MODE="true"
+        DRESET="true"
+        ;;
+    *)
+        echo "$ME: Unknown scenario [$SCENARIO]"
+        exit 1
+        ;;
+esac
 
 #------------------------------------------------------------
 #  Part 4: If not auto_launched and IP not explicitly set,
@@ -114,7 +121,7 @@ if [ "${VERBOSE}" = "yes" ]; then
     echo "MOOS_PORT =     [${MOOS_PORT}]"
     echo "PSHARE_PORT =   [${PSHARE_PORT}]"
     echo "LAUNCH_GUI =    [${LAUNCH_GUI}]"
-    echo "MMOD =          [${MMOD}]"
+    echo "SCENARIO =      [${SCENARIO}]"
     echo "ENDURANCE_MODE= [${ENDURANCE_MODE}]"
     echo "DRESET =        [${DRESET}]"
     echo "END_TIMEOUT =   [${ENDURANCE_TIMEOUT_SECS}]"
@@ -136,7 +143,7 @@ fi
 nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT    \
        PSHARE_PORT=$PSHARE_PORT     LAUNCH_GUI=$LAUNCH_GUI  \
-       MMOD=$MMOD                   VNAMES=$VNAMES          \
+       MMOD=$SCENARIO               VNAMES=$VNAMES          \
        ENDURANCE_MODE=$ENDURANCE_MODE DRESET=$DRESET        \
        ENDURANCE_TIMEOUT_SECS=$ENDURANCE_TIMEOUT_SECS       \
        ENDURANCE_TARGET_CYCLES=$ENDURANCE_TARGET_CYCLES
