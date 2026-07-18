@@ -1,0 +1,58 @@
+[
+  {
+    "key": "ubuntu_2604_gcc",
+    "image": "ubuntu:26.04",
+    "compiler": "gcc",
+    "profiles": ["full", "headless"],
+    "families": ["modern", "current", "ubuntu", "gcc"]
+  },
+  {
+    "key": "ubuntu_2604_clang",
+    "image": "ubuntu:26.04",
+    "compiler": "clang",
+    "profiles": ["full", "headless"],
+    "families": ["modern", "current", "ubuntu", "clang"]
+  },
+  {
+    "key": "ubuntu_2404_gcc",
+    "image": "ubuntu:24.04",
+    "compiler": "gcc",
+    "profiles": ["full", "headless"],
+    "families": ["modern", "compat", "ubuntu", "gcc"]
+  },
+  {
+    "key": "ubuntu_2404_clang",
+    "image": "ubuntu:24.04",
+    "compiler": "clang",
+    "profiles": ["full", "headless"],
+    "families": ["modern", "compat", "ubuntu", "clang"]
+  },
+  {
+    "key": "debian_13_gcc",
+    "image": "debian:13",
+    "compiler": "gcc",
+    "profiles": ["full", "headless"],
+    "families": ["modern", "current", "debian", "gcc"]
+  },
+  {
+    "key": "debian_12_gcc",
+    "image": "debian:12",
+    "compiler": "gcc",
+    "profiles": ["full", "headless"],
+    "families": ["modern", "compat", "debian", "gcc"]
+  },
+  {
+    "key": "rocky_10_gcc",
+    "image": "rockylinux/rockylinux:10",
+    "compiler": "gcc",
+    "profiles": ["full", "headless"],
+    "families": ["modern", "current", "rocky", "gcc"]
+  },
+  {
+    "key": "rocky_9_gcc",
+    "image": "rockylinux:9",
+    "compiler": "gcc",
+    "profiles": ["headless"],
+    "families": ["modern", "compat", "rocky", "gcc"]
+  }
+]

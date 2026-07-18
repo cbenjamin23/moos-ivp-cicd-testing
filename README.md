@@ -59,9 +59,18 @@ repo with `cmake -S . -B build -DMOOSIVP_SOURCE_TREE_BASE=/path/to/moos-ivp`
 and make sure that checkout's `bin/`, `scripts/`, and libraries are first in
 your shell's `PATH` and library path before running harnesses.
 
-For GitHub Actions-hosted validation, use the manual workflow input
-`moos_ivp_ref` with a MOOS-IvP branch, tag, or commit SHA. The workflow clones
-that ref, builds it, then runs the selected CTest families and harnesses.
+## Optional Build Matrix
+
+To run the normal build on this computer and compile the same local MOOS-IvP
+checkout in the current Ubuntu, Debian, and Rocky Linux environments, run:
+
+```bash
+./build-matrix.sh
+```
+
+The Linux builds are Docker compile checks, not additional CTest or harness
+runs. Use `./build-matrix.sh --help` for native-only testing, focused Linux
+targets, compatibility targets, and the smaller headless build profile.
 
 ## Repo Map
 
@@ -70,7 +79,7 @@ that ref, builds it, then runs the selected CTest families and harnesses.
 | `missions/` | Reusable MOOS mission stems. These define the base app/behavior scenario. |
 | `harnesses/` | Patch-driven test matrices around mission stems. These own expected outcomes. |
 | `tests/cpp/` | Fast GoogleTest/CTest library-level tests. These do not launch missions. |
-| `scripts/` | CI helpers, harness metadata checks, repeatability sweeps, timing tools. |
+| `scripts/` | Local and CI helpers, harness metadata checks, repeatability sweeps, timing tools. |
 | `config/harness_targets.json` | Manual-dispatch harness target metadata used by CI helper scripts. |
 | `docs/` | Generated/static project documentation and harness pages. |
 | `time_benchmarking/` | Local timing and parallelization notes. |

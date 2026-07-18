@@ -2703,6 +2703,23 @@ cd /path/to/moos-ivp-cicd-testing
       </div>
     </section>
 
+    <section id="build-matrix" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Optional build matrix</p>
+        <h2>Check the native and Linux builds</h2>
+        <p>Run the normal build on this computer, then compile the same local MOOS-IvP checkout in the current Linux distribution and compiler targets.</p>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <pre><code>cd /path/to/moos-ivp-cicd-testing
+./build-matrix.sh</code></pre>
+          <p><strong>Example success output</strong></p>
+          <pre><code>Build matrix result: 5 passed, 0 failed</code></pre>
+          <p>Run <code>./build-matrix.sh --help</code> for native-only testing, focused Linux targets, and compatibility builds.</p>
+        </article>
+      </div>
+    </section>
+
     <section id="harness-options" class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Harness reference</p>
@@ -2747,7 +2764,7 @@ cd /path/to/moos-ivp-cicd-testing
     <section class="workflow">
       <p class="eyebrow">Result</p>
       <h2>Check pass or fail</h2>
-      <p>CTest passes with <code>100% tests passed</code>. The harness passes with <code>failures=0</code>. Open <code>results.txt</code> only when you want the per-case details.</p>
+      <p>CTest passes with <code>100% tests passed</code>. The harness passes with <code>failures=0</code>. The optional build matrix passes with <code>0 failed</code>. Open <code>results.txt</code> only when you want the per-case harness details.</p>
     </section>
   </main>
 """

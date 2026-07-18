@@ -58,6 +58,8 @@ build/
 build-coverage/
 bin/
 lib/
+portability_results/
+build_matrix_results/
 
 # Temp files (emacs, etc)
 *#
