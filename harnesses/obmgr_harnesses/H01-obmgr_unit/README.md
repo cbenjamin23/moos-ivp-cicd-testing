@@ -130,6 +130,7 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ```bash
 ./zlaunch.sh
+./zlaunch.sh --log=full
 ./zlaunch.sh --jobs=2 --port_base=15000 10
 ./zlaunch.sh --case=given_baseline_pass 10
 ./zlaunch.sh --case=points_cluster_dist_pass 10
@@ -214,7 +215,8 @@ Seven expected-absence cases use the direct mission-side failure condition
 For each selected case, the harness:
 
 1. Copies and cleans the stem into an isolated case directory.
-2. Applies the case's explicit shoreside and vehicle `nspatch` overlays there.
+2. Applies optional full-logging restoration, then the case's explicit
+   shoreside and vehicle `nspatch` overlays there.
 3. Calls the copied stem's `zlaunch.sh`, forwarding the case token as `--mmod`,
    all four ports, `--max_time`, display mode, and time warp.
 4. Validates and records the one mission-owned result row, or writes a

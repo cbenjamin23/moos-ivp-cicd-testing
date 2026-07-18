@@ -12,6 +12,10 @@ Typical commands:
 
 The mission is intended for `harnesses/usim_marine_harnesses/H01-usim_marine_motion`, where each case grades simulator publications such as `NAV_X`, `NAV_Y`, `NAV_SPEED`, `NAV_HEADING`, `NAV_DEPTH`, `USM_RESET_COUNT`, and `USM_DRIFT_SUMMARY`.
 
+Logging defaults to `minimal`, which omits `pLogger` because grading is based
+on live `pMissionEval` evidence. Pass `--log=full` to `launch.sh` or
+`zlaunch.sh` to restore the previous logger configuration.
+
 `zlaunch.sh` is the self-evaluating wrapper used by the harness. It forwards
 time warp, `--max_time`, display mode, `--mmod`, an explicit shoreside MOOSDB
 port, and a reserved shoreside pShare port to `xlaunch.sh`. In `--just_make`

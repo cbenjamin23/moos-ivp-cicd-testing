@@ -32,3 +32,7 @@ duplicating `xlaunch.sh`/`uMayFinish` lifecycle logic.
 `TEST_EVAL_READY=true` is posted by the tested `uPokeDB` command together with
 the value under evaluation. No separate initializer app or additional grading
 variable is needed.
+
+Logging defaults to `minimal`, with no active `pLogger`; no log artifact is
+part of grading. Pass `--log=full` to either mission launcher to restore the
+previous logger configuration.

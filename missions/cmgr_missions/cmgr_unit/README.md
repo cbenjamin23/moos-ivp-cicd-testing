@@ -19,6 +19,9 @@ and the early-warning flag path.
 - `pMissionEval` grades at the timer checkpoint, not on arrival.
 - The default standalone mission passes when `CONTACT_SEEN=true` by the
   evaluation checkpoint.
+- Logging defaults to `minimal`, which does not launch `pLogger` in either
+  community. Use `--log=full` to restore the previous shoreside and vehicle
+  logger configurations for diagnosis.
 - The shoreside viewer uses `MIT_SP.tif` with `set_pan_x=0`, `set_pan_y=-300`,
   and `zoom=1.0`.
 
@@ -36,14 +39,18 @@ still letting the harness build richer cases from the same stem.
 
 ```bash
 ./launch.sh 10
+./launch.sh --log=full 10
 ./launch.sh --nogui 10
 ./zlaunch.sh 10
+./zlaunch.sh --log=full 10
 ./zlaunch.sh --gui 10
 ```
 
 `./zlaunch.sh` defaults to `--nogui`, which matches its role as the automation
 wrapper for this CI stem. Use `--gui` only when you explicitly want to inspect
-the run in `pMarineViewer`.
+the run in `pMarineViewer`. Both launchers accept only `--log=minimal` and
+`--log=full`. Full mode uses the stem-local `full-logging-*.xmoos` restoration
+patches; a later minimal launch removes any stale generated logging sidecars.
 
 ## What The Harness Patches
 

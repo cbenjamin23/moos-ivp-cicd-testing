@@ -50,3 +50,6 @@ defaults during active development. Grouped runs use 30-port case blocks from
 that base so each live case gets isolated MOOSDB and pShare ports. A smaller
 `--port_stride` may be used when a coordinator assigns a tighter non-overlapping
 port band.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

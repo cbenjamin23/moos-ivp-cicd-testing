@@ -159,3 +159,6 @@ Latest validation:
 - wave matrix: `24/24` mission `grade=pass` with `--jobs=4 --port_base=29400 --port_stride=12`
 - port range used by grouped run: `29400-29687`
 - warp: `10`
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

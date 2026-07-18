@@ -22,12 +22,12 @@ case.
 
 Important architecture point:
 
-- the harness does not call the stem mission's `zlaunch.sh`
-- it patches the stem mission directly
-- then it calls shared `xlaunch.sh`, which calls the stem mission `launch.sh`
+- the harness copies the stem into one isolated directory per case
+- it composes the optional full-logging restoration and case patches there
+- then it calls the copied stem mission's `zlaunch.sh`
 
-That is why the harness can own patching, cleanup, and results parsing without
-stacking two automation wrappers on top of each other.
+The copied stem launcher is told that its logging sidecars are already
+prepared, so it does not remove or rebuild the harness-composed overlays.
 
 ## What Gets Patched
 
@@ -68,24 +68,25 @@ logic changes, not a fundamentally different launcher topology.
 
 For each case:
 
-1. Run `clean.sh` and `ktm` in the stem mission directory.
-2. Apply the selected case patches with `nspatch`.
-3. Run the mission through the harness-controlled `xlaunch.sh` path.
-4. Read the mission-local `results.txt`.
-5. Compare the observed mission result against the harness expectation.
+1. Copy the stem into an isolated case directory and run its `clean.sh`.
+2. In full mode, apply the stem-local full-logging patches.
+3. Apply the selected case patches after the logging patches so case-specific
+   blocks retain final precedence.
+4. Run the mission through the copied stem's `zlaunch.sh` path.
+5. Read the mission-local `results.txt`.
+6. Normalize the mission-owned result into the harness result row.
 
 ## Cleanup And Safety
 
-The harness treats the stem overlay files as part of the normal mission
-workspace. `clean.sh` already removes `meta_*.moosx` and `meta_*.bhvx`, so the
-harness relies on `clean.sh` before each case and one final `clean.sh` on exit.
+The harness treats generated overlay files as part of each isolated case
+workspace. `clean.sh` removes `meta_*.moosx` and `meta_*.bhvx` before patching.
 
 That means:
 
 - one case should not leak patches into the next case
-- the harness assumes this repo is being used in the normal harness-driven way
-- do not run two live harness invocations in parallel against this same stem
-  mission directory, because they will race on the temporary overlay files
+- parallel workers do not write to the checked-in stem directory
+- the harness lock prevents two live invocations from sharing its results and
+  invocation-root state
 
 ## Adding A New Case
 

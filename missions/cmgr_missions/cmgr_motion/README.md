@@ -57,8 +57,14 @@ Current moving harness summary:
 Entry points:
 
 - `./launch.sh` for interactive runs
+- `./launch.sh --log=full` for the previous diagnostic logger configuration
 - `./launch.sh --just_make --nogui 10` for target generation
 - `./zlaunch.sh` for automated headless runs through shared `xlaunch.sh`
+- `./zlaunch.sh --log=full` for an automated run with full logging
+
+Logging defaults to `minimal`, which does not launch `pLogger`. Both launchers
+accept only `--log=minimal|full`; full mode uses the stem-local restoration
+patches, and a later minimal launch removes stale logging sidecars.
 
 The thin `zlaunch.sh` accepts and forwards `--mmod`, `--max_time`,
 `--shore_mport`, `--veh_mport`, `--shore_pshare`, and `--veh_pshare`. It does

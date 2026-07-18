@@ -22,6 +22,7 @@ Run the full matrix:
 ```bash
 cd /Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obmgr_harnesses/H02-obmgr_motion
 ./zlaunch.sh 10
+./zlaunch.sh --log=full 10
 ./zlaunch.sh --jobs=2 --port_base=24000 10
 ```
 
@@ -33,6 +34,8 @@ Run one case:
 
 Execution notes:
 
+- logging defaults to `minimal`; `--log=full` restores the previous stem
+  logger configuration before applying each case patch
 - every selected case, including single-case and `--jobs=1` runs, uses an
   isolated mission copy and a unique port block
 - `--jobs=<N>` uses rolling scheduling: the next pending case starts whenever

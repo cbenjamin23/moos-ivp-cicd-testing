@@ -42,8 +42,10 @@ custom point input names, and point-cluster trimming.
 
 ```bash
 ./launch.sh 10
+./launch.sh --log=full 10
 ./launch.sh --nogui 10
 ./zlaunch.sh 10
+./zlaunch.sh --log=full 10
 ./zlaunch.sh --gui 10
 ./zlaunch.sh --shore_mport=22000 --veh_mport=22001 \
   --shore_pshare=22015 --veh_pshare=22016 10
@@ -52,7 +54,9 @@ custom point input names, and point-cluster trimming.
 
 `./zlaunch.sh` defaults to `--nogui`, which matches its role as the automation
 wrapper for this CI stem. Use `--gui` only when you explicitly want to inspect
-the run in `pMarineViewer`.
+the run in `pMarineViewer`. Logging defaults to `minimal` with no active
+`pLogger`; `--log=full` restores the previous shoreside and vehicle logger
+configuration from stem-local patches.
 
 ## Evaluation-Wrapper Contract
 

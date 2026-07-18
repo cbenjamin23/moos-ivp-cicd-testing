@@ -62,6 +62,9 @@ Run from this directory:
 ./zlaunch.sh --jobs=4 10
 ```
 
+Logging is minimal by default. Add `--log=full` to restore the original
+shoreside and two-vehicle `pLogger` configuration for diagnostic runs.
+
 Named cases are implemented in the paired harness:
 
 [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion)

@@ -114,8 +114,10 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ```bash
 ./zlaunch.sh
+./zlaunch.sh --log=full
 ./zlaunch.sh --jobs=4 --port_base=20000 10
 ./zlaunch.sh --case=detect_baseline_pass 10
+./zlaunch.sh --log=full --case=detect_baseline_pass 10
 ./zlaunch.sh --case=count_two_pass 10
 ./zlaunch.sh --just_make 10
 ./zlaunch.sh --max_time=65 10
@@ -125,6 +127,8 @@ Execution notes:
 
 - every selected case, including single-case and `--jobs=1` runs, uses an
   isolated mission copy and a unique port block
+- logging defaults to `minimal` for every selected case; `--log=full` restores
+  the stem's previous logger configuration for the whole selection
 - `--jobs=<N>` uses rolling scheduling: the next pending case starts whenever
   any active case finishes
 - every case writes its own log and intermediate result row beneath a unique
@@ -144,7 +148,8 @@ launch and grading:
 1. Choose one case or the full default case list.
 2. Copy the stem mission into a per-case directory and run its local
    `clean.sh`.
-3. Apply the selected `nspatch` overlays only inside that copy.
+3. Apply the optional full-logging restoration first, followed by the selected
+   case overlays, only inside that copy.
 4. Assign explicit MOOSDB and pShare ports from the case's 30-port block.
 5. Call the copied stem's `zlaunch.sh`.
 6. Read the single mission-owned `pMissionEval` row from its `results.txt`.

@@ -87,6 +87,10 @@ mission contains no viewer. Use `--keep_workdirs` to inspect generated targets,
 applied sidecars, case logs, and intermediate result rows under
 `.harness_runs`. See [`NSPATCH.md`](NSPATCH.md) for the patch contract.
 
+The harness defaults to `--log=minimal`, which runs without `pLogger` because
+all grading evidence is live. Use `--log=full` for the complete matrix, or
+combine it with `--case=<name>` for one inspectable fully logged case.
+
 ## Harness-skill Migration Validation
 
 Validation on July 14, 2026 preserved all thirty-six case tokens in their

@@ -23,3 +23,7 @@ Run one inspectable case:
 ```sh
 ../../../harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh --case=numeric_command_pass --port_base=16200 10
 ```
+
+Logging defaults to `minimal`, with no active `pLogger`; terminal stimulus and
+the mission result provide the grading evidence. Pass `--log=full` to either
+mission launcher to restore the previous logger configuration.

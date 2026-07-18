@@ -79,6 +79,7 @@ override-release publication, not proof that a complete input set was accepted.
 
 ```bash
 ./zlaunch.sh --case=rudder_starboard_pass 10
+./zlaunch.sh --log=full --case=rudder_starboard_pass 10
 ./zlaunch.sh --case=depth_elevator_pass 10
 ./zlaunch.sh --jobs=2 --port_base=22000 10
 ./zlaunch.sh --just_make --keep_workdirs 10
@@ -90,6 +91,9 @@ Every selected case runs from its own copy of the `pid_unit` stem, including
 single-case and serial runs. The harness applies at most one shoreside
 `nspatch` overlay inside that copy and calls the copy's `zlaunch.sh`; it never
 patches the source stem in place.
+
+Logging defaults to `minimal`; `--log=full` restores the previous one-community
+logger configuration before the case overlay.
 
 The launcher requires Bash 5.1 or newer for rolling `--jobs` scheduling. On
 macOS it safely re-executes a suitable Homebrew or Linuxbrew Bash when one is

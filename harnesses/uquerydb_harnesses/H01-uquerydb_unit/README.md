@@ -20,6 +20,11 @@ No shell check replaces the mission readiness verdict.
 ./zlaunch.sh --keep_workdirs --jobs=2 --port_base=22000 10
 ```
 
+The harness defaults to `--log=minimal`, which omits `pLogger` because the
+mission result, command status, and `.checkvars` output are the grading inputs.
+Use `--log=full` for the complete matrix, or combine it with `--case=<name>`
+for one fully logged case.
+
 ## Cases
 
 - `cli_numeric_pass`: CLI numeric equality condition.

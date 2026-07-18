@@ -102,3 +102,6 @@ the end of the line.
 ./zlaunch.sh --case=reset_false_visual_pass --gui --port_base=15000 1
 ./zlaunch.sh --jobs=4 --port_base=34000 --port_stride=12 10
 ```
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

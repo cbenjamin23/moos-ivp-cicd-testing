@@ -33,3 +33,8 @@ Run one inspectable case:
 ```sh
 ../../../harnesses/uquerydb_harnesses/H01-uquerydb_unit/zlaunch.sh --case=cli_numeric_pass --port_base=15600 10
 ```
+
+Logging defaults to `minimal`, with no active `pLogger`; mission results,
+command status, and `.checkvars` output supply the grading evidence. Pass
+`--log=full` to either mission launcher to restore the previous logger
+configuration.

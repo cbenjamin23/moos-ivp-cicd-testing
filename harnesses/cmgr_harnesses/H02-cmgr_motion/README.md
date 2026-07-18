@@ -112,6 +112,7 @@ Field anatomy:
 
 ```bash
 ./zlaunch.sh
+./zlaunch.sh --log=full
 ./zlaunch.sh --jobs=2 --port_base=21000 10
 ./zlaunch.sh --case=head_on_pass 10
 ./zlaunch.sh --just_make 10
@@ -123,6 +124,8 @@ available on systems whose default Bash is older.
 
 Execution contract:
 
+- logging defaults to `minimal` for every selected case; `--log=full` restores
+  the stem's previous logger configuration before case patches
 - every selected case, including serial and one-case runs, gets its own mission
   copy beneath a harness-owned `.harness_runs` root
 - every case gets a unique 30-port block: MOOSDB at `case_base + 0..1` and

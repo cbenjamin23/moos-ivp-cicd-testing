@@ -38,3 +38,7 @@ Run the publisher stem alone on an explicit port with:
 ```sh
 ./zlaunch.sh --shore_mport=15200 --shore_pshare=15215 --max_time=30 10
 ```
+
+Logging defaults to `minimal`, with no active `pLogger`; terminal output and
+the mission result provide the grading evidence. Pass `--log=full` to either
+mission launcher to restore the previous logger configuration.

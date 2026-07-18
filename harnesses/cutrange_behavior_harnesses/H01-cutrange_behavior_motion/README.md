@@ -119,3 +119,7 @@ and Bash 3.2 rejection. Disposable fault injection verified normalized
 `missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax,
 ShellCheck, and both skill static checkers pass. No tested MOOS process
 survived cleanup.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case. Full mode
+restores one shoreside and both vehicle loggers before case overlays.

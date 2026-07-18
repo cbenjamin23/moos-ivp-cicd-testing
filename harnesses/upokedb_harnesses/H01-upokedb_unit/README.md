@@ -72,6 +72,10 @@ mission-owned. `uPokeDB` stimulus commands are bounded by the existing
 `--keep_workdirs` retains the invocation under `.harness_runs` for generated
 target, evaluator config, cache fixture, result, and `.alog` inspection.
 
+The harness defaults to `--log=minimal`, which omits `pLogger` because logs
+are not grading inputs. Use `--log=full` for the complete matrix, or combine
+it with `--case=<name>` for one fully logged case.
+
 ## Migration Validation
 
 The legacy batch-wave runner passed three complete two-job matrices in 65.16,

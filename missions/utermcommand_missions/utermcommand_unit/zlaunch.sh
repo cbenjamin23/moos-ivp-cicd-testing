@@ -15,6 +15,7 @@ CLIENT_START_TIMEOUT=20
 TERMINAL_TIMEOUT=12
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 EXTERNAL_STIMULUS=no
 MOOS_PORT=9000
 DISPLAY_ARGS=(--nogui)
@@ -28,6 +29,7 @@ Options:
   --help, -h            Show this help message
   --verbose, -v         Verbose launch output
   --just_make, -j       Only create targ files
+  --log=<mode>          Logging mode: minimal (default) or full
   --nogui, -ng          Headless launch, no GUI (default)
   --gui                 Launch with GUI support
   --max_time=<secs>     Maximum time passed to xlaunch
@@ -55,6 +57,7 @@ for arg in "$@"; do
         --help|-h) usage; exit 0 ;;
         --verbose|-v) VERBOSE=yes; FLOW_ARGS+=(--verbose) ;;
         --just_make|-j) JUST_MAKE=yes ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --external_stimulus) EXTERNAL_STIMULUS=yes ;;
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --gui) DISPLAY_ARGS=() ;;
@@ -70,6 +73,10 @@ done
 
 is_uint "$TIME_WARP" && [ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
 is_uint "$MAX_TIME" && [ "$MAX_TIME" -gt 0 ] || die "--max_time must be a positive integer"
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 REPO_DIR=$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null) || \
     die "unable to locate repository root from $PWD"
@@ -158,8 +165,14 @@ run_ready_poke() {
 trap on_exit EXIT
 trap on_signal INT TERM
 
+if [ "${LOG_MODE_PREPARED:-no}" != yes ]; then
+    ./prepare_logging_mode.sh "$LOG_MODE" || die "unable to prepare --log=$LOG_MODE"
+fi
+export LOG_MODE_PREPARED=yes
+export LOG_MODE_PREPARED_VALUE="$LOG_MODE"
+
 : > results.txt
-[ "$VERBOSE" = yes ] && echo "$ME: launching with max_time=$MAX_TIME warp=$TIME_WARP"
+[ "$VERBOSE" = yes ] && echo "$ME: launching with max_time=$MAX_TIME warp=$TIME_WARP log=$LOG_MODE"
 
 if [ "$JUST_MAKE" = yes ]; then
     rm -f targ_shoreside.moos

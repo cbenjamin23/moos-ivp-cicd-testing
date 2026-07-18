@@ -55,6 +55,7 @@ PSHARE_OFFSET=$((PORT_STRIDE / 2))
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 CASE=""
 HAVE_LOCK=no
@@ -92,6 +93,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show rolling scheduler events
   --just_make, -j    Prepare each case without launching it
+  --log=<mode>       Logging mode: minimal (default) or full
   --max_time=<secs>  Maximum time passed to each stem mission
   --case=<name>      Run one named case
   --jobs=<n>         Run up to n cases concurrently with rolling scheduling
@@ -109,6 +111,7 @@ EOF
 
 Examples:
   ./$ME
+  ./$ME --log=full
   ./$ME --case=numeric_command_pass
   ./$ME --jobs=2 --port_base=22000
   ./$ME --just_make --case=ambiguous_partial_absent_pass
@@ -133,6 +136,7 @@ for arg in "$@"; do
         --jobs=*) JOBS="${arg#--jobs=}" ;;
         --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
@@ -148,6 +152,10 @@ is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bo
 is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
 is_uint "$PORT_BASE" && [ "${#PORT_BASE}" -le 5 ] || die "--port_base must be an integer from 1 through 65535"
 is_uint "$MAX_TIME" && [ "${#MAX_TIME}" -le 9 ] || die "--max_time must be a bounded positive integer"
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 TIME_WARP=$((10#$TIME_WARP))
 JOBS=$((10#$JOBS))
@@ -667,7 +675,7 @@ run_case() {
                 --shore_pshare="$((case_base + PSHARE_OFFSET))"
                 "$TIME_WARP"
             )
-            ./zlaunch.sh "${launch_args[@]}"
+            ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
         ) || launch_rc=$?
     else
         (
@@ -681,7 +689,7 @@ run_case() {
                 --shore_pshare="$((case_base + PSHARE_OFFSET))"
                 "$TIME_WARP"
             )
-            ./zlaunch.sh "${launch_args[@]}"
+            ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
         ) &
         stem_pid=$!
         run_ready_poke "$((case_base + 0))" "$workdir/eval_not_ready.out" false || startup_rc=$?
@@ -939,7 +947,7 @@ if [ "$CLEANUP_FAILED" = yes ]; then
 fi
 trap - EXIT INT TERM PIPE
 
-printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
-    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]

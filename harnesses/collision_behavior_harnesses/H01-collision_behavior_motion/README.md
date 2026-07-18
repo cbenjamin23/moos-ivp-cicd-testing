@@ -150,3 +150,6 @@ Latest validation:
 - warp: `10`
 - command: individual `--case=<name>` runs with `--port_base` values from
   `36100` through `36500`
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

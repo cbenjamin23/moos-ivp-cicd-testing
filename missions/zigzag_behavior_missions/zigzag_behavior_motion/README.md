@@ -22,5 +22,8 @@ Typical commands:
 ./launch.sh --shore_mport=15000 --veh_mport=15001 --shore_pshare=15010 --veh_pshare=15011 --nogui 10
 ```
 
+Logging is minimal by default. Add `--log=full` to either launcher to restore
+the stem's original shoreside and vehicle `pLogger` configuration.
+
 The companion harness lives at
 `harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion`.

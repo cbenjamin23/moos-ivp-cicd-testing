@@ -70,6 +70,10 @@ Run one inspectable case:
 Use `--keep_workdirs` to retain generated targets, `uxms.out`, mission results,
 and alogs for inspection. `--gui` is accepted only with one explicit case.
 
+The harness defaults to `--log=minimal`, which omits `pLogger` because terminal
+capture and mission results are the grading inputs. Use `--log=full` for the
+complete matrix, or combine it with `--case=<name>` for one fully logged case.
+
 ## Migration Validation
 
 The legacy two-slot batch-wave matrix passed 96/96 case runs in 106.33,

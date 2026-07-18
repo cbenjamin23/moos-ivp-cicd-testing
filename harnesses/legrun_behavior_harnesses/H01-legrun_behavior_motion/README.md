@@ -69,3 +69,6 @@ Latest validation:
 - three full rolling matrices: `99/99` mission-owned verdicts passed
 - full serial matrix: `33/33` mission-owned verdicts passed
 - warp: `10`
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.
