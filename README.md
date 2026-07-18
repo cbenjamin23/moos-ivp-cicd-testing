@@ -9,7 +9,7 @@ MOOS-IvP checkout:
 - full mission harnesses for controlled end-to-end scenarios
 - native macOS and containerized Linux build checks
 
-Explore the [MOOS-IvP testing website](https://cbenjamin23.github.io/moos-ivp-cicd-testing/).
+Explore the [Website](https://cbenjamin23.github.io/moos-ivp-cicd-testing/).
 
 ## Quick Start
 
