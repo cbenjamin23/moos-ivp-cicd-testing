@@ -838,6 +838,10 @@ pre code {
   gap: 0.8rem;
 }
 
+.table-wrap + .explain-stack {
+  margin-top: 0.8rem;
+}
+
 .explain-stack article {
   min-width: 0;
   padding: 1rem;
