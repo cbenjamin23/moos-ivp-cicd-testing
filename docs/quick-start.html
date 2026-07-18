@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Developer Quick Start | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="styles.css?v=20260511-5">
+  <script src="theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="quick-start.html">Quick Start</a>
+        <a href="index.html#families">Harnesses</a>
+        <a href="ctest-coverage.html">CTest Coverage</a>
+        <a href="technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero page-hero--wide-lede">
+      <a class="back-link" href="index.html">Back to overview</a>
+      <p class="eyebrow">Developer Quick Start</p>
+      <h1>Build your edit. Run the relevant tests.</h1>
+      <p class="lede">Check out the MOOS-IvP branch containing your changes, build it, then use this repository to run a focused CTest group and its mission harness.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#build">Build</a>
+        <a class="button secondary" href="#example">Run an example</a>
+      </div>
+    </section>
+
+    <section id="build" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">1. Build</p>
+        <h2>Build the edited MOOS-IvP branch and the tests</h2>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Build both</h3>
+          <pre><code>cd /path/to/moos-ivp
+git switch my-branch
+./build.sh
+
+cd /path/to/moos-ivp-cicd-testing
+./build.sh</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section id="example" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">2. Test</p>
+        <h2>Example: editing <code>pEchoVar</code></h2>
+        <p>Run the focused CTest group, then the full <code>pEchoVar</code> harness.</p>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Run the <code>pechovar</code> CTest group</h3>
+          <pre><code>ctest --test-dir build -L '^pechovar$' --output-on-failure</code></pre>
+          <p><strong>Example success output</strong></p>
+          <pre><code>100% tests passed, 0 tests failed out of 31</code></pre>
+        </article>
+        <article>
+          <h3>Run the full <code>pEchoVar</code> harness</h3>
+          <pre><code>cd harnesses/pechovar_harnesses/H01-pechovar_unit
+./zlaunch.sh 10</code></pre>
+          <p><strong>Example success output</strong></p>
+          <pre><code>results=.../results.txt failures=0 total=33 jobs=1 elapsed_seconds=...</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="workflow">
+      <p class="eyebrow">Result</p>
+      <h2>Check pass or fail</h2>
+      <p>CTest passes with <code>100% tests passed</code>. The harness passes with <code>failures=0</code>. Open <code>results.txt</code> only when you want the per-case details.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>
