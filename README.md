@@ -52,13 +52,6 @@ open its `results.txt` for per-case details.
 Do not run two harnesses at the same time unless their `--port_base` ranges are
 isolated.
 
-## Using a Different MOOS-IvP Checkout
-
-If you prefer to test a different local `moos-ivp` checkout, configure this
-repo with `cmake -S . -B build -DMOOSIVP_SOURCE_TREE_BASE=/path/to/moos-ivp`
-and make sure that checkout's `bin/`, `scripts/`, and libraries are first in
-your shell's `PATH` and library path before running harnesses.
-
 ## Optional Build Matrix
 
 To run the normal build on this computer and compile the same local MOOS-IvP
@@ -71,6 +64,13 @@ checkout in the current Ubuntu, Debian, and Rocky Linux environments, run:
 The Linux builds are Docker compile checks, not additional CTest or harness
 runs. Use `./build-matrix.sh --help` for native-only testing, focused Linux
 targets, compatibility targets, and the smaller headless build profile.
+
+## Using a Different MOOS-IvP Checkout
+
+If you prefer to test a different local `moos-ivp` checkout, configure this
+repo with `cmake -S . -B build -DMOOSIVP_SOURCE_TREE_BASE=/path/to/moos-ivp`
+and make sure that checkout's `bin/`, `scripts/`, and libraries are first in
+your shell's `PATH` and library path before running harnesses.
 
 ## Repo Map
 
