@@ -158,11 +158,7 @@ CASES=(
     "${GROUP_INEXTREMIS_CASES[@]}"
 )
 
-EXPLORATORY_CASES=(
-    standon_neither_below_pass
-    standon_neither_edge_pass
-    standon_neither_above_pass
-)
+EXPLORATORY_CASES=()
 
 declare -a SELECTED_CASES CASE_RESULT
 declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
@@ -201,13 +197,6 @@ Groups:
 Default cases:
 EOF
     for case_name in "${CASES[@]}"; do
-        printf '  %s\n' "$case_name"
-    done
-    cat <<EOF
-
-Manual exploratory cases (available only through --case):
-EOF
-    for case_name in "${EXPLORATORY_CASES[@]}"; do
         printf '  %s\n' "$case_name"
     done
     cat <<EOF
@@ -538,15 +527,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "outer_dist_above_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/outer-dist-above-shoreside.xmoos"
         MMOD="crossing_port_standon_southwest_outer_above_pass"
-    elif [ "$CASE_NAME" = "standon_neither_below_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-neither-below-shoreside.xmoos"
-        MMOD="crossing_port_standon_southwest_neither_pass"
-    elif [ "$CASE_NAME" = "standon_neither_edge_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-neither-edge-shoreside.xmoos"
-        MMOD="crossing_port_standon_neither_heading135_edge_pass"
-    elif [ "$CASE_NAME" = "standon_neither_above_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-neither-above-shoreside.xmoos"
-        MMOD="crossing_port_standon_neither_heading135_above_pass"
     elif [ "$CASE_NAME" = "standon_inextremis_range_below_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-inextremis-below-shoreside.xmoos"
         MMOD="crossing_port_standon_stern_pass"

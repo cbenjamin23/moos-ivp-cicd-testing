@@ -719,21 +719,14 @@ Purpose:
 - this family was repeatedly probed and rejected as a supported H02 threshold
   family; it remains calibration-only
 
-Exploratory cases kept off the supported gate:
-- `standon_neither_below_pass`
-- `standon_neither_edge_pass`
-- `standon_neither_above_pass`
-
-What each exploratory case was trying to mean:
-- `standon_neither_below_pass`: stable stern-side anchor that should remain in
-  `standon:stern` (`30`) under the delayed release
-- `standon_neither_edge_pass`: release-controlled pocket that was intended to
-  land in `standon:neither` (`39`)
-- `standon_neither_above_pass`: earlier-release version of the same pocket
-  that was also intended to land in `standon:neither` (`39`)
+Current status:
+- the shared mission retains the attempted delayed-release geometries as
+  calibration material
+- H02 does not expose them as harness cases because no below/edge/above set
+  produced a repeatable `standon:neither` (`39`) threshold contract
 
 Notes:
-- this family deliberately used delayed release on the shared stem so the
+- the calibration family used delayed release on the shared stem so the
   transition could settle before the behavior was sampled
 - the search tried multiple pockets and release points, including southwest,
   turn-driven, and band315 midpoints; none produced a clean, repeatable

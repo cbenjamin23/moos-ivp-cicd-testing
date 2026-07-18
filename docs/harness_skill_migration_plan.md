@@ -5131,3 +5131,77 @@ preserves the mission-owned row, while a nonzero wrapper, missing or malformed
 result, preparation failure, or teardown failure is a normalized runner
 failure with available mission evidence retained as provenance. Do not add
 new grading logic, timing changes, process supervision, or global cleanup.
+
+## Post-Migration Stability Audit
+
+A July 18 follow-up revisited every case-level anomaly still called out in
+this ledger. The audit distinguished a supported case whose checkpoint could
+be made repeatable without changing its contract from a rejected calibration
+probe that never had a repeatable contract. It did not reinterpret isolated
+process-launch failures as case failures.
+
+Five supported checkpoints were stabilized:
+
+- `cmgr_h02/fast_intruder_fail` now requires one or more detected encounters,
+  rather than exactly one threshold episode. Arrival, contact detection, and
+  zero collision remain required. Ten focused runs, including a reproduced
+  two-episode run, passed; moving the intruder out of the encounter path failed.
+- `convoy_h01/lead_s_turn_pass` uses a 0.30 minimum final lead speed rather
+  than 0.35. That remains above the suite's 0.25 stopped/estop boundary and
+  retains queue, trail-length, breadcrumb, route-position, and S-turn evidence.
+  Ten focused runs and three 48-case rolling matrices passed; replacing the
+  S-turn with a straight route failed.
+- `depth_max_h04/max_depth_zero_tolerance_pass` allows the simulator's physical
+  depth/slack sample to be two meters beyond the configured zero-tolerance
+  guard. The behavior configuration remains zero tolerance, the opposing
+  constant-depth request remains 30 meters, and the guard still has to hold
+  the vehicle near 12 meters. Ten focused runs and three 15-case rolling
+  matrices passed; changing the maximum depth to 30 failed.
+- `depth_min_altitude_h05/min_altitude_zero_min_pass` now waits for the existing
+  depth, altitude, and horizontal checkpoints together before grading. No
+  pass condition changed. Ten focused runs and three 13-case rolling matrices
+  passed; changing the minimum altitude from zero to ten failed.
+- `usim_marine_h01/dual_state_reset_nav_pass` widens only the upper timing band
+  on post-reset navigation and ground-truth x. The lower bounds still require
+  the reset jump from zero to roughly five meters, while y, speed, heading,
+  depth, and drift evidence remain unchanged. Ten focused runs and three
+  36-case rolling matrices passed; removing the reset event failed.
+
+The H05 `min_altitude_unconstrained_deep_bottom_pass` diagnostic was also
+closed. Its intermittent `MissingDecVars:speed,course` occurred after waypoint
+completion while the old fixed-time evaluator kept the depth-only helm alive.
+The evaluator now grades after at least 100 meters of travel once depth is at
+least 20 meters and altitude is at least 40 meters, with the existing timer as
+the failure deadline, and it requires no behavior error. The final form passed
+10/10 focused runs and a 13/13 rolling matrix. Raising the configured minimum
+altitude enough to constrain the 22-meter dive produced the expected failure.
+
+Three historical one-off missing-result observations were stress-checked with
+unchanged cases: ObstacleBehavior `default_auto_request_pass`, Trail
+`bad_decay_fail`, and GotoDepth `goto_depth_bad_update_preserve_pass` each
+passed 10/10 focused runs plus two complete rolling matrices. They remain
+recorded as isolated launch/lifecycle observations, not reproducible grading
+or case-contract flakes.
+
+The COLREGS review made two final corrections. H01's supported
+`crossing_port_standon_far_pass` once fell into CPA under its old marginal far
+geometry. It now uses the stem's existing completion-stable long-range
+stand-on geometry and passed 10/10 focused runs in `standon:bow`, followed by
+a clean 22/22 rolling matrix. The old geometry's CPA failure demonstrates that
+the unchanged mode assertion still rejects the wrong classification.
+
+Five unsupported COLREGS calibration probes were removed from harness case
+selection: H01's startup-dependent `giveway:bow` and far `unsure_bow` probes,
+and H02's three unsuccessful delayed-release `standon:neither` probes. Raw
+history confirmed that the give-way probe normally followed
+`giveway:stern -> cpa -> complete`; accepting that path would have erased the
+test's purpose. The shared mission retains those geometries as calibration
+material, but the harness no longer presents them as runnable tests. H02's
+remaining 58 supported threshold cases then passed one complete rolling
+matrix in 199 seconds.
+
+At the end of this audit there is no known reproducibly flaky supported case
+left unresolved in the migration ledger. Historical timing and launch outliers
+remain documented as evidence, and any recurrence should still be treated as
+suspicious, but none currently warrants a solo slot, weakened behavior claim,
+or hidden pass conversion.

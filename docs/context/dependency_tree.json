@@ -2442,7 +2442,7 @@
         "path": "missions/colregs_missions/colregs_unit"
       },
       "patches": {
-        "file_count": 14
+        "file_count": 13
       },
       "path": "harnesses/colregs_harnesses/H01-colregs_classification",
       "perf_profile": "",
@@ -2531,7 +2531,7 @@
         "path": "missions/colregs_missions/colregs_unit"
       },
       "patches": {
-        "file_count": 30
+        "file_count": 27
       },
       "path": "harnesses/colregs_harnesses/H02-colregs_thresholds",
       "perf_profile": "",
@@ -7027,10 +7027,10 @@
       ".sh": 316,
       ".txt": 300,
       ".xbhv": 518,
-      ".xmoos": 1242,
+      ".xmoos": 1238,
       "[none]": 7
     },
-    "harness_patch_count": 1737,
+    "harness_patch_count": 1733,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 429,

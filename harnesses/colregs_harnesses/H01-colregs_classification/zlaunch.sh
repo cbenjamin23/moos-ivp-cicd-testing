@@ -85,10 +85,7 @@ CASES=(
     overtaken_starboard_standon_pass
 )
 
-EXPLORATORY_CASES=(
-    crossing_starboard_giveway_bow_pass
-    crossing_port_standon_far_unsure_bow_pass
-)
+EXPLORATORY_CASES=()
 
 declare -a SELECTED_CASES CASE_RESULT
 declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
@@ -114,13 +111,6 @@ Options:
 Default cases:
 EOF
     for case_name in "${CASES[@]}"; do
-        printf '  %s\n' "$case_name"
-    done
-    cat <<EOF
-
-Manual exploratory cases (available only through --case):
-EOF
-    for case_name in "${EXPLORATORY_CASES[@]}"; do
         printf '  %s\n' "$case_name"
     done
     cat <<EOF
@@ -330,14 +320,13 @@ get_case_config() {
          [ "$CASE_NAME" = "crossing_starboard_giveway_far_pass" ] ||
          [ "$CASE_NAME" = "crossing_starboard_giveway_close_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/crossing-starboard-giveway-pass-shoreside.xmoos"
-    elif [ "$CASE_NAME" = "crossing_starboard_giveway_bow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/crossing-starboard-giveway-bow-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "crossing_port_standon_pass" ] ||
-         [ "$CASE_NAME" = "crossing_port_standon_far_pass" ] ||
          [ "$CASE_NAME" = "crossing_port_standon_close_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/crossing-port-standon-pass-shoreside.xmoos"
+    elif [ "$CASE_NAME" = "crossing_port_standon_far_pass" ]; then
+        SHORE_PATCH="$HARNESS_DIR/crossing-port-standon-pass-shoreside.xmoos"
+        MMOD="crossing_port_standon_exec_far_pass"
     elif [ "$CASE_NAME" = "crossing_port_standon_unsure_bow_pass" ] ||
-         [ "$CASE_NAME" = "crossing_port_standon_far_unsure_bow_pass" ] ||
          [ "$CASE_NAME" = "crossing_port_standon_close_unsure_bow_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/crossing-port-standon-unsure-bow-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "crossing_port_standon_unsure_pass" ]; then

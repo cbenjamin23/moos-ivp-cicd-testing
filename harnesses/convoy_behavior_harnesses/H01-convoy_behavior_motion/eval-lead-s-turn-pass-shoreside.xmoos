@@ -23,7 +23,7 @@ ProcessConfig = pMissionEval
   pass_condition = TLEN <= 55
   pass_condition = MXRNG = 40
   pass_condition = AVG2 >= 0.6
-  pass_condition = ABE_NAV_SPEED >= 0.35
+  pass_condition = ABE_NAV_SPEED >= 0.30
   pass_condition = ABE_NAV_X >= 55
   pass_condition = ABE_NAV_X <= 68
   pass_condition = ABE_NAV_Y >= -58

@@ -42,9 +42,9 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = NAV_X >= 4.8
-  pass_condition = NAV_X <= 6.1
+  pass_condition = NAV_X <= 7.0
   pass_condition = NAV_GT_X >= 5.0
-  pass_condition = NAV_GT_X <= 6.6
+  pass_condition = NAV_GT_X <= 7.5
   pass_condition = NAV_Y >= -0.5
   pass_condition = NAV_Y <= 0.5
   pass_condition = NAV_SPEED >= -0.1

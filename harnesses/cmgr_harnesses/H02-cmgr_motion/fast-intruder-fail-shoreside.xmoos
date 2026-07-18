@@ -6,7 +6,7 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = ARRIVED = true
   pass_condition = COLLISION_TOTAL = 0
-  pass_condition = ENCOUNTER_TOTAL = 1
+  pass_condition = ENCOUNTER_TOTAL >= 1
   pass_condition = CONTACT_DETECTED = true
 
   result_flag = MISSION_EVALUATED = true
