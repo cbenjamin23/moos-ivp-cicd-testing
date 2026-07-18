@@ -12,75 +12,56 @@ regressions, and grow repeatable coverage around important upstream tools.
 
 Website: [MOOS-IvP Harnesses](https://cbenjamin23.github.io/moos-ivp-cicd-testing/)
 
+Developer guide: [Quick Start](https://cbenjamin23.github.io/moos-ivp-cicd-testing/quick-start.html)
+
 ## Quick Start
 
-Build the repo:
+Check out the MOOS-IvP branch containing your edits, then build MOOS-IvP and
+this test repository:
 
 ```bash
+cd /path/to/moos-ivp
+git switch my-branch
+./build.sh
+
+cd /path/to/moos-ivp-cicd-testing
 ./build.sh
 ```
 
-Run all C++ tests:
+From the test repository root, run the focused pEchoVar CTest family:
 
 ```bash
-./tests/cpp/ctests.sh
+cd tests/cpp
+./ctests.sh --pechovar
 ```
 
-Run one C++ label:
+Run `./ctests.sh` without a family option to test everything, or use `--help`
+to list all family options. The first run may configure and build the CTest
+executables before testing; later runs rebuild incrementally.
+
+From the test repository root, run the full pEchoVar mission harness:
 
 ```bash
-./tests/cpp/ctests.sh --geometry
+cd harnesses/pechovar_harnesses/H01-pechovar_unit
+./zlaunch.sh 10
 ```
 
-Run one mission harness case:
-
-```bash
-cd harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion
-./zlaunch.sh --case=single_point_arrival_pass 10
-```
-
-Run a harness matrix locally:
-
-```bash
-./zlaunch.sh --jobs=4 --port_base=15000 10
-```
+CTest passes with `100% tests passed`. The harness passes with `failures=0`;
+open its `results.txt` for per-case details.
 
 Do not run two harnesses at the same time unless their `--port_base` ranges are
 isolated.
 
-## Local Testing Against MOOS-IvP Edits
-
-This is the simplest workflow. Check out the edited branch in your local `moos-ivp`
-tree this repo already uses, rebuild MOOS-IvP if the branch changes compiled
-C++ code, then run the normal tests.
-
-```bash
-cd /path/to/moos-ivp
-git checkout my-branch
-./build-moos.sh --minrobot --release
-./build-ivp.sh --nogui
-
-cd /Users/charlesbenjamin/moos-ivp-cicd-testing
-./build.sh
-
-./tests/cpp/ctests.sh --geometry
-
-cd harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion
-./zlaunch.sh --case=single_point_arrival_pass 10
-```
-
-If the branch only changes docs, scripts, or mission files, a MOOS-IvP rebuild
-may not matter. If it changes apps, behaviors, or libraries, rebuild before
-trusting the result.
+## Using a Different MOOS-IvP Checkout
 
 If you prefer to test a different local `moos-ivp` checkout, configure this
 repo with `cmake -S . -B build -DMOOSIVP_SOURCE_TREE_BASE=/path/to/moos-ivp`
 and make sure that checkout's `bin/`, `scripts/`, and libraries are first in
 your shell's `PATH` and library path before running harnesses.
 
-For Github Actions hosted validation, use the manual workflow input `moos_ivp_ref` with a
-MOOS-IvP branch, tag, or commit SHA. The workflow clones that ref, builds it,
-then runs the selected CTest families and harnesses.
+For GitHub Actions-hosted validation, use the manual workflow input
+`moos_ivp_ref` with a MOOS-IvP branch, tag, or commit SHA. The workflow clones
+that ref, builds it, then runs the selected CTest families and harnesses.
 
 ## Repo Map
 
