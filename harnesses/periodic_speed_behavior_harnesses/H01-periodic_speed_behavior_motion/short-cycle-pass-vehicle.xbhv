@@ -10,4 +10,5 @@ Behavior = BHV_PeriodicSpeed
   basewidth    = 0.2
   peakwidth    = 0
   initially_busy = true
+  reset_upon_running = false
 }

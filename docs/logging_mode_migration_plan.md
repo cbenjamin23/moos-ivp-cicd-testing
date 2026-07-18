@@ -1065,10 +1065,14 @@ Correctness, exceptions, and hygiene:
   lazy (`PS_PENDING_ACTIVE=3`, `PS_PENDING_INACTIVE=0`, `NAV_SPEED=0`) despite
   `initially_busy=true`. The upstream `BHV_PeriodicSpeed::onIdleToRunState()`
   resets `m_mode_busy=false` under the default reset policy, so startup outcome
-  depends on whether that lifecycle callback runs. This is an upstream
-  behavior/lifecycle-test defect, not a logger-mode difference. The existing
-  case is not weakened; two focused runs and a clean repeated full matrix pass,
-  and the failed attempt remains excluded from performance statistics;
+  depends on whether that lifecycle callback runs. This is not a logger-mode
+  difference. The harness now separates the two contracts: cases that require
+  an initially busy window explicitly set `reset_upon_running=false`, while
+  `reset_on_reactivation_pass` independently verifies the default
+  `reset_upon_running=true` behavior. All three startup-busy cases passed in
+  both logging modes at jobs 1, followed by complete 24/24 jobs-4 matrices in
+  minimal and full mode. The failed pre-fix attempt remains excluded from
+  performance statistics;
 - two `legrun_h01` full jobs-4 attempts consistently missed only the final
   `bad_speed_count_fail` result while focused full runs passed twice and the
   generated full target matched the untouched target after port normalization.
@@ -1143,7 +1147,7 @@ mixed-shared-stem deferrals.
 | `convoy_h01` | `convoy_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | two-vehicle full mode correctly restores 3 pLoggers | complete |
 | `cutrange_h01` | `cutrange_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | two-vehicle full mode correctly restores 3 pLoggers | complete |
 | `fixedturn_h01` | `fixedturn_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
-| `periodic_speed_h01` | `periodic_speed_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass after clean repeat (jobs 4) | 2026-07-18 paired | upstream `initially_busy` lifecycle defect; case unchanged | complete |
+| `periodic_speed_h01` | `periodic_speed_behavior_motion` | no | `N` | complete | complete | pass (3 startup cases, both modes, jobs 1) | pass post-fix (jobs 4) | pass post-fix (jobs 4) | 2026-07-18 paired | startup-busy cases explicitly disable reset; default reset has a separate case | complete |
 | `zigzag_h01` | `zigzag_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `legrun_h01` | `legrun_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4 low ports; jobs 2 high ports) | 2026-07-18 paired jobs 4 | high-port pShare handshake anomaly; no case edit | complete |
 | `memoryturnlimit_h01` | `memoryturnlimit_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
