@@ -1,33 +1,62 @@
-This directory may contain developer utility scripts.
+# Repository Scripts
 
-The MyGenMOOSApp script is similar to that found in the moos-ivp/trunk/scripts/
-directory. Users are encouraged to tailor this one to their own needs.
+These helpers support repository validation, GitHub Actions, harness execution,
+repeatability analysis, and standalone MOOS-IvP portability builds. Most are
+called by a top-level workflow or launcher; run a script directly only when its
+description below identifies it as a useful local entry point.
 
-Current repo-specific helpers:
+## Validation And CI
 
-- `ci_harness_case_count.py` derives the default case count from a harness
-  `zlaunch.sh` so GitHub Actions can reject incomplete `results.txt` files.
-- `ci_cpp_test_targets.py` builds the C++ unit test target matrix, runs CTest
-  label targets, writes per-target JUnit XML reports, and appends a C++ unit
-  test summary to GitHub Actions.
-- `harness_targets.py` validates and selects the manual-dispatch harness
-  target metadata in `config/harness_targets.json`.
-- `check_repo_invariants.py` checks that harness target metadata, docs catalog
-  entries, default case lists, and generated docs stay in sync.
-- `list_harness_targets.py` prints the configured manual-dispatch families and
-  targets for quick local inspection.
-- `benchmark_parallel.sh` runs repeatable wall-clock timing sweeps for a
-  harness across multiple `--jobs` values and writes the summary under
+- `check_repo_invariants.py` checks harness target metadata, docs catalog
+  entries, default case lists, generated docs, and the generated dependency
+  map for drift. Run it after changing harness metadata, launchers, mission
+  stems, docs catalog wiring, or C++ test-family metadata.
+- `check_cpp_tests.py` validates C++ test registration, labels, source
+  references, portability rules, and optional upstream library coverage.
+- `harness_targets.py` validates and selects targets from
+  `config/harness_targets.json`. It is the shared implementation used by the
+  listing and CI helpers.
+- `list_harness_targets.py` is the local command for listing configured harness
+  families and targets.
+- `ci_harness_case_count.py` derives expected case counts from harness
+  `zlaunch.sh` files so CI can reject incomplete `results.txt` files.
+- `ci_harness_results_summary.py` validates harness result rows and writes the
+  harness result table used in GitHub Actions summaries.
+- `ci_cpp_test_targets.py` selects CTest family jobs, runs their label targets,
+  writes per-target JUnit XML, and appends C++ results to the GitHub Actions
+  step summary.
+- `generate_context_graph.py` regenerates
+  `docs/context/dependency_tree.{md,json}` from repository metadata and source
+  relationships. The invariant checker verifies that both outputs are current.
+
+## Harness Runtime Support
+
+- `harness_teardown.sh` provides shared harness cleanup for isolated case
+  workdirs and their process manifests.
+- `moos_scoped_teardown.sh` terminates MOOS processes within one explicitly
+  identified mission scope without sweeping unrelated processes.
+
+These teardown helpers are launcher internals. Harness users should normally
+run the relevant `zlaunch.sh`, not invoke teardown scripts directly.
+
+## Repeatability And Timing
+
+- `benchmark_parallel.sh` runs repeatable wall-clock sweeps for one harness
+  across multiple `--jobs` values and writes results under
   `time_benchmarking/`.
-- `repeatability_sweep.py` reruns one harness multiple times at a fixed
-  configuration, saves raw logs/results, and writes a per-case stability
-  summary under `time_benchmarking/`.
-- `moos_ivp_build_matrix.py` validates and selects local MOOS-IvP build-matrix
+- `repeatability_sweep.py` reruns one harness at a fixed configuration, retains
+  raw logs and results, and writes a per-case stability summary under
+  `time_benchmarking/`.
+
+## MOOS-IvP Build Portability
+
+- `moos_ivp_build_matrix.py` validates and selects standalone MOOS-IvP build
   targets and build-profile compatibility from
   `config/moos_ivp_build_targets.json`.
-- `build_moos_ivp_target.sh` installs build dependencies for the current
-  Linux target, copies the selected local MOOS-IvP checkout, and runs either
-  the full or headless build without invoking this repo's tests or missions.
+- `build_moos_ivp_target.sh` installs dependencies for one Linux target, clones
+  the selected MOOS-IvP ref, and runs either the full or headless MOOS-IvP
+  build. It does not invoke this repository's CTests or mission harnesses.
 
-Run the native and Linux build matrix from the repository root with
-`./build-matrix.sh`.
+The portability workflow is independent of runtime regression testing: it
+answers whether the selected MOOS-IvP source builds across the configured
+platform/compiler matrix, not whether this repository's tests pass.

@@ -2102,7 +2102,7 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
-        <span class="theme-switch-track" aria-hidden="true"></span>
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
       </label>
     </div>
   </header>
@@ -2954,24 +2954,24 @@ def render_technical() -> str:
         <p class="eyebrow">Core Terms</p>
         <h2>Vocabulary for the rest of the site</h2>
       </div>
-      <dl class="term-list">
-        <div class="term-item">
-          <dt>CTest target</dt>
-          <dd>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</dd>
-        </div>
-        <div class="term-item">
-          <dt>CTest family</dt>
-          <dd>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</dd>
-        </div>
-        <div class="term-item">
-          <dt>Mission stem</dt>
-          <dd>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</dd>
-        </div>
-        <div class="term-item">
-          <dt>Harness case</dt>
-          <dd>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</dd>
-        </div>
-      </dl>
+      <div class="term-list">
+        <article class="term-item">
+          <h3>CTest target</h3>
+          <p>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</p>
+        </article>
+        <article class="term-item">
+          <h3>CTest family</h3>
+          <p>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</p>
+        </article>
+        <article class="term-item">
+          <h3>Mission stem</h3>
+          <p>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</p>
+        </article>
+        <article class="term-item">
+          <h3>Harness case</h3>
+          <p>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</p>
+        </article>
+      </div>
     </section>
 
     <section class="technical-grid">

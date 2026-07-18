@@ -875,13 +875,13 @@ pre code {
   border-bottom: 0;
 }
 
-.term-item dt {
+.term-item h3 {
   margin: 0 0 0.35rem;
   color: var(--blue);
   font-weight: 900;
 }
 
-.term-item dd {
+.term-item p {
   margin: 0;
   color: var(--muted);
 }
