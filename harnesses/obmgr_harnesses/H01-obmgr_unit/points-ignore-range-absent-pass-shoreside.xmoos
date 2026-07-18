@@ -6,7 +6,7 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
   fail_condition = OBM_DIST_TO_OBJ = ROCK_A,18.0
-  fail_condition = OBSTACLE_ALERT = name=avd_rock_a#poly=pts={18,-62:22,-62:22,-58:18,-58},label=rock_a#id=rock_a
+  fail_condition = OBSTACLE_ALERT != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = obmgr_tests_harness

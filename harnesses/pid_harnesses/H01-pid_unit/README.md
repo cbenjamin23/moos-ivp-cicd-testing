@@ -79,9 +79,82 @@ override-release publication, not proof that a complete input set was accepted.
 
 ```bash
 ./zlaunch.sh --case=rudder_starboard_pass 10
+./zlaunch.sh --log=full --case=rudder_starboard_pass 10
 ./zlaunch.sh --case=depth_elevator_pass 10
-./zlaunch.sh --jobs=4 --port_base=22000 10
+./zlaunch.sh --jobs=2 --port_base=22000 10
+./zlaunch.sh --just_make --keep_workdirs 10
 ```
 
-The wrapper supports `--jobs` and `--port_base` so local grouped runs and
-GitHub Actions dispatches can isolate each case's MOOSDB and pShare port block.
+## Launcher Contract
+
+Every selected case runs from its own copy of the `pid_unit` stem, including
+single-case and serial runs. The harness applies at most one shoreside
+`nspatch` overlay inside that copy and calls the copy's `zlaunch.sh`; it never
+patches the source stem in place.
+
+Logging defaults to `minimal`; `--log=full` restores the previous one-community
+logger configuration before the case overlay.
+
+The launcher requires Bash 5.1 or newer for rolling `--jobs` scheduling. On
+macOS it safely re-executes a suitable Homebrew or Linuxbrew Bash when one is
+available. It uses stride-30 port blocks with the one-community MOOSDB at `+0`
+and a reserved shoreside pShare slot at `+15`. This mission does not launch a
+pShare process; the reserved slot is forwarded only to keep launcher and port
+allocation contracts consistent across harnesses.
+
+`pMissionEval` is the sole owner of the live verdict. The shell requires
+exactly one mission row with exactly one `grade=pass|fail` field, adds the
+selected `case=`, and writes exactly one aggregate row per selected case in
+the declared order. Ordinary case failures do not stop later cases. Scoped
+cleanup is limited to each case root; if cleanup itself cannot be proved, the
+scheduler stops launching new cases and retains the run root and safety lock
+for diagnosis.
+
+Use `--keep_workdirs` to inspect generated targets, applied sidecars, case
+logs, and intermediate result rows under `.harness_runs`. See
+[`NSPATCH.md`](NSPATCH.md) for the exact patch contract.
+
+## Harness-skill Migration Validation
+
+Validation on July 14, 2026 preserved all thirty-four case tokens in their
+declared order, the unpatched baseline, all thirty-three shoreside overlay
+mappings, every hard-coded `mission_mod`, every evaluator condition, and every
+report column. No evaluator block, application, grading variable, PID setting,
+scripted input, or case-quality assertion changed.
+
+Untouched legacy measurements at warp 10 and `--max_time=35` were:
+
+- three two-worker batch-wave matrices: 102/102 rows passing in 110.77, 108.98,
+  and 108.92 seconds, for a 109.56-second mean
+- one shared-stem serial matrix: 34/34 passing in 170.52 seconds
+
+Migrated validation included both skill static checkers, Bash syntax,
+ShellCheck, Bash 3.2 rejection and Homebrew re-execution, invalid argument and
+port probes, a retained full generation matrix, a direct stem pass, isolated
+nominal and both expected-negative cases, a complete serial matrix, three
+complete rolling matrices, and missing-file, missing-row, duplicate-row,
+invalid-grade, duplicate-grade, nonzero-launch, preparation, timeout, and
+teardown failure paths.
+
+Complete migrated measurements were:
+
+- isolated serial: 34/34 passing in 194.65 seconds
+- rolling `--jobs=2`: 102/102 rows passing in 101.22, 96.81, and 101.26
+  seconds, for a 99.76-second mean
+- final checkout-state rolling matrix: 34/34 passing in 102.86 seconds from a
+  port range verified clear on both TCP and UDP before and after the run
+
+The rolling mean is 9.79 seconds, about 8.9 percent, faster than the matched
+legacy mean. Serial is 24.13 seconds, about 14.2 percent, slower than the one
+legacy sample because it now pays the same copy and scoped-cleanup cost for
+every case. The retained rolling matrix had thirty-four targets, thirty-three
+intended sidecars, thirty-four original `.alog` files, exact selected-order
+results, no runtime error flags, and no pShare process blocks. Every assigned
+TCP and UDP slot was clear afterward.
+
+The migration deliberately leaves existing coverage choices for later work:
+the heading-debug case reports but does not grade its debug string; the stale-
+nav case reports its stale message while grading zero outputs; some temporal
+or absence cases grade the final value rather than full publication history;
+and the alternate-suffix case does not separately assert that unsuffixed
+outputs are absent.

@@ -1,0 +1,39 @@
+ProcessConfig = uFldCollisionDetect
+{
+  AppTick = 10
+  CommsTick = 10
+  collision_range = 3
+  near_miss_range = 6
+  encounter_range = 20
+  post_closest_range = true
+  post_closest_range_ever = true
+  report_all_encounters = false
+  encounter_rings = false
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldCollisionDetect
+  event = var=UCD_RING_SEEN, val="false", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=90", time=0.4
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=10,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=2.5
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @VIEW_CIRCLE#UCD_RING_SEEN=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = UCD_RING_SEEN = false
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = ring_seen=$[UCD_RING_SEEN]
+  report_file = results.txt
+}
+

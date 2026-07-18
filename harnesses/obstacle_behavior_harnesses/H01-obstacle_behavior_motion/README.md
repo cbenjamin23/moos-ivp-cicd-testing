@@ -38,8 +38,12 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
   path remains valid.
 - `two_obstacles_clean_pass`
   Two obstacles are injected after deploy so both obstacle-alert spawn paths
-  are exercised. The vehicle should spawn avoidance behavior for each obstacle,
-  route through the corridor cleanly, arrive, and finish with zero collisions.
+  are exercised. The evaluator requires two `OBSTACLE_ALERT` deliveries and
+  the behavior's spawn flag must identify the second obstacle as `ob_two`, so
+  a single spawned avoidance behavior is no longer enough to pass. The vehicle
+  uses a case-specific speed of `1.6` to retain avoidance control margin under
+  rolling load, while still having to route through the corridor, arrive, and
+  finish with zero collisions.
 - `static_polygon_pass`
   The behavior is configured with a launch-time `polygon` instead of the
   templated `OBSTACLE_ALERT` input. It should still complete avoidance and
@@ -116,6 +120,10 @@ Field anatomy:
 - `obavoiding`: behavior-owned lifecycle flag from `BHV_AvoidObstacleV24`
 - `alert_req_seen`: whether the behavior posted `OBM_ALERT_REQUEST`
 - `obstacle_alert_seen`: whether the behavior actually received `OBSTACLE_ALERT`
+- `obstacle_alert_count`: the number of `OBSTACLE_ALERT` deliveries observed;
+  the two-obstacle case requires at least two
+- `obstacle_spawned`: the obstacle label reported by the behavior's
+  `spawnxflag`; the two-obstacle case requires the later `ob_two` spawn
 - `resolved_seen`: whether `OBM_RESOLVED` was seen before grading when that
   path is active for the case. When a helper flag is never posted, the raw
   report may still show the unevaluated `$[...]` placeholder.
@@ -137,7 +145,12 @@ Field anatomy:
 
 Latest validation:
 
-- May 20, 2026
-- full matrix: `21/21` mission-owned grades passed
+- July 16, 2026
+- final rolling matrices: `105/105` mission-owned grades passed across five
+  runs in `62`, `62`, `62`, `61`, and `63` seconds (mean `62.0`)
+- final serial matrix: `21/21` passed in `222` seconds
+- focused `two_obstacles_clean_pass`: `10/10` passed at speed `1.6`
+- mutation probe: removing the `ob_two` vehicle stimulus produced
+  `obstacle_alert_count=1 obstacle_spawned=ob_one grade=fail`
 - warp: `10`
-- command: `./zlaunch.sh --jobs=4 --port_base=36600 --port_stride=20 10`
+- rolling command: `./zlaunch.sh --jobs=4 --port_base=36600 --port_stride=30 10`

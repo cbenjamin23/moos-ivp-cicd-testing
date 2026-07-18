@@ -27,20 +27,26 @@ ProcessConfig = uTimerScript
   event = var=NAV_Y, val=-5, time=0.5
   event = var=NAV_SPEED, val=2.5, time=0.5
   event = var=NAV_HEADING, val=123, time=0.5
-  event = var=NAV_TRUTH_X, val=22, time=1.0
-  event = var=NAV_TRUTH_Y, val=-12, time=1.0
-  event = var=NAV_TRUTH_SPEED, val=3.1, time=1.0
-  event = var=NAV_TRUTH_HEADING, val=210, time=1.0
-  event = var=NAV_TRUTH_DEPTH, val=4, time=1.0
-  event = var=NAV_TRUTH_ALTITUDE, val=40, time=1.0
-  event = var=NAV_TRUTH_X, val=22, time=4.0
-  event = var=NAV_TRUTH_Y, val=-12, time=4.0
-  event = var=NAV_TRUTH_SPEED, val=3.1, time=4.0
-  event = var=NAV_TRUTH_HEADING, val=210, time=4.0
-  event = var=NAV_TRUTH_DEPTH, val=4, time=4.0
-  event = var=NAV_TRUTH_ALTITUDE, val=40, time=4.0
+  event = var=NAV_TRUTH_X, val=22, time=5.0
+  event = var=NAV_TRUTH_Y, val=-12, time=5.0
+  event = var=NAV_TRUTH_SPEED, val=3.1, time=5.0
+  event = var=NAV_TRUTH_HEADING, val=210, time=5.0
+  event = var=NAV_TRUTH_DEPTH, val=4, time=5.0
+  event = var=NAV_TRUTH_ALTITUDE, val=40, time=5.0
+  event = var=NAV_TRUTH_X, val=22, time=10.0
+  event = var=NAV_TRUTH_Y, val=-12, time=10.0
+  event = var=NAV_TRUTH_SPEED, val=3.1, time=10.0
+  event = var=NAV_TRUTH_HEADING, val=210, time=10.0
+  event = var=NAV_TRUTH_DEPTH, val=4, time=10.0
+  event = var=NAV_TRUTH_ALTITUDE, val=40, time=10.0
+  event = var=NAV_TRUTH_X, val=22, time=15.0
+  event = var=NAV_TRUTH_Y, val=-12, time=15.0
+  event = var=NAV_TRUTH_SPEED, val=3.1, time=15.0
+  event = var=NAV_TRUTH_HEADING, val=210, time=15.0
+  event = var=NAV_TRUTH_DEPTH, val=4, time=15.0
+  event = var=NAV_TRUTH_ALTITUDE, val=40, time=15.0
   event = var=IVPHELM_STATE, val=DRIVE, time=0.5
-  event = var=TEST_EVAL_READY, val=true, time=6.0
+  event = var=TEST_EVAL_READY, val=true, time=19.0
 }
 
 ProcessConfig = pMissionEval

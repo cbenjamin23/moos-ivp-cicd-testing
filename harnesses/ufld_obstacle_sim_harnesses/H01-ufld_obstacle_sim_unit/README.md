@@ -1,6 +1,54 @@
 # H01 uFldObstacleSim Unit Harness
 
-This harness validates `uFldObstacleSim` as the obstacle-field source rather than as an obstacle consumer. The stem mission is a single shoreside community that starts the simulator, prompts refresh/reset events with `uTimerScript`, lets `pMissionEval` produce a mission grade, and then checks the resulting `.alog` for source-side publication details that are awkward to express as one current MOOS value.
+This harness validates `uFldObstacleSim` as the obstacle-field source rather
+than as an obstacle consumer. The stem mission is a single shoreside community
+that starts the simulator, prompts refresh/reset events with `uTimerScript`,
+and lets the case's `pMissionEval` block write the authoritative `grade=` row.
+The shell launcher only prepares, schedules, and aggregates cases; it does not
+inspect `.alog` files or reinterpret ordinary mission failures.
+
+## Execution And Grading
+
+- Every case, including serial and single-case runs, executes in its own copy
+  beneath `.harness_runs/`.
+- Bash 5.1 or newer provides rolling `--jobs` scheduling. On macOS the launcher
+  re-executes Homebrew Bash when available and otherwise prints a clear error.
+- Each case gets a 30-port block. The generated shoreside target uses the first
+  port; the midpoint pShare offsets are reserved consistently with other
+  migrated harnesses. The launcher rejects a selected matrix whose final block
+  would exceed port 65535.
+- Each overlay owns its scripted inputs, subject configuration, and substantive
+  `pMissionEval` conditions. Plain scalars, presence, absence, and counts use
+  existing mission variables directly. Publication counters exist only when
+  multiplicity is the behavior under test.
+- The condition parser does not accept a structured literal containing a
+  relation character such as `=`. Cases needing exact structured equality
+  therefore post a case-owned expected value and use the parser-safe right-
+  variable form, for example
+  `KNOWN_OBSTACLE = $ (UFOS_EXPECT_OBSTACLE)`.
+- One stock `pEchoVar` process provides narrowly filtered field or history
+  adapters only where a current raw value is insufficient. `pMissionEval`
+  normally checks those outputs as plain components or nonempty presence
+  sentinels. The reset-ID case compares one exact inactive composite against a
+  runtime expected variable; no `key=value` payload is embedded as a condition
+  literal. No custom grading application or repository app is added.
+- `uTimerScript` waits for the evaluator, adapter, and subject to appear in the
+  MOOSDB client list before starting a case's event clock.
+- The harness forwards `--max_time` unchanged to each stem wrapper as the
+  mission's `uMayFinish` ceiling. It does not add a second wall-clock watchdog
+  or process-tree supervisor.
+- `pMissionEval` writes exactly one result row. After a clean stem exit, the
+  harness prepends `case=` and preserves that row. Missing/malformed results,
+  or a nonzero stem exit become runner-owned `reason=` failures; all usable
+  mission fields remain as provenance, with reserved names rewritten (for
+  example, `grade=` becomes `mission_grade=`).
+- Results are aggregated in the declared case order after all selected cases
+  finish. Ordinary failures do not stop later cases from running.
+- Teardown is scoped to the case or invocation root. `--keep_workdirs` retains
+  generated targets, logs, intermediate rows, and patch sidecars for review.
+  A scoped-cleanup failure also retains its run root and safety lock;
+  inspect the printed path, clear any surviving scoped processes, and remove
+  `.harness_runs.lock` only after the root is safe.
 
 ## Current Matrix
 
@@ -17,10 +65,10 @@ This harness validates `uFldObstacleSim` as the obstacle-field source rather tha
 - `draw_region_false_pass` Confirms `draw_region=false` suppresses only the region visual while leaving obstacle visuals enabled.
 - `post_points_inside_pass` Confirms point-sensor mode suppresses `GIVEN_OBSTACLE` and emits `TRACKED_FEATURE_ALPHA` and `VIEW_POINT` for an in-range vehicle.
 - `post_points_multi_field_pass` Confirms point-sensor mode can report features from two configured obstacles in the same field.
-- `post_points_multi_vehicle_pass` Confirms point-sensor mode publishes per-vehicle tracked-feature variables and point labels.
+- `post_points_multi_vehicle_pass` Confirms point-sensor mode publishes both per-vehicle tracked-feature variables and point visuals.
 - `invalid_node_report_no_refresh_pass` Confirms malformed `NODE_REPORT` mail does not create ledger state or trigger an obstacle refresh.
 - `invalid_node_report_no_points_pass` Confirms malformed `NODE_REPORT` mail does not produce tracked features in point-sensor mode.
-- `node_report_mixed_case_vehicle_pass` Confirms mixed-case vehicle names map to the upper-case tracked-feature variable while preserving the point label name.
+- `node_report_mixed_case_vehicle_pass` Confirms mixed-case vehicle names map to the upper-case tracked-feature variable while still producing point visuals.
 - `node_report_color_point_pass` Confirms point visuals use the color supplied by the reporting vehicle.
 - `sensor_range_outside_pass` Confirms an out-of-range vehicle receives no tracked feature points in point-sensor mode.
 - `sensor_range_edge_pass` Confirms a vehicle exactly at the sensor-range boundary still receives tracked feature points.
@@ -34,7 +82,7 @@ This harness validates `uFldObstacleSim` as the obstacle-field source rather tha
 - `point_size_uppercase_pass` Confirms point-size keyword mail is case-insensitive.
 - `point_size_fraction_pass` Confirms numeric-prefix point-size mail accepts fractional values.
 - `point_size_zero_ignored_pass` Confirms zero point-size mail is ignored and leaves the configured visual size intact.
-- `rate_points_three_pass` Confirms `rate_points=3` produces multiple tracked features and matching point visuals per in-range iteration.
+- `rate_points_three_pass` Uses a bounded single-iteration window to confirm `rate_points=3` produces exactly three tracked features.
 - `rate_points_zero_pass` Confirms `rate_points=0` suppresses tracked feature and point visual output while still publishing source truth.
 - `post_points_no_visuals_pass` Confirms point-sensor mode can publish tracked features while `post_visuals=false` suppresses `VIEW_POINT`.
 - `node_report_refresh_pass` Confirms a first `NODE_REPORT` can request an obstacle refresh without `PMV_CONNECT`.
@@ -57,6 +105,7 @@ This harness validates `uFldObstacleSim` as the obstacle-field source rather tha
 Typical runs:
 
 ```bash
-./zlaunch.sh --jobs=4 --port_base=7600 10
-./zlaunch.sh --case=post_points_inside_pass --port_base=7900 10
+./zlaunch.sh --jobs=2 --port_base=28000 10
+./zlaunch.sh --case=post_points_inside_pass --port_base=30000 10
+./zlaunch.sh --jobs=2 --port_base=24000 --keep_workdirs 10
 ```

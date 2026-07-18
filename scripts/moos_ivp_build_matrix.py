@@ -146,49 +146,6 @@ def select_targets(
     return selected
 
 
-def matrix_entry(target: dict[str, object]) -> dict[str, str]:
-    key = str(target["key"])
-    return {
-        "key": key,
-        "image": str(target["image"]),
-        "compiler": str(target["compiler"]),
-        "artifact": f"moos-ivp-build-{key}",
-    }
-
-
-def matrix_for_targets(selected: list[dict[str, object]]) -> dict[str, list[dict[str, str]]]:
-    return {"include": [matrix_entry(target) for target in selected]}
-
-
-def write_github_output(selected: list[dict[str, object]], output_path: Path | None) -> None:
-    lines = [
-        "matrix=" + json.dumps(matrix_for_targets(selected), separators=(",", ":")),
-        "selected_keys=" + ",".join(str(target["key"]) for target in selected),
-    ]
-
-    if output_path is None:
-        print("\n".join(lines))
-        return
-
-    with output_path.open("a", encoding="utf-8") as stream:
-        stream.write("\n".join(lines))
-        stream.write("\n")
-
-
-def write_github_summary(selected: list[dict[str, object]], summary_path: Path | None) -> None:
-    if summary_path is None:
-        return
-
-    with summary_path.open("a", encoding="utf-8") as stream:
-        stream.write("### Selected MOOS-IvP Build Targets\n\n")
-        for target in selected:
-            profiles = ", ".join(str(item) for item in target["profiles"])
-            stream.write(
-                f"- `{target['key']}`: `{target['image']}` with `{target['compiler']}` "
-                f"(profiles: `{profiles}`)\n"
-            )
-
-
 def print_target_list(targets: list[dict[str, object]]) -> None:
     for target in targets:
         families = ", ".join(str(item) for item in target["families"])
@@ -197,6 +154,11 @@ def print_target_list(targets: list[dict[str, object]]) -> None:
             f"{target['key']}: {target['image']} / {target['compiler']} "
             f"[profiles: {profiles}; families: {families}]"
         )
+
+
+def print_target_rows(selected: list[dict[str, object]]) -> None:
+    for target in selected:
+        print(f"{target['key']}\t{target['image']}\t{target['compiler']}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -227,17 +189,6 @@ def parse_args() -> argparse.Namespace:
         default="full",
         help="Build profile to select compatible targets for.",
     )
-    select_parser.add_argument(
-        "--github-output",
-        default="",
-        help="Optional GITHUB_OUTPUT path for matrix output.",
-    )
-    select_parser.add_argument(
-        "--summary-path",
-        default="",
-        help="Optional GitHub step summary path to append Markdown output.",
-    )
-
     subparsers.add_parser("list", help="List configured build targets.")
     subparsers.add_parser("validate", help="Validate build target metadata.")
 
@@ -263,14 +214,7 @@ def main() -> int:
                 raw_targets=args.targets,
                 build_profile=args.build_profile,
             )
-            write_github_output(
-                selected,
-                Path(args.github_output) if args.github_output else None,
-            )
-            write_github_summary(
-                selected,
-                Path(args.summary_path) if args.summary_path else None,
-            )
+            print_target_rows(selected)
         else:
             raise ValueError(f"Unknown command: {args.command}")
     except ValueError as err:

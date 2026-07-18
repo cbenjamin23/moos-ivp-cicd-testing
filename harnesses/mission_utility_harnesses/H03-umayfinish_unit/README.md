@@ -2,10 +2,11 @@
 
 Patch-driven unit harness for `uMayFinish`.
 
-The harness uses the stem mission at
-`missions/mission_utility_missions/mission_utility_unit`, but launches
-`uMayFinish` directly with a unique alias per case so the process exit code is
-part of the tested contract.
+The harness uses isolated copies of the stem mission at
+`missions/mission_utility_missions/mission_utility_unit`, but intentionally
+launches `uMayFinish` directly with a unique alias per case so the process exit
+code and timeout remain the tested contract. This direct path is the family's
+CLI-subject exception to the ordinary `xlaunch` lifecycle.
 
 Exported harness rows use `grade=<pass|fail>` for the harness verdict and
 `subject=uMayFinish` for the utility under test. Expected timeout cases pass the
@@ -21,10 +22,10 @@ harness when `expected_subject=timeout` and the observed `subject_rc=1`.
 ## Running
 
 ```bash
-./zlaunch.sh --case=mayfinish_default_exit_pass --port_base=7400 10
-./zlaunch.sh --jobs=3 --port_base=7400 10
-./zlaunch.sh --just_make --jobs=3 --port_base=7400 10
+./zlaunch.sh --case=mayfinish_default_exit_pass --port_base=9000 10
+./zlaunch.sh --jobs=3 --port_base=9000 10
+./zlaunch.sh --just_make --jobs=3 --port_base=9000 10
 ```
 
-Grouped runs use 10-port case blocks from `--port_base`. The default starts at
-`7400`.
+Serial and rolling runs use the same isolated-case path. Grouped runs use
+30-port case blocks from `--port_base`; the default starts at `9000`.

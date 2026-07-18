@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/obstacles/Obstacle/test_obstacles_obstacle[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/obstacles/Obstacle/test_obstacles_obstacle[1]_tests.cmake")
-else()
-  add_test(test_obstacles_obstacle_NOT_BUILT test_obstacles_obstacle_NOT_BUILT)
-endif()

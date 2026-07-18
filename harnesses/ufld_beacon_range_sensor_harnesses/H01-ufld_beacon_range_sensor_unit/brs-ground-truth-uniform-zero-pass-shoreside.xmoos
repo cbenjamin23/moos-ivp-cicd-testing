@@ -1,0 +1,40 @@
+ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick = 4
+  CommsTick = 4
+  ping_wait = default=0
+  report_vars = both
+  rn_algorithm = uniform,pct=0
+  ground_truth = true
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldBeaconRangeSensor
+  event = var=EXPECT_REPORT_MIN, val="vname=alpha,range=50,id=beacon,time=", time=0.1
+  event = var=EXPECT_REPORT_MAX, val="vname=alpha,range=50,id=beacon,time=~", time=0.1
+  event = var=EXPECT_GT_MIN, val="vname=ALPHA,range=50,id=beacon,time=", time=0.1
+  event = var=EXPECT_GT_MAX, val="vname=ALPHA,range=50,id=beacon,time=~", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = BRS_RANGE_REPORT >= $ (EXPECT_REPORT_MIN)
+  pass_condition = BRS_RANGE_REPORT < $ (EXPECT_REPORT_MAX)
+  pass_condition = BRS_RANGE_REPORT_GT >= $ (EXPECT_GT_MIN)
+  pass_condition = BRS_RANGE_REPORT_GT < $ (EXPECT_GT_MAX)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_file = results.txt
+}

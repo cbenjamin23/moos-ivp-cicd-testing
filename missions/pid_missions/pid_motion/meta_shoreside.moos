@@ -16,7 +16,6 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB          @ NewConsole = false
   Run = pRealm          @ NewConsole = false
-  Run = pLogger         @ NewConsole = false
   Run = uProcessWatch   @ NewConsole = false
   Run = pShare          @ NewConsole = false
   Run = pHostInfo       @ NewConsole = false
@@ -71,7 +70,9 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = (ARRIVED = true) or (TEST_EVAL_READY = true)
+  mailflag = @ARRIVED#TEST_EVAL_READY=true
+
+  lead_condition = TEST_EVAL_READY = true
   pass_condition = ARRIVED = true
   pass_condition = ABE_NAV_X >= 55
   pass_condition = ABE_NAV_X <= 80

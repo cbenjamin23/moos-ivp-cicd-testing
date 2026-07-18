@@ -1,0 +1,12 @@
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  try_shore_host = pshare_route=localhost:notaport
+  try_shore_host = pshare_route=localhost:$(SHORE_PSHARE)
+
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+  bridge = src=ACK_MESSAGE_LOCAL,  alias=ACK_MESSAGE
+}

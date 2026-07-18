@@ -8,6 +8,8 @@ TLDR:
   `pwt_outer_dist`, `pwt_inner_dist`, `pwt_grade`, `pts_port_turns_ok`,
   `turn_radius`, `check_plateaus`, `completed_dist`, and `use_refinery`
 - current supported gate: 32 cases
+- migration signoff: the modern launcher and all 32 ordinary rolling cases
+  are validated without exclusive scheduling
 - intended long-term pattern: keep geometry fixed and change one behavior knob
   at a time
 
@@ -66,6 +68,12 @@ Current case structure:
 - allow execution-style or timeout-snapshot families when that is the real
   parameter effect
 
+The migrated launcher requires Bash 5.1 or newer, uses isolated mission copies
+in serial and rolling modes, refills open job slots immediately, assigns a
+distinct three-MOOSDB/three-pShare port block to every case, applies shoreside
+and optional behavior overlays inside each copy, aggregates rows in selected
+order, and performs root-scoped cleanup.
+
 ## Running
 
 ```bash
@@ -75,9 +83,9 @@ Current case structure:
 ./zlaunch.sh --just_make --jobs=2 --port_base=24500 10
 ```
 
-Wave mode uses isolated temp mission copies and compact per-case port blocks:
+Every mode uses isolated mission copies and compact per-case port blocks:
 `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
-`case_base + 10`.
+`case_base + 15`.
 
 ## Cases
 
@@ -223,7 +231,7 @@ Implemented expectations:
   thresholds during evaluation
 - `eval_tol_default_pass`: fixed `overtaking_starboard_range_far_pass`
   geometry should finish with the stable overtaking-port execution shape and a
-  realized CPA in the default band around `20.7-21.8`
+  realized CPA in the default band around `20.7-22.1`
 - `eval_tol_short_pass`: the same geometry with `eval_tol=30` should keep the
   same overtaking classification but widen the realized CPA into the higher
   `23.5-24.8` band
@@ -241,10 +249,10 @@ Implemented expectations:
   the posted `COLREGS_AVOID_PWT_BEN` should separate into low / default /
   saturated bands
 - `pwt_grade_linear_pass` / `pwt_grade_quasi_pass` /
-  `pwt_grade_quadratic_pass`: the same fixed geometry and fixed range gate
-  should stay in `standon:stern` (`colregs_ix=30`) while the posted
-  `COLREGS_AVOID_PWT_BEN` follows the linear / quasi / quadratic relevance
-  curve ordering
+  `pwt_grade_quadratic_pass`: the same fixed geometry and source-derived
+  range checkpoints should stay in `standon:stern` (`colregs_ix=30`) while
+  the posted `COLREGS_AVOID_PWT_BEN` follows the selected linear, quasi, or
+  quadratic relevance curve
 - `pts_port_turns_ok_true_pass` / `pts_port_turns_ok_false_pass`: fixed
   `giveway_turngap_edge_pass` geometry should be checked at an early
   active-give-way gate, `AVDCOL_RANGE_BEN <= 20` while still in
@@ -403,11 +411,18 @@ Notes on the implemented `pwt_inner_dist` group:
 
 Notes on the implemented `pwt_grade` group:
 - `pwt_grade` also changes only the relevance curve in `getRelevance()`
-- H04 uses the same fixed geometry as the `pwt_inner_dist` family, but an
-  earlier fixed range gate, `AVDCOL_RANGE_BEN <= 35`, so the three curve
-  shapes stay well separated under repeated runs
-- at that gate, the same `standon:stern` case produces the expected weight ordering:
-  `quadratic < quasi < linear`
+- H04 uses the same fixed geometry as the `pwt_inner_dist` family; linear and
+  quasi grade at `AVDCOL_RANGE_BEN <= 35`, while quadratic grades at the
+  independent later checkpoint `AVDCOL_RANGE_BEN <= 33`
+- the quadratic checkpoint also requires the observed range to remain between
+  30 and 33 and its priority weight between 15 and 30
+- at any common normalized distance the source formulas have the ordering
+  `quadratic < quasi < linear`; each case checks its selected formula at a
+  stable independent checkpoint rather than comparing asynchronous samples
+- the quasi evaluator accepts priority weights through `36` because a loaded
+  jobs=4 scheduler may observe the first post-checkpoint sample slightly after
+  `AVDCOL_RANGE_BEN` crosses `35`; the band remains below the linear result and
+  above the quadratic band
 - this is a better H04 fit than the earlier attempted mode-split approach,
   because it tests the exact source-visible effect of the knob
 
@@ -436,9 +451,13 @@ Notes on the implemented `pts_port_turns_ok` group:
   ship on port (`cn_port=1`), while `pts_port_turns_ok=false` keeps the same
   `giveway:stern` mode but flips the early side state to starboard
   (`cn_port=0`)
-- room for improvement: this family still infers maneuver choice from early
-  relative-side state, not from a direct helm-direction signal; a stronger
-  future version would expose a clean mission-visible turn-direction metric
+- both cases also require closest range above the configured 10-meter safety
+  boundary,
+  zero near misses, zero collisions, the contact still forward, and no
+  port/starboard crossing before the checkpoint
+- the family uses the existing relative-side diagnostics as the
+  mission-visible consequence of the parameter; it does not introduce a
+  harness-only turn-direction signal
 
 ## Parameter Inventory
 
@@ -592,3 +611,6 @@ Recommended test style per parameter:
   - same geometry, same classification, but bounded difference in safe outcome
 - diagnostic/integration knobs:
   - usually do not belong in H04 unless they materially affect behavior
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

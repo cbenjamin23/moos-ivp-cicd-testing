@@ -3,9 +3,16 @@
 Live `pSearchGrid` harness for grid and delta publication behavior.
 
 ```sh
-./zlaunch.sh --jobs=4 --port_base=16400 10
-./zlaunch.sh --case=node_local_delta_pass --port_base=16400 10
+./zlaunch.sh --jobs=4 --port_base=9000 10
+./zlaunch.sh --case=node_local_delta_pass --port_base=9000 10
 ```
+
+The launcher requires Bash 5.1 or newer, gives every selected case an
+isolated mission copy and port block, and refills rolling `--jobs` slots as
+cases finish. `pMissionEval` owns each case's variable-presence or
+variable-absence verdict. The launcher supplements that verdict only where
+the contract depends on structured grid payloads or publication history, and
+it considers only evidence posted no later than `MISSION_EVALUATED=true`.
 
 ## Cases
 
@@ -23,7 +30,7 @@ Live `pSearchGrid` harness for grid and delta publication behavior.
 - `reset_grid_clears_pass` Verifies `PSG_RESET_GRID` clears a previously incremented full-grid cell value.
 - `reset_false_payload_clears_pass` Verifies `PSG_RESET_GRID` clears the grid based on mail presence regardless of payload value.
 - `two_cell_delta_pass` Verifies two simultaneous reports in different cells produce delta publication evidence.
-- `repeated_cell_delta_pass` Verifies repeated reports in one cell accumulate into a larger delta value.
+- `repeated_cell_delta_pass` Verifies two same-cycle reports in one cell are accumulated into one two-count delta.
 - `sequential_delta_cleared_pass` Verifies separated reports in one cell produce separate one-count deltas instead of retaining stale delta state.
 - `match_community_allows_pass` Verifies a matching community filter permits incoming reports.
 - `match_list_allows_pass` Verifies brace/comma-list match filters permit a listed community.

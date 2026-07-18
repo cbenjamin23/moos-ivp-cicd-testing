@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/dep_behaviors/Core/test_dep_behaviors_behaviors[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/dep_behaviors/Core/test_dep_behaviors_behaviors[1]_tests.cmake")
-else()
-  add_test(test_dep_behaviors_behaviors_NOT_BUILT test_dep_behaviors_behaviors_NOT_BUILT)
-endif()

@@ -7,7 +7,7 @@ ProcessConfig = pMissionEval
   pass_condition = TEST_EVAL_READY = true
   fail_condition = OBM_NEW_GIVEN = true
   fail_condition = OBM_DIST_TO_OBJ = BAD_GIVEN,20.0
-  fail_condition = OBSTACLE_ALERT = name=avd_bad_given#poly=pts={18,-62:20,-62:22,-62},label=bad_given#id=bad_given
+  fail_condition = OBSTACLE_ALERT != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = obmgr_tests_harness

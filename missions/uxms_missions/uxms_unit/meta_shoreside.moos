@@ -16,7 +16,6 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
-  Run = pLogger       @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false
   Run = pMissionEval  @ NewConsole = false
   Run = pMissionHash  @ NewConsole = false
@@ -54,7 +53,6 @@ ProcessConfig = uTimerScript
   event = var=XMS_HIST, val=first, time=0.5
   event = var=XMS_HIST, val=second, time=1.0
   event = var=XMS_HIST, val=third, time=1.5
-  event = var=TEST_EVAL_READY, val=true, time=2.0
 }
 
 //----------------------------------------------------
@@ -73,8 +71,8 @@ ProcessConfig = pMissionEval
   mission_form = uxms_unit
   mission_mod  = $(MMOD:=scoped_var_pass)
 
-  prereport_column = form=$[MISSION_FORM]
-  prereport_column = mmod=$[MMOD]
+  report_column    = form=$[MISSION_FORM]
+  report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = xms_alpha=$[XMS_ALPHA]
@@ -83,4 +81,3 @@ ProcessConfig = pMissionEval
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }
-

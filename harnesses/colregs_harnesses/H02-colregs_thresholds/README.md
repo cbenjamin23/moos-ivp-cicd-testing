@@ -4,7 +4,8 @@ TLDR:
 - threshold-edge harness on the shared `colregs_unit` stem
 - proves that small geometry changes flip classification where the source says they should
 - intended to absorb the unstable edge-space that does not belong in `H01`
-- current active gate is a geometry-first 58-case threshold sweep with wave-mode support
+- current active gate is a geometry-first 58-case threshold sweep with
+  isolated serial and Bash 5.1 rolling execution
 
 This harness uses the shared `colregs_unit` stem mission to probe the exact
 geometry boundaries that decide COLREGS classification in
@@ -26,16 +27,13 @@ Why a separate suite:
   staged deploy, or tighter telemetry inspection
 
 Developer note:
-- use `./zlaunch.sh --group=headon 10`, `--group=overtaking`,
+- use `./zlaunch.sh --group=headon 5`, `--group=overtaking`,
   `--group=overtaken`, `--group=overtaken_mirror`, `--group=giveway`,
   `--group=turngap`, or `--group=standon` to iterate on one family without
   running the full H02 gate
-- `./zlaunch.sh --jobs=2 --port_base=23000 10` runs isolated wave batches with
-  unique compact case blocks
-  (`case_base = port_base + case_idx*PORT_STRIDE`);
-  a small set of known-sensitive supported edge cases currently run as solo
-  waves, with a short settle pause between waves, to keep the stock geometry
-  honest instead of retuning it into different scenarios
+- `./zlaunch.sh --jobs=2 --port_base=23000 5` runs a rolling scheduler with
+  isolated mission copies and unique compact case blocks
+  (`case_base = port_base + case_idx*PORT_STRIDE`)
 
 ## How To Read Case Names
 
@@ -559,7 +557,7 @@ calibration.
 
 Why this section exists:
 - the upstream stand-on logic is explicitly split by relative-bearing band in
-  [BHV_AvdColregsV22.cpp](/Users/charlesbenjamin/moos-ivp/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp#L1008)
+  [BHV_AvdColregsV22.cpp](https://github.com/moos-ivp/moos-ivp/blob/main/ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp#L1008)
 - future chats or models should not have to reconstruct those bands from
   source before continuing the harness
 - some of the cases below will likely collapse or be pruned later, but the
@@ -721,21 +719,14 @@ Purpose:
 - this family was repeatedly probed and rejected as a supported H02 threshold
   family; it remains calibration-only
 
-Exploratory cases kept off the supported gate:
-- `standon_neither_below_pass`
-- `standon_neither_edge_pass`
-- `standon_neither_above_pass`
-
-What each exploratory case was trying to mean:
-- `standon_neither_below_pass`: stable stern-side anchor that should remain in
-  `standon:stern` (`30`) under the delayed release
-- `standon_neither_edge_pass`: release-controlled pocket that was intended to
-  land in `standon:neither` (`39`)
-- `standon_neither_above_pass`: earlier-release version of the same pocket
-  that was also intended to land in `standon:neither` (`39`)
+Current status:
+- the shared mission retains the attempted delayed-release geometries as
+  calibration material
+- H02 does not expose them as harness cases because no below/edge/above set
+  produced a repeatable `standon:neither` (`39`) threshold contract
 
 Notes:
-- this family deliberately used delayed release on the shared stem so the
+- the calibration family used delayed release on the shared stem so the
   transition could settle before the behavior was sampled
 - the search tried multiple pockets and release points, including southwest,
   turn-driven, and band315 midpoints; none produced a clean, repeatable
@@ -1077,7 +1068,7 @@ Implemented and supported families:
 ## Coverage Priorities
 
 Recommended next implementation order:
-1. keep the supported geometry-first gate stable under both serial and wave-mode runs
+1. keep the supported geometry-first gate stable under both isolated serial and rolling runs
 2. only promote a deferred activation/release or CPA-utility family if it can be kept geometry-first and stock-parameter honest
 3. otherwise move effort to `H03`, where the next useful question is maneuver quality after correct classification
 
@@ -1103,7 +1094,14 @@ Reason:
 Typical runs:
 
 ```bash
-./zlaunch.sh 10
-./zlaunch.sh --jobs=2 --port_base=23000 10
-./zlaunch.sh --case=head_on_thresh_edge_pass 10
+./zlaunch.sh 5
+./zlaunch.sh --jobs=2 --port_base=23000 5
+./zlaunch.sh --case=head_on_thresh_edge_pass 5
 ```
+
+H02 temporarily defaults to `--log=full`. Two jobs=4 minimal validation runs
+produced different sets of motion-threshold timeouts, while the full-mode
+control passed 58/58. This makes H02 a logging-sensitive exception until its
+deployment/readiness timing is made deterministic. `--log=minimal` remains
+available for focused diagnostics; combine either mode with `--case=NAME` for
+one case.

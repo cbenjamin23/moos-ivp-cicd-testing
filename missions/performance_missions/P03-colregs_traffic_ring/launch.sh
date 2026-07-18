@@ -13,7 +13,7 @@ TIME_WARP=1
 VERBOSE=""
 JUST_MAKE=""
 LOG_CLEAN=""
-MMOD="baseline_circle_pass"
+SCENARIO="baseline_circle"
 MAX_SPD="2.5"
 SHORE_MPORT="9000"
 VEH_MPORT="9001"
@@ -43,7 +43,7 @@ for ARGI; do
   CMD_ARGS+=" ${ARGI}"
   if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
     echo "$ME [OPTIONS] [time_warp]"
-    echo "  --mmod=<mod>       baseline_circle_pass | mixed_speed_circle_pass | endurance_circle_pass | noncoop_circle_pass"
+    echo "  --scenario=<name>  baseline_circle | mixed_speed_circle | endurance_circle | noncoop_circle"
     echo "  --dumb_vname=<v>   Vehicle launched with AVOID=false"
     echo "  --shore_mport=<n>  Shoreside MOOSDB port"
     echo "  --veh_mport=<n>    Base vehicle MOOSDB port"
@@ -63,8 +63,8 @@ for ARGI; do
     JUST_MAKE="yes"
   elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
     LOG_CLEAN="yes"
-  elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-    MMOD="${ARGI#--mmod=*}"
+  elif [ "${ARGI:0:11}" = "--scenario=" ]; then
+    SCENARIO="${ARGI#--scenario=*}"
   elif [ "${ARGI:0:14}" = "--shore_mport=" ]; then
     SHORE_MPORT="${ARGI#--shore_mport=*}"
   elif [ "${ARGI:0:12}" = "--veh_mport=" ]; then
@@ -87,8 +87,8 @@ for ARGI; do
   fi
 done
 
-case "$MMOD" in
-  baseline_circle_pass)
+case "$SCENARIO" in
+  baseline_circle)
     SEED="17"
     EVAL_TIME_SECS="300"
     MISSION_TIMEOUT_SECS="420"
@@ -98,8 +98,9 @@ case "$MMOD" in
     BATCHES_MIN="25"
     FIELD_RADIUS="36"
     BASE_RADIUS="38"
+    MIN_PRED_CPA="14"
     ;;
-  mixed_speed_circle_pass)
+  mixed_speed_circle)
     SEED="23"
     EVAL_TIME_SECS="300"
     MISSION_TIMEOUT_SECS="420"
@@ -110,7 +111,7 @@ case "$MMOD" in
     FIELD_RADIUS="36"
     BASE_RADIUS="39"
     ;;
-  endurance_circle_pass)
+  endurance_circle)
     SEED="31"
     EVAL_TIME_SECS="900"
     MISSION_TIMEOUT_SECS="1080"
@@ -123,7 +124,7 @@ case "$MMOD" in
     MIN_TARGET_SEP="18"
     MIN_PRED_CPA="14"
     ;;
-  noncoop_circle_pass)
+  noncoop_circle)
     SEED="41"
     EVAL_TIME_SECS="300"
     MISSION_TIMEOUT_SECS="420"
@@ -133,12 +134,13 @@ case "$MMOD" in
     BATCHES_MIN="25"
     FIELD_RADIUS="36"
     BASE_RADIUS="38"
+    MIN_PRED_CPA="14"
     if [ "$DUMB_VNAME" = "none" ]; then
       DUMB_VNAME="eve"
     fi
     ;;
   *)
-    echo "$ME: Unknown mission mode [$MMOD]"
+    echo "$ME: Unknown mission scenario [$SCENARIO]"
     exit 1
     ;;
 esac
@@ -147,7 +149,7 @@ if [ "$LOG_CLEAN" = "yes" -a -f "clean.sh" ]; then
   ./clean.sh >/dev/null 2>&1 || true
 fi
 
-./init_field.sh --mmod="$MMOD" --radius="$FIELD_RADIUS"
+./init_field.sh --scenario="$SCENARIO" --radius="$FIELD_RADIUS"
 
 VEHPOS=($(cat vpositions.txt))
 SPEEDS=($(cat vspeeds.txt))
@@ -156,7 +158,7 @@ VCOLOR=($(cat vcolors.txt))
 VAMT="${#VNAMES[@]}"
 
 if [ "$VERBOSE" = "yes" ]; then
-  echo "MMOD=$MMOD VAMT=$VAMT SEED=$SEED EVAL=$EVAL_TIME_SECS"
+  echo "SCENARIO=$SCENARIO VAMT=$VAMT SEED=$SEED EVAL=$EVAL_TIME_SECS"
   echo "VNAMES=${VNAMES[*]}"
   echo "VEHPOS=${VEHPOS[*]}"
   echo "SPEEDS=${SPEEDS[*]}"
@@ -195,7 +197,7 @@ fi
 if [ "$VERBOSE" = "yes" ]; then
   SARGS="$SARGS --verbose"
 fi
-SARGS="$SARGS $NOGUI --vnames=$(IFS=:; echo "${VNAMES[*]}") --mmod=$MMOD"
+SARGS="$SARGS $NOGUI --vnames=$(IFS=:; echo "${VNAMES[*]}") --scenario=$SCENARIO"
 SARGS="$SARGS --required_nodes=$VAMT --eval_time=$EVAL_TIME_SECS"
 SARGS="$SARGS --mission_timeout=$MISSION_TIMEOUT_SECS --deploy_delay=$DEPLOY_DELAY_SECS"
 SARGS="$SARGS --closest_min=$CLOSEST_MIN --closest_max=$CLOSEST_MAX"

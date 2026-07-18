@@ -8,6 +8,8 @@ ProcessConfig = uTimerScript
   AppTick   = 4
   CommsTick = 4
 
+  block_on = pMissionEval, pEchoVar, uFldObstacleSim
+
   event = var=PMV_CONNECT, val=true, time=1.0
   event = var=PMV_CONNECT, val=true, time=2.0
   event = var=PMV_CONNECT, val=true, time=3.0
@@ -20,7 +22,13 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  pass_condition = PMV_CONNECT_COUNT = 3
+  pass_condition = KNOWN_OBSTACLE_COUNT = 3
+  pass_condition = GIVEN_OBSTACLE_COUNT = 3
+
+  mailflag = @PMV_CONNECT#PMV_CONNECT_COUNT=$[CNT]
+  mailflag = @KNOWN_OBSTACLE#KNOWN_OBSTACLE_COUNT=$[CNT]
+  mailflag = @GIVEN_OBSTACLE#GIVEN_OBSTACLE_COUNT=$[CNT]
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -32,7 +40,9 @@ ProcessConfig = pMissionEval
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = known=$[KNOWN_OBSTACLE]
   report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = connect_count=$[PMV_CONNECT_COUNT]
+  report_column    = known_count=$[KNOWN_OBSTACLE_COUNT]
+  report_column    = given_count=$[GIVEN_OBSTACLE_COUNT]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

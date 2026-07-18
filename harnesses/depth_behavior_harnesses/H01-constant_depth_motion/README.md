@@ -38,5 +38,54 @@ and integration evidence from `pMarinePIDV22`.
 ./zlaunch.sh --just_make 10
 ```
 
-The wrapper supports `--jobs` and `--port_base` for isolated grouped local and
-CI runs.
+The wrapper requires Bash 5.1 or newer and supports `--jobs`, `--port_base`,
+and `--port_stride` for isolated serial and rolling local or CI runs.
+
+## Scheduling Notes
+
+Five existing timing-sensitive cases remain solo-slot cases:
+`constant_depth_shape_params_pass`,
+`constant_depth_summitdelta_clip_pass`,
+`constant_depth_no_mismatch_var_pass`,
+`constant_depth_bad_update_preserve_pass`, and
+`constant_depth_low_elevator_authority_fail`. A rolling run drains active
+workers before starting one of these cases, then resumes rolling refill for
+the rest of the matrix. This preserves the legacy isolation policy without
+weakening any evaluator condition.
+
+The migrated launcher uses one isolated mission copy and one dedicated MOOSDB
+and pShare port block per case in both serial and rolling modes. It aggregates
+exactly one mission-owned pMissionEval row per selected case in deterministic
+case order, uses root-scoped teardown, rejects concurrent invocations with a
+harness lock, and continues after ordinary case failures. All nineteen case
+names, explicit patch mappings, evaluator conditions, behavior values, event
+times, grading variables, and coverage claims are unchanged.
+
+Three untouched legacy `--jobs=4` matrices passed 57/57 rows in 122.06,
+123.24, and 123.30 seconds, for a 122.87-second mean. The untouched serial
+matrix passed 19/19 in 155.30 seconds. Three migrated rolling matrices passed
+57/57 rows in 116.66, 116.16, and 116.48 seconds, for a 116.43-second mean,
+about 5.2 percent faster. The isolated migrated serial matrix passed 19/19 in
+181.14 seconds, 25.84 seconds or about 16.6 percent slower, roughly 1.36
+seconds per case.
+
+A controlled serial run using the teardown helper's supported one-second INT
+and TERM grace overrides passed in 164.97 seconds. Thus about 16.17 seconds of
+the default serial difference came from the canonical three-second graceful
+cleanup budgets; the remaining 9.67 seconds, about 0.51 seconds per case,
+came from isolated copying and the standard mission-wrapper lifecycle. The
+canonical cleanup defaults remain unchanged.
+
+Validation covered all-case generation, three full rolling matrices, one full
+serial matrix, nominal depth hold, expected helm-malconfiguration, all five
+solo-slot cases, standalone stem generation and live execution with both the
+preserved 55-second default and an explicit 80-second ceiling, exact matrix
+and patch-map reconciliation, rolling refill, 38 unique MOOSDB ports, 38
+non-overlapping pShare ports, intended sidecars, unknown-case rejection,
+active-lock behavior, and Bash 3.2 rejection. Failure probes verified
+normalized `missing_result`, `duplicate_results`, and `prepare_error` rows.
+Bash syntax, ShellCheck, and both skill static checkers pass. No tested MOOS
+process survived cleanup.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

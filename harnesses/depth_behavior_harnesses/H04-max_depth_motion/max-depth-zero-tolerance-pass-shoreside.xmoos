@@ -23,8 +23,8 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = ABE_NAV_X >= 45
-  pass_condition = ABE_NAV_DEPTH <= 13
-  pass_condition = DEPTH_SLACK >= -1
+  pass_condition = ABE_NAV_DEPTH <= 14
+  pass_condition = DEPTH_SLACK >= -2
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

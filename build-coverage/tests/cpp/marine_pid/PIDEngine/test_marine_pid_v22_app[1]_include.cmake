@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/marine_pid/PIDEngine/test_marine_pid_v22_app[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/marine_pid/PIDEngine/test_marine_pid_v22_app[1]_tests.cmake")
-else()
-  add_test(test_marine_pid_v22_app_NOT_BUILT test_marine_pid_v22_app_NOT_BUILT)
-endif()

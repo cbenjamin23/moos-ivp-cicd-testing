@@ -1,2 +1,1 @@
-form=processwatch_unit  mmod=processwatch_missing_awol_fail  
-grade=pass  eval=true  expected=watch_awol  proc_ok=false  ghost_present=false  proc_summary=AWOL: pGhost  proc_full=pGhost(1/1)  mhash=[TORY-TWIT]
+  form=processwatch_unit  mmod=processwatch_all_present_pass  grade=pass  eval=true  proc_ok=true  proc_summary=All Present  mhash=[IDLE-RATS]

@@ -19,7 +19,7 @@ right family label.
 Run a focused family:
 
 ```bash
-ctest --test-dir build -L geometry --output-on-failure
+./tests/cpp/ctests.sh --geometry
 ```
 
 Run one GoogleTest suite while editing:
@@ -32,7 +32,7 @@ The sections below explain the structure and conventions in more detail. The
 suite is designed for targeted regression work. A developer should be able to
 run:
 
-- one component family with a label, such as `ctest --test-dir build -L geometry`
+- one component family with a label, such as `./tests/cpp/ctests.sh --geometry`
 - one executable directly, such as `./bin/test_geometry_arcutils`
 - one GoogleTest suite with an executable filter, such as
   `./bin/test_geometry_arcutils --gtest_filter='ArcUtilsIntersectionTest.*'`
@@ -96,12 +96,17 @@ failures are reported with better detail.
 
 ## Run Tests
 
-Build and run everything:
+Build incrementally and run everything:
 
 ```bash
-./build.sh
-ctest --test-dir build --output-on-failure
+./tests/cpp/ctests.sh
 ```
+
+The first run configures the test build when needed. Use `--jobs=N` for
+parallel building and testing, or `--no-build` when the test executables are
+already current. Focused family runs build only the selected families and their
+dependencies; a run without family options builds everything. Run
+`./tests/cpp/ctests.sh --help` to list every family.
 
 If the build cache points at the wrong MOOS-IvP checkout, reconfigure once:
 
@@ -111,15 +116,16 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Run a focused CTest family:
+Run focused CTest families:
 
 ```bash
-ctest --test-dir build -L geometry --output-on-failure
-ctest --test-dir build -L ivpbuild --output-on-failure
-ctest --test-dir build -L mbutil --output-on-failure
+./tests/cpp/ctests.sh --geometry
+./tests/cpp/ctests.sh --ivpbuild
+./tests/cpp/ctests.sh --geometry --mbutil
 ```
 
-CTest label matching is regex-based. Anchor broad labels when needed:
+The wrapper uses exact family-label matching. For lower-level investigation,
+CTest label matching is regex-based, so anchor broad labels:
 
 ```bash
 ctest --test-dir build -L '^behaviors$' --output-on-failure
@@ -232,7 +238,7 @@ label such as:
 - `geometry`
 - `mbutil`
 - `ivpbuild`
-- `behaviors_marine`
+- `behaviors-marine`
 - `apputil`
 
 Additional labels may be useful as CTest registry metadata, but they should not
@@ -255,12 +261,26 @@ Rules:
 
 - every CTest case must have at least one useful label
 - no duplicate labels on a case
+- public family selectors must be unique even when compared without case;
+  selectors that differ only by capitalization would map to the same focused
+  build target on case-insensitive filesystems
+- canonical public family selectors use only lowercase letters, numbers, `_`,
+  and `-`; selector matching is strict, so mixed-case spellings are rejected
 - concrete class/tool labels should not spill across unrelated suites
 - family labels may be broad when the whole executable is the family
 - app-impact labels mean the test protects behavior used by that app; they do
   not mean the app itself is launched
 - prefer canonical MOOS-IvP names, including existing capitalization such as
   `XYPolygon`, `ZAIC_PEAK`, `BHV_Waypoint`, or `VIEW_POLYGON`
+
+Public selectors and descriptive component labels serve different purposes.
+For example, the lowercase `pnodereporter` family and canonical
+`pNodeReporter` component label may both be attached to a test. CTest retains
+their original, case-sensitive spellings for filtering and reporting. The
+internal focused-build target key is always lowercase, so both labels safely
+contribute dependencies to `ctest-family-pnodereporter` on macOS, Linux, and
+other build hosts. Use `ctests.sh` as the public interface rather than relying
+on a mixed-case internal CMake target name.
 
 ## Test Quality Standard
 
@@ -391,8 +411,8 @@ Before adding a new test family:
 Useful local commands:
 
 ```bash
-ctest --test-dir build -L XYFormatUtilsPoint --output-on-failure
-ctest --test-dir build -L geometry --output-on-failure
+ctest --test-dir build -L '^XYFormatUtilsPoint$' --output-on-failure
+./tests/cpp/ctests.sh --geometry
 python3 scripts/check_cpp_tests.py \
   --build-dir build \
   --moos-src /path/to/moos-ivp/ivp/src
@@ -402,8 +422,8 @@ Run the relevant family or explicit family batch before handing off broad
 changes:
 
 ```bash
-ctest --test-dir build -L geometry --output-on-failure
-ctest --test-dir build -L 'geometry|ivpbuild|mbutil' --output-on-failure
+./tests/cpp/ctests.sh --geometry
+./tests/cpp/ctests.sh --geometry --ivpbuild --mbutil
 ```
 
 ## Invariants

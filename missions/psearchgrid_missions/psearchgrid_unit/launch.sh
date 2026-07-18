@@ -18,7 +18,7 @@ MOOS_PORT="9000"
 PSHARE_PORT="9200"
 XLAUNCHED="no"
 NOGUI=""
-MMOD="node_local_delta_pass"
+MMOD="initial_grid_publish_pass"
 
 for ARGI; do
     if [ "${ARGI}" = "--help" ] || [ "${ARGI}" = "-h" ]; then

@@ -27,3 +27,17 @@ Typical commands:
 ./zlaunch.sh --jobs=2 --port_base=11000 --max_time=25 10
 ./zlaunch.sh --case=pshare_wildcard_route_pass --port_base=11000 --max_time=25 10
 ```
+
+Every selected case runs from its own mission copy and four-port block. The
+shoreside and peer communities receive distinct MOOSDB and pShare ports.
+`--jobs=N` uses rolling scheduling, starting the next pending case whenever an
+active case finishes. Use `--keep_workdirs` to retain generated targets,
+sidecars, logs, and result rows for inspection.
+
+Latest validation:
+
+- July 15, 2026
+- three `13/13` rolling passes with `--jobs=3 --max_time=25 10`
+- one `13/13` isolated serial pass with `--jobs=1 --max_time=25 10`
+- retained inspection confirmed 26 distinct-port targets, 24 intended
+  sidecars, one mission-owned result row per case, and no remaining listeners

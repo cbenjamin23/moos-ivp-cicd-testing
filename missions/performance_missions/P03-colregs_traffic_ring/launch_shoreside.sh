@@ -17,7 +17,7 @@ IP_ADDR="localhost"
 MOOS_PORT="9000"
 PSHARE_PORT="9200"
 VNAMES="abe:ben:cal:deb:eve"
-MMOD="baseline_circle_pass"
+SCENARIO="baseline_circle"
 REQUIRED_NODES="5"
 EVAL_TIME_SECS="300"
 MISSION_TIMEOUT_SECS="420"
@@ -61,8 +61,8 @@ for ARGI; do
     PSHARE_PORT="${ARGI#--pshare=*}"
   elif [ "${ARGI:0:9}" = "--vnames=" ]; then
     VNAMES="${ARGI#--vnames=*}"
-  elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-    MMOD="${ARGI#--mmod=*}"
+  elif [ "${ARGI:0:11}" = "--scenario=" ]; then
+    SCENARIO="${ARGI#--scenario=*}"
   elif [ "${ARGI:0:17}" = "--required_nodes=" ]; then
     REQUIRED_NODES="${ARGI#--required_nodes=*}"
   elif [ "${ARGI:0:12}" = "--eval_time=" ]; then
@@ -75,7 +75,7 @@ for ARGI; do
     CLOSEST_MIN="${ARGI#--closest_min=*}"
   elif [ "${ARGI:0:14}" = "--closest_max=" ]; then
     CLOSEST_MAX="${ARGI#--closest_max=*}"
-  elif [ "${ARGI:0:17}" = "--near_miss_max=" ]; then
+  elif [ "${ARGI:0:16}" = "--near_miss_max=" ]; then
     NEAR_MISS_MAX="${ARGI#--near_miss_max=*}"
   elif [ "${ARGI:0:14}" = "--batches_min=" ]; then
     BATCHES_MIN="${ARGI#--batches_min=*}"
@@ -101,17 +101,20 @@ for ARGI; do
     TRAFFIC_BIN="${ARGI#--traffic_bin=*}"
   elif [ "${ARGI:0:13}" = "--dumb_vname=" ]; then
     DUMB_VNAME="${ARGI#--dumb_vname=*}"
+  else
+    echo "$ME: Bad arg: $ARGI"
+    exit 1
   fi
 done
 
-NSFLAGS="--strict --force"
+NSFLAGS="--strict --force -x"
 if [ "${AUTO_LAUNCHED}" = "no" ]; then
-  NSFLAGS="--interactive --force"
+  NSFLAGS="--interactive --force -x"
 fi
 
 nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
   IP_ADDR=$IP_ADDR MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT LAUNCH_GUI=$LAUNCH_GUI \
-  VNAMES=$VNAMES MMOD=$MMOD REQUIRED_NODES=$REQUIRED_NODES \
+  VNAMES=$VNAMES MMOD=$SCENARIO REQUIRED_NODES=$REQUIRED_NODES \
   EVAL_TIME_SECS=$EVAL_TIME_SECS MISSION_TIMEOUT_SECS=$MISSION_TIMEOUT_SECS \
   DEPLOY_DELAY_SECS=$DEPLOY_DELAY_SECS CLOSEST_MIN=$CLOSEST_MIN CLOSEST_MAX=$CLOSEST_MAX \
   NEAR_MISS_MAX=$NEAR_MISS_MAX BATCHES_MIN=$BATCHES_MIN \

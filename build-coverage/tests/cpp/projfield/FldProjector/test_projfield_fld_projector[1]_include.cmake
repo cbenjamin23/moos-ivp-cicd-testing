@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/projfield/FldProjector/test_projfield_fld_projector[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/projfield/FldProjector/test_projfield_fld_projector[1]_tests.cmake")
-else()
-  add_test(test_projfield_fld_projector_NOT_BUILT test_projfield_fld_projector_NOT_BUILT)
-endif()

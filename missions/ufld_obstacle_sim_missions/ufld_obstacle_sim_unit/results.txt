@@ -1,1 +1,1 @@
-form=ufld_obstacle_sim_unit  mmod=fixed_field_publish_pass  grade=pass  eval=true  known=pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a  given=pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a  tracked=$[TRACKED_FEATURE_ALPHA]  mhash=[DUAL-DOSE]
+form=ufld_obstacle_sim_unit  mmod=fixed_field_publish_pass  grade=pass  eval=true  known=pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a  given=pts={10,-10:14,-10:14,-6:10,-6},label=ufos_a  min_rng=8  obstacle_view=label=ufos_a  view_count=2  mhash=[WILD-DALE]

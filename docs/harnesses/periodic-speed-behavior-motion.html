@@ -15,13 +15,14 @@
     </a>
     <div class="header-actions">
       <nav>
+        <a href="../quick-start.html">Quick Start</a>
         <a href="../index.html#families">Harnesses</a>
         <a href="../ctest-coverage.html">CTest Coverage</a>
         <a href="../technical.html">Technical</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
-        <span class="theme-switch-track" aria-hidden="true"></span>
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
       </label>
     </div>
   </header>
@@ -106,7 +107,7 @@
 
         <article class="case-row">
           <code>busy_to_lazy_pass</code>
-          <p>Starts busy and samples after the initial busy window returns to lazy. Requires pending-active evidence without depending on vehicle deceleration dynamics.</p>
+          <p>Starts busy with reset_upon_running=false and samples after the initial busy window returns to lazy. Requires pending-active evidence without depending on vehicle deceleration dynamics.</p>
         </article>
 
 
@@ -148,13 +149,13 @@
 
         <article class="case-row">
           <code>initially_busy_pass</code>
-          <p>Starts the behavior in the busy state and requires immediate speed evidence while the busy counter remains at zero.</p>
+          <p>Sets initially_busy=true with reset_upon_running=false, then requires immediate speed evidence while the busy counter remains at zero. The separate reset_on_reactivation_pass case owns the default reset policy.</p>
         </article>
 
 
         <article class="case-row">
           <code>zero_speed_pass</code>
-          <p>Starts busy with period_speed=0, proving zero is accepted and the vehicle remains effectively stopped while the behavior is active.</p>
+          <p>Starts busy with reset_upon_running=false and period_speed=0, proving zero is accepted and the vehicle remains effectively stopped while the behavior is active.</p>
         </article>
 
 

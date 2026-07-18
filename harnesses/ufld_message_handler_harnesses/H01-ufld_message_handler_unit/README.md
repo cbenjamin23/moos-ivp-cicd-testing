@@ -2,8 +2,9 @@
 
 This harness tests `uFldMessageHandler` as an app-level message-routing
 contract. Cases post controlled `NODE_MESSAGE` strings and check forwarded
-payloads, rejection behavior, summary counters, and configured flags in the
-mission `.alog`.
+payloads, rejection behavior, summary counters, and configured flags. Each
+case runs in an isolated copy of the shared uField app stem, and
+`pMissionEval` owns the substantive verdict from live MOOS variables.
 
 ## Current Matrix
 

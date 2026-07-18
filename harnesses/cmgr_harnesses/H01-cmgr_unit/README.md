@@ -114,41 +114,52 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ```bash
 ./zlaunch.sh
+./zlaunch.sh --log=full
 ./zlaunch.sh --jobs=4 --port_base=20000 10
 ./zlaunch.sh --case=detect_baseline_pass 10
+./zlaunch.sh --log=full --case=detect_baseline_pass 10
 ./zlaunch.sh --case=count_two_pass 10
 ./zlaunch.sh --just_make 10
 ./zlaunch.sh --max_time=65 10
 ```
 
-Wave mode notes:
+Execution notes:
 
-- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
-- each live case in a wave gets its own temp mission directory and unique port
-  block
-- the harness uses one `ktm` barrier between waves, not after every case
-- this mode is intended for CI wall-clock reduction, not for interactive use
-  alongside other MOOS missions
+- every selected case, including single-case and `--jobs=1` runs, uses an
+  isolated mission copy and a unique port block
+- logging defaults to `minimal` for every selected case; `--log=full` restores
+  the stem's previous logger configuration for the whole selection
+- `--jobs=<N>` uses rolling scheduling: the next pending case starts whenever
+  any active case finishes
+- every case writes its own log and intermediate result row beneath a unique
+  harness-owned invocation root
+- final rows are aggregated in the matrix order, not completion order
+- `--keep_workdirs` preserves only the current invocation root for inspection
+- `--gui` requires one explicit `--case`; full matrices remain headless
+- cleanup is scoped to that invocation root; the harness does not use a
+  machine-wide `ktm`, `pkill`, or `killall`
 
 ## What `./zlaunch.sh` Does Here
 
-When run from this harness directory, `./zlaunch.sh` does not call the stem
-mission's own `zlaunch.sh`. Instead it owns the full run:
+When run from this harness directory, `./zlaunch.sh` owns case selection,
+isolation, scheduling, and aggregation while the copied stem owns mission
+launch and grading:
 
 1. Choose one case or the full default case list.
-2. Run the stem mission `clean.sh` and `ktm` so the next case starts clean.
-3. Apply the selected `nspatch` overlays to `missions/cmgr_missions/cmgr_unit`.
-4. Call shared `xlaunch.sh`, which in turn calls the stem mission `launch.sh`.
-5. Read the mission-local `results.txt`.
-6. Compare `actual` against `expected`.
-7. Append one summary line to the harness `results.txt`.
-8. On harness exit, run one final `clean.sh` and `ktm`.
+2. Copy the stem mission into a per-case directory and run its local
+   `clean.sh`.
+3. Apply the optional full-logging restoration first, followed by the selected
+   case overlays, only inside that copy.
+4. Assign explicit MOOSDB and pShare ports from the case's 30-port block.
+5. Call the copied stem's `zlaunch.sh`.
+6. Read the single mission-owned `pMissionEval` row from its `results.txt`.
+7. Prepend `case=<name>` and retain the mission's `grade=` and evidence fields.
+8. After every selected case finishes, write the normalized rows to the
+   harness `results.txt` in selected-case order.
 
-That means the harness owns patching, cleanup, and result comparison.
-
-In wave mode, those same steps happen inside per-case temporary mission copies.
-The shared stem directory remains the source for patches and the default serial
-execution path.
+Runner failures use `grade=fail reason=<runner_reason>`. Ordinary case verdicts
+come directly from `pMissionEval`; the harness no longer compares a redundant
+shell `expected=pass` value with an extracted `actual` value.
 
 ## Results Lines
 
@@ -252,18 +263,14 @@ Important note about the current matrix:
 - in those cases, `grade=pass` means the mission correctly confirmed that a
   contact should stay unseen or should stay out of the alerted set
 
-Why both `actual` and `grade` appear in harness output:
-
-- `grade` is the mission's own result, written by `pMissionEval`
-- `actual` is the harness's extracted view of that result, used for comparison
-  against `expected`
-- today `actual` is usually the same value as `grade`
-- they are kept separate because they come from different layers:
-  mission result versus harness observation of that result
+The normalized harness row contains one authoritative `grade` field. The
+legacy `actual` and `expected` shell fields were redundant because every case
+in this matrix already makes the intended outcome, including non-detection,
+produce mission-owned `grade=pass`.
 
 ## Wall-Clock Efficiency
 
-Validated on March 20, 2026:
+Legacy wave implementation, validated on March 20, 2026:
 
 - full 33-case matrix passed at warp `10`
 - serial wall clock: `239.45` seconds
@@ -274,3 +281,39 @@ Validated on March 20, 2026:
 The suite exits on `MISSION_EVALUATED`, so fixed launch and teardown work is a
 larger wall-clock cost than the case logic itself. Lowering `--max_time`
 further is not likely to save much unless cases are timing out.
+
+Migrated rolling implementation, validated on July 13, 2026:
+
+- unified isolated `--jobs=1`: 33/33 passed in `257.51` seconds
+- three matching `--jobs=2 --port_base=20000` matrices: 99/99 rows passed
+- rolling wall times: `132.84`, `136.17`, and `135.12` seconds
+- rolling mean: `134.71` seconds; median: `135.12` seconds
+- the matching legacy three-run mean was `146.20` seconds
+- the migrated mean was `11.49` seconds, or about `7.9%`, faster
+
+The retained rolling evidence was inspected for generated ports, sidecars, and
+logs, then removed so generated mission trees do not inflate source review. An
+intentional warp-1/one-second timeout matrix also confirmed that all 33
+missing-result failures are reported before the launcher exits nonzero.
+
+Skill 1.4.2 alignment, validated on July 14, 2026:
+
+- the stem's Apple Bash 3.2 paths safely handle empty GUI/forwarding arrays and
+  report zero or duplicate mission rows without an unbound-variable error
+- runner-owned launch failures retain a valid mission row as renamed
+  `mission_*` provenance instead of discarding it
+- `detect_baseline_pass` passed five consecutive focused repetitions, and
+  `detect_strict_absent_pass` again passed with `seen=false`
+- the isolated serial matrix passed 33/33 in `282.27` seconds
+- three clean rolling matrices passed 99/99 in `154`, `140`, and `153.88`
+  seconds; their mean was `149.29` seconds
+- one apparent `570`-second sample included a documented `429`-second macOS
+  clamshell sleep and is excluded from timing statistics
+- a diagnostic run using the helper's supported one-second INT/TERM grace
+  overrides passed 33/33 in `134.38` seconds, essentially matching the earlier
+  `134.71`-second mean
+
+The refreshed helper's canonical three-second grace defaults therefore account
+for the current timing increase. They are retained unchanged here; the cost is
+cleanup patience rather than slower mission evaluation, copy preparation, or
+scheduler refill.

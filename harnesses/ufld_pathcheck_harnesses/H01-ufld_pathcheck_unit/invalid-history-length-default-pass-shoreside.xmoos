@@ -1,0 +1,36 @@
+ProcessConfig = uFldPathCheck
+{
+  AppTick = 4
+  CommsTick = 4
+  history_length = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldPathCheck
+  event = var=EXPECT_ODOM, val="vname=alpha,total_dist=25.0,trip_dist=25.0", time=0.1
+  event = var=EXPECT_SPEED, val="vname=alpha,avg_spd=10.00", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=101,X=5,Y=0,LAT=43.825300,LON=-70.330338,SPD=5,HDG=90", time=1.5
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=102,X=15,Y=0,LAT=43.825300,LON=-70.330214,SPD=10,HDG=90", time=2.5
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=103,X=30,Y=0,LAT=43.825300,LON=-70.330027,SPD=15,HDG=90", time=3.5
+  event = var=TEST_EVAL_READY, val=true, time=7.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = UPC_ODOMETRY_REPORT = $ (EXPECT_ODOM)
+  pass_condition = UPC_SPEED_REPORT = $ (EXPECT_SPEED)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = odom=$[UPC_ODOMETRY_REPORT]
+  report_column = speed=$[UPC_SPEED_REPORT]
+  report_file = results.txt
+}

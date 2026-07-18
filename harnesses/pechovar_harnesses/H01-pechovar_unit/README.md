@@ -5,8 +5,17 @@ behavior against a deterministic single-community MOOSDB mission.
 
 The harness copies the mission stem per case, assigns isolated port ranges,
 writes case-specific `pEchoVar`, `uTimerScript`, and `pMissionEval` blocks, and
-then grades the mission result plus targeted alog evidence for suppression and
-latest-only cases.
+uses rolling `--jobs` scheduling. Ordinary scalar and string echoes are graded
+directly by pMissionEval. Targeted `.alog` checks remain only where current
+state cannot express the contract: exact serialized EFlipper payloads, absence
+of a publication, and exact publication counts. Those checks stop at the first
+`MISSION_EVALUATED=true` timestamp, so shutdown activity is outside the test
+window.
+
+The evaluation-ready event occurs at mission time 2.0. The previous 1.5 value
+occasionally allowed pMissionEval to grade immediately before pEchoVar
+published a value; no source event, expected value, mapping, or case assertion
+changed.
 
 ```sh
 ./zlaunch.sh --jobs=4 --port_base=17600 10

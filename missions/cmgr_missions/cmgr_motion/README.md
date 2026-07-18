@@ -49,12 +49,25 @@ Implementation notes:
 
 Current moving harness summary:
 
-- harness size: `9` cases
-- latest full run on March 20, 2026: `9/9` passing at warp `10`
-- latest wall clock for the full harness: about `97` seconds
+- harness size: `15` cases
+- latest definitive serial run on July 14, 2026: `15/15` passing at warp `10`
+- latest three rolling `--jobs=2` runs: `45/45` passing with a 90.33-second
+  mean wall time
 
 Entry points:
 
 - `./launch.sh` for interactive runs
+- `./launch.sh --log=full` for the previous diagnostic logger configuration
 - `./launch.sh --just_make --nogui 10` for target generation
 - `./zlaunch.sh` for automated headless runs through shared `xlaunch.sh`
+- `./zlaunch.sh --log=full` for an automated run with full logging
+
+Logging defaults to `minimal`, which does not launch `pLogger`. Both launchers
+accept only `--log=minimal|full`; full mode uses the stem-local restoration
+patches, and a later minimal launch removes stale logging sidecars.
+
+The thin `zlaunch.sh` accepts and forwards `--mmod`, `--max_time`,
+`--shore_mport`, `--veh_mport`, `--shore_pshare`, and `--veh_pshare`. It does
+not grade the mission: `pMissionEval` writes the single `grade=pass|fail` row,
+and the wrapper only validates that row and performs canonical root-scoped
+cleanup.

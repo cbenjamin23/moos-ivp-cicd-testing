@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MOOS_IVP_REF="${1:-${MOOS_IVP_REF:-main}}"
-MOOS_IVP_REPO="${MOOS_IVP_REPO:-https://github.com/moos-ivp/moos-ivp.git}"
+MOOS_IVP_SOURCE="${MOOS_IVP_SOURCE:-}"
 TARGET_KEY="${TARGET_KEY:-local}"
 TARGET_COMPILER="${TARGET_COMPILER:-gcc}"
 BUILD_PROFILE="${BUILD_PROFILE:-full}"
@@ -136,58 +135,58 @@ validate_build_profile() {
   esac
 }
 
-checkout_moos_ivp() {
-  mkdir -p "$WORK_DIR"
-  rm -rf "$WORK_DIR/moos-ivp"
-  git clone "$MOOS_IVP_REPO" "$WORK_DIR/moos-ivp"
-  git -C "$WORK_DIR/moos-ivp" fetch --tags origin "$MOOS_IVP_REF" || true
+prepare_moos_ivp() {
+  local checkout_dir
+  local source_dir
 
-  if git -C "$WORK_DIR/moos-ivp" rev-parse --verify --quiet "$MOOS_IVP_REF^{commit}" >/dev/null; then
-    git -C "$WORK_DIR/moos-ivp" checkout --detach "$MOOS_IVP_REF"
-  elif git -C "$WORK_DIR/moos-ivp" rev-parse --verify --quiet "origin/$MOOS_IVP_REF^{commit}" >/dev/null; then
-    git -C "$WORK_DIR/moos-ivp" checkout --detach "origin/$MOOS_IVP_REF"
-  else
-    echo "Unable to resolve MOOS-IvP ref: $MOOS_IVP_REF" >&2
+  if [ -z "$WORK_DIR" ] || [ "$WORK_DIR" = "/" ]; then
+    echo "Refusing unsafe WORK_DIR: '$WORK_DIR'" >&2
     exit 1
   fi
-}
 
-write_summary() {
-  local sha="$1"
-  if [ -n "${GITHUB_OUTPUT:-}" ]; then
-    echo "moos_ivp_sha=$sha" >> "$GITHUB_OUTPUT"
+  mkdir -p "$WORK_DIR"
+  WORK_DIR="$(cd "$WORK_DIR" && pwd -P)"
+  checkout_dir="$WORK_DIR/moos-ivp"
+
+  if [ -z "$MOOS_IVP_SOURCE" ] || [ ! -d "$MOOS_IVP_SOURCE" ] || [ ! -f "$MOOS_IVP_SOURCE/build.sh" ]; then
+    echo "MOOS_IVP_SOURCE is not a MOOS-IvP checkout: $MOOS_IVP_SOURCE" >&2
+    exit 1
+  fi
+  source_dir="$(cd "$MOOS_IVP_SOURCE" && pwd -P)"
+  if [ "$source_dir" = "$checkout_dir" ]; then
+    echo "MOOS_IVP_SOURCE must not be the disposable build directory: $checkout_dir" >&2
+    exit 1
   fi
 
-  if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
-    {
-      echo "### MOOS-IvP Build"
-      echo ""
-      echo "- Target: \`$TARGET_KEY\`"
-      echo "- Compiler: \`$TARGET_COMPILER\`"
-      echo "- Build profile: \`$BUILD_PROFILE\`"
-      echo "- Repository: \`$MOOS_IVP_REPO\`"
-      echo "- Requested ref: \`$MOOS_IVP_REF\`"
-      echo "- Resolved SHA: \`$sha\`"
-    } >> "$GITHUB_STEP_SUMMARY"
-  fi
+  rm -rf -- "$checkout_dir"
+  echo "Copying local MOOS-IvP checkout: $source_dir"
+  mkdir -p "$checkout_dir"
+  cp -a "$source_dir/." "$checkout_dir/"
+  rm -rf -- \
+    "${checkout_dir:?}/build" \
+    "${checkout_dir:?}/bin" \
+    "${checkout_dir:?}/include" \
+    "${checkout_dir:?}/lib"
 }
 
 main() {
   echo "Target: $TARGET_KEY"
   echo "Compiler: $TARGET_COMPILER"
   echo "Build profile: $BUILD_PROFILE"
-  echo "MOOS-IvP repository: $MOOS_IVP_REPO"
-  echo "MOOS-IvP ref: $MOOS_IVP_REF"
+  echo "MOOS-IvP source: local checkout $MOOS_IVP_SOURCE"
   echo "Work directory: $WORK_DIR"
 
   validate_build_profile
   install_dependencies
   configure_compiler
-  checkout_moos_ivp
+  prepare_moos_ivp
 
   local sha
-  sha="$(git -C "$WORK_DIR/moos-ivp" rev-parse HEAD)"
+  sha="$(git -C "$WORK_DIR/moos-ivp" rev-parse HEAD 2>/dev/null || echo local-tree)"
   echo "Resolved MOOS-IvP SHA: $sha"
+  if [ -n "$(git -C "$WORK_DIR/moos-ivp" status --short 2>/dev/null || true)" ]; then
+    echo "Local MOOS-IvP edits: present (included in this build)"
+  fi
   echo "CC=$CC"
   echo "CXX=$CXX"
 
@@ -203,8 +202,6 @@ main() {
         ;;
     esac
   )
-
-  write_summary "$sha"
 }
 
 main "$@"

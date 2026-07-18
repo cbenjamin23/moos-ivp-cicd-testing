@@ -1,11 +1,17 @@
 # H01-utermcommand_unit
 
-Live `uTermCommand` harness for deterministic terminal-command posting.
+Live `uTermCommand` harness for deterministic terminal-command posting. Each
+case runs in an isolated mission copy, and `pMissionEval` owns the final grade.
+The launcher supports Bash 5.1 rolling scheduling and root-scoped teardown.
 
 ```sh
 ./zlaunch.sh --jobs=4 --port_base=16200 10
-./zlaunch.sh --case=numeric_command_pass --port_base=16200 10
+./zlaunch.sh --case=numeric_command_pass --port_base=16200 --keep_workdirs 10
 ```
+
+The harness defaults to `--log=minimal`, which omits `pLogger` because terminal
+stimulus and mission results are the grading inputs. Use `--log=full` for the
+complete matrix, or combine it with `--case=<name>` for one fully logged case.
 
 ## Cases
 

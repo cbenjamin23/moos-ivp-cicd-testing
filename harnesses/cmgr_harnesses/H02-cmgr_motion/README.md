@@ -79,13 +79,13 @@ and running a short `70m` eastbound corridor.
 Typical pass line:
 
 ```text
-case=baseline_crossing_pass  grade=pass  form=cmgr_motion_tests  mmod=baseline_crossing_pass  eval=true  arrived=true  detected=true  closest=intruder  range=34  encounters=0  near_misses=0  collisions=0  mhash=[COLD-DUKE]
+case=baseline_crossing_pass grade=pass form=cmgr_motion_tests mmod=baseline_crossing_pass eval=true arrived=true detected=true closest=intruder range=34 encounters=0 near_misses=0 collisions=0 mhash=[COLD-DUKE]
 ```
 
 Expected-negative pass line:
 
 ```text
-case=avoid_disabled_fail  grade=pass  form=cmgr_motion_tests  mmod=avoid_disabled_fail  eval=true  expected=encounter_without_avoid  arrived=true  detected=true  closest=intruder  range=80  encounters=1  near_misses=0  collisions=0  mhash=[DARK-HYMM]
+case=avoid_disabled_fail grade=pass form=cmgr_motion_tests mmod=avoid_disabled_fail eval=true expected=encounter_without_avoid arrived=true detected=true closest=intruder range=80 encounters=1 near_misses=0 collisions=0 mhash=[DARK-HYMM]
 ```
 
 Field anatomy:
@@ -112,30 +112,76 @@ Field anatomy:
 
 ```bash
 ./zlaunch.sh
-./zlaunch.sh --jobs=4 --port_base=21000 10
+./zlaunch.sh --log=full
+./zlaunch.sh --jobs=2 --port_base=21000 10
 ./zlaunch.sh --case=head_on_pass 10
 ./zlaunch.sh --just_make 10
 ```
 
-This harness defaults to headless runs and uses the shared `xlaunch.sh`
-wrapper, just like the other CI harnesses in this repo.
+The harness defaults to headless runs and requires Bash 5.1 or newer for its
+rolling scheduler. It safely re-executes Homebrew or Linuxbrew Bash when
+available on systems whose default Bash is older.
 
-Wave mode notes:
+Execution contract:
 
-- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
-- each live case in a wave gets its own temp mission directory and unique port
-  block
-- the harness uses scoped teardown between waves, not global process cleanup
-- this mode is intended for CI wall-clock reduction, not for interactive use
-  alongside other MOOS missions
+- logging defaults to `minimal` for every selected case; `--log=full` restores
+  the stem's previous logger configuration before case patches
+- every selected case, including serial and one-case runs, gets its own mission
+  copy beneath a harness-owned `.harness_runs` root
+- every case gets a unique 30-port block: MOOSDB at `case_base + 0..1` and
+  pShare at `case_base + 15..16`
+- `--jobs=<N>` is rolling: a pending case starts as soon as any active case
+  finishes
+- the copied stem `zlaunch.sh` receives `--mmod`, `--max_time`, and all four
+  explicit ports
+- during live runs, `pMissionEval` writes the authoritative grade; the harness
+  prepends `case=` and only synthesizes failures for runner or cleanup errors
+- cleanup uses the repository's canonical root-scoped teardown helper; no
+  global `ktm`, `pkill`, or process-group extension is used
 
-Latest validation:
+## Harness-skill migration validation
 
-- May 20, 2026
-- focused expected-negative cases:
-  `tight_alert_fail`, `avoid_disabled_fail`, `runtime_alert_disable_fail`,
-  `fast_intruder_fail`
-- grouped full matrix: `./zlaunch.sh --jobs=4 --port_base=25700 10`
-- serial full matrix: `./zlaunch.sh --port_base=26250 10`
-- compact port blocks: MOOSDB at `case_base + 0..1`, pShare at
-  `case_base + 10..11`
+Validation on July 14, 2026 preserved all 15 case tokens, all 24 patch files,
+the case-to-patch mapping, mission geometry, and every `pMissionEval`
+condition.
+
+Untouched legacy measurements at warp 10 were:
+
+- one serial matrix: 15/15 passing in 158.32 seconds
+- three `--jobs=2` batch-wave matrices: 45/45 passing in 93, 93, and 95
+  seconds, for a 93.67-second mean
+- `stale_reappear_pass`: 5/5 focused passes in 11-12 seconds after one full-run
+  sample reached the outer `uMayFinish` ceiling but still produced its valid
+  mission-owned passing row during shutdown
+
+Migrated validation included:
+
+- both skill static checkers, Bash syntax, old-Bash re-execution, invalid
+  argument and unknown-case probes
+- a retained 15-case `--just_make` run with 30 unique MOOSDB ports, 30 unique
+  pShare ports, 24 intended `.moosx` sidecars, and no source-stem leakage
+- standalone stem, nominal, expected-negative, and stale/reappear live passes
+- a definitive isolated serial matrix with 15/15 passing rows in 171 seconds
+- three rolling matrices with 45/45 passing rows in 90, 91, and 90 seconds,
+  for a 90.33-second mean, about 3.6 percent faster than the matched legacy
+  rolling mean
+- a separate final checkout-state rolling matrix after runner hardening with
+  15/15 passing rows in 89.58 seconds
+- explicit missing-result, duplicate-result, launch-error, preparation-error,
+  and teardown-error injection, including one result row for every selected
+  case, stopped refill after infrastructure failure, and preserved diagnostics
+  on teardown failure
+- zero leftover scoped processes and zero listeners on the assigned retained-run
+  ports
+
+The first migrated serial matrix produced one strict case failure when
+`fast_intruder_fail` reported two encounters instead of the required one. The
+unchanged case then passed 5/5 focused repetitions with exactly one encounter,
+and the definitive serial plus all three rolling matrices passed. This is
+recorded as a non-reproducing timing/trajectory outlier; the case assertion was
+not weakened.
+
+Every retained vehicle log contained the same advisory `BHV_WARNING` that the
+finite `waypt_transit` behavior had no remaining waypoints. The mission and
+behavior configuration were unchanged by this migration, so the warning is
+recorded for later case-quality work rather than added to grading or suppressed.

@@ -1,6 +1,8 @@
 # H01-ufld_collision_detect_unit
 
 Live `uFldCollisionDetect` harness for contact/contact CPA event reporting.
+Each case runs in an isolated copy of the shared uField app stem, and
+`pMissionEval` owns the substantive verdict from live MOOS variables.
 
 ```sh
 ./zlaunch.sh --jobs=4 --port_base=4800 10
@@ -28,4 +30,4 @@ Live `uFldCollisionDetect` harness for contact/contact CPA event reporting.
 - `collision_flag_numeric_cpa_pass` Verifies `$CPA` can be posted as a numeric collision flag value.
 - `encounter_rings_true_posts_pass` Verifies default encounter-ring rendering posts per-contact `VIEW_CIRCLE` mail.
 - `encounter_rings_false_absent_pass` Verifies `encounter_rings=false` suppresses per-contact `VIEW_CIRCLE` mail.
-- `range_normalization_params_pass` Verifies invalid range ordering is normalized and advertised in `COLLISION_DETECT_PARAMS`.
+- `range_normalization_params_pass` Verifies invalid range ordering publishes its parameter summary and makes a five-meter CPA rank as a collision under the normalized six-meter range.

@@ -1,0 +1,19 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pContactMgrV20 @ NewConsole = false
+  Run = uTimerScript   @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uSimMarineV22  @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+}

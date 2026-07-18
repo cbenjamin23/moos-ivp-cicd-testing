@@ -56,8 +56,12 @@ def derive_case_order(zlaunch_path: Path) -> list[str]:
 
         idx += 1
 
-    if "ALL_CASES" not in arrays:
-        raise ValueError(f"No ALL_CASES assignment found in {zlaunch_path}")
+    if "ALL_CASES" in arrays:
+        root_array = "ALL_CASES"
+    elif "CASES" in arrays:
+        root_array = "CASES"
+    else:
+        raise ValueError(f"No ALL_CASES or CASES assignment found in {zlaunch_path}")
 
     def expand_array(name: str, stack: tuple[str, ...] = ()) -> list[str]:
         if name in stack:
@@ -71,7 +75,7 @@ def derive_case_order(zlaunch_path: Path) -> list[str]:
                 expanded.append(token)
         return expanded
 
-    return [case for case in expand_array("ALL_CASES") if case]
+    return [case for case in expand_array(root_array) if case]
 
 
 def derive_case_count(zlaunch_path: Path) -> int:

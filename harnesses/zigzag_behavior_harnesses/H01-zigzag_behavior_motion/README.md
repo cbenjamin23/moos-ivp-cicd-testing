@@ -123,3 +123,6 @@ and expected malformed-configuration failures.
 `BHV_ZigZag` stores its original speed only on some configuration paths. The
 `speed_on_active_pass` case is therefore the one that grades that macro
 directly.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

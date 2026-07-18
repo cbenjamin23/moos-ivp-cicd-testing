@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
 #  Harness: H01-pmissioneval_unit
@@ -6,8 +6,7 @@
 #   LastEd: May 2026
 #------------------------------------------------------------
 
-PORT_BASE=${PORT_BASE:-7100}
-RUN_ROOT_PREFIX=pmissioneval
+PORT_BASE=${PORT_BASE:-9000}
 
 ALL_CASES=(
     eval_baseline_pass

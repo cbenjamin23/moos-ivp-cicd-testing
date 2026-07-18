@@ -24,7 +24,21 @@ ProcessConfig = ANTLER
   Run = pMissionHash  @ NewConsole = false
 }
 
-#include plugs.moos <pLogger>
+//----------------------------------------------------
+// Minimal pLogger grading evidence
+
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = LOG_$(MMOD)
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = NODE_REPORT_LOCAL @ 0 nosync
+}
 
 //----------------------------------------------------
 // pAutoPoke Config Block

@@ -17,5 +17,5 @@ Run a single mission:
 Run through the mission automation wrapper:
 
 ```sh
-./zlaunch.sh --max_time=30 --nogui 10
+./zlaunch.sh --max_time=180 --nogui 10
 ```

@@ -10,9 +10,9 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1529` under configured targets
-- Mission launch/config files: `425` under `missions/`
-- C++ test sources: `214`
+- Harness patch/config files: `1733` under configured targets
+- Mission launch/config files: `449` under `missions/`
+- C++ test sources: `215`
 
 ## Repo Layers
 
@@ -43,7 +43,8 @@ repo files should be opened next?
 - Docs page edits: edit `docs/tools/build_pages.py`; treat
   `docs/harnesses/<slug>.html` as generated output.
 - C++ work: CTest family in `scripts/ci_cpp_test_targets.py` ->
-  `tests/cpp/<family>` -> focused `ctest -L <family>` run.
+  matching labels under `tests/cpp/` -> focused
+  `./tests/cpp/ctests.sh --<family>` run.
 
 ## Detailed Lookup
 
@@ -84,7 +85,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `cmgr_h01` | `cmgr` | `harnesses/cmgr_harnesses/H01-cmgr_unit/zlaunch.sh` | `missions/cmgr_missions/cmgr_unit` | 33 | `pSpoofNode`, `pContactMgrV20` | `cmgr-unit` |
 | `cmgr_h02` | `cmgr` | `harnesses/cmgr_harnesses/H02-cmgr_motion/zlaunch.sh` | `missions/cmgr_missions/cmgr_motion` | 15 | `pSpoofNode`, `uFldCollisionDetect`, `pContactMgrV20` | `cmgr-motion` |
 | `obmgr_h01` | `obmgr` | `harnesses/obmgr_harnesses/H01-obmgr_unit/zlaunch.sh` | `missions/obmgr_missions/obmgr_unit` | 30 | `pObstacleMgr` | `obmgr-unit` |
-| `obmgr_h02` | `obmgr` | `harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh` | `missions/obmgr_missions/obmgr_motion` | 10 | `uFldCollObDetect`, `pObstacleMgr` | `obmgr-motion` |
+| `obmgr_h02` | `obmgr` | `harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh` | `missions/obmgr_missions/obmgr_motion` | 10 | `pObstacleMgr`, `uFldCollObDetect` | `obmgr-motion` |
 | `pid_h01` | `pid` | `harnesses/pid_harnesses/H01-pid_unit/zlaunch.sh` | `missions/pid_missions/pid_unit` | 34 | - | `pid-unit` |
 | `pid_h02` | `pid` | `harnesses/pid_harnesses/H02-pid_motion/zlaunch.sh` | `missions/pid_missions/pid_motion` | 13 | - | `pid-motion` |
 | `usim_marine_h01` | `usim_marine` | `harnesses/usim_marine_harnesses/H01-usim_marine_motion/zlaunch.sh` | `missions/usim_marine_missions/usim_marine_motion` | 36 | - | `usim-marine-motion` |
@@ -128,26 +129,26 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `pmissionhash_h01` | `pmissionhash` | `harnesses/mission_utility_harnesses/H02-pmissionhash_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 4 | - | `pmissionhash-unit` |
 | `umayfinish_h01` | `umayfinish` | `harnesses/mission_utility_harnesses/H03-umayfinish_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 4 | - | `umayfinish-unit` |
 | `loiter_h01` | `loiter_behavior` | `harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion/zlaunch.sh` | `missions/loiter_behavior_missions/loiter_behavior_motion` | 34 | - | `loiter-behavior-motion` |
-| `obstacle_behavior_h01` | `obstacle_behavior` | `harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/zlaunch.sh` | `missions/obstacle_behavior_missions/obstacle_behavior_motion` | 21 | `uFldCollObDetect`, `pObstacleMgr` | `obstacle-behavior-motion` |
+| `obstacle_behavior_h01` | `obstacle_behavior` | `harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/zlaunch.sh` | `missions/obstacle_behavior_missions/obstacle_behavior_motion` | 21 | `pObstacleMgr`, `uFldCollObDetect` | `obstacle-behavior-motion` |
 | `opregion_h01` | `opregion` | `harnesses/opregion_harnesses/H01-opregion_safety/zlaunch.sh` | `missions/opregion_missions/opregion_motion` | 25 | - | `opregion-safety` |
-| `p01_obstacle` | `performance` | `harnesses/performance_harnesses/P01-obstacle_gauntlet/zlaunch.sh` | `missions/performance_missions/P01-obstacle_gauntlet` | 3 | `uFldObstacleSim`, `uFldCollObDetect`, `pObstacleMgr` | `performance-obstacle-gauntlet` |
+| `p01_obstacle` | `performance` | `harnesses/performance_harnesses/P01-obstacle_gauntlet/zlaunch.sh` | `missions/performance_missions/P01-obstacle_gauntlet` | 3 | `uFldObstacleSim`, `pObstacleMgr`, `uFldCollObDetect` | `performance-obstacle-gauntlet` |
 | `shadow_h01` | `shadow_behavior` | `harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion/zlaunch.sh` | `missions/shadow_behavior_missions/shadow_behavior_motion` | 35 | `pContactMgrV20` | `shadow-behavior-motion` |
 | `stationkeep_h01` | `stationkeep_behavior` | `harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion/zlaunch.sh` | `missions/stationkeep_behavior_missions/stationkeep_behavior_motion` | 34 | - | `stationkeep-behavior-motion` |
 | `trail_h01` | `trail_behavior` | `harnesses/trail_behavior_harnesses/H01-trail_behavior_motion/zlaunch.sh` | `missions/trail_behavior_missions/trail_behavior_motion` | 42 | `pContactMgrV20` | `trail-behavior-motion` |
 | `waypoint_h01` | `waypoint_behavior` | `harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion/zlaunch.sh` | `missions/waypoint_behavior_missions/waypoint_behavior_motion` | 43 | - | `waypoint-behavior-motion` |
 | `p02_colregs` | `colregs`, `performance` | `harnesses/performance_harnesses/P02-colregs_joust/zlaunch.sh` | `missions/performance_missions/P02-colregs_joust` | 3 | `iM300`, `iM300Health`, `uFldCollisionDetect`, `pContactMgrV20` | `performance-colregs-joust` |
 | `p03_colregs` | `colregs`, `performance` | `harnesses/performance_harnesses/P03-colregs_traffic_ring/zlaunch.sh` | `missions/performance_missions/P03-colregs_traffic_ring` | 4 | `pTrafficManager`, `iM300`, `iM300Health`, `uFldCollisionDetect` | `performance-traffic-ring` |
-| `ufld_pathcheck_h01` | `ufld_pathcheck` | `harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 17 | - | `ufld-pathcheck-unit` |
-| `ufld_message_handler_h01` | `ufld_message_handler` | `harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 26 | - | `ufld-message-handler-unit` |
-| `ufld_contact_range_sensor_h01` | `ufld_contact_range_sensor` | `harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 34 | - | `ufld-contact-range-sensor-unit` |
-| `ufld_beacon_range_sensor_h01` | `ufld_beacon_range_sensor` | `harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | - | `ufld-beacon-range-sensor-unit` |
-| `ufld_collision_detect_h01` | `ufld_collision_detect` | `harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | - | `ufld-collision-detect-unit` |
-| `ufld_collob_detect_h01` | `ufld_collob_detect` | `harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 14 | - | `ufld-collob-detect-unit` |
-| `ufld_scope_h01` | `ufld_scope` | `harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 8 | - | `ufld-scope-unit` |
+| `ufld_pathcheck_h01` | `ufld_pathcheck` | `harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 17 | `uFldPathCheck`, `pMissionEvalAlpha` | `ufld-pathcheck-unit` |
+| `ufld_message_handler_h01` | `ufld_message_handler` | `harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 26 | `uFldMessageHandler` | `ufld-message-handler-unit` |
+| `ufld_contact_range_sensor_h01` | `ufld_contact_range_sensor` | `harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 34 | `uFldContactRangeSensor` | `ufld-contact-range-sensor-unit` |
+| `ufld_beacon_range_sensor_h01` | `ufld_beacon_range_sensor` | `harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `uFldBeaconRangeSensor`, `pMissionEvalAlpha` | `ufld-beacon-range-sensor-unit` |
+| `ufld_collision_detect_h01` | `ufld_collision_detect` | `harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `pMissionEvalAlpha`, `uFldCollisionDetect` | `ufld-collision-detect-unit` |
+| `ufld_collob_detect_h01` | `ufld_collob_detect` | `harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 14 | `uFldCollObDetect` | `ufld-collob-detect-unit` |
+| `ufld_scope_h01` | `ufld_scope` | `harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 8 | `uFldScope` | `ufld-scope-unit` |
 | `ufield_comms_h01` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H01-ufield_comms_unit/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 35 | - | `ufield-comms-unit` |
-| `ufield_comms_h02` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 12 | - | `ufield-broker-bridge` |
+| `ufield_comms_h02` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 12 | `pMediator` | `ufield-broker-bridge` |
 | `ufield_comms_h03` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H03-ufield_route_resilience/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 25 | - | `ufield-route-resilience` |
-| `ufld_obstacle_sim_h01` | `ufld_obstacle_sim` | `harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/zlaunch.sh` | `missions/ufld_obstacle_sim_missions/ufld_obstacle_sim_unit` | 49 | `uFldObstacleSim` | `ufld-obstacle-sim-unit` |
+| `ufld_obstacle_sim_h01` | `ufld_obstacle_sim` | `harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/zlaunch.sh` | `missions/ufld_obstacle_sim_missions/ufld_obstacle_sim_unit` | 49 | `pEchoVar`, `uFldObstacleSim` | `ufld-obstacle-sim-unit` |
 
 ## Shared Mission Stems
 
@@ -171,14 +172,21 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `iM300Health`: `p02_colregs`, `p03_colregs`
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
-- `pEchoVar`: `pechovar_h01`
+- `pEchoVar`: `pechovar_h01`, `ufld_obstacle_sim_h01`
+- `pMediator`: `ufield_comms_h02`
+- `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`
 - `pObstacleMgr`: `obmgr_h01`, `obmgr_h02`, `obstacle_behavior_h01`, `p01_obstacle`
 - `pSearchGrid`: `psearchgrid_h01`
 - `pSpoofNode`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `pspoofnode_h01`
 - `pTrafficManager`: `p03_colregs`
-- `uFldCollObDetect`: `obmgr_h02`, `obstacle_behavior_h01`, `p01_obstacle`
-- `uFldCollisionDetect`: `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `cutrange_h01`, `p02_colregs`, `p03_colregs`
+- `uFldBeaconRangeSensor`: `ufld_beacon_range_sensor_h01`
+- `uFldCollObDetect`: `obmgr_h02`, `obstacle_behavior_h01`, `p01_obstacle`, `ufld_collob_detect_h01`
+- `uFldCollisionDetect`: `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `ufld_collision_detect_h01`
+- `uFldContactRangeSensor`: `ufld_contact_range_sensor_h01`
+- `uFldMessageHandler`: `ufld_message_handler_h01`
 - `uFldObstacleSim`: `p01_obstacle`, `ufld_obstacle_sim_h01`
+- `uFldPathCheck`: `ufld_pathcheck_h01`
+- `uFldScope`: `ufld_scope_h01`
 - `uMemWatch`: `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`
 - `uQueryDB`: `uquerydb_h01`
 - `uTimerAlias`: `pantler_h01`

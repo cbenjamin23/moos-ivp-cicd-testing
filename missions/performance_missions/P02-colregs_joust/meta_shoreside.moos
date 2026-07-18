@@ -95,7 +95,7 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = colregs_joust
-  mission_mod  = $(MMOD:=baseline_colregs_pass)
+  mission_mod  = $(MMOD:=baseline_colregs)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]

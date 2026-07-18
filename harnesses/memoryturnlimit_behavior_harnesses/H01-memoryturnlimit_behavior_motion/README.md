@@ -48,3 +48,6 @@ The invalid and missing configuration cases are listed in `SOLO_CASES` in
 not produce the same normal motion telemetry as the pass cases, so grouped runs
 isolate them while still preserving caller-controlled `--jobs` and
 `--port_base` behavior for the rest of the matrix.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

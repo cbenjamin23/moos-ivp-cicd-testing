@@ -51,5 +51,12 @@ Implementation notes:
 Entry points:
 
 - `./launch.sh` for interactive runs
+- `./launch.sh --log=full` for the previous diagnostic logger configuration
 - `./launch.sh --just_make --nogui 10` for target generation
-- `./zlaunch.sh` for automated headless runs through shared `xlaunch.sh`
+- `./zlaunch.sh` for one automated headless run through shared `xlaunch.sh`;
+  it accepts explicit shoreside/vehicle MOOSDB and pShare ports, verifies that
+  `pMissionEval` wrote a `grade=`, and performs root-scoped teardown
+
+Logging defaults to `minimal`, which does not launch `pLogger`. Both launchers
+accept only `--log=minimal|full`; full mode restores the previous logger
+configuration from the stem-local patches.

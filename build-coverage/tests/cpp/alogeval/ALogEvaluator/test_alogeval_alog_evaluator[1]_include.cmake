@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogeval/ALogEvaluator/test_alogeval_alog_evaluator[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogeval/ALogEvaluator/test_alogeval_alog_evaluator[1]_tests.cmake")
-else()
-  add_test(test_alogeval_alog_evaluator_NOT_BUILT test_alogeval_alog_evaluator_NOT_BUILT)
-endif()

@@ -1,0 +1,30 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldMessageHandler
+  event = var=HANDLED_REJECT_SEEN, val=false, time=0.1
+  event = var=EXPECT_SUMMARY, val="total=2,valid=2,rejected=1", time=0.1
+  event = var=NODE_MESSAGE, val="src_node=alpha,dest_node=shoreside,var_name=HANDLED_RESULT,string_val=first_ok", time=1.0
+  event = var=NODE_MESSAGE, val="src_node=bravo,dest_node=charlie,var_name=HANDLED_REJECT,string_val=nope", time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @HANDLED_REJECT#HANDLED_REJECT_SEEN=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = HANDLED_RESULT = first_ok
+  pass_condition = HANDLED_REJECT_SEEN = false
+  pass_condition = UMH_SUMMARY_MSGS = $ (EXPECT_SUMMARY)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = result=$[HANDLED_RESULT]
+  report_column = reject_seen=$[HANDLED_REJECT_SEEN]
+  report_column = summary=$[UMH_SUMMARY_MSGS]
+  report_file = results.txt
+}

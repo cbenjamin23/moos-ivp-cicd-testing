@@ -1,0 +1,1 @@
+form=pshare_unit  mmod=pshare_direct_route_pass  grade=pass  eval=true  route_rx=alpha  renamed=$[ROUTE_RENAMED]  limited=$[LIMITED_RX]  wild=$[WILD_SRC]  pshare_in=127.0.0.1:34115  mhash=[NUMB-EROS]

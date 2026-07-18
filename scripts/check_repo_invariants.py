@@ -18,21 +18,7 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from scripts import check_cpp_tests, ci_cpp_test_targets, ci_harness_case_count, generate_context_graph, harness_targets  # noqa: E402
 
-WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "build_extend.yml"
 DOCS_BUILD_PATH = REPO_ROOT / "docs" / "tools" / "build_pages.py"
-EXPECTED_DISPATCH_MODES = {
-    "none",
-    "full",
-    "family_run",
-    "batch_family_run",
-    "specific_harnesses",
-}
-EXPECTED_CPP_TEST_MODES = {
-    "none",
-    "all",
-    "family_run",
-    "batch_family_run",
-}
 
 
 @dataclass(frozen=True)
@@ -54,72 +40,6 @@ def load_docs_harness_paths() -> set[str]:
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
     return {str(harness.path) for harness in module.HARNESSES}
-
-
-def workflow_choice_block(input_name: str, workflow_text: str) -> list[str]:
-    lines = workflow_text.splitlines()
-    input_indent = None
-    in_input = False
-    in_options = False
-    choices: list[str] = []
-
-    for line in lines:
-        stripped = line.strip()
-        indent = len(line) - len(line.lstrip(" "))
-
-        if stripped == f"{input_name}:":
-            input_indent = indent
-            in_input = True
-            in_options = False
-            continue
-
-        if not in_input:
-            continue
-
-        if input_indent is not None and indent <= input_indent and stripped.endswith(":"):
-            break
-
-        if stripped == "options:":
-            in_options = True
-            continue
-
-        if in_options:
-            if stripped.startswith("- "):
-                choices.append(stripped[2:].strip().strip('"'))
-            elif stripped and not stripped.startswith("#"):
-                in_options = False
-
-    return choices
-
-
-def workflow_default(input_name: str, workflow_text: str) -> str:
-    lines = workflow_text.splitlines()
-    input_indent = None
-    in_input = False
-
-    for line in lines:
-        stripped = line.strip()
-        indent = len(line) - len(line.lstrip(" "))
-
-        if stripped == f"{input_name}:":
-            input_indent = indent
-            in_input = True
-            continue
-
-        if not in_input:
-            continue
-
-        if input_indent is not None and indent <= input_indent and stripped.endswith(":"):
-            break
-
-        if stripped.startswith("default:"):
-            return stripped.split(":", 1)[1].strip().strip('"')
-
-    return ""
-
-
-def comma_list(raw: str) -> list[str]:
-    return [item.strip() for item in raw.split(",") if item.strip()]
 
 
 def check_harness_targets(targets: list[dict[str, object]]) -> list[CheckFailure]:
@@ -173,102 +93,6 @@ def check_docs_catalog(targets: list[dict[str, object]]) -> list[CheckFailure]:
     return failures
 
 
-def check_workflow_inputs(targets: list[dict[str, object]]) -> list[CheckFailure]:
-    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
-    target_keys = {str(target["key"]) for target in targets}
-    target_families = {
-        str(family)
-        for target in targets
-        for family in target["families"]
-    }
-    failures: list[CheckFailure] = []
-
-    dispatch_modes = set(workflow_choice_block("dispatch_mode", workflow_text))
-    if dispatch_modes != EXPECTED_DISPATCH_MODES:
-        failures.append(
-            CheckFailure(
-                "workflow dispatch modes",
-                "expected "
-                + ", ".join(sorted(EXPECTED_DISPATCH_MODES))
-                + "; found "
-                + ", ".join(sorted(dispatch_modes)),
-            )
-        )
-    runtime_condition = next(
-        (
-            line.strip()
-            for line in workflow_text.splitlines()
-            if line.strip().startswith("if: ${{")
-            and "inputs.dispatch_mode" in line
-            and "specific_harnesses" in line
-            and "batch_family_run" in line
-        ),
-        "",
-    )
-    if "inputs.dispatch_mode == 'full'" not in runtime_condition:
-        failures.append(
-            CheckFailure(
-                "workflow runtime dispatch condition",
-                "runtime-harnesses job must allow dispatch_mode full",
-            )
-        )
-
-    cpp_test_modes = set(workflow_choice_block("cpp_test_mode", workflow_text))
-    if cpp_test_modes != EXPECTED_CPP_TEST_MODES:
-        failures.append(
-            CheckFailure(
-                "workflow C++ test modes",
-                "expected "
-                + ", ".join(sorted(EXPECTED_CPP_TEST_MODES))
-                + "; found "
-                + ", ".join(sorted(cpp_test_modes)),
-            )
-        )
-
-    cpp_test_families = set(workflow_choice_block("cpp_test_family", workflow_text))
-    expected_cpp_test_families = set(ci_cpp_test_targets.CPP_FAMILIES)
-    if cpp_test_families != expected_cpp_test_families:
-        missing = sorted(expected_cpp_test_families - cpp_test_families)
-        extra = sorted(cpp_test_families - expected_cpp_test_families)
-        detail_parts = []
-        if missing:
-            detail_parts.append("missing: " + ", ".join(missing))
-        if extra:
-            detail_parts.append("extra: " + ", ".join(extra))
-        failures.append(CheckFailure("workflow C++ test family choices", "; ".join(detail_parts)))
-
-    workflow_families = set(workflow_choice_block("family", workflow_text))
-    if workflow_families != target_families:
-        missing = sorted(target_families - workflow_families)
-        extra = sorted(workflow_families - target_families)
-        detail_parts = []
-        if missing:
-            detail_parts.append("missing: " + ", ".join(missing))
-        if extra:
-            detail_parts.append("extra: " + ", ".join(extra))
-        failures.append(CheckFailure("workflow family choices", "; ".join(detail_parts)))
-
-    default_family = workflow_default("family", workflow_text)
-    if default_family and default_family not in target_families:
-        failures.append(CheckFailure("workflow family default", f"unknown family: {default_family}"))
-
-    default_targets = comma_list(workflow_default("targets", workflow_text))
-    unknown_targets = sorted(set(default_targets) - target_keys)
-    if unknown_targets:
-        failures.append(
-            CheckFailure("workflow targets default", "unknown target(s): " + ", ".join(unknown_targets))
-        )
-
-    default_families = comma_list(workflow_default("families", workflow_text))
-    unknown_families = sorted(set(default_families) - target_families)
-    if unknown_families:
-        failures.append(
-            CheckFailure("workflow families default", "unknown family/families: " + ", ".join(unknown_families))
-        )
-
-    return failures
-
-
 def check_docs_generated_clean() -> list[CheckFailure]:
     before = snapshot_tree(REPO_ROOT / "docs")
 
@@ -311,10 +135,23 @@ def check_context_graph_generated_clean(_targets: list[dict[str, object]]) -> li
 
 
 def check_cpp_test_tree(_targets: list[dict[str, object]]) -> list[CheckFailure]:
-    return [
+    failures = [
         CheckFailure(failure.label, failure.detail)
         for failure in check_cpp_tests.check_static()
     ]
+    for issue in ci_cpp_test_targets.family_name_issues(
+        list(ci_cpp_test_targets.CPP_FAMILIES)
+    ):
+        failures.append(CheckFailure("CTest family selector naming", issue))
+    declared_labels = check_cpp_tests.declared_labels()
+    for family in sorted(set(ci_cpp_test_targets.CPP_FAMILIES) - declared_labels):
+        failures.append(
+            CheckFailure(
+                "CTest family selector",
+                f"{family} is not declared by CMake LABELS or SUITE_LABELS",
+            )
+        )
+    return failures
 
 
 def snapshot_tree(root: Path) -> dict[str, str]:
@@ -353,7 +190,6 @@ def main() -> int:
     check_steps = [
         check_harness_targets,
         check_docs_catalog,
-        check_workflow_inputs,
         check_context_graph_generated_clean,
         check_cpp_test_tree,
     ]

@@ -3,14 +3,27 @@
 Live `uQueryDB` harness for validating query conditions and `.checkvars`
 output formats against a deterministic MOOSDB publisher mission.
 
-The harness copies the mission stem per case, assigns isolated port ranges, runs
-one bounded `uQueryDB` invocation, and grades the command return code, mission
-readiness grade, and expected `.checkvars` tokens.
+The harness copies the mission stem for every case, assigns isolated port
+blocks, runs one bounded `uQueryDB` invocation, and validates the command return
+code, mission readiness grade, and expected `.checkvars` tokens. Cases use a
+Bash 5.1 rolling scheduler when `--jobs` is greater than one.
+
+This is a documented CLI-result exception to ordinary mission-only grading.
+`pMissionEval` owns the deterministic publisher-readiness grade. The harness
+then treats the configured `uQueryDB` return code and `.checkvars` output as the
+subject contract, including cases where return code 1 is the expected result.
+No shell check replaces the mission readiness verdict.
 
 ```sh
-./zlaunch.sh --jobs=4 --port_base=15600 10
+./zlaunch.sh --jobs=2 --port_base=15600 10
 ./zlaunch.sh --case=cli_numeric_pass --port_base=15600 10
+./zlaunch.sh --keep_workdirs --jobs=2 --port_base=22000 10
 ```
+
+The harness defaults to `--log=minimal`, which omits `pLogger` because the
+mission result, command status, and `.checkvars` output are the grading inputs.
+Use `--log=full` for the complete matrix, or combine it with `--case=<name>`
+for one fully logged case.
 
 ## Cases
 

@@ -20,14 +20,15 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @OBM_ALERT_REQUEST#ALERT_REQUEST_SEEN=true
-  mailflag = @OBSTACLE_ALERT#OBSTACLE_ALERT_SEEN=true
+  mailflag = @OBSTACLE_ALERT#OBSTACLE_ALERT_COUNT=$[CNT]
   mailflag = @OBM_RESOLVED#RESOLVED_SEEN=true
   mailflag = @AVOID_RANGE_SEEN#RANGE_FLAG_SEEN=true
   mailflag = @AVOID_CPA_SEEN#CPA_FLAG_SEEN=true
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = ALERT_REQUEST_SEEN = true
-  pass_condition = OBSTACLE_ALERT_SEEN = true
+  pass_condition = OBSTACLE_ALERT_COUNT >= 2
+  pass_condition = OBSTACLE_SPAWNED = ob_two
   pass_condition = ARRIVED = true
   pass_condition = OB_TOTAL_COLLISIONS = 0
 
@@ -45,7 +46,8 @@ ProcessConfig = pMissionEval
   report_column = eval=$[TEST_EVAL_READY]
   report_column = obavoiding=$[OBAVOIDING]
   report_column = alert_req_seen=$[ALERT_REQUEST_SEEN]
-  report_column = obstacle_alert_seen=$[OBSTACLE_ALERT_SEEN]
+  report_column = obstacle_alert_count=$[OBSTACLE_ALERT_COUNT]
+  report_column = obstacle_spawned=$[OBSTACLE_SPAWNED]
   report_column = resolved_seen=$[RESOLVED_SEEN]
   report_column = range_flag_seen=$[RANGE_FLAG_SEEN]
   report_column = cpa_flag_seen=$[CPA_FLAG_SEEN]
@@ -55,4 +57,15 @@ ProcessConfig = pMissionEval
   report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
   report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
   report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = OBAVOIDING, OBM_ALERT_REQUEST, OBSTACLE_ALERT, OBSTACLE_SPAWNED
+  qbridge  = OBM_RESOLVED, AVOID_RANGE_SEEN, AVOID_CPA_SEEN
 }

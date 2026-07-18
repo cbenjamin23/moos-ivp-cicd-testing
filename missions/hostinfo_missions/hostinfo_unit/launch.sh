@@ -21,6 +21,10 @@ TIME_WARP=1
 VERBOSE=""
 JUST_MAKE=""
 LOG_CLEAN=""
+LOG_MODE="minimal"
+if [ "${LOG_MODE_PREPARED:-no}" = yes ] && [ -n "${LOG_MODE_PREPARED_VALUE:-}" ]; then
+    LOG_MODE="$LOG_MODE_PREPARED_VALUE"
+fi
 MOOS_PORT="11000"
 PSHARE_PORT="11010"
 MMOD=""
@@ -40,6 +44,7 @@ for ARGI; do
         echo "  --help, -h           Show this help message"
         echo "  --verbose, -v        Verbose, confirm launch"
         echo "  --just_make, -j      Only create targ files"
+        echo "  --log=<mode>       minimal (default) or full"
         echo "  --log_clean, -lc     Run clean.sh before launch"
         echo "  --mport=N            MOOSDB port"
         echo "  --pshare=N           pShare port"
@@ -57,6 +62,8 @@ for ARGI; do
         JUST_MAKE=$ARGI
     elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
         LOG_CLEAN=$ARGI
+        elif [ "${ARGI:0:6}" = "--log=" ]; then
+            LOG_MODE="${ARGI#--log=*}"
     elif [ "${ARGI:0:8}" = "--mport=" ]; then
         MOOS_PORT="${ARGI#--mport=*}"
     elif [ "${ARGI:0:9}" = "--pshare=" ]; then
@@ -80,6 +87,16 @@ for ARGI; do
         exit 1
     fi
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) echo "$ME: --log must be minimal or full" >&2; exit 2 ;;
+esac
+if [ "${LOG_MODE_PREPARED:-no}" != yes ]; then
+    ./prepare_logging_mode.sh "$LOG_MODE"
+fi
+export LOG_MODE_PREPARED=yes
+export LOG_MODE_PREPARED_VALUE="$LOG_MODE"
 
 #------------------------------------------------------------
 #  Part 4: Optionally clean previous generated/run artifacts.

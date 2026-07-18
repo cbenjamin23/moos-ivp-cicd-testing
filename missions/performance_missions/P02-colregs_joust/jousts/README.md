@@ -16,6 +16,6 @@ These checked-in layouts are the deterministic route seeds used by
   - three-vehicle longer-running joust
   - milder than the dense case so it can run for a longer evaluation window
 
-At launch time, `launch.sh` selects one of these files from `--mmod` and copies
+At launch time, `launch.sh` selects one of these files from `--scenario` and copies
 it into the mission root as `joust.txt`. The launch flow then seeds each
 vehicle's `BHV_LegRun` from that chosen file.

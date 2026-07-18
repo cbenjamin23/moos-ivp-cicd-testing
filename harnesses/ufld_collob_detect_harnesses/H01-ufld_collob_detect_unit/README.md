@@ -1,6 +1,8 @@
 # H01-ufld_collob_detect_unit
 
-Live `uFldCollObDetect` harness for vehicle/obstacle encounter reporting.
+Live `uFldCollObDetect` harness for vehicle/obstacle encounter reporting. Each
+case runs in an isolated copy of the shared uField app stem, and `pMissionEval`
+owns the substantive pass/fail verdict.
 
 ```sh
 ./zlaunch.sh --jobs=4 --port_base=4900 10

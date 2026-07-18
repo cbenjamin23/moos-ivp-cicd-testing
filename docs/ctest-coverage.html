@@ -15,13 +15,14 @@
     </a>
     <div class="header-actions">
       <nav>
+        <a href="quick-start.html">Quick Start</a>
         <a href="index.html#families">Harnesses</a>
         <a href="ctest-coverage.html">CTest Coverage</a>
         <a href="technical.html">Technical</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
-        <span class="theme-switch-track" aria-hidden="true"></span>
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
       </label>
     </div>
   </header>
@@ -45,17 +46,17 @@
       </div>
       <div class="stats-grid stats-grid--three">
         <article class="stat-card">
-          <strong>2796</strong>
+          <strong>2822</strong>
           <span>Test Cases</span>
           <p>Individual GoogleTest checks covering expected and edge-case behavior.</p>
         </article>
         <article class="stat-card">
-          <strong>195</strong>
+          <strong>196</strong>
           <span>CTest Targets</span>
           <p>Focused executables that group related component checks.</p>
         </article>
         <article class="stat-card">
-          <strong>71</strong>
+          <strong>72</strong>
           <span>Component Families</span>
           <p>Groups such as behaviors, geometry, utilities, viewers, and IvP tools.</p>
         </article>
@@ -615,6 +616,17 @@
               <td>1</td>
               <td>2</td>
               <td class="ctest-description">MOOS app generator source transformations, file planning, naming rules, and generated text checks. <span class="coverage-note">Coverage: 100.00% line direct-compiled.</span></td>
+            </tr>
+
+
+            <tr class="ctest-summary-row">
+              <th>
+                <span class="component-key"><code>moosgeodesy</code></span>
+                <span class="component-name">MOOS Geodesy</span>
+              </th>
+              <td>1</td>
+              <td>26</td>
+              <td class="ctest-description">WGS-84 datum initialization, UTM and local-grid projection, inverse conversion, zone and latitude-band boundaries, safe value semantics, and four disabled PROJ-migration contracts for seam continuity and input validation. <span class="coverage-note">Coverage: not measured.</span></td>
             </tr>
 
 

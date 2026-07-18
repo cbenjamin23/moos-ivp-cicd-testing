@@ -89,3 +89,6 @@ expected result for the case.
 ./launch.sh --just_make --nogui 10
 ./zlaunch.sh 10
 ```
+
+Logging is minimal by default. Add `--log=full` to either launcher to restore
+the stem's original shoreside and vehicle `pLogger` configuration.

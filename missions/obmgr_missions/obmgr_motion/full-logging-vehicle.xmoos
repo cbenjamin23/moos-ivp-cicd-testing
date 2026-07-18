@@ -1,0 +1,55 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+  Run = uSimMarineV22  @ NewConsole = false
+  Run = pObstacleMgr   @ NewConsole = false
+  Run = uTimerScript   @ NewConsole = false
+}
+
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = LOG_%(VNAME)
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+  Log = BHV_WARNING @ 0 nosync
+  Log = BHV_ERROR @ 0 nosync
+
+  LogAuxSrc = true
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = APPCAST
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = *ITER_GAP
+  WildCardOmitPattern = *ITER_LEN
+  WildCardOmitPattern = SIMULATION_MODE
+  WildCardOmitPattern = NAV_PITCH
+  WildCardOmitPattern = NAV_YAW
+  WildCardOmitPattern = NAV_Z
+  WildCardOmitPattern = TRUE_X
+  WildCardOmitPattern = TRUE_Y
+  WildCardOmitPattern = NAV_SPEED_OVER_GROUND
+  WildCardOmitPattern = NAV_HEADING_OVER_GROUND
+  WildCardOmitPattern = NAV_DEPTH
+  WildCardOmitPattern = NAV_LAT
+  WildCardOmitPattern = NAV_LONG
+  WildCardOmitPattern = DB_QOS
+}

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogeplot/EPlotEngine/test_alogeplot_eplot_engine[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogeplot/EPlotEngine/test_alogeplot_eplot_engine[1]_tests.cmake")
-else()
-  add_test(test_alogeplot_eplot_engine_NOT_BUILT test_alogeplot_eplot_engine_NOT_BUILT)
-endif()

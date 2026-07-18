@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ufldbeaconrangesensor/BeaconBuoy/test_ufldbeaconrangesensor_beacon_buoy[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ufldbeaconrangesensor/BeaconBuoy/test_ufldbeaconrangesensor_beacon_buoy[1]_tests.cmake")
-else()
-  add_test(test_ufldbeaconrangesensor_beacon_buoy_NOT_BUILT test_ufldbeaconrangesensor_beacon_buoy_NOT_BUILT)
-endif()

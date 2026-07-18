@@ -1,0 +1,60 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+  Run = MOOSDB @ NewConsole = false
+  Run = pRealm @ NewConsole = false
+  Run = pLogger @ NewConsole = false
+  Run = uFldCollObDetect @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false
+}
+
+ProcessConfig = uFldCollObDetect
+{
+  AppTick = 10
+  CommsTick = 10
+  collision_dist = 1
+  near_miss_dist = 5
+  encounter_dist = 15
+  encounter_flag = COD_ENCOUNTER=$VNAME:$ID:$DIST:$ENC_CNT
+  near_miss_flag = COD_NEAR=$VNAME:$ID:$DIST:$MISS_CNT
+  collision_flag = COD_COLLISION=$VNAME:$ID:$DIST:$COLL_CNT
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldCollObDetect
+  event = var=COD_ENCOUNTER_SEEN, val=false, time=0.1
+  event = var=COD_NEAR_SEEN, val=false, time=0.1
+  event = var=COD_COLLISION_SEEN, val=false, time=0.1
+  event = var=COD_MIN_SEEN, val=false, time=0.1
+  event = var=KNOWN_OBSTACLE, val="pts={0,0:10,0:5,5:10,10:0,10},label=bad", time=0.4
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.8
+  event = var=TEST_EVAL_READY, val=true, time=2.5
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @COD_ENCOUNTER#COD_ENCOUNTER_SEEN=true
+  mailflag = @COD_NEAR#COD_NEAR_SEEN=true
+  mailflag = @COD_COLLISION#COD_COLLISION_SEEN=true
+  mailflag = @OB_GLOBAL_MIN#COD_MIN_SEEN=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = COD_ENCOUNTER_SEEN = false
+  pass_condition = COD_NEAR_SEEN = false
+  pass_condition = COD_COLLISION_SEEN = false
+  pass_condition = COD_MIN_SEEN = false
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = encounter_seen=$[COD_ENCOUNTER_SEEN]
+  report_column = near_seen=$[COD_NEAR_SEEN]
+  report_column = collision_seen=$[COD_COLLISION_SEEN]
+  report_column = min_seen=$[COD_MIN_SEEN]
+  report_file = results.txt
+}

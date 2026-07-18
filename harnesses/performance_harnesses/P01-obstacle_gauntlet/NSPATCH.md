@@ -4,27 +4,24 @@ This harness uses `nspatch` more narrowly than the correctness suites.
 
 The mission stem in
 [`missions/performance_missions/P01-obstacle_gauntlet`](../../../missions/performance_missions/P01-obstacle_gauntlet)
-still owns the common loop-course environment and the obstacle-source choice
-through `--mmod`. The harness owns the one case whose evaluation semantics
-materially differ from the stem default.
+still owns the common loop-course environment and scenario construction through
+`--scenario`. The harness owns each case's explicit evaluation overlay.
 
 Current split:
 
-- stem mission default:
-  - one-loop fixed-field performance evaluation
-  - manual `--mmod` support for `baseline_field_pass`, `dense_field_pass`,
-    and `endurance_random_pass`
-- harness overlay:
-  - `endurance-random-pass-shoreside.xmoos`
-  - replaces `uTimerScript`, `pMissionEval`, and `uFldObstacleSim`
-  - turns the endurance case into a 10-cycle run with obstacle resets enabled
+- stem scenario selector:
+  - `baseline_field`, `dense_field`, or `endurance_random`
+  - selects fixed versus generated obstacle data and endurance launch behavior
+- harness overlays:
+  - one explicitly mapped shoreside patch per case
+  - fixed cases replace the `pMissionEval` block
+  - the endurance patch also replaces `uTimerScript` and `uFldObstacleSim`
 
 Why this hybrid model:
 
-- fixed-field cases differ mainly by obstacle data, so `mmod` is a reasonable
-  scenario selector there
-- endurance differs in mission semantics, not just geometry, so the harness
-  owns that change with `nspatch`
+- scenario construction includes files and launch-time behavior, so it remains
+  a human-facing mission argument rather than being forced into a MOOS patch
+- case-specific grading stays visible in the harness-owned patches
 
 The launchers in the mission stem are run with `nsplug -x`, so when the harness
 creates `meta_shoreside.moosx`, the generated targ file automatically uses the

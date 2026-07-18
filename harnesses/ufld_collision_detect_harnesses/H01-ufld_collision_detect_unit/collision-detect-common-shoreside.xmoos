@@ -1,0 +1,22 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+  Run = MOOSDB @ NewConsole = false
+  Run = pRealm @ NewConsole = false
+  Run = pLogger @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false
+  Run = uFldCollisionDetect @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+}
+
+ProcessConfig = uFldCollisionDetect
+{
+  AppTick = 10
+  CommsTick = 10
+  collision_range = 3
+  near_miss_range = 6
+  encounter_range = 20
+  post_closest_range = true
+  post_closest_range_ever = true
+  report_all_encounters = false
+}

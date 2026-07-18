@@ -50,6 +50,10 @@ class CppTestTargetSummaryTests(unittest.TestCase):
     def test_select_targets_for_mode_rejects_unknown_family(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown C\\+\\+ test family"):
             ci_cpp_test_targets.select_targets_for_mode("family_run", "missing", "")
+        with self.assertRaisesRegex(ValueError, "Unknown C\\+\\+ test family"):
+            ci_cpp_test_targets.select_targets_for_mode(
+                "family_run", "pMissionEval", ""
+            )
 
     def test_safe_filename_replaces_regex_characters(self) -> None:
         self.assertEqual(ci_cpp_test_targets.safe_filename("^behaviors$"), "behaviors")
@@ -86,6 +90,64 @@ class CppTestTargetSummaryTests(unittest.TestCase):
         )
 
         self.assertNotIn("-L", command)
+
+    def test_family_ctest_target_uses_an_exact_label_filter(self) -> None:
+        command = ci_cpp_test_targets.ctest_command(
+            Path("build"),
+            "behaviors-marine",
+            Path("reports/behaviors-marine.xml"),
+        )
+
+        label_index = command.index("-L")
+        self.assertEqual(command[label_index + 1], r"^(behaviors\-marine)$")
+
+    def test_exact_label_regex_escapes_every_family_as_literal_text(self) -> None:
+        self.assertEqual(
+            ci_cpp_test_targets.exact_label_regex(["foo.bar", "c++"]),
+            r"^(foo\.bar|c\+\+)$",
+        )
+
+    def test_public_behavior_families_match_cmake_labels(self) -> None:
+        self.assertIn("behaviors-marine", ci_cpp_test_targets.CPP_FAMILIES)
+        self.assertIn("behaviors-colregs", ci_cpp_test_targets.CPP_FAMILIES)
+        self.assertNotIn("behaviors_marine", ci_cpp_test_targets.CPP_FAMILIES)
+        self.assertNotIn("behaviors_colregs", ci_cpp_test_targets.CPP_FAMILIES)
+
+    def test_family_name_issues_rejects_case_only_build_target_collisions(self) -> None:
+        self.assertEqual(
+            ci_cpp_test_targets.family_name_issues(
+                ["pnodereporter", "pNodeReporter"]
+            ),
+            [
+                "public selectors must be lowercase and contain only letters, "
+                "numbers, _, or -: pNodeReporter",
+                "case-insensitive selector collision for "
+                "ctest-family-pnodereporter: pNodeReporter, pnodereporter"
+            ],
+        )
+
+    def test_family_name_issues_rejects_invalid_and_exact_duplicate_names(self) -> None:
+        self.assertEqual(
+            ci_cpp_test_targets.family_name_issues(
+                ["geometry", "bad/family", "geometry"]
+            ),
+            [
+                "public selectors must be lowercase and contain only letters, "
+                "numbers, _, or -: bad/family",
+                "duplicate selector: geometry",
+            ],
+        )
+
+    def test_current_public_family_names_are_unambiguous(self) -> None:
+        self.assertEqual(
+            ci_cpp_test_targets.family_name_issues(
+                list(ci_cpp_test_targets.CPP_FAMILIES)
+            ),
+            [],
+        )
+        self.assertTrue(
+            all(family == family.lower() for family in ci_cpp_test_targets.CPP_FAMILIES)
+        )
 
     def test_parse_junit_report_counts_failures_errors_and_skips(self) -> None:
         report = self.write_report(

@@ -34,7 +34,9 @@ Status:
   - `overtaken_port_standon_pass`
   - `overtaken_starboard_standon_pass`
 - current harness model: case-owned shoreside `nspatch` overlays
-- current wrapper support: serial or wave-batched execution with `--jobs=<n>`
+- current wrapper support: isolated serial execution or Bash 5.1 rolling
+  execution with `--jobs=<n>`, distinct two-vehicle port blocks, and
+  root-scoped teardown
 - long-term role: canonical classification suite for `BHV_AvdColregsV22`
 
 ## Cases
@@ -91,7 +93,7 @@ For example:
 
 Those numbers come directly from the upstream `BHV_AvdColregsV22` source
 mapping, documented in the shared
-[colregs_unit README](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/colregs_missions/colregs_unit/README.md).
+[colregs_unit README](../../../missions/colregs_missions/colregs_unit/README.md).
 
 Current assertions:
 - `COLREGS_AVOID_MODE_<CONTACT>`
@@ -138,14 +140,10 @@ Next planned case groups:
 - all-clear completion and broader non-COLREGS fallback families
 
 Current known gaps:
-- `crossing_starboard_giveway_bow_pass` remains available as a manual exploratory
-  case, but it is intentionally not part of the default H01 pass set because
-  repeated serial runs showed it can fall into `giveway:stern` or release to
-  `complete` depending on startup timing under the shared stem
-- `crossing_port_standon_far_unsure_bow_pass` remains available as a manual
-  exploratory case, but it is intentionally not part of the default H01 pass
-  set because repeated isolated runs can fall through to `cpa` instead of
-  holding a stable `standon:unsure_bow` classification under the shared stem
+- the shared mission retains developer calibration geometries for
+  `giveway:bow` and a far-range `standon:unsure_bow` transition, but H01 does
+  not expose them as harness cases because neither has a repeatable
+  classification contract
 - `giveway:bow_must` appears unreachable in the current upstream source path
 - `standon_ot` is covered by mode-string assertions because the current source
   does not assign a dedicated nonzero `COLREGS_AVOID_IX` to that mode family
@@ -163,3 +161,6 @@ Typical runs:
 ./zlaunch.sh --case=head_on_cpa_fallback_pass 10
 ./zlaunch.sh --case=overtaking_starboard_mirror_pass 10
 ```
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

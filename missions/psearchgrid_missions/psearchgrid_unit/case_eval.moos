@@ -9,15 +9,15 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  pass_condition = VIEW_GRID != __missing_VIEW_GRID
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = psearchgrid_unit
-  mission_mod  = $(MMOD:=node_local_delta_pass)
+  mission_mod  = $(MMOD:=initial_grid_publish_pass)
 
-  prereport_column = form=$[MISSION_FORM]
-  prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
+  report_column    = form=$[MISSION_FORM]
+  report_column    = mmod=$[MMOD]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt

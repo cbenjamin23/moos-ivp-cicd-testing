@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/PolygonGeneration/test_geometry_polygon_generation[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/PolygonGeneration/test_geometry_polygon_generation[1]_tests.cmake")
-else()
-  add_test(test_geometry_polygon_generation_NOT_BUILT test_geometry_polygon_generation_NOT_BUILT)
-endif()

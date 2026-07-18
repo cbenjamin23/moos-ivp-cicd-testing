@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/gen_moos_app/AppGenerator/test_gen_moos_app_app_generator[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/gen_moos_app/AppGenerator/test_gen_moos_app_app_generator[1]_tests.cmake")
-else()
-  add_test(test_gen_moos_app_app_generator_NOT_BUILT test_gen_moos_app_app_generator_NOT_BUILT)
-endif()

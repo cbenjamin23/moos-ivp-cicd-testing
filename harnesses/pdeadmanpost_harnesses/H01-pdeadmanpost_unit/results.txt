@@ -1,20 +1,20 @@
-case=active_start_once_posts_pass  grade=pass  form=pdeadmanpost_unit  mmod=active_start_once_posts_pass  eval=true  dead_once=true  mhash=[]
-case=active_start_false_no_initial_post_pass  grade=pass  form=pdeadmanpost_unit  mmod=active_start_false_no_initial_post_pass  eval=true  dead_no_start=$[DEAD_NO_START]  mhash=[]
-case=heartbeat_before_dead_suppresses_pass  grade=pass  form=pdeadmanpost_unit  mmod=heartbeat_before_dead_suppresses_pass  eval=true  dead_keepalive=$[DEAD_KEEPALIVE]  mhash=[]
-case=stop_heartbeat_posts_pass  grade=pass  form=pdeadmanpost_unit  mmod=stop_heartbeat_posts_pass  eval=true  dead_stop=true  mhash=[]
-case=active_false_after_first_heartbeat_posts_pass  grade=pass  form=pdeadmanpost_unit  mmod=active_false_after_first_heartbeat_posts_pass  eval=true  dead_after_first=true  mhash=[]
-case=numeric_deadflag_pass  grade=pass  form=pdeadmanpost_unit  mmod=numeric_deadflag_pass  eval=true  dead_num=7.5  mhash=[]
-case=string_deadflag_pass  grade=pass  form=pdeadmanpost_unit  mmod=string_deadflag_pass  eval=true  dead_str=halt  mhash=[]
-case=multiple_deadflags_pass  grade=pass  form=pdeadmanpost_unit  mmod=multiple_deadflags_pass  eval=true  dead_multi_a=true  dead_multi_b=alpha  mhash=[]
-case=once_policy_single_post_pass  grade=pass  form=pdeadmanpost_unit  mmod=once_policy_single_post_pass  eval=true  dead_once_single=true  mhash=[]  min_DEAD_ONCE_SINGLE=1  count_DEAD_ONCE_SINGLE=1  max_DEAD_ONCE_SINGLE=1  count_DEAD_ONCE_SINGLE=1
-case=repeat_policy_reposts_pass  grade=pass  form=pdeadmanpost_unit  mmod=repeat_policy_reposts_pass  eval=true  dead_repeat=true  mhash=[]  min_DEAD_REPEAT=2  count_DEAD_REPEAT=23
-case=reset_policy_reposts_after_heartbeat_pass  grade=pass  form=pdeadmanpost_unit  mmod=reset_policy_reposts_after_heartbeat_pass  eval=true  dead_reset=true  mhash=[]  min_DEAD_RESET=2  count_DEAD_RESET=2
-case=repeat_policy_inactive_reposts_pass  grade=pass  form=pdeadmanpost_unit  mmod=repeat_policy_inactive_reposts_pass  eval=true  dead_repeat_after_first=true  mhash=[]  min_DEAD_REPEAT_AFTER_FIRST=2  count_DEAD_REPEAT_AFTER_FIRST=10
-case=reset_policy_no_repost_without_heartbeat_pass  grade=pass  form=pdeadmanpost_unit  mmod=reset_policy_no_repost_without_heartbeat_pass  eval=true  dead_reset_single=true  mhash=[]  min_DEAD_RESET_SINGLE=1  count_DEAD_RESET_SINGLE=1  max_DEAD_RESET_SINGLE=1  count_DEAD_RESET_SINGLE=1
-case=active_start_keepalive_suppresses_pass  grade=pass  form=pdeadmanpost_unit  mmod=active_start_keepalive_suppresses_pass  eval=true  dead_active_keepalive=$[DEAD_ACTIVE_KEEPALIVE]  mhash=[]  max_DEAD_ACTIVE_KEEPALIVE=0  count_DEAD_ACTIVE_KEEPALIVE=0
-case=custom_heartbeat_var_pass  grade=pass  form=pdeadmanpost_unit  mmod=custom_heartbeat_var_pass  eval=true  dead_alt_heart=true  mhash=[]  min_DEAD_ALT_HEART=1  count_DEAD_ALT_HEART=1
-case=negative_deadflag_pass  grade=pass  form=pdeadmanpost_unit  mmod=negative_deadflag_pass  eval=true  dead_neg=-3.25  mhash=[]
-case=zero_max_noheart_posts_pass  grade=pass  form=pdeadmanpost_unit  mmod=zero_max_noheart_posts_pass  eval=true  dead_zero_max=true  mhash=[]  min_DEAD_ZERO_MAX=1  count_DEAD_ZERO_MAX=1
-case=false_deadflag_pass  grade=pass  form=pdeadmanpost_unit  mmod=false_deadflag_pass  eval=true  dead_false=false  mhash=[]  min_DEAD_FALSE=1  count_DEAD_FALSE=1
-case=invalid_post_policy_falls_back_once_pass  grade=pass  form=pdeadmanpost_unit  mmod=invalid_post_policy_falls_back_once_pass  eval=true  dead_invalid_policy=true  mhash=[]  min_DEAD_INVALID_POLICY=1  count_DEAD_INVALID_POLICY=1  max_DEAD_INVALID_POLICY=1  count_DEAD_INVALID_POLICY=1
-case=reset_policy_multiple_reposts_pass  grade=pass  form=pdeadmanpost_unit  mmod=reset_policy_multiple_reposts_pass  eval=true  dead_reset_multi=true  mhash=[BUSY-MILO]  min_DEAD_RESET_MULTI=3  count_DEAD_RESET_MULTI=3  max_DEAD_RESET_MULTI=3  count_DEAD_RESET_MULTI=3
+case=active_start_once_posts_pass form=pdeadmanpost_unit mmod=active_start_once_posts_pass grade=pass eval=true dead_once=true mhash=[]
+case=active_start_false_no_initial_post_pass form=pdeadmanpost_unit mmod=active_start_false_no_initial_post_pass grade=pass eval=true dead_no_start=$[DEAD_NO_START] mhash=[]
+case=heartbeat_before_dead_suppresses_pass form=pdeadmanpost_unit mmod=heartbeat_before_dead_suppresses_pass grade=pass eval=true dead_keepalive=$[DEAD_KEEPALIVE] mhash=[]
+case=stop_heartbeat_posts_pass form=pdeadmanpost_unit mmod=stop_heartbeat_posts_pass grade=pass eval=true dead_stop=true mhash=[]
+case=active_false_after_first_heartbeat_posts_pass form=pdeadmanpost_unit mmod=active_false_after_first_heartbeat_posts_pass grade=pass eval=true dead_after_first=true mhash=[]
+case=numeric_deadflag_pass form=pdeadmanpost_unit mmod=numeric_deadflag_pass grade=pass eval=true dead_num=7.5 mhash=[]
+case=string_deadflag_pass form=pdeadmanpost_unit mmod=string_deadflag_pass grade=pass eval=true dead_str=halt mhash=[]
+case=multiple_deadflags_pass form=pdeadmanpost_unit mmod=multiple_deadflags_pass grade=pass eval=true dead_multi_a=true dead_multi_b=alpha mhash=[]
+case=once_policy_single_post_pass form=pdeadmanpost_unit mmod=once_policy_single_post_pass grade=pass eval=true dead_once_single=true mhash=[] evidence=count_contract min_DEAD_ONCE_SINGLE=1 count_DEAD_ONCE_SINGLE=1 max_DEAD_ONCE_SINGLE=1 count_DEAD_ONCE_SINGLE=1
+case=repeat_policy_reposts_pass form=pdeadmanpost_unit mmod=repeat_policy_reposts_pass grade=pass eval=true dead_repeat=true mhash=[] evidence=count_contract min_DEAD_REPEAT=2 count_DEAD_REPEAT=20
+case=reset_policy_reposts_after_heartbeat_pass form=pdeadmanpost_unit mmod=reset_policy_reposts_after_heartbeat_pass grade=pass eval=true dead_reset=true mhash=[] evidence=count_contract min_DEAD_RESET=2 count_DEAD_RESET=2
+case=repeat_policy_inactive_reposts_pass form=pdeadmanpost_unit mmod=repeat_policy_inactive_reposts_pass grade=pass eval=true dead_repeat_after_first=true mhash=[] evidence=count_contract min_DEAD_REPEAT_AFTER_FIRST=2 count_DEAD_REPEAT_AFTER_FIRST=6
+case=reset_policy_no_repost_without_heartbeat_pass form=pdeadmanpost_unit mmod=reset_policy_no_repost_without_heartbeat_pass grade=pass eval=true dead_reset_single=true mhash=[] evidence=count_contract min_DEAD_RESET_SINGLE=1 count_DEAD_RESET_SINGLE=1 max_DEAD_RESET_SINGLE=1 count_DEAD_RESET_SINGLE=1
+case=active_start_keepalive_suppresses_pass form=pdeadmanpost_unit mmod=active_start_keepalive_suppresses_pass grade=pass eval=true dead_active_keepalive=$[DEAD_ACTIVE_KEEPALIVE] mhash=[] evidence=count_contract max_DEAD_ACTIVE_KEEPALIVE=0 count_DEAD_ACTIVE_KEEPALIVE=0
+case=custom_heartbeat_var_pass form=pdeadmanpost_unit mmod=custom_heartbeat_var_pass grade=pass eval=true dead_alt_heart=true mhash=[] evidence=count_contract min_DEAD_ALT_HEART=1 count_DEAD_ALT_HEART=1
+case=negative_deadflag_pass form=pdeadmanpost_unit mmod=negative_deadflag_pass grade=pass eval=true dead_neg=-3.25 mhash=[]
+case=zero_max_noheart_posts_pass form=pdeadmanpost_unit mmod=zero_max_noheart_posts_pass grade=pass eval=true dead_zero_max=true mhash=[] evidence=count_contract min_DEAD_ZERO_MAX=1 count_DEAD_ZERO_MAX=1
+case=false_deadflag_pass form=pdeadmanpost_unit mmod=false_deadflag_pass grade=pass eval=true dead_false=false mhash=[] evidence=count_contract min_DEAD_FALSE=1 count_DEAD_FALSE=1
+case=invalid_post_policy_falls_back_once_pass form=pdeadmanpost_unit mmod=invalid_post_policy_falls_back_once_pass grade=pass eval=true dead_invalid_policy=true mhash=[] evidence=count_contract min_DEAD_INVALID_POLICY=1 count_DEAD_INVALID_POLICY=1 max_DEAD_INVALID_POLICY=1 count_DEAD_INVALID_POLICY=1
+case=reset_policy_multiple_reposts_pass form=pdeadmanpost_unit mmod=reset_policy_multiple_reposts_pass grade=pass eval=true dead_reset_multi=true mhash=[MEEK-WOLF] evidence=count_contract min_DEAD_RESET_MULTI=3 count_DEAD_RESET_MULTI=3 max_DEAD_RESET_MULTI=3 count_DEAD_RESET_MULTI=3

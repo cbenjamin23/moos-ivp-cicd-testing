@@ -22,6 +22,7 @@ ProcessConfig = pMissionEval
   mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
   lead_condition = TEST_EVAL_READY = true
+  lead_condition = GTD_LEVEL_HIT >= 2
   pass_condition = ABE_NAV_X >= 60
   pass_condition = ABE_NAV_Y >= -75
   pass_condition = ABE_NAV_Y <= -45

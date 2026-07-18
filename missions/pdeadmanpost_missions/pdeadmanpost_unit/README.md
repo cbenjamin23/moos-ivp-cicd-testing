@@ -10,6 +10,13 @@ variables, zero-threshold posting, `once`/`repeat`/`reset` post policies with
 posting-count checks, invalid policy fallback, numeric/string/false deadflags,
 and multiple deadflags.
 
+The mission's `pMissionEval` configuration writes the live verdict. Its thin
+`zlaunch.sh` forwards the requested ports, mission label, display mode, time
+warp, and maximum time to shared `xlaunch.sh`, requires exactly one valid result
+row, and applies the repository's scoped-cleanup backstop when run directly.
+Publication-count checks remain a harness responsibility because they require
+the completed `.alog` file.
+
 Typical harness run:
 
 ```sh

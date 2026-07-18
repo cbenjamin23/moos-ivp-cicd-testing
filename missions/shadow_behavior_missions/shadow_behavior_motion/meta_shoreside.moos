@@ -12,7 +12,7 @@ Community  = shoreside
 //----------------------------------------------------
 ProcessConfig = ANTLER
 {
-  MSBetweenLaunches = 100
+  MSBetweenLaunches = 200
 
   Run = MOOSDB           @ NewConsole = false
   Run = pRealm           @ NewConsole = false

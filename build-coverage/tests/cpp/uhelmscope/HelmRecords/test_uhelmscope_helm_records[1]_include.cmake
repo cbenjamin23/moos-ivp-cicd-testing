@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/uhelmscope/HelmRecords/test_uhelmscope_helm_records[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/uhelmscope/HelmRecords/test_uhelmscope_helm_records[1]_tests.cmake")
-else()
-  add_test(test_uhelmscope_helm_records_NOT_BUILT test_uhelmscope_helm_records_NOT_BUILT)
-endif()

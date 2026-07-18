@@ -361,19 +361,19 @@ case "$MMOD" in
         ;;
     giveway_turngap_edge_pass)
         A_POS="-25.377,11.833,115"
-        B_POS="41.529,-50.552,330"
+        B_POS="41.600,-50.480,330"
         A_DEST="83.38,-38.881"
-        B_DEST="-18.471,53.371"
+        B_DEST="-18.400,53.443"
         A_SPD="1.4"
-        B_SPD="1.3"
+        B_SPD="1.4"
         ;;
     giveway_turngap_above_pass)
         A_POS="-25.377,11.833,115"
-        B_POS="41.26,-50.827,330"
+        B_POS="39.46,-52.627,330"
         A_DEST="83.38,-38.881"
-        B_DEST="-18.74,53.096"
-        A_SPD="1.4"
-        B_SPD="1.3"
+        B_DEST="-20.54,51.296"
+        A_SPD="1.2"
+        B_SPD="1.4"
         ;;
     giveway_turngap_below_mirror_pass)
         A_POS="25.377,-11.833,295"
@@ -389,15 +389,15 @@ case "$MMOD" in
         A_DEST="-83.38,38.881"
         B_DEST="18.400,-53.443"
         A_SPD="1.4"
-        B_SPD="1.3"
+        B_SPD="1.4"
         ;;
     giveway_turngap_above_mirror_pass)
         A_POS="25.377,-11.833,295"
-        B_POS="-41.26,50.827,150"
+        B_POS="-39.46,52.627,150"
         A_DEST="-83.38,38.881"
-        B_DEST="18.74,-53.096"
-        A_SPD="1.4"
-        B_SPD="1.3"
+        B_DEST="20.54,-51.296"
+        A_SPD="1.2"
+        B_SPD="1.4"
         ;;
     crossing_starboard_giveway_pass)
         A_POS="-70,-80,90"

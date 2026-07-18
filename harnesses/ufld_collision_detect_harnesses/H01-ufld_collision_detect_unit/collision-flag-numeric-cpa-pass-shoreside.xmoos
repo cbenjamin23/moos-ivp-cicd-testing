@@ -1,0 +1,40 @@
+ProcessConfig = uFldCollisionDetect
+{
+  AppTick = 10
+  CommsTick = 10
+  collision_range = 3
+  near_miss_range = 6
+  encounter_range = 20
+  post_closest_range = true
+  post_closest_range_ever = true
+  report_all_encounters = false
+  collision_flag = UCD_COLLISION_CPA=$CPA
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldCollisionDetect
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=90", time=0.4
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=10,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=0.5
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=30,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=0.9
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=2,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=1.3
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=10,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=270", time=1.8
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = UCD_COLLISION_CPA = 2
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = cpa=$[UCD_COLLISION_CPA]
+  report_file = results.txt
+}
+

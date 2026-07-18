@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogsplit/SplitHandler/test_alogsplit_split_handler[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogsplit/SplitHandler/test_alogsplit_split_handler[1]_tests.cmake")
-else()
-  add_test(test_alogsplit_split_handler_NOT_BUILT test_alogsplit_split_handler_NOT_BUILT)
-endif()

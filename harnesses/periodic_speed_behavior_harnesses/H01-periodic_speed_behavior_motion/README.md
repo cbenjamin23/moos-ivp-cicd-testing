@@ -23,9 +23,9 @@ the end of the line.
   Samples the first busy window. Requires one busy transition, positive
   pending-inactive time, and positive vehicle speed.
 - `busy_to_lazy_pass`
-  Starts busy and samples after the initial busy window returns to lazy.
-  Requires pending-active evidence without depending on vehicle deceleration
-  dynamics.
+  Starts busy with `reset_upon_running=false` and samples after the initial
+  busy window returns to lazy. Requires pending-active evidence without
+  depending on vehicle deceleration dynamics.
 - `deprecated_zaic_aliases_pass`
   Uses deprecated ZAIC alias parameters and requires the behavior to enter busy
   mode with positive vehicle speed.
@@ -45,11 +45,13 @@ the end of the line.
   Temporarily disables the behavior condition with `reset_upon_running=false`
   and verifies idle time continues to advance the periodic state.
 - `initially_busy_pass`
-  Starts the behavior in the busy state and requires immediate speed evidence
-  while the busy counter remains at zero.
+  Sets `initially_busy=true` with `reset_upon_running=false`, then requires
+  immediate speed evidence while the busy counter remains at zero. The
+  separate `reset_on_reactivation_pass` case owns the default reset policy.
 - `zero_speed_pass`
-  Starts busy with `period_speed=0`, proving zero is accepted and the vehicle
-  remains effectively stopped while the behavior is active.
+  Starts busy with `reset_upon_running=false` and `period_speed=0`, proving
+  zero is accepted and the vehicle remains effectively stopped while the
+  behavior is active.
 - `bad_period_lazy_fail`
   Expected negative for `period_lazy=0`. Passes only when the helm reports
   `HELM_MALCONFIG=true`.
@@ -102,3 +104,6 @@ the end of the line.
 ./zlaunch.sh --case=reset_false_visual_pass --gui --port_base=15000 1
 ./zlaunch.sh --jobs=4 --port_base=34000 --port_stride=12 10
 ```
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

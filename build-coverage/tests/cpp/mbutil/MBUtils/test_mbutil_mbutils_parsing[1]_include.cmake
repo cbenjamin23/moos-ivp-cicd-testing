@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/mbutil/MBUtils/test_mbutil_mbutils_parsing[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/mbutil/MBUtils/test_mbutil_mbutils_parsing[1]_tests.cmake")
-else()
-  add_test(test_mbutil_mbutils_parsing_NOT_BUILT test_mbutil_mbutils_parsing_NOT_BUILT)
-endif()

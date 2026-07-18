@@ -16,6 +16,12 @@ stays tied to process launch behavior.
 Typical commands:
 
 ```sh
-./zlaunch.sh --jobs=2 --port_base=12200 --max_time=20 10
-./zlaunch.sh --case=pantler_multi_alias_launch_pass --port_base=12200 --max_time=20 10
+./zlaunch.sh --jobs=2 --port_base=9000 --max_time=20 10
+./zlaunch.sh --case=pantler_multi_alias_launch_pass --port_base=9000 --max_time=20 10
 ```
+
+The launcher requires Bash 5.1 or newer for rolling scheduling. Every case,
+including serial runs, executes in its own mission copy and port block.
+pMissionEval owns each verdict from flags published only by the processes that
+pAntler starts; the harness only applies the case patch, validates the mission
+row, aggregates results in case order, and performs scoped cleanup.

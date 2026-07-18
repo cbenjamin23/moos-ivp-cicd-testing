@@ -7,5 +7,5 @@
 #------------------------------------------------------------
 
 rm -f targ_*.moos
-rm -f termcommand.moos termcommand.out mayfinish.out launch.out results.txt
+rm -f termcommand.moos termcommand.out eval_not_ready.out eval_ready.out launch.out results.txt
 rm -rf LOG_* XLOG_* MOOSLog_*

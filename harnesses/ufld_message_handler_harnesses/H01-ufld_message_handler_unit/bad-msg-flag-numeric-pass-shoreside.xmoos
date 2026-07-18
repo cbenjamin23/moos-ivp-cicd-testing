@@ -1,0 +1,33 @@
+ProcessConfig = uFldMessageHandler
+{
+  AppTick = 4
+  CommsTick = 4
+  bad_msg_flag = UMH_BAD_NUM=11
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldMessageHandler
+  event = var=UMH_RESULT_SEEN, val=false, time=0.1
+  event = var=NODE_MESSAGE, val="src_node=alpha,dest_node=bravo,var_name=HANDLED_RESULT,string_val=bad_flagged_num", time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @HANDLED_RESULT#UMH_RESULT_SEEN=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = UMH_RESULT_SEEN = false
+  pass_condition = UMH_BAD_NUM = 11
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = result_seen=$[UMH_RESULT_SEEN]
+  report_column = bad_num=$[UMH_BAD_NUM]
+  report_file = results.txt
+}

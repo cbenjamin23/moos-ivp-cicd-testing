@@ -4,12 +4,12 @@ This stem mission is the first COLREGS/contact performance baseline. It was
 copied from `missions-swarm/S51-joust` and then adapted to this repo's
 auto-deploy, self-evaluating test flow.
 
-The mission now has three checked-in modes:
-- `baseline_colregs_pass`
+The mission now has three checked-in scenarios:
+- `baseline_colregs`
   - two-vehicle deterministic joust
-- `dense_colregs_pass`
+- `dense_colregs`
   - three-vehicle deterministic continuous joust
-- `endurance_colregs_pass`
+- `endurance_colregs`
   - a milder three-vehicle joust evaluated over a longer window
 
 The copied swarm stem has been trimmed so the vehicles keep moving through the
@@ -35,7 +35,7 @@ scenario.
 Typical runs:
 
 ```bash
-./launch.sh --just_make --mmod=baseline_colregs_pass --nogui 10
-./zlaunch.sh --mmod=dense_colregs_pass --nogui 10
-./zlaunch.sh --mmod=endurance_colregs_pass --nogui 10
+./launch.sh --just_make --scenario=baseline_colregs --nogui 10
+./zlaunch.sh --scenario=dense_colregs --nogui 10
+./zlaunch.sh --scenario=endurance_colregs --nogui 10
 ```

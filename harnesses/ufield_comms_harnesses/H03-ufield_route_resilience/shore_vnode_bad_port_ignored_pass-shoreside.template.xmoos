@@ -1,0 +1,11 @@
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
+
+  try_vnode = route=127.0.0.1:notaport
+  try_vnode = route=127.0.0.1:@VEH1_PSHARE@
+  try_vnode = route=127.0.0.1:@VEH2_PSHARE@
+}

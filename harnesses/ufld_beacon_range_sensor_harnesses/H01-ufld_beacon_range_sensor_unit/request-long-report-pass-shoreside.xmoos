@@ -1,0 +1,38 @@
+ProcessConfig = uFldBeaconRangeSensor
+{
+  AppTick = 4
+  CommsTick = 4
+  ping_wait = default=0
+  report_vars = long
+  beacon = x=30,y=40,label=beacon,push_dist=50,pull_dist=50
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldBeaconRangeSensor
+  event = var=EXPECT_LONG_MIN, val="range=50,id=beacon,time=", time=0.1
+  event = var=EXPECT_LONG_MAX, val="range=50,id=beacon,time=~", time=0.1
+  event = var=BRS_SHORT_SEEN, val=false, time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.5
+  event = var=BRS_RANGE_REQUEST, val="name=alpha", time=1.2
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  mailflag = @BRS_RANGE_REPORT#BRS_SHORT_SEEN=true
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = BRS_SHORT_SEEN = false
+  pass_condition = BRS_RANGE_REPORT_ALPHA >= $ (EXPECT_LONG_MIN)
+  pass_condition = BRS_RANGE_REPORT_ALPHA < $ (EXPECT_LONG_MAX)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = short_seen=$[BRS_SHORT_SEEN]
+  report_file = results.txt
+}

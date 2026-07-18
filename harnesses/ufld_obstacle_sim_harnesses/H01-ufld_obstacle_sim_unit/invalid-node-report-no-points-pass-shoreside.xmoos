@@ -8,6 +8,8 @@ ProcessConfig = uTimerScript
   AppTick   = 4
   CommsTick = 4
 
+  block_on = pMissionEval, pEchoVar, uFldObstacleSim
+
   event = var=PMV_CONNECT, val=true, time=1.0
   event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK", time=1.4
   event = var=TEST_EVAL_READY, val=true, time=4.0
@@ -34,7 +36,11 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  pass_condition = UFOS_EVAL_KNOWN_A != ""
+  pass_condition = NODE_REPORT != ""
+  fail_condition = TRACKED_FEATURE_ALPHA != ""
+  fail_condition = VIEW_POINT != ""
+  fail_condition = GIVEN_OBSTACLE != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = ufld_obstacle_sim_unit
@@ -45,8 +51,7 @@ ProcessConfig = pMissionEval
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = known=$[KNOWN_OBSTACLE]
-  report_column    = given=$[GIVEN_OBSTACLE]
-  report_column    = tracked=$[TRACKED_FEATURE_ALPHA]
+  report_column    = node_report=$[NODE_REPORT]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

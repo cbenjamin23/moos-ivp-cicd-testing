@@ -56,3 +56,19 @@ Expected-negative cases use mission-owned criteria. The result row grades
 
 Headless `--nogui` mode is the default. Use `--gui` with a single case for
 visual inspection.
+
+Serial and rolling modes both use isolated mission copies and deterministic
+per-case port blocks. Rolling mode starts the next pending case whenever an
+active slot finishes. Use `--keep_workdirs` to preserve the harness-owned run
+tree for inspection.
+
+Latest validation:
+
+- July 16, 2026
+- generated-file matrix: `33/33` cases completed with `--just_make --jobs=4`
+- three full rolling matrices: `99/99` mission-owned verdicts passed
+- full serial matrix: `33/33` mission-owned verdicts passed
+- warp: `10`
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

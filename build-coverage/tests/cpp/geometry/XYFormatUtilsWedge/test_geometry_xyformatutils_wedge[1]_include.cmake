@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsWedge/test_geometry_xyformatutils_wedge[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsWedge/test_geometry_xyformatutils_wedge[1]_tests.cmake")
-else()
-  add_test(test_geometry_xyformatutils_wedge_NOT_BUILT test_geometry_xyformatutils_wedge_NOT_BUILT)
-endif()

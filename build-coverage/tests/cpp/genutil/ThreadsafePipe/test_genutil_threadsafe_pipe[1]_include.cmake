@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/genutil/ThreadsafePipe/test_genutil_threadsafe_pipe[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/genutil/ThreadsafePipe/test_genutil_threadsafe_pipe[1]_tests.cmake")
-else()
-  add_test(test_genutil_threadsafe_pipe_NOT_BUILT test_genutil_threadsafe_pipe_NOT_BUILT)
-endif()

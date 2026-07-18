@@ -11,6 +11,9 @@ Typical runs:
 ./zlaunch.sh --max_time=70 10
 ```
 
+Logging is minimal by default. Add `--log=full` to either launcher to restore
+the stem's original shoreside and vehicle `pLogger` configuration.
+
 The harness in
 `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion` applies case
 overlays to this stem with `nspatch`.

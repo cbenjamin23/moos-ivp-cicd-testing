@@ -21,8 +21,15 @@ community.
 ./zlaunch.sh --jobs=3 --port_base=11000 --max_time=40 10
 ```
 
+`--jobs` uses rolling scheduling. Every selected case runs from its own mission
+copy and port block; add `--keep_workdirs` to retain those copies for target,
+sidecar, result, and log inspection.
+
 Run one inspectable case:
 
 ```sh
 ./zlaunch.sh --case=hostinfo_pshare_route_pass --port_base=11000 --max_time=40 10
 ```
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case.

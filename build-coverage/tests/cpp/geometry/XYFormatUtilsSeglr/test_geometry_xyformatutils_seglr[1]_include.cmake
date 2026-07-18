@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsSeglr/test_geometry_xyformatutils_seglr[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsSeglr/test_geometry_xyformatutils_seglr[1]_tests.cmake")
-else()
-  add_test(test_geometry_xyformatutils_seglr_NOT_BUILT test_geometry_xyformatutils_seglr_NOT_BUILT)
-endif()

@@ -17,7 +17,11 @@ In this moving contact suite, patches mainly do three things:
 
 Important practical point:
 
-- the harness always clears old `*.moosx` overlays before each case
+- every case starts from a separate cleaned copy of the stem, so old sidecars
+  cannot leak between serial or rolling cases
+- `nspatch` writes sidecars only inside that case's copied mission directory
 - each case is launched with `--mmod=<case_name>` so the stem `pMissionEval`
   result line already carries the case name even when no shoreside patch is
   needed
+- `baseline_crossing_pass` explicitly uses no patch; every other case maps to
+  its historical shoreside and/or vehicle patch in `zlaunch.sh`

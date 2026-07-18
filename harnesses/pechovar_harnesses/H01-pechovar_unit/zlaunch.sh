@@ -1,94 +1,65 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
 #  Harness: H01-pechovar_unit
 #   Author: Charles Benjamin
-#   LastEd: May 2026
+#   LastEd: Jul 2026
 #------------------------------------------------------------
-vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
-on_exit() { echo; echo "$ME: Halting all apps"; cleanup; exit 1; }
-trap on_exit SIGINT
-trap "echo zlaunch.sh has received sigterm" SIGTERM
 
-ME=`basename "$0"`
-TIME_WARP="10"
-MAX_TIME="20"
-JOBS="1"
-PORT_BASE="17600"
-PORT_STRIDE="20"
-CASE=""
-JUST_MAKE="no"
-KEEP_WORKDIRS="no"
-VERBOSE=""
-
-HARNESS_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
-MISSION_DIR="$REPO_DIR/missions/pechovar_missions/pechovar_unit"
-TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
-RESULTS_FILE="$HARNESS_DIR/results.txt"
-RUN_ROOT=""
-CASE_ROW_DIR=""
-ALL_OK="yes"
-
-if [ -f "$TEARDOWN_HELPER" ]; then
-    . "$TEARDOWN_HELPER"
-else
-    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
-    exit 1
+need_bash=5.1
+if [ -z "${BASH_VERSION:-}" ]; then
+    echo "zlaunch.sh: run this harness as ./zlaunch.sh with Bash >= $need_bash." >&2
+    exit 2
 fi
 
-usage() {
-    echo "$ME [OPTIONS] [time_warp]"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h           Show this help message"
-    echo "  --case=<name>        Run one named case"
-    echo "  --jobs=<n>           Run up to n cases per wave"
-    echo "  --port_base=<n>      Base MOOSDB port for per-case blocks"
-    echo "  --max_time=<secs>    Max time passed to uMayFinish"
-    echo "  --just_make, -j      Generate target files only"
-    echo "  --keep_workdirs      Keep temp mission copies"
-    echo "  --verbose, -v        Verbose output"
+have_bash51() {
+    (( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1) ))
 }
 
-for ARGI; do
-    if [ "$ARGI" = "--help" ] || [ "$ARGI" = "-h" ]; then
-        usage
-        exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" ] && [ "$TIME_WARP" = 10 ]; then
-        TIME_WARP="$ARGI"
-    elif [ "${ARGI:0:7}" = "--case=" ]; then
-        CASE="${ARGI#--case=*}"
-    elif [ "${ARGI:0:7}" = "--jobs=" ]; then
-        JOBS="${ARGI#--jobs=*}"
-    elif [ "${ARGI:0:12}" = "--port_base=" ]; then
-        PORT_BASE="${ARGI#--port_base=*}"
-    elif [ "${ARGI:0:11}" = "--max_time=" ]; then
-        MAX_TIME="${ARGI#--max_time=*}"
-    elif [ "$ARGI" = "--just_make" ] || [ "$ARGI" = "-j" ]; then
-        JUST_MAKE="yes"
-    elif [ "$ARGI" = "--keep_workdirs" ]; then
-        KEEP_WORKDIRS="yes"
-    elif [ "$ARGI" = "--verbose" ] || [ "$ARGI" = "-v" ]; then
-        VERBOSE="yes"
-    elif [ "$ARGI" = "--gui" ] || [ "$ARGI" = "--nogui" ] || [ "$ARGI" = "-ng" ]; then
-        true
-    else
-        echo "$ME: Bad arg: $ARGI"
-        exit 1
+if ! have_bash51; then
+    if [ "${HARNESS_DISABLE_BASH_REEXEC:-}" != 1 ]; then
+        for bash_candidate in "${HARNESS_BASH:-}" /opt/homebrew/bin/bash /usr/local/bin/bash /home/linuxbrew/.linuxbrew/bin/bash; do
+            [ -n "$bash_candidate" ] && [ -x "$bash_candidate" ] || continue
+            if "$bash_candidate" -c '(( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1) ))' 2>/dev/null; then
+                echo "zlaunch.sh: re-running with $bash_candidate for Bash >= $need_bash" >&2
+                exec "$bash_candidate" "$0" "$@"
+            fi
+        done
     fi
-done
-
-if ! echo "$JOBS" | grep -Eq '^[0-9]+$' || [ "$JOBS" -lt 1 ]; then
-    echo "$ME: Bad --jobs value: $JOBS"
-    exit 1
-fi
-if ! echo "$PORT_BASE" | grep -Eq '^[0-9]+$'; then
-    echo "$ME: Bad --port_base value: $PORT_BASE"
-    exit 1
+    echo "zlaunch.sh: Bash >= $need_bash is required for rolling --jobs scheduling." >&2
+    echo "Detected Bash: $BASH_VERSION" >&2
+    echo "On macOS, install Homebrew Bash or run: HARNESS_BASH=/opt/homebrew/bin/bash ./zlaunch.sh" >&2
+    exit 2
 fi
 
-ALL_CASES=(
+set -u
+
+ME=$(basename "$0")
+HARNESS_DIR=$(cd "$(dirname "$0")" && pwd)
+REPO_DIR=$(cd "$HARNESS_DIR/../../.." && pwd)
+MISSION_DIR="$REPO_DIR/missions/pechovar_missions/pechovar_unit"
+TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
+RESULTS_FILE="$HARNESS_DIR/results.txt"
+RUNS_DIR="$HARNESS_DIR/.harness_runs"
+LOCK_DIR="$HARNESS_DIR/.harness_runs.lock"
+RUN_ROOT=""
+
+TIME_WARP=10
+MAX_TIME=20
+JOBS=1
+PORT_BASE=17600
+PORT_STRIDE=30
+PSHARE_OFFSET=$((PORT_STRIDE / 2))
+CASE=""
+JUST_MAKE=no
+KEEP_WORKDIRS=no
+VERBOSE=no
+DISPLAY_ARGS=(--nogui)
+HAVE_LOCK=no
+CLEANED=no
+CLEANUP_FAILED=no
+
+CASES=(
     numeric_echo_pass
     string_echo_pass
     bool_switch_true_pass
@@ -124,25 +95,173 @@ ALL_CASES=(
     dual_flip_independent_pass
 )
 
-cleanup() {
-    if [ "$RUN_ROOT" != "" ]; then
-        harness_teardown_stop_root "$RUN_ROOT"
-    fi
-    if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ] && [ -d "$RUN_ROOT" ]; then
-        rm -rf "$RUN_ROOT"
-    fi
+declare -a SELECTED_CASES CASE_RESULT
+declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
+
+usage() {
+    local case_name
+    cat <<EOF
+$ME [OPTIONS] [time_warp]
+
+Options:
+  --help, -h         Show this help message
+  --verbose, -v      Show rolling scheduler events
+  --just_make, -j    Prepare each case without launching it
+  --max_time=<secs>  Maximum time passed to each stem mission
+  --case=<name>      Run one named case
+  --jobs=<n>         Run up to n cases concurrently with rolling scheduling
+  --port_base=<n>    Base MOOS port for per-case blocks
+  --keep_workdirs    Keep this invocation's isolated case directories
+  --gui              Run one explicit case with GUI enabled
+  --nogui, -ng       Headless launch, no gui (default)
+
+Cases:
+EOF
+    for case_name in "${CASES[@]}"; do
+        printf '  %s\n' "$case_name"
+    done
 }
 
-case_known() {
-    local wanted="$1"
-    local one
-    for one in "${ALL_CASES[@]}"; do
-        if [ "$one" = "$wanted" ]; then
-            return 0
-        fi
+die() {
+    echo "$ME: $*" >&2
+    exit 2
+}
+
+is_uint() {
+    [[ "$1" =~ ^[0-9]+$ ]]
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --case=*) CASE="${arg#--case=}"; [ -n "$CASE" ] || die "--case requires a nonempty case name" ;;
+        --jobs=*) JOBS="${arg#--jobs=}" ;;
+        --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
+        --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --keep_workdirs) KEEP_WORKDIRS=yes ;;
+        --verbose|-v) VERBOSE=yes ;;
+        --just_make|-j) JUST_MAKE=yes ;;
+        --gui) DISPLAY_ARGS=() ;;
+        --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
+        --help|-h) usage; exit 0 ;;
+        *[!0-9]*|'') die "bad argument: $arg" ;;
+        *) TIME_WARP="$arg" ;;
+    esac
+done
+
+is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
+is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
+is_uint "$PORT_BASE" && [ "${#PORT_BASE}" -le 5 ] || die "--port_base must be an integer from 1 through 65535"
+is_uint "$MAX_TIME" && [ "${#MAX_TIME}" -le 9 ] || die "--max_time must be a bounded positive integer"
+
+TIME_WARP=$((10#$TIME_WARP))
+JOBS=$((10#$JOBS))
+PORT_BASE=$((10#$PORT_BASE))
+MAX_TIME=$((10#$MAX_TIME))
+
+[ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
+[ "$JOBS" -gt 0 ] || die "--jobs must be a positive integer"
+[ "$PORT_BASE" -gt 0 ] && [ "$PORT_BASE" -le 65535 ] || die "--port_base must be an integer from 1 through 65535"
+[ "$MAX_TIME" -gt 0 ] || die "--max_time must be a positive integer"
+
+[ -d "$MISSION_DIR" ] || die "mission directory not found: $MISSION_DIR"
+[ -f "$TEARDOWN_HELPER" ] || die "missing teardown helper: $TEARDOWN_HELPER"
+# shellcheck source=/dev/null
+. "$TEARDOWN_HELPER"
+
+select_cases() {
+    local case_name
+    SELECTED_CASES=()
+    if [ -n "$CASE" ]; then
+        for case_name in "${CASES[@]}"; do
+            if [ "$case_name" = "$CASE" ]; then
+                SELECTED_CASES=("$case_name")
+                return 0
+            fi
+        done
+        die "unknown case: $CASE"
+    fi
+    SELECTED_CASES=("${CASES[@]}")
+    [ "${#SELECTED_CASES[@]}" -gt 0 ] || die "no cases selected"
+}
+
+field_value() {
+    local line="$1" key="$2" field
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in "$key"=*) printf '%s\n' "${field#*=}"; return 0 ;; esac
     done
     return 1
 }
+
+field_count() {
+    local line="$1" key="$2" field count=0
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in "$key"=*) count=$((count + 1)) ;; esac
+    done
+    printf '%s\n' "$count"
+}
+
+without_case_field() {
+    local line="$1" field output=""
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in case=*) ;; *) output="${output:+$output }$field" ;; esac
+    done
+    printf '%s\n' "$output"
+}
+
+runner_provenance() {
+    local line="$1" field output=""
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            case=*) field="mission_case=${field#*=}" ;;
+            grade=*) field="mission_grade=${field#*=}" ;;
+            reason=*) field="mission_reason=${field#*=}" ;;
+            launch_rc=*) field="mission_launch_rc=${field#*=}" ;;
+        esac
+        output="${output:+$output }$field"
+    done
+    printf '%s\n' "$output"
+}
+
+stop_root() {
+    moos_scoped_teardown_stop_root "$1" || {
+        echo "$ME: scoped teardown failed for $1" >&2
+        return 1
+    }
+}
+
+cleanup_runtime() {
+    local pid root_stopped=yes
+    [ "$CLEANED" = no ] || return 0
+    for pid in "${!PID_CASE[@]}"; do kill "$pid" 2>/dev/null || true; done
+    wait 2>/dev/null || true
+    if [ -n "$RUN_ROOT" ] && [ -d "$RUN_ROOT" ]; then
+        if ! stop_root "$RUN_ROOT"; then root_stopped=no; CLEANUP_FAILED=yes; fi
+        if [ "$KEEP_WORKDIRS" != yes ] && [ "$root_stopped" = yes ]; then rm -rf "$RUN_ROOT"; fi
+    fi
+    rmdir "$RUNS_DIR" 2>/dev/null || true
+    if [ "$HAVE_LOCK" = yes ]; then
+        if [ "$CLEANUP_FAILED" = yes ]; then
+            echo "$ME: retaining safety lock after teardown failure: $LOCK_DIR" >&2
+            echo "$ME: retained run root for manual recovery: $RUN_ROOT" >&2
+        else
+            rmdir "$LOCK_DIR" 2>/dev/null || true
+            HAVE_LOCK=no
+        fi
+    fi
+    CLEANED=yes
+}
+
+on_signal() { exit 130; }
+trap cleanup_runtime EXIT
+trap on_signal INT TERM PIPE
 
 add_timer_event() {
     local value="$2"
@@ -161,12 +280,7 @@ get_case_config() {
     REQUIRED_TOKENS=()
     ABSENT_TOKENS=()
     COUNT_VAR=""
-    COUNT_EXPECTED=""
-
-    if ! case_known "$CASE_NAME"; then
-        echo "$ME: Unknown case: $CASE_NAME"
-        return 1
-    fi
+    COUNT_TARGET=""
 
     REPORT_COLUMNS=("out_num=\$[ECHO_OUT_NUM]" "out_str=\$[ECHO_OUT_STR]" "out_bool=\$[ECHO_OUT_BOOL]" "out_a=\$[ECHO_OUT_A]" "out_b=\$[ECHO_OUT_B]" "latest=\$[ECHO_OUT_LATEST]" "flip_out=\$[FLIP_OUT]")
 
@@ -175,79 +289,67 @@ get_case_config() {
             ECHO_LINES=("  Echo = ECHO_SRC_NUM -> ECHO_OUT_NUM")
             add_timer_event ECHO_SRC_NUM 42.5 0.5
             PASS_CONDITIONS=("ECHO_OUT_NUM = 42.5")
-            REQUIRED_TOKENS=(" ECHO_OUT_NUM ")
             ;;
         string_echo_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_STR -> ECHO_OUT_STR")
             add_timer_event ECHO_SRC_STR ready 0.5
             PASS_CONDITIONS=("ECHO_OUT_STR = ready")
-            REQUIRED_TOKENS=(" ECHO_OUT_STR ")
             ;;
         bool_switch_true_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_BOOL !-> ECHO_OUT_BOOL")
             add_timer_event ECHO_SRC_BOOL true 0.5
             PASS_CONDITIONS=("ECHO_OUT_BOOL = false")
-            REQUIRED_TOKENS=(" ECHO_OUT_BOOL ")
             ;;
         bool_switch_mixed_case_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_BOOL !-> ECHO_OUT_BOOL")
             add_timer_event ECHO_SRC_BOOL True 0.5
             PASS_CONDITIONS=("ECHO_OUT_BOOL = False")
-            REQUIRED_TOKENS=(" ECHO_OUT_BOOL ")
             ;;
         bool_switch_upper_false_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_BOOL !-> ECHO_OUT_BOOL")
             add_timer_event ECHO_SRC_BOOL FALSE 0.5
             PASS_CONDITIONS=("ECHO_OUT_BOOL = TRUE")
-            REQUIRED_TOKENS=(" ECHO_OUT_BOOL ")
             ;;
         bool_switch_numeric_passthrough_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_NUM !-> ECHO_OUT_NUM")
             add_timer_event ECHO_SRC_NUM 7 0.5
             PASS_CONDITIONS=("ECHO_OUT_NUM = 7")
-            REQUIRED_TOKENS=(" ECHO_OUT_NUM ")
             ;;
         bool_switch_nonbool_passthrough_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_BOOL !-> ECHO_OUT_BOOL")
             add_timer_event ECHO_SRC_BOOL maybe 0.5
             PASS_CONDITIONS=("ECHO_OUT_BOOL = maybe")
-            REQUIRED_TOKENS=(" ECHO_OUT_BOOL ")
             ;;
         multi_target_echo_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_MULTI -> ECHO_OUT_A" "  Echo = ECHO_SRC_MULTI -> ECHO_OUT_B")
             add_timer_event ECHO_SRC_MULTI alpha 0.5
             PASS_CONDITIONS=("ECHO_OUT_A = alpha" "ECHO_OUT_B = alpha")
-            REQUIRED_TOKENS=(" ECHO_OUT_A " " ECHO_OUT_B ")
             ;;
         acyclic_chain_echo_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_STR -> ECHO_OUT_A" "  Echo = ECHO_OUT_A -> ECHO_OUT_B")
             add_timer_event ECHO_SRC_STR chain 0.5
             PASS_CONDITIONS=("ECHO_OUT_A = chain" "ECHO_OUT_B = chain")
-            REQUIRED_TOKENS=(" ECHO_OUT_A " " ECHO_OUT_B ")
             ;;
         duplicate_mapping_single_post_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_STR -> ECHO_OUT_STR" "  Echo = ECHO_SRC_STR -> ECHO_OUT_STR")
             add_timer_event ECHO_SRC_STR dedupe 0.5
             PASS_CONDITIONS=("ECHO_OUT_STR = dedupe")
-            REQUIRED_TOKENS=(" ECHO_OUT_STR ")
             COUNT_VAR="ECHO_OUT_STR"
-            COUNT_EXPECTED="1"
+            COUNT_TARGET="1"
             ;;
         default_repeated_source_posts_each_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_LATEST -> ECHO_OUT_LATEST")
             add_timer_event ECHO_SRC_LATEST first 0.5
             add_timer_event ECHO_SRC_LATEST second 0.7
             PASS_CONDITIONS=("ECHO_OUT_LATEST = second")
-            REQUIRED_TOKENS=(" ECHO_OUT_LATEST ")
             COUNT_VAR="ECHO_OUT_LATEST"
-            COUNT_EXPECTED="2"
+            COUNT_TARGET="2"
             ;;
         latest_only_repeated_source_pass)
             ECHO_LINES=("  echo_latest_only = true" "  Echo = ECHO_SRC_LATEST -> ECHO_OUT_LATEST")
             add_timer_event ECHO_SRC_LATEST first 0.5
             add_timer_event ECHO_SRC_LATEST second 0.7
             PASS_CONDITIONS=("ECHO_OUT_LATEST = second")
-            REQUIRED_TOKENS=(" ECHO_OUT_LATEST ")
             ;;
         flip_component_pass)
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = dest_separator = #" "  FLIP:click = x -> xcenter" "  FLIP:click = y -> ycenter")
@@ -346,7 +448,7 @@ get_case_config() {
             add_timer_event CYCLE_A self 0.5
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
             COUNT_VAR="CYCLE_A"
-            COUNT_EXPECTED="1"
+            COUNT_TARGET="1"
             ;;
         indirect_cycle_blocks_all_pass)
             ECHO_LINES=("  Echo = CYCLE_A -> CYCLE_B" "  Echo = CYCLE_B -> CYCLE_C" "  Echo = CYCLE_C -> CYCLE_A" "  Echo = ECHO_SRC_STR -> ECHO_OUT_STR")
@@ -380,9 +482,11 @@ get_case_config() {
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
             REQUIRED_TOKENS=("xcenter=44" "word_out=bravo")
             ;;
+        *) return 1 ;;
     esac
 
-    add_timer_event TEST_EVAL_READY true 1.5
+    # Leave enough room for pEchoVar to publish before pMissionEval's lead flag.
+    add_timer_event TEST_EVAL_READY true 2.0
 }
 
 write_case_files() {
@@ -441,10 +545,10 @@ write_case_files() {
         echo ""
         echo "  result_flag  = MISSION_EVALUATED = true"
         echo "  mission_form = pechovar_unit"
-        echo "  mission_mod  = \$(MMOD:=numeric_echo_pass)"
+        echo "  mission_mod  = $CASE_NAME"
         echo ""
-        echo "  prereport_column = form=\$[MISSION_FORM]"
-        echo "  prereport_column = mmod=\$[MMOD]"
+        echo "  report_column    = form=\$[MISSION_FORM]"
+        echo "  report_column    = mmod=\$[MMOD]"
         echo "  report_column    = grade=\$[GRADE]"
         echo "  report_column    = eval=\$[TEST_EVAL_READY]"
         for line in "${REPORT_COLUMNS[@]}"; do
@@ -456,201 +560,275 @@ write_case_files() {
     } > "$case_dir/case_eval.moos"
 }
 
-wait_for_result_line() {
-    local results_path="$1"
-    local attempts="${2:-80}"
-    local line=""
-    local attempt
+evaluation_cutoff() {
+    aloggrep MISSION_EVALUATED "$1" 2>/dev/null |
+        awk '$2 == "MISSION_EVALUATED" && $4 == "true" {print $1; exit}'
+}
 
-    for attempt in $(seq 1 "$attempts"); do
-        line=$(tail -n 1 "$results_path" 2>/dev/null)
-        if echo "$line" | grep -q 'grade='; then
-            echo "$line"
-            return 0
-        fi
-        sleep 0.25
-    done
+validate_alog_windows() {
+    local root="$1" alog cutoff found=no
+    while IFS= read -r -d '' alog; do
+        found=yes
+        cutoff=$(evaluation_cutoff "$alog")
+        [ -n "$cutoff" ] || return 1
+    done < <(find "$root" -type f -name '*.alog' -print0)
+    [ "$found" = yes ]
+}
 
-    echo "$line"
+alog_window_has_token() {
+    local root="$1" token="$2" alog cutoff
+    while IFS= read -r -d '' alog; do
+        cutoff=$(evaluation_cutoff "$alog")
+        awk -v end="$cutoff" -v token="$token" \
+            '$1 ~ /^[0-9.]+$/ && $1 <= end && index($0, token) {found=1; exit} END {exit !found}' \
+            "$alog" && return 0
+    done < <(find "$root" -type f -name '*.alog' -print0)
     return 1
+}
+
+count_alog_posts() {
+    local root="$1" var="$2" alog cutoff count total=0 found=no
+    while IFS= read -r -d '' alog; do
+        found=yes
+        cutoff=$(evaluation_cutoff "$alog")
+        count=$(aloggrep "$var" "$alog" 2>/dev/null |
+            awk -v v="$var" -v end="$cutoff" \
+                '$2 == v && $1 <= end {count++} END {print count+0}')
+        total=$((total + count))
+    done < <(find "$root" -type f -name '*.alog' -print0)
+    [ "$found" = yes ] || return 1
+    printf '%s\n' "$total"
 }
 
 check_alog_evidence() {
-    local root="$1"
-    local token
-    local count
-
-    if ! find "$root" -type f -name '*.alog' | grep -q .; then
-        echo "missing_alog"
-        return 1
+    local root="$1" token count evidence=mission_owned
+    if [ "${#REQUIRED_TOKENS[@]}" -eq 0 ] && [ "${#ABSENT_TOKENS[@]}" -eq 0 ] && [ -z "$COUNT_VAR" ]; then
+        printf 'evidence=%s\n' "$evidence"
+        return 0
     fi
 
+    validate_alog_windows "$root" || { echo 'evidence=missing_evaluation_window'; return 1; }
+    evidence=alog_window_ok
     for token in "${REQUIRED_TOKENS[@]}"; do
-        if ! find "$root" -type f -name '*.alog' -exec grep -Fq "$token" {} +; then
-            echo "missing_token:$token"
-            return 1
-        fi
+        alog_window_has_token "$root" "$token" || { echo 'evidence=missing_required_token'; return 1; }
     done
-
     for token in "${ABSENT_TOKENS[@]}"; do
-        if find "$root" -type f -name '*.alog' -exec grep -Fq "$token" {} +; then
-            echo "unexpected_token:$token"
+        if alog_window_has_token "$root" "$token"; then
+            echo 'evidence=unexpected_token'
             return 1
         fi
     done
-
-    if [ "$COUNT_VAR" != "" ]; then
-        count=$(find "$root" -type f -name '*.alog' -exec grep -h " $COUNT_VAR " {} + | wc -l | tr -d ' ')
-        if [ "$count" != "$COUNT_EXPECTED" ]; then
-            echo "bad_count:$COUNT_VAR:$count"
-            return 1
-        fi
+    if [ -n "$COUNT_VAR" ]; then
+        count=$(count_alog_posts "$root" "$COUNT_VAR") || { echo 'evidence=missing_count_log'; return 1; }
+        evidence="$evidence count_${COUNT_VAR}=$count target_${COUNT_VAR}=$COUNT_TARGET"
+        [ "$count" = "$COUNT_TARGET" ] || { printf 'evidence=%s\n' "$evidence"; return 1; }
     fi
-
-    echo "alog_ok"
-    return 0
+    printf 'evidence=%s\n' "$evidence"
 }
 
+prepare_case() {
+    local case_name="$1" workdir="$2"
+    rm -rf "$workdir"
+    mkdir -p "$workdir" || return 1
+    cp -R "$MISSION_DIR"/. "$workdir"/ || return 1
+    (cd "$workdir" && ./clean.sh >/dev/null 2>&1) || return 1
+    get_case_config "$case_name" || return 1
+    write_case_files "$workdir"
+}
 
-emit_case_row() {
-    local case_name="$1"
-    local status="$2"
-    local expected="$3"
-    local actual="$4"
-    shift 4
-    local line="$1"
-    shift || true
-    local grade
+write_result() {
+    local case_name="$1" result_file="$2" launch_rc="$3" workdir="$4"
+    local evidence="$5" evidence_rc="$6" line grade_count mission_grade mission_rows provenance
 
-    grade=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
-    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
-
-    if [ "$grade" != "" ]; then
-        echo "case=$case_name  grade=$grade  $line  $*"
-    elif [ "$status" = "success" ]; then
-        echo "case=$case_name  grade=fail  reason=missing_result  $line  $*"
-    else
-        echo "case=$case_name  grade=fail  reason=$status  $line  $*"
+    if [ "$JUST_MAKE" = yes ]; then
+        if [ "$launch_rc" -eq 0 ]; then
+            printf 'case=%s grade=pass mode=just_make\n' "$case_name" > "$result_file"
+        else
+            printf 'case=%s grade=fail reason=launch_error launch_rc=%s mode=just_make\n' "$case_name" "$launch_rc" > "$result_file"
+        fi
+        return 0
     fi
+    if [ ! -f "$workdir/results.txt" ]; then
+        printf 'case=%s grade=fail reason=missing_result_file launch_rc=%s\n' "$case_name" "$launch_rc" > "$result_file"
+        return 0
+    fi
+    mission_rows=$(awk 'NF {count++} END {print count+0}' "$workdir/results.txt")
+    if [ "$mission_rows" -eq 0 ]; then
+        printf 'case=%s grade=fail reason=missing_result launch_rc=%s\n' "$case_name" "$launch_rc" > "$result_file"
+        return 0
+    fi
+    if [ "$mission_rows" -ne 1 ]; then
+        printf 'case=%s grade=fail reason=duplicate_results result_rows=%s\n' "$case_name" "$mission_rows" > "$result_file"
+        return 0
+    fi
+    line=$(awk 'NF {print; exit}' "$workdir/results.txt")
+    grade_count=$(field_count "$line" grade)
+    if [ "$grade_count" -ne 1 ]; then
+        printf 'case=%s grade=fail reason=malformed_result grade_fields=%s\n' "$case_name" "$grade_count" > "$result_file"
+        return 0
+    fi
+    mission_grade=$(field_value "$line" grade || true)
+    if [ "$mission_grade" != pass ] && [ "$mission_grade" != fail ]; then
+        printf 'case=%s grade=fail reason=malformed_result mission_grade=%s\n' "$case_name" "${mission_grade:-missing}" > "$result_file"
+        return 0
+    fi
+    if [ "$launch_rc" -ne 0 ]; then
+        provenance=$(runner_provenance "$line")
+        printf 'case=%s grade=fail reason=launch_error launch_rc=%s%s\n' "$case_name" "$launch_rc" "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
+    if [ "$evidence_rc" -ne 0 ]; then
+        provenance=$(runner_provenance "$line")
+        printf 'case=%s grade=fail reason=evidence_check_failed%s%s\n' "$case_name" "${evidence:+ $evidence}" "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
+    line=$(without_case_field "$line")
+    printf 'case=%s %s%s\n' "$case_name" "$line" "${evidence:+ $evidence}" > "$result_file"
 }
 
 run_case() {
-    local case_name="$1"
-    local case_idx="$2"
-    local case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
-    local shore_mport=$((case_base + 0))
-    local shore_pshare=$((case_base + 10))
-    local case_dir="$RUN_ROOT/$case_name"
-    local line=""
-    local actual="fail"
-    local evidence="not_checked"
-    local launch_rc=0
-    local status="success"
+    local case_name="$1" workdir="$2" result_file="$3" case_base="$4"
+    local launch_rc=0 evidence='' evidence_rc=0 result_line grade
+    local -a launch_args
 
-    get_case_config "$case_name" || return 1
+    prepare_case "$case_name" "$workdir" || {
+        printf 'case=%s grade=fail reason=prepare_error\n' "$case_name" > "$result_file"
+        return 1
+    }
+    (
+        cd "$workdir" || exit 1
+        : > results.txt
+        launch_args=(--max_time="$MAX_TIME" "${DISPLAY_ARGS[@]}"
+            --shore_mport="$case_base" --shore_pshare="$((case_base + PSHARE_OFFSET))" "$TIME_WARP")
+        [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
+        ./zlaunch.sh "${launch_args[@]}"
+    ) || launch_rc=$?
 
-    rm -rf "$case_dir"
+    if [ "$JUST_MAKE" != yes ] && [ "$launch_rc" -eq 0 ]; then
+        evidence=$(check_alog_evidence "$workdir") || evidence_rc=$?
+    fi
+    write_result "$case_name" "$result_file" "$launch_rc" "$workdir" "$evidence" "$evidence_rc"
+    if ! stop_root "$workdir"; then
+        printf 'case=%s grade=fail reason=teardown_error\n' "$case_name" > "$result_file"
+    fi
+    result_line=$(awk 'NF {print; exit}' "$result_file" 2>/dev/null)
+    grade=$(field_value "$result_line" grade || true)
+    [ "$grade" = pass ]
+}
+
+start_case() {
+    local case_idx="$1" case_name="${SELECTED_CASES[$1]}" case_dir workdir result_file log_file case_base pid
+    case_base=$((PORT_BASE + case_idx * PORT_STRIDE))
+    case_dir="$RUN_ROOT/case_$(printf '%03d' "$case_idx")_$case_name"
+    workdir="$case_dir/mission"
+    result_file="$case_dir/result.row"
+    log_file="$case_dir/run.log"
     mkdir -p "$case_dir"
-    cp -R "$MISSION_DIR/." "$case_dir/"
-    write_case_files "$case_dir"
-
-    if [ "$JUST_MAKE" = "yes" ]; then
-        (cd "$case_dir" && ./launch.sh --just_make --mmod="$case_name" --shore_mport="$shore_mport" --shore_pshare="$shore_pshare" "$TIME_WARP")
-        echo "case=$case_name  grade=pass  form=pechovar_unit  mmod=$case_name  done=true  reason=just_make"
-        return 0
+    CASE_RESULT[case_idx]="$result_file"
+    (
+        local rc=0
+        set +e
+        run_case "$case_name" "$workdir" "$result_file" "$case_base" > "$log_file" 2>&1
+        rc=$?
+        [ -s "$result_file" ] || printf 'case=%s grade=fail reason=missing_result launch_rc=%s\n' "$case_name" "$rc" > "$result_file"
+        exit "$rc"
+    ) &
+    pid=$!
+    PID_CASE[$pid]="$case_name"
+    PID_RESULT[$pid]="$result_file"
+    PID_LOG[$pid]="$log_file"
+    PID_PORT_BASE[$pid]="$case_base"
+    if [ "$VERBOSE" = yes ]; then
+        printf 'event=start epoch=%s pid=%s case=%s port_base=%s workdir=%s\n' "$(date +%s)" "$pid" "$case_name" "$case_base" "$workdir"
     fi
-
-    (cd "$case_dir" && ./clean.sh >/dev/null 2>&1 && xlaunch.sh --max_time="$MAX_TIME" --mmod="$case_name" --shore_mport="$shore_mport" --shore_pshare="$shore_pshare" --nogui "$TIME_WARP" >/dev/null 2>&1)
-    launch_rc=$?
-
-    line=$(wait_for_result_line "$case_dir/results.txt")
-    if echo "$line" | grep -q 'grade=pass'; then
-        actual="pass"
-    fi
-
-    if [ "$actual" = "pass" ] && [ "$launch_rc" -eq 0 ]; then
-        evidence=$(check_alog_evidence "$case_dir")
-        if [ "$evidence" != "alog_ok" ]; then
-            actual="fail"
-        fi
-    else
-        evidence="mission_or_launch_failed"
-    fi
-
-    if [ "$actual" != "pass" ]; then
-        status="mismatch"
-    fi
-
-    emit_case_row "$case_name" "$status" "pass" "$actual" "$line" "evidence=$evidence"
-
-    if [ "$status" = "success" ]; then
-        return 0
-    fi
-    return 1
 }
 
-run_cases() {
-    local cases=("$@")
-    local idx=0
-    local active=0
-    local pids=()
-    local names=()
-    local pid
-    local name
-    local outfile
-    local rc
+finish_one() {
+    local done_pid='' wait_rc=0 case_name line grade
+    wait -p done_pid -n || wait_rc=$?
+    [ -n "${done_pid:-}" ] || { echo "$ME: wait returned without a completed pid rc=$wait_rc" >&2; return 1; }
+    case_name="${PID_CASE[$done_pid]:-}"
+    [ -n "$case_name" ] || { echo "$ME: unknown completed pid $done_pid rc=$wait_rc" >&2; return 1; }
+    line=$(awk 'NF {print; exit}' "${PID_RESULT[$done_pid]}" 2>/dev/null)
+    grade=$(field_value "$line" grade || true)
+    if [ "$wait_rc" -ne 0 ] && [ "$grade" = pass ]; then
+        printf 'case=%s grade=fail reason=worker_error worker_rc=%s\n' "$case_name" "$wait_rc" > "${PID_RESULT[$done_pid]}"
+        grade=fail
+    fi
+    if [ "$VERBOSE" = yes ]; then
+        printf 'event=finish epoch=%s pid=%s case=%s rc=%s grade=%s port_base=%s log=%s\n' "$(date +%s)" "$done_pid" "$case_name" "$wait_rc" "${grade:-missing}" "${PID_PORT_BASE[$done_pid]}" "${PID_LOG[$done_pid]}"
+    fi
+    unset 'PID_CASE[$done_pid]' 'PID_RESULT[$done_pid]' 'PID_LOG[$done_pid]' 'PID_PORT_BASE[$done_pid]'
+    [ "$grade" = pass ]
+}
 
+aggregate_results() {
+    local total="${#SELECTED_CASES[@]}" case_idx case_name result_file row_count line row_case grade_count grade
+    FINAL_FAILURES=0
+    RESULT_ROWS=0
     : > "$RESULTS_FILE"
-    RUN_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/pechovar_harness.XXXXXX")
-    CASE_ROW_DIR="$RUN_ROOT/case_rows"
-    mkdir -p "$CASE_ROW_DIR"
-
-    for name in "${cases[@]}"; do
-        outfile="$CASE_ROW_DIR/$name.out"
-        (run_case "$name" "$idx") > "$outfile" 2>&1 &
-        pids+=("$!")
-        names+=("$name")
-        idx=$((idx + 1))
-        active=$((active + 1))
-
-        if [ "$active" -ge "$JOBS" ]; then
-            for pid in "${pids[@]}"; do
-                wait "$pid" || ALL_OK="no"
-            done
-            for name in "${names[@]}"; do
-                cat "$CASE_ROW_DIR/$name.out" | tee -a "$RESULTS_FILE"
-            done
-            pids=()
-            names=()
-            active=0
+    for ((case_idx = 0; case_idx < total; case_idx++)); do
+        case_name="${SELECTED_CASES[$case_idx]}"
+        result_file="${CASE_RESULT[$case_idx]:-}"
+        line=''
+        if [ -n "$result_file" ] && [ -f "$result_file" ]; then
+            row_count=$(awk 'NF {count++} END {print count+0}' "$result_file")
+            if [ "$row_count" -eq 1 ]; then line=$(awk 'NF {print; exit}' "$result_file"); else line="case=$case_name grade=fail reason=invalid_row_count result_rows=$row_count"; fi
+        else
+            line="case=$case_name grade=fail reason=missing_result_file"
         fi
-    done
-
-    for pid in "${pids[@]}"; do
-        wait "$pid" || ALL_OK="no"
-    done
-    for name in "${names[@]}"; do
-        cat "$CASE_ROW_DIR/$name.out" | tee -a "$RESULTS_FILE"
+        row_case=$(field_value "$line" case || true)
+        grade_count=$(field_count "$line" grade)
+        if [ "$row_case" != "$case_name" ]; then
+            line="case=$case_name grade=fail reason=result_case_mismatch"
+        elif [ "$grade_count" -ne 1 ]; then
+            line="case=$case_name grade=fail reason=malformed_result grade_fields=$grade_count"
+        else
+            grade=$(field_value "$line" grade || true)
+            if [ "$grade" != pass ] && [ "$grade" != fail ]; then line="case=$case_name grade=fail reason=malformed_result mission_grade=${grade:-missing}"; fi
+        fi
+        printf '%s\n' "$line" >> "$RESULTS_FILE"
+        RESULT_ROWS=$((RESULT_ROWS + 1))
+        grade=$(field_value "$line" grade || true)
+        [ "$grade" = pass ] || FINAL_FAILURES=$((FINAL_FAILURES + 1))
     done
 }
 
-if [ "$CASE" != "" ]; then
-    if ! case_known "$CASE"; then
-        echo "$ME: Unknown case: $CASE"
-        exit 1
-    fi
-    SELECTED_CASES=("$CASE")
-else
-    SELECTED_CASES=("${ALL_CASES[@]}")
+select_cases
+total=${#SELECTED_CASES[@]}
+if [ "${#DISPLAY_ARGS[@]}" -eq 0 ] && [ "$total" -ne 1 ]; then die "--gui requires one explicit --case"; fi
+last_port=$((PORT_BASE + (total - 1) * PORT_STRIDE + PSHARE_OFFSET))
+[ "$last_port" -le 65535 ] || die "selected cases require ports through $last_port"
+
+mkdir -p "$RUNS_DIR" || die "unable to create run directory: $RUNS_DIR"
+mkdir "$LOCK_DIR" 2>/dev/null || die "another harness run appears active for $HARNESS_DIR"
+HAVE_LOCK=yes
+RUN_ROOT="$RUNS_DIR/run_$(date +%Y%m%dT%H%M%S)_$$"
+mkdir -p "$RUN_ROOT" || die "unable to create run root: $RUN_ROOT"
+: > "$RESULTS_FILE"
+
+SECONDS=0
+active=0
+next=0
+while [ "$next" -lt "$total" ] || [ "$active" -gt 0 ]; do
+    while [ "$next" -lt "$total" ] && [ "$active" -lt "$JOBS" ]; do
+        start_case "$next"
+        next=$((next + 1))
+        active=$((active + 1))
+    done
+    if [ "$active" -gt 0 ]; then finish_one || true; active=$((active - 1)); fi
+done
+
+aggregate_results
+if [ "$RESULT_ROWS" -ne "$total" ] || { [ "$total" -gt 0 ] && [ "$RESULT_ROWS" -eq 0 ]; }; then
+    echo "$ME: expected $total result rows but wrote $RESULT_ROWS" >&2
+    FINAL_FAILURES=$((FINAL_FAILURES + 1))
 fi
+cleanup_runtime
+elapsed_seconds=$SECONDS
+if [ -d "$RUN_ROOT" ]; then kept_root="$RUN_ROOT"; else kept_root=none; fi
+[ "$CLEANUP_FAILED" = yes ] && FINAL_FAILURES=$((FINAL_FAILURES + 1))
+trap - EXIT INT TERM PIPE
 
-run_cases "${SELECTED_CASES[@]}"
-cleanup
-
-if [ "$ALL_OK" = "yes" ]; then
-    echo "$ME: all ${#SELECTED_CASES[@]} case(s) matched expected outcomes"
-    exit 0
-fi
-
-echo "$ME: one or more cases failed"
-exit 1
+printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+[ "$FINAL_FAILURES" -eq 0 ]

@@ -1,7 +1,7 @@
 # H02-obmgr_motion
 
 Patch-driven harness for the moving obstacle-avoidance stem in
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/obmgr_missions/obmgr_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/obmgr_missions/obmgr_motion).
+[`missions/obmgr_missions/obmgr_motion`](../../../missions/obmgr_missions/obmgr_motion).
 
 This harness is intentionally smaller than the app-level suites. Each case is a
 short integration check over the same moving mission:
@@ -22,7 +22,8 @@ Run the full matrix:
 ```bash
 cd /Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obmgr_harnesses/H02-obmgr_motion
 ./zlaunch.sh 10
-./zlaunch.sh --jobs=4 --port_base=28500 10
+./zlaunch.sh --log=full 10
+./zlaunch.sh --jobs=2 --port_base=24000 10
 ```
 
 Run one case:
@@ -31,15 +32,27 @@ Run one case:
 ./zlaunch.sh --case=baseline_center_pass 10
 ```
 
-Wave mode notes:
+Execution notes:
 
-- `--jobs=<N>` runs the matrix in waves of up to `N` isolated case copies
-- each live case in a wave gets its own temp mission directory and unique port
-  block
-- the harness uses scoped mission teardown between waves rather than global
-  `ktm`
-- this mode is intended for CI wall-clock reduction, not for interactive use
-  alongside other MOOS missions
+- logging defaults to `minimal`; `--log=full` restores the previous stem
+  logger configuration before applying each case patch
+- every selected case, including single-case and `--jobs=1` runs, uses an
+  isolated mission copy and a unique port block
+- `--jobs=<N>` uses rolling scheduling: the next pending case starts whenever
+  any active case finishes
+- final result rows are aggregated in the case-list order, not completion
+  order
+- `--keep_workdirs` preserves the current invocation's unique directory under
+  `.harness_runs/`
+- `--gui` requires one explicit `--case`; full matrices remain headless
+- cleanup is scoped to the invocation root; the harness does not use global
+  `ktm`, `pkill`, or `killall`
+
+The harness owns case selection, isolated copies, overlays, ports, scheduling,
+and ordered aggregation. Each copied stem owns launch and grading. A normal
+case row retains the single `pMissionEval` `grade=` field and evidence exactly
+as written by the mission, with only `case=<name>` prepended. Runner failures
+instead use `grade=fail reason=<runner_reason>`.
 
 ## Cases
 - `baseline_center_pass`: One obstacle blocks the lane and the vehicle is expected to arrive cleanly with zero collisions.
@@ -65,9 +78,37 @@ Key fields:
 - `expected=collision` appears on expected collision stress cases.
 - `form`, `mmod`, and the trailing metrics come from the mission-level `pMissionEval` report.
 
-Latest validation:
+Latest migration validation:
 
-- April 27, 2026
-- full matrix: `10/10` expected outcomes matched
-- command: `./zlaunch.sh --jobs=4 --port_base=15000 10`
-- warp: `10`
+- July 13, 2026
+- isolated serial matrix: `10/10` pass in 110.13 seconds
+- three rolling `--jobs=2 --port_base=24000 10` matrices: `30/30`
+  published rows pass, with wall times 58.18, 55.16, and 56.77 seconds
+- rolling mean: 56.70 seconds, about 1.8 percent faster than the 57.74-second
+  three-run legacy mean on the same host and settings
+- all four expected-collision cases retained mission-owned `grade=pass`,
+  `expected=collision`, and the required collision/encounter evidence
+- an intentional `--max_time=1` matrix published one ordered
+  `reason=missing_result` row for each of all ten cases and exited nonzero
+- the final full matrix passed `10/10` in 56.15 seconds and left no scoped
+  process or listener behind
+
+Skill 1.4.2 alignment, validated on July 14, 2026:
+
+- the stem's Apple Bash 3.2 paths safely handle empty GUI/forwarding arrays and
+  report zero or duplicate mission rows without an unbound-variable error
+- runner-owned launch failures retain a valid mission row as renamed
+  `mission_*` provenance instead of discarding it
+- `baseline_center_pass` passed in `11.69` seconds and the expected-collision
+  `wide_center_fail` case passed in `10.83` seconds
+- the isolated serial matrix passed `10/10` in `112.37` seconds
+- three canonical rolling matrices passed `30/30` in `58`, `58`, and `57`
+  seconds, for a `57.67`-second mean
+- the `0.97`-second difference from the earlier `56.70`-second mean is within
+  the earlier `55.16`-to-`58.18` observed range
+- a retained `58.25`-second rolling run confirmed immediate refill, all 19
+  intended sidecars, 40 unique listener ports, four expected-collision pass
+  rows, and no log warnings or cleanup residue
+
+No case, expected-collision condition, mission variable, geometry, port layout,
+or scheduler policy changed during this alignment.

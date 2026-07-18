@@ -1,0 +1,22 @@
+Processconfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = uProcessWatch   @ NewConsole = false
+  Run = pShare          @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+  Run = uFldCollisionDetect @ NewConsole = false
+  Run = uTimerScript    @ NewConsole = false
+  Run = pMissionEval    @ NewConsole = false
+  Run = pAutoPoke       @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer   @ NewConsole = false
+#else
+  Run = pMissionHash    @ NewConsole = false
+#endif
+}

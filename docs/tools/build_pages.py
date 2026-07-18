@@ -19,10 +19,12 @@ CPP_TEST_DIR = REPO_ROOT / "tests" / "cpp"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 CTEST_COVERAGE_DATA = ROOT / "data" / "ctest_coverage.json"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
-REPO_ACTIONS = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/workflows/build_extend.yml"
 ASSET_VERSION = "20260511-5"
 PENDING_GIF = "GIF_PENDING"
-CASE_ARRAY_RE = re.compile(r'^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)^\s*\)\s*$', re.MULTILINE | re.DOTALL)
+CASE_ARRAY_RE = re.compile(
+    r"^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)\)\s*(?:#.*)?$",
+    re.MULTILINE | re.DOTALL,
+)
 ARRAY_REF_RE = re.compile(r"^\$\{([A-Z][A-Z0-9_]*)\[@\]\}$")
 CASE_NAME_RE = re.compile(r"\b[A-Za-z0-9_]+_(?:pass|fail|absent)\b")
 VISUAL_NOTES = {
@@ -1305,8 +1307,8 @@ HARNESSES: tuple[Harness, ...] = (
         family="Performance",
         path="harnesses/performance_harnesses/P03-colregs_traffic_ring",
         mission="missions/performance_missions/P03-colregs_traffic_ring",
-        summary="Seeded five-vehicle traffic-ring harness with repeated reassignment pressure.",
-        proof="Checks zero collisions, assignment activity floors, fixed runtime windows, warning-free logs, and reproducible seeded random behavior.",
+        summary="Fixed-seed five-vehicle traffic-ring harness with repeated reassignment pressure.",
+        proof="Checks zero collisions, assignment activity floors, fixed runtime windows, warning-free logs, and sustained randomized traffic pressure.",
         gifs=(
             ("Baseline Traffic Ring", "baseline_circle_pass", "performance-traffic-ring-baseline.gif"),
             ("Mixed-Speed Traffic Ring", "mixed_speed_circle_pass", "performance-traffic-ring-mixed-speed.gif"),
@@ -1314,7 +1316,7 @@ HARNESSES: tuple[Harness, ...] = (
         ),
         run="./zlaunch.sh --case=baseline_circle_pass --gui 10",
         notes=(
-            "This harness uses seeded randomization so traffic pressure is repeatable enough for CI.",
+            "Fixed RNG seeds keep runs comparable, while asynchronous completion may change the exact assignment order.",
             "Assignment activity and zero-collision checks are the primary health signals.",
         ),
     ),
@@ -1804,7 +1806,7 @@ STEM_CONTEXT: dict[str, str] = {
     "ufield-comms-unit": "The stem mission runs one shoreside community and two static vehicle communities with uFldNodeComms, uFldNodeBroker, uFldShoreBroker, pShare, uTimerScript, and pMissionEval. Case overlays change communication policy and scripted report/message traffic while the harness verifies payload-level effects.",
     "ufield-broker-bridge": "The stem mission runs the same two-vehicle uField setup but focuses on broker configuration. Case overlays change shore broker bridges, vnode discovery, keywords, mediated node bridging, and auto-bridge settings while the harness verifies broker pShare command output.",
     "ufield-route-resilience": "The stem mission runs the same two static vehicle communities and one shoreside community, but startup and runtime route setup is delayed, invalid, duplicated, partially supplied, or supplied by shore vnode discovery. The mission grade proves communications recovered or intentionally failed, and harness alog checks prove which route path was used.",
-    "ufld-obstacle-sim-unit": "The stem mission runs a single shoreside MOOS community with uFldObstacleSim, uTimerScript, pMissionHash, pMissionEval, and pLogger. Case overlays change only simulator configuration and scripted refresh/reset/node-report mail while the harness verifies source-side obstacle and point publications.",
+    "ufld-obstacle-sim-unit": "The stem mission runs one shoreside community with uFldObstacleSim, uTimerScript, one stock pEchoVar adapter, pMissionEval, pMissionHash, and pLogger. Case overlays own scripted inputs, subject settings, and parser-safe mission-owned grading; the shell only prepares, schedules, and aggregates results.",
     "ufld-pathcheck-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldPathCheck config and scripted node-report mail, then checks path and speed report payloads from the alog.",
     "ufld-message-handler-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness generates case-specific uFldMessageHandler config and scripted NODE_MESSAGE mail, then checks forwarded variables, counters, flags, and expected absence from the alog.",
     "ufld-contact-range-sensor-unit": "The shared uField app stem mission runs a single shoreside MOOS community with one selected app, uTimerScript, pMissionEval, and pLogger. This harness scripts static contact geometry and range requests, then checks range-report, ground-truth, and pulse outputs from the alog.",
@@ -1820,7 +1822,7 @@ STEM_CONTEXT: dict[str, str] = {
     "shadow-behavior-motion": "The stem mission uses two simulated vehicles: `abe` runs BHV_Shadow while `ben` provides controlled contact headings and speeds. Case overlays vary target motion, relevance distance, runtime updates, and missing-contact behavior.",
     "performance-obstacle-gauntlet": "The stem mission is a repeatable obstacle-field loop. Individual cases change field density or duration so the same avoidance stack can be tested under baseline, dense, and longer-running pressure.",
     "performance-colregs-joust": "The stem mission creates sustained two- or three-vehicle COLREGS encounters. Cases adjust traffic density and duration to test whether safe spacing holds beyond a single isolated encounter.",
-    "performance-traffic-ring": "The stem mission keeps five vehicles moving through a seeded traffic-ring assignment pattern. The seed makes the pressure replayable enough for CI while still exercising repeated COLREGS interactions.",
+    "performance-traffic-ring": "The stem mission keeps five vehicles moving through a fixed-seed traffic-ring assignment pattern. Runs remain comparable for CI while asynchronous completion can change the exact assignment order.",
 }
 
 
@@ -1913,6 +1915,7 @@ def ctest_area_label(area: str) -> str:
         "marineview": "Marine Viewer",
         "mbutil": "MB Utilities",
         "manifest": "Manifest",
+        "moosgeodesy": "MOOS Geodesy",
         "nspatch": "NSPatch",
         "nsplug": "NSPlug",
         "obstacles": "Obstacles",
@@ -1989,6 +1992,7 @@ def ctest_area_description(area: str) -> str:
         "marine_pid": "Marine PID engines and pMarinePIDV22 app-level control logic.",
         "marineview": "Marine viewer shapes, GUI-adjacent models, image handling, and viewer support classes.",
         "mbutil": "MOOS-IvP utility objects, formatting, timers, macros, hashes, JSON helpers, and node messages.",
+        "moosgeodesy": "WGS-84 datum initialization, UTM and local-grid projection, inverse conversion, zone and latitude-band boundaries, safe value semantics, and four disabled PROJ-migration contracts for seam continuity and input validation.",
         "nspatch": "NSPatch patch-file parsing, named-block replacement, line patch behavior, and conflict/edge semantics.",
         "nsplug": "NSPlug expansion helpers, macro handling, conditional expansion, and template-processing behavior.",
         "obstacles": "Obstacle parsing, representation, and obstacle-manager support objects.",
@@ -2091,13 +2095,14 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
     </a>
     <div class="header-actions">
       <nav>
+        <a href="{prefix}quick-start.html">Quick Start</a>
         <a href="{prefix}index.html#families">Harnesses</a>
         <a href="{prefix}ctest-coverage.html">CTest Coverage</a>
         <a href="{prefix}technical.html">Technical</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
-        <span class="theme-switch-track" aria-hidden="true"></span>
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
       </label>
     </div>
   </header>
@@ -2272,7 +2277,7 @@ def phrase_performance_case(slug: str, case_name: str) -> str:
         return {
             "baseline_field_pass": "Baseline obstacle-field traversal; expected to complete the loop with zero collisions and clean warning logs.",
             "dense_field_pass": "Denser obstacle-field traversal; expected to preserve clean completion under heavier obstacle pressure.",
-            "endurance_random_pass": "Longer seeded obstacle-field run; expected to preserve completion and safety over an extended randomized field.",
+            "endurance_random_pass": "Longer randomized obstacle-field run; expected to preserve completion and safety over an extended field.",
         }.get(case_name, "")
     if slug == "performance-colregs-joust":
         return {
@@ -2282,7 +2287,7 @@ def phrase_performance_case(slug: str, case_name: str) -> str:
         }.get(case_name, "")
     if slug == "performance-traffic-ring":
         return {
-            "baseline_circle_pass": "Baseline seeded five-vehicle traffic ring; expected to maintain assignment activity with zero collisions.",
+            "baseline_circle_pass": "Baseline fixed-seed five-vehicle traffic ring; expected to maintain assignment activity with zero collisions.",
             "mixed_speed_circle_pass": "Traffic ring with mixed vehicle speeds; expected to keep assignment pressure active while remaining collision-free.",
             "endurance_circle_pass": "Longer traffic-ring run; expected to sustain repeated assignments over the endurance window with zero collisions.",
             "noncoop_circle_pass": "Traffic ring with one non-cooperative vehicle; expected to remain collision-free while `eve` runs with avoidance disabled.",
@@ -2356,7 +2361,8 @@ def zlaunch_all_cases(text: str) -> list[str]:
         except ValueError:
             arrays[name] = CASE_NAME_RE.findall(body)
 
-    if "ALL_CASES" not in arrays:
+    root_array = "ALL_CASES" if "ALL_CASES" in arrays else "CASES"
+    if root_array not in arrays:
         return []
 
     def expand_array(name: str, stack: tuple[str, ...] = ()) -> list[str]:
@@ -2373,7 +2379,7 @@ def zlaunch_all_cases(text: str) -> list[str]:
 
     names: list[str] = []
     seen: set[str] = set()
-    for token in expand_array("ALL_CASES"):
+    for token in expand_array(root_array):
         if token not in seen:
             names.append(token)
             seen.add(token)
@@ -2513,7 +2519,7 @@ def harness_case_counts() -> dict[str, int]:
         text = zlaunch.read_text()
         all_cases = zlaunch_all_cases(text)
         if not all_cases:
-            raise ValueError(f"No ALL_CASES entries found in {zlaunch}")
+            raise ValueError(f"No ALL_CASES or CASES entries found in {zlaunch}")
         counts[zlaunch.parent.name] = len(all_cases)
     return counts
 
@@ -2552,46 +2558,6 @@ def render_stats() -> str:
 """
         for value, label, text in stats
     )
-
-
-def load_manual_targets() -> list[dict[str, object]]:
-    targets_path = REPO_ROOT / "config" / "harness_targets.json"
-    with targets_path.open(encoding="utf-8") as stream:
-        targets = json.load(stream)
-    return targets
-
-
-def manual_target_rows() -> str:
-    rows = []
-    for target in load_manual_targets():
-        rows.append(
-            f"""
-          <tr>
-            <th><code>{escape(str(target["key"]))}</code></th>
-            <td>{escape(", ".join(str(item) for item in target["families"]))}</td>
-            <td>{escape(str(target["harness"]))}</td>
-          </tr>
-"""
-        )
-    return "\n".join(rows)
-
-
-def cpp_test_family_rows() -> str:
-    if str(SCRIPTS_DIR) not in sys.path:
-        sys.path.insert(0, str(SCRIPTS_DIR))
-    import ci_cpp_test_targets
-
-    rows = []
-    for family in ci_cpp_test_targets.CPP_FAMILIES:
-        rows.append(
-            f"""
-          <tr>
-            <th><code>{escape(family)}</code></th>
-            <td>{escape(ctest_area_label(family))}</td>
-          </tr>
-"""
-        )
-    return "\n".join(rows)
 
 
 def ctest_area_table_rows(areas: list[CTestArea]) -> str:
@@ -2679,280 +2645,130 @@ def render_ctest_coverage() -> str:
     return page_shell("CTest Coverage", body)
 
 
-def render_user_guide() -> str:
-    body = f"""
+def render_quick_start() -> str:
+    body = """
   <main>
-    <section class="page-hero">
+    <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
-      <p class="eyebrow">User Guide</p>
-      <h1>Run regression checks from GitHub Actions.</h1>
-      <p class="lede">Launch CTest coverage, mission harnesses, or both. CTest runs source-level component checks; mission harnesses run live MOOS scenarios.</p>
+      <p class="eyebrow">Developer Quick Start</p>
+      <h1>Build your edit. Run the relevant tests.</h1>
+      <p class="lede">Check out the MOOS-IvP branch containing your changes, build it, then use this repository to run a focused CTest group and its mission harness.</p>
       <div class="hero-actions">
-        <a class="button primary" href="{REPO_ACTIONS}">Open workflow</a>
-        <a class="button secondary" href="#example-values">Example values</a>
-        <a class="button secondary" href="#target-keys">Selectors</a>
+        <a class="button primary" href="#build">Build</a>
+        <a class="button secondary" href="#example">Run an example</a>
       </div>
     </section>
 
-    <section class="content-section">
+    <section id="build" class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Before You Run</p>
-        <h2>Plain-language workflow terms</h2>
-        <p>The workflow form has two similar selection lanes. The CTest lane chooses source-level GoogleTest/CTest coverage; the harness lane chooses live MOOS mission scenarios.</p>
-      </div>
-      <div class="technical-grid">
-        <article class="technical-card">
-          <h3>Workflow</h3>
-          <p>A workflow is a GitHub Actions page that runs CI. This guide uses the <code>Build And Check Active Harnesses</code> workflow.</p>
-        </article>
-        <article class="technical-card">
-          <h3>CTest mode</h3>
-          <p><code>cpp_test_mode</code> selects the CTest lane. Use it for source-level checks that do not need a mission scenario.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Harness mode</h3>
-          <p><code>dispatch_mode</code> selects the mission-harness lane. Use it when behavior depends on live MOOS processes, ports, timing, or vehicle motion.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Family</h3>
-          <p>Both lanes support one family or comma-separated family batches: <code>cpp_test_family</code>/<code>cpp_test_families</code> for CTest, and <code>family</code>/<code>families</code> for harnesses.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Exact harnesses</h3>
-          <p>Harnesses can also run exact target keys through <code>targets</code>. CTest selection stays at the family level.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Selected workloads</h3>
-          <p>The workflow can run CTest only, harnesses only, or both. It rejects only the empty case where both lanes are set to <code>none</code>.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Normal Flow</p>
-        <h2>Pick one lane, or run both</h2>
-        <p>The workflow builds once, uploads that build as an artifact, then fans out the selected CTest and harness rows. Both lanes support full sweeps, one family, or comma-separated family batches; harnesses also support exact target keys.</p>
-      </div>
-      <div class="technical-grid">
-        <article class="technical-card">
-          <h3>1. Open Actions</h3>
-          <p>Use the <strong>Open workflow</strong> button at the top of this page, then click <code>Run workflow</code> in GitHub. Keep the branch on <code>main</code> unless you deliberately want to test another branch.</p>
-        </article>
-        <article class="technical-card">
-          <h3>2. Choose CTest coverage</h3>
-          <p>Use <code>cpp_test_mode: all</code> for the full CTest registry, <code>family_run</code> for one component family, or <code>batch_family_run</code> for a comma-separated batch.</p>
-        </article>
-        <article class="technical-card">
-          <h3>3. Choose harness coverage</h3>
-          <p>Use <code>dispatch_mode: full</code> for all registered mission harnesses, <code>none</code> to skip missions, or select <code>family_run</code>, <code>batch_family_run</code>, or <code>specific_harnesses</code>.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Selection Modes</p>
-        <h2>The two lanes use matching patterns</h2>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Pattern</th>
-              <th>CTest inputs</th>
-              <th>Harness inputs</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>Skip this lane</th>
-              <td><code>cpp_test_mode: none</code></td>
-              <td><code>dispatch_mode: none</code></td>
-            </tr>
-            <tr>
-              <th>Full sweep</th>
-              <td><code>cpp_test_mode: all</code></td>
-              <td><code>dispatch_mode: full</code></td>
-            </tr>
-            <tr>
-              <th>One family</th>
-              <td><code>cpp_test_mode: family_run</code><br><code>cpp_test_family: geometry</code></td>
-              <td><code>dispatch_mode: family_run</code><br><code>family: waypoint_behavior</code></td>
-            </tr>
-            <tr>
-              <th>Family batch</th>
-              <td><code>cpp_test_mode: batch_family_run</code><br><code>cpp_test_families: geometry,ivpbuild,mbutil</code></td>
-              <td><code>dispatch_mode: batch_family_run</code><br><code>families: convoy_behavior,cutrange_behavior,waypoint_behavior</code></td>
-            </tr>
-            <tr>
-              <th>Exact harnesses</th>
-              <td><span class="muted">Use one family or a family batch.</span></td>
-              <td><code>dispatch_mode: specific_harnesses</code><br><code>targets: cutrange_h01,waypoint_h01</code></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="example-values" class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Inputs</p>
-        <h2>Example values</h2>
-        <p>These examples show the same selection shapes on each side of the workflow form. Leave unused lane-specific fields unchanged; only the mode decides whether that lane runs.</p>
+        <p class="eyebrow">1. Build</p>
+        <h2>Build the edited MOOS-IvP branch and the tests</h2>
       </div>
       <div class="explain-stack">
         <article>
-          <h3>CTest one family</h3>
-          <pre><code>dispatch_mode: none
-cpp_test_mode: family_run
-cpp_test_family: geometry
-moos_ivp_ref: main</code></pre>
-        </article>
-        <article>
-          <h3>CTest family batch</h3>
-          <pre><code>dispatch_mode: none
-cpp_test_mode: batch_family_run
-cpp_test_families: geometry,ivpbuild,mbutil
-moos_ivp_ref: main</code></pre>
-        </article>
-        <article>
-          <h3>Harness family batch</h3>
-          <pre><code>dispatch_mode: batch_family_run
-families: convoy_behavior,cutrange_behavior,waypoint_behavior
-cpp_test_mode: none
-time_warp: 10
-moos_ivp_ref: main</code></pre>
-        </article>
-        <article>
-          <h3>Harness one family</h3>
-          <pre><code>dispatch_mode: family_run
-family: waypoint_behavior
-cpp_test_mode: none
-time_warp: 10
-moos_ivp_ref: main</code></pre>
-        </article>
-        <article>
-          <h3>Combined family run</h3>
-          <pre><code>dispatch_mode: family_run
-family: waypoint_behavior
-cpp_test_mode: family_run
-cpp_test_family: geometry
-time_warp: 10
-moos_ivp_ref: main</code></pre>
-        </article>
-        <article>
-          <h3>Harness targets with CTest family</h3>
-          <pre><code>dispatch_mode: specific_harnesses
-targets: cutrange_h01,waypoint_h01
-cpp_test_mode: family_run
-cpp_test_family: geometry
-time_warp: 10
-moos_ivp_ref: main</code></pre>
+          <h3>Build both</h3>
+          <pre><code>cd /path/to/moos-ivp
+git switch my-branch
+./build.sh
+
+cd /path/to/moos-ivp-cicd-testing
+./build.sh</code></pre>
         </article>
       </div>
-      <p class="guide-note">GitHub's manual workflow form does not support dynamic checkboxes from repository metadata, so batch selection uses comma-separated family names and exact harness selection uses comma-separated target keys.</p>
     </section>
 
-    <section id="target-keys" class="content-section">
+    <section id="example" class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Selectors</p>
-        <h2>Selector values</h2>
-        <p>Use these exact values in the GitHub Actions form. CTest values go in <code>cpp_test_family</code> or <code>cpp_test_families</code>. Harness family values go in <code>family</code> or <code>families</code>. Harness target keys go in <code>targets</code>.</p>
+        <p class="eyebrow">2. Test</p>
+        <h2>Example: editing <code>pEchoVar</code></h2>
+        <p>Run the focused CTest group, then the full <code>pEchoVar</code> harness.</p>
       </div>
-      <h3>CTest families</h3>
+      <div class="explain-stack">
+        <article>
+          <h3>Run the <code>pechovar</code> CTest group</h3>
+          <pre><code>cd tests/cpp
+./ctests.sh --pechovar</code></pre>
+          <p>Run <code>./ctests.sh</code> with no family option to test everything, or use <code>--help</code> to list the available families.</p>
+          <p>The first focused run may configure and build the selected CTest executables before testing. Later runs rebuild incrementally.</p>
+          <p><strong>Example success output</strong></p>
+          <pre><code>100% tests passed, 0 tests failed out of 31</code></pre>
+        </article>
+        <article>
+          <h3>Run the full <code>pEchoVar</code> harness</h3>
+          <pre><code>cd harnesses/pechovar_harnesses/H01-pechovar_unit
+./zlaunch.sh 10</code></pre>
+          <p><strong>Example success output</strong></p>
+          <pre><code>results=.../results.txt failures=0 total=33 jobs=1 elapsed_seconds=...</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section id="build-matrix" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Optional build matrix</p>
+        <h2>Check the native and Linux builds</h2>
+        <p>Run the normal build on this computer, then compile the same local MOOS-IvP checkout in the current Linux distribution and compiler targets.</p>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <pre><code>cd /path/to/moos-ivp-cicd-testing
+./build-matrix.sh</code></pre>
+          <p><strong>Example success output</strong></p>
+          <pre><code>Build matrix result: 5 passed, 0 failed</code></pre>
+          <p>Run <code>./build-matrix.sh --help</code> for native-only testing, focused Linux targets, and compatibility builds.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="harness-options" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Harness reference</p>
+        <h2>Common launch options</h2>
+        <p>Harness defaults vary with the mission. Run <code>./zlaunch.sh --help</code> for the exact values and case names supported by the harness you are using.</p>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Selector value</th>
-              <th>Coverage area</th>
+              <th>Option</th>
+              <th>Typical default</th>
+              <th>Purpose</th>
             </tr>
           </thead>
           <tbody>
-            {cpp_test_family_rows()}
+            <tr><td><code>[time_warp]</code></td><td><code>10</code></td><td>Set the MOOS time warp.</td></tr>
+            <tr><td><code>--case=NAME</code></td><td>All cases</td><td>Run one named case.</td></tr>
+            <tr><td><code>--jobs=N</code></td><td><code>1</code></td><td>Run cases concurrently.</td></tr>
+            <tr><td><code>--max_time=SECONDS</code></td><td>Harness-specific</td><td>Override the per-case timeout.</td></tr>
+            <tr><td><code>--port_base=N</code></td><td>Harness-specific</td><td>Move the run to another MOOS port range.</td></tr>
+            <tr><td><code>--port_stride=N</code></td><td>Harness-specific</td><td>Change spacing between case port blocks, when supported.</td></tr>
+            <tr><td><code>--log=minimal|full</code></td><td><code>minimal</code></td><td>Reduce CPU usage with minimal logging, or capture full logs for debugging.</td></tr>
+            <tr><td><code>--keep_workdirs</code></td><td>Off</td><td>Preserve isolated case directories after the run.</td></tr>
+            <tr><td><code>--gui</code> / <code>--nogui</code></td><td><code>--nogui</code></td><td>Enable or disable the mission viewer.</td></tr>
+            <tr><td><code>--just_make</code>, <code>-j</code></td><td>Off</td><td>Generate mission files without launching.</td></tr>
+            <tr><td><code>--verbose</code>, <code>-v</code></td><td>Off</td><td>Show rolling scheduler activity.</td></tr>
+            <tr><td><code>--help</code>, <code>-h</code></td><td>&mdash;</td><td>List the harness options and case names.</td></tr>
           </tbody>
         </table>
       </div>
-      <h3>Harness target keys</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Selector value</th>
-              <th>Harness family</th>
-              <th>Harness</th>
-            </tr>
-          </thead>
-          <tbody>
-            {manual_target_rows()}
-          </tbody>
-        </table>
+      <div class="explain-stack">
+        <article>
+          <h3>Rerun a failure with full diagnostics</h3>
+          <pre><code>./zlaunch.sh --case=CASE --log=full --keep_workdirs 10</code></pre>
+          <p><code>--log=full</code> restores comprehensive logging. <code>--keep_workdirs</code> retains the generated mission and logs; the final <code>workdirs=...</code> field gives their location.</p>
+        </article>
       </div>
-      <p class="guide-note">Use <code>full</code> to run all registered mission harnesses and <code>all</code> to run the full CTest registry. Family batches remain useful when you want broad but bounded coverage.</p>
+      <p>Some harnesses also provide specialized selectors such as <code>--group=NAME</code> or performance timing profiles such as <code>--profile=local|ci</code>.</p>
     </section>
 
     <section class="workflow">
-      <p class="eyebrow">Interpreting Results</p>
-      <h2>What success means</h2>
-      <div class="guide-figures">
-        <figure class="guide-figure">
-          <img src="assets/images/workflow-graph-ctest-runtime-example.png" alt="GitHub Actions workflow graph showing prepare, build, ctest geometry, and runtime harness jobs">
-          <figcaption>Example run <a href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/runs/25176874485">25176874485</a> selected one CTest family and two runtime harness jobs. The graph shows one shared build feeding both selected lanes.</figcaption>
-        </figure>
-        <article class="run-summary-example">
-          <h3>Reading a passing run</h3>
-          <ul class="summary-meta">
-            <li>CTest row: <code>ctest / geometry</code></li>
-            <li>Runtime matrix: <code>2 jobs completed</code></li>
-            <li>Requested MOOS-IvP ref: <code>main</code></li>
-            <li>Workflow verdict: <code class="result-pass">green</code></li>
-          </ul>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Stage</th>
-                  <th>What it proves</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th><code>prepare</code></th>
-                  <td>Inputs were valid and resolved into CTest and harness matrix rows.</td>
-                </tr>
-                <tr>
-                  <th><code>build</code></th>
-                  <td>MOOS-IvP and this repo built once, then the shared build artifact was published.</td>
-                </tr>
-                <tr>
-                  <th><code>ctest / geometry</code></th>
-                  <td>The selected CTest family passed and produced a JUnit report artifact.</td>
-                </tr>
-                <tr>
-                  <th><code>runtime / ...</code></th>
-                  <td>Each selected harness ran its case matrix and uploaded its result summary.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-      </div>
-      <ol>
-        <li><code>prepare</code> validates the workflow inputs and resolves CTest families and harness selections into matrix rows.</li>
-        <li><code>build</code> compiles once and validates the CTest registry before either test lane runs.</li>
-        <li>Each <code>ctest / &lt;family&gt;</code> row runs the selected CTest family and uploads JUnit XML.</li>
-        <li>Each <code>runtime / &lt;key&gt; / &lt;harness&gt;</code> row runs one harness <code>zlaunch.sh</code> and uploads <code>results.txt</code>.</li>
-        <li>A green run means every selected CTest row passed and every selected harness completed with its expected case matrix.</li>
-      </ol>
-      <div class="workflow-actions">
-        <a class="text-link" href="https://github.com/cbenjamin23/moos-ivp-cicd-testing/actions/runs/25176874485">Open example run</a>
-        <a class="text-link" href="technical.html">Read the technical architecture</a>
-      </div>
+      <p class="eyebrow">Result</p>
+      <h2>Check pass or fail</h2>
+      <p>CTest passes with <code>100% tests passed</code>. The harness passes with <code>failures=0</code>. The optional build matrix passes with <code>0 failed</code>. Open <code>results.txt</code> only when you want the per-case harness details.</p>
     </section>
   </main>
 """
-    return page_shell("User Guide", body)
+    return page_shell("Developer Quick Start", body)
 
 
 def render_index() -> str:
@@ -2967,7 +2783,8 @@ def render_index() -> str:
         <h1>Regression tests for MOOS-IvP Apps, Behaviors, and Libraries</h1>
         <p class="lede">This workspace collects fast CTest coverage for source-level component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
         <div class="hero-actions">
-          <a class="button primary" href="#families">Browse catalog</a>
+          <a class="button primary" href="quick-start.html">Developer quick start</a>
+          <a class="button secondary" href="#families">Browse catalog</a>
           <a class="button secondary" href="ctest-coverage.html">CTest coverage</a>
           <a class="button secondary" href="technical.html">Technical overview</a>
         </div>
@@ -3137,24 +2954,24 @@ def render_technical() -> str:
         <p class="eyebrow">Core Terms</p>
         <h2>Vocabulary for the rest of the site</h2>
       </div>
-      <dl class="term-list">
-        <div class="term-item">
-          <dt>CTest target</dt>
-          <dd>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</dd>
-        </div>
-        <div class="term-item">
-          <dt>CTest family</dt>
-          <dd>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors_marine</code>.</dd>
-        </div>
-        <div class="term-item">
-          <dt>Mission stem</dt>
-          <dd>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</dd>
-        </div>
-        <div class="term-item">
-          <dt>Harness case</dt>
-          <dd>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</dd>
-        </div>
-      </dl>
+      <div class="term-list">
+        <article class="term-item">
+          <h3>CTest target</h3>
+          <p>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</p>
+        </article>
+        <article class="term-item">
+          <h3>CTest family</h3>
+          <p>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</p>
+        </article>
+        <article class="term-item">
+          <h3>Mission stem</h3>
+          <p>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</p>
+        </article>
+        <article class="term-item">
+          <h3>Harness case</h3>
+          <p>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</p>
+        </article>
+      </div>
     </section>
 
     <section class="technical-grid">
@@ -3260,9 +3077,9 @@ def render_technical() -> str:
           <a class="text-link" href="index.html#families">Open catalog</a>
         </article>
         <article class="technical-card">
-          <h3>Repository README</h3>
-          <p>Use the README for repository setup notes, directory context, and links into the source tree.</p>
-          <a class="text-link" href="{repo_url('README.md')}">Open README</a>
+          <h3>Developer Quick Start</h3>
+          <p>Build a local MOOS-IvP branch, then run a focused CTest group and its full mission harness.</p>
+          <a class="text-link" href="quick-start.html">Open quick start</a>
         </article>
       </div>
     </section>
@@ -3361,6 +3178,7 @@ def render_gif_manifest() -> str:
 
 def main() -> None:
     write(ROOT / "index.html", render_index())
+    write(ROOT / "quick-start.html", render_quick_start())
     write(ROOT / "ctest-coverage.html", render_ctest_coverage())
     write(ROOT / "technical.html", render_technical())
     for harness in HARNESSES:

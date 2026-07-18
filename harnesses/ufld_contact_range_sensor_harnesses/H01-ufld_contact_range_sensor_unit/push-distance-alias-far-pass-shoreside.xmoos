@@ -1,0 +1,35 @@
+ProcessConfig = uFldContactRangeSensor
+{
+  AppTick = 4
+  CommsTick = 4
+  ping_wait = default=0
+  report_vars = short
+
+  push_distance = default=unlimited
+  pull_distance = default=10
+}
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldContactRangeSensor
+  event = var=EXPECT_SHORT_MIN, val="vname=alpha,range=500,target=bravo,time=", time=0.1
+  event = var=EXPECT_SHORT_MAX, val="vname=alpha,range=500,target=bravo,time=~", time=0.1
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=0,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=0.5
+  event = var=NODE_REPORT, val="NAME=bravo,TYPE=KAYAK,GROUP=blue,UTC_TIME=100,X=500,Y=0,LAT=43.825300,LON=-70.324178,SPD=0,HDG=180", time=0.7
+  event = var=CRS_RANGE_REQUEST, val="name=alpha", time=1.5
+  event = var=TEST_EVAL_READY, val=true, time=6.0
+}
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = CRS_RANGE_REPORT >= $ (EXPECT_SHORT_MIN)
+  pass_condition = CRS_RANGE_REPORT < $ (EXPECT_SHORT_MAX)
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  report_column = grade=$[GRADE]
+  report_column = eval=$[TEST_EVAL_READY]
+  report_file = results.txt
+}

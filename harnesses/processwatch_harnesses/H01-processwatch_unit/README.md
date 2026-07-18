@@ -18,23 +18,30 @@ apps as watched subjects.
 ## Run
 
 ```sh
-./zlaunch.sh --jobs=3 --port_base=11600 --max_time=40 10
+./zlaunch.sh --jobs=3 --port_base=11600 --max_time=180 10
 ```
 
 Run one inspectable case:
 
 ```sh
-./zlaunch.sh --case=processwatch_missing_awol_fail --port_base=11600 --max_time=40 10
+./zlaunch.sh --case=processwatch_missing_awol_fail --port_base=11600 --max_time=180 10
 ```
 
 Results are emitted as `case=<name>` followed by the mission-owned row. The
 expected-AWOL case reports `grade=pass` when the absent-process evidence is
 observed, with `expected=watch_awol`.
 
+Every selected case runs from its own mission copy and port block. `--jobs=N`
+uses rolling scheduling, so a new case starts as soon as any active case ends.
+Use `--keep_workdirs` to retain the per-case missions, logs, and result rows for
+inspection.
+
 Latest validation:
 
-- May 20, 2026
-- focused expected-AWOL case:
-  `./zlaunch.sh --case=processwatch_missing_awol_fail --port_base=22800 --max_time=40 10`
-- grouped matrix: `7/7` cases passed with `--jobs=3 --port_base=22900 --max_time=40 10`
-- serial matrix: `7/7` cases passed with `--port_base=23150 --max_time=40 10`
+- July 15, 2026
+- focused expected-AWOL case: three consecutive passes with
+  `--max_time=180 10`
+- grouped matrix: three `7/7` rolling passes with `--jobs=3 --max_time=180 10`
+- serial matrix: `7/7` cases passed with `--jobs=1 --max_time=180 10`
+- retained inspection confirmed one target, intended sidecar, log, and
+  mission-owned result row per case, with no remaining mission processes

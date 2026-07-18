@@ -159,25 +159,53 @@ From this harness directory:
 ./zlaunch.sh --jobs=4 --port_base=26000 10
 ```
 
-From the paired mission directory, named cases are forwarded to this harness:
+The paired mission launcher remains a single-scenario launcher. It accepts the
+mission modifier, custom chaser start, and all six MOOSDB/pShare ports directly:
 
 ```bash
-./zlaunch.sh --case=runtime_max_mark_short_pass --gui 1
+./zlaunch.sh --mmod=static_convoy_pass --vpos1=x=-20,y=-80,heading=90 \
+  --shore_mport=26000 --veh1_mport=26001 --veh2_mport=26002 \
+  --shore_pshare=26010 --veh1_pshare=26011 --veh2_pshare=26012 10
 ```
 
 The geometry-entry cases are evaluated at 65 seconds and require `QLEN >= 2`,
 `TLEN` between 10 and 95 meters, `MXRNG = 80`, `AVG2 >= 1`, a moving target
 and chaser, chaser `Y` between -102 and -58, and no behavior error.
 
-The full matrix currently has 48 cases. Wave mode uses isolated temp mission
-copies and deterministic two-vehicle port blocks:
+The full matrix currently has 48 cases. Serial and rolling modes both use one
+isolated mission copy and one deterministic two-vehicle port block per case:
 `case_base = port_base + case_idx*PORT_STRIDE`, with MOOSDB ports at
-`case_base + 0..2` and pShare ports at `case_base + 10..12`. Do not overlap it
-with other MOOS harnesses on the same machine.
+`case_base + 0..2` and pShare ports at `case_base + 10..12`. The harness
+requires Bash 5.1 or newer and prevents a second invocation from starting
+while one is active. Do not overlap it with other MOOS harnesses on the same
+machine.
 
 Latest validation:
 
-- April 27, 2026
-- generated-file matrix: `48/48` cases completed with `--just_make --jobs=4 --port_base=15000`
-- full wave matrix: `48/48` expected outcomes matched
-- command: `./zlaunch.sh --jobs=4 --port_base=15000 10`
+- July 16, 2026
+- generated-file matrix: `48/48` isolated cases completed
+- migrated rolling matrices: `144/144` rows passed in 150.14, 157.45, and
+  148.09 seconds
+- migrated isolated serial matrix: `48/48` rows passed in 564.49 seconds
+- untouched legacy rolling mean: 186.59 seconds; legacy serial: 552.52 seconds
+
+The migration preserved every case mapping, patch, evaluator condition, event
+time, behavior value, grading variable, custom start position, and the
+`lead_s_turn_pass` 170-second case ceiling. One of four untouched legacy full
+matrices narrowly failed that S-turn case with `ABE_NAV_SPEED=0.34` against its
+existing 0.35 condition. The unchanged case then passed 5/5 focused legacy
+repetitions, its migrated focused run, all three migrated rolling matrices,
+and migrated serial. The outlier is recorded rather than hidden or fixed by
+weakening the test.
+
+Validation also covered standalone generation and live execution, exact case
+order, rolling refill, 144 unique MOOSDB ports and 144 non-overlapping pShare
+ports, intended sidecars, unknown-case rejection, active-lock behavior, and
+Bash 3.2 rejection. Disposable fault injection verified normalized
+`missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax,
+ShellCheck, and both skill static checkers pass. No tested MOOS process
+survived cleanup.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for a fully logged diagnostic case. Full mode
+restores one shoreside and both vehicle loggers before case overlays.

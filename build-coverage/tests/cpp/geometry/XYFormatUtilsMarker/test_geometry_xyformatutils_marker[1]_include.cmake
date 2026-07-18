@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsMarker/test_geometry_xyformatutils_marker[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/geometry/XYFormatUtilsMarker/test_geometry_xyformatutils_marker[1]_tests.cmake")
-else()
-  add_test(test_geometry_xyformatutils_marker_NOT_BUILT test_geometry_xyformatutils_marker_NOT_BUILT)
-endif()

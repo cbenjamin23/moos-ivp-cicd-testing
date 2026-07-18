@@ -15,13 +15,14 @@
     </a>
     <div class="header-actions">
       <nav>
+        <a href="../quick-start.html">Quick Start</a>
         <a href="../index.html#families">Harnesses</a>
         <a href="../ctest-coverage.html">CTest Coverage</a>
         <a href="../technical.html">Technical</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
-        <span class="theme-switch-track" aria-hidden="true"></span>
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
       </label>
     </div>
   </header>
@@ -124,13 +125,13 @@
 
         <article class="case-row">
           <code>given_general_alert_pass</code>
-          <p>A broader general_alert variable should post even when the main alert range is too tight for the obstacle. The mission grades only when the obstacle is accepted and the general-alert publication is present at the checkpoint.</p>
+          <p>A broader general_alert variable should post even when the main alert range is too tight for the obstacle. The mission requires the obstacle to be accepted and the complete named general-alert payload to match.</p>
         </article>
 
 
         <article class="case-row">
           <code>general_alert_default_name_pass</code>
-          <p>The same general-alert configuration should work without an explicit name= field, using the default gen_alert_ prefix.</p>
+          <p>The same general-alert configuration should work without an explicit name= field, using the default gen_alert_ prefix in the complete payload.</p>
         </article>
 
 
@@ -232,7 +233,7 @@
 
         <article class="case-row">
           <code>point_vsource_alert_pass</code>
-          <p>Point inputs may include vsource=..., and the alert payload should preserve that source tag when a hull update is posted. The mission grades on alert and distance, while the harness verifies the vsource=radar token in the result line.</p>
+          <p>Point inputs may include vsource=..., and the alert payload should preserve that source tag when a hull update is posted. pMissionEval requires the expected distance and the complete obstacle-alert payload.</p>
         </article>
 
 
@@ -250,7 +251,7 @@
 
         <article class="case-row">
           <code>disable_vsource_pass</code>
-          <p>The modification parser also accepts vsource=... selectors, not only bare obstacle IDs. This case sends a vsource disable command and checks that the resulting filter message preserves vsource=radar,action=disable.</p>
+          <p>The modification parser also accepts vsource=... selectors, not only bare obstacle IDs. This case sends a vsource disable command, and pMissionEval requires the complete vsource=radar,action=disable filter message.</p>
         </article>
 
 

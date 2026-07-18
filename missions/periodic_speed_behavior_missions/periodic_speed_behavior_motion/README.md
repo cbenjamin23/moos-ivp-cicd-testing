@@ -14,5 +14,8 @@ Typical commands:
 ./zlaunch.sh 10
 ```
 
+Logging is minimal by default. Add `--log=full` to either launcher to restore
+the stem's original shoreside and vehicle `pLogger` configuration.
+
 Harness cases are in
 `harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion`.

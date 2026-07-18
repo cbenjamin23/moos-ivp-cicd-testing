@@ -1,0 +1,47 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 80
+  Run = MOOSDB @ NewConsole = false
+  Run = pRealm @ NewConsole = false
+  Run = pLogger @ NewConsole = false
+  Run = pMissionEval @ NewConsole = false
+  Run = uFldScope @ NewConsole = false
+  Run = uTimerScript @ NewConsole = false
+}
+
+ProcessConfig = uFldScope
+{
+  AppTick = 4
+  CommsTick = 4
+  scope = var=NODE_REPORT,key=NAME,fld=MODE
+  scope = var=UPC_SPEED_REPORT,key=vname,fld=avg_spd,alias=speed
+  scope = var=UPC_ODOMETRY_REPORT,key=vname,fld=trip_dist
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  block_on = pMissionEval, uFldScope
+  event = var=NODE_REPORT, val="NAME=alpha,MODE=survey,X=0,Y=0,SPD=0,HDG=0", time=0.5
+  event = var=UPC_SPEED_REPORT, val="vname=alpha,avg_spd=2.5", time=0.7
+  event = var=UPC_ODOMETRY_REPORT, val="vname=alpha,trip_dist=12,total_dist=40", time=0.9
+  event = var=APPCAST_REQ, val="node=shoreside,app=uFldScope,duration=4,key=harness,thresh=any", time=2.2
+  event = var=TEST_DRIVER_DONE, val=true, time=4.0
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_DRIVER_DONE = true
+  result_flag = MISSION_EVALUATED = true
+  mission_form = ufield_app_unit
+  mission_mod = $(MMOD:=baseline)
+  report_column = grade=$[GRADE]
+  report_column = ready=$[TEST_EVAL_READY]
+  report_column = done=$[TEST_DRIVER_DONE]
+  report_file = results.txt
+}

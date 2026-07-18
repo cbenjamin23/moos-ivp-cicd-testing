@@ -19,3 +19,6 @@ Run through the mission automation wrapper:
 ```sh
 ./zlaunch.sh --max_time=30 --nogui 10
 ```
+
+Logging is minimal by default. Add `--log=full` to either launcher to restore
+the stem's original shoreside `pLogger` configuration.

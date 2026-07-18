@@ -1,196 +1,330 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
+#  Harness: H03-colregs_execution
 #   Author: Charles Benjamin
-#   LastEd: Mar 2026
+#   LastEd: Jul 2026
 #------------------------------------------------------------
-vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
-on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
-trap on_exit SIGINT
-trap "echo zlaunch.sh has received sigterm" SIGTERM
 
-ME=`basename "$0"`
-TIME_WARP="10"
-VERBOSE=""
-JUST_MAKE=""
-MAX_TIME="120"
-NOGUI="--nogui"
-CASE=""
-JOBS="1"
-PORT_BASE="10080"
-PORT_BASE_SET="no"
-PORT_STRIDE="30"
-KEEP_WORKDIRS="no"
-RESULTS_FILE="$PWD/results.txt"
-HARNESS_DIR="$PWD"
-REPO_DIR="$(cd "$HARNESS_DIR/../../.." && pwd)"
-MISSION_DIR="$REPO_DIR/missions/colregs_missions/colregs_unit"
-TEARDOWN_HELPER="$REPO_DIR/scripts/harness_teardown.sh"
-ALL_OK="yes"
-SHORE_STEM="$MISSION_DIR/meta_shoreside.moos"
-SHORE_XFILE="$MISSION_DIR/meta_shoreside.moosx"
-RUN_ROOT=""
-CASE_ROW_DIR=""
-
-if [ -f "$TEARDOWN_HELPER" ]; then
-    . "$TEARDOWN_HELPER"
-else
-    echo "$ME: Missing teardown helper: $TEARDOWN_HELPER"
-    exit 1
+need_bash=5.1
+if [ -z "${BASH_VERSION:-}" ]; then
+    echo "zlaunch.sh: run this harness as ./zlaunch.sh with Bash >= $need_bash." >&2
+    exit 2
 fi
 
-for ARGI; do
-    if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
-        echo "$ME [OPTIONS] [time_warp]"
-        echo ""
-        echo "Options:"
-        echo "  --help, -h         Show this help message"
-        echo "  --verbose, -v      Verbose, confirm launch"
-        echo "  --just_make, -j    Only create targ files"
-        echo "  --max_time=<secs>  Max time passed to xlaunch"
-        echo "  --gui              Launch with pMarineViewer"
-        echo "  --nogui, -ng       Headless launch, no gui"
-        echo "  --case=<name>      Run one named case"
-        echo "  --jobs=<n>         Run up to n cases per wave"
-        echo "  --port_base=<n>    Base port for per-case wave blocks"
-        echo "  --keep_workdirs    Keep temp mission copies in wave mode"
-        echo "                     head_on_execution_pass"
-        echo "                     head_on_cpa_fallback_execution_pass"
-        echo "                     head_on_port_offset_execution_pass"
-        echo "                     head_on_starboard_offset_execution_pass"
-        echo "                     crossing_starboard_giveway_execution_pass"
-        echo "                     crossing_starboard_giveway_far_execution_pass"
-        echo "                     crossing_starboard_giveway_close_execution_pass"
-        echo "                     crossing_port_standon_execution_pass"
-        echo "                     crossing_port_standon_unsure_bow_execution_pass"
-        echo "                     crossing_port_standon_stern_execution_pass"
-        echo "                     crossing_port_standon_far_execution_pass"
-        echo "                     crossing_port_standon_close_execution_pass"
-        echo "                     crossing_port_standon_close_unsure_bow_execution_pass"
-        echo "                     crossing_port_standon_unsure_execution_pass"
-        echo "                     overtaking_starboard_execution_pass"
-        echo "                     overtaking_starboard_range_far_execution_pass"
-        echo "                     overtaking_starboard_small_gap_execution_pass"
-        echo "                     overtaking_starboard_mirror_execution_pass"
-        echo "                     overtaking_starboard_mirror_range_far_execution_pass"
-        echo "                     overtaking_starboard_mirror_small_gap_execution_pass"
-        echo "                     overtaking_starboard_mirror_large_gap_execution_pass"
-        echo "                     overtaken_port_standon_execution_pass"
-        echo "                     overtaken_port_standon_midrange_execution_pass"
-        echo "                     overtaken_starboard_standon_midrange_execution_pass"
-        exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 10 ]; then
-        TIME_WARP=$ARGI
-    elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
-        VERBOSE="yes"
-    elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
-        JUST_MAKE="yes"
-    elif [ "${ARGI:0:11}" = "--max_time=" ]; then
-        MAX_TIME="${ARGI#--max_time=*}"
-    elif [ "${ARGI}" = "--gui" ]; then
-        NOGUI=""
-    elif [ "${ARGI}" = "--nogui" ] || [ "${ARGI}" = "-ng" ]; then
-        NOGUI="--nogui"
-    elif [ "${ARGI:0:7}" = "--case=" ]; then
-        CASE="${ARGI#--case=*}"
-    elif [ "${ARGI:0:7}" = "--jobs=" ]; then
-        JOBS="${ARGI#--jobs=*}"
-    elif [ "${ARGI:0:12}" = "--port_base=" ]; then
-        PORT_BASE="${ARGI#--port_base=*}"
-        PORT_BASE_SET="yes"
-    elif [ "${ARGI}" = "--keep_workdirs" ]; then
-        KEEP_WORKDIRS="yes"
-    else
-        echo "$ME: Bad arg: $ARGI"
-        exit 1
+have_bash51() {
+    (( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1) ))
+}
+
+if ! have_bash51; then
+    if [ "${HARNESS_DISABLE_BASH_REEXEC:-}" != 1 ]; then
+        for bash_candidate in "${HARNESS_BASH:-}" /opt/homebrew/bin/bash /usr/local/bin/bash /home/linuxbrew/.linuxbrew/bin/bash; do
+            [ -n "$bash_candidate" ] && [ -x "$bash_candidate" ] || continue
+            if "$bash_candidate" -c '(( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1) ))' 2>/dev/null; then
+                echo "zlaunch.sh: re-running with $bash_candidate for Bash >= $need_bash" >&2
+                exec "$bash_candidate" "$0" "$@"
+            fi
+        done
     fi
+    echo "zlaunch.sh: Bash >= $need_bash is required for rolling --jobs scheduling." >&2
+    echo "Detected Bash: $BASH_VERSION" >&2
+    echo "On macOS, install Homebrew Bash or run: HARNESS_BASH=/opt/homebrew/bin/bash ./zlaunch.sh" >&2
+    exit 2
+fi
+
+set -u
+
+ME=$(basename "$0")
+HARNESS_DIR=$(cd "$(dirname "$0")" && pwd)
+REPO_DIR=$(cd "$HARNESS_DIR/../../.." && pwd)
+MISSION_DIR="$REPO_DIR/missions/colregs_missions/colregs_unit"
+TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
+RESULTS_FILE="$HARNESS_DIR/results.txt"
+RUNS_DIR="$HARNESS_DIR/.harness_runs"
+LOCK_DIR="$HARNESS_DIR/.harness_runs.lock"
+RUN_ROOT=""
+
+TIME_WARP=10
+MAX_TIME=120
+JOBS=1
+PORT_BASE=9000
+PORT_STRIDE=30
+PSHARE_OFFSET=15
+KEEP_WORKDIRS=no
+VERBOSE=no
+JUST_MAKE=no
+LOG_MODE=minimal
+DISPLAY_ARGS=(--nogui)
+CASE=""
+HAVE_LOCK=no
+CLEANED=no
+CLEANUP_FAILED=no
+FINISH_FATAL_REASON=""
+
+CASES=(
+    head_on_execution_pass
+    head_on_cpa_fallback_execution_pass
+    head_on_port_offset_execution_pass
+    head_on_starboard_offset_execution_pass
+    crossing_starboard_giveway_execution_pass
+    crossing_starboard_giveway_far_execution_pass
+    crossing_starboard_giveway_close_execution_pass
+    crossing_port_standon_execution_pass
+    crossing_port_standon_unsure_bow_execution_pass
+    crossing_port_standon_stern_execution_pass
+    crossing_port_standon_far_execution_pass
+    crossing_port_standon_close_execution_pass
+    crossing_port_standon_close_unsure_bow_execution_pass
+    crossing_port_standon_unsure_execution_pass
+    overtaking_starboard_execution_pass
+    overtaking_starboard_range_far_execution_pass
+    overtaking_starboard_small_gap_execution_pass
+    overtaking_starboard_mirror_execution_pass
+    overtaking_starboard_mirror_range_far_execution_pass
+    overtaking_starboard_mirror_small_gap_execution_pass
+    overtaking_starboard_mirror_large_gap_execution_pass
+    overtaken_port_standon_midrange_execution_pass
+    overtaken_starboard_standon_midrange_execution_pass
+)
+
+EXPLORATORY_CASES=(
+    overtaken_port_standon_execution_pass
+)
+
+declare -a SELECTED_CASES CASE_RESULT
+declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
+
+usage() {
+    local case_name
+    cat <<EOF
+$ME [OPTIONS] [time_warp]
+
+Options:
+  --help, -h         Show this help message
+  --verbose, -v      Show rolling scheduler events
+  --just_make, -j    Prepare each case without launching it
+  --log=<mode>       Logging mode: minimal (default) or full
+  --max_time=<secs>  Maximum time passed to each stem mission
+  --case=<name>      Run one named case
+  --jobs=<n>         Run up to n cases concurrently with rolling scheduling
+  --port_base=<n>    Base MOOS port for per-case blocks
+  --port_stride=<n>  Port spacing between case blocks (minimum 18)
+  --keep_workdirs    Keep this invocation's isolated case directories
+  --gui              Launch with pMarineViewer
+  --nogui, -ng       Headless launch, no gui (default)
+
+Default cases:
+EOF
+    for case_name in "${CASES[@]}"; do
+        printf '  %s\n' "$case_name"
+    done
+    cat <<EOF
+
+Manual exploratory cases (available only through --case):
+EOF
+    for case_name in "${EXPLORATORY_CASES[@]}"; do
+        printf '  %s\n' "$case_name"
+    done
+    cat <<EOF
+
+Examples:
+  ./$ME
+  ./$ME --case=head_on_execution_pass
+  ./$ME --jobs=4 --port_base=22000
+  ./$ME --just_make --case=overtaken_port_standon_midrange_execution_pass
+EOF
+}
+
+die() {
+    echo "$ME: $*" >&2
+    exit 2
+}
+
+is_uint() {
+    [[ "$1" =~ ^[0-9]+$ ]]
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --case=*)
+            CASE="${arg#--case=}"
+            [ -n "$CASE" ] || die "--case requires a nonempty case name"
+            ;;
+        --jobs=*) JOBS="${arg#--jobs=}" ;;
+        --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
+        --port_stride=*) PORT_STRIDE="${arg#--port_stride=}" ;;
+        --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
+        --keep_workdirs) KEEP_WORKDIRS=yes ;;
+        --verbose|-v) VERBOSE=yes ;;
+        --just_make|-j) JUST_MAKE=yes ;;
+        --gui) DISPLAY_ARGS=() ;;
+        --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
+        --help|-h) usage; exit 0 ;;
+        *[!0-9]*|'') die "bad argument: $arg" ;;
+        *) TIME_WARP="$arg" ;;
+    esac
 done
 
-if ! echo "$JOBS" | grep -Eq '^[0-9]+$' || [ "$JOBS" -lt 1 ]; then
-    echo "$ME: Bad value for --jobs: [$JOBS]"
-    exit 1
-fi
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
-if ! echo "$PORT_BASE" | grep -Eq '^[0-9]+$'; then
-    echo "$ME: Bad value for --port_base: [$PORT_BASE]"
-    exit 1
-fi
+is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
+is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
+is_uint "$PORT_BASE" && [ "${#PORT_BASE}" -le 5 ] || die "--port_base must be an integer from 1 through 65535"
+is_uint "$PORT_STRIDE" && [ "${#PORT_STRIDE}" -le 5 ] || die "--port_stride must be a bounded integer of at least 18"
+is_uint "$MAX_TIME" && [ "${#MAX_TIME}" -le 9 ] || die "--max_time must be a bounded positive integer"
 
-wait_for_result_line() {
-    local results_path="$1"
-    local attempts="${2:-40}"
-    local line=""
-    local attempt
+TIME_WARP=$((10#$TIME_WARP))
+JOBS=$((10#$JOBS))
+PORT_BASE=$((10#$PORT_BASE))
+PORT_STRIDE=$((10#$PORT_STRIDE))
+MAX_TIME=$((10#$MAX_TIME))
 
-    for attempt in $(seq 1 "$attempts"); do
-        line=$(tail -n 1 "$results_path" 2>/dev/null)
-        if echo "$line" | grep -q 'grade='; then
-            echo "$line"
-            return 0
-        fi
-        sleep 0.25
+[ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
+[ "$JOBS" -gt 0 ] || die "--jobs must be a positive integer"
+[ "$PORT_BASE" -gt 0 ] && [ "$PORT_BASE" -le 65535 ] || die "--port_base must be an integer from 1 through 65535"
+[ "$PORT_STRIDE" -ge 18 ] || die "--port_stride must be at least 18"
+[ "$MAX_TIME" -gt 0 ] || die "--max_time must be a positive integer"
+
+[ -d "$MISSION_DIR" ] || die "mission directory not found: $MISSION_DIR"
+[ -f "$TEARDOWN_HELPER" ] || die "missing teardown helper: $TEARDOWN_HELPER"
+# shellcheck source=/dev/null
+. "$TEARDOWN_HELPER"
+
+case_is_known() {
+    local wanted="$1"
+    local case_name
+    for case_name in "${CASES[@]}" "${EXPLORATORY_CASES[@]}"; do
+        [ "$case_name" = "$wanted" ] && return 0
     done
-
-    echo "$line"
     return 1
 }
 
-extract_field() {
+select_cases() {
+    SELECTED_CASES=()
+    if [ -n "$CASE" ]; then
+        case_is_known "$CASE" || die "unknown case: $CASE"
+        SELECTED_CASES=("$CASE")
+        return 0
+    fi
+    SELECTED_CASES=("${CASES[@]}")
+    [ "${#SELECTED_CASES[@]}" -gt 0 ] || die "no cases selected"
+}
+
+field_value() {
     local line="$1"
     local key="$2"
-    echo "$line" | sed -n "s/.*$key=\\([^ ]*\\).*/\\1/p"
+    local field
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            "$key"=*) printf '%s\n' "${field#*=}"; return 0 ;;
+        esac
+    done
+    return 1
 }
 
-float_gt() {
-    awk -v a="$1" -v b="$2" 'BEGIN { exit !(a > b) }'
+field_count() {
+    local line="$1"
+    local key="$2"
+    local field
+    local count=0
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            "$key"=*) count=$((count + 1)) ;;
+        esac
+    done
+    printf '%s\n' "$count"
 }
 
-clear_xfiles() {
-    rm -f "$SHORE_XFILE"
+without_case_field() {
+    local line="$1"
+    local field
+    local output=""
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            case=*) ;;
+            *) output="${output:+$output }$field" ;;
+        esac
+    done
+    printf '%s\n' "$output"
 }
 
-cleanup() {
-    local start_dir="$PWD"
-    if [ -d "$MISSION_DIR" ]; then
-        cd "$MISSION_DIR"
-        clear_xfiles
-        ./clean.sh >/dev/null 2>&1 || true
-        stop_mission_apps "$MISSION_DIR"
+runner_provenance() {
+    local line="$1"
+    local field
+    local output=""
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            case=*) field="mission_case=${field#*=}" ;;
+            grade=*) field="mission_grade=${field#*=}" ;;
+            reason=*) field="mission_reason=${field#*=}" ;;
+            launch_rc=*) field="mission_launch_rc=${field#*=}" ;;
+        esac
+        output="${output:+$output }$field"
+    done
+    printf '%s\n' "$output"
+}
+
+stop_root() {
+    if ! moos_scoped_teardown_stop_root "$1"; then
+        echo "$ME: scoped teardown failed for $1" >&2
+        return 1
     fi
-    cd "$start_dir"
-    if [ "$RUN_ROOT" != "" ]; then
-        stop_mission_apps "$RUN_ROOT"
-    fi
-    if [ "$KEEP_WORKDIRS" != "yes" ] && [ "$RUN_ROOT" != "" ]; then
-        rm -rf "$RUN_ROOT"
-    fi
 }
 
-stop_mission_apps() {
-    local mission_root="${1:-$MISSION_DIR}"
-    harness_teardown_stop_root "$mission_root"
-}
-
-prepare_case_dir() {
-    local case_dir="$1"
-    cp -R "$MISSION_DIR"/. "$case_dir"/
-    (
-        cd "$case_dir"
-        ./clean.sh >/dev/null 2>&1 || true
-    )
-
-    local shore_stem="$case_dir/meta_shoreside.moos"
-    local shore_xfile="$case_dir/meta_shoreside.moosx"
-    if [ "$SHORE_PATCH" != "" ]; then
-        nspatch --stem="$shore_stem" "$SHORE_PATCH" --targ="$shore_xfile"
+cleanup_runtime() {
+    local pid
+    local root_stopped=yes
+    [ "$CLEANED" = no ] || return 0
+    for pid in "${!PID_CASE[@]}"; do
+        kill "$pid" 2>/dev/null || true
+    done
+    wait 2>/dev/null || true
+    if [ -n "$RUN_ROOT" ] && [ -d "$RUN_ROOT" ]; then
+        if ! stop_root "$RUN_ROOT"; then
+            root_stopped=no
+            CLEANUP_FAILED=yes
+        fi
+        if [ "$KEEP_WORKDIRS" != yes ] && [ "$root_stopped" = yes ] &&
+           [ "$CLEANUP_FAILED" = no ]; then
+            rm -rf "$RUN_ROOT"
+        fi
     fi
+    rmdir "$RUNS_DIR" 2>/dev/null || true
+    if [ "$HAVE_LOCK" = yes ]; then
+        if [ "$CLEANUP_FAILED" = yes ]; then
+            echo "$ME: retaining safety lock after teardown failure: $LOCK_DIR" >&2
+            echo "$ME: retained run root for manual recovery: $RUN_ROOT" >&2
+        else
+            rmdir "$LOCK_DIR" 2>/dev/null || true
+            HAVE_LOCK=no
+        fi
+    fi
+    CLEANED=yes
 }
+
+on_signal() {
+    exit 130
+}
+
+trap cleanup_runtime EXIT
+trap on_signal INT TERM PIPE
 
 get_case_config() {
     CASE_NAME="$1"
-    EXPECTED="pass"
     SHORE_PATCH="$HARNESS_DIR/${CASE_NAME//_/-}-shoreside.xmoos"
-    MAX_WALL="12"
+    MAX_WALL=12
 
     if [ "$CASE_NAME" = "head_on_execution_pass" ] || \
        [ "$CASE_NAME" = "head_on_cpa_fallback_execution_pass" ] || \
@@ -224,10 +358,10 @@ get_case_config() {
         esac
     elif [ "$CASE_NAME" = "crossing_port_standon_stern_execution_pass" ]; then
         MMOD="crossing_port_standon_stern_pass"
-        MAX_WALL="16"
+        MAX_WALL=16
     elif [ "$CASE_NAME" = "crossing_port_standon_unsure_execution_pass" ]; then
         MMOD="crossing_port_standon_unsure_pass"
-        MAX_WALL="12.1"
+        MAX_WALL=12.1
     elif [ "$CASE_NAME" = "overtaking_starboard_execution_pass" ] || \
          [ "$CASE_NAME" = "overtaking_starboard_range_far_execution_pass" ] || \
          [ "$CASE_NAME" = "overtaking_starboard_small_gap_execution_pass" ]; then
@@ -250,278 +384,432 @@ get_case_config() {
         MMOD="overtaken_port_standon_pass"
     elif [ "$CASE_NAME" = "overtaken_port_standon_midrange_execution_pass" ]; then
         MMOD="overtaken_port_standon_midrange_pass"
-        MAX_WALL="10"
     elif [ "$CASE_NAME" = "overtaken_starboard_standon_midrange_execution_pass" ]; then
         MMOD="overtaken_starboard_standon_midrange_pass"
-        MAX_WALL="10.3"
     else
-        echo "$ME: Unknown case [$CASE_NAME]"
-        exit 2
+        echo "$ME: unknown case: $CASE_NAME" >&2
+        return 1
     fi
 
     if [ "$CASE_NAME" = "crossing_starboard_giveway_far_execution_pass" ] || \
        [ "$CASE_NAME" = "crossing_port_standon_far_execution_pass" ]; then
-        MAX_WALL="13"
+        MAX_WALL=13
     fi
 
     if [ ! -f "$SHORE_PATCH" ]; then
-        echo "$ME: Missing patch [$SHORE_PATCH]"
-        exit 2
+        echo "$ME: missing patch: $SHORE_PATCH" >&2
+        return 1
     fi
 }
 
 
-emit_case_row() {
+apply_case_overlays() {
     local case_name="$1"
-    local status="$2"
-    local expected="$3"
-    local actual="$4"
-    shift 4
-    local line="$1"
-    shift || true
-    local grade
+    local workdir="$2"
+    local patch
+    local -a shore_patches=()
 
-    grade=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
-    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
+    get_case_config "$case_name" || return 1
+    if [ "$LOG_MODE" = full ]; then
+        shore_patches+=("$workdir/full-logging-shoreside.xmoos")
+        [ -f "$workdir/full-logging-vehicle.xmoos" ] || return 1
+        nspatch --stem="$workdir/meta_vehicle.moos" \
+            "$workdir/full-logging-vehicle.xmoos" --targ="$workdir/meta_vehicle.moosx" || return 1
+    fi
+    shore_patches+=("$SHORE_PATCH")
+    for patch in "${shore_patches[@]}"; do [ -f "$patch" ] || return 1; done
+    nspatch --stem="$workdir/meta_shoreside.moos" \
+        "${shore_patches[@]}" --targ="$workdir/meta_shoreside.moosx"
+}
 
-    if [ "$grade" != "" ]; then
-        echo "case=$case_name  grade=$grade  $line  $*"
-    elif [ "$status" = "success" ]; then
-        echo "case=$case_name  grade=fail  reason=missing_result  $line  $*"
+prepare_case() {
+    local case_name="$1"
+    local workdir="$2"
+
+    rm -rf "$workdir"
+    mkdir -p "$workdir" || return 1
+    cp -R "$MISSION_DIR"/. "$workdir"/ || return 1
+    (
+        cd "$workdir" || exit 1
+        ./clean.sh >/dev/null 2>&1
+    ) || return 1
+    apply_case_overlays "$case_name" "$workdir"
+}
+
+write_result() {
+    local case_name="$1"
+    local result_file="$2"
+    local launch_rc="$3"
+    local workdir="$4"
+    local line
+    local grade_count
+    local mission_grade
+    local mission_rows
+    local provenance
+    local wall_time
+
+    if [ "$JUST_MAKE" = yes ]; then
+        if [ "$launch_rc" -eq 0 ]; then
+            printf 'case=%s grade=pass mode=just_make\n' "$case_name" > "$result_file"
+        else
+            printf 'case=%s grade=fail reason=launch_error launch_rc=%s mode=just_make\n' \
+                "$case_name" "$launch_rc" > "$result_file"
+        fi
+        return 0
+    fi
+
+    if [ ! -f "$workdir/results.txt" ]; then
+        printf 'case=%s grade=fail reason=missing_result_file launch_rc=%s\n' \
+            "$case_name" "$launch_rc" > "$result_file"
+        return 0
+    fi
+
+    mission_rows=$(awk 'NF {count++} END {print count+0}' "$workdir/results.txt")
+    if [ "$mission_rows" -eq 0 ]; then
+        printf 'case=%s grade=fail reason=missing_result launch_rc=%s\n' \
+            "$case_name" "$launch_rc" > "$result_file"
+        return 0
+    fi
+    if [ "$mission_rows" -ne 1 ]; then
+        printf 'case=%s grade=fail reason=duplicate_results result_rows=%s\n' \
+            "$case_name" "$mission_rows" > "$result_file"
+        return 0
+    fi
+
+    line=$(awk 'NF {print; exit}' "$workdir/results.txt")
+    grade_count=$(field_count "$line" grade)
+    if [ "$grade_count" -eq 0 ]; then
+        printf 'case=%s grade=fail reason=missing_result launch_rc=%s\n' \
+            "$case_name" "$launch_rc" > "$result_file"
+        return 0
+    fi
+    if [ "$grade_count" -ne 1 ]; then
+        printf 'case=%s grade=fail reason=malformed_result grade_fields=%s\n' \
+            "$case_name" "$grade_count" > "$result_file"
+        return 0
+    fi
+
+    mission_grade=$(field_value "$line" grade || true)
+    if [ "$mission_grade" != pass ] && [ "$mission_grade" != fail ]; then
+        printf 'case=%s grade=fail reason=malformed_result mission_grade=%s\n' \
+            "$case_name" "${mission_grade:-missing}" > "$result_file"
+        return 0
+    fi
+
+    if [ "$launch_rc" -ne 0 ]; then
+        provenance=$(runner_provenance "$line")
+        printf 'case=%s grade=fail reason=launch_error launch_rc=%s%s\n' \
+            "$case_name" "$launch_rc" "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
+
+    # WALL_TIME is a pMissionEval report-only macro, not a logic variable.
+    # Preserve H03's legacy loose wall-clock ceiling after mission grading.
+    if [ "$mission_grade" = pass ]; then
+        wall_time=$(field_value "$line" wall_time || true)
+        if ! [[ "$wall_time" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+            provenance=$(runner_provenance "$line")
+            printf 'case=%s grade=fail reason=missing_wall_time max_wall=%s%s\n' \
+                "$case_name" "$MAX_WALL" "${provenance:+ $provenance}" > "$result_file"
+            return 0
+        fi
+        if awk -v actual="$wall_time" -v limit="$MAX_WALL" \
+            'BEGIN {exit !(actual > limit)}'; then
+            provenance=$(runner_provenance "$line")
+            printf 'case=%s grade=fail reason=wall_time_limit max_wall=%s%s\n' \
+                "$case_name" "$MAX_WALL" "${provenance:+ $provenance}" > "$result_file"
+            return 0
+        fi
+    fi
+
+    line=$(without_case_field "$line")
+    if [ "$mission_grade" = pass ]; then
+        printf 'case=%s %s wall_time_check=pass max_wall=%s\n' \
+            "$case_name" "$line" "$MAX_WALL" > "$result_file"
     else
-        echo "case=$case_name  grade=fail  reason=$status  $line  $*"
+        printf 'case=%s %s\n' "$case_name" "$line" > "$result_file"
     fi
 }
 
 run_case() {
     local case_name="$1"
-    local case_idx="${RUN_CASE_IDX:-0}"
-    RUN_CASE_IDX=$((case_idx + 1))
-    local line actual status wall_time wall_note
-    local shore_mport veh_mport shore_pshare veh_pshare case_base
-    local xargs
+    local workdir="$2"
+    local result_file="$3"
+    local case_base="$4"
+    local launch_rc=0
+    local -a launch_args=()
+    local result_line
+    local grade
 
-    get_case_config "$case_name"
-
-    cd "$MISSION_DIR"
-    stop_mission_apps "$MISSION_DIR"
-    ./clean.sh >/dev/null 2>&1 || true
-    clear_xfiles
-    nspatch --stem="$SHORE_STEM" "$SHORE_PATCH" --targ="$SHORE_XFILE"
-    : > results.txt
-    xargs="--max_time=$MAX_TIME --mmod=$MMOD"
-    if [ "$PORT_BASE_SET" = "yes" ]; then
-        case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
-        shore_mport=$((case_base + 0))
-        veh_mport=$((case_base + 1))
-        shore_pshare=$((case_base + 10))
-        veh_pshare=$((case_base + 11))
-        xargs="$xargs --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare"
-    fi
-    xlaunch.sh $xargs $NOGUI ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
-
-    if [ "$JUST_MAKE" = "yes" ]; then
-        clear_xfiles
-        cd "$HARNESS_DIR"
-        return 0
-    fi
-
-    line=$(wait_for_result_line results.txt 40)
-    actual=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
-    if [ "$actual" = "" ]; then
-        actual="missing"
-    fi
-    status="success"
-    wall_note="wall_time_check=ok"
-    if [ "$actual" = "missing" ]; then
-        status="error"
-        ALL_OK="no"
-    elif [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
-        ALL_OK="no"
-    elif [ "$EXPECTED" = "pass" ]; then
-        wall_time=$(extract_field "$line" "wall_time")
-        if [ "$wall_time" = "" ] || float_gt "$wall_time" "$MAX_WALL"; then
-            status="mismatch"
-            wall_note="wall_time_check=fail max_wall=$MAX_WALL"
-            ALL_OK="no"
-        else
-            wall_note="wall_time_check=ok max_wall=$MAX_WALL"
-        fi
-    fi
-
-    emit_case_row "$case_name" "$status" "$EXPECTED" "$actual" "$line" "$wall_note" >> "$RESULTS_FILE"
-    stop_mission_apps "$MISSION_DIR"
-    clear_xfiles
-    cd "$HARNESS_DIR"
-}
-
-run_case_isolated() {
-    local case_idx="$1"
-    local case_name="$2"
-    local case_tag
-    local case_dir
-    local case_row_file
-    local shore_mport
-    local veh_mport
-    local shore_pshare
-    local veh_pshare
-    local line
-    local actual
-    local status
-    local launch_rc
-    local wall_time
-    local wall_note
-
-    get_case_config "$case_name"
-    case_tag=$(printf "%03d_%s" "$case_idx" "$case_name")
-    case_dir="$RUN_ROOT/$case_tag"
-    case_row_file="$CASE_ROW_DIR/${case_tag}.txt"
-
-    prepare_case_dir "$case_dir" || {
-        echo "case=$case_name  grade=fail  reason=script_error" > "$case_row_file"
+    prepare_case "$case_name" "$workdir" || {
+        printf 'case=%s grade=fail reason=prepare_error\n' "$case_name" > "$result_file"
+        return 1
+    }
+    get_case_config "$case_name" || {
+        printf 'case=%s grade=fail reason=prepare_error\n' "$case_name" > "$result_file"
         return 1
     }
 
-    case_base=$((PORT_BASE + case_idx*PORT_STRIDE))
-    shore_mport=$((case_base + 0))
-    veh_mport=$((case_base + 1))
-    shore_pshare=$((case_base + 10))
-    veh_pshare=$((case_base + 11))
-
     (
-        cd "$case_dir"
+        cd "$workdir" || exit 1
         : > results.txt
-        xlaunch.sh --max_time=$MAX_TIME --mmod=$MMOD --shore_mport=$shore_mport --veh_mport=$veh_mport --shore_pshare=$shore_pshare --veh_pshare=$veh_pshare $NOGUI ${JUST_MAKE:+--just_make} ${VERBOSE:+--verbose} $TIME_WARP
-        launch_rc=$?
-        echo "$launch_rc" > launch_rc.txt
-    )
-    launch_rc=$(cat "$case_dir/launch_rc.txt" 2>/dev/null || echo "1")
+        launch_args=(
+            --max_time="$MAX_TIME"
+            --mmod="$MMOD"
+            "${DISPLAY_ARGS[@]}"
+            --shore_mport="$((case_base + 0))"
+            --veh_mport="$((case_base + 1))"
+            --shore_pshare="$((case_base + PSHARE_OFFSET))"
+            --veh_pshare="$((case_base + PSHARE_OFFSET + 1))"
+            "$TIME_WARP"
+        )
+        [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
+        LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
+    ) || launch_rc=$?
 
-    if [ "$JUST_MAKE" = "yes" ]; then
-        if [ "$launch_rc" = "0" ]; then
-            echo "case=$case_name  grade=pass  reason=just_make" > "$case_row_file"
-            return 0
-        fi
-        echo "case=$case_name  grade=fail  reason=script_error" > "$case_row_file"
-        return 1
-    fi
-
-    line=$(wait_for_result_line "$case_dir/results.txt" 40)
-    actual=$(echo "$line" | sed -n 's/.*grade=\([^ ]*\).*/\1/p')
-    if [ "$actual" = "" ]; then
-        actual="missing"
-    fi
-    status="success"
-    wall_note="wall_time_check=ok"
-    if [ "$actual" = "missing" ]; then
-        status="error"
-        ALL_OK="no"
-    elif [ "$actual" != "$EXPECTED" ]; then
-        status="mismatch"
-        ALL_OK="no"
-    elif [ "$EXPECTED" = "pass" ]; then
-        wall_time=$(extract_field "$line" "wall_time")
-        if [ "$wall_time" = "" ] || float_gt "$wall_time" "$MAX_WALL"; then
-            status="mismatch"
-            wall_note="wall_time_check=fail max_wall=$MAX_WALL"
-            ALL_OK="no"
-        else
-            wall_note="wall_time_check=ok max_wall=$MAX_WALL"
-        fi
+    write_result "$case_name" "$result_file" "$launch_rc" "$workdir"
+    if ! stop_root "$workdir"; then
+        printf 'case=%s grade=fail reason=teardown_error\n' "$case_name" > "$result_file"
     fi
 
-    emit_case_row "$case_name" "$status" "$EXPECTED" "$actual" "$line" "$wall_note" "launch_rc=$launch_rc" > "$case_row_file"
-    if [ "$launch_rc" != "0" ] && [ "$actual" = "missing" ]; then
-        return 1
-    fi
-    if [ "$actual" != "$EXPECTED" ] || [ "$status" != "success" ]; then
-        return 1
-    fi
-    return 0
+    result_line=$(awk 'NF {print; exit}' "$result_file" 2>/dev/null)
+    grade=$(field_value "$result_line" grade || true)
+    [ "$grade" = pass ]
 }
 
-ALL_CASES=(
-    head_on_execution_pass
-    head_on_cpa_fallback_execution_pass
-    head_on_port_offset_execution_pass
-    head_on_starboard_offset_execution_pass
-    crossing_starboard_giveway_execution_pass
-    crossing_starboard_giveway_far_execution_pass
-    crossing_starboard_giveway_close_execution_pass
-    crossing_port_standon_execution_pass
-    crossing_port_standon_unsure_bow_execution_pass
-    crossing_port_standon_stern_execution_pass
-    crossing_port_standon_far_execution_pass
-    crossing_port_standon_close_execution_pass
-    crossing_port_standon_close_unsure_bow_execution_pass
-    crossing_port_standon_unsure_execution_pass
-    overtaking_starboard_execution_pass
-    overtaking_starboard_range_far_execution_pass
-    overtaking_starboard_small_gap_execution_pass
-    overtaking_starboard_mirror_execution_pass
-    overtaking_starboard_mirror_range_far_execution_pass
-    overtaking_starboard_mirror_small_gap_execution_pass
-    overtaking_starboard_mirror_large_gap_execution_pass
-    overtaken_port_standon_midrange_execution_pass
-    overtaken_starboard_standon_midrange_execution_pass
-)
+start_case() {
+    local case_idx="$1"
+    local case_name="${SELECTED_CASES[$case_idx]}"
+    local case_dir
+    local workdir
+    local result_file
+    local log_file
+    local case_base
+    local pid
 
-RUN_CASES=("${ALL_CASES[@]}")
-if [ "$CASE" != "" ]; then
-    RUN_CASES=("$CASE")
-fi
+    case_base=$((PORT_BASE + case_idx * PORT_STRIDE))
+    case_dir="$RUN_ROOT/case_$(printf '%03d' "$case_idx")_$case_name"
+    workdir="$case_dir/mission"
+    result_file="$case_dir/result.row"
+    log_file="$case_dir/run.log"
 
-: > "$RESULTS_FILE"
-trap cleanup EXIT
+    mkdir -p "$case_dir"
+    CASE_RESULT[case_idx]="$result_file"
 
-if [ "$JOBS" -le 1 ] || [ "$CASE" != "" ]; then
-    for ONE_CASE in "${RUN_CASES[@]}"; do
-        run_case "$ONE_CASE"
-    done
-else
-    RUN_ROOT=$(mktemp -d "$HARNESS_DIR/.parallel_colregs_execution_XXXXXX")
-    CASE_ROW_DIR="$RUN_ROOT/case_rows"
-    mkdir -p "$CASE_ROW_DIR"
-
-    stop_mission_apps "$MISSION_DIR"
-
-    case_idx=0
-    wave_pids=""
-    wave_count=0
-    for ONE_CASE in "${RUN_CASES[@]}"; do
-        run_case_isolated "$case_idx" "$ONE_CASE" &
-        wave_pids="$wave_pids $!"
-        wave_count=$((wave_count + 1))
-        case_idx=$((case_idx + 1))
-
-        if [ "$wave_count" -ge "$JOBS" ]; then
-            for pid in $wave_pids; do
-                wait "$pid" || ALL_OK="no"
-            done
-            wave_pids=""
-            wave_count=0
-            stop_mission_apps "$RUN_ROOT"
+    (
+        local rc=0
+        set +e
+        run_case "$case_name" "$workdir" "$result_file" "$case_base" > "$log_file" 2>&1
+        rc=$?
+        if [ ! -s "$result_file" ]; then
+            printf 'case=%s grade=fail reason=missing_result launch_rc=%s\n' \
+                "$case_name" "$rc" > "$result_file"
         fi
-    done
+        exit "$rc"
+    ) &
 
-    if [ "$wave_pids" != "" ]; then
-        for pid in $wave_pids; do
-            wait "$pid" || ALL_OK="no"
-        done
-        stop_mission_apps "$RUN_ROOT"
+    pid=$!
+    PID_CASE[$pid]="$case_name"
+    PID_RESULT[$pid]="$result_file"
+    PID_LOG[$pid]="$log_file"
+    PID_PORT_BASE[$pid]="$case_base"
+
+    if [ "$VERBOSE" = yes ]; then
+        printf 'event=start epoch=%s pid=%s case=%s port_base=%s workdir=%s\n' \
+            "$(date +%s)" "$pid" "$case_name" "$case_base" "$workdir"
+    fi
+}
+
+finish_one() {
+    local done_pid=""
+    local wait_rc=0
+    local case_name
+    local line
+    local grade
+    local reason
+
+    FINISH_FATAL_REASON=""
+    wait -p done_pid -n || wait_rc=$?
+    if [ -z "${done_pid:-}" ]; then
+        echo "$ME: wait returned without a completed pid rc=$wait_rc" >&2
+        FINISH_FATAL_REASON=scheduler_state_error
+        return 2
     fi
 
-    for ONE_CASE in "${RUN_CASES[@]}"; do
-        case_file=$(find "$CASE_ROW_DIR" -maxdepth 1 -type f -name "*_${ONE_CASE}.txt" | sort | head -n 1)
-        if [ "$case_file" = "" ]; then
-            echo "case=$ONE_CASE  grade=fail  reason=missing_result" >> "$RESULTS_FILE"
-            ALL_OK="no"
+    case_name="${PID_CASE[$done_pid]:-}"
+    if [ -z "$case_name" ]; then
+        echo "$ME: unknown completed pid $done_pid rc=$wait_rc" >&2
+        FINISH_FATAL_REASON=scheduler_state_error
+        return 2
+    fi
+
+    line=$(awk 'NF {print; exit}' "${PID_RESULT[$done_pid]}" 2>/dev/null)
+    grade=$(field_value "$line" grade || true)
+    reason=$(field_value "$line" reason || true)
+    if [ "$wait_rc" -ne 0 ] && [ "$grade" = pass ]; then
+        printf 'case=%s grade=fail reason=worker_error worker_rc=%s\n' \
+            "$case_name" "$wait_rc" > "${PID_RESULT[$done_pid]}"
+        grade=fail
+    fi
+    if [ "$VERBOSE" = yes ]; then
+        printf 'event=finish epoch=%s pid=%s case=%s rc=%s grade=%s port_base=%s log=%s\n' \
+            "$(date +%s)" "$done_pid" "$case_name" "$wait_rc" "${grade:-missing}" \
+            "${PID_PORT_BASE[$done_pid]}" "${PID_LOG[$done_pid]}"
+    fi
+
+    unset 'PID_CASE[$done_pid]' 'PID_RESULT[$done_pid]' 'PID_LOG[$done_pid]'
+    unset 'PID_PORT_BASE[$done_pid]'
+    if [ "$reason" = teardown_error ]; then
+        FINISH_FATAL_REASON=teardown_error
+        return 2
+    fi
+    [ "$grade" = pass ]
+}
+
+stop_refill_after_infrastructure_error() {
+    local next_idx="$1"
+    local total="$2"
+    local fatal_reason="$3"
+    local case_idx
+    local case_name
+    local case_dir
+    local result_file
+
+    CLEANUP_FAILED=yes
+    echo "$ME: stopping scheduler refill after $fatal_reason" >&2
+
+    for ((case_idx = next_idx; case_idx < total; case_idx++)); do
+        case_name="${SELECTED_CASES[$case_idx]}"
+        case_dir="$RUN_ROOT/case_$(printf '%03d' "$case_idx")_$case_name"
+        result_file="$case_dir/result.row"
+        CASE_RESULT[case_idx]="$result_file"
+        if mkdir -p "$case_dir"; then
+            printf 'case=%s grade=fail reason=scheduler_aborted_after_%s\n' \
+                "$case_name" "$fatal_reason" > "$result_file"
         else
-            cat "$case_file" >> "$RESULTS_FILE"
-            grep -Eq '(^|[[:space:]])grade=pass([[:space:]]|$)' "$case_file" || ALL_OK="no"
+            echo "$ME: unable to record aborted case: $case_name" >&2
         fi
     done
+}
+
+aggregate_results() {
+    local total="${#SELECTED_CASES[@]}"
+    local case_idx
+    local case_name
+    local result_file
+    local row_count
+    local line
+    local row_case
+    local grade_count
+    local grade
+
+    FINAL_FAILURES=0
+    RESULT_ROWS=0
+    : > "$RESULTS_FILE"
+
+    for ((case_idx = 0; case_idx < total; case_idx++)); do
+        case_name="${SELECTED_CASES[$case_idx]}"
+        result_file="${CASE_RESULT[$case_idx]:-}"
+        line=""
+
+        if [ -n "$result_file" ] && [ -f "$result_file" ]; then
+            row_count=$(awk 'NF {count++} END {print count+0}' "$result_file")
+            if [ "$row_count" -eq 1 ]; then
+                line=$(awk 'NF {print; exit}' "$result_file")
+            else
+                line="case=$case_name grade=fail reason=invalid_row_count result_rows=$row_count"
+            fi
+        else
+            line="case=$case_name grade=fail reason=missing_result_file"
+        fi
+
+        row_case=$(field_value "$line" case || true)
+        grade_count=$(field_count "$line" grade)
+        if [ "$row_case" != "$case_name" ]; then
+            line="case=$case_name grade=fail reason=result_case_mismatch"
+        elif [ "$grade_count" -ne 1 ]; then
+            line="case=$case_name grade=fail reason=malformed_result grade_fields=$grade_count"
+        else
+            grade=$(field_value "$line" grade || true)
+            if [ "$grade" != pass ] && [ "$grade" != fail ]; then
+                line="case=$case_name grade=fail reason=malformed_result mission_grade=${grade:-missing}"
+            fi
+        fi
+
+        printf '%s\n' "$line" >> "$RESULTS_FILE"
+        RESULT_ROWS=$((RESULT_ROWS + 1))
+        grade=$(field_value "$line" grade || true)
+        [ "$grade" = pass ] || FINAL_FAILURES=$((FINAL_FAILURES + 1))
+    done
+}
+
+select_cases
+total=${#SELECTED_CASES[@]}
+if [ "${#DISPLAY_ARGS[@]}" -eq 0 ] && [ "$total" -ne 1 ]; then
+    die "--gui requires one explicit --case"
+fi
+last_port=$((PORT_BASE + (total - 1) * PORT_STRIDE + PSHARE_OFFSET + 2))
+[ "$last_port" -le 65535 ] || die "selected cases require ports through $last_port"
+
+mkdir -p "$RUNS_DIR" || die "unable to create run directory: $RUNS_DIR"
+mkdir "$LOCK_DIR" 2>/dev/null || die "another harness run appears active for $HARNESS_DIR"
+HAVE_LOCK=yes
+RUN_ROOT="$RUNS_DIR/run_$(date +%Y%m%dT%H%M%S)_$$"
+mkdir -p "$RUN_ROOT" || die "unable to create run root: $RUN_ROOT"
+: > "$RESULTS_FILE"
+
+SECONDS=0
+active=0
+next=0
+scheduler_broken=no
+
+while [ "$next" -lt "$total" ] || [ "$active" -gt 0 ]; do
+    while [ "$next" -lt "$total" ] && [ "$active" -lt "$JOBS" ]; do
+        start_case "$next"
+        next=$((next + 1))
+        active=$((active + 1))
+    done
+    if [ "$active" -gt 0 ]; then
+        finish_rc=0
+        finish_one || finish_rc=$?
+        if [ "$finish_rc" -eq 2 ] && [ "$FINISH_FATAL_REASON" = scheduler_state_error ]; then
+            stop_refill_after_infrastructure_error "$next" "$total" "$FINISH_FATAL_REASON"
+            next=$total
+            scheduler_broken=yes
+            break
+        fi
+        active=$((active - 1))
+        if [ "$finish_rc" -eq 2 ]; then
+            stop_refill_after_infrastructure_error "$next" "$total" "$FINISH_FATAL_REASON"
+            next=$total
+        fi
+    fi
+done
+
+if [ "$scheduler_broken" = yes ]; then
+    cleanup_runtime
 fi
 
-[ "$ALL_OK" = "yes" ]
+aggregate_results
+
+if [ "$RESULT_ROWS" -ne "$total" ] || { [ "$total" -gt 0 ] && [ "$RESULT_ROWS" -eq 0 ]; }; then
+    echo "$ME: expected $total result rows but wrote $RESULT_ROWS" >&2
+    FINAL_FAILURES=$((FINAL_FAILURES + 1))
+fi
+
+cleanup_runtime
+elapsed_seconds=$SECONDS
+if [ -d "$RUN_ROOT" ]; then
+    kept_root="$RUN_ROOT"
+else
+    kept_root="none"
+fi
+if [ "$CLEANUP_FAILED" = yes ]; then
+    FINAL_FAILURES=$((FINAL_FAILURES + 1))
+fi
+trap - EXIT INT TERM PIPE
+
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+
+[ "$FINAL_FAILURES" -eq 0 ]

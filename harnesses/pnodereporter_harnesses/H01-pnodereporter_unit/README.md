@@ -7,6 +7,9 @@ scripted navigation, helm, platform, and status mail.
 
 Harness result rows prepend `case=<name>` to the mission result row and retain
 the supplemental `token_check` field for structured report payload checks.
+This is a documented exception to sole mission-owned grading because the exact
+comma-delimited/JSON report representation is the subject of these tests and
+contains dynamic fields that `pMissionEval` cannot match directly.
 
 ## Current Matrix
 
@@ -47,11 +50,53 @@ the supplemental `token_check` field for structured report payload checks.
 ## Run
 
 ```sh
-./zlaunch.sh --jobs=4 --port_base=12400 --max_time=35 10
+./zlaunch.sh --jobs=2 --port_base=22000 --max_time=35 10
 ```
 
 Run one inspectable case:
 
 ```sh
-./zlaunch.sh --case=platform_report_pass --port_base=12400 --max_time=35 10
+./zlaunch.sh --case=platform_report_pass --port_base=22000 --max_time=35 10
 ```
+
+## Launcher Contract
+
+Every path, including single-case and `--jobs=1`, runs from an isolated copy of
+the stem. The launcher requires Bash 5.1 or newer and uses rolling refill for
+`--jobs`. Each case receives a stride-30 block with its MOOSDB at `+0` and a
+reserved shoreside pShare slot at `+15`; this mission does not launch pShare.
+
+The copied stem's `pMissionEval` must write exactly one row with exactly one
+`grade=pass|fail`. When that grade is `pass`, the harness checks the case's
+explicit structured-payload fragments. Ordinary mission failures and payload
+failures do not stop the remaining selected cases. Results are aggregated once
+in declared case order. Preparation, launch, malformed-result, and teardown
+failures use runner-owned failure rows.
+
+The alternate-report cases repeat their navigation inputs after startup before
+evaluation. `reverse_load_warning_pass` repeats its ephemeral warning before
+pausing. For those three cases, the supplement accepts either the final mission
+snapshot or a matching `NODE_REPORT_LOCAL` publication in the case `.alog`.
+The expected fields are unchanged; this removes snapshot timing races without
+weakening the case contract.
+
+`--keep_workdirs` retains the invocation under `.harness_runs` for target,
+sidecar, result, and `.alog` inspection. See [`NSPATCH.md`](NSPATCH.md).
+
+## Migration Validation
+
+The migrated harness passed three complete rolling matrices (33/33 each) in
+101, 102, and 98 seconds, for a 100.33-second mean. It also passed the complete
+isolated serial matrix in 193 seconds with canonical cleanup defaults. The
+stabilized legacy runner averaged 108.48 seconds rolling and took 168.44
+seconds serial. A supported one-second cleanup-grace diagnostic reduced the
+migrated serial time to 178 seconds; canonical defaults remain unchanged.
+
+Focused repetition and retained-log inspection verified the three
+history-sensitive report cases. A real warp-1 timeout also produced the
+required single `missing_result` failure row and left no process or listener.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case. The three
+history-sensitive cases use their mission result payload as the primary grade;
+minimal mode retains only `NODE_REPORT_LOCAL` for their historical fallback.

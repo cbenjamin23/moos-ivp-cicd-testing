@@ -2,7 +2,8 @@
 """Render generated GIFs for the uFldObstacleSim harness page.
 
 These are compact documentation views of the source-side publication flow.
-The headless harness and alogs remain the source of truth for pass/fail.
+The pMissionEval result rows are authoritative for pass/fail; alogs provide
+reconstruction evidence for these visuals.
 """
 
 from __future__ import annotations

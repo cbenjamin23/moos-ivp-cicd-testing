@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import contextlib
+import io
 import unittest
 
 from scripts import moos_ivp_build_matrix
@@ -113,33 +115,19 @@ class MoosIvpBuildMatrixTests(unittest.TestCase):
                 build_profile="full",
             )
 
-    def test_matrix_includes_artifact_names(self) -> None:
+    def test_target_rows_are_tab_separated_for_local_wrapper(self) -> None:
         selected = moos_ivp_build_matrix.select_targets(
             self.targets,
-            target_set="clang",
-            raw_targets="",
+            target_set="specific_targets",
+            raw_targets="ubuntu_2404_gcc",
             build_profile="full",
         )
 
-        self.assertEqual(
-            moos_ivp_build_matrix.matrix_for_targets(selected),
-            {
-                "include": [
-                    {
-                        "key": "ubuntu_2604_clang",
-                        "image": "ubuntu:26.04",
-                        "compiler": "clang",
-                        "artifact": "moos-ivp-build-ubuntu_2604_clang",
-                    },
-                    {
-                        "key": "ubuntu_2404_clang",
-                        "image": "ubuntu:24.04",
-                        "compiler": "clang",
-                        "artifact": "moos-ivp-build-ubuntu_2404_clang",
-                    },
-                ]
-            },
-        )
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            moos_ivp_build_matrix.print_target_rows(selected)
+
+        self.assertEqual(output.getvalue(), "ubuntu_2404_gcc\tubuntu:24.04\tgcc\n")
 
 
 if __name__ == "__main__":

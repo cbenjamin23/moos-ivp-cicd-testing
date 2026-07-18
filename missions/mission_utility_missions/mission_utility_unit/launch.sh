@@ -1,120 +1,113 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: launch.sh
 #  Mission: mission_utility_unit
 #   Author: Charles Benjamin
-#   LastEd: May 2026
+#   LastEd: Jul 2026
 #------------------------------------------------------------
-vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
-on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
-trap on_exit SIGINT
 
-ME=`basename "$0"`
-CMD_ARGS=""
+set -u
+
+ME=$(basename "$0")
 TIME_WARP=1
-VERBOSE=""
-JUST_MAKE=""
-LOG_CLEAN=""
-MOOS_PORT="7100"
-PSHARE_PORT="7120"
+VERBOSE=no
+JUST_MAKE=no
+LOG_CLEAN=no
+MOOS_PORT=9000
+PSHARE_PORT=9015
 MMOD=""
-XLAUNCHED="no"
-NOGUI=""
-SHORE_MOOS="meta_shoreside.moos"
+XLAUNCHED=no
+SHORE_MOOS=meta_shoreside.moos
 
-for ARGI; do
-    CMD_ARGS+=" ${ARGI}"
-    if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
-        echo "$ME [OPTIONS] [time_warp]"
-        echo ""
-        echo "Options:"
-        echo "  --help, -h           Show this help message"
-        echo "  --verbose, -v        Verbose, confirm launch"
-        echo "  --just_make, -j      Only create targ files"
-        echo "  --log_clean, -lc     Run clean.sh before launch"
-        echo "  --mport=N            MOOSDB port"
-        echo "  --pshare=N           Accepted for wrapper parity"
-        echo "  --shore_mport=N      MOOSDB port alias for xlaunch"
-        echo "  --shore_pshare=N     Accepted for wrapper parity"
-        echo "  --mmod=<mod>         Mission variation/mod"
-        echo "  --xlaunched, -x      Launched by xlaunch"
-        echo "  --nogui, -ng         Headless launch"
-        exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 1 ]; then
-        TIME_WARP=$ARGI
-    elif [ "${ARGI}" = "--verbose" -o "${ARGI}" = "-v" ]; then
-        VERBOSE=$ARGI
-    elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
-        JUST_MAKE=$ARGI
-    elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
-        LOG_CLEAN=$ARGI
-    elif [ "${ARGI:0:8}" = "--mport=" ]; then
-        MOOS_PORT="${ARGI#--mport=*}"
-    elif [ "${ARGI:0:9}" = "--pshare=" ]; then
-        PSHARE_PORT="${ARGI#--pshare=*}"
-    elif [ "${ARGI:0:14}" = "--shore_mport=" ]; then
-        MOOS_PORT="${ARGI#--shore_mport=*}"
-    elif [ "${ARGI:0:15}" = "--shore_pshare=" ]; then
-        PSHARE_PORT="${ARGI#--shore_pshare=*}"
-    elif [ "${ARGI:0:12}" = "--veh_mport=" ]; then
-        true
-    elif [ "${ARGI:0:13}" = "--veh_pshare=" ]; then
-        true
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
-    elif [ "${ARGI}" = "--xlaunched" -o "${ARGI}" = "-x" ]; then
-        XLAUNCHED="yes"
-    elif [ "${ARGI}" = "--nogui" -o "${ARGI}" = "-ng" ]; then
-        NOGUI="--nogui"
-    else
-        echo "$ME: Bad arg:" $ARGI "Exit Code 1."
-        exit 1
-    fi
+usage() {
+    cat <<EOF
+$ME [OPTIONS] [time_warp]
+
+Options:
+  --help, -h            Show this help message
+  --verbose, -v         Verbose launch output
+  --just_make, -j       Only create target files
+  --log_clean, -lc      Run clean.sh before launch
+  --mport=<n>           MOOSDB port
+  --pshare=<n>          Reserved pShare port
+  --shore_mport=<n>     MOOSDB port alias for xlaunch
+  --shore_pshare=<n>    Reserved pShare port alias for xlaunch
+  --mmod=<name>         Optional standalone mission modification label
+  --xlaunched, -x       Launched by xlaunch or a harness
+  --nogui, -ng          Accepted for wrapper parity
+EOF
+}
+
+die() {
+    echo "$ME: $*" >&2
+    exit 2
+}
+
+is_uint() {
+    case "$1" in
+        ''|*[!0-9]*) return 1 ;;
+        *) return 0 ;;
+    esac
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --help|-h) usage; exit 0 ;;
+        --verbose|-v) VERBOSE=yes ;;
+        --just_make|-j) JUST_MAKE=yes ;;
+        --log_clean|-lc) LOG_CLEAN=yes ;;
+        --mport=*) MOOS_PORT="${arg#--mport=}" ;;
+        --pshare=*) PSHARE_PORT="${arg#--pshare=}" ;;
+        --shore_mport=*) MOOS_PORT="${arg#--shore_mport=}" ;;
+        --shore_pshare=*) PSHARE_PORT="${arg#--shore_pshare=}" ;;
+        --veh_mport=*|--veh_pshare=*) ;;
+        --mmod=*) MMOD="${arg#--mmod=}" ;;
+        --xlaunched|-x) XLAUNCHED=yes ;;
+        --nogui|-ng) ;;
+        *)
+            is_uint "$arg" || die "bad argument: $arg"
+            TIME_WARP="$arg"
+            ;;
+    esac
 done
 
-if [ "$LOG_CLEAN" != "" ]; then
-    ./clean.sh
-fi
+is_uint "$TIME_WARP" && [ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
+is_uint "$MOOS_PORT" && [ "$MOOS_PORT" -gt 0 ] && [ "$MOOS_PORT" -le 65535 ] || \
+    die "MOOSDB port must be an integer from 1 through 65535"
+is_uint "$PSHARE_PORT" && [ "$PSHARE_PORT" -gt 0 ] && [ "$PSHARE_PORT" -le 65535 ] || \
+    die "pShare port must be an integer from 1 through 65535"
 
-if [ "${VERBOSE}" != "" ]; then
-    echo "============================================"
-    echo "  $ME SUMMARY"
-    echo "============================================"
-    echo "CMD_ARGS =     [${CMD_ARGS}]"
-    echo "TIME_WARP =    [${TIME_WARP}]"
-    echo "JUST_MAKE =    [${JUST_MAKE}]"
-    echo "MOOS_PORT =    [${MOOS_PORT}]"
-    echo "MMOD =         [${MMOD}]"
-    echo "XLAUNCHED =    [${XLAUNCHED}]"
-    echo -n "Hit any key to continue launch "
-    read ANSWER
-fi
+[ "$LOG_CLEAN" = no ] || ./clean.sh
+[ -f meta_shoreside.moosx ] && SHORE_MOOS=meta_shoreside.moosx
 
-NSFLAGS="--strict --force -x"
-if [ "${XLAUNCHED}" != "yes" ]; then
-    NSFLAGS="--interactive --force -x"
-fi
+nsplug_args=(
+    "$SHORE_MOOS"
+    targ_shoreside.moos
+    --strict
+    --force
+    -x
+    WARP="$TIME_WARP"
+    MOOS_PORT="$MOOS_PORT"
+    PSHARE_PORT="$PSHARE_PORT"
+)
+[ -n "$MMOD" ] && nsplug_args+=(MMOD="$MMOD")
+nsplug "${nsplug_args[@]}"
 
-if [ -f "meta_shoreside.moosx" ]; then
-    SHORE_MOOS="meta_shoreside.moosx"
-fi
-
-nsplug "$SHORE_MOOS" targ_shoreside.moos $NSFLAGS \
-       WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT \
-       MMOD=${MMOD:=eval_baseline_pass}
-
-if [ "${JUST_MAKE}" != "" ]; then
-    echo "$ME: Targ files made; exiting without launch."
+if [ "$JUST_MAKE" = yes ]; then
+    [ "$VERBOSE" = no ] || echo "$ME: target files made; exiting without launch"
     exit 0
 fi
 
-vecho "Launching mission utility unit community"
-pAntler targ_shoreside.moos >& /dev/null &
+[ "$VERBOSE" = no ] || echo "$ME: launching mission utility unit community"
+pAntler targ_shoreside.moos >/dev/null 2>&1 &
 
-if [ "${XLAUNCHED}" != "yes" ]; then
+if [ "$XLAUNCHED" = no ]; then
     uMAC --paused targ_shoreside.moos || true
-    trap "" SIGINT
-    kill -- -$$
+    REPO_DIR=$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null) || \
+        die "unable to locate repository root from $PWD"
+    # shellcheck source=/dev/null
+    . "$REPO_DIR/scripts/moos_scoped_teardown.sh"
+    moos_scoped_teardown_stop_root "$PWD"
 fi
 
 exit 0

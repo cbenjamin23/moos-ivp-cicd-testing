@@ -6,16 +6,27 @@ for other tests. The stem mission runs one shoreside MOOS community with
 case-specific script and evaluator config into isolated mission copies, then uses
 external `uPokeDB` only for runtime control mail.
 
+The launcher requires Bash 5.1 or newer and uses rolling `--jobs` scheduling,
+distinct stride-30 port blocks, canonical root-scoped teardown, and one
+deterministically ordered result row per selected case. Serial and rolling runs
+use the same isolated-copy path.
+
+`pMissionEval` owns each ordinary current-state verdict. A narrow set of
+post-run `.alog` checks remains for publication counts, exact structured
+payload/status text, and expected absence because those histories cannot be
+represented by the final value of a MOOS variable. These checks are bounded by
+the first `MISSION_EVALUATED=true` timestamp.
+
 Typical run:
 
 ```sh
-./zlaunch.sh --jobs=4 --port_base=7300 10
+./zlaunch.sh --jobs=4 --port_base=9000 10
 ```
 
 Run one case:
 
 ```sh
-./zlaunch.sh --case=timed_numeric_string_pass --port_base=7300 10
+./zlaunch.sh --case=timed_numeric_string_pass --port_base=9000 10
 ```
 
 ## Current Matrix

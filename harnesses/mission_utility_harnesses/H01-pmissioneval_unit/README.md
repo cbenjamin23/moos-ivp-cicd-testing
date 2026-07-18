@@ -2,11 +2,12 @@
 
 Patch-driven unit harness for `pMissionEval`.
 
-The harness uses the stem mission at
-`missions/mission_utility_missions/mission_utility_unit`. Each case launches
-the same stem directly, starts a uniquely aliased `uMayFinish`, and then pokes
-the case mail. The mission grade still comes from `pMissionEval` through its
-`results.txt` row plus selected alog evidence.
+The harness uses isolated copies of the stem mission at
+`missions/mission_utility_missions/mission_utility_unit`. Each case applies an
+explicit overlay, runs through the standard `xlaunch` lifecycle, and then
+pokes the case mail. The subject grade comes from `pMissionEval` through its
+single `results.txt` row plus selected publication evidence for flag and macro
+contracts.
 
 Exported harness rows use the mission-utility edge shape:
 `grade=<pass|fail>` is the harness case verdict, while the pMissionEval row is
@@ -37,10 +38,10 @@ grades fail.
 ## Running
 
 ```bash
-./zlaunch.sh --case=eval_baseline_pass --port_base=7100 10
-./zlaunch.sh --jobs=3 --port_base=7100 10
-./zlaunch.sh --just_make --jobs=3 --port_base=7100 10
+./zlaunch.sh --case=eval_baseline_pass --port_base=9000 10
+./zlaunch.sh --jobs=3 --port_base=9000 10
+./zlaunch.sh --just_make --jobs=3 --port_base=9000 10
 ```
 
-Grouped runs use 10-port case blocks from `--port_base`. The default starts at
-`7100`.
+Serial and rolling runs use the same isolated-case path. Grouped runs use
+30-port case blocks from `--port_base`; the default starts at `9000`.

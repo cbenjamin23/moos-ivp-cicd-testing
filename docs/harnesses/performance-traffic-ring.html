@@ -15,13 +15,14 @@
     </a>
     <div class="header-actions">
       <nav>
+        <a href="../quick-start.html">Quick Start</a>
         <a href="../index.html#families">Harnesses</a>
         <a href="../ctest-coverage.html">CTest Coverage</a>
         <a href="../technical.html">Technical</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
-        <span class="theme-switch-track" aria-hidden="true"></span>
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
       </label>
     </div>
   </header>
@@ -39,7 +40,7 @@
       <article class="stem-card">
         <p class="eyebrow">Stem Mission</p>
         <h2>Baseline scenario context</h2>
-        <p>The stem mission keeps five vehicles moving through a seeded traffic-ring assignment pattern. The seed makes the pressure replayable enough for CI while still exercising repeated COLREGS interactions.</p>
+        <p>The stem mission keeps five vehicles moving through a fixed-seed traffic-ring assignment pattern. Runs remain comparable for CI while asynchronous completion can change the exact assignment order.</p>
       </article>
     </section>
 
@@ -58,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Traffic Ring</h3>
-          <p>Description: Baseline seeded five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
+          <p>Description: Baseline fixed-seed five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
         </div>
       </article>
 
@@ -97,7 +98,7 @@
 
         <article class="case-row">
           <code>baseline_circle_pass</code>
-          <p>Baseline seeded five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
+          <p>Baseline fixed-seed five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
         </article>
 
 
@@ -109,7 +110,7 @@
 
         <article class="case-row">
           <code>endurance_circle_pass</code>
-          <p>Longer traffic-ring run. The mission should sustain repeated assignments over the endurance window with zero collisions and clean warning logs. This case uses a wider assignment ring and stricter predicted-CPA filtering than the shorter cases to keep the long CI soak replayable.</p>
+          <p>Longer traffic-ring run. The mission should sustain repeated assignments over the endurance window with zero collisions and clean warning logs. This case uses a wider assignment ring and stricter predicted-CPA filtering than the shorter cases to keep the long CI soak stable.</p>
         </article>
 
 

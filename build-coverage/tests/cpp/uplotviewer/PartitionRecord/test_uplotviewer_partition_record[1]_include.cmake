@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/uplotviewer/PartitionRecord/test_uplotviewer_partition_record[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/uplotviewer/PartitionRecord/test_uplotviewer_partition_record[1]_tests.cmake")
-else()
-  add_test(test_uplotviewer_partition_record_NOT_BUILT test_uplotviewer_partition_record_NOT_BUILT)
-endif()

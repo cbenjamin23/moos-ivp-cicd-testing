@@ -15,13 +15,14 @@
     </a>
     <div class="header-actions">
       <nav>
+        <a href="../quick-start.html">Quick Start</a>
         <a href="../index.html#families">Harnesses</a>
         <a href="../ctest-coverage.html">CTest Coverage</a>
         <a href="../technical.html">Technical</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
-        <span class="theme-switch-track" aria-hidden="true"></span>
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
       </label>
     </div>
   </header>
@@ -39,7 +40,7 @@
       <article class="stem-card">
         <p class="eyebrow">Stem Mission</p>
         <h2>Baseline scenario context</h2>
-        <p>The stem mission runs a single shoreside MOOS community with uFldObstacleSim, uTimerScript, pMissionHash, pMissionEval, and pLogger. Case overlays change only simulator configuration and scripted refresh/reset/node-report mail while the harness verifies source-side obstacle and point publications.</p>
+        <p>The stem mission runs one shoreside community with uFldObstacleSim, uTimerScript, one stock pEchoVar adapter, pMissionEval, pMissionHash, and pLogger. Case overlays own scripted inputs, subject settings, and parser-safe mission-owned grading; the shell only prepares, schedules, and aggregates results.</p>
       </article>
     </section>
 
@@ -164,7 +165,7 @@
 
         <article class="case-row">
           <code>post_points_multi_vehicle_pass</code>
-          <p>Confirms point-sensor mode publishes per-vehicle tracked-feature variables and point labels.</p>
+          <p>Confirms point-sensor mode publishes both per-vehicle tracked-feature variables and point visuals.</p>
         </article>
 
 
@@ -182,7 +183,7 @@
 
         <article class="case-row">
           <code>node_report_mixed_case_vehicle_pass</code>
-          <p>Confirms mixed-case vehicle names map to the upper-case tracked-feature variable while preserving the point label name.</p>
+          <p>Confirms mixed-case vehicle names map to the upper-case tracked-feature variable while still producing point visuals.</p>
         </article>
 
 
@@ -266,7 +267,7 @@
 
         <article class="case-row">
           <code>rate_points_three_pass</code>
-          <p>Confirms rate_points=3 produces multiple tracked features and matching point visuals per in-range iteration.</p>
+          <p>Uses a bounded single-iteration window to confirm rate_points=3 produces exactly three tracked features.</p>
         </article>
 
 

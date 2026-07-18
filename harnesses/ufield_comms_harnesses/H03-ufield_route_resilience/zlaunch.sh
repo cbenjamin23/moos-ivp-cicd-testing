@@ -1,279 +1,471 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
 #  Harness: H03-ufield_route_resilience
 #   Author: Charles Benjamin
-#   LastEd: May 2026
+#   LastEd: Jul 2026
 #------------------------------------------------------------
-ME=`basename "$0"`
-HARNESS_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_DIR="$(git -C "$HARNESS_DIR" rev-parse --show-toplevel)"
+
+need_bash=5.1
+if [ -z "${BASH_VERSION:-}" ]; then
+    echo "zlaunch.sh: run this harness as ./zlaunch.sh with Bash >= $need_bash." >&2
+    exit 2
+fi
+
+have_bash51() {
+    (( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1) ))
+}
+
+if ! have_bash51; then
+    if [ "${HARNESS_DISABLE_BASH_REEXEC:-}" != 1 ]; then
+        for bash_candidate in "${HARNESS_BASH:-}" /opt/homebrew/bin/bash /usr/local/bin/bash /home/linuxbrew/.linuxbrew/bin/bash; do
+            [ -n "$bash_candidate" ] && [ -x "$bash_candidate" ] || continue
+            if "$bash_candidate" -c '(( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1) ))' 2>/dev/null; then
+                echo "zlaunch.sh: re-running with $bash_candidate for Bash >= $need_bash" >&2
+                exec "$bash_candidate" "$0" "$@"
+            fi
+        done
+    fi
+    echo "zlaunch.sh: Bash >= $need_bash is required for rolling --jobs scheduling." >&2
+    echo "Detected Bash: $BASH_VERSION" >&2
+    echo "On macOS, install Homebrew Bash or run: HARNESS_BASH=/opt/homebrew/bin/bash ./zlaunch.sh" >&2
+    exit 2
+fi
+
+set -u
+
+ME=$(basename "$0")
+HARNESS_DIR=$(cd "$(dirname "$0")" && pwd)
+REPO_DIR=$(cd "$HARNESS_DIR/../../.." && pwd)
 MISSION_DIR="$REPO_DIR/missions/ufield_comms_missions/ufield_comms_unit"
+TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
+RUNS_DIR="$HARNESS_DIR/.harness_runs"
+LOCK_DIR="$HARNESS_DIR/.harness_runs.lock"
+RUN_ROOT=""
+
 TIME_WARP=20
 MAX_TIME=4000
 JOBS=1
 PORT_BASE=4000
 PORT_STRIDE=30
+PSHARE_OFFSET=$((PORT_STRIDE / 2))
+KEEP_WORKDIRS=no
+VERBOSE=no
+JUST_MAKE=no
+DISPLAY_ARGS=(--nogui)
 CASE=""
-JUST_MAKE="no"
-KEEP_WORKDIRS="no"
-NOGUI="--nogui"
-RUN_ROOT=""
-ALL_OK="yes"
+HAVE_LOCK=no
+CLEANED=no
+CLEANING=no
+CLEANUP_FAILED=no
+FINISH_FATAL_REASON=""
 
-source "$REPO_DIR/scripts/harness_teardown.sh"
-
-cleanup() {
-    if [ "$RUN_ROOT" != "" ]; then
-        harness_teardown_stop_root "$RUN_ROOT" >/dev/null 2>&1 || true
-    fi
-    if [ "$RUN_ROOT" != "" ] && [ "$KEEP_WORKDIRS" != "yes" ]; then
-        rm -rf "$RUN_ROOT"
-    fi
-}
-trap cleanup EXIT
-
-usage() {
-    echo "$ME [OPTIONS] [time_warp]"
-    echo "  --case=<name>      Run one named case"
-    echo "  --jobs=N           Run up to N cases per wave"
-    echo "  --port_base=N      Base port; default 4000"
-    echo "  --max_time=N       Max time passed to xlaunch"
-    echo "  --just_make, -j    Generate target files only"
-    echo "  --keep_workdirs    Keep isolated temp mission copies"
-    echo "  --gui              Launch pMarineViewer"
-}
-
-for ARGI; do
-    if [ "$ARGI" = "--help" ] || [ "$ARGI" = "-h" ]; then
-        usage
-        exit 0
-    elif [ "${ARGI//[^0-9]/}" = "$ARGI" ] && [ "$TIME_WARP" = 20 ]; then
-        TIME_WARP=$ARGI
-    elif [ "${ARGI:0:7}" = "--case=" ]; then
-        CASE="${ARGI#--case=*}"
-    elif [ "${ARGI:0:7}" = "--jobs=" ]; then
-        JOBS="${ARGI#--jobs=*}"
-    elif [ "${ARGI:0:12}" = "--port_base=" ]; then
-        PORT_BASE="${ARGI#--port_base=*}"
-    elif [ "${ARGI:0:11}" = "--max_time=" ]; then
-        MAX_TIME="${ARGI#--max_time=*}"
-    elif [ "$ARGI" = "--just_make" ] || [ "$ARGI" = "-j" ]; then
-        JUST_MAKE="yes"
-    elif [ "$ARGI" = "--keep_workdirs" ]; then
-        KEEP_WORKDIRS="yes"
-    elif [ "$ARGI" = "--gui" ]; then
-        NOGUI=""
-    else
-        echo "$ME: Bad arg: $ARGI"
-        exit 1
-    fi
-done
-
-ALL_CASES=(
-dead_first_tryhost_blocks_fail
-secondary_dead_tryhost_ignored_pass
-startup_invalid_bad_port_valid_route_pass
-startup_invalid_bad_param_valid_route_pass
-startup_ip_route_recover_pass
-runtime_tryhost_recover_pass
-runtime_dead_then_valid_blocks_fail
-runtime_valid_then_dead_stays_pass
-runtime_duplicate_tryhost_ignored_pass
-startup_duplicate_runtime_ignored_pass
-delayed_runtime_tryhost_recover_pass
-late_runtime_tryhost_blocks_delivery_fail
-runtime_one_node_missing_route_fail
-runtime_staggered_nodes_recover_pass
-invalid_runtime_tryhost_recover_pass
-invalid_runtime_bad_port_recover_pass
-invalid_runtime_bad_param_recover_pass
-runtime_ip_route_recover_pass
-shore_vnode_discovery_recover_pass
-shore_vnode_one_node_only_fail
-shore_vnode_extra_dead_ignored_pass
-shore_vnode_default_port_no_listener_fail
-shore_vnode_invalid_host_ignored_pass
-shore_vnode_bad_port_ignored_pass
-shore_vnode_duplicate_ignored_pass
+CASES=(
+    dead_first_tryhost_blocks_fail
+    secondary_dead_tryhost_ignored_pass
+    startup_invalid_bad_port_valid_route_pass
+    startup_invalid_bad_param_valid_route_pass
+    startup_ip_route_recover_pass
+    runtime_tryhost_recover_pass
+    runtime_dead_then_valid_blocks_fail
+    runtime_valid_then_dead_stays_pass
+    runtime_duplicate_tryhost_ignored_pass
+    startup_duplicate_runtime_ignored_pass
+    delayed_runtime_tryhost_recover_pass
+    late_runtime_tryhost_blocks_delivery_fail
+    runtime_one_node_missing_route_fail
+    runtime_staggered_nodes_recover_pass
+    invalid_runtime_tryhost_recover_pass
+    invalid_runtime_bad_port_recover_pass
+    invalid_runtime_bad_param_recover_pass
+    runtime_ip_route_recover_pass
+    shore_vnode_discovery_recover_pass
+    shore_vnode_one_node_only_fail
+    shore_vnode_extra_dead_ignored_pass
+    shore_vnode_default_port_no_listener_fail
+    shore_vnode_invalid_host_ignored_pass
+    shore_vnode_bad_port_ignored_pass
+    shore_vnode_duplicate_ignored_pass
 )
 
-case_list() {
-    printf "%s\n" "${ALL_CASES[@]}"
-}
+declare -a SELECTED_CASES CASE_RESULT
+declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
 
-get_case_config() {
-    CASE_NAME="$1"
-    ROUTE_MODE="stock"
-    EXTRA_CHECK=""
-    NEGATIVE_PROFILE=""
+usage() {
+    local case_name
+    cat <<EOF
+$ME [OPTIONS] [time_warp]
 
-    case "$CASE_NAME" in
-        dead_first_tryhost_blocks_fail)
-            ROUTE_MODE="dead_first_tryhost"
-            EXTRA_CHECK="dead_first_tryhost_blocks"
-            NEGATIVE_PROFILE="blocked_no_nodes"
-            ;;
-        secondary_dead_tryhost_ignored_pass)
-            ROUTE_MODE="secondary_dead_tryhost"
-            EXTRA_CHECK="secondary_dead_tryhost_ignored"
-            ;;
-        startup_invalid_bad_port_valid_route_pass)
-            ROUTE_MODE="startup_invalid_bad_port"
-            EXTRA_CHECK="startup_invalid_bad_port_valid_route"
-            ;;
-        startup_invalid_bad_param_valid_route_pass)
-            ROUTE_MODE="startup_invalid_bad_param"
-            EXTRA_CHECK="startup_invalid_bad_param_valid_route"
-            ;;
-        startup_ip_route_recover_pass)
-            ROUTE_MODE="startup_ip_route"
-            EXTRA_CHECK="startup_ip_route_recover"
-            ;;
-        runtime_tryhost_recover_pass)
-            ROUTE_MODE="runtime_tryhost"
-            EXTRA_CHECK="runtime_tryhost_recover"
-            ;;
-        runtime_dead_then_valid_blocks_fail)
-            ROUTE_MODE="runtime_dead_then_valid"
-            EXTRA_CHECK="runtime_dead_then_valid_blocks"
-            NEGATIVE_PROFILE="blocked_no_nodes"
-            ;;
-        runtime_valid_then_dead_stays_pass)
-            ROUTE_MODE="runtime_valid_then_dead"
-            EXTRA_CHECK="runtime_valid_then_dead_stays"
-            ;;
-        runtime_duplicate_tryhost_ignored_pass)
-            ROUTE_MODE="runtime_duplicate_tryhost"
-            EXTRA_CHECK="runtime_duplicate_tryhost_ignored"
-            ;;
-        startup_duplicate_runtime_ignored_pass)
-            ROUTE_MODE="startup_duplicate_runtime"
-            EXTRA_CHECK="startup_duplicate_runtime_ignored"
-            ;;
-        delayed_runtime_tryhost_recover_pass)
-            ROUTE_MODE="delayed_runtime_tryhost"
-            EXTRA_CHECK="delayed_runtime_tryhost_recover"
-            ;;
-        late_runtime_tryhost_blocks_delivery_fail)
-            ROUTE_MODE="late_runtime_tryhost"
-            EXTRA_CHECK="late_runtime_tryhost_blocks_delivery"
-            NEGATIVE_PROFILE="late_blocks_delivery"
-            ;;
-        runtime_one_node_missing_route_fail)
-            ROUTE_MODE="runtime_one_node_missing_route"
-            EXTRA_CHECK="runtime_one_node_missing_route"
-            NEGATIVE_PROFILE="one_node_only"
-            ;;
-        runtime_staggered_nodes_recover_pass)
-            ROUTE_MODE="runtime_staggered_nodes"
-            EXTRA_CHECK="runtime_staggered_nodes_recover"
-            ;;
-        invalid_runtime_tryhost_recover_pass)
-            ROUTE_MODE="invalid_runtime_tryhost"
-            EXTRA_CHECK="invalid_runtime_tryhost_recover"
-            ;;
-        invalid_runtime_bad_port_recover_pass)
-            ROUTE_MODE="invalid_runtime_bad_port"
-            EXTRA_CHECK="invalid_runtime_bad_port_recover"
-            ;;
-        invalid_runtime_bad_param_recover_pass)
-            ROUTE_MODE="invalid_runtime_bad_param"
-            EXTRA_CHECK="invalid_runtime_bad_param_recover"
-            ;;
-        runtime_ip_route_recover_pass)
-            ROUTE_MODE="runtime_ip_route"
-            EXTRA_CHECK="runtime_ip_route_recover"
-            ;;
-        shore_vnode_discovery_recover_pass)
-            ROUTE_MODE="shore_vnode_discovery"
-            EXTRA_CHECK="shore_vnode_discovery_recover"
-            ;;
-        shore_vnode_one_node_only_fail)
-            ROUTE_MODE="shore_vnode_one_node_only"
-            EXTRA_CHECK="shore_vnode_one_node_only"
-            NEGATIVE_PROFILE="one_node_only"
-            ;;
-        shore_vnode_extra_dead_ignored_pass)
-            ROUTE_MODE="shore_vnode_extra_dead"
-            EXTRA_CHECK="shore_vnode_extra_dead_ignored"
-            ;;
-        shore_vnode_default_port_no_listener_fail)
-            ROUTE_MODE="shore_vnode_default_port"
-            EXTRA_CHECK="shore_vnode_default_port_no_listener"
-            NEGATIVE_PROFILE="blocked_no_nodes"
-            ;;
-        shore_vnode_invalid_host_ignored_pass)
-            ROUTE_MODE="shore_vnode_invalid_host"
-            EXTRA_CHECK="shore_vnode_invalid_host_ignored"
-            ;;
-        shore_vnode_bad_port_ignored_pass)
-            ROUTE_MODE="shore_vnode_bad_port"
-            EXTRA_CHECK="shore_vnode_bad_port_ignored"
-            ;;
-        shore_vnode_duplicate_ignored_pass)
-            ROUTE_MODE="shore_vnode_duplicate"
-            EXTRA_CHECK="shore_vnode_duplicate_ignored"
-            ;;
-        *)
-            echo "$ME: Unknown case: $CASE_NAME"
-            return 1
-            ;;
-    esac
-}
+Options:
+  --help, -h         Show this help message
+  --verbose, -v      Show rolling scheduler events
+  --just_make, -j    Prepare each case without launching it
+  --max_time=<secs>  Maximum time passed to each mission wrapper
+  --case=<name>      Run one named case
+  --jobs=<n>         Run up to n cases concurrently with rolling scheduling
+  --port_base=<n>    Base MOOS port for per-case blocks
+  --keep_workdirs    Keep this invocation's isolated case directories
+  --gui              Launch with pMarineViewer
+  --nogui, -ng       Headless launch, no gui (default)
 
-wait_for_result_line() {
-    local file="$1"
-    local tries=240
-    local line
-    local i=0
-    while [ "$i" -lt "$tries" ]; do
-        line=`tail -n 1 "$file" 2>/dev/null`
-        if echo "$line" | grep -q "grade="; then
-            echo "$line"
-            return 0
-        fi
-        sleep 0.5
-        i=$((i + 1))
+Cases:
+EOF
+    for case_name in "${CASES[@]}"; do
+        printf '  %s\n' "$case_name"
     done
-    echo ""
+}
+
+die() {
+    echo "$ME: $*" >&2
+    exit 2
+}
+
+is_uint() {
+    [[ "$1" =~ ^[0-9]+$ ]]
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --case=*) CASE="${arg#--case=}" ;;
+        --jobs=*) JOBS="${arg#--jobs=}" ;;
+        --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
+        --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --keep_workdirs) KEEP_WORKDIRS=yes ;;
+        --verbose|-v) VERBOSE=yes ;;
+        --just_make|-j) JUST_MAKE=yes ;;
+        --gui) DISPLAY_ARGS=() ;;
+        --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
+        --help|-h) usage; exit 0 ;;
+        *[!0-9]*|'') die "bad argument: $arg" ;;
+        *) TIME_WARP="$arg" ;;
+    esac
+done
+
+is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
+is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
+is_uint "$PORT_BASE" && [ "${#PORT_BASE}" -le 5 ] || die "--port_base must be an integer from 1 through 65535"
+is_uint "$MAX_TIME" && [ "${#MAX_TIME}" -le 9 ] || die "--max_time must be a bounded positive integer"
+
+TIME_WARP=$((10#$TIME_WARP))
+JOBS=$((10#$JOBS))
+PORT_BASE=$((10#$PORT_BASE))
+MAX_TIME=$((10#$MAX_TIME))
+
+[ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
+[ "$JOBS" -gt 0 ] || die "--jobs must be a positive integer"
+[ "$PORT_BASE" -gt 0 ] && [ "$PORT_BASE" -le 65535 ] || die "--port_base must be an integer from 1 through 65535"
+[ "$MAX_TIME" -gt 0 ] || die "--max_time must be a positive integer"
+[ -d "$MISSION_DIR" ] || die "mission directory not found: $MISSION_DIR"
+[ -f "$TEARDOWN_HELPER" ] || die "missing teardown helper: $TEARDOWN_HELPER"
+
+# shellcheck source=/dev/null
+. "$TEARDOWN_HELPER"
+
+select_cases() {
+    local case_name
+    SELECTED_CASES=()
+    if [ -n "$CASE" ]; then
+        for case_name in "${CASES[@]}"; do
+            if [ "$case_name" = "$CASE" ]; then
+                SELECTED_CASES=("$case_name")
+                return 0
+            fi
+        done
+        die "unknown case: $CASE"
+    fi
+    SELECTED_CASES=("${CASES[@]}")
+    [ "${#SELECTED_CASES[@]}" -gt 0 ] || die "no cases selected"
+}
+
+field_value() {
+    local line="$1"
+    local key="$2"
+    local field
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            "$key"=*) printf '%s\n' "${field#*=}"; return 0 ;;
+        esac
+    done
     return 1
 }
 
-grade_from_line() {
-    echo "$1" | sed -n 's/.*grade=\([^ ]*\).*/\1/p'
-}
-
-format_result_row() {
-    local case_name="$1"
-    local line="$2"
-    local launch_rc="${3:-0}"
-    local grade
-
-    if [ "$launch_rc" != 0 ]; then
-        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc"
-        return
-    fi
-
-    line=$(echo "$line" | sed 's/^[[:space:]]*//')
-    grade=$(grade_from_line "$line")
-    if [ "$grade" = "" ]; then
-        echo "case=$case_name  grade=fail  reason=missing_result"
-        return
-    fi
-
-    line=$(echo "$line" | sed 's/grade=[^, ]*[[:space:]]*//')
-
-
-    echo "case=$case_name  grade=$grade  $line"
-}
-
-result_row_passed() {
+field_count() {
     local line="$1"
-    local grade
-    grade=$(grade_from_line "$line")
-    [ "$grade" = "pass" ]
+    local key="$2"
+    local field
+    local count=0
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            "$key"=*) count=$((count + 1)) ;;
+        esac
+    done
+    printf '%s\n' "$count"
+}
+
+without_case_field() {
+    local line="$1"
+    local field
+    local output=""
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            case=*) ;;
+            *) output="${output:+$output }$field" ;;
+        esac
+    done
+    printf '%s\n' "$output"
+}
+
+runner_provenance() {
+    local line="$1"
+    local field
+    local output=""
+    local -a fields=()
+    read -r -a fields <<< "$line"
+    for field in "${fields[@]}"; do
+        case "$field" in
+            case=*) field="mission_case=${field#*=}" ;;
+            grade=*) field="mission_grade=${field#*=}" ;;
+            reason=*) field="mission_reason=${field#*=}" ;;
+            launch_rc=*) field="mission_launch_rc=${field#*=}" ;;
+        esac
+        output="${output:+$output }$field"
+    done
+    printf '%s\n' "$output"
+}
+
+stop_root() {
+    if ! moos_scoped_teardown_stop_root "$1"; then
+        echo "$ME: scoped teardown failed for $1" >&2
+        return 1
+    fi
+}
+
+cleanup_runtime() {
+    local pid
+    local root_stopped=yes
+    [ "$CLEANED" = no ] || return 0
+    [ "$CLEANING" = no ] || return 0
+    CLEANING=yes
+    trap '' INT TERM PIPE
+
+    if [ -n "$RUN_ROOT" ] && [ -d "$RUN_ROOT" ]; then
+        if ! stop_root "$RUN_ROOT"; then
+            root_stopped=no
+            CLEANUP_FAILED=yes
+        fi
+    fi
+    for pid in "${!PID_CASE[@]}"; do
+        kill "$pid" 2>/dev/null || true
+    done
+    wait 2>/dev/null || true
+    if [ -n "$RUN_ROOT" ] && [ -d "$RUN_ROOT" ]; then
+        if ! stop_root "$RUN_ROOT"; then
+            root_stopped=no
+            CLEANUP_FAILED=yes
+        fi
+        if [ "$KEEP_WORKDIRS" != yes ] && [ "$root_stopped" = yes ] && [ "$CLEANUP_FAILED" = no ]; then
+            rm -rf -- "$RUN_ROOT" || CLEANUP_FAILED=yes
+            [ ! -e "$RUN_ROOT" ] || CLEANUP_FAILED=yes
+        fi
+    fi
+    rmdir "$RUNS_DIR" 2>/dev/null || true
+    if [ "$HAVE_LOCK" = yes ]; then
+        if [ "$CLEANUP_FAILED" = yes ]; then
+            echo "$ME: retaining safety lock after cleanup/infrastructure failure: $LOCK_DIR" >&2
+            [ ! -d "$RUN_ROOT" ] || echo "$ME: retained run root: $RUN_ROOT" >&2
+        elif rmdir "$LOCK_DIR" 2>/dev/null; then
+            HAVE_LOCK=no
+        else
+            echo "$ME: unable to remove safety lock: $LOCK_DIR" >&2
+            CLEANUP_FAILED=yes
+        fi
+    fi
+    CLEANED=yes
+    CLEANING=no
+}
+
+on_signal() {
+    exit 130
+}
+
+trap cleanup_runtime EXIT
+trap on_signal INT TERM PIPE
+
+get_case_config() {
+    local case_name="$1"
+    SHORE_PATCH=""
+    VEHICLE_PATCH=""
+    EXTRA_CHECK=""
+    case "$case_name" in
+        dead_first_tryhost_blocks_fail)
+            VEHICLE_PATCH="$HARNESS_DIR/dead_first_tryhost_blocks_fail-vehicle.template.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/dead_first_tryhost_blocks_fail-shoreside.xmoos"
+            EXTRA_CHECK=dead_first_tryhost_blocks
+            ;;
+        secondary_dead_tryhost_ignored_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/secondary_dead_tryhost_ignored_pass-vehicle.template.xmoos"
+            EXTRA_CHECK=secondary_dead_tryhost_ignored
+            ;;
+        startup_invalid_bad_port_valid_route_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/startup_invalid_bad_port_valid_route_pass-vehicle.xmoos"
+            EXTRA_CHECK=startup_invalid_bad_port_valid_route
+            ;;
+        startup_invalid_bad_param_valid_route_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/startup_invalid_bad_param_valid_route_pass-vehicle.xmoos"
+            EXTRA_CHECK=startup_invalid_bad_param_valid_route
+            ;;
+        startup_ip_route_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/startup_ip_route_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=startup_ip_route_recover
+            ;;
+        runtime_tryhost_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/runtime_tryhost_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=runtime_tryhost_recover
+            ;;
+        runtime_dead_then_valid_blocks_fail)
+            VEHICLE_PATCH="$HARNESS_DIR/runtime_dead_then_valid_blocks_fail-vehicle.template.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/runtime_dead_then_valid_blocks_fail-shoreside.xmoos"
+            EXTRA_CHECK=runtime_dead_then_valid_blocks
+            ;;
+        runtime_valid_then_dead_stays_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/runtime_valid_then_dead_stays_pass-vehicle.template.xmoos"
+            EXTRA_CHECK=runtime_valid_then_dead_stays
+            ;;
+        runtime_duplicate_tryhost_ignored_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/runtime_duplicate_tryhost_ignored_pass-vehicle.xmoos"
+            EXTRA_CHECK=runtime_duplicate_tryhost_ignored
+            ;;
+        startup_duplicate_runtime_ignored_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/startup_duplicate_runtime_ignored_pass-vehicle.xmoos"
+            EXTRA_CHECK=startup_duplicate_runtime_ignored
+            ;;
+        delayed_runtime_tryhost_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/delayed_runtime_tryhost_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=delayed_runtime_tryhost_recover
+            ;;
+        late_runtime_tryhost_blocks_delivery_fail)
+            VEHICLE_PATCH="$HARNESS_DIR/late_runtime_tryhost_blocks_delivery_fail-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/late_runtime_tryhost_blocks_delivery_fail-shoreside.xmoos"
+            EXTRA_CHECK=late_runtime_tryhost_blocks_delivery
+            ;;
+        runtime_one_node_missing_route_fail)
+            VEHICLE_PATCH="$HARNESS_DIR/runtime_one_node_missing_route_fail-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/runtime_one_node_missing_route_fail-shoreside.xmoos"
+            EXTRA_CHECK=runtime_one_node_missing_route
+            ;;
+        runtime_staggered_nodes_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/runtime_staggered_nodes_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=runtime_staggered_nodes_recover
+            ;;
+        invalid_runtime_tryhost_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/invalid_runtime_tryhost_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=invalid_runtime_tryhost_recover
+            ;;
+        invalid_runtime_bad_port_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/invalid_runtime_bad_port_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=invalid_runtime_bad_port_recover
+            ;;
+        invalid_runtime_bad_param_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/invalid_runtime_bad_param_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=invalid_runtime_bad_param_recover
+            ;;
+        runtime_ip_route_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/runtime_ip_route_recover_pass-vehicle.xmoos"
+            EXTRA_CHECK=runtime_ip_route_recover
+            ;;
+        shore_vnode_discovery_recover_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/shore_vnode_discovery_recover_pass-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/shore_vnode_discovery_recover_pass-shoreside.template.xmoos"
+            EXTRA_CHECK=shore_vnode_discovery_recover
+            ;;
+        shore_vnode_one_node_only_fail)
+            VEHICLE_PATCH="$HARNESS_DIR/shore_vnode_one_node_only_fail-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/shore_vnode_one_node_only_fail-shoreside.template.xmoos"
+            EXTRA_CHECK=shore_vnode_one_node_only
+            ;;
+        shore_vnode_extra_dead_ignored_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/shore_vnode_extra_dead_ignored_pass-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/shore_vnode_extra_dead_ignored_pass-shoreside.template.xmoos"
+            EXTRA_CHECK=shore_vnode_extra_dead_ignored
+            ;;
+        shore_vnode_default_port_no_listener_fail)
+            VEHICLE_PATCH="$HARNESS_DIR/shore_vnode_default_port_no_listener_fail-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/shore_vnode_default_port_no_listener_fail-shoreside.xmoos"
+            EXTRA_CHECK=shore_vnode_default_port_no_listener
+            ;;
+        shore_vnode_invalid_host_ignored_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/shore_vnode_invalid_host_ignored_pass-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/shore_vnode_invalid_host_ignored_pass-shoreside.template.xmoos"
+            EXTRA_CHECK=shore_vnode_invalid_host_ignored
+            ;;
+        shore_vnode_bad_port_ignored_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/shore_vnode_bad_port_ignored_pass-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/shore_vnode_bad_port_ignored_pass-shoreside.template.xmoos"
+            EXTRA_CHECK=shore_vnode_bad_port_ignored
+            ;;
+        shore_vnode_duplicate_ignored_pass)
+            VEHICLE_PATCH="$HARNESS_DIR/shore_vnode_duplicate_ignored_pass-vehicle.xmoos"
+            SHORE_PATCH="$HARNESS_DIR/shore_vnode_duplicate_ignored_pass-shoreside.template.xmoos"
+            EXTRA_CHECK=shore_vnode_duplicate_ignored
+            ;;
+        *) return 1 ;;
+    esac
+}
+
+render_patch() {
+    local source="$1"
+    local output="$2"
+    local case_base="$3"
+    local bad_port=$((case_base + PORT_STRIDE - 1))
+    local veh1_pshare=$((case_base + PSHARE_OFFSET + 1))
+    local veh2_pshare=$((case_base + PSHARE_OFFSET + 2))
+
+    sed -e "s/@BAD_PORT@/$bad_port/g" \
+        -e "s/@VEH1_PSHARE@/$veh1_pshare/g" \
+        -e "s/@VEH2_PSHARE@/$veh2_pshare/g" \
+        "$source" > "$output"
+}
+
+prepare_case() {
+    local case_name="$1"
+    local workdir="$2"
+    local case_base="$3"
+    local shore_patch=""
+    local vehicle_patch=""
+
+    get_case_config "$case_name" || return 1
+    shore_patch="$SHORE_PATCH"
+    vehicle_patch="$VEHICLE_PATCH"
+    [ -z "$shore_patch" ] || [ -f "$shore_patch" ] || return 1
+    [ -n "$vehicle_patch" ] && [ -f "$vehicle_patch" ] || return 1
+    rm -rf "$workdir"
+    mkdir -p "$workdir" || return 1
+    cp -R "$MISSION_DIR"/. "$workdir"/ || return 1
+    (
+        cd "$workdir" || exit 1
+        ./clean.sh >/dev/null 2>&1
+    ) || return 1
+    if [[ "$shore_patch" = *.template.xmoos ]]; then
+        render_patch "$shore_patch" "$workdir/case-shoreside.xmoos" "$case_base" || return 1
+        shore_patch="$workdir/case-shoreside.xmoos"
+    fi
+    if [[ "$vehicle_patch" = *.template.xmoos ]]; then
+        render_patch "$vehicle_patch" "$workdir/case-vehicle.xmoos" "$case_base" || return 1
+        vehicle_patch="$workdir/case-vehicle.xmoos"
+    fi
+    if [ -n "$shore_patch" ]; then
+        nspatch --stem="$workdir/meta_shoreside.moos" \
+            "$shore_patch" --targ="$workdir/meta_shoreside.moosx" || return 1
+    fi
+    nspatch --stem="$workdir/meta_vehicle.moos" \
+        "$vehicle_patch" --targ="$workdir/meta_vehicle.moosx" || return 1
 }
 
 shore_alog() {
@@ -300,7 +492,7 @@ alog_var_lacks_pattern() {
     local pattern="$3"
     local lines
     [ "$alog" != "" ] || return 1
-    lines=`aloggrep "$alog" "$var" 2>/dev/null`
+    lines=$(aloggrep "$alog" "$var" 2>/dev/null)
     [ "$lines" != "" ] || return 1
     ! printf "%s\n" "$lines" | rg "$pattern" >/dev/null
 }
@@ -311,7 +503,7 @@ vehicle_has() {
     local var="$3"
     local pattern="$4"
     local alog
-    alog=`vehicle_alog "$case_dir" "$vname"`
+    alog=$(vehicle_alog "$case_dir" "$vname")
     alog_var_has_pattern "$alog" "$var" "$pattern"
 }
 
@@ -321,7 +513,7 @@ vehicle_lacks() {
     local var="$3"
     local pattern="$4"
     local alog
-    alog=`vehicle_alog "$case_dir" "$vname"`
+    alog=$(vehicle_alog "$case_dir" "$vname")
     alog_var_lacks_pattern "$alog" "$var" "$pattern"
 }
 
@@ -330,7 +522,7 @@ shore_has() {
     local var="$2"
     local pattern="$3"
     local alog
-    alog=`shore_alog "$case_dir"`
+    alog=$(shore_alog "$case_dir")
     alog_var_has_pattern "$alog" "$var" "$pattern"
 }
 
@@ -339,31 +531,17 @@ shore_lacks() {
     local var="$2"
     local pattern="$3"
     local alog
-    alog=`shore_alog "$case_dir"`
+    alog=$(shore_alog "$case_dir")
     alog_var_lacks_pattern "$alog" "$var" "$pattern"
 }
 
-base_delivery_ok() {
-    local line="$1"
-    echo "$line" | rg -q 'node_count=2' && \
-    echo "$line" | rg -q 'direct=true' && \
-    echo "$line" | rg -q 'ack=true' && \
-    echo "$line" | rg -q 'rpt_ab=true' && \
-    echo "$line" | rg -q 'rpt_ba=true'
-}
-
-extra_check_ok() {
+supplemental_check_ok() {
     local check="$1"
     local case_dir="$2"
     local line="$3"
 
     case "$check" in
         dead_first_tryhost_blocks)
-            echo "$line" | rg -q 'grade=pass' && \
-            echo "$line" | rg -q 'expected=dead_first_tryhost_blocks' && \
-            echo "$line" | rg -q 'node_count=0' && \
-            echo "$line" | rg -q 'direct=false' && \
-            echo "$line" | rg -q 'ack=false' && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
@@ -373,7 +551,6 @@ extra_check_ok() {
             ! vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok"
             ;;
         secondary_dead_tryhost_ignored)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
@@ -384,28 +561,24 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         startup_invalid_bad_port_valid_route)
-            base_delivery_ok "$line" && \
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "notaport" && \
             vehicle_lacks "$case_dir" "BEN" "PSHARE_CMD" "notaport" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         startup_invalid_bad_param_valid_route)
-            base_delivery_ok "$line" && \
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "shore_route" && \
             vehicle_lacks "$case_dir" "BEN" "PSHARE_CMD" "shore_route" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         startup_ip_route_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "PSHARE_CMD" "route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         runtime_tryhost_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
@@ -414,11 +587,6 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         runtime_dead_then_valid_blocks)
-            echo "$line" | rg -q 'grade=pass' && \
-            echo "$line" | rg -q 'expected=runtime_dead_then_valid_blocks' && \
-            echo "$line" | rg -q 'node_count=0' && \
-            echo "$line" | rg -q 'direct=false' && \
-            echo "$line" | rg -q 'ack=false' && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
@@ -427,14 +595,12 @@ extra_check_ok() {
             ! vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok"
             ;;
         runtime_valid_then_dead_stays)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         runtime_duplicate_tryhost_ignored)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
@@ -445,7 +611,6 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         startup_duplicate_runtime_ignored)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1" && \
@@ -454,39 +619,29 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         delayed_runtime_tryhost_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         late_runtime_tryhost_blocks_delivery)
-            echo "$line" | rg -q 'grade=pass' && \
-            echo "$line" | rg -q 'expected=late_runtime_tryhost_blocks_delivery' && \
-            echo "$line" | rg -q 'node_count=2' && \
-            ! base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         runtime_one_node_missing_route)
-            echo "$line" | rg -q 'grade=pass' && \
-            echo "$line" | rg -q 'expected=runtime_one_node_missing_route' && \
-            echo "$line" | rg -q 'node_count=1' && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             ! vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok"
             ;;
         runtime_staggered_nodes_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         invalid_runtime_tryhost_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=not_a_route" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=not_a_route" && \
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "not_a_route" && \
@@ -495,7 +650,6 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         invalid_runtime_bad_port_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=localhost:notaport" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=localhost:notaport" && \
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "notaport" && \
@@ -504,7 +658,6 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         invalid_runtime_bad_param_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "shore_route=localhost:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "shore_route=localhost:[0-9]+" && \
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "shore_route" && \
@@ -513,7 +666,6 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         runtime_ip_route_recover)
-            base_delivery_ok "$line" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "pshare_route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "route=127.0.0.1:[0-9]+" && \
@@ -522,7 +674,6 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         shore_vnode_discovery_recover)
-            base_delivery_ok "$line" && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
             shore_has "$case_dir" "TRY_SHORE_HOST" "pshare_route=.*:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=.*:[0-9]+" && \
@@ -531,45 +682,35 @@ extra_check_ok() {
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         shore_vnode_one_node_only)
-            echo "$line" | rg -q 'grade=pass' && \
-            echo "$line" | rg -q 'expected=shore_vnode_one_node_only' && \
-            echo "$line" | rg -q 'node_count=1' && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "TRY_SHORE_HOST" "pshare_route=.*:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             ! vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok"
             ;;
         shore_vnode_extra_dead_ignored)
-            base_delivery_ok "$line" && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
             shore_has "$case_dir" "PSHARE_CMD" "route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         shore_vnode_default_port_no_listener)
-            echo "$line" | rg -q 'grade=pass' && \
-            echo "$line" | rg -q 'expected=shore_vnode_default_port_no_listener' && \
-            echo "$line" | rg -q 'node_count=0' && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:9200" && \
             ! vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok" && \
             ! vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok"
             ;;
         shore_vnode_invalid_host_ignored)
-            base_delivery_ok "$line" && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
             shore_lacks "$case_dir" "PSHARE_CMD" "badhost" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         shore_vnode_bad_port_ignored)
-            base_delivery_ok "$line" && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
             shore_lacks "$case_dir" "PSHARE_CMD" "notaport" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
         shore_vnode_duplicate_ignored)
-            base_delivery_ok "$line" && \
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
@@ -580,361 +721,264 @@ extra_check_ok() {
     esac
 }
 
-remove_startup_tryhost() {
-    local case_dir="$1"
-    perl -0pi -e 's/\n  try_shore_host = pshare_route=localhost:\$\(SHORE_PSHARE\)\n/\n/' "$case_dir/meta_vehicle.moos"
-}
+write_result() {
+    local case_name="$1"
+    local result_file="$2"
+    local launch_rc="$3"
+    local workdir="$4"
+    local line grade_count mission_grade mission_rows provenance
 
-insert_vehicle_event_before_messages() {
-    local case_dir="$1"
-    local event_text="$2"
-    EVENT_TEXT="$event_text" perl -0pi -e 's/(#ifdef VNAME abe)/$ENV{EVENT_TEXT} . "\n\n" . $1/e' "$case_dir/meta_vehicle.moos"
-}
-
-insert_abe_event() {
-    local case_dir="$1"
-    local event_text="$2"
-    EVENT_TEXT="$event_text" perl -0pi -e 's/(#ifdef VNAME abe\n)/$1 . $ENV{EVENT_TEXT} . "\n"/e' "$case_dir/meta_vehicle.moos"
-}
-
-insert_ben_event() {
-    local case_dir="$1"
-    local event_text="$2"
-    EVENT_TEXT="$event_text" perl -0pi -e 's/(#ifdef VNAME ben\n)/$1 . $ENV{EVENT_TEXT} . "\n"/e' "$case_dir/meta_vehicle.moos"
-}
-
-patch_shore_broker_block() {
-    local case_dir="$1"
-    local block="$2"
-    BLOCK="$block" perl -0pi -e 's/ProcessConfig = uFldShoreBroker\n\{\n.*?\n\}/$ENV{BLOCK}/s or die "failed to patch uFldShoreBroker block\n";' "$case_dir/meta_shoreside.moos"
-}
-
-patch_pmission_eval_block() {
-    local case_dir="$1"
-    local block="$2"
-    BLOCK="$block" perl -0pi -e 's/ProcessConfig = pMissionEval\n\{\n.*?\n\}/$ENV{BLOCK}/s or die "failed to patch pMissionEval block\n";' "$case_dir/meta_shoreside.moos"
-}
-
-patch_negative_eval_block() {
-    local case_dir="$1"
-    local profile="$2"
-    local expected="$3"
-    local conditions
-
-    if [ "$profile" = "blocked_no_nodes" ]; then
-        conditions="  pass_condition = UFSB_NODE_COUNT = 0
-  pass_condition = DIRECT_MSG_DELIVERED = false
-  pass_condition = ACK_DELIVERED = false
-  pass_condition = REPORT_ABE_TO_BEN = false
-  pass_condition = REPORT_BEN_TO_ABE = false
-  pass_condition = SHARED_REPORT_SEEN = false
-  pass_condition = MISSION_TIMEOUT = false"
-    elif [ "$profile" = "late_blocks_delivery" ]; then
-        conditions="  pass_condition = UFSB_NODE_COUNT >= 2
-  pass_condition = MISSION_TIMEOUT = false"
-    elif [ "$profile" = "one_node_only" ]; then
-        conditions="  pass_condition = UFSB_NODE_COUNT = 1
-  pass_condition = DIRECT_MSG_DELIVERED = false
-  pass_condition = MISSION_TIMEOUT = false"
-    else
+    if [ "$JUST_MAKE" = yes ]; then
+        if [ "$launch_rc" -eq 0 ]; then
+            printf 'case=%s grade=pass mode=just_make\n' "$case_name" > "$result_file"
+        else
+            printf 'case=%s grade=fail reason=launch_error launch_rc=%s mode=just_make\n' "$case_name" "$launch_rc" > "$result_file"
+        fi
         return 0
     fi
-
-    patch_pmission_eval_block "$case_dir" "ProcessConfig = pMissionEval
-{
-  AppTick   = 10
-  CommsTick = 10
-
-  mailflag = @NODE_MESSAGE_BEN#DIRECT_MSG_DELIVERED=true
-  mailflag = @ACK_MESSAGE_abe#ACK_DELIVERED=true
-  mailflag = @NODE_REPORT_BEN#REPORT_ABE_TO_BEN=true
-  mailflag = @NODE_REPORT_ABE#REPORT_BEN_TO_ABE=true
-  mailflag = @VIEW_COMMS_PULSE#VIEW_COMMS_PULSE_SEEN=true
-  mailflag = @NODE_REPORT_UNC#SHARED_REPORT_SEEN=true
-
-  lead_condition = MISSION_DONE = true
-$conditions
-
-  result_flag = MISSION_EVALUATED = true
-  pass_flag   = SAY_MOOS = pass
-  fail_flag   = SAY_MOOS = fail
-
-  mission_form = ufield_comms_tests
-  mission_mod  = \$(MMOD:=route_resilience_expected_negative_pass)
-
-  report_file   = results.txt
-  report_column = grade=\$[GRADE]
-  report_column = form=\$[MISSION_FORM]
-  report_column = mmod=\$[MMOD]
-  report_column = expected=$expected
-  report_column = node_count=\$[UFSB_NODE_COUNT]
-  report_column = direct=\$[DIRECT_MSG_DELIVERED]
-  report_column = ack=\$[ACK_DELIVERED]
-  report_column = rpt_ab=\$[REPORT_ABE_TO_BEN]
-  report_column = rpt_ba=\$[REPORT_BEN_TO_ABE]
-  report_column = pulse=\$[VIEW_COMMS_PULSE_SEEN]
-  report_column = shared=\$[SHARED_REPORT_SEEN]
-  report_column = timeout=\$[MISSION_TIMEOUT]
-  report_column = mhash=\$[MHASH_SHORT]
-}"
-}
-
-prepare_case_dir() {
-    local case_dir="$1"
-    local pbase="$2"
-    local bad_port=$((pbase + 29))
-    local veh1_pshare=$((pbase + 11))
-    local veh2_pshare=$((pbase + 12))
-
-    cp -R "$MISSION_DIR"/. "$case_dir"/
-    (cd "$case_dir" && ./clean.sh >/dev/null 2>&1 || true)
-
-    if [ "$ROUTE_MODE" = "dead_first_tryhost" ]; then
-        BAD_PORT="$bad_port" perl -0pi -e 's/  try_shore_host = pshare_route=localhost:\$\(SHORE_PSHARE\)/  try_shore_host = pshare_route=localhost:\$(SHORE_PSHARE)\n  try_shore_host = pshare_route=localhost:$ENV{BAD_PORT}/' "$case_dir/meta_vehicle.moos"
-    elif [ "$ROUTE_MODE" = "secondary_dead_tryhost" ]; then
-        BAD_PORT="$bad_port" perl -0pi -e 's/  try_shore_host = pshare_route=localhost:\$\(SHORE_PSHARE\)/  try_shore_host = pshare_route=localhost:$ENV{BAD_PORT}\n  try_shore_host = pshare_route=localhost:\$(SHORE_PSHARE)/' "$case_dir/meta_vehicle.moos"
-    elif [ "$ROUTE_MODE" = "startup_invalid_bad_port" ]; then
-        perl -0pi -e 's/  try_shore_host = pshare_route=localhost:\$\(SHORE_PSHARE\)/  try_shore_host = pshare_route=localhost:notaport\n  try_shore_host = pshare_route=localhost:\$(SHORE_PSHARE)/' "$case_dir/meta_vehicle.moos"
-    elif [ "$ROUTE_MODE" = "startup_invalid_bad_param" ]; then
-        perl -0pi -e 's/  try_shore_host = pshare_route=localhost:\$\(SHORE_PSHARE\)/  try_shore_host = shore_route=localhost:\$(SHORE_PSHARE)\n  try_shore_host = pshare_route=localhost:\$(SHORE_PSHARE)/' "$case_dir/meta_vehicle.moos"
-    elif [ "$ROUTE_MODE" = "startup_ip_route" ]; then
-        perl -0pi -e 's/  try_shore_host = pshare_route=localhost:\$\(SHORE_PSHARE\)/  try_shore_host = pshare_route=127.0.0.1:\$(SHORE_PSHARE)/' "$case_dir/meta_vehicle.moos"
-    elif [ "$ROUTE_MODE" = "runtime_tryhost" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=220'
-    elif [ "$ROUTE_MODE" = "runtime_dead_then_valid" ]; then
-        remove_startup_tryhost "$case_dir"
-        BAD_PORT="$bad_port" insert_vehicle_event_before_messages "$case_dir" "  event = var=TRY_SHORE_HOST, val=\"pshare_route=localhost:$bad_port\", time=80
-  event = var=TRY_SHORE_HOST, val=\"pshare_route=localhost:\$(SHORE_PSHARE)\", time=220"
-    elif [ "$ROUTE_MODE" = "runtime_valid_then_dead" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" "  event = var=TRY_SHORE_HOST, val=\"pshare_route=localhost:\$(SHORE_PSHARE)\", time=120
-  event = var=TRY_SHORE_HOST, val=\"pshare_route=localhost:$bad_port\", time=620"
-    elif [ "$ROUTE_MODE" = "runtime_duplicate_tryhost" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=220
-  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=260'
-    elif [ "$ROUTE_MODE" = "startup_duplicate_runtime" ]; then
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=160'
-    elif [ "$ROUTE_MODE" = "delayed_runtime_tryhost" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=700'
-    elif [ "$ROUTE_MODE" = "late_runtime_tryhost" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=1700'
-    elif [ "$ROUTE_MODE" = "runtime_one_node_missing_route" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_abe_event "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=220'
-    elif [ "$ROUTE_MODE" = "runtime_staggered_nodes" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_abe_event "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=220'
-        insert_ben_event "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=620'
-    elif [ "$ROUTE_MODE" = "invalid_runtime_tryhost" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=not_a_route", time=120
-  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=260'
-    elif [ "$ROUTE_MODE" = "invalid_runtime_bad_port" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:notaport", time=120
-  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=260'
-    elif [ "$ROUTE_MODE" = "invalid_runtime_bad_param" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="shore_route=localhost:$(SHORE_PSHARE)", time=120
-  event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=260'
-    elif [ "$ROUTE_MODE" = "runtime_ip_route" ]; then
-        remove_startup_tryhost "$case_dir"
-        insert_vehicle_event_before_messages "$case_dir" '  event = var=TRY_SHORE_HOST, val="pshare_route=127.0.0.1:$(SHORE_PSHARE)", time=220'
-    elif [ "$ROUTE_MODE" = "shore_vnode_discovery" ]; then
-        remove_startup_tryhost "$case_dir"
-        patch_shore_broker_block "$case_dir" "ProcessConfig = uFldShoreBroker
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
-
-  try_vnode = route=127.0.0.1:$veh1_pshare
-  try_vnode = route=127.0.0.1:$veh2_pshare
-}"
-    elif [ "$ROUTE_MODE" = "shore_vnode_one_node_only" ]; then
-        remove_startup_tryhost "$case_dir"
-        patch_shore_broker_block "$case_dir" "ProcessConfig = uFldShoreBroker
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
-
-  try_vnode = route=127.0.0.1:$veh1_pshare
-}"
-    elif [ "$ROUTE_MODE" = "shore_vnode_extra_dead" ]; then
-        remove_startup_tryhost "$case_dir"
-        patch_shore_broker_block "$case_dir" "ProcessConfig = uFldShoreBroker
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
-
-  try_vnode = route=127.0.0.1:$veh1_pshare
-  try_vnode = route=127.0.0.1:$veh2_pshare
-  try_vnode = route=127.0.0.1:$bad_port
-}"
-    elif [ "$ROUTE_MODE" = "shore_vnode_default_port" ]; then
-        remove_startup_tryhost "$case_dir"
-        patch_shore_broker_block "$case_dir" "ProcessConfig = uFldShoreBroker
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
-
-  try_vnode = route=127.0.0.1
-}"
-    elif [ "$ROUTE_MODE" = "shore_vnode_invalid_host" ]; then
-        remove_startup_tryhost "$case_dir"
-        patch_shore_broker_block "$case_dir" "ProcessConfig = uFldShoreBroker
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
-
-  try_vnode = route=badhost:$veh1_pshare
-  try_vnode = route=127.0.0.1:$veh1_pshare
-  try_vnode = route=127.0.0.1:$veh2_pshare
-}"
-    elif [ "$ROUTE_MODE" = "shore_vnode_bad_port" ]; then
-        remove_startup_tryhost "$case_dir"
-        patch_shore_broker_block "$case_dir" "ProcessConfig = uFldShoreBroker
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
-
-  try_vnode = route=127.0.0.1:notaport
-  try_vnode = route=127.0.0.1:$veh1_pshare
-  try_vnode = route=127.0.0.1:$veh2_pshare
-}"
-    elif [ "$ROUTE_MODE" = "shore_vnode_duplicate" ]; then
-        remove_startup_tryhost "$case_dir"
-        patch_shore_broker_block "$case_dir" "ProcessConfig = uFldShoreBroker
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  qbridge = NODE_REPORT, NODE_MESSAGE, ACK_MESSAGE
-
-  try_vnode = route=127.0.0.1:$veh1_pshare
-  try_vnode = route=127.0.0.1:$veh1_pshare
-  try_vnode = route=127.0.0.1:$veh2_pshare
-}"
+    if [ ! -f "$workdir/results.txt" ]; then
+        printf 'case=%s grade=fail reason=missing_result_file launch_rc=%s\n' "$case_name" "$launch_rc" > "$result_file"
+        return 0
     fi
-
-    if [ "$NEGATIVE_PROFILE" != "" ]; then
-        patch_negative_eval_block "$case_dir" "$NEGATIVE_PROFILE" "$EXTRA_CHECK"
+    mission_rows=$(awk 'NF {count++} END {print count+0}' "$workdir/results.txt")
+    if [ "$mission_rows" -eq 0 ]; then
+        printf 'case=%s grade=fail reason=missing_result launch_rc=%s\n' "$case_name" "$launch_rc" > "$result_file"
+        return 0
     fi
+    if [ "$mission_rows" -ne 1 ]; then
+        printf 'case=%s grade=fail reason=duplicate_results result_rows=%s\n' "$case_name" "$mission_rows" > "$result_file"
+        return 0
+    fi
+    line=$(awk 'NF {print; exit}' "$workdir/results.txt")
+    grade_count=$(field_count "$line" grade)
+    if [ "$grade_count" -ne 1 ]; then
+        printf 'case=%s grade=fail reason=malformed_result grade_fields=%s\n' "$case_name" "$grade_count" > "$result_file"
+        return 0
+    fi
+    mission_grade=$(field_value "$line" grade || true)
+    if [ "$mission_grade" != pass ] && [ "$mission_grade" != fail ]; then
+        printf 'case=%s grade=fail reason=malformed_result mission_grade=%s\n' "$case_name" "${mission_grade:-missing}" > "$result_file"
+        return 0
+    fi
+    if [ "$launch_rc" -ne 0 ]; then
+        provenance=$(runner_provenance "$line")
+        printf 'case=%s grade=fail reason=launch_error launch_rc=%s%s\n' \
+            "$case_name" "$launch_rc" "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
+    if [ "$mission_grade" = pass ] && ! supplemental_check_ok "$EXTRA_CHECK" "$workdir" "$line"; then
+        provenance=$(runner_provenance "$line")
+        printf 'case=%s grade=fail reason=supplemental_route_check_failed%s\n' \
+            "$case_name" "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
+    line=$(without_case_field "$line")
+    printf 'case=%s %s\n' "$case_name" "$line" > "$result_file"
 }
 
 run_case() {
     local case_name="$1"
-    local case_index="$2"
-    get_case_config "$case_name" || {
-        echo "case=$case_name  grade=fail  reason=case_config_error" >> "$RESULTS_FILE"
+    local workdir="$2"
+    local result_file="$3"
+    local case_base="$4"
+    local launch_rc=0
+    local result_line grade
+    local -a launch_args
+
+    prepare_case "$case_name" "$workdir" "$case_base" || {
+        printf 'case=%s grade=fail reason=prepare_error\n' "$case_name" > "$result_file"
         return 1
     }
-
-    local case_dir="$RUN_ROOT/$case_name"
-    local case_rows="$case_dir/results.txt"
-    local pbase=$((PORT_BASE + case_index * PORT_STRIDE))
-    mkdir -p "$case_dir"
-    prepare_case_dir "$case_dir" "$pbase" || {
-        echo "case=$case_name  grade=fail  reason=prepare_error" >> "$RESULTS_FILE"
-        return 1
-    }
-    : > "$case_rows"
-
-    local just_make_arg=""
-    if [ "$JUST_MAKE" = "yes" ]; then
-        just_make_arg="--just_make"
-    fi
-
     (
-        cd "$case_dir"
-        xlaunch.sh --max_time="$MAX_TIME" $NOGUI $just_make_arg \
-            --mmod="$case_name" \
-            --shore_mport="$pbase" \
-            --veh1_mport="$((pbase+1))" \
-            --veh2_mport="$((pbase+2))" \
-            --shore_pshare="$((pbase+10))" \
-            --veh1_pshare="$((pbase+11))" \
-            --veh2_pshare="$((pbase+12))" \
-            "$TIME_WARP" >"$case_dir/xlaunch.out" 2>&1
-    )
-    local launch_rc=$?
-    harness_teardown_stop_root "$case_dir" >/dev/null 2>&1 || true
+        cd "$workdir" || exit 1
+        : > results.txt
+        launch_args=(
+            --max_time="$MAX_TIME"
+            "${DISPLAY_ARGS[@]}"
+            --shore_mport="$case_base"
+            --veh1_mport="$((case_base + 1))"
+            --veh2_mport="$((case_base + 2))"
+            --shore_pshare="$((case_base + PSHARE_OFFSET))"
+            --veh1_pshare="$((case_base + PSHARE_OFFSET + 1))"
+            --veh2_pshare="$((case_base + PSHARE_OFFSET + 2))"
+            "$TIME_WARP"
+        )
+        [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
+        ./zlaunch.sh "${launch_args[@]}"
+    ) || launch_rc=$?
 
-    if [ "$JUST_MAKE" = "yes" ]; then
-        if [ "$launch_rc" = 0 ]; then
-            echo "case=$case_name  grade=pass  reason=just_make" >> "$RESULTS_FILE"
-            echo "$case_name: just_make ok"
-            return 0
-        fi
-        echo "case=$case_name  grade=fail  reason=launch_error  launch_rc=$launch_rc" >> "$RESULTS_FILE"
-        echo "$case_name: launch failed in just_make"
-        return 1
+    write_result "$case_name" "$result_file" "$launch_rc" "$workdir"
+    if ! stop_root "$workdir"; then
+        printf 'case=%s grade=fail reason=teardown_error\n' "$case_name" > "$result_file"
     fi
-
-    local line
-    local result_line
-    if [ "$launch_rc" = 0 ]; then
-        line=`wait_for_result_line "$case_rows"`
-    else
-        line=""
-    fi
-
-    result_line=$(format_result_row "$case_name" "$line" "$launch_rc")
-    echo "$result_line" >> "$RESULTS_FILE"
-    if ! result_row_passed "$result_line"; then
-        echo "$case_name: result failed: $result_line"
-        return 1
-    fi
-    if ! extra_check_ok "$EXTRA_CHECK" "$case_dir" "$result_line"; then
-        echo "$case_name: extra check failed: $result_line"
-        return 1
-    fi
-    echo "$case_name: ok"
+    result_line=$(awk 'NF {print; exit}' "$result_file" 2>/dev/null)
+    grade=$(field_value "$result_line" grade || true)
+    [ "$grade" = pass ]
 }
 
-if [ "$CASE" != "" ]; then
-    CASES="$CASE"
-else
-    CASES=`case_list`
-fi
+start_case() {
+    local case_idx="$1"
+    local case_name="${SELECTED_CASES[$case_idx]}"
+    local case_dir workdir result_file log_file case_base pid
 
-RUN_ROOT=`mktemp -d "${TMPDIR:-/tmp}/ufield_route_resilience_harness.XXXXXX"`
+    case_base=$((PORT_BASE + case_idx * PORT_STRIDE))
+    case_dir="$RUN_ROOT/case_$(printf '%03d' "$case_idx")_$case_name"
+    workdir="$case_dir/mission"
+    result_file="$case_dir/result.row"
+    log_file="$case_dir/run.log"
+    CASE_RESULT[case_idx]="$result_file"
+    mkdir -p "$case_dir" || return 1
+    (
+        local rc=0
+        set +e
+        run_case "$case_name" "$workdir" "$result_file" "$case_base" > "$log_file" 2>&1
+        rc=$?
+        if [ ! -s "$result_file" ]; then
+            printf 'case=%s grade=fail reason=missing_result launch_rc=%s\n' "$case_name" "$rc" > "$result_file"
+        fi
+        exit "$rc"
+    ) &
+    pid=$!
+    PID_CASE[$pid]="$case_name"
+    PID_RESULT[$pid]="$result_file"
+    PID_LOG[$pid]="$log_file"
+    PID_PORT_BASE[$pid]="$case_base"
+    [ "$VERBOSE" != yes ] || printf 'event=start epoch=%s pid=%s case=%s port_base=%s workdir=%s\n' \
+        "$(date +%s)" "$pid" "$case_name" "$case_base" "$workdir"
+}
+
+finish_one() {
+    local done_pid="" wait_rc=0 case_name line grade reason
+
+    FINISH_FATAL_REASON=""
+    wait -p done_pid -n || wait_rc=$?
+    if [ -z "${done_pid:-}" ] || [ -z "${PID_CASE[$done_pid]:-}" ]; then
+        echo "$ME: scheduler could not identify completed worker rc=$wait_rc" >&2
+        FINISH_FATAL_REASON=scheduler_state_error
+        return 2
+    fi
+    case_name="${PID_CASE[$done_pid]}"
+    line=$(awk 'NF {print; exit}' "${PID_RESULT[$done_pid]}" 2>/dev/null)
+    grade=$(field_value "$line" grade || true)
+    reason=$(field_value "$line" reason || true)
+    if [ "$wait_rc" -ne 0 ] && [ "$grade" = pass ]; then
+        printf 'case=%s grade=fail reason=worker_error worker_rc=%s\n' "$case_name" "$wait_rc" > "${PID_RESULT[$done_pid]}"
+        grade=fail
+    fi
+    [ "$VERBOSE" != yes ] || printf 'event=finish epoch=%s pid=%s case=%s rc=%s grade=%s port_base=%s log=%s\n' \
+        "$(date +%s)" "$done_pid" "$case_name" "$wait_rc" "${grade:-missing}" \
+        "${PID_PORT_BASE[$done_pid]}" "${PID_LOG[$done_pid]}"
+    unset 'PID_CASE[$done_pid]' 'PID_RESULT[$done_pid]' 'PID_LOG[$done_pid]' 'PID_PORT_BASE[$done_pid]'
+    if [ "$reason" = teardown_error ]; then
+        FINISH_FATAL_REASON=teardown_error
+        return 2
+    fi
+    [ "$grade" = pass ]
+}
+
+abort_pending() {
+    local next_idx="$1" total="$2" fatal_reason="$3" case_idx case_name case_dir result_file
+    CLEANUP_FAILED=yes
+    echo "$ME: stopping scheduler refill after $fatal_reason" >&2
+    for ((case_idx = next_idx; case_idx < total; case_idx++)); do
+        case_name="${SELECTED_CASES[$case_idx]}"
+        case_dir="$RUN_ROOT/case_$(printf '%03d' "$case_idx")_$case_name"
+        result_file="$case_dir/result.row"
+        CASE_RESULT[case_idx]="$result_file"
+        mkdir -p "$case_dir" || continue
+        printf 'case=%s grade=fail reason=scheduler_aborted_after_%s\n' "$case_name" "$fatal_reason" > "$result_file"
+    done
+}
+
+aggregate_results() {
+    local total="${#SELECTED_CASES[@]}" case_idx case_name result_file row_count line row_case grade_count grade
+    FINAL_FAILURES=0
+    RESULT_ROWS=0
+    : > "$RESULTS_FILE"
+    for ((case_idx = 0; case_idx < total; case_idx++)); do
+        case_name="${SELECTED_CASES[$case_idx]}"
+        result_file="${CASE_RESULT[$case_idx]:-}"
+        if [ -n "$result_file" ] && [ -f "$result_file" ]; then
+            row_count=$(awk 'NF {count++} END {print count+0}' "$result_file")
+            if [ "$row_count" -eq 1 ]; then
+                line=$(awk 'NF {print; exit}' "$result_file")
+            else
+                line="case=$case_name grade=fail reason=invalid_row_count result_rows=$row_count"
+            fi
+        else
+            line="case=$case_name grade=fail reason=missing_result_file"
+        fi
+        row_case=$(field_value "$line" case || true)
+        grade_count=$(field_count "$line" grade)
+        if [ "$row_case" != "$case_name" ]; then
+            line="case=$case_name grade=fail reason=result_case_mismatch"
+        elif [ "$grade_count" -ne 1 ]; then
+            line="case=$case_name grade=fail reason=malformed_result grade_fields=$grade_count"
+        else
+            grade=$(field_value "$line" grade || true)
+            if [ "$grade" != pass ] && [ "$grade" != fail ]; then
+                line="case=$case_name grade=fail reason=malformed_result mission_grade=${grade:-missing}"
+            fi
+        fi
+        printf '%s\n' "$line" >> "$RESULTS_FILE"
+        RESULT_ROWS=$((RESULT_ROWS + 1))
+        grade=$(field_value "$line" grade || true)
+        [ "$grade" = pass ] || FINAL_FAILURES=$((FINAL_FAILURES + 1))
+    done
+}
+
+select_cases
+total=${#SELECTED_CASES[@]}
+last_port=$((PORT_BASE + (total - 1) * PORT_STRIDE + PSHARE_OFFSET + 2))
+[ "$last_port" -le 65535 ] || die "selected cases require ports through $last_port"
+
+mkdir -p "$RUNS_DIR" || die "unable to create run directory: $RUNS_DIR"
+mkdir "$LOCK_DIR" 2>/dev/null || die "another harness run appears active for $HARNESS_DIR"
+HAVE_LOCK=yes
+RUN_ROOT="$RUNS_DIR/run_$(date +%Y%m%dT%H%M%S)_$$"
+mkdir -p "$RUN_ROOT" || die "unable to create run root: $RUN_ROOT"
 : > "$RESULTS_FILE"
 
-INDEX=0
-PIDS=""
-for C in $CASES; do
-    run_case "$C" "$INDEX" &
-    PIDS="$PIDS $!"
-    INDEX=$((INDEX + 1))
-    if [ "$JUST_MAKE" = "yes" ]; then
-        wait || ALL_OK="no"
-        PIDS=""
-    elif [ $((INDEX % JOBS)) -eq 0 ]; then
-        for P in $PIDS; do
-            wait "$P" || ALL_OK="no"
-        done
-        PIDS=""
+SECONDS=0
+active=0
+next=0
+scheduler_broken=no
+while [ "$next" -lt "$total" ] || [ "$active" -gt 0 ]; do
+    while [ "$next" -lt "$total" ] && [ "$active" -lt "$JOBS" ]; do
+        start_case "$next" && active=$((active + 1))
+        next=$((next + 1))
+    done
+    if [ "$active" -gt 0 ]; then
+        finish_rc=0
+        finish_one || finish_rc=$?
+        if [ "$finish_rc" -eq 2 ] && [ "$FINISH_FATAL_REASON" = scheduler_state_error ]; then
+            abort_pending "$next" "$total" "$FINISH_FATAL_REASON"
+            next=$total
+            scheduler_broken=yes
+            break
+        fi
+        active=$((active - 1))
+        if [ "$finish_rc" -eq 2 ]; then
+            abort_pending "$next" "$total" "$FINISH_FATAL_REASON"
+            next=$total
+        fi
     fi
 done
 
-for P in $PIDS; do
-    wait "$P" || ALL_OK="no"
-done
+[ "$scheduler_broken" != yes ] || cleanup_runtime
+aggregate_results
+if [ "$RESULT_ROWS" -ne "$total" ] || { [ "$total" -gt 0 ] && [ "$RESULT_ROWS" -eq 0 ]; }; then
+    echo "$ME: expected $total result rows but wrote $RESULT_ROWS" >&2
+    FINAL_FAILURES=$((FINAL_FAILURES + 1))
+fi
 
-[ "$ALL_OK" = "yes" ]
+cleanup_runtime
+elapsed_seconds=$SECONDS
+[ -d "$RUN_ROOT" ] && kept_root="$RUN_ROOT" || kept_root=none
+[ "$CLEANUP_FAILED" != yes ] || FINAL_FAILURES=$((FINAL_FAILURES + 1))
+trap - EXIT INT TERM PIPE
+
+printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+
+[ "$FINAL_FAILURES" -eq 0 ]

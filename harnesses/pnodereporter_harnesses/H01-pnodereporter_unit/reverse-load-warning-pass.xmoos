@@ -17,9 +17,12 @@ ProcessConfig = uTimerScript
   event = var=IVPHELM_STATE, val=DRIVE, time=0.5
   event = var=THRUST_MODE_REVERSE, val=true, time=1.0
   event = var=LOAD_WARNING, val="app=pHelmIvP,maxgap=5", time=1.0
-  event = var=LOAD_WARNING, val="app=pHelmIvP,maxgap=5", time=1.2
-  event = var=PNR_PAUSE, val=true, time=1.5
-  event = var=TEST_EVAL_READY, val=true, time=5.0
+  event = var=THRUST_MODE_REVERSE, val=true, time=3.0
+  event = var=LOAD_WARNING, val="app=pHelmIvP,maxgap=5", time=3.0
+  event = var=THRUST_MODE_REVERSE, val=true, time=5.0
+  event = var=LOAD_WARNING, val="app=pHelmIvP,maxgap=5", time=5.0
+  event = var=PNR_PAUSE, val=true, time=8.0
+  event = var=TEST_EVAL_READY, val=true, time=10.0
 }
 
 ProcessConfig = pMissionEval

@@ -16,7 +16,6 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
-  Run = pLogger       @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false
   Run = pMissionEval  @ NewConsole = false
   Run = pMissionHash  @ NewConsole = false
@@ -59,7 +58,6 @@ ProcessConfig = uTimerScript
   event = var=QUERY_FAIL, val=false, time=1.0
   event = var=QUERY_OTHER, val=bravo, time=1.2
   event = var=QUERY_LATE, val=arrived, time=1.5
-  event = var=TEST_EVAL_READY, val=true, time=2.0
 }
 
 //----------------------------------------------------
@@ -79,8 +77,8 @@ ProcessConfig = pMissionEval
   mission_form = uquerydb_unit
   mission_mod  = $(MMOD:=cli_numeric_pass)
 
-  prereport_column = form=$[MISSION_FORM]
-  prereport_column = mmod=$[MMOD]
+  report_column    = form=$[MISSION_FORM]
+  report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = query_num=$[QUERY_NUM]

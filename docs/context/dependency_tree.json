@@ -164,19 +164,15 @@
           "Core"
         ]
       },
-      "behaviors_colregs": {
-        "path": "tests/cpp/behaviors_colregs",
-        "source_count": 3,
-        "subareas": [
-          "Core"
-        ]
+      "behaviors-colregs": {
+        "path": "tests/cpp/behaviors-colregs",
+        "source_count": 0,
+        "subareas": []
       },
-      "behaviors_marine": {
-        "path": "tests/cpp/behaviors_marine",
-        "source_count": 39,
-        "subareas": [
-          "CoreBehaviors"
-        ]
+      "behaviors-marine": {
+        "path": "tests/cpp/behaviors-marine",
+        "source_count": 0,
+        "subareas": []
       },
       "bhvutil": {
         "path": "tests/cpp/bhvutil",
@@ -384,6 +380,13 @@
           "VarDataPair"
         ]
       },
+      "moosgeodesy": {
+        "path": "tests/cpp/moosgeodesy",
+        "source_count": 1,
+        "subareas": [
+          "Core"
+        ]
+      },
       "nspatch": {
         "path": "tests/cpp/nspatch",
         "source_count": 1,
@@ -404,16 +407,6 @@
         "subareas": [
           "Obstacle"
         ]
-      },
-      "pMissionEval": {
-        "path": "tests/cpp/pMissionEval",
-        "source_count": 0,
-        "subareas": []
-      },
-      "pMissionHash": {
-        "path": "tests/cpp/pMissionHash",
-        "source_count": 0,
-        "subareas": []
       },
       "pechovar": {
         "path": "tests/cpp/pechovar",
@@ -436,6 +429,16 @@
         "subareas": [
           "Plucker"
         ]
+      },
+      "pmissioneval": {
+        "path": "tests/cpp/pmissioneval",
+        "source_count": 0,
+        "subareas": []
+      },
+      "pmissionhash": {
+        "path": "tests/cpp/pmissionhash",
+        "source_count": 0,
+        "subareas": []
       },
       "pnodereporter": {
         "path": "tests/cpp/pnodereporter",
@@ -493,11 +496,6 @@
           "TurnGenerator"
         ]
       },
-      "uMayFinish": {
-        "path": "tests/cpp/uMayFinish",
-        "source_count": 0,
-        "subareas": []
-      },
       "ucommand": {
         "path": "tests/cpp/ucommand",
         "source_count": 2,
@@ -540,6 +538,11 @@
         "subareas": [
           "HelmRecords"
         ]
+      },
+      "umayfinish": {
+        "path": "tests/cpp/umayfinish",
+        "source_count": 0,
+        "subareas": []
       },
       "uplotviewer": {
         "path": "tests/cpp/uplotviewer",
@@ -594,8 +597,8 @@
       "alogtm",
       "apputil",
       "behaviors",
-      "behaviors_colregs",
-      "behaviors_marine",
+      "behaviors-colregs",
+      "behaviors-marine",
       "bhvutil",
       "contacts",
       "dep_behaviors",
@@ -616,9 +619,10 @@
       "logutils",
       "manifest",
       "marine_pid",
-      "pMissionEval",
-      "pMissionHash",
-      "uMayFinish",
+      "moosgeodesy",
+      "pmissioneval",
+      "pmissionhash",
+      "umayfinish",
       "pnodereporter",
       "marineview",
       "mbutil",
@@ -646,7 +650,7 @@
       "zaicview"
     ],
     "path": "tests/cpp",
-    "source_count": 214,
+    "source_count": 215,
     "source_count_by_family": {
       "alogavg": 1,
       "alogbin": 1,
@@ -671,8 +675,6 @@
       "alogtm": 1,
       "apputil": 3,
       "behaviors": 5,
-      "behaviors_colregs": 3,
-      "behaviors_marine": 39,
       "bhvutil": 9,
       "contacts": 3,
       "dep_behaviors": 2,
@@ -694,6 +696,7 @@
       "marine_pid": 3,
       "marineview": 3,
       "mbutil": 19,
+      "moosgeodesy": 1,
       "nspatch": 1,
       "nsplug": 1,
       "obstacles": 2,
@@ -816,7 +819,7 @@
           "alpha_far_bravo_only_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/cmgr_harnesses/H01-cmgr_unit/zlaunch.sh"
       }
@@ -899,7 +902,7 @@
           "fast_intruder_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/cmgr_harnesses/H02-cmgr_motion/zlaunch.sh"
       }
@@ -989,7 +992,7 @@
           "expunge_obstacle_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/obmgr_harnesses/H01-obmgr_unit/zlaunch.sh"
       }
@@ -1065,7 +1068,7 @@
           "no_alert_request_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh"
       }
@@ -1145,7 +1148,7 @@
           "depth_missing_pitch_zero_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pid_harnesses/H01-pid_unit/zlaunch.sh"
       }
@@ -1219,7 +1222,7 @@
           "manual_override_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pid_harnesses/H02-pid_motion/zlaunch.sh"
       }
@@ -1301,7 +1304,7 @@
           "trim_control_report_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/usim_marine_harnesses/H01-usim_marine_motion/zlaunch.sh"
       }
@@ -1379,7 +1382,7 @@
           "extrap_prune_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pnodereporter_harnesses/H01-pnodereporter_unit/zlaunch.sh"
       }
@@ -1447,7 +1450,7 @@
           "cache_cli_mixed_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/upokedb_harnesses/H01-upokedb_unit/zlaunch.sh"
       }
@@ -1523,7 +1526,7 @@
           "clean_shortcut_scope_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/uxms_harnesses/H01-uxms_unit/zlaunch.sh"
       }
@@ -1597,7 +1600,7 @@
           "config_condition_alias_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/uquerydb_harnesses/H01-uquerydb_unit/zlaunch.sh"
       }
@@ -1674,7 +1677,7 @@
           "dual_flip_independent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pechovar_harnesses/H01-pechovar_unit/zlaunch.sh"
       }
@@ -1749,7 +1752,7 @@
           "quit_event_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/utimerscript_harnesses/H01-utimerscript_unit/zlaunch.sh"
       }
@@ -1813,7 +1816,7 @@
           "reset_policy_multiple_reposts_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit/zlaunch.sh"
       }
@@ -1890,7 +1893,7 @@
           "invalid_duration_absent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pspoofnode_harnesses/H01-pspoofnode_unit/zlaunch.sh"
       }
@@ -1945,7 +1948,7 @@
           "unknown_command_absent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh"
       }
@@ -2012,7 +2015,7 @@
           "malformed_report_absent_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/psearchgrid_harnesses/H01-psearchgrid_unit/zlaunch.sh"
       }
@@ -2092,7 +2095,7 @@
           "constant_depth_control_disabled_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H01-constant_depth_motion/zlaunch.sh"
       }
@@ -2125,7 +2128,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 38
+        "file_count": 39
       },
       "path": "harnesses/depth_behavior_harnesses/H02-goto_depth_motion",
       "perf_profile": "",
@@ -2171,7 +2174,7 @@
           "goto_depth_domain_missing_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H02-goto_depth_motion/zlaunch.sh"
       }
@@ -2256,7 +2259,7 @@
           "periodic_surface_domain_missing_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H03-periodic_surface_motion/zlaunch.sh"
       }
@@ -2332,7 +2335,7 @@
           "max_depth_domain_missing_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H04-max_depth_motion/zlaunch.sh"
       }
@@ -2406,7 +2409,7 @@
           "min_altitude_noncritical_missing_altitude_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/depth_behavior_harnesses/H05-min_altitude_motion/zlaunch.sh"
       }
@@ -2442,7 +2445,7 @@
         "path": "missions/colregs_missions/colregs_unit"
       },
       "patches": {
-        "file_count": 14
+        "file_count": 13
       },
       "path": "harnesses/colregs_harnesses/H01-colregs_classification",
       "perf_profile": "",
@@ -2495,7 +2498,7 @@
           "overtaken_starboard_standon_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H01-colregs_classification/zlaunch.sh"
       }
@@ -2531,7 +2534,7 @@
         "path": "missions/colregs_missions/colregs_unit"
       },
       "patches": {
-        "file_count": 30
+        "file_count": 27
       },
       "path": "harnesses/colregs_harnesses/H02-colregs_thresholds",
       "perf_profile": "",
@@ -2620,7 +2623,7 @@
           "standon_ot_inextremis_cpa_above_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh"
       }
@@ -2710,7 +2713,7 @@
           "overtaken_starboard_standon_midrange_execution_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H03-colregs_execution/zlaunch.sh"
       }
@@ -2809,7 +2812,7 @@
           "refinery_off_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/colregs_harnesses/H04-colregs_parameters/zlaunch.sh"
       }
@@ -2898,7 +2901,7 @@
           "bad_collision_depth_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh"
       }
@@ -3010,7 +3013,7 @@
           "bad_cruise_speed_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/zlaunch.sh"
       }
@@ -3115,7 +3118,7 @@
           "bad_legacy_util_param_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/zlaunch.sh"
       }
@@ -3201,7 +3204,7 @@
           "bad_schedule_repeat_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/zlaunch.sh"
       }
@@ -3287,7 +3290,7 @@
           "bad_zaic_summit_delta_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion/zlaunch.sh"
       }
@@ -3384,7 +3387,7 @@
           "bad_visual_hint_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion/zlaunch.sh"
       }
@@ -3479,7 +3482,7 @@
           "bad_speed_count_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/zlaunch.sh"
       }
@@ -3562,7 +3565,7 @@
           "missing_turn_range_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion/zlaunch.sh"
       }
@@ -3642,7 +3645,7 @@
           "unknown_param_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/timer_behavior_harnesses/H01-timer_behavior_motion/zlaunch.sh"
       }
@@ -3698,7 +3701,7 @@
           "unknown_type_default_crash_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh"
       }
@@ -3750,7 +3753,7 @@
           "hostinfo_pshare_nonudp_route_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/hostinfo_harnesses/H01-hostinfo_unit/zlaunch.sh"
       }
@@ -3807,7 +3810,7 @@
           "loadwatch_near_thresh_clamped_high_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/loadwatch_harnesses/H01-loadwatch_unit/zlaunch.sh"
       }
@@ -3859,7 +3862,7 @@
           "processwatch_missing_awol_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/processwatch_harnesses/H01-processwatch_unit/zlaunch.sh"
       }
@@ -3915,7 +3918,7 @@
           "pshare_wildcard_caret_rename_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pshare_harnesses/H01-pshare_unit/zlaunch.sh"
       }
@@ -3973,7 +3976,7 @@
           "pshare_topology_runtime_route_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pshare_harnesses/H02-pshare_topology/zlaunch.sh"
       }
@@ -4025,7 +4028,7 @@
           "plogger_copy_file_request_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/plogger_harnesses/H01-plogger_unit/zlaunch.sh"
       }
@@ -4088,7 +4091,7 @@
           "pantler_extra_params_launch_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/pantler_harnesses/H01-pantler_unit/zlaunch.sh"
       }
@@ -4338,7 +4341,7 @@
           "patience_high_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion/zlaunch.sh"
       }
@@ -4425,7 +4428,7 @@
           "bad_pwt_grade_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/zlaunch.sh"
       }
@@ -4512,7 +4515,7 @@
           "dynamic_region_halt_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/opregion_harnesses/H01-opregion_safety/zlaunch.sh"
       }
@@ -4583,7 +4586,7 @@
           "endurance_random_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/performance_harnesses/P01-obstacle_gauntlet/zlaunch.sh"
       }
@@ -4682,7 +4685,7 @@
           "bad_post_per_contact_info_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion/zlaunch.sh"
       }
@@ -4778,7 +4781,7 @@
           "bad_swing_time_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion/zlaunch.sh"
       }
@@ -4884,7 +4887,7 @@
           "bad_time_on_leg_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/trail_behavior_harnesses/H01-trail_behavior_motion/zlaunch.sh"
       }
@@ -4989,7 +4992,7 @@
           "bad_efficiency_measure_fail"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion/zlaunch.sh"
       }
@@ -5062,7 +5065,7 @@
           "endurance_colregs_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/performance_harnesses/P02-colregs_joust/zlaunch.sh"
       }
@@ -5138,7 +5141,7 @@
           "noncoop_circle_pass"
         ],
         "helpers": [
-          "scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/performance_harnesses/P03-colregs_traffic_ring/zlaunch.sh"
       }
@@ -5156,14 +5159,17 @@
       "families": [
         "ufld_pathcheck"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "pMissionEvalAlpha",
+        "uFldPathCheck"
+      ],
       "harness": "H01-ufld_pathcheck_unit",
       "key": "ufld_pathcheck_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 18
       },
       "path": "harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit",
       "perf_profile": "",
@@ -5171,6 +5177,8 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "pMissionEvalAlpha",
+        "uFldPathCheck",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5196,7 +5204,7 @@
           "bad_then_good_recovery_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/zlaunch.sh"
       }
@@ -5214,14 +5222,16 @@
       "families": [
         "ufld_message_handler"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldMessageHandler"
+      ],
       "harness": "H01-ufld_message_handler_unit",
       "key": "ufld_message_handler_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 27
       },
       "path": "harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit",
       "perf_profile": "",
@@ -5229,6 +5239,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldMessageHandler",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5263,7 +5274,7 @@
           "mixed_valid_rejected_summary_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/zlaunch.sh"
       }
@@ -5281,14 +5292,16 @@
       "families": [
         "ufld_contact_range_sensor"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldContactRangeSensor"
+      ],
       "harness": "H01-ufld_contact_range_sensor_unit",
       "key": "ufld_contact_range_sensor_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 35
       },
       "path": "harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit",
       "perf_profile": "",
@@ -5296,6 +5309,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldContactRangeSensor",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5338,7 +5352,7 @@
           "reciprocal_request_report_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/zlaunch.sh"
       }
@@ -5356,14 +5370,17 @@
       "families": [
         "ufld_beacon_range_sensor"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "pMissionEvalAlpha",
+        "uFldBeaconRangeSensor"
+      ],
       "harness": "H01-ufld_beacon_range_sensor_unit",
       "key": "ufld_beacon_range_sensor_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 21
       },
       "path": "harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit",
       "perf_profile": "",
@@ -5371,6 +5388,8 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "pMissionEvalAlpha",
+        "uFldBeaconRangeSensor",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5399,7 +5418,7 @@
           "unsolicited_frequency_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/zlaunch.sh"
       }
@@ -5417,14 +5436,17 @@
       "families": [
         "ufld_collision_detect"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "pMissionEvalAlpha",
+        "uFldCollisionDetect"
+      ],
       "harness": "H01-ufld_collision_detect_unit",
       "key": "ufld_collision_detect_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 21
       },
       "path": "harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit",
       "perf_profile": "",
@@ -5432,6 +5454,8 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "pMissionEvalAlpha",
+        "uFldCollisionDetect",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5460,7 +5484,7 @@
           "range_normalization_params_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/zlaunch.sh"
       }
@@ -5478,14 +5502,16 @@
       "families": [
         "ufld_collob_detect"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldCollObDetect"
+      ],
       "harness": "H01-ufld_collob_detect_unit",
       "key": "ufld_collob_detect_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 14
       },
       "path": "harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit",
       "perf_profile": "",
@@ -5493,6 +5519,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldCollObDetect",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5515,7 +5542,7 @@
           "range_normalization_collision_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh"
       }
@@ -5533,14 +5560,16 @@
       "families": [
         "ufld_scope"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uFldScope"
+      ],
       "harness": "H01-ufld_scope_unit",
       "key": "ufld_scope_h01",
       "mission": {
         "path": "missions/ufield_app_missions/ufield_app_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 9
       },
       "path": "harnesses/ufld_scope_harnesses/H01-ufld_scope_unit",
       "perf_profile": "",
@@ -5548,6 +5577,7 @@
         "ANTLER",
         "pLogger",
         "pMissionEval",
+        "uFldScope",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -5564,7 +5594,7 @@
           "later_missing_field_replaces_value_pass"
         ],
         "helpers": [
-          "$(cd"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_scope_harnesses/H01-ufld_scope_unit/zlaunch.sh"
       }
@@ -5593,7 +5623,7 @@
         "path": "missions/ufield_comms_missions/ufield_comms_unit"
       },
       "patches": {
-        "file_count": 31
+        "file_count": 46
       },
       "path": "harnesses/ufield_comms_harnesses/H01-ufield_comms_unit",
       "perf_profile": "",
@@ -5651,7 +5681,7 @@
           "critical_group_override_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufield_comms_harnesses/H01-ufield_comms_unit/zlaunch.sh"
       }
@@ -5670,6 +5700,7 @@
         "ufield_comms"
       ],
       "focus_process_apps": [
+        "pMediator",
         "uFldNodeBroker",
         "uFldNodeComms",
         "uFldShoreBroker"
@@ -5680,7 +5711,7 @@
         "path": "missions/ufield_comms_missions/ufield_comms_unit"
       },
       "patches": {
-        "file_count": 8
+        "file_count": 19
       },
       "path": "harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge",
       "perf_profile": "",
@@ -5689,6 +5720,7 @@
         "pHostInfo",
         "pLogger",
         "pMarineViewer",
+        "pMediator",
         "pMissionEval",
         "pShare",
         "uFldNodeBroker",
@@ -5715,7 +5747,7 @@
           "shore_try_vnode_default_port_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh"
       }
@@ -5744,7 +5776,7 @@
         "path": "missions/ufield_comms_missions/ufield_comms_unit"
       },
       "patches": {
-        "file_count": 0
+        "file_count": 36
       },
       "path": "harnesses/ufield_comms_harnesses/H03-ufield_route_resilience",
       "perf_profile": "",
@@ -5792,7 +5824,7 @@
           "shore_vnode_duplicate_ignored_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufield_comms_harnesses/H03-ufield_route_resilience/zlaunch.sh"
       }
@@ -5811,6 +5843,7 @@
         "ufld_obstacle_sim"
       ],
       "focus_process_apps": [
+        "pEchoVar",
         "uFldObstacleSim"
       ],
       "harness": "H01-ufld_obstacle_sim_unit",
@@ -5825,6 +5858,7 @@
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
+        "pEchoVar",
         "pLogger",
         "pMissionEval",
         "pMissionHash",
@@ -5886,7 +5920,7 @@
           "missing_obstacle_file_absent_pass"
         ],
         "helpers": [
-          "$REPO_DIR/scripts/harness_teardown.sh"
+          "scripts/moos_scoped_teardown.sh"
         ],
         "path": "harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/zlaunch.sh"
       }
@@ -6208,7 +6242,8 @@
         "pdeadmanpost_h01"
       ],
       "pEchoVar": [
-        "pechovar_h01"
+        "pechovar_h01",
+        "ufld_obstacle_sim_h01"
       ],
       "pHelmIvP": [
         "cmgr_h01",
@@ -6428,6 +6463,9 @@
         "waypoint_h01",
         "zigzag_h01"
       ],
+      "pMediator": [
+        "ufield_comms_h02"
+      ],
       "pMissionEval": [
         "cmgr_h01",
         "cmgr_h02",
@@ -6496,6 +6534,11 @@
         "uxms_h01",
         "waypoint_h01",
         "zigzag_h01"
+      ],
+      "pMissionEvalAlpha": [
+        "ufld_beacon_range_sensor_h01",
+        "ufld_collision_detect_h01",
+        "ufld_pathcheck_h01"
       ],
       "pMissionHash": [
         "pmissioneval_h01",
@@ -6598,10 +6641,14 @@
       "pTrafficManager": [
         "p03_colregs"
       ],
+      "uFldBeaconRangeSensor": [
+        "ufld_beacon_range_sensor_h01"
+      ],
       "uFldCollObDetect": [
         "obmgr_h02",
         "obstacle_behavior_h01",
-        "p01_obstacle"
+        "p01_obstacle",
+        "ufld_collob_detect_h01"
       ],
       "uFldCollisionDetect": [
         "cmgr_h02",
@@ -6612,7 +6659,14 @@
         "colregs_h04",
         "cutrange_h01",
         "p02_colregs",
-        "p03_colregs"
+        "p03_colregs",
+        "ufld_collision_detect_h01"
+      ],
+      "uFldContactRangeSensor": [
+        "ufld_contact_range_sensor_h01"
+      ],
+      "uFldMessageHandler": [
+        "ufld_message_handler_h01"
       ],
       "uFldNodeBroker": [
         "cmgr_h01",
@@ -6693,6 +6747,12 @@
       "uFldObstacleSim": [
         "p01_obstacle",
         "ufld_obstacle_sim_h01"
+      ],
+      "uFldPathCheck": [
+        "ufld_pathcheck_h01"
+      ],
+      "uFldScope": [
+        "ufld_scope_h01"
       ],
       "uFldShoreBroker": [
         "cmgr_h01",
@@ -6953,32 +7013,30 @@
   "repo": {
     "file_counts_by_suffix": {
       ".bhv": 32,
-      ".cpp": 220,
+      ".cpp": 221,
       ".css": 3,
       ".gif": 1,
       ".h": 13,
-      ".html": 70,
+      ".html": 71,
       ".js": 1,
       ".json": 2,
-      ".md": 136,
+      ".md": 144,
       ".mjo": 1,
       ".moos": 155,
-      ".moos#": 1,
       ".mp4": 149,
       ".pdf": 1,
       ".png": 4,
-      ".py": 32,
-      ".sh": 309,
-      ".slog": 1,
-      ".txt": 296,
+      ".py": 38,
+      ".sh": 338,
+      ".txt": 302,
       ".xbhv": 518,
-      ".xmoos": 1034,
+      ".xmoos": 1271,
       "[none]": 7
     },
-    "harness_patch_count": 1529,
+    "harness_patch_count": 1733,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
-    "mission_config_count": 425,
+    "mission_config_count": 449,
     "root": "."
   },
   "schema": "moos-ivp-cicd-context-graph.v1",

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/behaviors_marine/CoreBehaviors/test_behaviors_marine_waypoint[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/behaviors_marine/CoreBehaviors/test_behaviors_marine_waypoint[1]_tests.cmake")
-else()
-  add_test(test_behaviors_marine_waypoint_NOT_BUILT test_behaviors_marine_waypoint_NOT_BUILT)
-endif()

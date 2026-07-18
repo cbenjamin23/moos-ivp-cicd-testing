@@ -10,6 +10,7 @@ add_moos_cpp_test(test_evalutil_vcheck
   LABELS
     evalutil
     pMissionEval
+    pmissioneval
   SUITE_LABELS
     VCheckTest=VCheck
     VCheckSetTest=VCheckSet

@@ -89,7 +89,7 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = colregs_traffic_ring
-  mission_mod  = $(MMOD:=baseline_circle_pass)
+  mission_mod  = $(MMOD:=baseline_circle)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/evalutil/VCheck/test_evalutil_vcheck[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/evalutil/VCheck/test_evalutil_vcheck[1]_tests.cmake")
-else()
-  add_test(test_evalutil_vcheck_NOT_BUILT test_evalutil_vcheck_NOT_BUILT)
-endif()

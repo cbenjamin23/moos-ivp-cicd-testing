@@ -61,17 +61,14 @@ From this harness directory:
 ./zlaunch.sh --jobs=2 --port_base=33000 10
 ```
 
-From the paired mission directory, named cases are forwarded to this harness:
-
-```bash
-./zlaunch.sh --case=runtime_pwt_outer_off_pass --gui 1
-```
+The paired mission `zlaunch.sh` remains a thin single-scenario wrapper. Run
+named cases and multi-case jobs from this harness directory.
 
 The full matrix currently has 35 cases. Normal expected-pass cases require
 `BHV_WARNING_SEEN=false`; explicitly named `*_warn_pass` cases require the
-expected warning and `BHV_ERROR_SEEN=false`. Wave mode uses isolated temp mission
-copies and deterministic two-vehicle port blocks; keep `--port_base` separated
-from any other live harness on the same machine.
+expected warning and `BHV_ERROR_SEEN=false`. Serial and rolling modes both use
+isolated temp mission copies and deterministic two-vehicle port blocks; keep
+`--port_base` separated from any other live harness on the same machine.
 
 Source-audit note: `BHV_Shadow` accepts inherited bearing-line configuration
 parameters, but it does not call the inherited bearing-line publisher. This
@@ -79,7 +76,8 @@ harness therefore does not include a bearing-line output case for Shadow.
 
 Latest validation:
 
-- April 27, 2026
-- generated-file matrix: `35/35` cases completed with `--just_make --jobs=2 --port_base=15000`
-- wave matrix: `35/35` expected outcomes matched with `--jobs=2 --port_base=15000`
+- July 16, 2026
+- generated-file matrix: `35/35` cases completed with isolated copies and distinct three-community port blocks
+- rolling matrices: three valid `35/35` passes with `--jobs=4`
+- serial matrix: `35/35` passes with `--jobs=1`
 - warp: `10`

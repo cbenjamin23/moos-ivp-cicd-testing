@@ -22,9 +22,20 @@ The default case expects a positive rudder command and a thrust command near
 
 ```bash
 ./launch.sh 10
+./launch.sh --log=full 10
 ./zlaunch.sh 10
+./zlaunch.sh --log=full 10
 ./zlaunch.sh --just_make 10
 ```
+
+`zlaunch.sh` is the self-evaluating wrapper used by the harness. It accepts
+explicit shoreside MOOSDB and reserved pShare ports, forwards `--max_time` and
+display mode to `xlaunch.sh`, validates `targ_shoreside.moos` in
+`--just_make`, and requires exactly one valid `pMissionEval` result row after
+a live run. It preserves launch failure status and performs canonical
+root-scoped teardown. The mission itself launches no pShare application.
+Logging defaults to `minimal`, which does not launch `pLogger`; `--log=full`
+restores the previous one-community logger configuration.
 
 The patch-driven harness at
 [`harnesses/pid_harnesses/H01-pid_unit`](../../../harnesses/pid_harnesses/H01-pid_unit)

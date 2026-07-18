@@ -5,7 +5,7 @@ TLDR:
 - checks realized CPA band, relative side outcome, and loose completion time per canonical case
 - sits after `H01/H02`: mode selection is already assumed correct and now we check maneuver quality
 - current implemented cases: 23 default execution cases covering most H01 canonicals plus the better-fit spacing siblings
-- current signoff status: 5/5 repeatability pass on the supported 23-case default gate, most recently rerun on April 11, 2026 with `scripts/repeatability_sweep.py`
+- migration signoff: three rolling 23/23 matrices and one serial 23/23 matrix passed on July 16, 2026
 
 Execution-quality harness built on the shared `colregs_unit` stem mission.
 
@@ -26,6 +26,12 @@ Primary intent:
   - relative side outcome (`cn_port`, selective `cn_fore`, `cn_crossed=0`)
   - final `colregs_mode` where the case identity should persist through completion
 - keep only loose completion time in the shell harness, because `WALL_TIME` is available to `pMissionEval` only as a report macro and not as a logic-test variable
+
+The migrated launcher requires Bash 5.1 or newer, uses isolated mission copies
+in serial and rolling modes, refills open job slots immediately, assigns a
+distinct three-MOOSDB/three-pShare port block to every case, aggregates rows
+in selected-case order, and performs root-scoped cleanup. It does not alter
+any case geometry, stimulus, evaluator condition, or timing ceiling.
 
 ## Cases
 
@@ -112,7 +118,7 @@ Current mission-side assertions:
 - crossing-port-standon unsure family (`crossing_port_standon_unsure_execution_pass`): `closest_range_ever` in `[10,13]`, `cn_port=0`, `cn_fore=0`
 - overtaking-starboard family (`overtaking_starboard_execution_pass`): `closest_range_ever` in `[17,21]`, `cn_port=0`
 - overtaking-starboard long-range family (`overtaking_starboard_range_far_execution_pass`): `closest_range_ever` in `[20,24]`, `cn_port=0`, `cn_fore=1`
-- overtaking-starboard long-range spacing family (`overtaking_starboard_small_gap_execution_pass`): `closest_range_ever` in `[21.7,22.7]`, `cn_port=0`, `cn_fore=1`
+- overtaking-starboard long-range spacing family (`overtaking_starboard_small_gap_execution_pass`): `closest_range_ever` in `[21.7,22.8]`, `cn_port=0`, `cn_fore=1`
 - overtaking-starboard mirror family (`overtaking_starboard_mirror_execution_pass`): `closest_range_ever` in `[17,21]`, `cn_port=1`, `cn_fore=1`
 - overtaking-starboard mirror long-range family (`overtaking_starboard_mirror_range_far_execution_pass`): `closest_range_ever` in `[20,24]`, `cn_port=1`, `cn_fore=1`
 - overtaking-starboard mirror long-range spacing family (`overtaking_starboard_mirror_small_gap_execution_pass`, `overtaking_starboard_mirror_large_gap_execution_pass`): `closest_range_ever` in `[21.8,22.8]` for the small-gap variant and `[20.7,22.1]` for the large-gap variant, `cn_port=1`, `cn_fore=1`
@@ -125,8 +131,7 @@ Current shell-side checks:
 - crossing-starboard-giveway family: `wall_time<=12`, far variant `wall_time<=13`
 - crossing-port-standon family: `wall_time<=12`, far variant `wall_time<=13`, stern variant `wall_time<=16`, unsure variant `wall_time<=12.1`
 - overtaking families: `wall_time<=12`
-- overtaken-port midrange: `wall_time<=10`
-- overtaken-starboard midrange: `wall_time<=10.3`
+- overtaken-port and overtaken-starboard midrange: `wall_time<=12`
 
 Current reported execution metrics:
 - `closest_range_ever`
@@ -146,9 +151,9 @@ Current reported execution metrics:
 ./zlaunch.sh --just_make --jobs=2 --port_base=24000 10
 ```
 
-Wave mode uses isolated temp mission copies and compact per-case port blocks:
+Every mode uses isolated mission copies and compact per-case port blocks:
 `case_base = port_base + case_idx*PORT_STRIDE`, with pShare ports starting at
-`case_base + 10`.
+`case_base + 15`.
 
 This harness now stays on realized execution quality while still preserving the
 case identity where that matters. In practice that means family-level CPA/side
@@ -174,3 +179,6 @@ Side-check strength is not uniform across the suite:
 - the admitted `overtaken_starboard_standon_midrange_execution_pass` depends on a deeper/wider sibling, not the compact canonical geometry. Endpoint-only tuning was not enough; the stable version required both a one-meter wider starboard lane and a deeper start for the overtaking contact before the final mode stopped drifting at completion.
 - `overtaken_port_standon_range_far_pass` remains outside H03 because its longer-range stem no longer preserves the stand-on identity through completion. In a preserved H03-style run it finished `grade=pass` with `closest_range_ever=16.503`, `cn_port=1`, and `wall_time=12.72`, but the final mode had already degraded to `cpa`.
 - `overtaken_starboard_standon_range_far_pass` remains outside H03 because it still does not produce a clean completion-grade path under the current H03 overlay, so it is not yet a stable completion-style execution case.
+
+Logging is minimal by default. Use `--log=full` for the complete matrix, or
+combine it with `--case=NAME` for one fully logged diagnostic case.

@@ -103,7 +103,7 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = obstacle_gauntlet
-  mission_mod  = $(MMOD:=baseline_field_pass)
+  mission_mod  = $(MMOD:=baseline_field)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]

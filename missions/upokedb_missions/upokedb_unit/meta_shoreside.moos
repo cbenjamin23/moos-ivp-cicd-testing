@@ -16,11 +16,9 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
-  Run = pLogger       @ NewConsole = false
   Run = pMissionEval  @ NewConsole = false
   Run = pMissionHash  @ NewConsole = false
 }
 
 #include plugs.moos <pLogger>
 #include case_eval.moos
-

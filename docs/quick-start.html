@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Developer Quick Start | MOOS-IvP CI/CD</title>
+  <link rel="stylesheet" href="styles.css?v=20260511-5">
+  <script src="theme.js?v=20260511-5"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">CI</span>
+      <span>MOOS-IvP Harnesses</span>
+    </a>
+    <div class="header-actions">
+      <nav>
+        <a href="quick-start.html">Quick Start</a>
+        <a href="index.html#families">Harnesses</a>
+        <a href="ctest-coverage.html">CTest Coverage</a>
+        <a href="technical.html">Technical</a>
+      </nav>
+      <label class="theme-switch" title="Toggle Frost theme">
+        <input type="checkbox" data-theme-toggle aria-label="Frost theme">
+        <span class="theme-switch-track" aria-hidden="true"><!-- CSS-rendered track --></span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero page-hero--wide-lede">
+      <a class="back-link" href="index.html">Back to overview</a>
+      <p class="eyebrow">Developer Quick Start</p>
+      <h1>Build your edit. Run the relevant tests.</h1>
+      <p class="lede">Check out the MOOS-IvP branch containing your changes, build it, then use this repository to run a focused CTest group and its mission harness.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#build">Build</a>
+        <a class="button secondary" href="#example">Run an example</a>
+      </div>
+    </section>
+
+    <section id="build" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">1. Build</p>
+        <h2>Build the edited MOOS-IvP branch and the tests</h2>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Build both</h3>
+          <pre><code>cd /path/to/moos-ivp
+git switch my-branch
+./build.sh
+
+cd /path/to/moos-ivp-cicd-testing
+./build.sh</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section id="example" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">2. Test</p>
+        <h2>Example: editing <code>pEchoVar</code></h2>
+        <p>Run the focused CTest group, then the full <code>pEchoVar</code> harness.</p>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Run the <code>pechovar</code> CTest group</h3>
+          <pre><code>cd tests/cpp
+./ctests.sh --pechovar</code></pre>
+          <p>Run <code>./ctests.sh</code> with no family option to test everything, or use <code>--help</code> to list the available families.</p>
+          <p>The first focused run may configure and build the selected CTest executables before testing. Later runs rebuild incrementally.</p>
+          <p><strong>Example success output</strong></p>
+          <pre><code>100% tests passed, 0 tests failed out of 31</code></pre>
+        </article>
+        <article>
+          <h3>Run the full <code>pEchoVar</code> harness</h3>
+          <pre><code>cd harnesses/pechovar_harnesses/H01-pechovar_unit
+./zlaunch.sh 10</code></pre>
+          <p><strong>Example success output</strong></p>
+          <pre><code>results=.../results.txt failures=0 total=33 jobs=1 elapsed_seconds=...</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section id="build-matrix" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Optional build matrix</p>
+        <h2>Check the native and Linux builds</h2>
+        <p>Run the normal build on this computer, then compile the same local MOOS-IvP checkout in the current Linux distribution and compiler targets.</p>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <pre><code>cd /path/to/moos-ivp-cicd-testing
+./build-matrix.sh</code></pre>
+          <p><strong>Example success output</strong></p>
+          <pre><code>Build matrix result: 5 passed, 0 failed</code></pre>
+          <p>Run <code>./build-matrix.sh --help</code> for native-only testing, focused Linux targets, and compatibility builds.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="harness-options" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Harness reference</p>
+        <h2>Common launch options</h2>
+        <p>Harness defaults vary with the mission. Run <code>./zlaunch.sh --help</code> for the exact values and case names supported by the harness you are using.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Typical default</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>[time_warp]</code></td><td><code>10</code></td><td>Set the MOOS time warp.</td></tr>
+            <tr><td><code>--case=NAME</code></td><td>All cases</td><td>Run one named case.</td></tr>
+            <tr><td><code>--jobs=N</code></td><td><code>1</code></td><td>Run cases concurrently.</td></tr>
+            <tr><td><code>--max_time=SECONDS</code></td><td>Harness-specific</td><td>Override the per-case timeout.</td></tr>
+            <tr><td><code>--port_base=N</code></td><td>Harness-specific</td><td>Move the run to another MOOS port range.</td></tr>
+            <tr><td><code>--port_stride=N</code></td><td>Harness-specific</td><td>Change spacing between case port blocks, when supported.</td></tr>
+            <tr><td><code>--log=minimal|full</code></td><td><code>minimal</code></td><td>Reduce CPU usage with minimal logging, or capture full logs for debugging.</td></tr>
+            <tr><td><code>--keep_workdirs</code></td><td>Off</td><td>Preserve isolated case directories after the run.</td></tr>
+            <tr><td><code>--gui</code> / <code>--nogui</code></td><td><code>--nogui</code></td><td>Enable or disable the mission viewer.</td></tr>
+            <tr><td><code>--just_make</code>, <code>-j</code></td><td>Off</td><td>Generate mission files without launching.</td></tr>
+            <tr><td><code>--verbose</code>, <code>-v</code></td><td>Off</td><td>Show rolling scheduler activity.</td></tr>
+            <tr><td><code>--help</code>, <code>-h</code></td><td>&mdash;</td><td>List the harness options and case names.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Rerun a failure with full diagnostics</h3>
+          <pre><code>./zlaunch.sh --case=CASE --log=full --keep_workdirs 10</code></pre>
+          <p><code>--log=full</code> restores comprehensive logging. <code>--keep_workdirs</code> retains the generated mission and logs; the final <code>workdirs=...</code> field gives their location.</p>
+        </article>
+      </div>
+      <p>Some harnesses also provide specialized selectors such as <code>--group=NAME</code> or performance timing profiles such as <code>--profile=local|ci</code>.</p>
+    </section>
+
+    <section class="workflow">
+      <p class="eyebrow">Result</p>
+      <h2>Check pass or fail</h2>
+      <p>CTest passes with <code>100% tests passed</code>. The harness passes with <code>failures=0</code>. The optional build matrix passes with <code>0 failed</code>. Open <code>results.txt</code> only when you want the per-case harness details.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Overview site for the MOOS-IvP CI/CD test workspace.</span>
+    <span>Source mission and harness links are included for readers who want implementation detail.</span>
+  </footer>
+</body>
+</html>

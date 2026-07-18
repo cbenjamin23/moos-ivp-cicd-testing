@@ -6,6 +6,20 @@ It launches a controlled MOOSDB publisher and runs bounded `uXMS` terminal
 captures to verify scoping, column display, history, truncation, source filters,
 and mission-file configuration behavior.
 
+This is a documented CLI-output grading exception. `pMissionEval` owns the
+publisher-mission readiness grade and confirms the existing `XMS_ALPHA` and
+`XMS_NUM` facts. Because `uXMS` is a terminal viewer and does not publish a
+display-verdict variable, the harness supplements that mission grade with the
+case's exact required and forbidden terminal tokens. No helper application or
+additional grading variable is used.
+
+The launcher requires Bash 5.1 or newer for rolling `--jobs` scheduling. Every
+serial and rolling case runs in its own copy under `.harness_runs`, receives a
+distinct 30-port block, uses the repository's canonical scoped teardown helper,
+and contributes exactly one result row in declared-case order. A nonzero
+subject, launch, setup, result-validation, or cleanup status is reported as a
+runner failure rather than being mistaken for a pMissionEval verdict.
+
 ## Current Matrix
 
 - `scoped_var_pass` Scopes one named variable and expects both the variable name and posted value to appear.
@@ -52,3 +66,24 @@ Run one inspectable case:
 ```sh
 ./zlaunch.sh --case=history_var_pass --port_base=15200 --max_time=30 10
 ```
+
+Use `--keep_workdirs` to retain generated targets, `uxms.out`, mission results,
+and alogs for inspection. `--gui` is accepted only with one explicit case.
+
+The harness defaults to `--log=minimal`, which omits `pLogger` because terminal
+capture and mission results are the grading inputs. Use `--log=full` for the
+complete matrix, or combine it with `--case=<name>` for one fully logged case.
+
+## Migration Validation
+
+The legacy two-slot batch-wave matrix passed 96/96 case runs in 106.33,
+106.33, and 105.85 wall seconds. Its one-slot matrix passed 32/32 in 200.21
+seconds. The migrated rolling matrix passed 96/96 in 126.65, 127.46, and
+125.63 seconds; the migrated one-slot matrix passed 32/32 in 249.00 seconds.
+
+The retained migrated run contains 32 isolated missions, terminal captures,
+alogs, one-row pMissionEval reports, and distinct MOOSDB ports from 54000
+through 54930. Validation also covered all-case target generation, standalone
+stem execution, output-check rejection, invalid arguments, port bounds, lock
+contention, exact result ordering, Bash 3.2 re-execution/rejection, and scoped
+post-run cleanup.

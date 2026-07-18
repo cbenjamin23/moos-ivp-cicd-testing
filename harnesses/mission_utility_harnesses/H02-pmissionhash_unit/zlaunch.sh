@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------
 #   Script: zlaunch.sh
 #  Harness: H02-pmissionhash_unit
@@ -6,8 +6,7 @@
 #   LastEd: May 2026
 #------------------------------------------------------------
 
-PORT_BASE=${PORT_BASE:-7300}
-RUN_ROOT_PREFIX=pmissionhash
+PORT_BASE=${PORT_BASE:-9000}
 
 ALL_CASES=(
     hash_custom_vars_pass

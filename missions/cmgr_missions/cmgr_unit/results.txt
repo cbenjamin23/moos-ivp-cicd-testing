@@ -1,1 +1,1 @@
-form=cmgr_tests_harness  mmod=alpha_far_bravo_only_pass  grade=pass  eval=true  count=1  list=alpha,bravo  closest=bravo  range=8  mhash=[DEAR-BREW]
+form=cmgr_tests  mmod=detect_baseline_pass  grade=pass  eval=true  seen=true  closest=intruder  range=14  mhash=[GRIM-ZALE]
