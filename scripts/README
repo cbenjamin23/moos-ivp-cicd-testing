@@ -13,8 +13,7 @@ Current repo-specific helpers:
 - `harness_targets.py` validates and selects the manual-dispatch harness
   target metadata in `config/harness_targets.json`.
 - `check_repo_invariants.py` checks that harness target metadata, docs catalog
-  entries, workflow dispatch choices, default case lists, and generated docs
-  stay in sync.
+  entries, default case lists, and generated docs stay in sync.
 - `list_harness_targets.py` prints the configured manual-dispatch families and
   targets for quick local inspection.
 - `benchmark_parallel.sh` runs repeatable wall-clock timing sweeps for a
@@ -23,3 +22,12 @@ Current repo-specific helpers:
 - `repeatability_sweep.py` reruns one harness multiple times at a fixed
   configuration, saves raw logs/results, and writes a per-case stability
   summary under `time_benchmarking/`.
+- `moos_ivp_build_matrix.py` validates and selects local MOOS-IvP build-matrix
+  targets and build-profile compatibility from
+  `config/moos_ivp_build_targets.json`.
+- `build_moos_ivp_target.sh` installs build dependencies for the current
+  Linux target, copies the selected local MOOS-IvP checkout, and runs either
+  the full or headless build without invoking this repo's tests or missions.
+
+Run the native and Linux build matrix from the repository root with
+`./build-matrix.sh`.
