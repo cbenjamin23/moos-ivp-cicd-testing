@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogcat/ALogCatHandler/test_alogcat_alog_cat_handler[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogcat/ALogCatHandler/test_alogcat_alog_cat_handler[1]_tests.cmake")
-else()
-  add_test(test_alogcat_alog_cat_handler_NOT_BUILT test_alogcat_alog_cat_handler_NOT_BUILT)
-endif()

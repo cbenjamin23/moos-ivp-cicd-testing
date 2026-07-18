@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogload/LoadReporter/test_alogload_load_reporter[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogload/LoadReporter/test_alogload_load_reporter[1]_tests.cmake")
-else()
-  add_test(test_alogload_load_reporter_NOT_BUILT test_alogload_load_reporter_NOT_BUILT)
-endif()

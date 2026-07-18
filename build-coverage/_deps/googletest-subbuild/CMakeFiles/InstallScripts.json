@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/_deps/googletest-subbuild/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

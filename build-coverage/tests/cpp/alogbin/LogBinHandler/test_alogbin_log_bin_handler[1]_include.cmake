@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogbin/LogBinHandler/test_alogbin_log_bin_handler[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogbin/LogBinHandler/test_alogbin_log_bin_handler[1]_tests.cmake")
-else()
-  add_test(test_alogbin_log_bin_handler_NOT_BUILT test_alogbin_log_bin_handler_NOT_BUILT)
-endif()

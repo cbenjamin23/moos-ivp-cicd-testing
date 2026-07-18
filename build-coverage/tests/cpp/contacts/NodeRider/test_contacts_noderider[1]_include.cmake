@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/contacts/NodeRider/test_contacts_noderider[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/contacts/NodeRider/test_contacts_noderider[1]_tests.cmake")
-else()
-  add_test(test_contacts_noderider_NOT_BUILT test_contacts_noderider_NOT_BUILT)
-endif()

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/nsplug/Expander/test_nsplug_expander[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/nsplug/Expander/test_nsplug_expander[1]_tests.cmake")
-else()
-  add_test(test_nsplug_expander_NOT_BUILT test_nsplug_expander_NOT_BUILT)
-endif()

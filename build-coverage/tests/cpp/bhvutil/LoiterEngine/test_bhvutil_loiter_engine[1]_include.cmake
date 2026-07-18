@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/LoiterEngine/test_bhvutil_loiter_engine[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/LoiterEngine/test_bhvutil_loiter_engine[1]_tests.cmake")
-else()
-  add_test(test_bhvutil_loiter_engine_NOT_BUILT test_bhvutil_loiter_engine_NOT_BUILT)
-endif()

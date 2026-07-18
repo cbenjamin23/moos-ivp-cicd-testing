@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/marineview/Core/test_marineview_core[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/marineview/Core/test_marineview_core[1]_tests.cmake")
-else()
-  add_test(test_marineview_core_NOT_BUILT test_marineview_core_NOT_BUILT)
-endif()

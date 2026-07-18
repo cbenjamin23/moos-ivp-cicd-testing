@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogtest/LogTester/test_alogtest_log_tester[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/alogtest/LogTester/test_alogtest_log_tester[1]_tests.cmake")
-else()
-  add_test(test_alogtest_log_tester_NOT_BUILT test_alogtest_log_tester_NOT_BUILT)
-endif()

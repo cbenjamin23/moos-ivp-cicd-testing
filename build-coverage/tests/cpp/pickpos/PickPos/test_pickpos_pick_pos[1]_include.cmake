@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/pickpos/PickPos/test_pickpos_pick_pos[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/pickpos/PickPos/test_pickpos_pick_pos[1]_tests.cmake")
-else()
-  add_test(test_pickpos_pick_pos_NOT_BUILT test_pickpos_pick_pos_NOT_BUILT)
-endif()

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/Refineries/test_bhvutil_refineries[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/bhvutil/Refineries/test_bhvutil_refineries[1]_tests.cmake")
-else()
-  add_test(test_bhvutil_refineries_NOT_BUILT test_bhvutil_refineries_NOT_BUILT)
-endif()

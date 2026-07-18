@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/nspatch/PatchFiles/test_nspatch_patch_files[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/nspatch/PatchFiles/test_nspatch_patch_files[1]_tests.cmake")
-else()
-  add_test(test_nspatch_patch_files_NOT_BUILT test_nspatch_patch_files_NOT_BUILT)
-endif()

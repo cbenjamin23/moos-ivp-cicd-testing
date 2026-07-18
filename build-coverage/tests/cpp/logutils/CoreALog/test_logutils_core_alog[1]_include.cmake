@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logutils/CoreALog/test_logutils_core_alog[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logutils/CoreALog/test_logutils_core_alog[1]_tests.cmake")
-else()
-  add_test(test_logutils_core_alog_NOT_BUILT test_logutils_core_alog_NOT_BUILT)
-endif()

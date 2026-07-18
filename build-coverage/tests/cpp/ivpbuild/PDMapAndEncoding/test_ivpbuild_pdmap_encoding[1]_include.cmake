@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ivpbuild/PDMapAndEncoding/test_ivpbuild_pdmap_encoding[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ivpbuild/PDMapAndEncoding/test_ivpbuild_pdmap_encoding[1]_tests.cmake")
-else()
-  add_test(test_ivpbuild_pdmap_encoding_NOT_BUILT test_ivpbuild_pdmap_encoding_NOT_BUILT)
-endif()

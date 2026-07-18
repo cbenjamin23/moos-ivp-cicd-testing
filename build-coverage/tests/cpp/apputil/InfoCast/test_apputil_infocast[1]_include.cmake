@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/apputil/InfoCast/test_apputil_infocast[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/apputil/InfoCast/test_apputil_infocast[1]_tests.cmake")
-else()
-  add_test(test_apputil_infocast_NOT_BUILT test_apputil_infocast_NOT_BUILT)
-endif()

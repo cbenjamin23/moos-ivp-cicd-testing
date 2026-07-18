@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logic/ConditionalLedger/test_logic_conditional_ledger[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/logic/ConditionalLedger/test_logic_conditional_ledger[1]_tests.cmake")
-else()
-  add_test(test_logic_conditional_ledger_NOT_BUILT test_logic_conditional_ledger_NOT_BUILT)
-endif()

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ufield/UFieldUtils/test_ufield_utils[1]_tests.cmake")
-  include("/Users/charlesbenjamin/moos-ivp-cicd-testing/build-coverage/tests/cpp/ufield/UFieldUtils/test_ufield_utils[1]_tests.cmake")
-else()
-  add_test(test_ufield_utils_NOT_BUILT test_ufield_utils_NOT_BUILT)
-endif()
