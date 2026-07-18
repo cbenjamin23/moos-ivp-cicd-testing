@@ -311,10 +311,19 @@ def check_context_graph_generated_clean(_targets: list[dict[str, object]]) -> li
 
 
 def check_cpp_test_tree(_targets: list[dict[str, object]]) -> list[CheckFailure]:
-    return [
+    failures = [
         CheckFailure(failure.label, failure.detail)
         for failure in check_cpp_tests.check_static()
     ]
+    declared_labels = check_cpp_tests.declared_labels()
+    for family in sorted(set(ci_cpp_test_targets.CPP_FAMILIES) - declared_labels):
+        failures.append(
+            CheckFailure(
+                "CTest family selector",
+                f"{family} is not declared by CMake LABELS or SUITE_LABELS",
+            )
+        )
+    return failures
 
 
 def snapshot_tree(root: Path) -> dict[str, str]:

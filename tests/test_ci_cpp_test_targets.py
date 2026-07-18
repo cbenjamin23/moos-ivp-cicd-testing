@@ -87,6 +87,22 @@ class CppTestTargetSummaryTests(unittest.TestCase):
 
         self.assertNotIn("-L", command)
 
+    def test_family_ctest_target_uses_an_exact_label_filter(self) -> None:
+        command = ci_cpp_test_targets.ctest_command(
+            Path("build"),
+            "behaviors-marine",
+            Path("reports/behaviors-marine.xml"),
+        )
+
+        label_index = command.index("-L")
+        self.assertEqual(command[label_index + 1], r"^behaviors\-marine$")
+
+    def test_public_behavior_families_match_cmake_labels(self) -> None:
+        self.assertIn("behaviors-marine", ci_cpp_test_targets.CPP_FAMILIES)
+        self.assertIn("behaviors-colregs", ci_cpp_test_targets.CPP_FAMILIES)
+        self.assertNotIn("behaviors_marine", ci_cpp_test_targets.CPP_FAMILIES)
+        self.assertNotIn("behaviors_colregs", ci_cpp_test_targets.CPP_FAMILIES)
+
     def test_parse_junit_report_counts_failures_errors_and_skips(self) -> None:
         report = self.write_report(
             """<?xml version="1.0"?>

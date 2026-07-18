@@ -66,7 +66,8 @@ cd /path/to/moos-ivp-cicd-testing
       <div class="explain-stack">
         <article>
           <h3>Run the <code>pechovar</code> CTest group</h3>
-          <pre><code>ctest --test-dir build -L '^pechovar$' --output-on-failure</code></pre>
+          <pre><code>./tests/cpp/ctests.sh --pechovar</code></pre>
+          <p>Run <code>./tests/cpp/ctests.sh</code> with no family option to test everything, or use <code>--help</code> to list the available families.</p>
           <p><strong>Example success output</strong></p>
           <pre><code>100% tests passed, 0 tests failed out of 31</code></pre>
         </article>
@@ -78,6 +79,47 @@ cd /path/to/moos-ivp-cicd-testing
           <pre><code>results=.../results.txt failures=0 total=33 jobs=1 elapsed_seconds=...</code></pre>
         </article>
       </div>
+    </section>
+
+    <section id="harness-options" class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Harness reference</p>
+        <h2>Common launch options</h2>
+        <p>Harness defaults vary with the mission. Run <code>./zlaunch.sh --help</code> for the exact values and case names supported by the harness you are using.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Typical default</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>[time_warp]</code></td><td><code>10</code></td><td>Set the MOOS time warp.</td></tr>
+            <tr><td><code>--case=NAME</code></td><td>All cases</td><td>Run one named case.</td></tr>
+            <tr><td><code>--jobs=N</code></td><td><code>1</code></td><td>Run cases concurrently.</td></tr>
+            <tr><td><code>--max_time=SECONDS</code></td><td>Harness-specific</td><td>Override the per-case timeout.</td></tr>
+            <tr><td><code>--port_base=N</code></td><td>Harness-specific</td><td>Move the run to another MOOS port range.</td></tr>
+            <tr><td><code>--port_stride=N</code></td><td>Harness-specific</td><td>Change spacing between case port blocks, when supported.</td></tr>
+            <tr><td><code>--log=minimal|full</code></td><td><code>minimal</code></td><td>Reduce CPU usage with minimal logging, or capture full logs for debugging.</td></tr>
+            <tr><td><code>--keep_workdirs</code></td><td>Off</td><td>Preserve isolated case directories after the run.</td></tr>
+            <tr><td><code>--gui</code> / <code>--nogui</code></td><td><code>--nogui</code></td><td>Enable or disable the mission viewer.</td></tr>
+            <tr><td><code>--just_make</code>, <code>-j</code></td><td>Off</td><td>Generate mission files without launching.</td></tr>
+            <tr><td><code>--verbose</code>, <code>-v</code></td><td>Off</td><td>Show rolling scheduler activity.</td></tr>
+            <tr><td><code>--help</code>, <code>-h</code></td><td>&mdash;</td><td>List the harness options and case names.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="explain-stack">
+        <article>
+          <h3>Rerun a failure with full diagnostics</h3>
+          <pre><code>./zlaunch.sh --case=CASE --log=full --keep_workdirs 10</code></pre>
+          <p><code>--log=full</code> restores comprehensive logging. <code>--keep_workdirs</code> retains the generated mission and logs; the final <code>workdirs=...</code> field gives their location.</p>
+        </article>
+      </div>
+      <p>Some harnesses also provide specialized selectors such as <code>--group=NAME</code> or performance timing profiles such as <code>--profile=local|ci</code>.</p>
     </section>
 
     <section class="workflow">

@@ -19,7 +19,7 @@ right family label.
 Run a focused family:
 
 ```bash
-ctest --test-dir build -L geometry --output-on-failure
+./tests/cpp/ctests.sh --geometry
 ```
 
 Run one GoogleTest suite while editing:
@@ -32,7 +32,7 @@ The sections below explain the structure and conventions in more detail. The
 suite is designed for targeted regression work. A developer should be able to
 run:
 
-- one component family with a label, such as `ctest --test-dir build -L geometry`
+- one component family with a label, such as `./tests/cpp/ctests.sh --geometry`
 - one executable directly, such as `./bin/test_geometry_arcutils`
 - one GoogleTest suite with an executable filter, such as
   `./bin/test_geometry_arcutils --gtest_filter='ArcUtilsIntersectionTest.*'`
@@ -96,12 +96,15 @@ failures are reported with better detail.
 
 ## Run Tests
 
-Build and run everything:
+Build incrementally and run everything:
 
 ```bash
-./build.sh
-ctest --test-dir build --output-on-failure
+./tests/cpp/ctests.sh
 ```
+
+The first run configures the test build when needed. Use `--jobs=N` for
+parallel building and testing, or `--no-build` when the test executables are
+already current. Run `./tests/cpp/ctests.sh --help` to list every family.
 
 If the build cache points at the wrong MOOS-IvP checkout, reconfigure once:
 
@@ -111,15 +114,16 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Run a focused CTest family:
+Run focused CTest families:
 
 ```bash
-ctest --test-dir build -L geometry --output-on-failure
-ctest --test-dir build -L ivpbuild --output-on-failure
-ctest --test-dir build -L mbutil --output-on-failure
+./tests/cpp/ctests.sh --geometry
+./tests/cpp/ctests.sh --ivpbuild
+./tests/cpp/ctests.sh --geometry --mbutil
 ```
 
-CTest label matching is regex-based. Anchor broad labels when needed:
+The wrapper uses exact family-label matching. For lower-level investigation,
+CTest label matching is regex-based, so anchor broad labels:
 
 ```bash
 ctest --test-dir build -L '^behaviors$' --output-on-failure
@@ -232,7 +236,7 @@ label such as:
 - `geometry`
 - `mbutil`
 - `ivpbuild`
-- `behaviors_marine`
+- `behaviors-marine`
 - `apputil`
 
 Additional labels may be useful as CTest registry metadata, but they should not
@@ -391,8 +395,8 @@ Before adding a new test family:
 Useful local commands:
 
 ```bash
-ctest --test-dir build -L XYFormatUtilsPoint --output-on-failure
-ctest --test-dir build -L geometry --output-on-failure
+ctest --test-dir build -L '^XYFormatUtilsPoint$' --output-on-failure
+./tests/cpp/ctests.sh --geometry
 python3 scripts/check_cpp_tests.py \
   --build-dir build \
   --moos-src /path/to/moos-ivp/ivp/src
@@ -402,8 +406,8 @@ Run the relevant family or explicit family batch before handing off broad
 changes:
 
 ```bash
-ctest --test-dir build -L geometry --output-on-failure
-ctest --test-dir build -L 'geometry|ivpbuild|mbutil' --output-on-failure
+./tests/cpp/ctests.sh --geometry
+./tests/cpp/ctests.sh --geometry --ivpbuild --mbutil
 ```
 
 ## Invariants

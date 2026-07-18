@@ -126,6 +126,18 @@ def all_targets() -> list[CppTestTarget]:
     return targets
 
 
+def declared_labels(targets: list[CppTestTarget] | None = None) -> set[str]:
+    labels: set[str] = set()
+    for target in all_targets() if targets is None else targets:
+        labels.update(target.values("LABELS"))
+        for suite_label in target.values("SUITE_LABELS"):
+            if "=" not in suite_label:
+                continue
+            _, values = suite_label.split("=", 1)
+            labels.update(value for value in values.split(",") if value)
+    return labels
+
+
 def relative(path: Path) -> str:
     try:
         return path.relative_to(REPO_ROOT).as_posix()

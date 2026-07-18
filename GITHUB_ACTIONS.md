@@ -126,7 +126,7 @@ git checkout my-moos-ivp-branch
 cd /Users/charlesbenjamin/moos-ivp-cicd-testing
 ./build.sh
 
-ctest --test-dir build -L geometry --output-on-failure
+./tests/cpp/ctests.sh --geometry
 ```
 
 When testing a different local checkout, configure this repo with

@@ -36,8 +36,8 @@ CPP_FAMILIES = (
     "alogtm",
     "apputil",
     "behaviors",
-    "behaviors_colregs",
-    "behaviors_marine",
+    "behaviors-colregs",
+    "behaviors-marine",
     "bhvutil",
     "contacts",
     "dep_behaviors",
@@ -175,6 +175,11 @@ def parse_args() -> argparse.Namespace:
         "--summary-path",
         default="",
         help="Optional GitHub step summary path to append Markdown output.",
+    )
+
+    subparsers.add_parser(
+        "list",
+        help="List the public CTest family selectors.",
     )
     return parser.parse_args()
 
@@ -319,7 +324,7 @@ def ctest_command(build_dir: Path, target: str, report_path: Path) -> list[str]:
         str(report_path),
     ]
     if target != "all":
-        command[4:4] = ["-L", target]
+        command[4:4] = ["-L", f"^{re.escape(target)}$"]
     return command
 
 
@@ -423,6 +428,10 @@ def main() -> int:
                 handle.write(summary)
                 if not summary.endswith("\n"):
                     handle.write("\n")
+        return 0
+
+    if args.command == "list":
+        print("\n".join(CPP_FAMILIES))
         return 0
 
     if args.command != "run":

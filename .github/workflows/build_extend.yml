@@ -118,8 +118,8 @@ on:
           - alogtm
           - apputil
           - behaviors
-          - behaviors_colregs
-          - behaviors_marine
+          - behaviors-colregs
+          - behaviors-marine
           - bhvutil
           - contacts
           - dep_behaviors

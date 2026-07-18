@@ -23,13 +23,13 @@ Build the repo:
 Run all C++ tests:
 
 ```bash
-ctest --test-dir build --output-on-failure
+./tests/cpp/ctests.sh
 ```
 
 Run one C++ label:
 
 ```bash
-ctest --test-dir build -L geometry --output-on-failure
+./tests/cpp/ctests.sh --geometry
 ```
 
 Run one mission harness case:
@@ -63,7 +63,7 @@ git checkout my-branch
 cd /Users/charlesbenjamin/moos-ivp-cicd-testing
 ./build.sh
 
-ctest --test-dir build -L geometry --output-on-failure
+./tests/cpp/ctests.sh --geometry
 
 cd harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion
 ./zlaunch.sh --case=single_point_arrival_pass 10
