@@ -31,5 +31,5 @@ Behavior = BHV_PeriodicSurface
   max_time_at_surface   = 3
   ascent_speed          = 1.0
   ascent_grade          = linear
-  acomms_mark_variable  = ACOMMS_MARK,20,10
+  acomms_mark_variable  = BAD MARK,5,10
 }

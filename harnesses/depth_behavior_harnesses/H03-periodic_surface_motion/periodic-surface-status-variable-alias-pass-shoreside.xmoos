@@ -11,8 +11,9 @@ ProcessConfig = uTimerScript
   condition = DEPLOY_ALL = true
 
   event = var=BHV_ERROR_SEEN, val=false, time=0
-  event = var=SURFACE_TIMEOUT_SEEN, val=false, time=0
-  event = var=TEST_EVAL_READY, val=true, time=48
+  event = var=PERIODIC_ASCEND_SEEN, val=false, time=0
+  event = var=TEST_EVAL_DEADLINE, val=false, time=0
+  event = var=TEST_EVAL_DEADLINE, val=true, time=45
 }
 
 ProcessConfig = pMissionEval
@@ -21,16 +22,13 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @PERIODIC_ASCEND#PERIODIC_ASCEND_SEEN=true
-  mailflag = @PSF_AT_SURFACE_TIMEOUT#SURFACE_TIMEOUT_SEEN=true
   mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  lead_condition = PERIODIC_ASCEND_SEEN = true
-  lead_condition = SURFACE_TIMEOUT_SEEN = true
+  lead_condition = (SURFACE_DWELL_LONG >= 1) or (TEST_EVAL_DEADLINE = true)
   pass_condition = PERIODIC_ASCEND_SEEN = true
-  pass_condition = SURFACE_TIMEOUT_SEEN = true
-  pass_condition = SURFACE_WAIT_LONG <= 8
-  pass_condition = SURFACE_DWELL_LONG >= 0
+  pass_condition = SURFACE_WAIT_LONG <= 0
+  pass_condition = SURFACE_DWELL_LONG >= 1
+  pass_condition = SURFACE_DWELL_LONG <= 3
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -44,11 +42,10 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = deadline=$[TEST_EVAL_DEADLINE]
   report_column = depth=$[ABE_NAV_DEPTH]
   report_column = periodic=$[PERIODIC_ASCEND]
   report_column = surface_seen=$[PERIODIC_ASCEND_SEEN]
-  report_column = timeout_seen=$[SURFACE_TIMEOUT_SEEN]
   report_column = surface_wait=$[SURFACE_WAIT_LONG]
   report_column = surface_dwell=$[SURFACE_DWELL_LONG]
   report_column = bhv_error=$[BHV_ERROR_SEEN]

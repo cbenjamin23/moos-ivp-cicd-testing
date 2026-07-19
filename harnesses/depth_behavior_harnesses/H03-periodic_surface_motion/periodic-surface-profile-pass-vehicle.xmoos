@@ -1,0 +1,25 @@
+//-------------------------------------------------
+// FILE: periodic-surface-profile-pass-vehicle.xmoos
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+// Begin the profile cases submerged so each ascent starts from the
+// configured 12-meter depth instead of racing the initial dive.
+ProcessConfig = uSimMarineV22
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  start_pos = $(START_POS),depth=12
+  prefix    = NAV
+
+  max_speed        = $(MAX_SPD)
+  max_deceleration = 0.1
+  turn_rate        = 95
+  turn_spd_loss    = 0.6
+
+  buoyancy_rate         = 0.025
+  max_depth_rate        = 5
+  max_depth_rate_speed  = 2.0
+  default_water_depth   = 400
+}

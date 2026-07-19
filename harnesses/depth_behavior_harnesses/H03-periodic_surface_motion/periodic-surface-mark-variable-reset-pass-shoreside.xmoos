@@ -44,7 +44,6 @@ ProcessConfig = pMissionEval
   report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = depth=$[ABE_NAV_DEPTH]
-  report_column = periodic=$[PERIODIC_ASCEND]
   report_column = surface_seen=$[PERIODIC_ASCEND_SEEN]
   report_column = timeout_seen=$[SURFACE_TIMEOUT_SEEN]
   report_column = pending=$[PENDING_SURFACE]

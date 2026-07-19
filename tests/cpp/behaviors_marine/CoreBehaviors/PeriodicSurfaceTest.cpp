@@ -289,3 +289,131 @@ TEST(BHVPeriodicSurfaceTest, AscentGradeControlsSpeedRamp)
   EXPECT_GT(evalTwoDimPoint(*full_mid, 4, 0),
             evalTwoDimPoint(*full_mid, 2, 0));
 }
+
+// Covers BHV periodic surface behavior: quadratic ascent reduces speed by the
+// square of the remaining depth fraction.
+TEST(BHVPeriodicSurfaceTest, QuadraticAscentUsesSquaredDepthFraction)
+{
+  InfoBuffer info;
+  info.setCurrTime(0);
+  info.setValue("NAV_DEPTH", 20);
+  info.setValue("NAV_SPEED", 2);
+
+  BHV_PeriodicSurface behavior(makeSpeedDepthDomain());
+  behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(behavior.setParam("period", "1"));
+  ASSERT_TRUE(behavior.setParam("zero_speed_depth", "0"));
+  ASSERT_TRUE(behavior.setParam("ascent_speed", "4"));
+  ASSERT_TRUE(behavior.setParam("ascent_grade", "quadratic"));
+
+  EXPECT_EQ(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(2);
+  ASSERT_NE(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(3);
+  info.setValue("NAV_DEPTH", 10);
+  std::unique_ptr<IvPFunction> mid_ascent(behavior.onRunState());
+  ASSERT_NE(mid_ascent, nullptr);
+  EXPECT_GT(evalTwoDimPoint(*mid_ascent, 1, 0),
+            evalTwoDimPoint(*mid_ascent, 2, 0));
+}
+
+// Covers BHV periodic surface behavior: "current" captures speed once when
+// ascent starts rather than following later NAV_SPEED changes.
+TEST(BHVPeriodicSurfaceTest, CurrentAscentSpeedIsCapturedAtAscentStart)
+{
+  InfoBuffer info;
+  info.setCurrTime(0);
+  info.setValue("NAV_DEPTH", 20);
+  info.setValue("NAV_SPEED", 4);
+
+  BHV_PeriodicSurface behavior(makeSpeedDepthDomain());
+  behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(behavior.setParam("period", "1"));
+  ASSERT_TRUE(behavior.setParam("zero_speed_depth", "0"));
+  ASSERT_TRUE(behavior.setParam("ascent_speed", "current"));
+  ASSERT_TRUE(behavior.setParam("ascent_grade", "linear"));
+
+  EXPECT_EQ(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(2);
+  ASSERT_NE(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(3);
+  info.setValue("NAV_DEPTH", 10);
+  info.setValue("NAV_SPEED", 1);
+  std::unique_ptr<IvPFunction> mid_ascent(behavior.onRunState());
+  ASSERT_NE(mid_ascent, nullptr);
+  EXPECT_GT(evalTwoDimPoint(*mid_ascent, 2, 0),
+            evalTwoDimPoint(*mid_ascent, 1, 0));
+}
+
+// Covers BHV periodic surface behavior: legacy speed_to_surface configures the
+// same ascent objective as ascent_speed.
+TEST(BHVPeriodicSurfaceTest, SpeedToSurfaceAliasDrivesAscentObjective)
+{
+  InfoBuffer info;
+  info.setCurrTime(0);
+  info.setValue("NAV_DEPTH", 20);
+  info.setValue("NAV_SPEED", 2);
+
+  BHV_PeriodicSurface behavior(makeSpeedDepthDomain());
+  behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(behavior.setParam("period", "1"));
+  ASSERT_TRUE(behavior.setParam("zero_speed_depth", "0"));
+  ASSERT_TRUE(behavior.setParam("speed_to_surface", "4"));
+  ASSERT_TRUE(behavior.setParam("ascent_grade", "linear"));
+
+  EXPECT_EQ(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(2);
+  std::unique_ptr<IvPFunction> ascent(behavior.onRunState());
+  ASSERT_NE(ascent, nullptr);
+  EXPECT_GT(evalTwoDimPoint(*ascent, 4, 0),
+            evalTwoDimPoint(*ascent, 2, 0));
+}
+
+// Covers BHV periodic surface behavior: long status-variable spellings publish
+// the pending and at-surface values in their corresponding phases.
+TEST(BHVPeriodicSurfaceTest, LongStatusAliasesPublishPhaseValues)
+{
+  InfoBuffer info;
+  info.setCurrTime(0);
+  info.setValue("NAV_DEPTH", 20);
+  info.setValue("NAV_SPEED", 2);
+
+  BHV_PeriodicSurface behavior(makeSpeedDepthDomain());
+  behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(behavior.setParam("period", "5"));
+  ASSERT_TRUE(behavior.setParam("zero_speed_depth", "1"));
+  ASSERT_TRUE(behavior.setParam("max_time_at_surface", "10"));
+  ASSERT_TRUE(behavior.setParam("ascent_speed", "2"));
+  ASSERT_TRUE(behavior.setParam("pending_status_variable", "SURFACE_WAIT_LONG"));
+  ASSERT_TRUE(behavior.setParam("atsurface_status_variable", "SURFACE_DWELL_LONG"));
+
+  EXPECT_EQ(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(4);
+  behavior.clearMessages();
+  EXPECT_EQ(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+  VarDataPair pending;
+  ASSERT_TRUE(findBehaviorMessage(behavior.getMessages(), "SURFACE_WAIT_LONG", pending));
+  EXPECT_DOUBLE_EQ(pending.get_ddata(), 1);
+
+  info.setCurrTime(6);
+  behavior.clearMessages();
+  ASSERT_NE(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(7);
+  info.setValue("NAV_DEPTH", 0);
+  behavior.clearMessages();
+  ASSERT_NE(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+
+  info.setCurrTime(9);
+  behavior.clearMessages();
+  ASSERT_NE(std::unique_ptr<IvPFunction>(behavior.onRunState()), nullptr);
+  VarDataPair dwell;
+  ASSERT_TRUE(findBehaviorMessage(behavior.getMessages(), "SURFACE_DWELL_LONG", dwell));
+  EXPECT_DOUBLE_EQ(dwell.get_ddata(), 2);
+}

@@ -108,6 +108,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=NAV_ALTITUDE, alias=ABE_NAV_ALTITUDE
   bridge = src=DESIRED_THRUST,   alias=ABE_DESIRED_THRUST
   bridge = src=DESIRED_RUDDER,   alias=ABE_DESIRED_RUDDER
+  bridge = src=DESIRED_SPEED,    alias=ABE_DESIRED_SPEED
   bridge = src=DESIRED_ELEVATOR, alias=ABE_DESIRED_ELEVATOR
   bridge = src=DEPTH_MISMATCH
   bridge = src=DEPTH_SLACK

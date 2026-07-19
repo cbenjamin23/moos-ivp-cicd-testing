@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Surfacing Cycle</h3>
-          <p>Description: Configures an eight-second period, two-meter zero-speed depth, three-second surface dwell, and full-speed ascent while a lower-weight constant-depth behavior keeps the UUV submerged between cycles. Passes when both PERIODIC_ASCEND and PSF_AT_SURFACE_TIMEOUT have been observed with no behavior error.</p>
+          <p>Description: Configures an eight-second wait, a two-meter zero-speed depth, a three-second surface dwell, and full-speed ascent to test one complete periodic-surface cycle; passes as soon as an ascent and its PSF_AT_SURFACE_TIMEOUT have both occurred with no behavior error.</p>
         </div>
       </article>
 
@@ -89,19 +89,19 @@
 
         <article class="case-row">
           <code>periodic_surface_pass</code>
-          <p>Configures an eight-second period, two-meter zero-speed depth, three-second surface dwell, and full-speed ascent while a lower-weight constant-depth behavior keeps the UUV submerged between cycles. Passes when both PERIODIC_ASCEND and PSF_AT_SURFACE_TIMEOUT have been observed with no behavior error.</p>
+          <p>Configures an eight-second wait, a two-meter zero-speed depth, a three-second surface dwell, and full-speed ascent to test one complete periodic-surface cycle; passes as soon as an ascent and its PSF_AT_SURFACE_TIMEOUT have both occurred with no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_status_vars_pass</code>
-          <p>Binds the short-form parameters to SURFACE_WAIT and SURFACE_DWELL. Passes after a surfacing cycle and timeout when SURFACE_WAIT&lt;=8, SURFACE_DWELL&gt;=0, and no behavior error is observed.</p>
+          <p>Binds the short parameter names to SURFACE_WAIT and SURFACE_DWELL to test their waiting-phase values; passes when the pending countdown reaches three through five seconds while the surface-dwell counter remains zero, with no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_status_variable_alias_pass</code>
-          <p>Binds the long-form aliases to SURFACE_WAIT_LONG and SURFACE_DWELL_LONG. Passes after a surfacing cycle and timeout when SURFACE_WAIT_LONG&lt;=8, SURFACE_DWELL_LONG&gt;=0, and no behavior error is observed.</p>
+          <p>Binds the long parameter aliases to SURFACE_WAIT_LONG and SURFACE_DWELL_LONG to test their at-surface values; passes during the first surface dwell when the dwell counter is one through three, the pending counter is nonpositive, an ascent has occurred, and no behavior error is observed.</p>
         </article>
 
 
@@ -125,13 +125,13 @@
 
         <article class="case-row">
           <code>periodic_surface_quadratic_ascent_pass</code>
-          <p>Configures ascent_grade=quadratic with an eight-second period and one-meter-per-second ascent. Passes when both PERIODIC_ASCEND and PSF_AT_SURFACE_TIMEOUT have been observed with no behavior error.</p>
+          <p>Starts at 12 meters and configures ascent_grade=quadratic, ascent_speed=1, and zero_speed_depth=2 to test the squared speed ramp; passes while ascending through six to eight meters when ABE_DESIRED_SPEED is 0.1–0.5 m/s and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_fullspeed_ascent_pass</code>
-          <p>Configures ascent_grade=fullspeed with an eight-second period and one-meter-per-second ascent. Passes when both PERIODIC_ASCEND and PSF_AT_SURFACE_TIMEOUT have been observed with no behavior error.</p>
+          <p>Starts at 12 meters and configures ascent_grade=fullspeed with ascent_speed=1 to test that the requested speed is held throughout ascent; passes while ascending through six to eight meters when ABE_DESIRED_SPEED is 0.9–1.1 m/s and no behavior error is observed.</p>
         </article>
 
 
@@ -143,79 +143,79 @@
 
         <article class="case-row">
           <code>periodic_surface_current_speed_pass</code>
-          <p>Configures ascent_speed=current and ascent_grade=quasi. Passes when both PERIODIC_ASCEND and PSF_AT_SURFACE_TIMEOUT have been observed with no behavior error.</p>
+          <p>Starts at 12 meters with the vehicle moving near 2 m/s and configures ascent_speed=current with a quasi ramp to test capture of the live speed at ascent start; passes while ascending through 10–11.5 meters when ABE_DESIRED_SPEED is 1.5–2.1 m/s and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_speed_alias_pass</code>
-          <p>Configures the speed_to_surface=1.2 alias with linear ascent. Passes when both PERIODIC_ASCEND and PSF_AT_SURFACE_TIMEOUT have been observed with no behavior error.</p>
+          <p>Starts at 12 meters and configures the legacy speed_to_surface=1.2 alias with a linear ramp to test that the alias supplies the ramp&#x27;s starting speed; passes while ascending through six to eight meters when ABE_DESIRED_SPEED is 0.4–0.8 m/s and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_period_fail</code>
-          <p>Sets period=0 to exercise rejection of a nonpositive surfacing period. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets period=0 to test rejection of a nonpositive surfacing period; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_ascent_grade_fail</code>
-          <p>Sets ascent_grade=rocket to exercise rejection of an unknown ascent profile. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets ascent_grade=rocket to test rejection of an unknown ascent profile; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_ascent_speed_fail</code>
-          <p>Sets ascent_speed=-1 to exercise rejection of a negative ascent speed. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets ascent_speed=-1 to test rejection of a negative ascent speed; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_zero_speed_depth_fail</code>
-          <p>Sets zero_speed_depth=-2 to exercise rejection of a negative transition depth. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets zero_speed_depth=-2 to test rejection of a negative transition depth; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_max_time_fail</code>
-          <p>Sets max_time_at_surface=-1 to exercise rejection of a negative surface dwell limit. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets max_time_at_surface=-1 to test rejection of a negative surface dwell limit; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_acomms_mark_fail</code>
-          <p>Configures acomms_mark_variable=ACOMMS_MARK,20,10, where the extension interval exceeds its maximum. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG; this is the same fixture used by periodic_surface_bad_acomms_max_fail.</p>
+          <p>Configures acomms_mark_variable=BAD MARK,5,10 to test rejection of whitespace in the acoustic mark variable name; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_acomms_interval_fail</code>
-          <p>Configures acomms_mark_variable=ACOMMS_MARK,0,10 to exercise rejection of a zero extension interval. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Configures acomms_mark_variable=ACOMMS_MARK,0,10 to test rejection of a zero extension interval; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_acomms_max_fail</code>
-          <p>Configures acomms_mark_variable=ACOMMS_MARK,20,10, where the maximum extension is shorter than one interval. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG; this duplicates periodic_surface_bad_acomms_mark_fail.</p>
+          <p>Configures acomms_mark_variable=ACOMMS_MARK,20,10 to test rejection when one extension interval exceeds the maximum accumulated extension; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_mark_variable_fail</code>
-          <p>Supplies an empty mark_variable value. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Supplies an empty mark_variable value to test rejection of a missing reset source; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_pending_status_var_fail</code>
-          <p>Supplies an empty pending_status_var value. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Supplies an empty pending_status_var value to test rejection of a missing pending-status output name; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>periodic_surface_bad_atsurface_status_var_fail</code>
-          <p>Supplies an empty atsurface_status_var value. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Supplies an empty atsurface_status_var value to test rejection of a missing surface-dwell output name; passes only when IVPHELM_STATE=MALCONFIG.</p>
         </article>
 
 
