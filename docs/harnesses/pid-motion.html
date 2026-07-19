@@ -107,7 +107,7 @@
 
         <article class="case-row">
           <code>rudder_bias_recover_pass</code>
-          <p>Sets sim_instability=18 in pMarinePIDV22, exercising the controller&#x27;s simulated rudder disturbance while following the eastbound waypoint; passes on arrival with 55&lt;=x&lt;=80, -76&lt;=y&lt;=-44, heading in [75,125], and speed at most 3.0.</p>
+          <p>Sets sim_instability=18 on an initially straight eastbound transit, requiring the growing disturbance to drive DESIRED_RUDDER&lt;-1 at four seconds before grading recovery; passes on arrival with 55&lt;=x&lt;=80, -76&lt;=y&lt;=-44, heading in [75,125], and speed at most 3.0.</p>
         </article>
 
 
@@ -131,7 +131,7 @@
 
         <article class="case-row">
           <code>override_release_pass</code>
-          <p>Starts deployed under manual override, releases MOOS_MANUAL_OVERRIDE_ALL at eight seconds, and continues toward (70,-60), exercising post-override control reacquisition; passes on arrival with 55&lt;=x&lt;=80, -72&lt;=y&lt;=-48, heading in [85,95], and speed at most 3.0. The evaluator does not grade pre-release immobility.</p>
+          <p>Starts deployed under manual override and, at six seconds, requires the override still true with x in [-0.25,0.25] and speed at most 0.1; after release at eight seconds, it passes on arrival with 55&lt;=x&lt;=80, -72&lt;=y&lt;=-48, heading in [85,95], and speed at most 3.0.</p>
         </article>
 
 
@@ -149,7 +149,7 @@
 
         <article class="case-row">
           <code>low_elevator_authority_fail</code>
-          <p>Extends the waypoint to (140,-60), commands depth 30, and limits maxelevator=0.25, testing the degraded dive under insufficient elevator authority; at 45 seconds, the harness passes with x&gt;=50, -74&lt;=y&lt;=-46, heading in [85,95], depth below 25, and DESIRED_ELEVATOR&gt;=-0.5.</p>
+          <p>Extends the waypoint to (140,-60), commands depth 30, and limits maxelevator=0.25; at 45 seconds, the expected-degraded case passes only after diving at least 10 meters but remaining shallower than 25 meters while DESIRED_ELEVATOR stays in the saturated [0.2,0.3] band.</p>
         </article>
 
 

@@ -137,7 +137,7 @@
 
         <article class="case-row">
           <code>stale_nav_pass</code>
-          <p>Sets both tardy thresholds to one second and stops refreshing all helm and nav inputs after one second, exercising the stale-input all-stop path; passes when rudder and thrust are each within [-0.1,0.1]. PID_STALE is reported but is not graded.</p>
+          <p>Sets the nav tardy threshold to one second, keeps desired heading, desired speed, and nav heading fresh, and lets only NAV_SPEED expire; passes after first proving DESIRED_RUDDER_PID&gt;1 and thrust in [39,41], then requiring both outputs within [-0.1,0.1] and a PID_STALE publication.</p>
         </article>
 
 
@@ -155,7 +155,7 @@
 
         <article class="case-row">
           <code>heading_debug_saturation_pass</code>
-          <p>Enables heading_debug, requests heading 180 from 0, and sets maxrudder=10, exercising heading diagnostics during rudder saturation; passes when rudder is in [-10,-9] and thrust is in [39,41]. PID_HDG_DEBUG is reported but is not graded.</p>
+          <p>Enables heading_debug, requests heading 180 from 0, and sets maxrudder=10; passes when PID_HDG_DEBUG publishes while rudder is saturated in [-10,-9] and thrust is in [39,41], with the diagnostic&#x27;s desired, current, error, and rudder fields retained in the result.</p>
         </article>
 
 
@@ -173,7 +173,7 @@
 
         <article class="case-row">
           <code>output_suffix_alt_pass</code>
-          <p>Configures output_suffix=_ALT, testing publication on the alternate actuator names; passes when DESIRED_RUDDER_ALT&gt;1, 39&lt;=DESIRED_THRUST_ALT&lt;=41, and PID_HAS_CONTROL=true. The evaluator does not check that the unsuffixed variables are absent.</p>
+          <p>Configures output_suffix=_ALT, requiring DESIRED_RUDDER_ALT&gt;1 and 39&lt;=DESIRED_THRUST_ALT&lt;=41 while failing on any unsuffixed DESIRED_RUDDER or DESIRED_THRUST publication.</p>
         </article>
 
 
@@ -185,13 +185,13 @@
 
         <article class="case-row">
           <code>override_release_needs_fresh_mail_pass</code>
-          <p>Posts complete helm/nav inputs while override is active and releases override two seconds later without refreshing them, testing the fresh-mail gate after release; passes when rudder and thrust remain within [-0.1,0.1].</p>
+          <p>First proves starboard control with rudder above 1 and thrust in [39,41], then posts a port command while override is active and requires zero outputs with PID_HAS_CONTROL=false; after release without fresh mail, it passes only while outputs remain zero even though PID_HAS_CONTROL=true.</p>
         </article>
 
 
         <article class="case-row">
           <code>override_recover_fresh_mail_pass</code>
-          <p>Releases override, then posts fresh desired heading, desired speed, heading, and speed mail one second later, testing control reacquisition; passes when rudder is positive, thrust is in [39,41], and PID_HAS_CONTROL=true.</p>
+          <p>First proves port control with rudder below -1 and thrust in [19,21], then requires zero outputs with PID_HAS_CONTROL=false during override; after release and a fresh starboard command, it passes on rudder above 1, thrust in [39,41], and PID_HAS_CONTROL=true.</p>
         </article>
 
 
@@ -203,7 +203,7 @@
 
         <article class="case-row">
           <code>stale_recover_pass</code>
-          <p>Lets all helm/nav inputs exceed three-second tardy thresholds, then refreshes them at 4.5 seconds, exercising recovery from the stale all-stop state; passes when rudder is positive, thrust is in [39,41], and PID_HAS_CONTROL=true.</p>
+          <p>First proves port control with rudder below -1 and thrust in [19,21], then requires a PID_STALE publication and zero outputs after every helm/nav input expires; after all four inputs are refreshed with a starboard command, it passes on rudder above 1, thrust in [39,41], and PID_HAS_CONTROL=true.</p>
         </article>
 
 

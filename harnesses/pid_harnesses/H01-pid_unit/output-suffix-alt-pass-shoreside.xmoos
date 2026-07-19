@@ -33,11 +33,16 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @DESIRED_RUDDER#PID_UNSUFFIXED_RUDDER_SEEN=true
+  mailflag = @DESIRED_THRUST#PID_UNSUFFIXED_THRUST_SEEN=true
+
   lead_condition = TEST_EVAL_READY = true
   pass_condition = DESIRED_RUDDER_ALT > 1
   pass_condition = DESIRED_THRUST_ALT >= 39
   pass_condition = DESIRED_THRUST_ALT <= 41
   pass_condition = PID_HAS_CONTROL = true
+  fail_condition = PID_UNSUFFIXED_RUDDER_SEEN = true
+  fail_condition = PID_UNSUFFIXED_THRUST_SEEN = true
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pid_unit
@@ -50,6 +55,8 @@ ProcessConfig = pMissionEval
   report_column    = rudder_alt=$[DESIRED_RUDDER_ALT]
   report_column    = thrust_alt=$[DESIRED_THRUST_ALT]
   report_column    = control=$[PID_HAS_CONTROL]
+  report_column    = rudder_plain=$[PID_UNSUFFIXED_RUDDER_SEEN]
+  report_column    = thrust_plain=$[PID_UNSUFFIXED_THRUST_SEEN]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

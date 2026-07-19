@@ -15,6 +15,16 @@ ProcessConfig = uTimerScript
   event = var=DESIRED_SPEED,        val=2,     time=1.0
   event = var=NAV_HEADING,          val=0,     time=1.0
   event = var=NAV_SPEED,            val=0,     time=1.0
+  event = var=PID_INITIAL_READY,     val=true,  time=1.5
+  event = var=DESIRED_HEADING,      val=90,    time=2.0
+  event = var=DESIRED_SPEED,        val=2,     time=2.0
+  event = var=NAV_HEADING,          val=0,     time=2.0
+  event = var=DESIRED_HEADING,      val=90,    time=3.0
+  event = var=DESIRED_SPEED,        val=2,     time=3.0
+  event = var=NAV_HEADING,          val=0,     time=3.0
+  event = var=DESIRED_HEADING,      val=90,    time=4.0
+  event = var=DESIRED_SPEED,        val=2,     time=4.0
+  event = var=NAV_HEADING,          val=0,     time=4.0
   event = var=TEST_EVAL_READY,      val=true,  time=5.0
 }
 
@@ -48,11 +58,17 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  lead_condition = PID_INITIAL_READY = true
+  pass_condition = DESIRED_RUDDER_PID > 1
+  pass_condition = DESIRED_THRUST_PID >= 39
+  pass_condition = DESIRED_THRUST_PID <= 41
+
   lead_condition = TEST_EVAL_READY = true
   pass_condition = DESIRED_RUDDER_PID >= -0.1
   pass_condition = DESIRED_RUDDER_PID <= 0.1
   pass_condition = DESIRED_THRUST_PID >= -0.1
   pass_condition = DESIRED_THRUST_PID <= 0.1
+  pass_condition = PID_STALE != missing
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pid_unit
@@ -62,6 +78,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = initial=$[PID_INITIAL_READY]
   report_column    = rudder=$[DESIRED_RUDDER_PID]
   report_column    = thrust=$[DESIRED_THRUST_PID]
   report_column    = control=$[PID_HAS_CONTROL]

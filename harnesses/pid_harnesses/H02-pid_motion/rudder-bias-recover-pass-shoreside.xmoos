@@ -10,6 +10,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
+  event = var=PID_BIAS_READY,  val=true, time=4
   event = var=TEST_EVAL_READY, val=true, time=50
 }
 
@@ -19,6 +20,9 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @ARRIVED#TEST_EVAL_READY=true
+
+  lead_condition = PID_BIAS_READY = true
+  pass_condition = ABE_DESIRED_RUDDER < -1
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = ARRIVED = true
@@ -41,6 +45,7 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
+  report_column = bias_checked=$[PID_BIAS_READY]
   report_column = arrived=$[ARRIVED]
   report_column = x=$[ABE_NAV_X]
   report_column = y=$[ABE_NAV_Y]

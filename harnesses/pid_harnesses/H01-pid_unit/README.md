@@ -18,18 +18,18 @@ input/output contract before introducing a vehicle simulator or helm behavior.
 - `max_thrust_limit_pass`: Configures `speed_factor=50` and `maxthrust=60` for a speed demand that would otherwise produce thrust `100`, testing the configured thrust limit; passes when rudder is positive and thrust is in `[59,60]`.
 - `depth_elevator_pass`: Enables depth control with desired depth `6`, `NAV_DEPTH=5`, and `NAV_PITCH=0`, testing the depth-to-pitch and pitch-to-elevator cascade; passes when rudder is positive, thrust is in `[39,41]`, and elevator is in `[11.3,11.7]`.
 - `manual_override_zero_pass`: Establishes nonzero PID inputs, then posts `MOOS_MANUAL_OVERRIDE=true`, testing the normal override input; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=false`.
-- `stale_nav_pass`: Sets both tardy thresholds to one second and stops refreshing all helm and nav inputs after one second, exercising the stale-input all-stop path; passes when rudder and thrust are each within `[-0.1,0.1]`. `PID_STALE` is reported but is not graded.
+- `stale_nav_pass`: Sets the nav tardy threshold to one second, keeps desired heading, desired speed, and nav heading fresh, and lets only `NAV_SPEED` expire; passes after first proving `DESIRED_RUDDER_PID>1` and thrust in `[39,41]`, then requiring both outputs within `[-0.1,0.1]` and a `PID_STALE` publication.
 - `nav_yaw_used_pass`: Omits `NAV_HEADING` and posts `NAV_YAW=-1.5708` with desired heading `0`, testing conversion from yaw radians to heading; passes when rudder is negative and thrust is in `[39,41]`.
 - `ignore_nav_yaw_pass`: Posts conflicting `NAV_YAW=-1.5708` and `NAV_HEADING=0` with `ignore_nav_yaw=true`, testing that heading mail remains authoritative; passes when rudder is positive and thrust is in `[39,41]`.
-- `heading_debug_saturation_pass`: Enables `heading_debug`, requests heading `180` from `0`, and sets `maxrudder=10`, exercising heading diagnostics during rudder saturation; passes when rudder is in `[-10,-9]` and thrust is in `[39,41]`. `PID_HDG_DEBUG` is reported but is not graded.
+- `heading_debug_saturation_pass`: Enables `heading_debug`, requests heading `180` from `0`, and sets `maxrudder=10`; passes when `PID_HDG_DEBUG` publishes while rudder is saturated in `[-10,-9]` and thrust is in `[39,41]`, with the diagnostic's desired, current, error, and rudder fields retained in the result.
 - `speed_zero_allstop_pass`: Requests `DESIRED_SPEED=0` while retaining a 90-degree heading error, testing the zero-speed all-stop branch; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
 - `speed_negative_allstop_pass`: Requests `DESIRED_SPEED=-1` while retaining a 90-degree heading error, testing clipping of a negative speed request to all-stop; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
-- `output_suffix_alt_pass`: Configures `output_suffix=_ALT`, testing publication on the alternate actuator names; passes when `DESIRED_RUDDER_ALT>1`, `39<=DESIRED_THRUST_ALT<=41`, and `PID_HAS_CONTROL=true`. The evaluator does not check that the unsuffixed variables are absent.
+- `output_suffix_alt_pass`: Configures `output_suffix=_ALT`, requiring `DESIRED_RUDDER_ALT>1` and `39<=DESIRED_THRUST_ALT<=41` while failing on any unsuffixed `DESIRED_RUDDER` or `DESIRED_THRUST` publication.
 - `manual_overide_alias_zero_pass`: Establishes nonzero PID inputs, then posts the legacy misspelled `MOOS_MANUAL_OVERIDE=true`, testing compatibility with that alias; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=false`.
-- `override_release_needs_fresh_mail_pass`: Posts complete helm/nav inputs while override is active and releases override two seconds later without refreshing them, testing the fresh-mail gate after release; passes when rudder and thrust remain within `[-0.1,0.1]`.
-- `override_recover_fresh_mail_pass`: Releases override, then posts fresh desired heading, desired speed, heading, and speed mail one second later, testing control reacquisition; passes when rudder is positive, thrust is in `[39,41]`, and `PID_HAS_CONTROL=true`.
+- `override_release_needs_fresh_mail_pass`: First proves starboard control with rudder above `1` and thrust in `[39,41]`, then posts a port command while override is active and requires zero outputs with `PID_HAS_CONTROL=false`; after release without fresh mail, it passes only while outputs remain zero even though `PID_HAS_CONTROL=true`.
+- `override_recover_fresh_mail_pass`: First proves port control with rudder below `-1` and thrust in `[19,21]`, then requires zero outputs with `PID_HAS_CONTROL=false` during override; after release and a fresh starboard command, it passes on rudder above `1`, thrust in `[39,41]`, and `PID_HAS_CONTROL=true`.
 - `stale_helm_pass`: Sets the helm tardy threshold to one second, leaves desired heading and speed at their one-second values, and refreshes nav mail at five seconds, isolating stale helm input; passes when rudder and thrust are within `[-0.1,0.1]` and `PID_STALE` is present.
-- `stale_recover_pass`: Lets all helm/nav inputs exceed three-second tardy thresholds, then refreshes them at 4.5 seconds, exercising recovery from the stale all-stop state; passes when rudder is positive, thrust is in `[39,41]`, and `PID_HAS_CONTROL=true`.
+- `stale_recover_pass`: First proves port control with rudder below `-1` and thrust in `[19,21]`, then requires a `PID_STALE` publication and zero outputs after every helm/nav input expires; after all four inputs are refreshed with a starboard command, it passes on rudder above `1`, thrust in `[39,41]`, and `PID_HAS_CONTROL=true`.
 - `depth_negative_elevator_pass`: Enables depth control with desired depth `5`, `NAV_DEPTH=10`, and zero pitch, testing the opposite depth-error sign; passes when rudder is positive, thrust is in `[39,41]`, and `DESIRED_ELEVATOR_PID<-1`.
 - `depth_debug_pass`: Enables `depth_debug` with desired depth `10`, `NAV_DEPTH=5`, and zero pitch, testing depth diagnostic publication during elevator control; passes when `DESIRED_ELEVATOR_PID>1` and `PID_DEP_DEBUG` is present.
 - `max_elevator_limit_pass`: Enables depth control with a five-meter depth error and `maxelevator=5`, testing elevator saturation; passes when `DESIRED_ELEVATOR_PID` is in `[4.9,5.0]`.
@@ -107,8 +107,7 @@ exactly one mission row with exactly one `grade=pass|fail` field, adds the
 selected `case=`, and writes exactly one aggregate row per selected case in
 the declared order. Ordinary case failures do not stop later cases. Scoped
 cleanup is limited to each case root; if cleanup itself cannot be proved, the
-scheduler stops launching new cases and retains the run root and safety lock
-for diagnosis.
+scheduler stops launching new cases and retains the run root for diagnosis.
 
 Use `--keep_workdirs` to inspect generated targets, applied sidecars, case
 logs, and intermediate result rows under `.harness_runs`. See

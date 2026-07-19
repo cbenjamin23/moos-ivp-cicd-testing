@@ -21,6 +21,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
+  event = var=PID_OVERRIDE_HOLD_READY, val=true,  time=6
   event = var=MOOS_MANUAL_OVERRIDE_ALL, val=false, time=8
   event = var=TEST_EVAL_READY, val=true, time=48
 }
@@ -31,6 +32,12 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @ARRIVED#TEST_EVAL_READY=true
+
+  lead_condition = PID_OVERRIDE_HOLD_READY = true
+  pass_condition = MOOS_MANUAL_OVERRIDE_ALL = true
+  pass_condition = ABE_NAV_X >= -0.25
+  pass_condition = ABE_NAV_X <= 0.25
+  pass_condition = ABE_NAV_SPEED <= 0.1
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = ARRIVED = true
@@ -53,6 +60,7 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
+  report_column = override_hold=$[PID_OVERRIDE_HOLD_READY]
   report_column = arrived=$[ARRIVED]
   report_column = x=$[ABE_NAV_X]
   report_column = y=$[ABE_NAV_Y]

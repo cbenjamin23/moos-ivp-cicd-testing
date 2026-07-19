@@ -24,8 +24,10 @@ ProcessConfig = pMissionEval
   pass_condition = ABE_NAV_Y <= -46
   pass_condition = ABE_NAV_HEADING >= 85
   pass_condition = ABE_NAV_HEADING <= 95
+  pass_condition = ABE_NAV_DEPTH >= 10
   pass_condition = ABE_NAV_DEPTH < 25
-  pass_condition = ABE_DESIRED_ELEVATOR >= -0.5
+  pass_condition = ABE_DESIRED_ELEVATOR >= 0.2
+  pass_condition = ABE_DESIRED_ELEVATOR <= 0.3
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
