@@ -73,6 +73,6 @@ Execution notes:
   (`case_base = port_base + case_idx*30`, pShare at `case_base + 15`).
 - The harness explicitly maps each case to a human-facing mission `--scenario`
   and a shoreside evaluator patch.
-- A performance-family lock prevents P01, P02, and P03 from overlapping in the
-  same checkout.
+- Separate invocations are not serialized. Callers must use non-overlapping
+  port ranges and avoid concurrent load that would invalidate timing gates.
 - Use `--keep_workdirs` to inspect isolated copies and generated targets.

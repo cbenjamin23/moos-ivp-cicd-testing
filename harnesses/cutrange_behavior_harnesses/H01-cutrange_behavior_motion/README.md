@@ -114,7 +114,7 @@ ordinary cases still finish as soon as pMissionEval grades them.
 Validation also covered nominal, two-position geometry, turn geometry, and
 expected-inactive verdicts, standalone generation and live execution, exact
 case order, rolling refill, 117 unique MOOSDB ports and 117 non-overlapping
-pShare ports, intended sidecars, unknown-case rejection, active-lock behavior,
+pShare ports, intended sidecars, unknown-case rejection,
 and Bash 3.2 rejection. Disposable fault injection verified normalized
 `missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax,
 ShellCheck, and both skill static checkers pass. No tested MOOS process

@@ -52,8 +52,8 @@ applies to the whole serial matrix or one explicit `--case`.
   wall-clock gates. Every case still uses an isolated mission copy and unique
   port block (`case_base = port_base + case_idx*30`, pShare at
   `case_base + 15`).
-- A performance-family lock prevents P01, P02, and P03 from overlapping in the
-  same checkout.
+- Separate invocations are not serialized. Callers must use non-overlapping
+  port ranges and avoid concurrent load that would invalidate timing gates.
 - The endurance case automatically uses a larger launcher `--max_time` budget than the fixed-field cases.
 - The harness has two timing profiles:
   - `local` is the default and keeps the original warp `10` timing bands.

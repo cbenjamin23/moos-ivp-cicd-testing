@@ -88,8 +88,8 @@ seconds per case for isolated copying and verified cleanup.
 Validation covered all-case generation, three clean rolling matrices, one
 complete migrated serial matrix, focused alias and reset sweeps, exact matrix
 and patch-map reconciliation, rolling refill, 48 unique MOOSDB ports, 48
-unique pShare ports, intended sidecars, unknown-case rejection, active-lock
-behavior, Homebrew Bash re-execution, and explicit Bash 3.2 rejection. Bash
+unique pShare ports, intended sidecars, unknown-case rejection, Homebrew Bash
+re-execution, and explicit Bash 3.2 rejection. Bash
 syntax, ShellCheck, the harness checker, and all 24 generated-case evaluator
 checks pass. No tested MOOS process survived cleanup, and the shared depth stem
 was not changed.

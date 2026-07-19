@@ -67,6 +67,6 @@ count of zero; a retained raw log confirmed the expected later deadflag.
 
 Validation also covered both skill static checks, Bash syntax, ShellCheck,
 standalone generation and live execution, all-case generation, exact result
-ordering, distinct ports, old-Bash and option errors, lock contention,
+ordering, distinct ports, old-Bash and option errors,
 launch-error and missing-result normalization, missing-alog rejection, retained
 workdirs, log inspection, and post-run listener checks.

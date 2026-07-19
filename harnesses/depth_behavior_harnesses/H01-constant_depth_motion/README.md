@@ -56,8 +56,9 @@ weakening any evaluator condition.
 The migrated launcher uses one isolated mission copy and one dedicated MOOSDB
 and pShare port block per case in both serial and rolling modes. It aggregates
 exactly one mission-owned pMissionEval row per selected case in deterministic
-case order, uses root-scoped teardown, rejects concurrent invocations with a
-harness lock, and continues after ordinary case failures. All nineteen case
+case order, uses root-scoped teardown, and continues after ordinary case
+failures. Separate invocations are allowed; callers must choose non-overlapping
+port ranges. All nineteen case
 names, explicit patch mappings, evaluator conditions, behavior values, event
 times, grading variables, and coverage claims are unchanged.
 
@@ -81,8 +82,8 @@ serial matrix, nominal depth hold, expected helm-malconfiguration, all five
 solo-slot cases, standalone stem generation and live execution with both the
 preserved 55-second default and an explicit 80-second ceiling, exact matrix
 and patch-map reconciliation, rolling refill, 38 unique MOOSDB ports, 38
-non-overlapping pShare ports, intended sidecars, unknown-case rejection,
-active-lock behavior, and Bash 3.2 rejection. Failure probes verified
+non-overlapping pShare ports, intended sidecars, unknown-case rejection, and
+Bash 3.2 rejection. Failure probes verified
 normalized `missing_result`, `duplicate_results`, and `prepare_error` rows.
 Bash syntax, ShellCheck, and both skill static checkers pass. No tested MOOS
 process survived cleanup.

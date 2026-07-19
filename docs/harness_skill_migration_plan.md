@@ -10,6 +10,22 @@ The migration should improve isolation, rolling parallel execution, cleanup,
 result completeness, and auditability without using the migration as a reason
 to redesign working mission stems.
 
+## Post-Migration Lock Removal
+
+On July 19, 2026, the repository removed harness-wide filesystem locks from
+all harness execution paths, including the shared mission-utility runner.
+Every invocation already owns a unique run root and every case owns an isolated
+mission copy and port block, so a harness lock added stale-state failure modes
+without protecting those resources.
+
+Cleanup now rejects re-entry and ignores further `INT`, `TERM`, and `PIPE`
+signals once teardown begins. Callers remain responsible for non-overlapping
+MOOSDB and pShare ranges. Concurrent invocations of the same harness directory
+remain unsupported because they share top-level `results.txt`.
+
+Lock references in the migration record below describe historical validation
+performed before this removal; they are not the current launcher contract.
+
 ## Scope
 
 The migration covers:
@@ -680,8 +696,8 @@ and corrected in the pilot pattern rather than copied:
    delete an earlier `--keep_workdirs` artifact. The pilot creates one unique
    invocation directory beneath `.harness_runs/` and removes only its own root.
 5. Teardown errors are suppressed in the example. The pilot turns a per-case
-   teardown failure into a runner-failure row and retains both the run root and
-   safety lock if final teardown cannot prove the root clear.
+   teardown failure into a runner-failure row and retains the run root if final
+   teardown cannot prove it clear.
 
 Initial migrated probes on July 13, 2026:
 
@@ -4939,11 +4955,12 @@ verdict boundary is the narrow uFldScope APPCAST case already justified above.
 
 All three performance harnesses now use one deliberately serial architecture.
 They omit `--jobs` because concurrent missions would invalidate their wall-time
-gates, but otherwise follow the same skill-1.4.5 contract: every case runs in a
-separate harness-owned mission copy with a distinct thirty-port block, one
-family lock prevents P01/P02/P03 overlap, the canonical root-scoped teardown
-helper owns cleanup, selected-order aggregation writes exactly one normalized
-row per case, and ordinary failures do not suppress later selected cases.
+gates, but otherwise follow the same harness contract: every case runs in a
+separate harness-owned mission copy with a distinct thirty-port block, the
+canonical root-scoped teardown helper owns cleanup, selected-order aggregation
+writes exactly one normalized row per case, and ordinary failures do not
+suppress later selected cases. Separate invocations are not serialized;
+callers must avoid overlapping ports and timing-distorting concurrent load.
 
 The verdict boundary is the documented performance exception. pMissionEval
 still owns the functional mission verdict. The runner preserves that as

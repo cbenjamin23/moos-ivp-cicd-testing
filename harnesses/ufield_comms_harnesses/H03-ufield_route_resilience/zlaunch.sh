@@ -41,7 +41,6 @@ MISSION_DIR="$REPO_DIR/missions/ufield_comms_missions/ufield_comms_unit"
 TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 RUNS_DIR="$HARNESS_DIR/.harness_runs"
-LOCK_DIR="$HARNESS_DIR/.harness_runs.lock"
 RUN_ROOT=""
 
 TIME_WARP=20
@@ -56,7 +55,6 @@ JUST_MAKE=no
 LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 CASE=""
-HAVE_LOCK=no
 CLEANED=no
 CLEANING=no
 CLEANUP_FAILED=no
@@ -283,17 +281,6 @@ cleanup_runtime() {
         fi
     fi
     rmdir "$RUNS_DIR" 2>/dev/null || true
-    if [ "$HAVE_LOCK" = yes ]; then
-        if [ "$CLEANUP_FAILED" = yes ]; then
-            echo "$ME: retaining safety lock after cleanup/infrastructure failure: $LOCK_DIR" >&2
-            [ ! -d "$RUN_ROOT" ] || echo "$ME: retained run root: $RUN_ROOT" >&2
-        elif rmdir "$LOCK_DIR" 2>/dev/null; then
-            HAVE_LOCK=no
-        else
-            echo "$ME: unable to remove safety lock: $LOCK_DIR" >&2
-            CLEANUP_FAILED=yes
-        fi
-    fi
     CLEANED=yes
     CLEANING=no
 }
@@ -955,8 +942,6 @@ last_port=$((PORT_BASE + (total - 1) * PORT_STRIDE + PSHARE_OFFSET + 2))
 [ "$last_port" -le 65535 ] || die "selected cases require ports through $last_port"
 
 mkdir -p "$RUNS_DIR" || die "unable to create run directory: $RUNS_DIR"
-mkdir "$LOCK_DIR" 2>/dev/null || die "another harness run appears active for $HARNESS_DIR"
-HAVE_LOCK=yes
 RUN_ROOT="$RUNS_DIR/run_$(date +%Y%m%dT%H%M%S)_$$"
 mkdir -p "$RUN_ROOT" || die "unable to create run root: $RUN_ROOT"
 : > "$RESULTS_FILE"

@@ -115,7 +115,7 @@ passing result.
 Validation also covered all-case generation, nominal, warning-only, and
 expected-inactive verdicts, standalone generation and live execution, exact
 case order, rolling refill, 126 unique MOOSDB ports and the paired pShare
-ports, intended sidecars, unknown-case rejection, active-lock behavior, and
+ports, intended sidecars, unknown-case rejection, and
 Bash 3.2 rejection. Disposable fault injection verified normalized
 `missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax,
 ShellCheck, and both skill static checkers pass. No tested MOOS process

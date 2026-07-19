@@ -73,7 +73,7 @@ isolated copying, xlaunch lifecycle, and verified scoped cleanup.
 Validation covered final-source generation and live execution, focused sweeps,
 full rolling and serial matrices, exact README/case/patch-map reconciliation,
 rolling refill, 26 unique MOOSDB ports, 26 unique pShare ports, unknown-case
-rejection, active-lock behavior, Homebrew Bash re-execution, and explicit Bash
+rejection, Homebrew Bash re-execution, and explicit Bash
 3.2 rejection. Bash syntax, ShellCheck, the harness checker, and all thirteen
 generated-case evaluator checks pass. No tested MOOS process survived cleanup,
 and the shared depth stem was not changed.

@@ -46,8 +46,10 @@ cd harnesses/pechovar_harnesses/H01-pechovar_unit
 CTest passes with `100% tests passed`. The harness passes with `failures=0`;
 open its `results.txt` for per-case details.
 
-Do not run two harnesses at the same time unless their `--port_base` ranges are
-isolated.
+See the [harness execution policy](harnesses/README.md) before overlapping
+local runs. Use non-overlapping `--port_base` ranges, and do not run the same
+harness directory concurrently because invocations share its top-level
+`results.txt`.
 
 ## Optional Build Matrix
 

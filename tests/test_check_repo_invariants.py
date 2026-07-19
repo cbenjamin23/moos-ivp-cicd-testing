@@ -6,6 +6,34 @@ from scripts import check_repo_invariants
 
 
 class CheckRepoInvariantParsingTests(unittest.TestCase):
+    def test_harness_lock_contract_rejects_shared_runner_lock(self) -> None:
+        launcher = """
+LOCK_DIR="$HARNESS_DIR/.harness_runs.lock"
+HAVE_LOCK=no
+mkdir "$LOCK_DIR" 2>/dev/null ||
+    die "another harness run appears active"
+"""
+        self.assertEqual(
+            check_repo_invariants.harness_lock_contract_issues(launcher),
+            [
+                "LOCK_DIR=",
+                "HAVE_LOCK",
+                ".harness_runs.lock",
+                "another harness run appears active",
+            ],
+        )
+
+    def test_harness_lock_contract_accepts_unique_run_root(self) -> None:
+        launcher = """
+RUN_ROOT="$RUNS_DIR/run_$(date +%Y%m%dT%H%M%S)_$$"
+CLEANING=yes
+trap '' INT TERM PIPE
+"""
+        self.assertEqual(
+            check_repo_invariants.harness_lock_contract_issues(launcher),
+            [],
+        )
+
     def test_gui_contract_requires_explicit_forwarding_and_case_guard(self) -> None:
         old_launcher = """
         --gui) DISPLAY_ARGS=() ;;

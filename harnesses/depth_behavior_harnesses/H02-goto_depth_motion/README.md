@@ -82,7 +82,7 @@ outlier, not hidden by a timing or coverage change.
 Validation covered all-case generation, three complete rolling matrices, two
 serial attempts, focused repeat and runtime-update sweeps, exact case and
 patch-map reconciliation, solo-slot scheduling, 36 unique MOOSDB ports, 36
-unique pShare ports, unknown-case rejection, active-lock behavior, Homebrew
+unique pShare ports, unknown-case rejection, Homebrew
 Bash re-execution, and explicit Bash 3.2 rejection. Bash syntax, ShellCheck,
 the harness checker, and all 18 generated-case evaluator checks pass. No
 tested MOOS process survived cleanup.

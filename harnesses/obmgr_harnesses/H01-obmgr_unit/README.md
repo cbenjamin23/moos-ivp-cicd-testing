@@ -194,7 +194,7 @@ Only runner failures are normalized by the harness, for example
 after the mission wrote evidence, the row keeps that evidence under
 `mission_*` provenance fields. A teardown failure is treated as an
 infrastructure error: scheduler refill stops, pending cases receive explicit
-aborted rows, and the run root and safety lock are kept for diagnosis.
+aborted rows, and the run root is kept for diagnosis.
 
 ## Mission-Owned Payload Comparisons
 

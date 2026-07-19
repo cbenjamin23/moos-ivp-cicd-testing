@@ -20,6 +20,14 @@ sys.path.insert(0, str(REPO_ROOT))
 from scripts import check_cpp_tests, ci_cpp_test_targets, ci_harness_case_count, generate_context_graph, harness_targets  # noqa: E402
 
 DOCS_BUILD_PATH = REPO_ROOT / "docs" / "tools" / "build_pages.py"
+HARNESS_LOCK_MARKERS = (
+    "LOCK_DIR=",
+    "HAVE_LOCK",
+    ".harness_runs.lock",
+    ".performance_harness.lock",
+    "another harness run appears active",
+    "another performance harness is already active",
+)
 
 
 @dataclass(frozen=True)
@@ -73,6 +81,10 @@ def mission_launch_args_contract_issues(zlaunch_text: str) -> list[str]:
     return []
 
 
+def harness_lock_contract_issues(shell_text: str) -> list[str]:
+    return [marker for marker in HARNESS_LOCK_MARKERS if marker in shell_text]
+
+
 def check_harness_targets(targets: list[dict[str, object]]) -> list[CheckFailure]:
     failures: list[CheckFailure] = []
 
@@ -120,6 +132,24 @@ def check_mission_wrapper_contracts(_targets: list[dict[str, object]]) -> list[C
         label = zlaunch_path.relative_to(REPO_ROOT).as_posix()
         for issue in mission_launch_args_contract_issues(zlaunch_text):
             failures.append(CheckFailure(label, issue))
+    return failures
+
+
+def check_harness_shell_contracts(_targets: list[dict[str, object]]) -> list[CheckFailure]:
+    failures: list[CheckFailure] = []
+    harness_root = REPO_ROOT / "harnesses"
+    for shell_path in sorted(harness_root.rglob("*.sh")):
+        shell_text = shell_path.read_text(encoding="utf-8", errors="replace")
+        markers = harness_lock_contract_issues(shell_text)
+        if markers:
+            label = shell_path.relative_to(REPO_ROOT).as_posix()
+            failures.append(
+                CheckFailure(
+                    label,
+                    "harness-wide filesystem lock markers are forbidden: "
+                    + ", ".join(markers),
+                )
+            )
     return failures
 
 
@@ -235,6 +265,7 @@ def main() -> int:
 
     check_steps = [
         check_harness_targets,
+        check_harness_shell_contracts,
         check_mission_wrapper_contracts,
         check_docs_catalog,
         check_context_graph_generated_clean,

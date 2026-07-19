@@ -52,9 +52,8 @@ inspect `.alog` files or reinterpret ordinary mission failures.
   finish. Ordinary failures do not stop later cases from running.
 - Teardown is scoped to the case or invocation root. `--keep_workdirs` retains
   generated targets, logs, intermediate rows, and patch sidecars for review.
-  A scoped-cleanup failure also retains its run root and safety lock;
-  inspect the printed path, clear any surviving scoped processes, and remove
-  `.harness_runs.lock` only after the root is safe.
+  A scoped-cleanup failure also retains its run root; inspect the printed
+  path and clear any surviving processes scoped to that root.
 
 ## Current Matrix
 

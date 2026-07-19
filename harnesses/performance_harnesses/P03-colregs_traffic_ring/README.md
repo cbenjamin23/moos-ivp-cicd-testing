@@ -46,9 +46,9 @@ mode applies to the whole serial matrix or one explicit `--case`.
 
 Performance cases run serially so concurrent system load cannot distort their
 wall-clock gates. Every case still uses an isolated mission copy and a unique
-30-port block, with pShare ports starting at `case_base + 15`. A
-performance-family lock prevents P01, P02, and P03 from overlapping in the same
-checkout.
+30-port block, with pShare ports starting at `case_base + 15`. Separate
+invocations are not serialized; callers must use non-overlapping port ranges
+and avoid concurrent load that would invalidate timing gates.
 
 Latest validation:
 

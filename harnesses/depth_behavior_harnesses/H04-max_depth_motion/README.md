@@ -59,8 +59,8 @@ xlaunch lifecycle, and verified scoped cleanup.
 
 Validation covered all-case generation, three full rolling matrices, one full
 serial matrix, exact README/case/patch-map reconciliation, rolling refill, 30
-unique MOOSDB ports, 30 unique pShare ports, unknown-case rejection,
-active-lock behavior, Homebrew Bash re-execution, and explicit Bash 3.2
+unique MOOSDB ports, 30 unique pShare ports, unknown-case rejection, Homebrew
+Bash re-execution, and explicit Bash 3.2
 rejection. Bash syntax, ShellCheck, the harness checker, and all fifteen
 generated-case evaluator checks pass. No tested MOOS process survived cleanup.
 

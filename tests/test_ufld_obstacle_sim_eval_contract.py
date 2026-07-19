@@ -87,7 +87,8 @@ class UfldObstacleSimEvalContractTests(unittest.TestCase):
 
     def test_launcher_propagates_destructive_cleanup_failures(self) -> None:
         self.assertIn('if ! rm -rf -- "$RUN_ROOT"', self.launcher_text)
-        self.assertIn('if rmdir "$LOCK_DIR"', self.launcher_text)
+        self.assertNotIn("LOCK_DIR=", self.launcher_text)
+        self.assertNotIn("HAVE_LOCK", self.launcher_text)
         self.assertIn("CLEANUP_FAILED=yes", self.launcher_text)
         self.assertIn('[ "$CLEANUP_FAILED" = no ]', self.launcher_text)
         self.assertIn('[ "$CLEANING" = no ] || return 0', self.launcher_text)

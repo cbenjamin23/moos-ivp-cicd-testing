@@ -80,7 +80,7 @@ exactly one mission row with exactly one `grade=pass|fail`, adds the selected
 does not compare the result with a shell-side expected value. Ordinary case
 failures do not stop later cases. Cleanup is limited to the case root; if
 cleanup cannot be proved, the scheduler stops launching new cases and retains
-the run root and safety lock for diagnosis.
+the run root for diagnosis.
 
 `--gui` remains accepted for single-case wrapper parity, but this app-level
 mission contains no viewer. Use `--keep_workdirs` to inspect generated targets,

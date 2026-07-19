@@ -84,6 +84,6 @@ seconds. The migrated rolling matrix passed 96/96 in 126.65, 127.46, and
 The retained migrated run contains 32 isolated missions, terminal captures,
 alogs, one-row pMissionEval reports, and distinct MOOSDB ports from 54000
 through 54930. Validation also covered all-case target generation, standalone
-stem execution, output-check rejection, invalid arguments, port bounds, lock
-contention, exact result ordering, Bash 3.2 re-execution/rejection, and scoped
+stem execution, output-check rejection, invalid arguments, port bounds, exact
+result ordering, Bash 3.2 re-execution/rejection, and scoped
 post-run cleanup.

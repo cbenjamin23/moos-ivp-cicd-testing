@@ -15,7 +15,6 @@ MISSION_DIR="$REPO_DIR/missions/performance_missions/P01-obstacle_gauntlet"
 TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 WORK_ROOT="$HARNESS_DIR/workdirs"
-LOCK_DIR="$HARNESS_DIR/../.performance_harness.lock"
 
 ALL_CASES=(
     baseline_field_pass
@@ -36,7 +35,6 @@ PERF_PROFILE="${PERF_PROFILE:-local}"
 TIME_WARP=""
 MAX_TIME_OVERRIDE=""
 RUN_ROOT=""
-HAVE_LOCK=no
 RESULT_COUNT=0
 FAILURES=0
 
@@ -125,6 +123,7 @@ cleanup() {
     local exit_rc=$?
     local teardown_ok=yes
     trap - EXIT
+    trap '' INT TERM PIPE
 
     if [ -n "$RUN_ROOT" ] && [ -d "$RUN_ROOT" ]; then
         if ! stop_root "$RUN_ROOT"; then
@@ -137,13 +136,6 @@ cleanup() {
         fi
     fi
 
-    if [ "$HAVE_LOCK" = yes ]; then
-        if [ "$teardown_ok" = yes ]; then
-            rmdir "$LOCK_DIR" 2>/dev/null || true
-        else
-            echo "$ME: retaining performance-family lock after teardown failure: $LOCK_DIR" >&2
-        fi
-    fi
 
     exit "$exit_rc"
 }
@@ -153,7 +145,7 @@ on_signal() {
 }
 
 trap cleanup EXIT
-trap on_signal INT TERM
+trap on_signal INT TERM PIPE
 
 get_field() {
     local line="$1"
@@ -445,9 +437,6 @@ highest_port=$((PORT_BASE + (${#RUN_CASES[@]} - 1) * PORT_STRIDE + PSHARE_OFFSET
 [ "$PORT_BASE" -ge 1 ] && [ "$highest_port" -le 65535 ] || \
     die "selected port blocks exceed the valid TCP/UDP range"
 
-mkdir "$LOCK_DIR" 2>/dev/null || \
-    die "another performance harness is already active in $HARNESS_DIR/.."
-HAVE_LOCK=yes
 
 mkdir -p "$WORK_ROOT"
 RUN_ROOT=$(mktemp -d "$WORK_ROOT/run_XXXXXX") || die "unable to create run root"
