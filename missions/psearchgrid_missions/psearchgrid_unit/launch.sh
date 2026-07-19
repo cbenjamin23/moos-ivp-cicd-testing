@@ -22,7 +22,6 @@ MOOS_PORT="9000"
 PSHARE_PORT="9200"
 XLAUNCHED="no"
 NOGUI=""
-MMOD="initial_grid_publish_pass"
 SHORE_MOOS="meta_shoreside.moos"
 
 for ARGI; do
@@ -43,8 +42,6 @@ for ARGI; do
         MOOS_PORT="${ARGI#--shore_mport=*}"
     elif [ "${ARGI:0:15}" = "--shore_pshare=" ]; then
         PSHARE_PORT="${ARGI#--shore_pshare=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
     elif [ "${ARGI}" = "--xlaunched" ] || [ "${ARGI}" = "-x" ]; then
         XLAUNCHED="yes"
     elif [ "${ARGI}" = "--nogui" ] || [ "${ARGI}" = "-ng" ]; then
@@ -79,7 +76,7 @@ if [ -f meta_shoreside.moosx ]; then
 fi
 
 nsplug "$SHORE_MOOS" targ_shoreside.moos $NSFLAGS \
-       WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT MMOD=$MMOD
+       WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT
 
 if [ "${JUST_MAKE}" != "" ]; then
     echo "$ME: Targ files made; exiting without launch."

@@ -30,9 +30,9 @@ checks. Use `--log=full` for the original nine-variable diagnostic logger.
 - `lowercase_var_name_pass`: Configures lowercase `grid_var_name=search_grid` and label `lower_psg`, testing output-variable normalization; passes when uppercase `SEARCH_GRID`/`SEARCH_GRID_DELTA` mail appears and `VIEW_GRID_DELTA` does not.
 - `custom_full_grid_var_pass`: Combines lowercase `search_grid` with `report_deltas=false`, testing custom naming in full-grid mode; passes when `SEARCH_GRID` contains `cell=0:x:1` and no `VIEW_GRID` mail is published.
 - `invalid_report_deltas_default_delta_pass`: Configures invalid `report_deltas=maybe`, testing fallback to the default delta mode; passes when `VIEW_GRID_DELTA` contains `psg@` and `x,1`.
-- `reset_grid_clears_pass`: In full-grid mode, increments cell 0 and then posts `PSG_RESET_GRID=true`; passes when `cell=0:x:1` existed before reset and is absent more than 0.2 seconds afterward.
-- `reset_false_payload_clears_pass`: Repeats the reset sequence with `PSG_RESET_GRID=false`, testing trigger-on-mail rather than boolean value; passes with the same pre-reset `x:1` presence and post-reset absence.
-- `two_cell_delta_pass`: Posts simultaneous local reports at `(5,5)` and `(15,5)`, intended to exercise two distinct cells; passes when delta history contains `psg@` and at least one `x,1` token.
+- `reset_grid_clears_pass`: In full-grid mode, increments cell 0 and posts `PSG_RESET_GRID=true`; passes when a pre-reset grid contains `cell=0:x:1` and a post-reset grid contains the default `cell_vars=x:0,label=psg` without the nondefault cell-0 override.
+- `reset_false_payload_clears_pass`: Repeats the full-grid reset with `PSG_RESET_GRID=false`, proving reset is triggered by receipt rather than boolean value; passes on the same ordered `cell=0:x:1` then cleared-default payload evidence.
+- `two_cell_delta_pass`: Posts simultaneous local reports at `(5,5)` and `(15,5)`, which map to cell indexes 0 and 2; passes only when one delta contains the complete `psg@0,x,1:2,x,1` update.
 - `repeated_cell_delta_pass`: Runs at AppTick 1 and posts two same-time reports at `(5,5)`, testing same-cycle accumulation; passes when one delta contains `x,2`.
 - `sequential_delta_cleared_pass`: Posts to cell 0 at times 0.4 and 1.0, testing that published delta state is cleared between cycles; passes when at least two `x,1` delta tokens appear and no `x,2` token appears.
 - `match_community_allows_pass`: Sets `match_name=shoreside` and posts a shoreside local report; passes when an `x,1` delta is published.

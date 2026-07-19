@@ -274,6 +274,7 @@ get_case_config() {
     absent_vars=()
     absent_after_marker=""
     absent_after_time="0.2"
+    required_after_var_tokens=()
     absent_after_var_tokens=()
     GRID_APP_TICK="10"
     EVAL_TIME="1.8"
@@ -335,6 +336,7 @@ get_case_config() {
             timer_events=("event = var=NODE_REPORT_LOCAL, val=\"$(base_node_report reset 5 5)\", time=0.4" "event = var=PSG_RESET_GRID, val=true, time=0.9")
             required_var_tokens=("VIEW_GRID:cell=0:x:1")
             absent_after_marker="PSG_RESET_GRID"
+            required_after_var_tokens=("VIEW_GRID:cell_vars=x:0,label=psg")
             absent_after_var_tokens=("VIEW_GRID:cell=0:x:1")
             EVAL_TIME="1.6"
             ;;
@@ -343,12 +345,13 @@ get_case_config() {
             timer_events=("event = var=NODE_REPORT_LOCAL, val=\"$(base_node_report resetfalse 5 5)\", time=0.4" "event = var=PSG_RESET_GRID, val=false, time=0.9")
             required_var_tokens=("VIEW_GRID:cell=0:x:1")
             absent_after_marker="PSG_RESET_GRID"
+            required_after_var_tokens=("VIEW_GRID:cell_vars=x:0,label=psg")
             absent_after_var_tokens=("VIEW_GRID:cell=0:x:1")
             EVAL_TIME="1.6"
             ;;
         two_cell_delta_pass)
             timer_events=("event = var=NODE_REPORT_LOCAL, val=\"$(base_node_report one 5 5)\", time=0.4" "event = var=NODE_REPORT_LOCAL, val=\"$(base_node_report two 15 5)\", time=0.4")
-            required_var_tokens=("VIEW_GRID_DELTA:psg@" "VIEW_GRID_DELTA:,x,1")
+            required_var_tokens=("VIEW_GRID_DELTA:psg@0,x,1:2,x,1")
             ;;
         repeated_cell_delta_pass)
             timer_events=("event = var=NODE_REPORT_LOCAL, val=\"$(base_node_report one 5 5)\", time=0.4" "event = var=NODE_REPORT_LOCAL, val=\"$(base_node_report two 5 5)\", time=0.4")
@@ -466,11 +469,9 @@ write_case_files() {
         echo ""
         echo "  result_flag  = MISSION_EVALUATED = true"
         echo "  mission_form = psearchgrid_unit"
-        echo "  mission_mod  = $CASE_NAME"
         echo ""
         echo "  report_column    = grade=\$[GRADE]"
         echo "  report_column    = form=\$[MISSION_FORM]"
-        echo "  report_column    = mmod=\$[MMOD]"
         echo "  report_column    = eval=\$[TEST_EVAL_READY]"
         echo "  report_column    = mhash=\$[MHASH_SHORT]"
         echo "  report_file      = results.txt"
@@ -576,6 +577,15 @@ check_payloads() {
         else
             threshold=$(awk -v base="$base_time" -v offset="$absent_after_time" \
                 'BEGIN { print base + offset }')
+            for item in "${required_after_var_tokens[@]}"; do
+                var="${item%%:*}"
+                token="${item#*:}"
+                after_lines=$(alog_lines_for_var "$case_dir" "$var" |
+                    awk -v min_time="$threshold" '$1+0 > min_time {print}')
+                if ! grep -Fq -- "$token" <<< "$after_lines"; then
+                    status="mismatch"
+                fi
+            done
             for item in "${absent_after_var_tokens[@]}"; do
                 var="${item%%:*}"
                 token="${item#*:}"

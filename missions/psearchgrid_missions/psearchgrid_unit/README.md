@@ -8,7 +8,8 @@ the generated alog.
 The standalone default is `initial_grid_publish_pass`: pMissionEval requires
 the configured `VIEW_GRID` publication that pSearchGrid produces at startup.
 Harness cases replace the generated case fixtures and retain their own
-case-specific variable and payload contracts, including node-report deltas.
+case-specific variable and payload contracts, including complete multi-cell
+deltas and ordered pre/post-reset full-grid evidence.
 
 Direct `zlaunch.sh` runs default to minimal grading logging. Pass
 `--log=full` to restore the original diagnostic variable set.
