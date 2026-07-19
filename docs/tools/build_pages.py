@@ -118,7 +118,7 @@ class Example:
     diff_label: str = ""
 
 
-EXAMPLES: tuple[Example, ...] = (
+EXAMPLE_CATALOG: tuple[Example, ...] = (
     Example(
         slug="global-obstacle-alert-deduplication",
         title="The deduplication that ignores the second obstacle",
@@ -246,6 +246,18 @@ Expected name: alpha
         ),
         diff_label="Reconstructed incomplete implementation",
     ),
+)
+
+EXAMPLE_ORDER = (
+    "dynamic-operating-region",
+    "json-node-reports",
+    "global-obstacle-alert-deduplication",
+    "coordinate-output-order",
+)
+
+_examples_by_slug = {example.slug: example for example in EXAMPLE_CATALOG}
+EXAMPLES: tuple[Example, ...] = tuple(
+    _examples_by_slug[slug] for slug in EXAMPLE_ORDER
 )
 
 STALE_EXAMPLE_SLUGS = (
@@ -3162,7 +3174,7 @@ def render_examples() -> str:
       <div class="section-heading">
         <p class="eyebrow">Four failure stories</p>
         <h2>What this test workspace catches</h2>
-        <p>The harness examples come first because they show the operational outcome. The CTest examples then show the smaller contracts underneath. Every story follows the same pattern: a reasonable edit, a focused failure, and the protected behavior.</p>
+        <p>The two new-feature stories come first, followed by the two debugging stories. Within each pair, the harness example shows the operational outcome before the CTest example shows the smaller contract underneath.</p>
       </div>
       <div class="example-grid">
         {cards}

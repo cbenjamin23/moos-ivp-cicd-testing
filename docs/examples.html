@@ -44,34 +44,13 @@
       <div class="section-heading">
         <p class="eyebrow">Four failure stories</p>
         <h2>What this test workspace catches</h2>
-        <p>The harness examples come first because they show the operational outcome. The CTest examples then show the smaller contracts underneath. Every story follows the same pattern: a reasonable edit, a focused failure, and the protected behavior.</p>
+        <p>The two new-feature stories come first, followed by the two debugging stories. Within each pair, the harness example shows the operational outcome before the CTest example shows the smaller contract underneath.</p>
       </div>
       <div class="example-grid">
 
       <article class="example-card">
         <div class="example-card-topline">
           <span class="example-number">01</span>
-          <span class="example-category">Mission harness · debugging</span>
-        </div>
-        <h2>The deduplication that ignores the second obstacle</h2>
-        <p>Suppressing repeated publications on one alert variable reduces traffic, but two different obstacle IDs legitimately share that channel.</p>
-        <dl class="example-card-facts">
-          <div>
-            <dt>Seemingly benign edit</dt>
-            <dd>Post only the first obstacle alert</dd>
-          </div>
-          <div>
-            <dt>Result</dt>
-            <dd><span class="result-fail">Focused failure</span></dd>
-          </div>
-        </dl>
-        <a class="text-link" href="examples/global-obstacle-alert-deduplication.html">Read the full example</a>
-      </article>
-
-
-      <article class="example-card">
-        <div class="example-card-topline">
-          <span class="example-number">02</span>
           <span class="example-category">Mission harness · new feature</span>
         </div>
         <h2>The geofence update that never takes effect</h2>
@@ -92,28 +71,7 @@
 
       <article class="example-card">
         <div class="example-card-topline">
-          <span class="example-number">03</span>
-          <span class="example-category">C++ unit test · debugging</span>
-        </div>
-        <h2>The coordinate cleanup that swaps X and Y</h2>
-        <p>A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.</p>
-        <dl class="example-card-facts">
-          <div>
-            <dt>Seemingly benign edit</dt>
-            <dd>Treat the geodesy outputs as X then Y</dd>
-          </div>
-          <div>
-            <dt>Result</dt>
-            <dd><span class="result-fail">Focused failure</span></dd>
-          </div>
-        </dl>
-        <a class="text-link" href="examples/coordinate-output-order.html">Read the full example</a>
-      </article>
-
-
-      <article class="example-card">
-        <div class="example-card-topline">
-          <span class="example-number">04</span>
+          <span class="example-number">02</span>
           <span class="example-category">C++ unit test · new feature</span>
         </div>
         <h2>The JSON reports that no consumer can read</h2>
@@ -129,6 +87,48 @@
           </div>
         </dl>
         <a class="text-link" href="examples/json-node-reports.html">Read the full example</a>
+      </article>
+
+
+      <article class="example-card">
+        <div class="example-card-topline">
+          <span class="example-number">03</span>
+          <span class="example-category">Mission harness · debugging</span>
+        </div>
+        <h2>The deduplication that ignores the second obstacle</h2>
+        <p>Suppressing repeated publications on one alert variable reduces traffic, but two different obstacle IDs legitimately share that channel.</p>
+        <dl class="example-card-facts">
+          <div>
+            <dt>Seemingly benign edit</dt>
+            <dd>Post only the first obstacle alert</dd>
+          </div>
+          <div>
+            <dt>Result</dt>
+            <dd><span class="result-fail">Focused failure</span></dd>
+          </div>
+        </dl>
+        <a class="text-link" href="examples/global-obstacle-alert-deduplication.html">Read the full example</a>
+      </article>
+
+
+      <article class="example-card">
+        <div class="example-card-topline">
+          <span class="example-number">04</span>
+          <span class="example-category">C++ unit test · debugging</span>
+        </div>
+        <h2>The coordinate cleanup that swaps X and Y</h2>
+        <p>A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.</p>
+        <dl class="example-card-facts">
+          <div>
+            <dt>Seemingly benign edit</dt>
+            <dd>Treat the geodesy outputs as X then Y</dd>
+          </div>
+          <div>
+            <dt>Result</dt>
+            <dd><span class="result-fail">Focused failure</span></dd>
+          </div>
+        </dl>
+        <a class="text-link" href="examples/coordinate-output-order.html">Read the full example</a>
       </article>
 
       </div>
