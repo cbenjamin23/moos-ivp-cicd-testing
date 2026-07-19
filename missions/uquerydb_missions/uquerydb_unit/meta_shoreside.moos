@@ -57,7 +57,7 @@ ProcessConfig = uTimerScript
   event = var=QUERY_BOOL, val=true, time=1.0
   event = var=QUERY_FAIL, val=false, time=1.0
   event = var=QUERY_OTHER, val=bravo, time=1.2
-  event = var=QUERY_LATE, val=arrived, time=1.5
+  event = var=QUERY_LATE, val=arrived, time=15
 }
 
 //----------------------------------------------------
@@ -71,7 +71,6 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = QUERY_NUM = 42
   pass_condition = QUERY_STR = ready
-  pass_condition = QUERY_LATE = arrived
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = uquerydb_unit

@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Checkvar Formats</h3>
-          <p>Description: Requests QUERY_STR with --check_var and --csv, testing comma-separated output; passes when the string query exits 0 and .checkvars contains QUERY_STR,ready.</p>
+          <p>Description: Requests QUERY_STR with --check_var and --csv, testing comma-separated output; passes when the string query exits 0 and .checkvars is exactly QUERY_STR,ready.</p>
         </div>
       </article>
 
@@ -116,6 +116,12 @@
 
 
         <article class="case-row">
+          <code>multiple_second_false_fail</code>
+          <p>Keeps the first separate condition true but changes the second to QUERY_STR = not_ready, proving every separately supplied condition is required; the harness passes when uQueryDB exits 1.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>fail_condition_false_pass</code>
           <p>Requires QUERY_NUM = 42 while declaring QUERY_FAIL = true as a fail condition, testing that a false fail condition does not veto a satisfied pass condition; passes when uQueryDB exits 0 with QUERY_FAIL=false.</p>
         </article>
@@ -129,49 +135,49 @@
 
         <article class="case-row">
           <code>missing_var_timeout_fail</code>
-          <p>Waits one second for never-published QUERY_MISSING = ready, testing the unsatisfied-variable timeout path; the harness passes when uQueryDB exits 1.</p>
+          <p>Waits one second for never-published QUERY_MISSING = ready, testing the CLI timeout path; the harness passes when uQueryDB exits 1 after 1.5 to 3.0 seconds of measured process time including connection and shutdown overhead.</p>
         </article>
 
 
         <article class="case-row">
           <code>late_var_wait_pass</code>
-          <p>Waits up to three seconds for QUERY_LATE = arrived, which is posted later than the baseline variables, testing that the query remains active for delayed mail; passes when uQueryDB exits 0.</p>
+          <p>Starts before QUERY_LATE=arrived is posted at mission time 15, testing that the query remains active for new mail rather than reading an existing DB value; passes when uQueryDB exits 0 after the same 1.5-to-3.0-second measured window.</p>
         </article>
 
 
         <article class="case-row">
           <code>mission_file_config_pass</code>
-          <p>Runs the stem mission file&#x27;s pass_condition=QUERY_NUM = 42, check_var=QUERY_NUM, and ESV format without CLI query arguments, testing ProcessConfig loading; passes when uQueryDB exits 0 and .checkvars contains QUERY_NUM=42.</p>
+          <p>Runs the stem mission file&#x27;s pass_condition=QUERY_NUM = 42, check_var=QUERY_NUM, and ESV format without CLI query arguments, testing ProcessConfig loading; passes when uQueryDB exits 0 and .checkvars is exactly one line, QUERY_NUM=42.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_esv_pass</code>
-          <p>Requests QUERY_NUM with --check_var and --esv, testing equals-separated output; passes when the numeric query exits 0 and .checkvars contains QUERY_NUM=42.</p>
+          <p>Requests QUERY_NUM with --check_var and --esv, testing equals-separated output; passes when the numeric query exits 0 and .checkvars is exactly one line, QUERY_NUM=42.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_csv_pass</code>
-          <p>Requests QUERY_STR with --check_var and --csv, testing comma-separated output; passes when the string query exits 0 and .checkvars contains QUERY_STR,ready.</p>
+          <p>Requests QUERY_STR with --check_var and --csv, testing comma-separated output; passes when the string query exits 0 and .checkvars is exactly QUERY_STR,ready.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_wsv_pass</code>
-          <p>Requests QUERY_OTHER with --check_var and --wsv, testing whitespace-separated output; passes when QUERY_OTHER = bravo exits 0 and .checkvars contains QUERY_OTHER bravo.</p>
+          <p>Requests QUERY_OTHER with --check_var and --wsv, testing whitespace-separated output; passes when QUERY_OTHER = bravo exits 0 and .checkvars is exactly QUERY_OTHER bravo.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_value_only_pass</code>
-          <p>Generates a config with check_var_format=vo for QUERY_BOOL, testing value-only output; passes when the query exits 0, .checkvars contains true, and no ESV, CSV, or WSV variable prefix appears.</p>
+          <p>Generates a config with check_var_format=vo for QUERY_BOOL, testing value-only output; passes when the query exits 0 and .checkvars is exactly the single line true.</p>
         </article>
 
 
         <article class="case-row">
           <code>unique_name_pass</code>
-          <p>Adds --unique to QUERY_NUM = 42, exercising randomized client-name startup; passes when the query exits 0, without independently checking the registered name.</p>
+          <p>Starts a delayed query with --unique and writes DB_CLIENTS to .checkvars, testing randomized client-name registration while the process is connected; passes when the client list contains uQueryDB_&lt;digits&gt;.</p>
         </article>
 
 
@@ -194,6 +200,12 @@
 
 
         <article class="case-row">
+          <code>compound_and_second_false_fail</code>
+          <p>Keeps the left side of the compound AND true but changes the right side to QUERY_STR = not_ready, proving both branches are required; the harness passes when uQueryDB exits 1.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>compound_or_fail</code>
           <p>Queries (QUERY_STR = not_ready) or (QUERY_OTHER = not_bravo), testing an OR expression with both branches false; the harness passes when uQueryDB exits 1 after the one-second wait.</p>
         </article>
@@ -201,7 +213,7 @@
 
         <article class="case-row">
           <code>config_halt_max_time_timeout_fail</code>
-          <p>Generates halt_max_time=1 with the never-satisfied QUERY_MISSING = ready pass condition, testing the configuration alias for the timeout; the harness passes when uQueryDB exits 1.</p>
+          <p>Generates halt_max_time=1 with the never-satisfied QUERY_MISSING = ready pass condition, testing the configuration alias for the timeout; the harness passes when uQueryDB exits 1 within the same 1.5-to-3.0-second measured process window as CLI --wait=1.</p>
         </article>
 
 
@@ -219,19 +231,19 @@
 
         <article class="case-row">
           <code>checkvar_multi_csv_pass</code>
-          <p>Requests QUERY_NUM and QUERY_STR in CSV format, testing multiple .checkvars rows from one successful query; passes when the query exits 0 and the file contains both QUERY_NUM,42 and QUERY_STR,ready.</p>
+          <p>Requests QUERY_NUM and QUERY_STR in CSV format, testing multiple .checkvars rows from one successful query; passes when the file contains exactly QUERY_NUM,42 followed by QUERY_STR,ready and no extra rows.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_timeout_esv_pass</code>
-          <p>Waits one second on missing QUERY_MISSING while requesting published QUERY_NUM in ESV format, testing check-variable output on query failure; the harness passes when uQueryDB exits 1 and .checkvars still contains QUERY_NUM=42.</p>
+          <p>Waits one second on missing QUERY_MISSING while requesting published QUERY_NUM in ESV format, testing check-variable output on query failure; the harness passes when uQueryDB exits 1 and .checkvars is exactly QUERY_NUM=42.</p>
         </article>
 
 
         <article class="case-row">
           <code>case_config_checkvar_csv_pass</code>
-          <p>Generates a config requiring QUERY_OTHER = bravo and writing that variable as CSV, testing config-file check-variable and format settings together; passes when the query exits 0 and .checkvars contains QUERY_OTHER,bravo.</p>
+          <p>Generates a config requiring QUERY_OTHER = bravo and writing that variable as CSV, testing config-file check-variable and format settings together; passes when uQueryDB exits 0 and .checkvars is exactly QUERY_OTHER,bravo.</p>
         </article>
 
 

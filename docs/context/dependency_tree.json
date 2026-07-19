@@ -1556,7 +1556,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 30,
+        "case_count": 32,
         "case_parse_error": "",
         "cases": [
           "cli_numeric_pass",
@@ -1564,6 +1564,7 @@
           "cli_boolean_pass",
           "cli_negative_numeric_pass",
           "multiple_pass_conditions_pass",
+          "multiple_second_false_fail",
           "fail_condition_false_pass",
           "fail_condition_true_fail",
           "missing_var_timeout_fail",
@@ -1577,6 +1578,7 @@
           "compound_or_pass",
           "pass_condition_alias_pass",
           "compound_and_pass",
+          "compound_and_second_false_fail",
           "compound_or_fail",
           "config_halt_max_time_timeout_fail",
           "config_fail_condition_false_pass",

@@ -66,6 +66,7 @@ CASES=(
     cli_boolean_pass
     cli_negative_numeric_pass
     multiple_pass_conditions_pass
+    multiple_second_false_fail
     fail_condition_false_pass
     fail_condition_true_fail
     missing_var_timeout_fail
@@ -79,6 +80,7 @@ CASES=(
     compound_or_pass
     pass_condition_alias_pass
     compound_and_pass
+    compound_and_second_false_fail
     compound_or_fail
     config_halt_max_time_timeout_fail
     config_fail_condition_false_pass
@@ -318,8 +320,10 @@ get_case_config() {
     QUERY_FILE_MODE="connect"
     QUERY_ARGS=()
     CONFIG_LINES=()
-    CHECKVAR_TOKENS=()
-    ABSENT_TOKENS=()
+    EXPECTED_CHECKVARS=()
+    CHECKVARS_REGEXES=()
+    MIN_ELAPSED_MS=0
+    MAX_ELAPSED_MS=0
 
     if ! case_known "$CASE_NAME"; then
         echo "$ME: Unknown case: $CASE_NAME"
@@ -342,6 +346,10 @@ get_case_config() {
         multiple_pass_conditions_pass)
             QUERY_ARGS=("--condition=QUERY_NUM = 42" "--condition=QUERY_STR = ready" "--wait=3")
             ;;
+        multiple_second_false_fail)
+            EXPECTED_RC="1"
+            QUERY_ARGS=("--condition=QUERY_NUM = 42" "--condition=QUERY_STR = not_ready" "--wait=1")
+            ;;
         fail_condition_false_pass)
             QUERY_ARGS=("--condition=QUERY_NUM = 42" "--fail_condition=QUERY_FAIL = true" "--wait=3")
             ;;
@@ -352,35 +360,39 @@ get_case_config() {
         missing_var_timeout_fail)
             EXPECTED_RC="1"
             QUERY_ARGS=("--condition=QUERY_MISSING = ready" "--wait=1")
+            MIN_ELAPSED_MS=1500
+            MAX_ELAPSED_MS=3000
             ;;
         late_var_wait_pass)
             QUERY_ARGS=("--condition=QUERY_LATE = arrived" "--wait=3")
+            MIN_ELAPSED_MS=1500
+            MAX_ELAPSED_MS=3000
             ;;
         mission_file_config_pass)
             QUERY_FILE_MODE="mission_config"
             QUERY_ARGS=()
-            CHECKVAR_TOKENS=("QUERY_NUM=42")
+            EXPECTED_CHECKVARS=(" QUERY_NUM=42")
             ;;
         checkvar_esv_pass)
             QUERY_ARGS=("--condition=QUERY_NUM = 42" "--check_var=QUERY_NUM" "--esv" "--wait=3")
-            CHECKVAR_TOKENS=("QUERY_NUM=42")
+            EXPECTED_CHECKVARS=(" QUERY_NUM=42")
             ;;
         checkvar_csv_pass)
             QUERY_ARGS=("--condition=QUERY_STR = ready" "--check_var=QUERY_STR" "--csv" "--wait=3")
-            CHECKVAR_TOKENS=("QUERY_STR,ready")
+            EXPECTED_CHECKVARS=("QUERY_STR,ready")
             ;;
         checkvar_wsv_pass)
             QUERY_ARGS=("--condition=QUERY_OTHER = bravo" "--check_var=QUERY_OTHER" "--wsv" "--wait=3")
-            CHECKVAR_TOKENS=("QUERY_OTHER bravo")
+            EXPECTED_CHECKVARS=("QUERY_OTHER bravo")
             ;;
         checkvar_value_only_pass)
             QUERY_FILE_MODE="case_config"
             CONFIG_LINES=("pass_condition = QUERY_BOOL = true" "check_var = QUERY_BOOL" "check_var_format = vo" "wait = 3")
-            CHECKVAR_TOKENS=("true")
-            ABSENT_TOKENS=("QUERY_BOOL=" "QUERY_BOOL,true" "QUERY_BOOL true")
+            EXPECTED_CHECKVARS=("true")
             ;;
         unique_name_pass)
-            QUERY_ARGS=("--unique" "--condition=QUERY_NUM = 42" "--wait=3")
+            QUERY_ARGS=("--unique" "--condition=QUERY_LATE = arrived" "--check_var=DB_CLIENTS" "--esv" "--wait=3")
+            CHECKVARS_REGEXES=('unique_name::^ DB_CLIENTS=.*uQueryDB_[0-9]+,')
             ;;
         compound_or_pass)
             compound_condition="--condition=(QUERY_STR = not_ready) or (QUERY_OTHER = bravo)"
@@ -393,6 +405,11 @@ get_case_config() {
             compound_condition="--condition=(QUERY_NUM = 42) and (QUERY_STR = ready)"
             QUERY_ARGS=("$compound_condition" "--wait=3")
             ;;
+        compound_and_second_false_fail)
+            EXPECTED_RC="1"
+            compound_condition="--condition=(QUERY_NUM = 42) and (QUERY_STR = not_ready)"
+            QUERY_ARGS=("$compound_condition" "--wait=1")
+            ;;
         compound_or_fail)
             EXPECTED_RC="1"
             compound_condition="--condition=(QUERY_STR = not_ready) or (QUERY_OTHER = not_bravo)"
@@ -402,6 +419,8 @@ get_case_config() {
             EXPECTED_RC="1"
             QUERY_FILE_MODE="case_config"
             CONFIG_LINES=("halt_max_time = 1" "pass_condition = QUERY_MISSING = ready")
+            MIN_ELAPSED_MS=1500
+            MAX_ELAPSED_MS=3000
             ;;
         config_fail_condition_false_pass)
             QUERY_FILE_MODE="case_config"
@@ -414,17 +433,17 @@ get_case_config() {
             ;;
         checkvar_multi_csv_pass)
             QUERY_ARGS=("--condition=QUERY_NUM = 42" "--check_var=QUERY_NUM" "--check_var=QUERY_STR" "--csv" "--wait=3")
-            CHECKVAR_TOKENS=("QUERY_NUM,42" "QUERY_STR,ready")
+            EXPECTED_CHECKVARS=("QUERY_NUM,42" "QUERY_STR,ready")
             ;;
         checkvar_timeout_esv_pass)
             EXPECTED_RC="1"
             QUERY_ARGS=("--condition=QUERY_MISSING = ready" "--check_var=QUERY_NUM" "--esv" "--wait=1")
-            CHECKVAR_TOKENS=("QUERY_NUM=42")
+            EXPECTED_CHECKVARS=(" QUERY_NUM=42")
             ;;
         case_config_checkvar_csv_pass)
             QUERY_FILE_MODE="case_config"
             CONFIG_LINES=("wait = 3" "pass_condition = QUERY_OTHER = bravo" "check_var = QUERY_OTHER" "check_var_format = csv")
-            CHECKVAR_TOKENS=("QUERY_OTHER,bravo")
+            EXPECTED_CHECKVARS=("QUERY_OTHER,bravo")
             ;;
         fail_only_false_pass)
             QUERY_ARGS=("--fail_condition=QUERY_FAIL = true" "--wait=3")
@@ -458,6 +477,8 @@ run_querydb() {
     local line
     local stop_attempt
     local cmd=()
+    local query_rc
+    local started_at="$EPOCHREALTIME"
 
     if [ "$QUERY_FILE_MODE" = "mission_config" ]; then
         cmd=("uQueryDB" "$case_dir/targ_shoreside.moos" "${QUERY_ARGS[@]}")
@@ -508,6 +529,10 @@ run_querydb() {
         done
         wait "$query_pid"
     )
+    query_rc=$?
+    QUERY_ELAPSED_MS=$(awk -v started="$started_at" -v finished="$EPOCHREALTIME" \
+        'BEGIN {printf "%d", (finished - started) * 1000}')
+    return "$query_rc"
 }
 
 wait_for_nonempty_file() {
@@ -523,22 +548,47 @@ wait_for_nonempty_file() {
 
 check_checkvars() {
     local workdir="$1"
-    local token
-    MISSING_TOKENS=""
-    FORBIDDEN_TOKENS=""
+    local check_file="$workdir/.checkvars"
+    local regex_spec
+    local regex_name
+    local regex
+    local index
+    local -a actual_lines=()
+    CHECKVARS_DETAIL=""
 
-    for token in "${CHECKVAR_TOKENS[@]}"; do
-        if ! grep -Fq -- "$token" "$workdir/.checkvars" 2>/dev/null; then
-            MISSING_TOKENS="${MISSING_TOKENS}${MISSING_TOKENS:+,}$token"
+    if [ "${#EXPECTED_CHECKVARS[@]}" -eq 0 ] &&
+       [ "${#CHECKVARS_REGEXES[@]}" -eq 0 ]; then
+        return 0
+    fi
+    if [ ! -f "$check_file" ]; then
+        CHECKVARS_DETAIL=missing_file
+        return 1
+    fi
+
+    mapfile -t actual_lines < "$check_file"
+    if [ "${#EXPECTED_CHECKVARS[@]}" -gt 0 ]; then
+        if [ "${#actual_lines[@]}" -ne "${#EXPECTED_CHECKVARS[@]}" ]; then
+            CHECKVARS_DETAIL="line_count_${#actual_lines[@]}_expected_${#EXPECTED_CHECKVARS[@]}"
+            return 1
+        fi
+        for ((index=0; index<${#EXPECTED_CHECKVARS[@]}; index++)); do
+            if [ "${actual_lines[$index]}" != "${EXPECTED_CHECKVARS[$index]}" ]; then
+                CHECKVARS_DETAIL="line_$((index + 1))_mismatch"
+                return 1
+            fi
+        done
+    fi
+
+    for regex_spec in "${CHECKVARS_REGEXES[@]}"; do
+        regex_name=${regex_spec%%::*}
+        regex=${regex_spec#*::}
+        if ! grep -Eq -- "$regex" "$check_file"; then
+            CHECKVARS_DETAIL="regex_$regex_name"
+            return 1
         fi
     done
-    for token in "${ABSENT_TOKENS[@]}"; do
-        if grep -Fq -- "$token" "$workdir/.checkvars" 2>/dev/null; then
-            FORBIDDEN_TOKENS="${FORBIDDEN_TOKENS}${FORBIDDEN_TOKENS:+,}$token"
-        fi
-    done
 
-    [ -z "$MISSING_TOKENS" ] && [ -z "$FORBIDDEN_TOKENS" ]
+    return 0
 }
 
 prepare_case() {
@@ -634,18 +684,28 @@ write_result() {
             "$case_name" "$EXPECTED_RC" "$query_rc" "${provenance:+ $provenance}" > "$result_file"
         return 0
     fi
+    if [ "$mission_grade" = pass ] && [ "$MIN_ELAPSED_MS" -gt 0 ] &&
+       { [ "$QUERY_ELAPSED_MS" -lt "$MIN_ELAPSED_MS" ] ||
+         [ "$QUERY_ELAPSED_MS" -gt "$MAX_ELAPSED_MS" ]; }; then
+        provenance=$(runner_provenance "$line")
+        printf 'case=%s grade=fail reason=subject_timing_mismatch elapsed_ms=%s min_elapsed_ms=%s max_elapsed_ms=%s%s\n' \
+            "$case_name" "$QUERY_ELAPSED_MS" "$MIN_ELAPSED_MS" "$MAX_ELAPSED_MS" \
+            "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
     if [ "$mission_grade" = pass ] && ! check_checkvars "$workdir"; then
         provenance=$(runner_provenance "$line")
-        printf 'case=%s grade=fail reason=checkvars_mismatch missing_tokens=%s forbidden_tokens=%s expected_rc=%s actual_rc=%s%s\n' \
-            "$case_name" "${MISSING_TOKENS:-none}" "${FORBIDDEN_TOKENS:-none}" \
+        printf 'case=%s grade=fail reason=checkvars_mismatch detail=%s expected_rc=%s actual_rc=%s%s\n' \
+            "$case_name" "${CHECKVARS_DETAIL:-unknown}" \
             "$EXPECTED_RC" "$query_rc" "${provenance:+ $provenance}" > "$result_file"
         return 0
     fi
 
     line=$(without_case_field "$line")
-    printf 'case=%s %s expected_rc=%s actual_rc=%s readiness=%s checkvars=%s absent=%s\n' \
-        "$case_name" "$line" "$EXPECTED_RC" "$query_rc" "$mission_grade" \
-        "${#CHECKVAR_TOKENS[@]}" "${#ABSENT_TOKENS[@]}" > "$result_file"
+    printf 'case=%s %s expected_rc=%s actual_rc=%s elapsed_ms=%s readiness=%s checkvars=%s checkvars_regexes=%s\n' \
+        "$case_name" "$line" "$EXPECTED_RC" "$query_rc" "$QUERY_ELAPSED_MS" \
+        "$mission_grade" "${#EXPECTED_CHECKVARS[@]}" \
+        "${#CHECKVARS_REGEXES[@]}" > "$result_file"
 }
 
 run_case() {
@@ -660,6 +720,7 @@ run_case() {
     local launch_args
     local result_line
     local grade
+    QUERY_ELAPSED_MS=0
 
     prepare_case "$case_name" "$workdir" || {
         printf 'case=%s grade=fail reason=prepare_error\n' "$case_name" > "$result_file"
@@ -671,6 +732,7 @@ run_case() {
             cd "$workdir" || exit 1
             launch_args=(
                 --just_make
+                --mmod="$case_name"
                 --max_time="$MAX_TIME"
                 "${DISPLAY_ARGS[@]}"
                 --shore_mport="$((case_base + 0))"
@@ -685,6 +747,7 @@ run_case() {
             : > results.txt
             launch_args=(
                 --external_client
+                --mmod="$case_name"
                 --max_time="$MAX_TIME"
                 "${DISPLAY_ARGS[@]}"
                 --shore_mport="$((case_base + 0))"
