@@ -1857,7 +1857,7 @@ def ctest_coverage_note(area: str, coverage_data: dict[str, object]) -> str:
     source_files = raw.get("source_files")
     if line_percent is None or not source_files:
         return "Coverage: not measured."
-    return f"Coverage: {line_percent:.2f}% line direct-compiled."
+    return f"Line coverage: {line_percent:.2f}%."
 
 
 def count_gtest_cases(path: Path) -> int:
@@ -2543,8 +2543,8 @@ def total_case_count() -> int:
 
 def render_stats() -> str:
     stats = (
-        (str(ctest_total_case_count()), "CTest Cases", "Source-level checks for component behavior that does not need a mission scenario."),
-        (str(ctest_area_count()), "Libraries & Components", "Source-level MOOS-IvP areas covered by GoogleTest/CTest."),
+        (str(ctest_total_case_count()), "Unit Test Cases", "C++ unit tests for individual MOOS-IvP classes and functions."),
+        (str(ctest_area_count()), "Libraries & Components", "MOOS-IvP areas covered by the C++ unit tests."),
         (str(total_case_count()), "Harness Cases", "Mission-run cases with expected outcomes and generated result summaries."),
         (str(app_behavior_target_count()), "Apps & Behaviors", "MOOS apps and IvP behaviors covered by mission harness cases."),
     )
@@ -2587,8 +2587,8 @@ def render_ctest_coverage() -> str:
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">CTest Coverage</p>
-      <h1>Fast source-level coverage for MOOS-IvP components.</h1>
-      <p class="lede">These tests use GoogleTest and CTest to check MOOS-IvP component behavior that does not need a mission scenario: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
+      <h1>C++ unit tests for MOOS-IvP.</h1>
+      <p class="lede">These tests check individual classes and functions without running a mission. CTest organizes them into focused groups for parsers, geometry, IvP functions, contact records, behavior helpers, app utilities, and other source-level logic.</p>
       <div class="hero-actions">
         <a class="button primary" href="#buckets">Browse component families</a>
         <a class="button secondary" href="{repo_url('tests/cpp/README.md')}">CTest README</a>
@@ -2604,7 +2604,7 @@ def render_ctest_coverage() -> str:
         <article class="stat-card">
           <strong>{ctest_total_case_count()}</strong>
           <span>Test Cases</span>
-          <p>Individual GoogleTest checks covering expected and edge-case behavior.</p>
+          <p>Individual C++ unit tests covering expected and edge-case behavior.</p>
         </article>
         <article class="stat-card">
           <strong>{ctest_total_target_count(targets)}</strong>
@@ -2623,6 +2623,7 @@ def render_ctest_coverage() -> str:
       <div class="section-heading">
         <p class="eyebrow">Component Families</p>
         <h2>CTest coverage by MOOS-IvP component family</h2>
+        <p>Line coverage includes only source files compiled directly into each test target.</p>
       </div>
       <div class="table-wrap">
         <table class="ctest-table">
@@ -2631,7 +2632,7 @@ def render_ctest_coverage() -> str:
               <th>Component family</th>
               <th>Targets</th>
               <th>Cases</th>
-              <th>Description + Coverage %</th>
+              <th>Description and line coverage</th>
             </tr>
           </thead>
           <tbody>
@@ -2651,7 +2652,7 @@ def render_quick_start() -> str:
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Developer Quick Start</p>
-      <h1>Build your edit. Run the relevant tests.</h1>
+      <h1>Build your changes. Run the relevant tests.</h1>
       <p class="lede">Check out the MOOS-IvP branch containing your changes, build it, then use this repository to run a focused CTest group and its mission harness.</p>
       <div class="hero-actions">
         <a class="button primary" href="#build">Build</a>
@@ -2707,7 +2708,7 @@ cd /path/to/moos-ivp-cicd-testing
       <div class="section-heading">
         <p class="eyebrow">Optional build matrix</p>
         <h2>Check the native and Linux builds</h2>
-        <p>Run the normal build on this computer, then compile the same local MOOS-IvP checkout in the current Linux distribution and compiler targets.</p>
+        <p>Run the normal build on this computer, then compile the same local MOOS-IvP checkout for each supported Linux and compiler combination.</p>
       </div>
       <div class="explain-stack">
         <article>
@@ -2763,7 +2764,7 @@ cd /path/to/moos-ivp-cicd-testing
 
     <section class="workflow">
       <p class="eyebrow">Result</p>
-      <h2>Check pass or fail</h2>
+      <h2>Confirm the result</h2>
       <p>CTest passes with <code>100% tests passed</code>. The harness passes with <code>failures=0</code>. The optional build matrix passes with <code>0 failed</code>. Open <code>results.txt</code> only when you want the per-case harness details.</p>
     </section>
   </main>
@@ -2781,7 +2782,7 @@ def render_index() -> str:
       <div class="hero-copy">
         <p class="eyebrow">MOOS-IvP CI/CD Pipeline</p>
         <h1>Regression tests for MOOS-IvP Apps, Behaviors, and Libraries</h1>
-        <p class="lede">This workspace collects fast CTest coverage for source-level component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
+        <p class="lede">This repository combines C++ unit tests for individual classes and functions with live mission harnesses for MOOS apps, behaviors, and vehicle motion.</p>
         <div class="hero-actions">
           <a class="button primary" href="quick-start.html">Developer quick start</a>
           <a class="button secondary" href="#families">Browse catalog</a>
@@ -2808,17 +2809,17 @@ def render_index() -> str:
       <div class="section-heading">
         <p class="eyebrow">Coverage Layers</p>
         <h2>Two complementary ways to catch regressions</h2>
-        <p>CTest coverage checks component behavior directly, while mission harnesses check live MOOS process behavior and motion outcomes.</p>
+        <p>C++ unit tests check individual classes and functions, while mission harnesses test live MOOS processes, vehicle motion, and system-level outcomes.</p>
       </div>
       <div class="technical-grid technical-grid--two">
         <article class="technical-card">
-          <h3>CTest Coverage</h3>
-          <p>Fast GoogleTest/CTest targets for MOOS-IvP components/libraries such as geometry, behaviors, contacts, utilities, viewers, and IvP construction.</p>
+          <h3>Unit Tests</h3>
+          <p>CTest C++ unit tests for MOOS-IvP libraries, apps, behaviors, and utilities.</p>
           <a class="text-link" href="ctest-coverage.html">Browse CTest coverage</a>
         </article>
         <article class="technical-card">
           <h3>Mission Harnesses</h3>
-          <p>Patch-driven MOOS mission matrices that exercise app postings, behavior lifecycle, vehicle motion, timing, and multi-process outcomes.</p>
+          <p>Live MOOS missions that test app messages, behavior states, vehicle motion, timing, and interactions between processes.</p>
           <a class="text-link" href="#families">Browse harness catalog</a>
         </article>
       </div>
@@ -2842,7 +2843,7 @@ def render_index() -> str:
         <li>Stem missions define reusable MOOS community layouts, behavior configs, and baseline geometry.</li>
         <li>Harness overlays use small patches so each run isolates one scenario or regression risk.</li>
         <li>The harness <code>zlaunch.sh</code> wrapper selects the case and then delegates to the shared <code>xlaunch.sh</code> path, keeping local and CI runs aligned.</li>
-        <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact result lines.</li>
+        <li><code>pMissionEval</code> reports and shell-side checks turn each run into a clear pass/fail result.</li>
       </ol>
       <div class="workflow-actions">
         <a class="text-link" href="technical.html">Read the technical architecture</a>
@@ -2941,7 +2942,7 @@ def render_technical() -> str:
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Technical Overview</p>
       <h1>How the coverage workspace is organized.</h1>
-      <p class="lede">The repository has two complementary coverage layers: CTest targets for source-level MOOS-IvP component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
+      <p class="lede">The repository combines C++ unit tests for individual classes and functions with mission harnesses that test live MOOS apps, behaviors, and vehicle motion.</p>
     </section>
 
     <section class="content-section compact-section">
@@ -2952,11 +2953,11 @@ def render_technical() -> str:
       <div class="term-list">
         <article class="term-item">
           <h3>CTest target</h3>
-          <p>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</p>
+          <p>A C++ unit-test executable registered with CTest. Use it for behavior that can be checked without running a mission.</p>
         </article>
         <article class="term-item">
           <h3>CTest family</h3>
-          <p>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</p>
+          <p>A named group of related C++ unit tests, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</p>
         </article>
         <article class="term-item">
           <h3>Mission stem</h3>
@@ -2972,15 +2973,15 @@ def render_technical() -> str:
     <section class="technical-grid">
       <article class="technical-card">
         <h2>CTest Coverage</h2>
-        <p><code>tests/cpp/</code> holds GoogleTest executables for source-level logic: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other component contracts.</p>
+        <p><code>tests/cpp/</code> holds C++ unit tests for parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
       </article>
       <article class="technical-card">
         <h2>Mission Harnesses</h2>
         <p>Harnesses run live MOOS missions when the behavior under test depends on process startup, MOOSDB traffic, vehicle motion, mission timing, or interactions between apps and behaviors.</p>
       </article>
       <article class="technical-card">
-        <h2>Separate Selectors</h2>
-        <p>CTest families select source-level component groups. Harness families and target keys select live mission workloads.</p>
+        <h2>How tests are grouped</h2>
+        <p>CTest families group related C++ unit tests. Harness families and target keys group related mission harnesses.</p>
       </article>
     </section>
 
@@ -2991,8 +2992,8 @@ def render_technical() -> str:
       </div>
       <div class="explain-stack">
         <article>
-          <h3>CTest component checks</h3>
-          <p>Fast checks exercise library, app, behavior, and utility logic directly without launching a mission or allocating MOOS ports.</p>
+          <h3>C++ unit tests</h3>
+          <p>Fast tests check individual library, app, behavior, and utility classes and functions without launching a mission or allocating MOOS ports.</p>
         </article>
         <article>
           <h3>Unit-style mission checks</h3>
@@ -3004,11 +3005,11 @@ def render_technical() -> str:
         </article>
         <article>
           <h3>Behavior correctness checks</h3>
-          <p>Behavior-focused missions isolate behavior-owned contracts, such as alert requests, helper flags, lifecycle state, and resolution evidence.</p>
+          <p>Behavior-focused missions isolate behavior-specific requirements, such as alert requests, helper flags, lifecycle state, successful avoidance, and behavior completion.</p>
         </article>
         <article>
           <h3>Performance and endurance checks</h3>
-          <p>Longer missions apply sustained pressure and add timing, warning-log, and repeatability constraints around mission-owned verdicts.</p>
+          <p>Longer missions apply sustained pressure and add timing, warning-log, and repeatability constraints around mission pass/fail results.</p>
         </article>
       </div>
     </section>

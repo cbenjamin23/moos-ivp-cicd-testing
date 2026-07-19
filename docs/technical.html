@@ -32,7 +32,7 @@
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Technical Overview</p>
       <h1>How the coverage workspace is organized.</h1>
-      <p class="lede">The repository has two complementary coverage layers: CTest targets for source-level MOOS-IvP component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
+      <p class="lede">The repository combines C++ unit tests for individual classes and functions with mission harnesses that test live MOOS apps, behaviors, and vehicle motion.</p>
     </section>
 
     <section class="content-section compact-section">
@@ -43,11 +43,11 @@
       <div class="term-list">
         <article class="term-item">
           <h3>CTest target</h3>
-          <p>A GoogleTest executable registered with CTest. Use it for component behavior that does not need a mission scenario.</p>
+          <p>A C++ unit-test executable registered with CTest. Use it for behavior that can be checked without running a mission.</p>
         </article>
         <article class="term-item">
           <h3>CTest family</h3>
-          <p>A workflow selector for one source-level component group, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</p>
+          <p>A named group of related C++ unit tests, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</p>
         </article>
         <article class="term-item">
           <h3>Mission stem</h3>
@@ -63,15 +63,15 @@
     <section class="technical-grid">
       <article class="technical-card">
         <h2>CTest Coverage</h2>
-        <p><code>tests/cpp/</code> holds GoogleTest executables for source-level logic: parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other component contracts.</p>
+        <p><code>tests/cpp/</code> holds C++ unit tests for parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
       </article>
       <article class="technical-card">
         <h2>Mission Harnesses</h2>
         <p>Harnesses run live MOOS missions when the behavior under test depends on process startup, MOOSDB traffic, vehicle motion, mission timing, or interactions between apps and behaviors.</p>
       </article>
       <article class="technical-card">
-        <h2>Separate Selectors</h2>
-        <p>CTest families select source-level component groups. Harness families and target keys select live mission workloads.</p>
+        <h2>How tests are grouped</h2>
+        <p>CTest families group related C++ unit tests. Harness families and target keys group related mission harnesses.</p>
       </article>
     </section>
 
@@ -82,8 +82,8 @@
       </div>
       <div class="explain-stack">
         <article>
-          <h3>CTest component checks</h3>
-          <p>Fast checks exercise library, app, behavior, and utility logic directly without launching a mission or allocating MOOS ports.</p>
+          <h3>C++ unit tests</h3>
+          <p>Fast tests check individual library, app, behavior, and utility classes and functions without launching a mission or allocating MOOS ports.</p>
         </article>
         <article>
           <h3>Unit-style mission checks</h3>
@@ -95,11 +95,11 @@
         </article>
         <article>
           <h3>Behavior correctness checks</h3>
-          <p>Behavior-focused missions isolate behavior-owned contracts, such as alert requests, helper flags, lifecycle state, and resolution evidence.</p>
+          <p>Behavior-focused missions isolate behavior-specific requirements, such as alert requests, helper flags, lifecycle state, successful avoidance, and behavior completion.</p>
         </article>
         <article>
           <h3>Performance and endurance checks</h3>
-          <p>Longer missions apply sustained pressure and add timing, warning-log, and repeatability constraints around mission-owned verdicts.</p>
+          <p>Longer missions apply sustained pressure and add timing, warning-log, and repeatability constraints around mission pass/fail results.</p>
         </article>
       </div>
     </section>

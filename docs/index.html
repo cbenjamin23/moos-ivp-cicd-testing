@@ -32,7 +32,7 @@
       <div class="hero-copy">
         <p class="eyebrow">MOOS-IvP CI/CD Pipeline</p>
         <h1>Regression tests for MOOS-IvP Apps, Behaviors, and Libraries</h1>
-        <p class="lede">This workspace collects fast CTest coverage for source-level component behavior and mission harnesses for live MOOS app, behavior, and motion scenarios.</p>
+        <p class="lede">This repository combines C++ unit tests for individual classes and functions with live mission harnesses for MOOS apps, behaviors, and vehicle motion.</p>
         <div class="hero-actions">
           <a class="button primary" href="quick-start.html">Developer quick start</a>
           <a class="button secondary" href="#families">Browse catalog</a>
@@ -54,15 +54,15 @@
 
       <article class="stat-card">
         <strong>2822</strong>
-        <span>CTest Cases</span>
-        <p>Source-level checks for component behavior that does not need a mission scenario.</p>
+        <span>Unit Test Cases</span>
+        <p>C++ unit tests for individual MOOS-IvP classes and functions.</p>
       </article>
 
 
       <article class="stat-card">
         <strong>72</strong>
         <span>Libraries &amp; Components</span>
-        <p>Source-level MOOS-IvP areas covered by GoogleTest/CTest.</p>
+        <p>MOOS-IvP areas covered by the C++ unit tests.</p>
       </article>
 
 
@@ -86,17 +86,17 @@
       <div class="section-heading">
         <p class="eyebrow">Coverage Layers</p>
         <h2>Two complementary ways to catch regressions</h2>
-        <p>CTest coverage checks component behavior directly, while mission harnesses check live MOOS process behavior and motion outcomes.</p>
+        <p>C++ unit tests check individual classes and functions, while mission harnesses test live MOOS processes, vehicle motion, and system-level outcomes.</p>
       </div>
       <div class="technical-grid technical-grid--two">
         <article class="technical-card">
-          <h3>CTest Coverage</h3>
-          <p>Fast GoogleTest/CTest targets for MOOS-IvP components/libraries such as geometry, behaviors, contacts, utilities, viewers, and IvP construction.</p>
+          <h3>Unit Tests</h3>
+          <p>CTest C++ unit tests for MOOS-IvP libraries, apps, behaviors, and utilities.</p>
           <a class="text-link" href="ctest-coverage.html">Browse CTest coverage</a>
         </article>
         <article class="technical-card">
           <h3>Mission Harnesses</h3>
-          <p>Patch-driven MOOS mission matrices that exercise app postings, behavior lifecycle, vehicle motion, timing, and multi-process outcomes.</p>
+          <p>Live MOOS missions that test app messages, behavior states, vehicle motion, timing, and interactions between processes.</p>
           <a class="text-link" href="#families">Browse harness catalog</a>
         </article>
       </div>
@@ -1305,7 +1305,7 @@
         <li>Stem missions define reusable MOOS community layouts, behavior configs, and baseline geometry.</li>
         <li>Harness overlays use small patches so each run isolates one scenario or regression risk.</li>
         <li>The harness <code>zlaunch.sh</code> wrapper selects the case and then delegates to the shared <code>xlaunch.sh</code> path, keeping local and CI runs aligned.</li>
-        <li><code>pMissionEval</code> reports and shell-side checks reduce the run to compact result lines.</li>
+        <li><code>pMissionEval</code> reports and shell-side checks turn each run into a clear pass/fail result.</li>
       </ol>
       <div class="workflow-actions">
         <a class="text-link" href="technical.html">Read the technical architecture</a>
