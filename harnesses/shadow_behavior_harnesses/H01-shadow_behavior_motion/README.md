@@ -1,7 +1,10 @@
 # H01-shadow_behavior_motion
 
+Logging is minimal by default in both communities. Use `--log=full` for the
+whole matrix or with `--case=NAME` for one diagnostic case.
+
 Patch-driven matrix for
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/shadow_behavior_missions/shadow_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/shadow_behavior_missions/shadow_behavior_motion).
+[`missions/shadow_behavior_missions/shadow_behavior_motion`](../../../missions/shadow_behavior_missions/shadow_behavior_motion).
 
 This harness focuses on `BHV_Shadow` as the behavior under test. The stem uses
 two simulated vehicles: `abe` owns `BHV_Shadow` and shadows `ben`, while `ben`
@@ -11,41 +14,41 @@ telemetry plus bridged NAV speed/heading from both vehicles.
 
 ## Cases
 
-- `startup_no_warning_pass` Delays Shadow activation until contact data is available and verifies the default run remains warning-free.
-- `static_shadow_pass` Baseline eastbound shadowing with active relevance and matched chaser/contact heading.
-- `west_shadow_pass` Forces a westbound contact leg and verifies Shadow reports westbound contact heading without warnings.
-- `north_shadow_pass` Forces a north-northeast contact leg without heading wrap and verifies Shadow reports the same contact heading family.
-- `heading_wrap_pass` Sends the target onto a northwest-ish leg and verifies Shadow reports a high heading across the 360-degree wrap boundary.
-- `turn_north_shadow_pass` Sends the target through an east-to-north dogleg and grades the chaser after the contact turn.
-- `slow_contact_speed_pass` Lowers the target waypoint speed and verifies the chaser follows the slower speed regime.
-- `fast_contact_speed_pass` Raises the target waypoint speed and verifies the chaser responds with a faster speed regime.
-- `stationary_contact_pass` Holds the contact nearly stationary and verifies Shadow reports near-zero contact speed without warning.
-- `pwt_outer_active_pass` Sets `pwt_outer_dist` high enough that contact relevance remains active.
-- `pwt_outer_edge_pass` Sets `pwt_outer_dist` at the contact-range edge and verifies relevance remains active.
-- `pwt_outer_inactive_pass` Sets `pwt_outer_dist` below contact range and verifies zero relevance and stopped chaser motion.
-- `runtime_pwt_outer_on_pass` Starts with relevance gated off, then raises `pwt_outer_dist` through `SHADOW_UPDATES` and verifies active shadowing.
-- `runtime_pwt_outer_off_pass` Starts active, then lowers `pwt_outer_dist` through `SHADOW_UPDATES` and verifies relevance shuts off.
-- `runtime_bad_update_recover_warn_pass` Sends one rejected runtime update followed by a valid update and requires both the expected warning and recovered active relevance.
-- `runtime_missing_contact_recover_warn_pass` Temporarily switches Shadow to a missing contact, then restores `contact=ben` and requires warning plus recovered active relevance.
-- `heading_widths_pass` Uses custom `heading_peakwidth` and `heading_basewidth` tuning while preserving clean shadowing.
-- `speed_width_aliases_pass` Uses accepted `hdg_*` and `spd_*` alias parameters while preserving clean shadowing.
-- `no_extrapolate_pass` Verifies clean shadowing with contact extrapolation disabled.
-- `cnflag_range_macro_pass` Exercises inherited contact-flag handling by posting a range macro when the target is within 120 meters and requiring the bridged value.
-- `missing_contact_warn_pass` Uses a missing contact with `on_no_contact_ok=true` and requires warning-only behavior with no behavior error.
-- `missing_contact_fail` Uses a missing contact with `on_no_contact_ok=false` and passes only when `BHV_ERROR` proves the missing contact was rejected.
-- `missing_contact_param_fail` Omits the required `contact` setting and passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_pwt_outer_dist_fail` Negative `pwt_outer_dist` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_heading_peakwidth_fail` Negative `heading_peakwidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_heading_basewidth_fail` Negative `heading_basewidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_speed_peakwidth_fail` Negative `speed_peakwidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_speed_basewidth_fail` Negative `speed_basewidth` passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_decay_fail` Malformed `decay` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_decay_order_fail` Rejects `decay` ranges whose start is greater than the end and passes only on `HELM_MALCONFIG`.
-- `bad_extrapolate_fail` Non-boolean `extrapolate` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_on_no_contact_ok_fail` Non-boolean `on_no_contact_ok` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_time_on_leg_fail` Negative inherited `time_on_leg` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
-- `bad_cnflag_fail` Rejects a malformed inherited contact-flag tag and passes only on `HELM_MALCONFIG`.
-- `bad_post_per_contact_info_fail` Non-boolean `post_per_contact_info` input passes only when `HELM_MALCONFIG` proves the behavior was rejected.
+- `startup_no_warning_pass` Leaves Shadow inactive until `contact=ben` at 30 seconds and `SHADOW=true` at 32 seconds, exercising startup after contact data has arrived; passes at 45 seconds with positive relevance, eastbound contact and vehicle headings, all three speeds above their lower bounds, and no behavior warning or error.
+- `static_shadow_pass` Runs the default eastbound target at speed `1.8` with unrestricted `pwt_outer_dist=0`; passes at 45 seconds with positive relevance, contact and vehicle headings in `[70,110]`, Abe's speed in `[1,2]`, Ben's speed at least `1`, and no warning or error.
+- `west_shadow_pass` Commands Ben to heading `270`, exercising westbound contact tracking; passes at 80 seconds when Shadow reports contact heading in `[245,310]`, Ben is in the same heading band, relevance is positive, both vehicles are moving, and no warning or error occurred.
+- `north_shadow_pass` Commands Ben to heading `20`, exercising contact tracking near north without crossing zero; passes at 55 seconds when Shadow and Ben headings are at most `35`, relevance is positive, both vehicles are moving, and no warning or error occurred.
+- `heading_wrap_pass` Commands Ben to heading `350`, exercising Shadow's contact heading across the `0/360` boundary; passes at 60 seconds when Shadow and Ben headings are at least `330`, Abe's heading is at most `40`, relevance is positive, all motion bounds hold, and no warning or error occurred.
+- `turn_north_shadow_pass` Changes Ben's commanded heading from `90` to `20` at 45 seconds, exercising Shadow after a live target turn; passes at 95 seconds when Shadow and Ben headings are at most `55`, Abe's heading is at most `70`, relevance is positive, all three speed floors hold, and no warning or error occurred.
+- `slow_contact_speed_pass` Sets Ben's commanded speed to `0.8`, exercising slow-contact speed matching; passes when Shadow reports contact speed in `[0.55,1.05]`, Abe moves in `[0.45,1.15]`, Ben moves in `[0.5,1.05]`, Abe remains eastbound, and no warning or error occurred.
+- `fast_contact_speed_pass` Sets Ben's commanded speed to `2.6`, exercising fast-contact speed matching; passes when Shadow reports contact speed in `[2,2.8]`, Abe moves at least `1.3`, Ben moves in `[1.7,2.8]`, Abe remains eastbound, and no warning or error occurred.
+- `stationary_contact_pass` Sets Ben's commanded speed to `0`, exercising a stationary contact; passes when relevance remains positive, Shadow reports contact speed at most `0.2`, both vehicle speeds are at most `0.35`, and no warning or error occurred.
+- `pwt_outer_active_pass` Sets `pwt_outer_dist=120`, exercising the outer-distance relevance setting during the default eastbound run; passes with the default positive-relevance, heading, speed, and warning-free motion grade.
+- `pwt_outer_edge_pass` Sets `pwt_outer_dist=100`, exercising the configured outer-distance boundary; passes at 36 seconds when relevance is positive, Shadow's contact speed and Ben's speed are at least `1`, Abe's speed is at least `0.8`, and no warning or error occurred.
+- `pwt_outer_inactive_pass` Sets `pwt_outer_dist=20`, below the starting contact range, exercising relevance gating; passes when `SHADOW_RELEVANCE=0`, Abe's speed is at most `0.35`, Ben keeps moving at least `1`, and no warning or error occurred.
+- `runtime_pwt_outer_on_pass` Starts with `pwt_outer_dist=20` and raises it to `120` through `SHADOW_UPDATES` at 12 seconds, exercising runtime activation of relevance; passes with the default positive-relevance, eastbound heading, speed, and warning-free motion grade.
+- `runtime_pwt_outer_off_pass` Starts with unrestricted relevance and lowers `pwt_outer_dist` to `5` at 38 seconds, exercising runtime deactivation; passes at 45 seconds when relevance is zero, Abe is stopped, Ben is still moving, and no warning or error occurred.
+- `runtime_bad_update_recover_warn_pass` Posts invalid `pwt_outer_dist=-5` at 11 seconds and valid `pwt_outer_dist=120` at 38 seconds, exercising recovery after a rejected update; passes at 50 seconds with any warning observed, no behavior error, positive relevance, moving contact, and Abe moving at least `0.8`.
+- `runtime_missing_contact_recover_warn_pass` Changes the contact to `ghost` at 10 seconds, restores `contact=ben` at 30 seconds, and sets `pwt_outer_dist=120` at 38 seconds, exercising recovery from a missing runtime contact; passes at 50 seconds with any warning observed, no behavior error, positive relevance, moving contact, and Abe moving at least `0.8`.
+- `heading_widths_pass` Sets `heading_peakwidth=8` and `heading_basewidth=80`, exercising nondefault heading objective widths; passes with the default positive-relevance, eastbound heading, speed, and warning-free motion grade.
+- `speed_width_aliases_pass` Configures `hdg_peakwidth=25`, `hdg_basewidth=170`, `spd_peakwidth=0.3`, and `spd_basewidth=1.5`, exercising the accepted width aliases; passes with the default positive-relevance, eastbound heading, speed, and warning-free motion grade.
+- `no_extrapolate_pass` Sets `extrapolate=false`, exercising shadowing from the latest contact report without projection; passes with the default positive-relevance, eastbound heading, speed, and warning-free motion grade.
+- `cnflag_range_macro_pass` Configures `cnflag=<120 SHADOW_RANGE_NEAR=$[RANGE]`, exercising inherited range-macro expansion; passes when relevance is positive, `SHADOW_RANGE_NEAR` is greater than zero and at most `120`, and no warning or error occurred.
+- `missing_contact_warn_pass` Sets `contact=ghost` with `on_no_contact_ok=true`, exercising warning-only handling of an unavailable contact; passes at 20 seconds when any `BHV_WARNING` has been observed and no `BHV_ERROR` has been observed.
+- `missing_contact_fail` Sets `contact=ghost` with `on_no_contact_ok=false`, exercising the error path for an unavailable required contact; the harness passes by 20 seconds when any `BHV_ERROR` publication is observed.
+- `missing_contact_param_fail` Omits the required `contact` setting, exercising configuration rejection; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_pwt_outer_dist_fail` Sets `pwt_outer_dist=-1`, exercising rejection of a negative outer relevance distance; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_heading_peakwidth_fail` Sets `heading_peakwidth=-5`, exercising rejection of a negative heading peak width; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_heading_basewidth_fail` Sets `heading_basewidth=-5`, exercising rejection of a negative heading base width; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_speed_peakwidth_fail` Sets `speed_peakwidth=-0.1`, exercising rejection of a negative speed peak width; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_speed_basewidth_fail` Sets `speed_basewidth=-1`, exercising rejection of a negative speed base width; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_decay_fail` Sets `decay=bad`, exercising rejection of malformed contact extrapolation decay; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_decay_order_fail` Sets `decay=60,30`, exercising rejection of a decay start greater than its end; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_extrapolate_fail` Sets `extrapolate=maybe`, exercising rejection of a non-boolean extrapolation setting; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_on_no_contact_ok_fail` Sets `on_no_contact_ok=maybe`, exercising rejection of a non-boolean missing-contact policy; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_time_on_leg_fail` Sets inherited `time_on_leg=-1`, exercising rejection of a negative leg duration; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_cnflag_fail` Sets malformed inherited `cnflag=soon SHADOW_RANGE_NEAR=$[RANGE]`, exercising contact-flag parser rejection; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
+- `bad_post_per_contact_info_fail` Sets inherited `post_per_contact_info=maybe`, exercising rejection of a non-boolean publication setting; the harness currently passes when any `ABE_IVPHELM_STATE` publication sets its `HELM_MALCONFIG` latch.
 
 ## Running
 

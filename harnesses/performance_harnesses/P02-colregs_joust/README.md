@@ -4,17 +4,9 @@ Initial performance harness for the COLREGS joust stem.
 
 ## Current Matrix
 
-- `baseline_colregs_pass`
-  Mild two-vehicle deterministic crossing. The mission should complete with
-  zero collisions, clean warning logs, and closest-range telemetry inside the
-  baseline envelope.
-- `dense_colregs_pass`
-  Denser three-vehicle continuous joust. The mission should preserve
-  collision-free completion and safe closest-range telemetry under added
-  COLREGS pressure.
-- `endurance_colregs_pass`
-  Longer-running three-vehicle joust. The mission should preserve the same
-  zero-collision and zero-warning contract over the endurance window.
+- `baseline_colregs_pass` Runs the checked-in two-vehicle `baseline_2v.txt` crossing for a 280-second mission window, testing deterministic COLREGS interaction at two meters per second; passes with mission completion, no timeout or collision, closest range in 5–20 meters, 0–5 near misses, zero scanned warning matches, and wall time in 27.5–31.0 seconds.
+- `dense_colregs_pass` Runs the checked-in three-vehicle `dense_3v.txt` crossing for 420 mission seconds, exercising simultaneous COLREGS pressure from three intersecting jousts; passes with completion, no timeout or collision, closest range in 6–20 meters, 0–8 near misses, zero scanned warnings, and wall time in 41.5–45.0 seconds.
+- `endurance_colregs_pass` Runs the checked-in three-vehicle `endurance_3v.txt` layout for 1,200 mission seconds, exercising the same three-way interactions over a longer soak; passes with completion, no timeout or collision, closest range in 6–20 meters, 0–8 near misses, zero scanned warnings, and wall time in 118–124 seconds.
 
 The harness checks:
 - mission `grade`
@@ -63,10 +55,16 @@ Typical runs:
 ```bash
 ./zlaunch.sh 10
 ./zlaunch.sh --port_base=31000 10
+./zlaunch.sh --log=full --port_base=31000 10
 ./zlaunch.sh --case=baseline_colregs_pass 10
 ./zlaunch.sh --case=dense_colregs_pass 10
 ./zlaunch.sh --case=endurance_colregs_pass 10
 ```
+
+Logging defaults to `minimal`: the shoreside logger is inactive and each
+vehicle logs only `APP_LOG`, which preserves the warning-scan verdict. Use
+`--log=full` to restore the original wildcard logs in every community. The
+mode applies to the whole serial matrix or one explicit `--case`.
 
 Execution notes:
 - Performance cases run serially so concurrent load cannot distort their

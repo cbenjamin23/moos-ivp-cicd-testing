@@ -1,5 +1,8 @@
 # opregion_motion
 
+Logging is minimal by default in both communities and launches no `pLogger`.
+Add `--log=full` to either launcher to restore both original loggers.
+
 Deterministic moving safety-envelope stem mission for `BHV_OpRegionV24`.
 
 This mission keeps the same one-vehicle MIT_SP framing as the other
@@ -45,7 +48,7 @@ Entry points:
 
 Companion harness:
 
-- [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/opregion_harnesses/H01-opregion_safety`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/opregion_harnesses/H01-opregion_safety)
+- [`harnesses/opregion_harnesses/H01-opregion_safety`](../../../harnesses/opregion_harnesses/H01-opregion_safety)
 
 The local `zlaunch.sh` keeps the stem mission convenient for default runs, but
 forwards named cases and wave runs to the companion harness. In wave mode, the

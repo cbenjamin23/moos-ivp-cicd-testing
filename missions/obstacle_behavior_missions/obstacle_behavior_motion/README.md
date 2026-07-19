@@ -1,5 +1,8 @@
 # obstacle_behavior_motion
 
+Logging is minimal by default in both communities and launches no `pLogger`.
+Add `--log=full` to either launcher to restore both original loggers.
+
 Deterministic moving behavior-correctness stem mission for
 `BHV_AvoidObstacleV24`.
 
@@ -37,4 +40,4 @@ Entry points:
 
 Companion harness:
 
-- [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion)
+- [`harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion`](../../../harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion)

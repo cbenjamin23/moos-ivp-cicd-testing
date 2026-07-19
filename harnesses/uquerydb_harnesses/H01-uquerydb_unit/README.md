@@ -27,33 +27,33 @@ for one fully logged case.
 
 ## Cases
 
-- `cli_numeric_pass`: CLI numeric equality condition.
-- `cli_string_pass`: CLI string equality condition.
-- `cli_boolean_pass`: CLI boolean-looking equality condition.
-- `cli_negative_numeric_pass`: CLI negative numeric equality condition.
-- `multiple_pass_conditions_pass`: Multiple CLI pass conditions must all become true.
-- `fail_condition_false_pass`: False CLI fail condition does not block success.
-- `fail_condition_true_fail`: True CLI fail condition returns non-zero as expected.
-- `missing_var_timeout_fail`: Missing variable times out and returns non-zero.
-- `late_var_wait_pass`: Delayed variable succeeds within the wait window.
-- `mission_file_config_pass`: Mission-file `ProcessConfig` pass condition and check variable.
-- `checkvar_esv_pass`: ESV `.checkvars` output.
-- `checkvar_csv_pass`: CSV `.checkvars` output.
-- `checkvar_wsv_pass`: WSV `.checkvars` output.
-- `checkvar_value_only_pass`: Config-driven value-only `.checkvars` output.
-- `unique_name_pass`: CLI `--unique` app naming still queries successfully.
-- `compound_or_pass`: Compound OR expression succeeds through the true branch.
-- `pass_condition_alias_pass`: CLI `--pass_condition` alias behaves like `--condition`.
-- `compound_and_pass`: Compound AND expression requires both terms.
-- `compound_or_fail`: Compound OR expression returns non-zero when both terms remain false.
-- `config_halt_max_time_timeout_fail`: Config `halt_max_time` bounds a missing-variable timeout.
-- `config_fail_condition_false_pass`: Generated config with false fail condition succeeds.
-- `config_fail_condition_true_fail`: Generated config with true fail condition returns non-zero.
-- `checkvar_multi_csv_pass`: CSV `.checkvars` output includes multiple requested variables.
-- `checkvar_timeout_esv_pass`: Timeout path still writes requested ESV check variables.
-- `case_config_checkvar_csv_pass`: Generated config writes CSV `.checkvars` output.
-- `fail_only_false_pass`: Fail-only query succeeds when the fail condition stays false.
-- `fail_only_true_fail`: Fail-only query returns non-zero when the fail condition is true.
-- `numeric_greater_than_pass`: Numeric greater-than comparison succeeds.
-- `numeric_less_than_fail`: Numeric less-than comparison returns non-zero when false.
-- `config_condition_alias_pass`: Generated config `condition` alias behaves like `pass_condition`.
+- `cli_numeric_pass`: Queries `QUERY_NUM = 42` from the command line, testing numeric equality against the published value; passes when `uQueryDB` exits `0` within the three-second wait.
+- `cli_string_pass`: Queries `QUERY_STR = ready`, testing string equality against the published value; passes when `uQueryDB` exits `0` within three seconds.
+- `cli_boolean_pass`: Queries `QUERY_BOOL = true`, testing equality for the published boolean-looking string; passes when `uQueryDB` exits `0` within three seconds.
+- `cli_negative_numeric_pass`: Queries `QUERY_NEG = -7.5`, testing parsing and equality for a negative decimal; passes when `uQueryDB` exits `0` within three seconds.
+- `multiple_pass_conditions_pass`: Supplies separate `QUERY_NUM = 42` and `QUERY_STR = ready` pass conditions, testing the all-conditions contract; passes when `uQueryDB` exits `0` after both published values satisfy their conditions.
+- `fail_condition_false_pass`: Requires `QUERY_NUM = 42` while declaring `QUERY_FAIL = true` as a fail condition, testing that a false fail condition does not veto a satisfied pass condition; passes when `uQueryDB` exits `0` with `QUERY_FAIL=false`.
+- `fail_condition_true_fail`: Requires `QUERY_NUM = 42` while declaring the published `QUERY_FAIL = false` as a fail condition, testing fail-condition precedence over a satisfied pass condition; the harness passes when `uQueryDB` exits `1`.
+- `missing_var_timeout_fail`: Waits one second for never-published `QUERY_MISSING = ready`, testing the unsatisfied-variable timeout path; the harness passes when `uQueryDB` exits `1`.
+- `late_var_wait_pass`: Waits up to three seconds for `QUERY_LATE = arrived`, which is posted later than the baseline variables, testing that the query remains active for delayed mail; passes when `uQueryDB` exits `0`.
+- `mission_file_config_pass`: Runs the stem mission file's `pass_condition=QUERY_NUM = 42`, `check_var=QUERY_NUM`, and ESV format without CLI query arguments, testing `ProcessConfig` loading; passes when `uQueryDB` exits `0` and `.checkvars` contains `QUERY_NUM=42`.
+- `checkvar_esv_pass`: Requests `QUERY_NUM` with `--check_var` and `--esv`, testing equals-separated output; passes when the numeric query exits `0` and `.checkvars` contains `QUERY_NUM=42`.
+- `checkvar_csv_pass`: Requests `QUERY_STR` with `--check_var` and `--csv`, testing comma-separated output; passes when the string query exits `0` and `.checkvars` contains `QUERY_STR,ready`.
+- `checkvar_wsv_pass`: Requests `QUERY_OTHER` with `--check_var` and `--wsv`, testing whitespace-separated output; passes when `QUERY_OTHER = bravo` exits `0` and `.checkvars` contains `QUERY_OTHER bravo`.
+- `checkvar_value_only_pass`: Generates a config with `check_var_format=vo` for `QUERY_BOOL`, testing value-only output; passes when the query exits `0`, `.checkvars` contains `true`, and no ESV, CSV, or WSV variable prefix appears.
+- `unique_name_pass`: Adds `--unique` to `QUERY_NUM = 42`, exercising randomized client-name startup; passes when the query exits `0`, without independently checking the registered name.
+- `compound_or_pass`: Queries `(QUERY_STR = not_ready) or (QUERY_OTHER = bravo)`, testing that a true right-hand branch satisfies an OR expression when the left branch is false; passes when `uQueryDB` exits `0`.
+- `pass_condition_alias_pass`: Supplies `QUERY_STR = ready` through the CLI `--pass_condition` alias, testing equivalence with `--condition`; passes when `uQueryDB` exits `0`.
+- `compound_and_pass`: Queries `(QUERY_NUM = 42) and (QUERY_STR = ready)`, testing a compound AND expression with both terms true; passes when `uQueryDB` exits `0`.
+- `compound_or_fail`: Queries `(QUERY_STR = not_ready) or (QUERY_OTHER = not_bravo)`, testing an OR expression with both branches false; the harness passes when `uQueryDB` exits `1` after the one-second wait.
+- `config_halt_max_time_timeout_fail`: Generates `halt_max_time=1` with the never-satisfied `QUERY_MISSING = ready` pass condition, testing the configuration alias for the timeout; the harness passes when `uQueryDB` exits `1`.
+- `config_fail_condition_false_pass`: Generates a config requiring `QUERY_NUM = 42` and failing on `QUERY_FAIL = true`, testing a false config-file fail condition; passes when `uQueryDB` exits `0` with `QUERY_FAIL=false`.
+- `config_fail_condition_true_fail`: Generates a config requiring `QUERY_NUM = 42` and failing on the published `QUERY_FAIL = false`, testing a true config-file fail condition; the harness passes when `uQueryDB` exits `1`.
+- `checkvar_multi_csv_pass`: Requests `QUERY_NUM` and `QUERY_STR` in CSV format, testing multiple `.checkvars` rows from one successful query; passes when the query exits `0` and the file contains both `QUERY_NUM,42` and `QUERY_STR,ready`.
+- `checkvar_timeout_esv_pass`: Waits one second on missing `QUERY_MISSING` while requesting published `QUERY_NUM` in ESV format, testing check-variable output on query failure; the harness passes when `uQueryDB` exits `1` and `.checkvars` still contains `QUERY_NUM=42`.
+- `case_config_checkvar_csv_pass`: Generates a config requiring `QUERY_OTHER = bravo` and writing that variable as CSV, testing config-file check-variable and format settings together; passes when the query exits `0` and `.checkvars` contains `QUERY_OTHER,bravo`.
+- `fail_only_false_pass`: Supplies only the fail condition `QUERY_FAIL = true`, testing a query with no pass conditions when the published value is false; passes when `uQueryDB` exits `0`.
+- `fail_only_true_fail`: Supplies only the fail condition `QUERY_FAIL = false`, testing a query with no pass conditions when the published value satisfies the fail condition; the harness passes when `uQueryDB` exits `1`.
+- `numeric_greater_than_pass`: Queries `QUERY_NUM > 41` against the published value `42`, testing a true numeric greater-than comparison; passes when `uQueryDB` exits `0`.
+- `numeric_less_than_fail`: Queries `QUERY_NUM < 41` against the published value `42`, testing a false numeric less-than comparison; the harness passes when `uQueryDB` exits `1` after the one-second wait.
+- `config_condition_alias_pass`: Generates `condition=QUERY_BOOL = true`, testing the config-file alias for `pass_condition`; passes when `uQueryDB` exits `0`.

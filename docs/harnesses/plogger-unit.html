@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Explicit Log Capture</h3>
-          <p>Description: Logs an explicitly configured variable and expects the .alog to contain the posted value.</p>
+          <p>Description: Configures Log=PLOGGER_ALPHA @ 0 nosync and posts PLOGGER_ALPHA=alpha, testing explicit asynchronous logging; passes when the live value is alpha and an .alog contains that variable-value pair.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Wildcard Omit</h3>
-          <p>Description: Enables wildcard logging with an omit pattern and expects the kept variable in the .alog while the omitted variable is absent.</p>
+          <p>Description: Enables wildcard logging for *_ME, omits OMIT_ME, and posts KEEP_ME=keep plus OMIT_ME=omit, testing the omit pattern; passes when both posts reach the mission evaluator, the .alog contains KEEP_ME=keep, and it does not contain OMIT_ME=omit.</p>
         </div>
       </article>
 
@@ -87,61 +87,61 @@
 
         <article class="case-row">
           <code>plogger_explicit_log_pass</code>
-          <p>Logs an explicitly configured variable and expects the .alog to contain the posted value.</p>
+          <p>Configures Log=PLOGGER_ALPHA @ 0 nosync and posts PLOGGER_ALPHA=alpha, testing explicit asynchronous logging; passes when the live value is alpha and an .alog contains that variable-value pair.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_wildcard_omit_pass</code>
-          <p>Enables wildcard logging with an omit pattern and expects the kept variable in the .alog while the omitted variable is absent.</p>
+          <p>Enables wildcard logging for *_ME, omits OMIT_ME, and posts KEEP_ME=keep plus OMIT_ME=omit, testing the omit pattern; passes when both posts reach the mission evaluator, the .alog contains KEEP_ME=keep, and it does not contain OMIT_ME=omit.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_dynamic_log_request_pass</code>
-          <p>Sends a PLOGGER_CMD log request at runtime and expects the dynamically requested variable to appear in the .alog.</p>
+          <p>Sends PLOGGER_CMD=&quot;LOG_REQUEST=DYN_LOG @ 0 nosync&quot; before posting DYN_LOG=dynamic, testing runtime addition of an asynchronous log variable; passes when the live value is dynamic and an .alog contains that variable-value pair.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_double_log_pass</code>
-          <p>Logs a numeric MOOS value and expects both mission-owned numeric bounds and .alog variable evidence.</p>
+          <p>Explicitly logs the numeric post PLOGGER_NUM=42.5, exercising double-valued asynchronous logging; passes when the live value is between 42 and 43 and an .alog contains a PLOGGER_NUM entry.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_sync_log_pass</code>
-          <p>Enables synchronous logging and expects the .slog header to contain the configured synchronous column.</p>
+          <p>Enables a 0.5-second synchronous log and configures SYNC_ALPHA as a synchronous column, testing static .slog column creation; passes when SYNC_ALPHA=sync reaches the evaluator and an .slog header contains SYNC_ALPHA.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_wildcard_xlog_pass</code>
-          <p>Enables wildcard exclusion logging and expects accepted mail in .alog while omitted mail is written to .xlog.</p>
+          <p>Enables wildcard logging for XLOG_*, omits XLOG_OMIT, and enables WildcardExclusionLog, testing exclusion-file routing; passes when both live posts arrive, the .alog contains XLOG_KEEP=keep but not XLOG_OMIT=omit, and an .xlog contains the omitted pair.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_filetimestamp_false_pass</code>
-          <p>Disables file timestamping and expects the fixed log directory and fixed .alog name to contain the posted value.</p>
+          <p>Sets FileTimeStamp=false, File=LOG_plogger_filetimestamp_false_pass, and posts FIXED_NAME=fixed, testing deterministic log naming; passes when that exact directory and .alog filename exist and the file contains the posted pair.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_datatype_precision_pass</code>
-          <p>Enables datatype marking and reduced double precision, then expects typed string and rounded numeric entries in .alog.</p>
+          <p>Sets MarkDataType=true and DoublePrecision=3, then posts DTYPE_NUM=3.14159265 and DTYPE_STR=typed, testing type markers and numeric rounding; passes when the live values match and an .alog contains D:3.142 and S:typed entries.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_dynamic_sync_column_pass</code>
-          <p>Sends a runtime log request with synchronous logging enabled and expects the dynamic column name in .slog.</p>
+          <p>Enables a 0.5-second synchronous log, sends PLOGGER_CMD=&quot;LOG_REQUEST=DYN_SYNC @ 0&quot;, and posts DYN_SYNC=dynsync, testing runtime addition of a synchronous column; passes when the live value is dynsync and an .slog header contains DYN_SYNC.</p>
         </article>
 
 
         <article class="case-row">
           <code>plogger_copy_file_request_pass</code>
-          <p>Sends a runtime copy-file request and expects pLogger to copy the requested file into the log directory.</p>
+          <p>Sends PLOGGER_CMD=&quot;COPY_FILE_REQUEST=logger_copy_source.txt&quot;, testing runtime file copying into the log directory; passes when the live completion flag is true and the generated logger_copy_source._txt contains the source text pLogger copy-file source artifact.</p>
         </article>
 
       </div>

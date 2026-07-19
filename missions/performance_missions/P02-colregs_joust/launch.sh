@@ -21,6 +21,10 @@ TIME_WARP=1
 VERBOSE=""
 JUST_MAKE=""
 LOG_CLEAN=""
+LOG_MODE="minimal"
+if [ "${LOG_MODE_PREPARED:-no}" = yes ] && [ -n "${LOG_MODE_PREPARED_VALUE:-}" ]; then
+    LOG_MODE="$LOG_MODE_PREPARED_VALUE"
+fi
 VAMT="4"
 MAX_VAMT="10"
 RAND_VPOS=""
@@ -60,6 +64,7 @@ for ARGI; do
 	echo "  --help, -h         Show this help message    " 
 	echo "  --verbose, -v      Verbose, confirm launch   "
 	echo "  --just_make, -j    Only create targ files    " 
+	echo "  --log=<mode>       minimal (default) or full  "
 	echo "  --log_clean, -lc   Run clean.sh bef launch   " 
 	echo "  --amt=N            Num vehicles to launch    "
 	echo "  --rand, -r         Rand vehicle positions    "
@@ -90,6 +95,8 @@ for ARGI; do
 	VERBOSE=$ARGI
     elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
 	JUST_MAKE=$ARGI
+    elif [ "${ARGI:0:6}" = "--log=" ]; then
+	LOG_MODE="${ARGI#--log=*}"
     elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
 	LOG_CLEAN=$ARGI
     elif [ "${ARGI:0:6}" = "--amt=" ]; then
@@ -133,6 +140,16 @@ for ARGI; do
         exit 1
     fi
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) echo "$ME: --log must be minimal or full" >&2; exit 2 ;;
+esac
+if [ "${LOG_MODE_PREPARED:-no}" != yes ]; then
+    ./prepare_logging_mode.sh "$LOG_MODE"
+fi
+export LOG_MODE_PREPARED=yes
+export LOG_MODE_PREPARED_VALUE="$LOG_MODE"
 
 #------------------------------------------------------------
 #  Part 3A: Mission-mode specific defaults

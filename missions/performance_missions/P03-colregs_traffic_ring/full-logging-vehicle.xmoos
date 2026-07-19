@@ -1,0 +1,60 @@
+Processconfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
+
+  Run = pHelmIvP       @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pContactMgrV20 @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+
+#ifdef XMODE SIM
+  Run = uSimMarineV22  @ NewConsole = false
+#elseifdef XMODE M300
+  Run = iM300          @ NewConsole = false
+  Run = iM300Health    @ NewConsole = false
+#endif
+}
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File      = LOG_%(VNAME)
+  PATH      = ./
+  AsyncLog  = true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+  Log = HD @ 0 nosync
+
+  LogAuxSrc = true
+  WildCardLogging = true
+
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = APPCAST
+  WildCardOmitPattern = PSHARE_OUTPUT_SUMMARY
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+  WildCardOmitPattern = NAV_SPEED_OVER_GROUND
+  WildCardOmitPattern = SIMULATION_MODE
+  WildCardOmitPattern = TRUE_X
+  WildCardOmitPattern = TRUE_Y
+  WildCardOmitPattern = NAV_PITCH
+  WildCardOmitPattern = NAV_YAW
+  WildCardOmitPattern = NAV_Z
+  WildCardOmitPattern = NODE_PSHARE_VARS
+  WildCardOmitPattern = NODE_BROKER_ACK
+
+  CompressAlogs = false
+}

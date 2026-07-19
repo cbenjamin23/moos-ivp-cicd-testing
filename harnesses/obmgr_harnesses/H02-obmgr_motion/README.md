@@ -20,7 +20,7 @@ starting at `(0,-60)` and heading east along a `70m` corridor.
 Run the full matrix:
 
 ```bash
-cd /Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obmgr_harnesses/H02-obmgr_motion
+cd /path/to/moos-ivp-cicd-testing/harnesses/obmgr_harnesses/H02-obmgr_motion
 ./zlaunch.sh 10
 ./zlaunch.sh --log=full 10
 ./zlaunch.sh --jobs=2 --port_base=24000 10
@@ -55,16 +55,47 @@ as written by the mission, with only `case=<name>` prepended. Runner failures
 instead use `grade=fail reason=<runner_reason>`.
 
 ## Cases
-- `baseline_center_pass`: One obstacle blocks the lane and the vehicle is expected to arrive cleanly with zero collisions.
-- `offset_clear_pass`: One obstacle sits well above the transit lane, the vehicle should arrive with zero encounters.
-- `tight_alert_pass`: The alert range is reduced but still large enough for a clean one-obstacle avoidance transit.
-- `runtime_given_late_pass`: The obstacle is mailed to `pObstacleMgr` after launch with `GIVEN_OBSTACLE` instead of being present in startup config; the vehicle should still receive a usable alert and complete cleanly.
-- `point_cluster_pass`: The obstacle is built from `TRACKED_FEATURE` points and a generated convex hull instead of a configured polygon; the resulting alert should still support a clean avoidance transit.
-- `lasso_cluster_pass`: The obstacle is built from point inputs with `lasso=true`, exercising the pseudo-hull branch while still requiring clean transit.
-- `two_sequential_fail`: Two obstacles are placed in sequence as a stress case; the case passes when the mission observes arrival, two encounters, and one collision.
-- `wide_center_fail`: A wider centered obstacle exceeds what this short corridor stem can safely clear; the case passes when the mission observes arrival, one encounter, and one collision.
-- `avoid_disabled_fail`: Obstacle alerts are redirected onto an unused variable instead of `OBSTACLE_ALERT`; the case passes when the mission observes arrival, one encounter, and one collision.
-- `no_alert_request_fail`: The obstacle exists in `pObstacleMgr`, but no `OBM_ALERT_REQUEST` is sent; the case passes when the mission observes arrival, one encounter, and one collision.
+
+- `baseline_center_pass`: Starts `pObstacleMgr` with a 14-by-14-meter
+  `given_obstacle` centered on the vehicle's route and requests alerts within
+  22 meters, testing that the obstacle is reported early enough for the
+  avoidance behavior to steer around it; passes when `ARRIVED=true` and
+  `OB_TOTAL_COLLISIONS=0`.
+- `offset_clear_pass`: Moves the same 14-by-14-meter `given_obstacle` so its
+  nearest edge is 14 meters north of the route, testing that an off-lane
+  obstacle does not create a collision-detector encounter; passes when
+  `ARRIVED=true`, `OB_TOTAL_COLLISIONS=0`, and `OB_TOTAL_ENCOUNTERS=0`.
+- `tight_alert_pass`: Keeps the centered startup obstacle but reduces the
+  `OBM_ALERT_REQUEST` range from 22 to 16 meters, testing whether the shorter
+  warning still leaves enough room for avoidance; passes when `ARRIVED=true`
+  and `OB_TOTAL_COLLISIONS=0`.
+- `runtime_given_late_pass`: Posts `GIVEN_OBSTACLE` at three seconds, after the
+  `OBM_ALERT_REQUEST` at one second, testing runtime obstacle insertion and
+  alert generation; passes when `ARRIVED=true` and `OB_TOTAL_COLLISIONS=0`.
+- `point_cluster_pass`: Posts four `TRACKED_FEATURE` points under the same key
+  to test `pObstacleMgr`'s generated convex-hull path instead of its configured
+  polygon path; passes when `ARRIVED=true` and `OB_TOTAL_COLLISIONS=0`.
+- `lasso_cluster_pass`: Posts the same four points with `lasso=true` and
+  `lasso_radius=8`, exercising pseudo-hull configuration instead of the normal
+  convex hull; the current evaluator passes when `ARRIVED=true` and
+  `OB_TOTAL_COLLISIONS=0` without comparing the generated hull.
+- `two_sequential_fail`: Places two 8-by-8-meter obstacles in the transit lane
+  at separate points along the route, testing consecutive obstacle encounters;
+  passes when `ARRIVED=true`, `OB_TOTAL_ENCOUNTERS=2`, and
+  `OB_TOTAL_COLLISIONS=1`.
+- `wide_center_fail`: Replaces the baseline polygon with a 28-by-28-meter
+  obstacle centered on the route, testing the collision outcome when the
+  obstacle is too wide for this short corridor; passes when `ARRIVED=true`,
+  `OB_TOTAL_ENCOUNTERS=1`, and `OB_TOTAL_COLLISIONS=1`.
+- `avoid_disabled_fail`: Starts with an 18-by-16-meter obstacle centered on the
+  route but directs the alert request to `DISABLED_ALERT` instead of the
+  behavior's `OBSTACLE_ALERT` update variable, testing the missing behavior
+  update path; passes when `ARRIVED=true`, `OB_TOTAL_ENCOUNTERS=1`, and
+  `OB_TOTAL_COLLISIONS=1`.
+- `no_alert_request_fail`: Starts with the same centered obstacle but sends no
+  `OBM_ALERT_REQUEST`, testing that `pObstacleMgr` does not publish an alert
+  without a request; passes when `ARRIVED=true`, `OB_TOTAL_ENCOUNTERS=1`, and
+  `OB_TOTAL_COLLISIONS=1`.
 
 Typical results line:
 

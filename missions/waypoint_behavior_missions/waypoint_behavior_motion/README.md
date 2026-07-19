@@ -1,5 +1,8 @@
 # waypoint_behavior_motion
 
+Logging is minimal by default in both communities and launches no `pLogger`.
+Add `--log=full` to either launcher to restore both original loggers.
+
 Deterministic one-vehicle motion stem for `BHV_Waypoint`.
 
 The vehicle starts at `(-18,-121)` and the default behavior drives it east to
@@ -38,7 +41,7 @@ Entry points:
 
 Companion harness:
 
-- [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion)
+- [`harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion`](../../../harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion)
 
 The local `zlaunch.sh` keeps the stem mission convenient for default runs, but
 forwards named cases and wave runs to the companion harness. In wave mode, the

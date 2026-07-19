@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Alias Launch</h3>
-          <p>Description: Launches uTimerScript under the uTimerAlias MOOS name and expects the alias-specific config block to run.</p>
+          <p>Description: Starts uTimerScript as uTimerAlias, testing MOOS-name aliasing and lookup of the matching ProcessConfig=uTimerAlias block; passes when the aliased process posts ANTLER_ALIAS_FLAG=true and the evaluation trigger.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Multi-alias Launch</h3>
-          <p>Description: Launches two aliases of the same binary and expects both alias-specific config blocks to run.</p>
+          <p>Description: Starts two copies of uTimerScript as uTimerOne and uTimerTwo, testing independent configuration of multiple aliases of one executable; passes when the two processes post ANTLER_ONE_FLAG=true and ANTLER_TWO_FLAG=true.</p>
         </div>
       </article>
 
@@ -87,37 +87,37 @@
 
         <article class="case-row">
           <code>pantler_baseline_launch_pass</code>
-          <p>Launches a normal uTimerScript and expects its flag to reach pMissionEval.</p>
+          <p>Starts an ordinary uTimerScript from the ANTLER Run list, testing unaliased process launch; passes when that process posts ANTLER_BASE_FLAG=true and the later evaluation trigger.</p>
         </article>
 
 
         <article class="case-row">
           <code>pantler_alias_launch_pass</code>
-          <p>Launches uTimerScript under the uTimerAlias MOOS name and expects the alias-specific config block to run.</p>
+          <p>Starts uTimerScript as uTimerAlias, testing MOOS-name aliasing and lookup of the matching ProcessConfig=uTimerAlias block; passes when the aliased process posts ANTLER_ALIAS_FLAG=true and the evaluation trigger.</p>
         </article>
 
 
         <article class="case-row">
           <code>pantler_multi_alias_launch_pass</code>
-          <p>Launches two aliases of the same binary and expects both alias-specific config blocks to run.</p>
+          <p>Starts two copies of uTimerScript as uTimerOne and uTimerTwo, testing independent configuration of multiple aliases of one executable; passes when the two processes post ANTLER_ONE_FLAG=true and ANTLER_TWO_FLAG=true.</p>
         </article>
 
 
         <article class="case-row">
           <code>pantler_filter_launch_pass</code>
-          <p>Starts pAntler with a launch filter and expects the allowed timer to run while the blocked timer never posts.</p>
+          <p>Supplies a pAntler launch filter containing uTimerAllowed but not uTimerBlocked, testing selective launch from an ANTLER block that lists both aliases; passes when the allowed process posts ANTLER_FILTER_ALLOWED=true and any ANTLER_FILTER_BLOCKED=true post fails the case.</p>
         </article>
 
 
         <article class="case-row">
           <code>pantler_system_path_launch_pass</code>
-          <p>Launches an aliased timer with an explicit PATH=SYSTEM option and expects the alias config block to run.</p>
+          <p>Starts uTimerScript as uTimerSystemPath with PATH=SYSTEM, exercising explicit system-path lookup; passes when the aliased process posts ANTLER_PATH_FLAG=true and the evaluation trigger.</p>
         </article>
 
 
         <article class="case-row">
           <code>pantler_extra_params_launch_pass</code>
-          <p>Launches an aliased timer with ExtraProcessParams and expects the timer still to run with the added option.</p>
+          <p>Defines timer_args=--verbose=false and starts uTimerScript as uTimerExtra with ExtraProcessParams=timer_args, exercising named extra-argument forwarding; passes when the aliased process posts ANTLER_EXTRA_FLAG=true and the evaluation trigger.</p>
         </article>
 
       </div>

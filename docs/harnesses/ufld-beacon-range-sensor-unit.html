@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Beacon Range</h3>
-          <p>Description: Verifies a vehicle range request produces a short BRS_RANGE_REPORT with the expected beacon range.</p>
+          <p>Description: Places Alpha at (0,0) and beacon beacon at (30,40), then requests a range with report_vars=short; passes when BRS_RANGE_REPORT identifies Alpha and the beacon at range 50 and the reply pulse identifies the beacon at (30,40).</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Ground Truth Report</h3>
-          <p>Description: Verifies uniform zero-noise reporting also publishes ground-truth range mail.</p>
+          <p>Description: Enables ground_truth=true with zero-percent uniform noise and requests the 50-meter beacon range; passes when the ordinary short report and BRS_RANGE_REPORT_GT both identify the beacon at range 50.</p>
         </div>
       </article>
 
@@ -87,121 +87,121 @@
 
         <article class="case-row">
           <code>request_short_report_pass</code>
-          <p>Verifies a vehicle range request produces a short BRS_RANGE_REPORT with the expected beacon range.</p>
+          <p>Places Alpha at (0,0) and beacon beacon at (30,40), then requests a range with report_vars=short; passes when BRS_RANGE_REPORT identifies Alpha and the beacon at range 50 and the reply pulse identifies the beacon at (30,40).</p>
         </article>
 
 
         <article class="case-row">
           <code>request_long_report_pass</code>
-          <p>Verifies report_vars=long publishes the vehicle-specific long report and suppresses the short report.</p>
+          <p>Requests the same 50-meter measurement with report_vars=long; passes when BRS_RANGE_REPORT_ALPHA identifies beacon at range 50 and no short BRS_RANGE_REPORT is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>request_both_report_pass</code>
-          <p>Verifies report_vars=both publishes both short and long report channels.</p>
+          <p>Requests the same 50-meter measurement with report_vars=both; passes when both BRS_RANGE_REPORT and BRS_RANGE_REPORT_ALPHA identify beacon at range 50.</p>
         </article>
 
 
         <article class="case-row">
           <code>brs_ground_truth_uniform_zero_pass</code>
-          <p>Verifies uniform zero-noise reporting also publishes ground-truth range mail.</p>
+          <p>Enables ground_truth=true with zero-percent uniform noise and requests the 50-meter beacon range; passes when the ordinary short report and BRS_RANGE_REPORT_GT both identify the beacon at range 50.</p>
         </article>
 
 
         <article class="case-row">
           <code>brs_ground_truth_false_no_gt_pass</code>
-          <p>Verifies ground-truth mail is suppressed when disabled even with a noise algorithm configured.</p>
+          <p>Configures zero-percent uniform noise with ground_truth=false; passes when the ordinary short report identifies the beacon at range 50 and no short BRS_RANGE_REPORT_GT is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>far_request_blocked_pass</code>
-          <p>Verifies a request outside combined push/pull range produces no range report.</p>
+          <p>Places Alpha at (500,0), beyond the configured 50-meter node and beacon transfer limits; passes when neither short nor Alpha-specific range report is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>node_push_unlimited_far_pass</code>
-          <p>Verifies unlimited node push/pull settings permit a far beacon reply.</p>
+          <p>Places Alpha 500 meters from farbeacon, whose own push and pull limits are only 10 meters, while setting both node transfer limits to unlimited; passes when the short report identifies farbeacon at range 500.</p>
         </article>
 
 
         <article class="case-row">
           <code>brs_ping_wait_blocks_second_pass</code>
-          <p>Verifies ping-wait throttling blocks an immediate second request.</p>
+          <p>Sets the default ping_wait to 30 seconds and sends Alpha requests 0.8 seconds apart; passes when exactly one report is published and it identifies beacon at range 50.</p>
         </article>
 
 
         <article class="case-row">
           <code>brs_named_ping_wait_blocks_only_alpha_pass</code>
-          <p>Verifies node-specific ping wait throttles one vehicle without blocking another vehicle.</p>
+          <p>Sets ping_wait=alpha=30 over a zero-second default, sends two Alpha requests and then one Bravo request; passes when the first Alpha report is observed, the second Alpha request is suppressed, and Bravo produces the second and final 50-meter report.</p>
         </article>
 
 
         <article class="case-row">
           <code>ping_payment_request_blocks_retry_pass</code>
-          <p>Verifies ping_payments=upon_request charges a failed request and blocks an immediate retry.</p>
+          <p>Uses ping_payments=upon_request: Alpha requests while 470 meters from the beacon, moves into range, and retries one second later; passes when the failed first request consumes the 30-second wait and no report is published for the retry.</p>
         </article>
 
 
         <article class="case-row">
           <code>ping_payment_response_allows_retry_pass</code>
-          <p>Verifies ping_payments=upon_response leaves a failed request uncharged so a later in-range retry can succeed.</p>
+          <p>Uses ping_payments=upon_response with the same failed far request and in-range retry; passes when the failed request does not consume the wait and the retry reports beacon at range 50.</p>
         </article>
 
 
         <article class="case-row">
           <code>ping_payment_accept_blocks_retry_pass</code>
-          <p>Verifies ping_payments=upon_accept charges an accepted request even when no beacon reply is returned.</p>
+          <p>Uses ping_payments=upon_accept with a request path that reaches the beacon but a 10-meter beacon reply limit: Alpha requests from 50 meters, moves within 5 meters, and retries; passes when only the first request pulse is published and no range report is returned, showing the accepted first request consumed the wait despite its blocked reply.</p>
         </article>
 
 
         <article class="case-row">
           <code>brs_node_report_local_pass</code>
-          <p>Verifies NODE_REPORT_LOCAL updates the vehicle ledger for later beacon range requests.</p>
+          <p>Supplies Alpha&#x27;s position through NODE_REPORT_LOCAL rather than NODE_REPORT, then requests the beacon range; passes when the short report identifies beacon at range 50.</p>
         </article>
 
 
         <article class="case-row">
           <code>beacon_style_defaults_pass</code>
-          <p>Verifies default beacon style parameters flow into startup marker visuals.</p>
+          <p>Sets the default beacon color to green, shape to square, and width to 7; passes when the startup VIEW_MARKER at (30,40) contains exactly those style fields.</p>
         </article>
 
 
         <article class="case-row">
           <code>beacon_reply_push_blocks_pass</code>
-          <p>Verifies a request can reach the beacon while the beacon reply is blocked by beacon push distance.</p>
+          <p>Gives the request path 100-meter reach but the beacon reply only 10-meter reach for a 50-meter request; passes when the Alpha request pulse is published and no range report is returned.</p>
         </article>
 
 
         <article class="case-row">
           <code>request_path_pull_blocks_pass</code>
-          <p>Verifies a request pulse is visible but no reply is posted when the request cannot reach the beacon under combined range limits.</p>
+          <p>Gives the beacon reply 100-meter reach but the request path only 10-meter reach for a 50-meter request; passes when the Alpha request pulse is published and no range report is returned.</p>
         </article>
 
 
         <article class="case-row">
           <code>unknown_request_no_report_pass</code>
-          <p>Verifies a request from an unknown vehicle name is rejected before pulses or reports are posted.</p>
+          <p>Requests a range for unregistered vehicle ghost; passes when neither a request pulse nor a range report is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_name_request_no_report_pass</code>
-          <p>Verifies a malformed request without name is rejected before pulses or reports are posted.</p>
+          <p>Posts vehicle=alpha instead of the required name=alpha request field; passes when neither a request pulse nor a range report is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>beacon_visual_marker_pass</code>
-          <p>Verifies configured beacons publish startup VIEW_MARKER visuals.</p>
+          <p>Configures a beacon at (30,40) and makes no range request; passes when a VIEW_MARKER payload beginning with those coordinates is published at startup.</p>
         </article>
 
 
         <article class="case-row">
           <code>unsolicited_frequency_pass</code>
-          <p>Verifies beacon frequency broadcasts can publish an unsolicited range report.</p>
+          <p>Configures the beacon with freq=0.6 and makes no range request; passes when Alpha receives an unsolicited short report identifying beacon at range 50.</p>
         </article>
 
       </div>

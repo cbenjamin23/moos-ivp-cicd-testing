@@ -37,5 +37,10 @@ Typical runs:
 ```bash
 ./launch.sh --just_make --scenario=baseline_colregs --nogui 10
 ./zlaunch.sh --scenario=dense_colregs --nogui 10
+./zlaunch.sh --log=full --scenario=dense_colregs --nogui 10
 ./zlaunch.sh --scenario=endurance_colregs --nogui 10
 ```
+
+Direct launches default to `--log=minimal`, with only vehicle `APP_LOG`
+evidence retained for performance warning scans. `--log=full` restores the
+original shoreside and vehicle wildcard logging.

@@ -15,116 +15,134 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ### Given-obstacle and alert-path cases
 
-- `given_baseline_pass`
-  Default runtime alert request plus a near given obstacle should produce both
+- `given_baseline_pass`: Posts a 4-by-4-meter `GIVEN_OBSTACLE` 18 meters east
+  of the stationary vehicle after a 25-meter `OBM_ALERT_REQUEST`, testing
+  runtime obstacle ingestion and distance calculation; passes when
   `OBM_NEW_GIVEN=true` and `OBM_DIST_TO_OBJ=OB_NEAR,18.0`.
-- `config_given_obstacle_pass`
-  A startup `given_obstacle` entry should seed the manager before runtime mail
-  arrives. The case then sends only the alert request and grades on the
-  resulting distance publication for that config-owned polygon.
-- `given_obstable_alias_pass`
-  The source still accepts the historical misspelled `given_obstable` config
-  token. This case keeps that alias under regression coverage by requiring the
-  alias-loaded polygon to alert exactly like the canonical spelling.
-- `no_alert_request_absent_pass`
-  The same obstacle is still accepted, but the runtime `OBM_ALERT_REQUEST` is
-  removed. This matters because `pObstacleMgr` will not post `OBM_DIST_TO_OBJ`
-  or obstacle alerts at all until an alert request exists.
-- `bad_alert_request_absent_pass`
-  A malformed runtime alert request should be ignored rather than partially
-  installed. The obstacle is accepted, but the mission fails if the invalid
-  request causes a distance report or obstacle alert to appear.
-- `given_far_absent_pass`
-  A farther given obstacle should still be accepted, but with default
-  `post_dist_to_polys=close` it should not produce a distance report or an
-  obstacle alert.
-- `given_general_alert_pass`
-  A broader `general_alert` variable should post even when the main alert range
-  is too tight for the obstacle. The mission requires the obstacle to be
-  accepted and the complete named general-alert payload to match.
-- `general_alert_default_name_pass`
-  The same general-alert configuration should work without an explicit `name=`
-  field, using the default `gen_alert_` prefix in the complete payload.
-- `given_duration_resolve_pass`
-  A short-lived given obstacle should age out and post `OBM_RESOLVED`.
-- `given_max_duration_reject_absent_pass`
-  A mailed-in obstacle whose duration exceeds `given_max_duration` should be
-  rejected before it is ever accepted as a live obstacle.
-- `given_max_duration_missing_absent_pass`
-  A mailed-in obstacle without `duration=...` should also be rejected before it
-  can become a live given obstacle.
-- `invalid_given_nonconvex_absent_pass`
-  A non-convex/degenerate `GIVEN_OBSTACLE` payload should be rejected before it
-  posts `new_obs_flag`, `OBM_DIST_TO_OBJ`, or an obstacle alert.
-- `post_dist_always_pass`
-  With `post_dist_to_polys=true`, a far obstacle should still publish
-  `OBM_DIST_TO_OBJ`, distinct from the default close-only behavior.
-- `post_dist_false_absent_pass`
-  With `post_dist_to_polys=false`, the mission should not publish the normal
-  near-obstacle distance report for this fixed geometry.
+- `config_given_obstacle_pass`: Loads the same near polygon through the startup
+  `given_obstacle` parameter and sends only the runtime alert request, testing
+  the configuration-owned obstacle path; passes when
+  `OBM_DIST_TO_OBJ=CONFIG_NEAR,18.0`.
+- `given_obstable_alias_pass`: Loads the near polygon through the historical
+  misspelled `given_obstable` parameter, testing that the alias still reaches
+  the normal alert-distance path; passes when
+  `OBM_DIST_TO_OBJ=ALIAS_NEAR,18.0`.
+- `no_alert_request_absent_pass`: Posts the near `GIVEN_OBSTACLE` without an
+  `OBM_ALERT_REQUEST`, testing that an accepted obstacle does not produce
+  request-scoped output; passes when `OBM_NEW_GIVEN=true`,
+  `OBM_DIST_TO_OBJ=OB_NEAR,18.0` is absent, and `OBSTACLE_ALERT` remains empty.
+- `bad_alert_request_absent_pass`: Sends an `OBM_ALERT_REQUEST` with
+  `alert_range=-25` before posting the near obstacle, testing rejection of an
+  invalid request; passes when `OBM_NEW_GIVEN=true`, the expected
+  `OBM_DIST_TO_OBJ` report is absent, and `OBSTACLE_ALERT` remains empty.
+- `given_far_absent_pass`: Posts a `GIVEN_OBSTACLE` 35 meters east while the
+  alert range is 25 meters and `post_dist_to_polys=close`, testing close-range
+  output gating; passes when `OBM_NEW_GIVEN=true`,
+  `OBM_DIST_TO_OBJ=OB_FAR,35.0` is absent, and `OBSTACLE_ALERT` remains empty.
+- `given_general_alert_pass`: Configures a named `general_alert` with a
+  40-meter range, then posts an obstacle 35 meters away and outside the normal
+  25-meter alert range, testing the independent general-alert path; passes when
+  `OBM_NEW_GIVEN=true`, `GEN_ALERT_SEEN=true`, and `GEN_OBSTACLE_ALERT` exactly
+  matches the `gen_ob_far` polygon payload.
+- `general_alert_default_name_pass`: Omits `name=` from the same 40-meter
+  `general_alert`, testing the default `gen_alert_` prefix; passes when
+  `OBM_NEW_GIVEN=true`, `GEN_ALERT_SEEN=true`, and `GEN_OBSTACLE_ALERT` exactly
+  matches the `gen_alert_ob_far` polygon payload.
+- `given_duration_resolve_pass`: Posts the near obstacle with `duration=3`,
+  testing expiration of a runtime given obstacle; passes at 10 seconds when
+  `OBM_RESOLVED=ob_near`.
+- `given_max_duration_reject_absent_pass`: Sets `given_max_duration=5` and
+  posts an obstacle with `duration=10`, testing rejection above the configured
+  duration limit; passes when `OBM_NEW_GIVEN` is never set and
+  `OBSTACLE_ALERT` remains empty.
+- `given_max_duration_missing_absent_pass`: Sets `given_max_duration=30` and
+  posts a `GIVEN_OBSTACLE` without `duration=`, testing the required-duration
+  check; passes when `OBM_NEW_GIVEN` is never set.
+- `invalid_given_nonconvex_absent_pass`: Posts a `GIVEN_OBSTACLE` whose three
+  vertices are collinear, testing invalid-polygon rejection; passes when
+  `OBM_NEW_GIVEN` is never set, `OBM_DIST_TO_OBJ=BAD_GIVEN,20.0` is absent, and
+  `OBSTACLE_ALERT` remains empty.
+- `post_dist_always_pass`: Sets `post_dist_to_polys=true` and posts an obstacle
+  35 meters away, outside the 25-meter alert range, testing unconditional
+  distance publication; passes when `OBM_NEW_GIVEN=true` and
+  `OBM_DIST_TO_OBJ=OB_FAR,35.0`.
+- `post_dist_false_absent_pass`: Sets `post_dist_to_polys=false` before posting
+  the near obstacle, testing distance-output suppression without rejecting the
+  obstacle; passes when `OBM_NEW_GIVEN=true` and
+  `OBM_DIST_TO_OBJ=OB_NEAR,18.0` is absent.
 
 ### Point-cluster and hull-generation cases
 
-- `points_cluster_dist_pass`
-  A cluster of `TRACKED_FEATURE` points should generate a convex hull and a
-  stable `OBM_DIST_TO_OBJ` distance report.
-- `custom_point_var_pass`
-  The same point cluster is posted under a custom `point_var` instead of the
-  default `TRACKED_FEATURE`, and it should still become a valid obstacle.
-- `invalid_point_missing_key_absent_pass`
-  Point input without a key or label should be ignored before it can become an
-  obstacle cluster. The mission grades on the absence of a generic cluster
-  alert.
-- `max_pts_per_cluster_trim_pass`
-  The point set intentionally exceeds `max_pts_per_cluster`, so the hull should
-  be built from the trimmed cluster rather than from the full history of points.
-- `points_ignore_range_absent_pass`
-  The same point cluster should be ignored entirely when `ignore_range` is
-  tighter than the point distances.
-- `points_age_resolve_pass`
-  Point-based obstacles should resolve once all points age out past
-  `max_age_per_point`.
-- `lasso_cluster_pass`
-  With `lasso=true`, the manager should build a pseudo-hull instead of the
-  normal convex hull. The reported distance is checked in a numeric band because
-  the case is about the lasso geometry, not a specific polygon string.
-- `placeholder_hull_pass`
-  Three colinear points do not form a valid convex hull, so `pObstacleMgr`
-  should fall back to a placeholder radial polygon. The test checks the
-  resulting minimum distance band rather than the polygon text itself.
-- `post_view_polys_false_absent_pass`
-  A point cluster should still produce obstacle distance output when
-  `post_view_polys=false`, but it should not publish a `VIEW_POLYGON`
-  visualization. The mission watches for that visualization and fails if it
-  appears.
-- `new_obs_flag_macros_pass`
-  `new_obs_flag` supports `pObstacleMgr` macros such as `$[OBS_NOW]` and
-  `$[OBS_EVER]`. This case confirms a first accepted given obstacle expands
-  those counters to `now_1_ever_1`.
-- `point_vsource_alert_pass`
-  Point inputs may include `vsource=...`, and the alert payload should preserve
-  that source tag when a hull update is posted. `pMissionEval` requires the
-  expected distance and the complete obstacle-alert payload.
-- `given_after_points_same_key_reject_pass`
-  If a point-cluster obstacle already owns a key, a later mailed-in
-  `GIVEN_OBSTACLE` with the same label should be rejected. The point cluster
-  must remain alertable, and the given-obstacle `new_obs_flag` must stay absent.
+- `points_cluster_dist_pass`: Posts four `TRACKED_FEATURE` points under
+  `key=rock_a`, testing conversion of a point cluster into an obstacle hull and
+  its distance calculation; passes when `OBM_DIST_TO_OBJ=ROCK_A,18.0` and
+  `17 < OBM_MIN_DIST_EVER < 19`.
+- `custom_point_var_pass`: Sets `point_var=OBM_POINTS` and posts the same four
+  points on `OBM_POINTS`, testing the configurable point-input subscription;
+  passes when `OBM_DIST_TO_OBJ=ROCK_A,18.0` and
+  `17 < OBM_MIN_DIST_EVER < 19`.
+- `invalid_point_missing_key_absent_pass`: Posts four `TRACKED_FEATURE` points
+  without `key=` or `label=`, testing rejection before cluster creation; passes
+  when `OBM_DIST_TO_OBJ=GENERIC,18.0` is absent and `OBSTACLE_ALERT` remains
+  empty.
+- `max_pts_per_cluster_trim_pass`: Sets `max_pts_per_cluster=3` and posts five
+  points under `key=rock_a`, exercising the capped-cluster path before hull
+  construction; the current evaluator passes when
+  `17 < OBM_MIN_DIST_EVER < 19` but does not distinguish the retained points.
+- `points_ignore_range_absent_pass`: Sets `ignore_range=10` and posts a point
+  cluster whose nearest point is 18 meters away, testing point rejection
+  outside the input range; passes when `OBM_DIST_TO_OBJ=ROCK_A,18.0` is absent
+  and `OBSTACLE_ALERT` remains empty.
+- `points_age_resolve_pass`: Sets `max_age_per_point=3` and posts four points
+  under `key=rock_a`, testing point-cluster expiration; passes at 10 seconds
+  when `OBM_RESOLVED=rock_a`.
+- `lasso_cluster_pass`: Sets `lasso=true` and `lasso_radius=5` for three
+  collinear points centered 20 meters east of the vehicle, testing pseudo-hull
+  construction instead of the normal convex hull; passes when
+  `14 < OBM_MIN_DIST_EVER < 16`.
+- `placeholder_hull_pass`: Posts three collinear points with lasso disabled,
+  testing the placeholder-polygon fallback when a convex hull cannot be
+  formed; passes when `19 < OBM_MIN_DIST_EVER < 21`.
+- `post_view_polys_false_absent_pass`: Sets `post_view_polys=false` and posts a
+  valid four-point cluster, testing that visualization can be suppressed
+  without suppressing obstacle processing; passes when
+  `OBM_DIST_TO_OBJ=ROCK_A,18.0` and no `VIEW_POLYGON` mail is observed.
+- `new_obs_flag_macros_pass`: Configures
+  `new_obs_flag=OBM_NEW_STATS=now_$[OBS_NOW]_ever_$[OBS_EVER]` and posts the
+  first near obstacle, testing macro expansion of current and lifetime obstacle
+  counts; passes when `OBM_NEW_STATS=now_1_ever_1` and
+  `OBM_DIST_TO_OBJ=OB_NEAR,18.0`.
+- `point_vsource_alert_pass`: Adds `vsource=radar` to every point in the
+  `rock_a` cluster, testing preservation of the source tag in the generated
+  alert; passes when `ALERT_SEEN=true`, `OBM_DIST_TO_OBJ=ROCK_A,18.0`, and the
+  complete `OBSTACLE_ALERT` exactly matches the polygon payload containing
+  `vsource=radar`.
+- `given_after_points_same_key_reject_pass`: Builds the `mix_key` point cluster
+  and then posts a `GIVEN_OBSTACLE` with the same label, testing key-ownership
+  conflict handling; passes when `OBM_DIST_TO_OBJ=MIX_KEY,18.0` and the
+  given-obstacle `OBM_NEW_GIVEN` flag is never set.
 
 ### Obstacle-modification cases
 
-- `disable_obstacle_pass`
-  `disable_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=disable`,
-  confirming that obstacle-disable mail is generated for the named obstacle.
-- `disable_vsource_pass`
-  The modification parser also accepts `vsource=...` selectors, not only bare
-  obstacle IDs. This case sends a vsource disable command, and `pMissionEval`
-  requires the complete `vsource=radar,action=disable` filter message.
-- `enable_obstacle_pass`
-  `enable_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=enable`,
-  confirming that obstacle-enable mail is generated for the named obstacle.
-- `expunge_obstacle_pass`
-  `expunge_var` should post `BHV_ABLE_FILTER=obstacle_id=...,action=expunge`
-  and remove the obstacle from the manager's internal map.
+- `disable_obstacle_pass`: Sets `disable_var=OBM_DISABLE`, accepts `ob_near`,
+  and posts `OBM_DISABLE=ob_near`, testing generation of
+  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=disable`; the current evaluator
+  passes when any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true` and records
+  the payload without comparing it.
+- `disable_vsource_pass`: Posts `OBM_DISABLE=vsource=radar`, testing the
+  source-selector branch of the modification parser; passes when
+  `OB_FILTER_SEEN=true` and
+  `BHV_ABLE_FILTER=vsource=radar,action=disable` exactly.
+- `enable_obstacle_pass`: Sets `enable_var=OBM_ENABLE`, accepts `ob_near`, and
+  posts `OBM_ENABLE=ob_near`, testing generation of
+  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=enable`; the current evaluator
+  passes when any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true` and records
+  the payload without comparing it.
+- `expunge_obstacle_pass`: Sets `expunge_var=OBM_EXPUNGE`, accepts `ob_near`,
+  and posts `OBM_EXPUNGE=ob_near`, testing generation of
+  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=expunge`; the current evaluator
+  passes when any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true` and does not
+  verify removal from the manager's internal map.
 
 ## Typical Runs
 

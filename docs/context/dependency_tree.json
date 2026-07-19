@@ -4376,7 +4376,7 @@
         "path": "missions/obstacle_behavior_missions/obstacle_behavior_motion"
       },
       "patches": {
-        "file_count": 30
+        "file_count": 31
       },
       "path": "harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion",
       "perf_profile": "",
@@ -7023,22 +7023,22 @@
       ".html": 71,
       ".js": 1,
       ".json": 2,
-      ".md": 144,
+      ".md": 145,
       ".mjo": 1,
       ".moos": 155,
       ".mp4": 149,
       ".png": 4,
       ".py": 38,
-      ".sh": 347,
+      ".sh": 366,
       ".txt": 302,
       ".xbhv": 518,
-      ".xmoos": 1293,
+      ".xmoos": 1327,
       "[none]": 7
     },
-    "harness_patch_count": 1739,
+    "harness_patch_count": 1740,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
-    "mission_config_count": 458,
+    "mission_config_count": 477,
     "root": "."
   },
   "schema": "moos-ivp-cicd-context-graph.v1",

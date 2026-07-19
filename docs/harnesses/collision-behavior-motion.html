@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Head-on Resolve</h3>
-          <p>Description: This case moves the intruder head-on. This is a stronger geometry than the baseline crossing case, but the mission should still resolve cleanly.</p>
+          <p>Description: Starts the intruder at (70,-60) moving west at 1.2 m/s directly toward eastbound Abe; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>No Alert Request Fail</h3>
-          <p>Description: The behavior is told not to request an alert while the contact remains challenging. The mission should grade pass only when the avoid behavior stays idle, no contact info arrives, and a collision is observed.</p>
+          <p>Description: Sets no_alert_request=true while leaving the stationary intruder directly in Abe&#x27;s lane; this expected-negative case passes when the behavior remains idle, CONTACT_INFO is never observed, no contact is resolved, Abe arrives, and at least one collision is recorded.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Resolve</h3>
-          <p>Description: Baseline on-lane contact. The behavior should auto-request, spawn, resolve, and finish with no collision.</p>
+          <p>Description: Places a stationary kayak named intruder at (30,-60), directly in Abe&#x27;s eastbound lane, to exercise the stock spawned BHV_AvoidCollision; passes at the evaluation checkpoint when contact info was received, AVOIDING=end, CONTACT_RESOLVED=intruder, ARRIVED=true, and COLLISION_TOTAL=0.</p>
         </div>
       </article>
 
@@ -98,127 +98,127 @@
 
         <article class="case-row">
           <code>default_resolve_pass</code>
-          <p>Baseline on-lane contact. The behavior should auto-request, spawn, resolve, and finish with no collision.</p>
+          <p>Places a stationary kayak named intruder at (30,-60), directly in Abe&#x27;s eastbound lane, to exercise the stock spawned BHV_AvoidCollision; passes at the evaluation checkpoint when contact info was received, AVOIDING=end, CONTACT_RESOLVED=intruder, ARRIVED=true, and COLLISION_TOTAL=0.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_alert_request_absent_pass</code>
-          <p>The same behavior is run with no_alert_request=true, but the contact is moved off-lane so the mission stays clean without engaging the avoid behavior.</p>
+          <p>Sets no_alert_request=true and moves the stationary intruder five meters off the lane to (30,-55); passes when the behavior remains idle with no resolved contact, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_per_contact_info_pass</code>
-          <p>The avoid behavior is configured to post per-contact info and the mission confirms the range and closing-speed outputs show up.</p>
+          <p>Sets post_per_contact_info=true against the baseline on-lane intruder; passes when both RANGE_AVD_intruder and CLSG_SPD_AVD_intruder were published, contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>behavior_filter_absent_pass</code>
-          <p>The behavior requests an alert with a type filter that excludes the spoofed contact, so the avoid behavior stays idle and the mission still finishes cleanly.</p>
+          <p>Sets match_type=submarine while the off-lane intruder is a kayak, exercising the behavior-owned type filter; passes when the behavior remains idle with no resolved contact, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>head_on_resolve_pass</code>
-          <p>This case moves the intruder head-on. This is a stronger geometry than the baseline crossing case, but the mission should still resolve cleanly.</p>
+          <p>Starts the intruder at (70,-60) moving west at 1.2 m/s directly toward eastbound Abe; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_outer_too_small_fail</code>
-          <p>The collision-relevance outer distance is made too small for the on-lane encounter. The behavior may resolve administratively, but the mission should grade pass only when the expected collision evidence is observed.</p>
+          <p>Shrinks the relevance distances to pwt_outer_dist=5, pwt_inner_dist=2, min_util_cpa_dist=1, and max_util_cpa_dist=3 against the baseline on-lane intruder; this expected-negative case passes when COLLISION_TOTAL&gt;0 at the evaluation checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_grade_quadratic_pass</code>
-          <p>The objective-function grade is switched to quadratic. The behavior should still resolve the baseline encounter with no collision.</p>
+          <p>Sets pwt_grade=quadratic against the baseline on-lane intruder, exercising quadratic relevance shaping; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_grade_quasi_pass</code>
-          <p>The objective-function grade is switched to quasi. The behavior should still resolve the baseline encounter with no collision.</p>
+          <p>Sets pwt_grade=quasi against the baseline on-lane intruder, exercising quasi relevance shaping; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>use_refinery_pass</code>
-          <p>Enables the IvP refinery and verifies the behavior still builds a usable function, resolves the contact, arrives, and avoids collision.</p>
+          <p>Sets use_refinery=true against the baseline on-lane intruder, exercising refined IvP-function construction; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>contact_type_required_absent_pass</code>
-          <p>The legacy contact_type_required alias is set to a type that excludes the spoofed contact while the contact is moved off-lane. The behavior should stay idle and the transit should finish cleanly.</p>
+          <p>Uses the legacy contact_type_required=submarine alias while the off-lane intruder is a kayak; passes when the behavior remains idle with no resolved contact, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_extrapolate_pass</code>
-          <p>Contact extrapolation is disabled while the contact feed remains fresh. The behavior should still resolve the encounter cleanly.</p>
+          <p>Sets extrapolate=false while retaining the fresh stationary on-lane intruder feed; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_alert_request_fail</code>
-          <p>The behavior is told not to request an alert while the contact remains challenging. The mission should grade pass only when the avoid behavior stays idle, no contact info arrives, and a collision is observed.</p>
+          <p>Sets no_alert_request=true while leaving the stationary intruder directly in Abe&#x27;s lane; this expected-negative case passes when the behavior remains idle, CONTACT_INFO is never observed, no contact is resolved, Abe arrives, and at least one collision is recorded.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_inner_dist_fail</code>
-          <p>pwt_inner_dist is set outside the valid relationship to pwt_outer_dist. The mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets pwt_inner_dist=30 above pwt_outer_dist=24; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>pwt_outer_dist is set inside the configured inner distance. The mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets pwt_outer_dist=5 below pwt_inner_dist=10; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_min_util_cpa_dist_fail</code>
-          <p>min_util_cpa_dist is set above max_util_cpa_dist. The mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets min_util_cpa_dist=20 above max_util_cpa_dist=16; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_util_cpa_dist_fail</code>
-          <p>max_util_cpa_dist is set below min_util_cpa_dist. The mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets max_util_cpa_dist=4 below min_util_cpa_dist=6; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_grade_fail</code>
-          <p>pwt_grade is set to an unsupported token. The behavior configuration should be rejected and the mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets the unsupported pwt_grade=banana; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_completed_dist_fail</code>
-          <p>completed_dist is set negative. The behavior configuration should be rejected and the mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets completed_dist=-1; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>The inherited time_on_leg setting is set negative. The mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets inherited time_on_leg=-1; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>The inherited contact-decay window is malformed by making the stale threshold lower than the linear threshold. The mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets the inherited contact decay window to 30,20, placing the stale threshold below the linear threshold; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_collision_depth_fail</code>
-          <p>collision_depth is enabled in this 2D mission, where the source requires a depth domain. The mission should grade pass only when the helm reports malconfiguration.</p>
+          <p>Sets collision_depth=2 in a course/speed-only IvP domain; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
         </article>
 
       </div>

@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Forward Thrust</h3>
-          <p>Description: Straight positive thrust reaches the expected forward speed and eastward displacement while holding heading.</p>
+          <p>Description: Starts at (0,0) heading 90 and applies thrust 50 with zero rudder, testing the standard thrust_factor=20 forward-motion path; at eight seconds, passes with 14&lt;=NAV_X&lt;=25, -2&lt;=NAV_Y&lt;=2, speed in [2.2,2.8], and heading in [88,92].</p>
         </div>
       </article>
 
@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Drift</h3>
-          <p>Description: Positive DRIFT_X moves the vehicle east even without commanded thrust.</p>
+          <p>Description: Posts DRIFT_X=1.0 while thrust and rudder remain zero, testing runtime eastward drift independent of through-water speed; at seven seconds, passes with 5&lt;=NAV_X&lt;=9, -1&lt;=NAV_Y&lt;=1, and speed within [-0.1,0.1].</p>
         </div>
       </article>
 
@@ -89,217 +89,217 @@
 
         <article class="case-row">
           <code>thrust_forward_pass</code>
-          <p>Straight positive thrust reaches the expected forward speed and eastward displacement while holding heading.</p>
+          <p>Starts at (0,0) heading 90 and applies thrust 50 with zero rudder, testing the standard thrust_factor=20 forward-motion path; at eight seconds, passes with 14&lt;=NAV_X&lt;=25, -2&lt;=NAV_Y&lt;=2, speed in [2.2,2.8], and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>rudder_turn_starboard_pass</code>
-          <p>Positive rudder under forward thrust produces a clear starboard heading change while maintaining forward motion.</p>
+          <p>Applies thrust 60 and rudder 45 from an east-facing stop, testing positive-rudder turning under forward power; at six seconds, passes with NAV_X&gt;=5, speed at least 1.8, and heading in [135,230].</p>
         </article>
 
 
         <article class="case-row">
           <code>differential_turn_pass</code>
-          <p>Differential left/right thrust switches the simulator into differential mode and produces a heading change without ordinary rudder mail.</p>
+          <p>Enables THRUST_MODE_DIFFERENTIAL and posts left/right thrust 80/20 without ordinary rudder mail, testing differential propulsion and steering; at six seconds, passes with NAV_X&gt;=4, speed at least 1.5, and heading in [120,220].</p>
         </article>
 
 
         <article class="case-row">
           <code>start_pos_seed_pass</code>
-          <p>A non-zero start_pos seeds initial x/y, heading, speed, and subsequent motion as expected.</p>
+          <p>Configures start_pos=x=20,y=-10,heading=180,speed=1,depth=3 and applies thrust 20, testing nonzero planar state and speed initialization before southbound motion; at three seconds, passes with 18&lt;=NAV_X&lt;=22, NAV_Y&lt;=-12, heading in [178,182], and speed at least 0.8. Initial depth is reported but not graded.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_speed_clamp_pass</code>
-          <p>High thrust with a low max_speed cap keeps published speed bounded.</p>
+          <p>Configures max_speed=2 and applies thrust 100, whose factor-based target is 5, testing the simulator speed cap; at seven seconds, passes with 20&lt;=NAV_X&lt;=35 and speed in [1.8,2.1].</p>
         </article>
 
 
         <article class="case-row">
           <code>acceleration_limit_pass</code>
-          <p>A low max_acceleration prevents immediate jump to the requested thrust-derived speed.</p>
+          <p>Configures max_acceleration=0.2 and applies thrust 100 from rest, testing gradual acceleration toward the five-meter-per-second target; at five seconds, passes with 0.8&lt;=NAV_X&lt;=5 and speed in [0.3,0.8].</p>
         </article>
 
 
         <article class="case-row">
           <code>drift_x_pass</code>
-          <p>Positive DRIFT_X moves the vehicle east even without commanded thrust.</p>
+          <p>Posts DRIFT_X=1.0 while thrust and rudder remain zero, testing runtime eastward drift independent of through-water speed; at seven seconds, passes with 5&lt;=NAV_X&lt;=9, -1&lt;=NAV_Y&lt;=1, and speed within [-0.1,0.1].</p>
         </article>
 
 
         <article class="case-row">
           <code>rotate_speed_pass</code>
-          <p>Runtime ROTATE_SPEED changes heading without rudder input.</p>
+          <p>Applies thrust 30 with zero rudder, then posts ROTATE_SPEED=8, testing direct runtime heading rotation; at six seconds, passes with speed in [1.2,1.8] and heading in [120,150].</p>
         </article>
 
 
         <article class="case-row">
           <code>sim_pause_holds_pass</code>
-          <p>Runtime USM_SIM_PAUSED=true prevents continued motion under commanded thrust.</p>
+          <p>Applies thrust 50, then posts USM_SIM_PAUSED=true at 1.5 seconds, testing that position integration stops while the existing speed state is retained; at seven seconds, passes with 0&lt;=NAV_X&lt;=5, speed in [2.2,2.8], and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>reset_count_pass</code>
-          <p>Runtime USM_RESET increments the simulator reset counter and returns position near the configured start.</p>
+          <p>Applies thrust 50, posts USM_RESET=true at four seconds, and allows two seconds of post-reset motion, testing reset accounting and return to the configured start state; passes when USM_RESET_COUNT&gt;=1, 0&lt;=NAV_X&lt;=7, and heading is in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>disabled_nav_seed_pass</code>
-          <p>When USM_ENABLED=false, runtime NAV_X, NAV_Y, and NAV_HEADING mail seeds simulator state.</p>
+          <p>Posts USM_ENABLED=false, followed by NAV_X=42, NAV_Y=-17, and NAV_HEADING=275, exercising the disabled-state nav-seeding inputs; at three seconds, passes when those same MOOS variables remain within one unit and heading is in [274,276]. Because the evaluator sees the injected mail directly, it does not prove the simulator consumed it.</p>
         </article>
 
 
         <article class="case-row">
           <code>reverse_thrust_pass</code>
-          <p>Negative thrust produces reverse speed and westward displacement from an east-facing start.</p>
+          <p>Starts heading east and applies thrust -40 with zero rudder, testing negative thrust and signed speed; at six seconds, passes with NAV_X&lt;=-3, -2&lt;=NAV_Y&lt;=2, speed in [-1.7,-1.2], and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>elevator_dive_pass</code>
-          <p>Positive elevator under forward thrust increases published depth while maintaining bounded forward motion.</p>
+          <p>Applies thrust 40 and elevator 60 with zero buoyancy, testing elevator-driven descent during forward motion; at six seconds, passes with 8&lt;=NAV_X&lt;=16, -2&lt;=NAV_Y&lt;=2, speed in [1.6,2.4], and depth in [7,12].</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_turn_rate_pass</code>
-          <p>Runtime USM_TURN_RATE lowers rudder turn authority and produces a bounded heading change.</p>
+          <p>Applies thrust 50 and rudder 60, then lowers USM_TURN_RATE to 20, testing runtime turn-authority reconfiguration; at six seconds, passes with speed in [1.4,2.5] and heading in [110,150].</p>
         </article>
 
 
         <article class="case-row">
           <code>obstacle_hit_stop_pass</code>
-          <p>Runtime OBSTACLE_HIT=true forces the simulator to publish a stopped vehicle state.</p>
+          <p>Applies thrust 50, then posts OBSTACLE_HIT=true at 1.5 seconds, testing the collision-stop input; at six seconds, passes with 1&lt;=NAV_X&lt;=6, speed within [-0.1,0.1], and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>current_y_alias_pass</code>
-          <p>Runtime CURRENT_Y acts as a drift-y alias and moves the vehicle laterally without commanded thrust.</p>
+          <p>Posts CURRENT_Y=1.2 with zero thrust and rudder, testing the runtime alias for y-axis drift; at seven seconds, passes with -1&lt;=NAV_X&lt;=1, 6&lt;=NAV_Y&lt;=10, and speed within [-0.1,0.1].</p>
         </article>
 
 
         <article class="case-row">
           <code>drift_vector_mult_pass</code>
-          <p>Runtime DRIFT_VECTOR plus DRIFT_VECTOR_MULT scales an external drift vector before evaluation.</p>
+          <p>Posts DRIFT_VECTOR=&quot;90,1&quot;, then DRIFT_VECTOR_MULT=2, testing scalar multiplication of a runtime drift vector; at seven seconds, passes with 10&lt;=NAV_X&lt;=14, -1&lt;=NAV_Y&lt;=1, and speed within [-0.1,0.1].</p>
         </article>
 
 
         <article class="case-row">
           <code>water_depth_altitude_pass</code>
-          <p>A configured water depth and start depth produce the expected published altitude.</p>
+          <p>Starts at depth 12 with default_water_depth=40 and zero buoyancy, testing altitude publication as water depth minus vehicle depth; at three seconds, passes with depth in [11.5,12.5] and altitude in [27,29].</p>
         </article>
 
 
         <article class="case-row">
           <code>thrust_map_interpolation_pass</code>
-          <p>A custom thrust_map maps midrange thrust to bounded speed without using thrust_factor.</p>
+          <p>Replaces thrust_factor with thrust_map=0:0,50:1,100:4 and applies thrust 50, testing lookup/interpolation at the map&#x27;s midpoint; at seven seconds, passes with 5&lt;=NAV_X&lt;=9, speed in [0.8,1.2], and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>max_deceleration_pass</code>
-          <p>A low max_deceleration keeps an initially moving vehicle from stopping abruptly.</p>
+          <p>Starts at speed 3, configures max_deceleration=0.1, and commands zero thrust, testing rate-limited slowing instead of an immediate stop; at six seconds, passes with 12&lt;=NAV_X&lt;=28, speed in [2.2,2.8], and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>embedded_pid_speed_factor_pass</code>
-          <p>Embedded PID mode maps desired speed through speed_factor and publishes custom desired-thrust/rudder evidence.</p>
+          <p>Enables embedded simulation PID mode, requests speed 1.5 and heading 90, and uses speed_factor=20, testing conversion of helm setpoints inside uSimMarineV22; at six seconds, passes with 28&lt;=USM_PID_THRUST&lt;=32, -2&lt;=USM_PID_RUDDER&lt;=2, speed in [1.3,1.7], and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>drift_vector_add_pass</code>
-          <p>Runtime DRIFT_VECTOR_ADD composes a second drift vector with the existing one and produces two-axis displacement.</p>
+          <p>Posts eastward DRIFT_VECTOR=&quot;90,1&quot;, then adds northward DRIFT_VECTOR_ADD=&quot;0,1&quot;, testing vector composition; at seven seconds, passes with 5&lt;=NAV_X&lt;=8, 4&lt;=NAV_Y&lt;=7, and speed within [-0.1,0.1].</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_buoyancy_rate_pass</code>
-          <p>Runtime BUOYANCY_RATE changes vertical motion while the vehicle is otherwise stationary.</p>
+          <p>Starts stationary at depth 5 with zero configured buoyancy, then posts BUOYANCY_RATE=-1, testing runtime negative buoyancy; at five seconds, passes with depth in [8,11] and speed within [-0.1,0.1].</p>
         </article>
 
 
         <article class="case-row">
           <code>rudder_slew_limit_pass</code>
-          <p>max_rudder_degs_per_sec limits how quickly a large rudder command can take effect.</p>
+          <p>Configures max_rudder_degs_per_sec=5 and commands thrust 50 with rudder 100, testing gradual rudder application; at six seconds, passes with speed in [0.7,1.4], heading in [155,180], NAV_X&gt;=3, and NAV_Y&lt;=-2.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_speed_map_pass</code>
-          <p>A configured turn-speed map shapes turn authority as a function of vehicle speed.</p>
+          <p>Configures turn-rate interpolation from 5 degrees per second at zero speed to 70 at speed 4, then commands thrust 30 and rudder 80, testing speed-dependent turn authority; at six seconds, passes with speed in [0.6,1.0], heading in [125,140], NAV_X&gt;=3, and NAV_Y&lt;=-1.</p>
         </article>
 
 
         <article class="case-row">
           <code>wind_polar_speed_cap_pass</code>
-          <p>Configured wind and polar-plot data cap high commanded thrust at the wind-relative sailing limit.</p>
+          <p>Configures wind spd=3,dir=180 and a polar plot, then commands thrust 100 while heading east, testing the wind-relative sailing-speed limit; at six seconds, passes with speed in [2.2,2.6], 10&lt;=NAV_X&lt;=16, and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>dual_state_reset_nav_pass</code>
-          <p>In dual-state mode, runtime USM_RESET_NAV snaps navigation state back to ground truth after drift separates them.</p>
+          <p>Enables dual-state mode with drift_x=1 and posts USM_RESET_NAV=true at three seconds, exercising resynchronization of navigation state to ground truth; at 3.4 seconds, passes with both NAV_X and NAV_GT_X in their configured [4.8,7.5] bands, y near zero, and speed near zero. The evaluator does not observe the pre-reset separation.</p>
         </article>
 
 
         <article class="case-row">
           <code>wormhole_transport_pass</code>
-          <p>A configured wormhole transports the vehicle between convex polygons and updates published navigation position.</p>
+          <p>Starts inside a wormhole polygon centered at (0,0) with a one-way connection to a polygon centered at (100,100), testing stationary spatial transport; at seven seconds, passes with both nav coordinates in [98,102] and speed within [-0.1,0.1].</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_wind_conditions_pass</code>
-          <p>Runtime WIND_CONDITIONS activates an existing polar plot and caps high commanded thrust.</p>
+          <p>Configures only the polar plot, commands thrust 100, then posts WIND_CONDITIONS=&quot;spd=3, dir=180&quot; at 0.8 seconds, testing runtime activation of the wind-relative speed limit; at six seconds, passes with speed in [2.2,2.6], 10&lt;=NAV_X&lt;=16, and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_water_depth_pass</code>
-          <p>Runtime WATER_DEPTH updates published altitude without moving the vehicle vertically.</p>
+          <p>Starts stationary at depth 10, then posts WATER_DEPTH=40, testing runtime recomputation of altitude without vertical motion; at three seconds, passes with depth in [9.5,10.5] and altitude in [29,31].</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_thrust_mode_reverse_pass</code>
-          <p>Runtime THRUST_MODE_REVERSE flips the effective thrust/heading mode under positive thrust.</p>
+          <p>Enables THRUST_MODE_REVERSE, then applies positive thrust 40 with zero rudder, testing reverse-mode signed propulsion; at six seconds, passes with -1&lt;=NAV_X&lt;=1, 3&lt;=NAV_Y&lt;=5, and speed in [-1.8,-1.2].</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_rate_limit_pass</code>
-          <p>A zero max_depth_rate suppresses elevator-driven diving under forward motion.</p>
+          <p>Configures max_depth_rate=0 and commands thrust 50 with elevator 100, testing suppression of vertical motion without suppressing propulsion; at six seconds, passes with speed in [2.2,2.8], depth in [0,0.5], and NAV_X&gt;=12.</p>
         </article>
 
 
         <article class="case-row">
           <code>positive_buoyancy_surface_pass</code>
-          <p>Positive buoyancy moves a submerged stationary vehicle back to the surface clamp.</p>
+          <p>Starts stationary at depth 5 with buoyancy_rate=1, testing ascent and the zero-depth surface clamp; at six seconds, passes with depth in [0,0.5], speed within [-0.1,0.1], and NAV_X within [-0.5,0.5].</p>
         </article>
 
 
         <article class="case-row">
           <code>embedded_pid_depth_control_pass</code>
-          <p>Embedded PID depth control publishes simulation-mode depth state while driving toward a desired depth.</p>
+          <p>Enables embedded simulation PID and depth control, then requests speed 2, heading 90, and depth 5, testing internal thrust, heading, and depth actuation; at seven seconds, passes with SIMULATION_MODE=TRUE, speed in [1.7,2.3], depth in [1.0,5.5], NAV_Z&lt;=-1, and heading in [88,92].</p>
         </article>
 
 
         <article class="case-row">
           <code>buoyancy_control_report_pass</code>
-          <p>BUOYANCY_CONTROL completes through the depth-control report path and posts the expected completion report.</p>
+          <p>Enables depth control with buoyancy_rate=0.5 and posts BUOYANCY_CONTROL=true, testing the buoyancy-control completion protocol; at 6.5 seconds, passes when BUOYANCY_REPORT exactly equals status=2,error=0,completed,buoyancy=0.0 and depth is in [0,0.5].</p>
         </article>
 
 
         <article class="case-row">
           <code>trim_control_report_pass</code>
-          <p>TRIM_CONTROL completes through the depth-control report path and posts the expected trim report.</p>
+          <p>Enables depth control with max_trim_delay=6 and posts TRIM_CONTROL=true, testing the trim-control completion protocol; at 6.5 seconds, passes when TRIM_REPORT exactly equals status=2,error=0,completed,trim_pitch=0,trim_roll=0.0 and pitch is in [-0.1,0.1].</p>
         </article>
 
       </div>

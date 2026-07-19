@@ -14,11 +14,16 @@ TIME_WARP=10
 VERBOSE=""
 JUST_MAKE=""
 LOG_CLEAN=""
+LOG_MODE="minimal"
+if [ "${LOG_MODE_PREPARED:-no}" = yes ] && [ -n "${LOG_MODE_PREPARED_VALUE:-}" ]; then
+    LOG_MODE="$LOG_MODE_PREPARED_VALUE"
+fi
 MOOS_PORT="9000"
 PSHARE_PORT="9200"
 XLAUNCHED="no"
 NOGUI=""
 MMOD="config_static_report_pass"
+SHORE_MOOS="meta_shoreside.moos"
 
 for ARGI; do
     if [ "${ARGI}" = "--help" ] || [ "${ARGI}" = "-h" ]; then
@@ -30,6 +35,8 @@ for ARGI; do
         VERBOSE=$ARGI
     elif [ "${ARGI}" = "--just_make" ] || [ "${ARGI}" = "-j" ]; then
         JUST_MAKE=$ARGI
+    elif [ "${ARGI:0:6}" = "--log=" ]; then
+        LOG_MODE="${ARGI#--log=*}"
     elif [ "${ARGI}" = "--log_clean" ] || [ "${ARGI}" = "-lc" ]; then
         LOG_CLEAN=$ARGI
     elif [ "${ARGI:0:14}" = "--shore_mport=" ]; then
@@ -48,6 +55,16 @@ for ARGI; do
     fi
 done
 
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) echo "$ME: --log must be minimal or full" >&2; exit 2 ;;
+esac
+if [ "${LOG_MODE_PREPARED:-no}" != yes ]; then
+    ./prepare_logging_mode.sh "$LOG_MODE"
+fi
+export LOG_MODE_PREPARED=yes
+export LOG_MODE_PREPARED_VALUE="$LOG_MODE"
+
 if [ "$LOG_CLEAN" != "" ]; then
     ./clean.sh
 fi
@@ -57,7 +74,11 @@ if [ "${XLAUNCHED}" != "yes" ]; then
     NSFLAGS="--interactive --force -x"
 fi
 
-nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS \
+if [ -f meta_shoreside.moosx ]; then
+    SHORE_MOOS="meta_shoreside.moosx"
+fi
+
+nsplug "$SHORE_MOOS" targ_shoreside.moos $NSFLAGS \
        WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT MMOD=$MMOD
 
 if [ "${JUST_MAKE}" != "" ]; then

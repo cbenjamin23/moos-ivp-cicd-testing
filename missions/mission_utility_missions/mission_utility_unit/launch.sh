@@ -13,6 +13,10 @@ TIME_WARP=1
 VERBOSE=no
 JUST_MAKE=no
 LOG_CLEAN=no
+LOG_MODE=minimal
+if [ "${LOG_MODE_PREPARED:-no}" = yes ] && [ -n "${LOG_MODE_PREPARED_VALUE:-}" ]; then
+    LOG_MODE="$LOG_MODE_PREPARED_VALUE"
+fi
 MOOS_PORT=9000
 PSHARE_PORT=9015
 MMOD=""
@@ -27,6 +31,7 @@ Options:
   --help, -h            Show this help message
   --verbose, -v         Verbose launch output
   --just_make, -j       Only create target files
+  --log=<mode>          minimal (default) or full
   --log_clean, -lc      Run clean.sh before launch
   --mport=<n>           MOOSDB port
   --pshare=<n>          Reserved pShare port
@@ -55,6 +60,7 @@ for arg in "$@"; do
         --help|-h) usage; exit 0 ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --log_clean|-lc) LOG_CLEAN=yes ;;
         --mport=*) MOOS_PORT="${arg#--mport=}" ;;
         --pshare=*) PSHARE_PORT="${arg#--pshare=}" ;;
@@ -70,6 +76,16 @@ for arg in "$@"; do
             ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
+if [ "${LOG_MODE_PREPARED:-no}" != yes ]; then
+    ./prepare_logging_mode.sh "$LOG_MODE" || die "unable to prepare --log=$LOG_MODE"
+fi
+export LOG_MODE_PREPARED=yes
+export LOG_MODE_PREPARED_VALUE="$LOG_MODE"
 
 is_uint "$TIME_WARP" && [ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
 is_uint "$MOOS_PORT" && [ "$MOOS_PORT" -gt 0 ] && [ "$MOOS_PORT" -le 65535 ] || \

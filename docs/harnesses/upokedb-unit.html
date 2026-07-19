@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Direct Numeric Poke</h3>
-          <p>Description: Posts one numeric value through explicit --host/--port arguments and expects the DB value to match exactly.</p>
+          <p>Description: Runs uPokeDB --host=localhost --port=&lt;case-port&gt; with POKE_NUM=42.5, testing an explicitly addressed numeric poke; passes when POKE_NUM=42.5.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Cached Pokes</h3>
-          <p>Description: Uses cached numeric and string pokes together to exercise cache parsing for both value forms.</p>
+          <p>Description: Caches POKE_CACHE_NUM=77 and POKE_CACHE_STR:=seventy_seven in one config block, testing mixed cache value forms; passes when both exact values publish.</p>
         </div>
       </article>
 
@@ -87,169 +87,169 @@
 
         <article class="case-row">
           <code>numeric_direct_pass</code>
-          <p>Posts one numeric value through explicit --host/--port arguments and expects the DB value to match exactly.</p>
+          <p>Runs uPokeDB --host=localhost --port=&lt;case-port&gt; with POKE_NUM=42.5, testing an explicitly addressed numeric poke; passes when POKE_NUM=42.5.</p>
         </article>
 
 
         <article class="case-row">
           <code>string_forced_pass</code>
-          <p>Posts a numeric-looking value with := and expects it to remain available as the exact string payload.</p>
+          <p>Posts POKE_STR:=0012, testing forced-string parsing of a numeric-looking token; passes when the DB value remains the exact string 0012.</p>
         </article>
 
 
         <article class="case-row">
           <code>multiple_mixed_pass</code>
-          <p>Posts numeric and string variables in one uPokeDB invocation and expects both to be present.</p>
+          <p>Posts POKE_A=7 and POKE_B:=bravo in one invocation, testing mixed numeric and forced-string arguments; passes when both exact values are present.</p>
         </article>
 
 
         <article class="case-row">
           <code>overwrite_existing_pass</code>
-          <p>Posts the same variable twice and expects the later value to replace the earlier one.</p>
+          <p>Posts POKE_OVER:=old, waits 0.5 seconds, then posts POKE_OVER:=new in a second invocation, testing replacement across commands; passes when the final value is new.</p>
         </article>
 
 
         <article class="case-row">
           <code>cache_config_pass</code>
-          <p>Uses --cache with a generated mission-file ProcessConfig = uPokeDB block and expects cached pokes to publish.</p>
+          <p>Generates a ProcessConfig=uPokeDB block containing cached POKE_CACHE_NUM=88 and runs with --cache, testing numeric cache-file execution; passes when POKE_CACHE_NUM=88.</p>
         </article>
 
 
         <article class="case-row">
           <code>mission_file_connection_pass</code>
-          <p>Connects from targ_shoreside.moos instead of explicit host/port and expects the poke to arrive.</p>
+          <p>Passes targ_shoreside.moos instead of host/port flags and posts POKE_FILE:=from_file, testing connection discovery from a mission file; passes when POKE_FILE=from_file.</p>
         </article>
 
 
         <article class="case-row">
           <code>quiet_mode_pass</code>
-          <p>Uses --quiet and expects the poke to succeed without relying on terminal output.</p>
+          <p>Posts POKE_QUIET:=silent through the harness&#x27;s ordinary --quiet command path, exercising a quiet poke; passes when POKE_QUIET=silent. This path is also used by most other non-cache cases.</p>
         </article>
 
 
         <article class="case-row">
           <code>negative_double_pass</code>
-          <p>Posts a negative floating-point value and expects the sign and magnitude to survive.</p>
+          <p>Posts POKE_NEG=-13.25, testing signed floating-point parsing; passes when POKE_NEG=-13.25.</p>
         </article>
 
 
         <article class="case-row">
           <code>boolean_true_pass</code>
-          <p>Posts a boolean-looking value and expects mission evaluation to treat it as true.</p>
+          <p>Posts POKE_BOOL=true with numeric assignment syntax, testing the boolean-looking value accepted by the evaluator; passes when POKE_BOOL=true.</p>
         </article>
 
 
         <article class="case-row">
           <code>repeated_batch_pass</code>
-          <p>Sends two sequential uPokeDB commands and expects the second command to own the final value.</p>
+          <p>Posts POKE_REPEAT:=first, waits 0.5 seconds, then posts POKE_REPEAT:=second in a second invocation, testing sequential replacement; passes when the final value is second.</p>
         </article>
 
 
         <article class="case-row">
           <code>mixed_numeric_string_batch_pass</code>
-          <p>Posts a numeric and a forced string value together, checking both forms in one run.</p>
+          <p>Posts POKE_MIXED_NUM=31 and POKE_MIXED_STR:=031 together, testing numeric parsing alongside preservation of a leading-zero string; passes when the values are exactly 31 and 031.</p>
         </article>
 
 
         <article class="case-row">
           <code>cache_string_numeric_pass</code>
-          <p>Uses cached numeric and string pokes together to exercise cache parsing for both value forms.</p>
+          <p>Caches POKE_CACHE_NUM=77 and POKE_CACHE_STR:=seventy_seven in one config block, testing mixed cache value forms; passes when both exact values publish.</p>
         </article>
 
 
         <article class="case-row">
           <code>host_alias_args_pass</code>
-          <p>Uses host= and port= aliases instead of --host= and --port= and expects the poke to arrive.</p>
+          <p>Connects with host=localhost port=&lt;case-port&gt; and posts POKE_ALIAS:=alias_host, testing the unprefixed host/port aliases; passes when POKE_ALIAS=alias_host.</p>
         </article>
 
 
         <article class="case-row">
           <code>server_alias_args_pass</code>
-          <p>Uses serverhost= and serverport= aliases and expects the poke to arrive.</p>
+          <p>Connects with serverhost=localhost serverport=&lt;case-port&gt; and posts POKE_SERVER_ALIAS:=server_alias, testing the compact server aliases; passes when the exact value publishes.</p>
         </article>
 
 
         <article class="case-row">
           <code>server_underscore_args_pass</code>
-          <p>Uses server_host= and server_port= aliases and expects the poke to arrive.</p>
+          <p>Connects with server_host=localhost server_port=&lt;case-port&gt; and posts POKE_SERVER_UNDERSCORE:=server_under, testing the underscored server aliases; passes when the exact value publishes.</p>
         </article>
 
 
         <article class="case-row">
           <code>quiet_short_alias_pass</code>
-          <p>Uses the short -q quiet option and expects the poke to succeed.</p>
+          <p>Uses -q with explicit host/port flags and posts POKE_QSHORT:=quiet_short, testing the short quiet alias; passes when POKE_QSHORT=quiet_short.</p>
         </article>
 
 
         <article class="case-row">
           <code>cache_short_alias_pass</code>
-          <p>Uses the short -c cache option and expects configured cached pokes to publish.</p>
+          <p>Runs the generated cache file with -c -q and cached POKE_CACHE_SHORT:=cache_short, testing both short options; passes when the exact value publishes.</p>
         </article>
 
 
         <article class="case-row">
           <code>zero_double_pass</code>
-          <p>Posts numeric zero and expects the value to be treated as an intentional double rather than missing data.</p>
+          <p>Posts POKE_ZERO=0, testing that numeric zero is a present value rather than missing mail; passes when POKE_ZERO=0.</p>
         </article>
 
 
         <article class="case-row">
           <code>scientific_literal_pass</code>
-          <p>Posts a scientific-notation numeric literal and expects the DB value to match.</p>
+          <p>Posts POKE_SCI=1e-3, testing scientific-notation input; passes when the evaluator matches POKE_SCI=1e-3.</p>
         </article>
 
 
         <article class="case-row">
           <code>large_double_pass</code>
-          <p>Posts a large floating-point value and expects the magnitude to survive.</p>
+          <p>Posts POKE_BIG=123456.75, testing preservation of a large fractional value; passes when POKE_BIG=123456.75.</p>
         </article>
 
 
         <article class="case-row">
           <code>cache_forced_string_pass</code>
-          <p>Uses cached := syntax for a numeric-looking string and expects leading zeroes to survive.</p>
+          <p>Caches POKE_CACHE_FORCED:=0007, testing forced-string syntax inside a poke= config entry; passes when the four-character string 0007 is preserved.</p>
         </article>
 
 
         <article class="case-row">
           <code>cache_boolean_pass</code>
-          <p>Uses cached boolean-looking data and expects mission evaluation to see a true value.</p>
+          <p>Caches POKE_CACHE_BOOL=true, testing boolean-looking cache data; passes when POKE_CACHE_BOOL=true.</p>
         </article>
 
 
         <article class="case-row">
           <code>utc_macro_pass</code>
-          <p>Posts @UTC and expects uPokeDB to replace it with a positive MOOS time value.</p>
+          <p>Posts POKE_UTC=@UTC, exercising UTC macro expansion; passes when the resulting value is greater than zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>moostime_macro_pass</code>
-          <p>Posts @MOOSTIME and expects uPokeDB to replace it with a positive MOOS time value.</p>
+          <p>Posts POKE_MOOSTIME=@MOOSTIME, exercising MOOS-time macro expansion; passes when the resulting value is greater than zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>forced_utc_string_pass</code>
-          <p>Posts @UTC with forced-string syntax and expects the macro text to remain literal.</p>
+          <p>Posts POKE_UTC_STRING:=@UTC, testing that forced-string syntax suppresses macro expansion; passes when the value remains the literal @UTC.</p>
         </article>
 
 
         <article class="case-row">
           <code>duplicate_same_invocation_pass</code>
-          <p>Posts the same variable twice in one command and expects the later value to win.</p>
+          <p>Supplies POKE_DUP:=first POKE_DUP:=second in one command, testing duplicate command-line arguments; passes when the later value second wins.</p>
         </article>
 
 
         <article class="case-row">
           <code>cache_duplicate_first_wins_pass</code>
-          <p>Defines the same cached poke twice and captures the current first-value result.</p>
+          <p>Places POKE_CACHE_DUP:=first and then POKE_CACHE_DUP:=second in one cache block, preserving the cache parser&#x27;s current duplicate behavior; passes when the first value first wins.</p>
         </article>
 
 
         <article class="case-row">
           <code>cache_cli_mixed_pass</code>
-          <p>Combines cached pokes with a command-line poke and expects both sources to publish.</p>
+          <p>Caches POKE_CACHE_MIX:=from_cache while adding command-line POKE_CLI_MIX:=from_cli to the same --cache invocation, testing mixed stimulus sources; passes when both exact values publish.</p>
         </article>
 
       </div>

@@ -9,6 +9,9 @@ one-source-to-many-target output, latest-only pruning, EFlipper component
 mapping, filters, custom separators, cycle suppression, and invalid flipper
 suppression.
 
+Direct `zlaunch.sh` runs default to minimal grading logging. Pass
+`--log=full` to restore the original diagnostic variable set.
+
 Typical harness run:
 
 ```sh

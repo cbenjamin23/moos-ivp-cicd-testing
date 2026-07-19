@@ -20,10 +20,10 @@ ProcessConfig = uTimerScript
   event = var=NODE_REPORT_LOCAL, val="NAME=$(VNAME),TYPE=KAYAK,TIME=$[UTC],X=$(XPOS),Y=$(YPOS),LAT=43.825300,LON=-70.330400,SPD=0,HDG=$(HDG),YAW=$(HDG),DEPTH=0,LENGTH=4,GROUP=$(VGROUP),MODE=MODE@ACTIVE:COMMS", time=1540
 #ifdef VNAME abe
   event = var=NODE_MESSAGE_LOCAL, val="src_node=abe,dest_node=all,var_name=UFC_BEFORE,string_val=before_runtime,ack_id=before_1", time=650
-  event = var=NODE_MESSAGE_LOCAL, val="src_node=abe,dest_node=all,var_name=UFC_AFTER,string_val=after_runtime,ack_id=after_1", time=1040
+  event = var=NODE_MESSAGE_LOCAL, val="src_node=abe,dest_node=all,var_name=UFC_AFTER,string_val=after_runtime,ack_id=after_1", time=1640
 #endif
 #ifdef VNAME ben
   event = var=ACK_MESSAGE_LOCAL, val="src=ben,dest=abe,id=before_1", time=760
-  event = var=ACK_MESSAGE_LOCAL, val="src=ben,dest=abe,id=after_1", time=1120
+  event = var=ACK_MESSAGE_LOCAL, val="src=ben,dest=abe,id=after_1", time=1720
 #endif
 }

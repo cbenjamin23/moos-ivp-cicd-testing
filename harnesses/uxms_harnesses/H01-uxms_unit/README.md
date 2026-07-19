@@ -22,38 +22,38 @@ runner failure rather than being mistaken for a pMissionEval verdict.
 
 ## Current Matrix
 
-- `scoped_var_pass` Scopes one named variable and expects both the variable name and posted value to appear.
-- `scoped_excludes_noise_pass` Scopes `XMS_ALPHA` and expects unrelated `XMS_NOISE` mail to remain absent from the display.
-- `all_mode_pass` Uses `--all` and expects broad DB content, including `DB_UPTIME` and the scripted variable.
-- `all_shortcut_pass` Uses the `-a` shortcut and expects broad DB content, including `DB_UPTIME` and the scripted variable.
-- `show_source_pass` Enables the source column and expects `uTimerScript` to be visible as the publisher.
-- `show_time_only_pass` Enables only the time column and expects the time header plus the scoped variable to render.
-- `show_community_only_pass` Enables only the community column and expects the local `shoreside` community to be shown.
-- `show_time_community_pass` Enables time and community columns and expects the local `shoreside` community to be shown.
-- `show_source_community_pass` Enables source and community columns and expects both `uTimerScript` and `shoreside` evidence.
-- `history_var_pass` Uses `--history=XMS_HIST` and expects the latest scripted history value to be visible.
-- `trunc_long_payload_pass` Uses `--trunc=25` and expects the long payload to be clipped rather than printed in full.
-- `clean_cli_scope_pass` Uses `--clean` with a mission file and expects CLI scope variables to override configured `var=` entries.
-- `config_var_pass` Uses the mission-file `ProcessConfig = uXMS` block and expects configured variables to scope without CLI var names.
-- `filter_prefix_pass` Uses `--filter=XMS_ --all` and expects XMS variables while suppressing unrelated DB variables.
-- `src_timer_pass` Uses `--src=uTimerScript` and expects variables posted by that source to appear.
-- `novirgins_pass` Uses `--novirgins` and expects an unposted scoped variable to stay hidden while posted mail remains visible.
-- `novirgins_shortcut_pass` Uses the `-g` shortcut and expects an unposted scoped variable to stay hidden.
-- `shortcut_source_pass` Uses the `-s` shortcut and expects source information to appear.
-- `shortcut_source_time_pass` Uses the `-st` shortcut and expects source and time-oriented display to remain usable.
-- `filter_specific_pass` Filters all DB output to `XMS_A` and expects `XMS_ALPHA` while suppressing other XMS variables.
-- `filter_no_match_absent_pass` Uses a filter prefix that matches no DB variables and expects ordinary variables to stay hidden.
-- `colorany_pass` Exercises `--colorany` while still expecting the scoped variable and value to render.
-- `events_mode_pass` Uses event-driven refresh mode and expects a changed scoped variable to trigger output.
-- `paused_shortcut_pass` Uses the `-p` shortcut and expects paused-mode startup output to include the scoped variable.
-- `shortcut_trunc_pass` Uses the `-t` truncation shortcut and expects the long payload to be clipped.
-- `alll_mode_pass` Uses `--alll` and expects broad DB content to remain visible.
-- `server_underscore_args_pass` Connects with `--server_host` and `--server_port` aliases and expects scoped output.
-- `moos_alias_args_pass` Connects with `--mooshost` and `--moosport` aliases and expects scoped output.
-- `moos_underscore_args_pass` Connects with `--moos_host` and `--moos_port` aliases and expects scoped output.
-- `alias_proc_name_pass` Runs uXMS with a custom process alias while still scoping the requested variable.
-- `colormap_pair_pass` Parses a specific `--colormap` pair while still rendering the scoped variable.
-- `clean_shortcut_scope_pass` Uses the short `-c` clean option and expects CLI scope variables to override mission-file variables.
+- `scoped_var_pass`: Passes `XMS_ALPHA` as the only scoped variable, testing explicit command-line scope; passes when the capture contains `XMS_ALPHA` and its posted value `alpha`.
+- `scoped_excludes_noise_pass`: Scopes only `XMS_ALPHA` while the publisher also posts `XMS_NOISE`, testing exclusion of unrequested mail; passes when the capture contains `XMS_ALPHA=alpha` evidence and no `XMS_NOISE` token.
+- `all_mode_pass`: Runs with `--all`, testing the long option for database-wide scope; passes when the capture contains both the MOOSDB variable `DB_UPTIME` and scripted `XMS_ALPHA`.
+- `all_shortcut_pass`: Runs with `-a`, testing the short alias for database-wide scope; passes when the capture contains both `DB_UPTIME` and `XMS_ALPHA`.
+- `show_source_pass`: Runs `--show=source` for `XMS_ALPHA`, testing publication-source display; passes when the capture contains `XMS_ALPHA` and its publisher `uTimerScript`.
+- `show_time_only_pass`: Runs `--show=time` for `XMS_ALPHA`, testing the time-column option; passes when the capture contains `XMS_ALPHA` and the substring `(T`.
+- `show_community_only_pass`: Runs `--show=community` for `XMS_ALPHA`, testing community display; passes when the capture contains `XMS_ALPHA` and `shoreside`.
+- `show_time_community_pass`: Runs `--show=time,community` for `XMS_ALPHA`, testing the combined column request; passes when the capture contains `XMS_ALPHA` and `shoreside`, but the time column is not independently checked.
+- `show_source_community_pass`: Runs `--show=source,community` for `XMS_ALPHA`, testing both named columns together; passes when the capture contains `XMS_ALPHA`, `uTimerScript`, and `shoreside`.
+- `history_var_pass`: Posts `first`, `second`, and `third` to `XMS_HIST` while scoping it with `--history`, testing history-mode capture; passes when the output contains `XMS_HIST` and the final value `third`.
+- `trunc_long_payload_pass`: Scopes a 62-character `XMS_LONG` value with `--trunc=25`, testing the long truncation option; passes when the capture contains `abcdefghijklmnopqrstuvwxyz` but not the complete payload.
+- `clean_cli_scope_pass`: Loads a mission file that configures `XMS_ALPHA` and `XMS_SECONDARY`, then runs `--clean XMS_NUM`, testing replacement of file scope by CLI scope; passes when the capture contains `XMS_NUM=42` evidence and no `XMS_ALPHA` token.
+- `config_var_pass`: Loads the mission file without CLI variable names, testing its configured `var=XMS_ALPHA` and `var=XMS_SECONDARY` scope; passes when both variable names appear in the capture.
+- `filter_prefix_pass`: Combines `--all` with `--filter=XMS_`, testing prefix filtering of database-wide scope; passes when `XMS_ALPHA` and `XMS_NUM` appear and `DB_UPTIME` does not.
+- `src_timer_pass`: Uses `--src=uTimerScript` without explicit variable names, testing source-derived scope; passes when the capture includes the publisher's `XMS_ALPHA` and `XMS_NUM` variables.
+- `novirgins_pass`: Scopes posted `XMS_ALPHA` and never-posted `XMS_MISSING` with `--novirgins`, testing suppression of virgin variables; passes when `XMS_ALPHA=alpha` evidence appears and neither `XMS_MISSING` nor `n/a` appears.
+- `novirgins_shortcut_pass`: Repeats the posted and never-posted scope with `-g`, testing the short alias for virgin suppression; passes with the same `XMS_ALPHA` presence and `XMS_MISSING`/`n/a` absence checks.
+- `shortcut_source_pass`: Runs `-s` for `XMS_ALPHA`, testing the short alias for source display; passes when the capture contains `XMS_ALPHA` and `uTimerScript`.
+- `shortcut_source_time_pass`: Runs `-st` for `XMS_ALPHA`, testing the combined source-and-time shortcut; passes when the capture contains `XMS_ALPHA` and `uTimerScript`, but the time column is not independently checked.
+- `filter_specific_pass`: Combines `--all` with the narrower `--filter=XMS_A`, testing selective prefix filtering; passes when `XMS_ALPHA=alpha` evidence appears and neither `XMS_NUM` nor `DB_UPTIME` appears.
+- `filter_no_match_absent_pass`: Combines `--all` with `--filter=NO_SUCH_PREFIX`, testing a filter with no matching variables; passes when a `SCOPING` report is produced without `XMS_ALPHA` or `DB_UPTIME`.
+- `colorany_pass`: Applies `--colorany=XMS_ALPHA` to the scoped variable, testing that the option is accepted without losing its row; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking terminal color codes.
+- `events_mode_pass`: Runs `XMS_ALPHA` with `--mode=events` while the publisher posts `alpha` once, exercising event-mode output; passes when the capture contains `XMS_ALPHA` and `alpha`.
+- `paused_shortcut_pass`: Runs `XMS_ALPHA` with `-p`, exercising the short alias for paused mode; passes when startup capture contains `XMS_ALPHA` and `alpha`, without checking that later refreshes remain paused.
+- `shortcut_trunc_pass`: Scopes the 62-character `XMS_LONG` value with `-t`, testing the `--trunc=25` shortcut; passes when the capture contains `abcdefghijklmnopqrstuvwxyz` but not the complete payload.
+- `alll_mode_pass`: Runs with `--alll`, which requests even the variables normally excluded by `--all`; passes when the capture contains `DB_UPTIME` and `XMS_ALPHA`, the same evidence used for ordinary `--all`.
+- `server_underscore_args_pass`: Connects with `--server_host=localhost` and `--server_port=<case-port>`, testing the underscore server aliases; passes when the capture contains `XMS_ALPHA` and `alpha` from that database.
+- `moos_alias_args_pass`: Connects with `--mooshost=localhost` and `--moosport=<case-port>`, testing the compact MOOS aliases; passes when the capture contains `XMS_ALPHA` and `alpha` from that database.
+- `moos_underscore_args_pass`: Connects with `--moos_host=localhost` and `--moos_port=<case-port>`, testing the underscore MOOS aliases; passes when the capture contains `XMS_ALPHA` and `alpha` from that database.
+- `alias_proc_name_pass`: Runs with `--alias=uXMS_ci` while scoping `XMS_ALPHA`, exercising custom process-name parsing; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking the registered process name.
+- `colormap_pair_pass`: Applies `--colormap=XMS_ALPHA,red` to the scoped variable, testing that a variable/color pair is accepted without losing its row; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking terminal color codes.
+- `clean_shortcut_scope_pass`: Loads the mission-file scope, then runs `-c XMS_NUM`, testing the short alias for ignoring configured variables; passes when the capture contains `XMS_NUM=42` evidence and no `XMS_ALPHA` token.
 
 ## Run
 

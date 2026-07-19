@@ -7,34 +7,34 @@ lets `pMissionEval` grade the variables posted by `uPokeDB`.
 
 ## Current Matrix
 
-- `numeric_direct_pass` Posts one numeric value through explicit `--host/--port` arguments and expects the DB value to match exactly.
-- `string_forced_pass` Posts a numeric-looking value with `:=` and expects it to remain available as the exact string payload.
-- `multiple_mixed_pass` Posts numeric and string variables in one `uPokeDB` invocation and expects both to be present.
-- `overwrite_existing_pass` Posts the same variable twice and expects the later value to replace the earlier one.
-- `cache_config_pass` Uses `--cache` with a generated mission-file `ProcessConfig = uPokeDB` block and expects cached pokes to publish.
-- `mission_file_connection_pass` Connects from `targ_shoreside.moos` instead of explicit host/port and expects the poke to arrive.
-- `quiet_mode_pass` Uses `--quiet` and expects the poke to succeed without relying on terminal output.
-- `negative_double_pass` Posts a negative floating-point value and expects the sign and magnitude to survive.
-- `boolean_true_pass` Posts a boolean-looking value and expects mission evaluation to treat it as true.
-- `repeated_batch_pass` Sends two sequential `uPokeDB` commands and expects the second command to own the final value.
-- `mixed_numeric_string_batch_pass` Posts a numeric and a forced string value together, checking both forms in one run.
-- `cache_string_numeric_pass` Uses cached numeric and string pokes together to exercise cache parsing for both value forms.
-- `host_alias_args_pass` Uses `host=` and `port=` aliases instead of `--host=` and `--port=` and expects the poke to arrive.
-- `server_alias_args_pass` Uses `serverhost=` and `serverport=` aliases and expects the poke to arrive.
-- `server_underscore_args_pass` Uses `server_host=` and `server_port=` aliases and expects the poke to arrive.
-- `quiet_short_alias_pass` Uses the short `-q` quiet option and expects the poke to succeed.
-- `cache_short_alias_pass` Uses the short `-c` cache option and expects configured cached pokes to publish.
-- `zero_double_pass` Posts numeric zero and expects the value to be treated as an intentional double rather than missing data.
-- `scientific_literal_pass` Posts a scientific-notation numeric literal and expects the DB value to match.
-- `large_double_pass` Posts a large floating-point value and expects the magnitude to survive.
-- `cache_forced_string_pass` Uses cached `:=` syntax for a numeric-looking string and expects leading zeroes to survive.
-- `cache_boolean_pass` Uses cached boolean-looking data and expects mission evaluation to see a true value.
-- `utc_macro_pass` Posts `@UTC` and expects uPokeDB to replace it with a positive MOOS time value.
-- `moostime_macro_pass` Posts `@MOOSTIME` and expects uPokeDB to replace it with a positive MOOS time value.
-- `forced_utc_string_pass` Posts `@UTC` with forced-string syntax and expects the macro text to remain literal.
-- `duplicate_same_invocation_pass` Posts the same variable twice in one command and expects the later value to win.
-- `cache_duplicate_first_wins_pass` Defines the same cached poke twice and captures the current first-value result.
-- `cache_cli_mixed_pass` Combines cached pokes with a command-line poke and expects both sources to publish.
+- `numeric_direct_pass`: Runs `uPokeDB --host=localhost --port=<case-port>` with `POKE_NUM=42.5`, testing an explicitly addressed numeric poke; passes when `POKE_NUM=42.5`.
+- `string_forced_pass`: Posts `POKE_STR:=0012`, testing forced-string parsing of a numeric-looking token; passes when the DB value remains the exact string `0012`.
+- `multiple_mixed_pass`: Posts `POKE_A=7` and `POKE_B:=bravo` in one invocation, testing mixed numeric and forced-string arguments; passes when both exact values are present.
+- `overwrite_existing_pass`: Posts `POKE_OVER:=old`, waits 0.5 seconds, then posts `POKE_OVER:=new` in a second invocation, testing replacement across commands; passes when the final value is `new`.
+- `cache_config_pass`: Generates a `ProcessConfig=uPokeDB` block containing cached `POKE_CACHE_NUM=88` and runs with `--cache`, testing numeric cache-file execution; passes when `POKE_CACHE_NUM=88`.
+- `mission_file_connection_pass`: Passes `targ_shoreside.moos` instead of host/port flags and posts `POKE_FILE:=from_file`, testing connection discovery from a mission file; passes when `POKE_FILE=from_file`.
+- `quiet_mode_pass`: Posts `POKE_QUIET:=silent` through the harness's ordinary `--quiet` command path, exercising a quiet poke; passes when `POKE_QUIET=silent`. This path is also used by most other non-cache cases.
+- `negative_double_pass`: Posts `POKE_NEG=-13.25`, testing signed floating-point parsing; passes when `POKE_NEG=-13.25`.
+- `boolean_true_pass`: Posts `POKE_BOOL=true` with numeric assignment syntax, testing the boolean-looking value accepted by the evaluator; passes when `POKE_BOOL=true`.
+- `repeated_batch_pass`: Posts `POKE_REPEAT:=first`, waits 0.5 seconds, then posts `POKE_REPEAT:=second` in a second invocation, testing sequential replacement; passes when the final value is `second`.
+- `mixed_numeric_string_batch_pass`: Posts `POKE_MIXED_NUM=31` and `POKE_MIXED_STR:=031` together, testing numeric parsing alongside preservation of a leading-zero string; passes when the values are exactly `31` and `031`.
+- `cache_string_numeric_pass`: Caches `POKE_CACHE_NUM=77` and `POKE_CACHE_STR:=seventy_seven` in one config block, testing mixed cache value forms; passes when both exact values publish.
+- `host_alias_args_pass`: Connects with `host=localhost port=<case-port>` and posts `POKE_ALIAS:=alias_host`, testing the unprefixed host/port aliases; passes when `POKE_ALIAS=alias_host`.
+- `server_alias_args_pass`: Connects with `serverhost=localhost serverport=<case-port>` and posts `POKE_SERVER_ALIAS:=server_alias`, testing the compact server aliases; passes when the exact value publishes.
+- `server_underscore_args_pass`: Connects with `server_host=localhost server_port=<case-port>` and posts `POKE_SERVER_UNDERSCORE:=server_under`, testing the underscored server aliases; passes when the exact value publishes.
+- `quiet_short_alias_pass`: Uses `-q` with explicit host/port flags and posts `POKE_QSHORT:=quiet_short`, testing the short quiet alias; passes when `POKE_QSHORT=quiet_short`.
+- `cache_short_alias_pass`: Runs the generated cache file with `-c -q` and cached `POKE_CACHE_SHORT:=cache_short`, testing both short options; passes when the exact value publishes.
+- `zero_double_pass`: Posts `POKE_ZERO=0`, testing that numeric zero is a present value rather than missing mail; passes when `POKE_ZERO=0`.
+- `scientific_literal_pass`: Posts `POKE_SCI=1e-3`, testing scientific-notation input; passes when the evaluator matches `POKE_SCI=1e-3`.
+- `large_double_pass`: Posts `POKE_BIG=123456.75`, testing preservation of a large fractional value; passes when `POKE_BIG=123456.75`.
+- `cache_forced_string_pass`: Caches `POKE_CACHE_FORCED:=0007`, testing forced-string syntax inside a `poke=` config entry; passes when the four-character string `0007` is preserved.
+- `cache_boolean_pass`: Caches `POKE_CACHE_BOOL=true`, testing boolean-looking cache data; passes when `POKE_CACHE_BOOL=true`.
+- `utc_macro_pass`: Posts `POKE_UTC=@UTC`, exercising UTC macro expansion; passes when the resulting value is greater than zero.
+- `moostime_macro_pass`: Posts `POKE_MOOSTIME=@MOOSTIME`, exercising MOOS-time macro expansion; passes when the resulting value is greater than zero.
+- `forced_utc_string_pass`: Posts `POKE_UTC_STRING:=@UTC`, testing that forced-string syntax suppresses macro expansion; passes when the value remains the literal `@UTC`.
+- `duplicate_same_invocation_pass`: Supplies `POKE_DUP:=first POKE_DUP:=second` in one command, testing duplicate command-line arguments; passes when the later value `second` wins.
+- `cache_duplicate_first_wins_pass`: Places `POKE_CACHE_DUP:=first` and then `POKE_CACHE_DUP:=second` in one cache block, preserving the cache parser's current duplicate behavior; passes when the first value `first` wins.
+- `cache_cli_mixed_pass`: Caches `POKE_CACHE_MIX:=from_cache` while adding command-line `POKE_CLI_MIX:=from_cli` to the same `--cache` invocation, testing mixed stimulus sources; passes when both exact values publish.
 
 ## Run
 

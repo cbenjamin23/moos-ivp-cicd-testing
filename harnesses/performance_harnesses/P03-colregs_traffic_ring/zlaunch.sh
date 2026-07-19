@@ -32,6 +32,7 @@ PSHARE_OFFSET=15
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 PERF_PROFILE="${PERF_PROFILE:-local}"
 TIME_WARP=""
@@ -49,6 +50,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show case launch details
   --just_make, -j    Prepare each case without launching it
+  --log=<mode>       Logging mode: minimal (default) or full
   --max_time=<secs>  Override each case's launcher ceiling
   --case=<name>      Run one named case
   --port_base=<n>    Base of the first isolated case port block
@@ -80,6 +82,7 @@ for arg in "$@"; do
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
         --max_time=*) MAX_TIME_OVERRIDE="${arg#--max_time=}" ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --case=*) CASE="${arg#--case=}" ;;
         --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
@@ -93,6 +96,11 @@ for arg in "$@"; do
             ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 is_uint "$PORT_BASE" || die "--port_base must be an integer"
 if [ -n "$MAX_TIME_OVERRIDE" ]; then
@@ -222,13 +230,23 @@ get_case_config() {
 
 prepare_case() {
     local case_dir="$1"
+    local shore_stem
     mkdir "$case_dir" || return 1
     cp -R "$MISSION_DIR"/. "$case_dir"/ || return 1
     (
         cd "$case_dir" || exit 1
         ./clean.sh >/dev/null 2>&1 || true
-        rm -f meta_shoreside.moosx meta_vehicle.moosx meta_vehicle.bhvx
-        nspatch --stem=meta_shoreside.moos "$SHORE_PATCH" \
+        rm -f meta_shoreside.moosx meta_shoreside.full.moos \
+            meta_vehicle.moosx meta_vehicle.bhvx
+        shore_stem=meta_shoreside.moos
+        if [ "$LOG_MODE" = full ]; then
+            nspatch --stem=meta_shoreside.moos full-logging-shoreside.xmoos \
+                --targ=meta_shoreside.full.moos || exit 1
+            nspatch --stem=meta_vehicle.moos full-logging-vehicle.xmoos \
+                --targ=meta_vehicle.moosx || exit 1
+            shore_stem=meta_shoreside.full.moos
+        fi
+        nspatch --stem="$shore_stem" "$SHORE_PATCH" \
             --targ=meta_shoreside.moosx
     )
 }
@@ -382,7 +400,9 @@ run_case() {
         echo "$ME: case=$case_name scenario=$CASE_SCENARIO ports=$case_base-$((case_base + PORT_STRIDE - 1))"
     (
         cd "$case_dir" || exit 1
-        PTRAFFIC_BIN="$PTRAFFIC_BIN" ./zlaunch.sh "${launch_args[@]}"
+        LOG_MODE_PREPARED=yes LOG_MODE_PREPARED_VALUE="$LOG_MODE" \
+            PTRAFFIC_BIN="$PTRAFFIC_BIN" \
+            ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
     ) || launch_rc=$?
 
     if [ "$JUST_MAKE" = yes ]; then

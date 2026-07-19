@@ -22,6 +22,7 @@ MOOS_PORT="4000"
 PSHARE_PORT="4010"
 MMOD=""
 VNAMES="abe:ben"
+SHORE_MOOS="meta_shoreside.moos"
 
 for ARGI; do
     CMD_ARGS+="${ARGI} "
@@ -87,7 +88,11 @@ if [ "${AUTO_LAUNCHED}" = "no" ]; then
     NSFLAGS="--interactive --force -x"
 fi
 
-nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
+if [ -f "meta_shoreside.moosx" ]; then
+    SHORE_MOOS="meta_shoreside.moosx"
+fi
+
+nsplug "$SHORE_MOOS" targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT    \
        PSHARE_PORT=$PSHARE_PORT     LAUNCH_GUI=$LAUNCH_GUI  \
        MMOD=$MMOD                   VNAMES=$VNAMES          \

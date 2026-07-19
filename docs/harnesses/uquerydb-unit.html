@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Numeric Condition</h3>
-          <p>Description: CLI numeric equality condition.</p>
+          <p>Description: Queries QUERY_NUM = 42 from the command line, testing numeric equality against the published value; passes when uQueryDB exits 0 within the three-second wait.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Checkvar Formats</h3>
-          <p>Description: CSV .checkvars output.</p>
+          <p>Description: Requests QUERY_STR with --check_var and --csv, testing comma-separated output; passes when the string query exits 0 and .checkvars contains QUERY_STR,ready.</p>
         </div>
       </article>
 
@@ -87,181 +87,181 @@
 
         <article class="case-row">
           <code>cli_numeric_pass</code>
-          <p>CLI numeric equality condition.</p>
+          <p>Queries QUERY_NUM = 42 from the command line, testing numeric equality against the published value; passes when uQueryDB exits 0 within the three-second wait.</p>
         </article>
 
 
         <article class="case-row">
           <code>cli_string_pass</code>
-          <p>CLI string equality condition.</p>
+          <p>Queries QUERY_STR = ready, testing string equality against the published value; passes when uQueryDB exits 0 within three seconds.</p>
         </article>
 
 
         <article class="case-row">
           <code>cli_boolean_pass</code>
-          <p>CLI boolean-looking equality condition.</p>
+          <p>Queries QUERY_BOOL = true, testing equality for the published boolean-looking string; passes when uQueryDB exits 0 within three seconds.</p>
         </article>
 
 
         <article class="case-row">
           <code>cli_negative_numeric_pass</code>
-          <p>CLI negative numeric equality condition.</p>
+          <p>Queries QUERY_NEG = -7.5, testing parsing and equality for a negative decimal; passes when uQueryDB exits 0 within three seconds.</p>
         </article>
 
 
         <article class="case-row">
           <code>multiple_pass_conditions_pass</code>
-          <p>Multiple CLI pass conditions must all become true.</p>
+          <p>Supplies separate QUERY_NUM = 42 and QUERY_STR = ready pass conditions, testing the all-conditions contract; passes when uQueryDB exits 0 after both published values satisfy their conditions.</p>
         </article>
 
 
         <article class="case-row">
           <code>fail_condition_false_pass</code>
-          <p>False CLI fail condition does not block success.</p>
+          <p>Requires QUERY_NUM = 42 while declaring QUERY_FAIL = true as a fail condition, testing that a false fail condition does not veto a satisfied pass condition; passes when uQueryDB exits 0 with QUERY_FAIL=false.</p>
         </article>
 
 
         <article class="case-row">
           <code>fail_condition_true_fail</code>
-          <p>True CLI fail condition returns non-zero as expected.</p>
+          <p>Requires QUERY_NUM = 42 while declaring the published QUERY_FAIL = false as a fail condition, testing fail-condition precedence over a satisfied pass condition; the harness passes when uQueryDB exits 1.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_var_timeout_fail</code>
-          <p>Missing variable times out and returns non-zero.</p>
+          <p>Waits one second for never-published QUERY_MISSING = ready, testing the unsatisfied-variable timeout path; the harness passes when uQueryDB exits 1.</p>
         </article>
 
 
         <article class="case-row">
           <code>late_var_wait_pass</code>
-          <p>Delayed variable succeeds within the wait window.</p>
+          <p>Waits up to three seconds for QUERY_LATE = arrived, which is posted later than the baseline variables, testing that the query remains active for delayed mail; passes when uQueryDB exits 0.</p>
         </article>
 
 
         <article class="case-row">
           <code>mission_file_config_pass</code>
-          <p>Mission-file ProcessConfig pass condition and check variable.</p>
+          <p>Runs the stem mission file&#x27;s pass_condition=QUERY_NUM = 42, check_var=QUERY_NUM, and ESV format without CLI query arguments, testing ProcessConfig loading; passes when uQueryDB exits 0 and .checkvars contains QUERY_NUM=42.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_esv_pass</code>
-          <p>ESV .checkvars output.</p>
+          <p>Requests QUERY_NUM with --check_var and --esv, testing equals-separated output; passes when the numeric query exits 0 and .checkvars contains QUERY_NUM=42.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_csv_pass</code>
-          <p>CSV .checkvars output.</p>
+          <p>Requests QUERY_STR with --check_var and --csv, testing comma-separated output; passes when the string query exits 0 and .checkvars contains QUERY_STR,ready.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_wsv_pass</code>
-          <p>WSV .checkvars output.</p>
+          <p>Requests QUERY_OTHER with --check_var and --wsv, testing whitespace-separated output; passes when QUERY_OTHER = bravo exits 0 and .checkvars contains QUERY_OTHER bravo.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_value_only_pass</code>
-          <p>Config-driven value-only .checkvars output.</p>
+          <p>Generates a config with check_var_format=vo for QUERY_BOOL, testing value-only output; passes when the query exits 0, .checkvars contains true, and no ESV, CSV, or WSV variable prefix appears.</p>
         </article>
 
 
         <article class="case-row">
           <code>unique_name_pass</code>
-          <p>CLI --unique app naming still queries successfully.</p>
+          <p>Adds --unique to QUERY_NUM = 42, exercising randomized client-name startup; passes when the query exits 0, without independently checking the registered name.</p>
         </article>
 
 
         <article class="case-row">
           <code>compound_or_pass</code>
-          <p>Compound OR expression succeeds through the true branch.</p>
+          <p>Queries (QUERY_STR = not_ready) or (QUERY_OTHER = bravo), testing that a true right-hand branch satisfies an OR expression when the left branch is false; passes when uQueryDB exits 0.</p>
         </article>
 
 
         <article class="case-row">
           <code>pass_condition_alias_pass</code>
-          <p>CLI --pass_condition alias behaves like --condition.</p>
+          <p>Supplies QUERY_STR = ready through the CLI --pass_condition alias, testing equivalence with --condition; passes when uQueryDB exits 0.</p>
         </article>
 
 
         <article class="case-row">
           <code>compound_and_pass</code>
-          <p>Compound AND expression requires both terms.</p>
+          <p>Queries (QUERY_NUM = 42) and (QUERY_STR = ready), testing a compound AND expression with both terms true; passes when uQueryDB exits 0.</p>
         </article>
 
 
         <article class="case-row">
           <code>compound_or_fail</code>
-          <p>Compound OR expression returns non-zero when both terms remain false.</p>
+          <p>Queries (QUERY_STR = not_ready) or (QUERY_OTHER = not_bravo), testing an OR expression with both branches false; the harness passes when uQueryDB exits 1 after the one-second wait.</p>
         </article>
 
 
         <article class="case-row">
           <code>config_halt_max_time_timeout_fail</code>
-          <p>Config halt_max_time bounds a missing-variable timeout.</p>
+          <p>Generates halt_max_time=1 with the never-satisfied QUERY_MISSING = ready pass condition, testing the configuration alias for the timeout; the harness passes when uQueryDB exits 1.</p>
         </article>
 
 
         <article class="case-row">
           <code>config_fail_condition_false_pass</code>
-          <p>Generated config with false fail condition succeeds.</p>
+          <p>Generates a config requiring QUERY_NUM = 42 and failing on QUERY_FAIL = true, testing a false config-file fail condition; passes when uQueryDB exits 0 with QUERY_FAIL=false.</p>
         </article>
 
 
         <article class="case-row">
           <code>config_fail_condition_true_fail</code>
-          <p>Generated config with true fail condition returns non-zero.</p>
+          <p>Generates a config requiring QUERY_NUM = 42 and failing on the published QUERY_FAIL = false, testing a true config-file fail condition; the harness passes when uQueryDB exits 1.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_multi_csv_pass</code>
-          <p>CSV .checkvars output includes multiple requested variables.</p>
+          <p>Requests QUERY_NUM and QUERY_STR in CSV format, testing multiple .checkvars rows from one successful query; passes when the query exits 0 and the file contains both QUERY_NUM,42 and QUERY_STR,ready.</p>
         </article>
 
 
         <article class="case-row">
           <code>checkvar_timeout_esv_pass</code>
-          <p>Timeout path still writes requested ESV check variables.</p>
+          <p>Waits one second on missing QUERY_MISSING while requesting published QUERY_NUM in ESV format, testing check-variable output on query failure; the harness passes when uQueryDB exits 1 and .checkvars still contains QUERY_NUM=42.</p>
         </article>
 
 
         <article class="case-row">
           <code>case_config_checkvar_csv_pass</code>
-          <p>Generated config writes CSV .checkvars output.</p>
+          <p>Generates a config requiring QUERY_OTHER = bravo and writing that variable as CSV, testing config-file check-variable and format settings together; passes when the query exits 0 and .checkvars contains QUERY_OTHER,bravo.</p>
         </article>
 
 
         <article class="case-row">
           <code>fail_only_false_pass</code>
-          <p>Fail-only query succeeds when the fail condition stays false.</p>
+          <p>Supplies only the fail condition QUERY_FAIL = true, testing a query with no pass conditions when the published value is false; passes when uQueryDB exits 0.</p>
         </article>
 
 
         <article class="case-row">
           <code>fail_only_true_fail</code>
-          <p>Fail-only query returns non-zero when the fail condition is true.</p>
+          <p>Supplies only the fail condition QUERY_FAIL = false, testing a query with no pass conditions when the published value satisfies the fail condition; the harness passes when uQueryDB exits 1.</p>
         </article>
 
 
         <article class="case-row">
           <code>numeric_greater_than_pass</code>
-          <p>Numeric greater-than comparison succeeds.</p>
+          <p>Queries QUERY_NUM &gt; 41 against the published value 42, testing a true numeric greater-than comparison; passes when uQueryDB exits 0.</p>
         </article>
 
 
         <article class="case-row">
           <code>numeric_less_than_fail</code>
-          <p>Numeric less-than comparison returns non-zero when false.</p>
+          <p>Queries QUERY_NUM &lt; 41 against the published value 42, testing a false numeric less-than comparison; the harness passes when uQueryDB exits 1 after the one-second wait.</p>
         </article>
 
 
         <article class="case-row">
           <code>config_condition_alias_pass</code>
-          <p>Generated config condition alias behaves like pass_condition.</p>
+          <p>Generates condition=QUERY_BOOL = true, testing the config-file alias for pass_condition; passes when uQueryDB exits 0.</p>
         </article>
 
       </div>

@@ -14,78 +14,27 @@ the ownship starts at `(0,-60)` and drives a short eastbound corridor to
 
 ## Current Matrix
 
-- `default_resolve_pass`
-  Baseline on-lane contact. The behavior should auto-request, spawn, resolve,
-  and finish with no collision.
-- `no_alert_request_absent_pass`
-  The same behavior is run with `no_alert_request=true`, but the contact is
-  moved off-lane so the mission stays clean without engaging the avoid
-  behavior.
-- `post_per_contact_info_pass`
-  The avoid behavior is configured to post per-contact info and the mission
-  confirms the range and closing-speed outputs show up.
-- `behavior_filter_absent_pass`
-  The behavior requests an alert with a type filter that excludes the spoofed
-  contact, so the avoid behavior stays idle and the mission still finishes
-  cleanly.
-- `head_on_resolve_pass`
-  This case moves the intruder head-on. This is a stronger geometry than
-  the baseline crossing case, but the mission should still resolve cleanly.
-- `pwt_outer_too_small_fail`
-  The collision-relevance outer distance is made too small for the on-lane
-  encounter. The behavior may resolve administratively, but the mission should
-  grade pass only when the expected collision evidence is observed.
-- `pwt_grade_quadratic_pass`
-  The objective-function grade is switched to `quadratic`. The behavior should
-  still resolve the baseline encounter with no collision.
-- `pwt_grade_quasi_pass`
-  The objective-function grade is switched to `quasi`. The behavior should
-  still resolve the baseline encounter with no collision.
-- `use_refinery_pass`
-  Enables the IvP refinery and verifies the behavior still builds a usable
-  function, resolves the contact, arrives, and avoids collision.
-- `contact_type_required_absent_pass`
-  The legacy `contact_type_required` alias is set to a type that excludes the
-  spoofed contact while the contact is moved off-lane. The behavior should stay
-  idle and the transit should finish cleanly.
-- `no_extrapolate_pass`
-  Contact extrapolation is disabled while the contact feed remains fresh. The
-  behavior should still resolve the encounter cleanly.
-- `no_alert_request_fail`
-  The behavior is told not to request an alert while the contact remains
-  challenging. The mission should grade pass only when the avoid behavior stays
-  idle, no contact info arrives, and a collision is observed.
-- `bad_pwt_inner_dist_fail`
-  `pwt_inner_dist` is set outside the valid relationship to `pwt_outer_dist`.
-  The mission should grade pass only when the helm reports malconfiguration.
-- `bad_pwt_outer_dist_fail`
-  `pwt_outer_dist` is set inside the configured inner distance. The mission
-  should grade pass only when the helm reports malconfiguration.
-- `bad_min_util_cpa_dist_fail`
-  `min_util_cpa_dist` is set above `max_util_cpa_dist`. The mission should
-  grade pass only when the helm reports malconfiguration.
-- `bad_max_util_cpa_dist_fail`
-  `max_util_cpa_dist` is set below `min_util_cpa_dist`. The mission should
-  grade pass only when the helm reports malconfiguration.
-- `bad_pwt_grade_fail`
-  `pwt_grade` is set to an unsupported token. The behavior configuration
-  should be rejected and the mission should grade pass only when the helm
-  reports malconfiguration.
-- `bad_completed_dist_fail`
-  `completed_dist` is set negative. The behavior configuration should be
-  rejected and the mission should grade pass only when the helm reports
-  malconfiguration.
-- `bad_time_on_leg_fail`
-  The inherited `time_on_leg` setting is set negative. The mission should
-  grade pass only when the helm reports malconfiguration.
-- `bad_decay_fail`
-  The inherited contact-decay window is malformed by making the stale threshold
-  lower than the linear threshold. The mission should grade pass only when the
-  helm reports malconfiguration.
-- `bad_collision_depth_fail`
-  `collision_depth` is enabled in this 2D mission, where the source requires a
-  depth domain. The mission should grade pass only when the helm reports
-  malconfiguration.
+- `default_resolve_pass`: Places a stationary kayak named `intruder` at `(30,-60)`, directly in Abe's eastbound lane, to exercise the stock spawned `BHV_AvoidCollision`; passes at the evaluation checkpoint when contact info was received, `AVOIDING=end`, `CONTACT_RESOLVED=intruder`, `ARRIVED=true`, and `COLLISION_TOTAL=0`.
+- `no_alert_request_absent_pass`: Sets `no_alert_request=true` and moves the stationary intruder five meters off the lane to `(30,-55)`; passes when the behavior remains idle with no resolved contact, Abe arrives, and collision total is zero.
+- `post_per_contact_info_pass`: Sets `post_per_contact_info=true` against the baseline on-lane intruder; passes when both `RANGE_AVD_intruder` and `CLSG_SPD_AVD_intruder` were published, contact info was received, the behavior ends with `intruder` resolved, Abe arrives, and collision total is zero.
+- `behavior_filter_absent_pass`: Sets `match_type=submarine` while the off-lane intruder is a kayak, exercising the behavior-owned type filter; passes when the behavior remains idle with no resolved contact, Abe arrives, and collision total is zero.
+- `head_on_resolve_pass`: Starts the intruder at `(70,-60)` moving west at 1.2 m/s directly toward eastbound Abe; passes when contact info was received, the behavior ends with `intruder` resolved, Abe arrives, and collision total is zero.
+- `pwt_outer_too_small_fail`: Shrinks the relevance distances to `pwt_outer_dist=5`, `pwt_inner_dist=2`, `min_util_cpa_dist=1`, and `max_util_cpa_dist=3` against the baseline on-lane intruder; this expected-negative case passes when `COLLISION_TOTAL>0` at the evaluation checkpoint.
+- `pwt_grade_quadratic_pass`: Sets `pwt_grade=quadratic` against the baseline on-lane intruder, exercising quadratic relevance shaping; passes when contact info was received, the behavior ends with `intruder` resolved, Abe arrives, and collision total is zero.
+- `pwt_grade_quasi_pass`: Sets `pwt_grade=quasi` against the baseline on-lane intruder, exercising quasi relevance shaping; passes when contact info was received, the behavior ends with `intruder` resolved, Abe arrives, and collision total is zero.
+- `use_refinery_pass`: Sets `use_refinery=true` against the baseline on-lane intruder, exercising refined IvP-function construction; passes when contact info was received, the behavior ends with `intruder` resolved, Abe arrives, and collision total is zero.
+- `contact_type_required_absent_pass`: Uses the legacy `contact_type_required=submarine` alias while the off-lane intruder is a kayak; passes when the behavior remains idle with no resolved contact, Abe arrives, and collision total is zero.
+- `no_extrapolate_pass`: Sets `extrapolate=false` while retaining the fresh stationary on-lane intruder feed; passes when contact info was received, the behavior ends with `intruder` resolved, Abe arrives, and collision total is zero.
+- `no_alert_request_fail`: Sets `no_alert_request=true` while leaving the stationary intruder directly in Abe's lane; this expected-negative case passes when the behavior remains idle, `CONTACT_INFO` is never observed, no contact is resolved, Abe arrives, and at least one collision is recorded.
+- `bad_pwt_inner_dist_fail`: Sets `pwt_inner_dist=30` above `pwt_outer_dist=24`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_pwt_outer_dist_fail`: Sets `pwt_outer_dist=5` below `pwt_inner_dist=10`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_min_util_cpa_dist_fail`: Sets `min_util_cpa_dist=20` above `max_util_cpa_dist=16`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_max_util_cpa_dist_fail`: Sets `max_util_cpa_dist=4` below `min_util_cpa_dist=6`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_pwt_grade_fail`: Sets the unsupported `pwt_grade=banana`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_completed_dist_fail`: Sets `completed_dist=-1`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_time_on_leg_fail`: Sets inherited `time_on_leg=-1`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_decay_fail`: Sets the inherited contact decay window to `30,20`, placing the stale threshold below the linear threshold; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
+- `bad_collision_depth_fail`: Sets `collision_depth=2` in a course/speed-only IvP domain; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true` before the 18-second checkpoint.
 
 ## Results Lines
 

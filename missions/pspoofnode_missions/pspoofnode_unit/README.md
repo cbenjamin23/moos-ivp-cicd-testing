@@ -5,6 +5,9 @@ The harness writes case-specific spoof configuration and runtime `SPOOF` /
 `SPOOF_CANCEL` mail, then validates readiness plus structured `NODE_REPORT`
 payloads from the generated alog.
 
+Direct `zlaunch.sh` runs default to minimal grading logging. Pass
+`--log=full` to restore the original diagnostic variable set.
+
 Typical harness run:
 
 ```sh

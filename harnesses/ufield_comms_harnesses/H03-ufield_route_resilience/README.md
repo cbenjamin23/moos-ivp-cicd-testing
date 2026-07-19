@@ -7,40 +7,45 @@ to pass; expected-negative cases require mission-owned blocked-route evidence
 and still report `grade=pass` when that evidence is observed. All cases add
 alog checks for the specific route mechanism under test.
 
+Logging defaults to `--log=minimal`, retaining only the broker-ack, pShare,
+and try-host variables required by those supplemental checks. Use
+`--log=full` to restore the original wildcard shore and vehicle loggers.
+
 Typical runs:
 
 ```bash
 ./zlaunch.sh --jobs=2 --port_base=4000
 ./zlaunch.sh --case=shore_vnode_discovery_recover_pass --port_base=4000 --gui 10
+./zlaunch.sh --log=full --case=shore_vnode_discovery_recover_pass --port_base=4000 10
 ```
 
 ## Cases
 
-- `dead_first_tryhost_blocks_fail` Places a dead route in the effective first `try_shore_host` slot; the case is expected to fail while proving both broker ping routes were emitted and no valid shore ack was received.
-- `secondary_dead_tryhost_ignored_pass` Places a live route in the effective first slot and a dead secondary route; both vehicles must establish key `0` broker acks and complete direct message/report delivery.
-- `startup_invalid_bad_port_valid_route_pass` Adds a startup `try_shore_host` with a nonnumeric port beside a valid route; the invalid startup route must not create a pShare command.
-- `startup_invalid_bad_param_valid_route_pass` Adds a startup `try_shore_host` with the wrong parameter name beside a valid route; the invalid startup line must not create a pShare command.
-- `startup_ip_route_recover_pass` Uses a startup `try_shore_host` with `127.0.0.1` instead of `localhost`; both node brokers must recover through the numeric loopback route.
-- `runtime_tryhost_recover_pass` Removes startup shore routing and injects a valid runtime `TRY_SHORE_HOST`; both node brokers must add the route, handshake on key `0`, and finish normal communications.
-- `runtime_dead_then_valid_blocks_fail` Sends a runtime dead route before a valid route; the case is expected to fail and proves the later valid route does not recover this dead-first ordering.
-- `runtime_valid_then_dead_stays_pass` Sends a valid runtime route before a dead runtime route; the original key `0` route must remain sufficient for delivery.
-- `runtime_duplicate_tryhost_ignored_pass` Sends the same valid runtime route twice after removing startup routing; duplicate runtime route mail must not create a key `1` pShare route.
-- `startup_duplicate_runtime_ignored_pass` Keeps startup routing and repeats the same route through runtime mail; the duplicate must be ignored while the startup route remains healthy.
-- `delayed_runtime_tryhost_recover_pass` Delays the first valid runtime route until mid-scenario; both vehicles must still recover before the direct message and report checks complete.
-- `late_runtime_tryhost_blocks_delivery_fail` Delays the first valid runtime route until after key traffic has already been missed; broker acks may recover, but direct/report delivery must remain failed.
-- `runtime_one_node_missing_route_fail` Gives only `abe` a runtime shore route; the case is expected to fail because `ben` never receives a valid broker ack.
-- `runtime_staggered_nodes_recover_pass` Gives `abe` and `ben` valid runtime routes at different times; both must recover before the mission traffic window closes.
-- `invalid_runtime_tryhost_recover_pass` Sends an invalid runtime `TRY_SHORE_HOST` before a valid one; the invalid payload must not create a pShare command, and the later valid route must recover the mission.
-- `invalid_runtime_bad_port_recover_pass` Sends a runtime route with a nonnumeric port before a valid one; the bad port must not create a pShare command.
-- `invalid_runtime_bad_param_recover_pass` Sends a runtime route with the wrong parameter name before a valid one; the bad parameter must not create a pShare command.
-- `runtime_ip_route_recover_pass` Uses `127.0.0.1` instead of `localhost` in the runtime route; the node brokers must accept the numeric loopback route and recover.
-- `shore_vnode_discovery_recover_pass` Removes vehicle startup routing and has the shore broker publish `TRY_SHORE_HOST` to both vehicle pShare listeners via `try_vnode`; both vehicles must consume the discovery route and complete the mission.
-- `shore_vnode_one_node_only_fail` Publishes shore discovery to only one vehicle pShare listener; the case is expected to fail because the other node never recovers.
-- `shore_vnode_extra_dead_ignored_pass` Publishes valid discovery routes plus one dead vnode route; both live vehicles must still recover.
-- `shore_vnode_default_port_no_listener_fail` Uses a no-port vnode route, which defaults to `127.0.0.1:9200`; the case is expected to fail because no vehicle listener is present there.
-- `shore_vnode_invalid_host_ignored_pass` Adds a `try_vnode` route with an invalid host beside valid vnode routes; the invalid host must not create a pShare command.
-- `shore_vnode_bad_port_ignored_pass` Adds a `try_vnode` route with a nonnumeric port beside valid vnode routes; the invalid port must not create a pShare command.
-- `shore_vnode_duplicate_ignored_pass` Adds a duplicate valid vnode route beside the two required vehicle routes; the duplicate warning must not prevent both live vehicles from recovering.
+- `dead_first_tryhost_blocks_fail` Configures live and dead startup routes so the dead endpoint becomes effective key `0`; the expected-negative case passes when both vehicles emit key `0` and key `1` broker-ping pShare commands, neither receives any `status=ok` acknowledgement, shoreside node count stays zero, and all direct, acknowledgement, and report delivery remains absent.
+- `secondary_dead_tryhost_ignored_pass` Configures the same two startup endpoints with the live shore route as effective key `0`; passes when both vehicles emit key `0` and key `1` commands, receive `status=ok,key=0`, and complete the ordinary message, acknowledgement, bidirectional-report, and pulse checks.
+- `startup_invalid_bad_port_valid_route_pass` Adds `pshare_route=localhost:notaport` beside a valid startup route; passes when neither vehicle emits a pShare command containing `notaport`, both receive `status=ok,key=0`, and the ordinary communications mission succeeds.
+- `startup_invalid_bad_param_valid_route_pass` Adds `shore_route=localhost:<shore-port>` beside a valid startup `pshare_route`; passes when neither vehicle emits a pShare command containing `shore_route`, both receive `status=ok,key=0`, and ordinary communications succeed.
+- `startup_ip_route_recover_pass` Uses only startup `pshare_route=127.0.0.1:<shore-port>`; passes when both vehicle logs contain numeric-loopback pShare routes and `status=ok,key=0`, followed by the ordinary communications evidence.
+- `runtime_tryhost_recover_pass` Removes startup routing and posts a valid `TRY_SHORE_HOST` at mission time 220 to both vehicles; passes when each logs the runtime mail, creates a key `0` broker-ping route, receives `status=ok,key=0`, and completes ordinary communications.
+- `runtime_dead_then_valid_blocks_fail` Posts a dead runtime route at time 80 and the live route at 220; the expected-negative case passes when both key `0` and key `1` broker-ping routes are emitted but neither vehicle receives an `ok` acknowledgement, shoreside node count stays zero, and direct, acknowledgement, and report traffic remains absent.
+- `runtime_valid_then_dead_stays_pass` Posts the live route at time 120 and a dead route at 620; passes when the later key `1` route is emitted, both vehicles retain `status=ok,key=0`, and the full ordinary communications mission succeeds.
+- `runtime_duplicate_tryhost_ignored_pass` Posts the same valid route at times 220 and 260 with no startup route; passes when each vehicle creates only key `0`, no key `1` broker-ping command appears, both receive `status=ok,key=0`, and ordinary communications succeed.
+- `startup_duplicate_runtime_ignored_pass` Keeps the valid startup route and reposts it through `TRY_SHORE_HOST` at time 160; passes when the runtime mail is observed but neither vehicle creates a key `1` broker-ping command, both retain `status=ok,key=0`, and ordinary communications succeed.
+- `delayed_runtime_tryhost_recover_pass` Removes startup routing and waits until time 700 to post the first valid route; passes when both vehicles log the route, receive `status=ok,key=0`, and later scripted traffic still satisfies the full communications evaluator.
+- `late_runtime_tryhost_blocks_delivery_fail` Waits until time 1700—after Abe's message at 1040 and Ben's acknowledgement at 1120—to post the first valid route; the expected-negative case passes when both brokers later receive `status=ok,key=0` and node count reaches two, but no direct message was delivered before mission end.
+- `runtime_one_node_missing_route_fail` Removes startup routes and posts a valid route only to Abe at time 220; the expected-negative case passes when Abe receives `status=ok,key=0`, Ben never receives an `ok` acknowledgement, shoreside node count is exactly one, and the direct message is absent.
+- `runtime_staggered_nodes_recover_pass` Posts Abe's valid route at time 220 and Ben's at 620; passes when both independently receive `status=ok,key=0` and the later ordinary message, acknowledgement, reports, and pulse all arrive.
+- `invalid_runtime_tryhost_recover_pass` Posts `pshare_route=not_a_route` at time 300, then the valid route at 600 and repeats it at 800; passes when both logs contain the invalid mail but no pShare command containing `not_a_route`, both receive `status=ok,key=0`, and ordinary communications recover.
+- `invalid_runtime_bad_port_recover_pass` Posts `pshare_route=localhost:notaport` before the valid runtime route; passes when the malformed mail is logged, no pShare command contains `notaport`, both brokers receive `status=ok,key=0`, and ordinary communications recover.
+- `invalid_runtime_bad_param_recover_pass` Posts `shore_route=localhost:<shore-port>` before the valid runtime `pshare_route`; passes when the malformed mail is logged, no pShare command contains `shore_route`, both brokers receive `status=ok,key=0`, and ordinary communications recover.
+- `runtime_ip_route_recover_pass` Removes startup routing and posts `pshare_route=127.0.0.1:<shore-port>` at time 220; passes when both vehicles log the numeric-loopback mail and pShare route, receive `status=ok,key=0`, and complete ordinary communications.
+- `shore_vnode_discovery_recover_pass` Removes vehicle startup routes and configures shoreside `try_vnode` entries for both vehicle pShare ports; passes when shoreside emits `TRY_SHORE_HOST` route commands, both vehicles receive the discovery mail and `status=ok,key=0`, and the ordinary communications evaluator succeeds.
+- `shore_vnode_one_node_only_fail` Configures shoreside discovery for Abe's pShare listener only; the expected-negative case passes when Abe receives the discovery route and `status=ok,key=0`, Ben never receives an `ok` acknowledgement, node count is one, and the direct message is absent.
+- `shore_vnode_extra_dead_ignored_pass` Configures valid discovery routes for Abe and Ben followed by an unused numeric port; passes when shoreside emits discovery routing, both live vehicles receive `status=ok,key=0`, and ordinary communications succeed despite the extra endpoint.
+- `shore_vnode_default_port_no_listener_fail` Configures `try_vnode=route=127.0.0.1` with no port; the expected-negative case passes when shoreside emits the default `127.0.0.1:9200` route, neither vehicle receives an `ok` acknowledgement, node count remains zero, and direct, acknowledgement, and report delivery is absent.
+- `shore_vnode_invalid_host_ignored_pass` Configures `badhost:<Abe-port>` before the two valid numeric-loopback vnode routes; passes when no shoreside pShare command contains `badhost`, both brokers receive `status=ok,key=0`, and ordinary communications succeed.
+- `shore_vnode_bad_port_ignored_pass` Configures `127.0.0.1:notaport` before the two valid vnode routes; passes when no shoreside pShare command contains `notaport`, both brokers receive `status=ok,key=0`, and ordinary communications succeed.
+- `shore_vnode_duplicate_ignored_pass` Configures Abe's vnode route twice before Ben's route; passes when shoreside emits discovery routing, both vehicles receive `status=ok,key=0`, and the full ordinary communications mission succeeds.
 
 ## Evaluation
 

@@ -1,7 +1,10 @@
 # H01-trail_behavior_motion
 
+Logging is minimal by default in both communities. Use `--log=full` for the
+whole matrix or with `--case=NAME` for one diagnostic case.
+
 Patch-driven matrix for
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/trail_behavior_missions/trail_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/trail_behavior_missions/trail_behavior_motion).
+[`missions/trail_behavior_missions/trail_behavior_motion`](../../../missions/trail_behavior_missions/trail_behavior_motion).
 
 This harness focuses on `BHV_Trail` as the behavior under test. The stem uses
 two simulated vehicles: `abe` owns `BHV_Trail` and chases `ben`, while `ben`
@@ -18,104 +21,48 @@ uses behavior outputs such as:
 
 ## Cases
 
-- `static_trail_pass`
-  Baseline relative trailing at 180 degrees and 45 meters.
-- `absolute_west_pass`
-  Uses `trail_angle_type=absolute` with a westward trail point.
-- `relative_port_pass`
-  Keeps the chaser on the target's port quarter, proving `BHV_Trail` can hold
-  an offset relative trail angle instead of only following directly astern.
-- `relative_starboard_pass`
-  Trails off the contact's starboard quarter with a relative -135 degree angle.
-- `lead_right_turn_pass`
-  Replaces the target's straight waypoint leg with a right-angle dogleg and
-  grades pursuit after the target changes course.
-- `lead_port_turn_pass`
-  Combines the dogleg target route with a port-quarter relative trail angle.
-- `lead_turn_angle_update_pass`
-  Follows a target through a dogleg while changing `trail_angle` at runtime,
-  proving the chaser can reframe the desired trail point during a turn.
-- `short_trail_range_pass`
-  Shortens `trail_range` and grades tighter trail-point convergence.
-- `long_trail_range_pass`
-  Extends `trail_range` and evaluates after the longer geometry settles.
-- `tight_radius_pass`
-  Shrinks the inner radius while keeping pursuit active.
-- `wide_radius_pass`
-  Expands the inner radius and grades bounded trail-point convergence.
-- `inside_nm_radius_pass`
-  Starts inside `nm_radius` and verifies the expected near-contact trail
-  behavior.
-- `outside_nm_radius_pass`
-  Starts outside `nm_radius` with zero radius settings and verifies pursuit
-  remains valid.
-- `pwt_outer_active_pass`
-  Sets `pwt_outer_dist` high enough that relevance remains active.
-- `pwt_outer_inactive_pass`
-  Sets `pwt_outer_dist` below contact range and grades zero relevance/pursuit.
-- `mod_trail_range_plus_pass`
-  Uses `mod_trail_range` to increase configured trailing distance.
-- `mod_trail_range_pct_pass`
-  Uses `mod_trail_range_pct` to shrink configured trailing distance.
-- `mod_trail_range_floor_pass`
-  Drives `mod_trail_range` below the source minimum and verifies the configured
-  trail range clamps to the 10 meter floor while pursuit stays active.
-- `runtime_range_extend_pass`
-  Increases `trail_range` through `TRAIL_UPDATES`, proving the behavior can
-  accept a runtime range change and settle cleanly at the longer separation.
-- `runtime_mod_range_plus_pass`
-  Applies `mod_trail_range` through `TRAIL_UPDATES`.
-- `runtime_mod_range_pct_pass`
-  Applies `mod_trail_range_pct` through `TRAIL_UPDATES`.
-- `runtime_mod_range_floor_pass`
-  Applies a runtime `mod_trail_range_pct` update below the source minimum and
-  verifies the clamped trail range still produces valid pursuit.
-- `runtime_angle_update_pass`
-  Changes `trail_angle` through `TRAIL_UPDATES` and verifies the chaser settles
-  around the updated trail point.
-- `runtime_relevance_off_pass`
-  Lowers `pwt_outer_dist` through `TRAIL_UPDATES` and grades pursuit shutoff.
-- `runtime_bad_update_recover_pass`
-  Sends a malformed runtime trail-range update, then verifies a later valid
-  update recovers without a behavior error.
-- `idle_post_distance_pass`
-  Idles the trail behavior after pursuit and verifies distance reporting can
-  continue with pursuit off.
-- `idle_no_post_distance_pass`
-  Idles the trail behavior with `post_trail_dist_on_idle=false` and verifies a
-  sentinel `TRAIL_DISTANCE` value is not overwritten while pursuit is off.
-- `no_extrapolate_pass`
-  Verifies clean pursuit with contact extrapolation disabled.
-- `no_alert_request_pass`
-  Verifies `no_alert_request=true` is accepted without breaking pursuit.
-- `auto_alert_request_pass`
-  Runs a spawnable trail behavior with `no_alert_request=false` and verifies an
-  automatic `BCM_ALERT_REQUEST` is posted before pursuit becomes active.
-- `missing_contact_warn_pass`
-  Uses a missing contact with `on_no_contact_ok=true` and expects warning-only
-  behavior.
-- `missing_contact_fail`
-  Uses a missing contact with `on_no_contact_ok=false` and expects failure.
-- `missing_contact_param_fail`
-  Omits `contact` with `on_no_contact_ok=false` and expects failure.
-- `bad_trail_angle_type_fail`
-  Malformed `trail_angle_type` should be rejected and the mission should fail.
-- `bad_trail_angle_fail`
-  Malformed `trail_angle` should be rejected and the mission should fail.
-- `bad_trail_range_fail`
-  Negative `trail_range` should be rejected and the mission should fail.
-- `bad_mod_trail_range_pct_fail`
-  Zero `mod_trail_range_pct` should be rejected and the mission should fail.
-- `bad_radius_fail`
-  Negative `radius` should be rejected and the mission should fail.
-- `bad_nm_radius_fail`
-  Negative `nm_radius` should be rejected and the mission should fail.
-- `bad_pwt_outer_dist_fail`
-  Negative `pwt_outer_dist` should be rejected and the mission should fail.
-- `bad_decay_fail`
-  Malformed `decay` input should be rejected and the mission should fail.
-- `bad_time_on_leg_fail`
-  Negative `time_on_leg` should be rejected and the mission should fail.
+- `static_trail_pass` Configures a relative `180`-degree trail point `45` meters behind Ben with `radius=8` and `nm_radius=18`; passes at 45 seconds when `TRAIL_DISTANCE<=20`, `PURSUIT=1`, relevance is positive, and no `BHV_ERROR` occurred.
+- `absolute_west_pass` Sets `trail_angle_type=absolute` and `trail_angle=270`, exercising a world-frame trail point west of Ben; passes with the default `TRAIL_DISTANCE<=20`, active-pursuit, positive-relevance, and no-error grade.
+- `relative_port_pass` Sets relative `trail_angle=135` and `nm_radius=22`, exercising a port-quarter trail point; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit is active, relevance is positive, and no error occurred.
+- `relative_starboard_pass` Sets relative `trail_angle=-135` and `nm_radius=22`, exercising a starboard-quarter trail point; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit is active, relevance is positive, and no error occurred.
+- `lead_right_turn_pass` Replaces Ben's straight leg with points `(55,-80):(55,-35):(125,-35)`, exercising pursuit through a right-angle target turn; passes at 80 seconds when Ben has reached `x>=50,y>=-45`, `TRAIL_DISTANCE<=45`, pursuit and relevance are active, and no error occurred.
+- `lead_port_turn_pass` Uses the same target dogleg with relative `trail_angle=135` and `nm_radius=22`, exercising port-quarter trailing through the turn; passes at 80 seconds with Ben beyond `x=50,y=-45`, `TRAIL_DISTANCE<=45`, active pursuit and relevance, and no error.
+- `lead_turn_angle_update_pass` Uses the target dogleg and posts `trail_angle=135` at 12 seconds, exercising a live trail-point reframe before the turn; passes at 80 seconds with Ben beyond `x=50,y=-45`, `TRAIL_DISTANCE<=45`, active pursuit and relevance, and no error.
+- `short_trail_range_pass` Sets `trail_range=28`, `radius=5`, and `nm_radius=14`, exercising a shorter desired separation; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
+- `long_trail_range_pass` Sets `trail_range=70`, `radius=10`, and `nm_radius=28`, exercising a longer desired separation; passes at 60 seconds when `TRAIL_DISTANCE<=40`, pursuit and relevance are active, and no error occurred.
+- `tight_radius_pass` Sets `radius=3`, `nm_radius=14`, and `trail_range=35`, exercising tighter trail-point capture bands; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
+- `wide_radius_pass` Sets `radius=16` and `nm_radius=25`, exercising wider trail-point capture bands; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `inside_nm_radius_pass` Sets `nm_radius=45`, placing the chaser inside the near-mode radius for the default geometry; passes at 45 seconds when `TRAIL_DISTANCE<=45`, pursuit and relevance are active, and no error occurred.
+- `outside_nm_radius_pass` Sets both `radius` and `nm_radius` to zero, exercising continuous pursuit outside the near-mode radius; passes at 45 seconds when `TRAIL_DISTANCE>0`, pursuit and relevance are active, and no error occurred.
+- `pwt_outer_active_pass` Sets `pwt_outer_dist=250` and `nm_radius=22`, exercising outer-distance relevance while the contact remains inside the boundary; passes when `TRAIL_RANGE<250`, `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `pwt_outer_inactive_pass` Sets `pwt_outer_dist=30`, below the observed contact range; passes when `TRAIL_RANGE>30`, `PURSUIT=0`, relevance is zero, and no error occurred.
+- `mod_trail_range_plus_pass` Starts from `trail_range=45` and sets `mod_trail_range=15`, exercising an additive desired-range increase; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `mod_trail_range_pct_pass` Starts from `trail_range=50` and sets `mod_trail_range_pct=50`, exercising percentage range reduction; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
+- `mod_trail_range_floor_pass` Starts from `trail_range=12` and applies `mod_trail_range=-50`, exercising the 10-meter minimum range clamp; passes at 45 seconds when `TRAIL_DISTANCE<=14`, pursuit and relevance are active, and no error occurred.
+- `runtime_range_extend_pass` Posts `trail_range=70` through `TRAIL_UPDATES` at 12 seconds, exercising live desired-range extension; passes at 60 seconds when `TRAIL_DISTANCE<=40`, pursuit and relevance are active, and no error occurred.
+- `runtime_mod_range_plus_pass` Posts `mod_trail_range=15` at 12 seconds, exercising a live additive range change; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `runtime_mod_range_pct_pass` Posts `mod_trail_range_pct=50` at 12 seconds, exercising a live percentage range change; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
+- `runtime_mod_range_floor_pass` Posts `mod_trail_range_pct=10` at 12 seconds, exercising the 10-meter minimum clamp through a runtime update; passes at 60 seconds when `TRAIL_DISTANCE<=14`, pursuit and relevance are active, and no error occurred.
+- `runtime_angle_update_pass` Posts `trail_angle=135` at 12 seconds, exercising a live change from astern to port-quarter trailing; passes at 60 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `runtime_relevance_off_pass` Posts `pwt_outer_dist=5` at 12 seconds, exercising runtime relevance shutdown; passes at 35 seconds when `TRAIL_RANGE>5`, `PURSUIT=0`, relevance is zero, and no error occurred.
+- `runtime_bad_update_recover_pass` Posts invalid `trail_range=-5` at 12 seconds and valid `trail_range=45` at 15 seconds, exercising continued pursuit after a rejected update; passes at 25 seconds when any warning was observed, `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `idle_post_distance_pass` Sets `post_trail_dist_on_idle=true` and turns `TRAIL=false` at 25 seconds, exercising distance publication while idle; passes at 35 seconds when `PURSUIT=0`, `TRAIL_DISTANCE<999`, and no error occurred.
+- `idle_no_post_distance_pass` Sets `post_trail_dist_on_idle=false`, turns `TRAIL=false` at 25 seconds, and writes sentinel `TRAIL_DISTANCE=999` at 28 seconds; passes at 35 seconds when the sentinel remains `999`, `PURSUIT=0`, and no error occurred.
+- `no_extrapolate_pass` Sets `extrapolate=false`, exercising pursuit from the latest contact report without projection; passes at 60 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `no_alert_request_pass` Sets `no_alert_request=true`, exercising suppression of Trail's contact-manager alert request; passes with the default `TRAIL_DISTANCE<=20`, active-pursuit, positive-relevance, and no-error grade.
+- `auto_alert_request_pass` Uses a spawn-templated Trail with `no_alert_request=false`, exercising automatic contact-manager subscription; passes at 60 seconds when any `BCM_ALERT_REQUEST` was observed, `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `missing_contact_warn_pass` Sets `contact=ghost` with `on_no_contact_ok=true`, exercising warning-only handling of an unavailable contact; passes at eight seconds when any `BHV_WARNING` was observed and no `BHV_ERROR` occurred.
+- `missing_contact_fail` Sets `contact=ghost` with `on_no_contact_ok=false`, exercising the required-contact error path; the harness passes as soon as any `BHV_ERROR` publication is observed.
+- `missing_contact_param_fail` Omits `contact` while setting `on_no_contact_ok=false`, exercising the missing required parameter path; the harness passes as soon as any `BHV_ERROR` publication is observed.
+- `bad_trail_angle_type_fail` Sets `trail_angle_type=diagonal`, exercising invalid angle-type rejection; the harness passes at 20 seconds when Trail remains inactive (`TRAIL_DISTANCE>=900`, zero relevance, `PURSUIT=-1`, `REGION=UNKNOWN`) and no error occurred.
+- `bad_trail_angle_fail` Sets `trail_angle=west`, exercising nonnumeric angle rejection; the harness passes at 20 seconds when the same inactive sentinel outputs remain and no error occurred.
+- `bad_trail_range_fail` Sets `trail_range=-1`, exercising negative range rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
+- `bad_mod_trail_range_pct_fail` Sets `mod_trail_range_pct=0`, exercising rejection of a nonpositive percentage modifier; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
+- `bad_radius_fail` Sets `radius=-1`, exercising negative capture-radius rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
+- `bad_nm_radius_fail` Sets `nm_radius=-1`, exercising negative near-mode-radius rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
+- `bad_pwt_outer_dist_fail` Sets `pwt_outer_dist=-1`, exercising negative relevance-distance rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
+- `bad_decay_fail` Sets `decay=60,30`, exercising rejection of a decay start greater than its end; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
+- `bad_time_on_leg_fail` Sets inherited `time_on_leg=-1`, exercising rejection of a negative leg duration; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
 
 ## Running
 

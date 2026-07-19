@@ -41,32 +41,32 @@ Status:
 
 ## Cases
 
-- `head_on_colregs_pass`: Clean symmetric head-on encounter that should classify as true COLREGS head-on.
-- `head_on_cpa_fallback_pass`: Near-head-on geometry intentionally outside the head-on bucket so the app should fall back to CPA mode.
-- `head_on_port_offset_pass`: Head-on encounter with a left-right offset, still expected to stay in the head-on family.
-- `head_on_starboard_offset_pass`: Mirrored offset head-on encounter, also expected to stay in the head-on family.
-- `crossing_starboard_giveway_pass`: Canonical starboard crossing where ownship should be the give-way vessel.
-- `crossing_starboard_giveway_far_pass`: Same starboard crossing family with a longer setup and more spacing.
-- `crossing_starboard_giveway_close_pass`: Same starboard crossing family with a tighter setup and earlier interaction.
-- `crossing_port_standon_pass`: Canonical port-side crossing where ownship should stand on and settle to the bow submode.
-- `crossing_port_standon_unsure_bow_pass`: Port-side crossing that first enters the stand-on `unsure_bow` branch before later resolving.
-- `crossing_port_standon_stern_pass`: Port-side crossing that settles to the stand-on stern branch.
-- `crossing_port_standon_far_pass`: Longer-spacing version of the port-side stand-on bow case.
-- `crossing_port_standon_close_pass`: Tighter-spacing version of the port-side stand-on bow case.
-- `crossing_port_standon_close_unsure_bow_pass`: Tighter-spacing port-side case that still first enters `unsure_bow`.
-- `crossing_port_standon_unsure_pass`: Port-side crossing that first enters the generic stand-on `unsure` branch.
-- `overtaking_starboard_pass`: Canonical overtaking geometry on one passing side.
-- `overtaking_starboard_small_gap_pass`: Overtaking with a smaller lateral gap to confirm the same overtaking family still holds.
-- `overtaking_starboard_large_gap_pass`: Overtaking with a larger lateral gap to confirm the same overtaking family still holds.
-- `overtaking_starboard_mirror_pass`: Mirrored overtaking geometry on the opposite passing side.
-- `overtaking_starboard_mirror_small_gap_pass`: Mirrored overtaking with a smaller lateral gap.
-- `overtaking_starboard_mirror_large_gap_pass`: Mirrored overtaking with a larger lateral gap.
-- `overtaken_port_standon_pass`: Ownship is the vessel being overtaken, with the contact overtaking on ownship's port side.
-- `overtaken_starboard_standon_pass`: Mirrored overtaken-vessel case with the contact overtaking on ownship's starboard side.
+- `head_on_colregs_pass`: Sends equal-speed vessels directly toward one another on the `x=0` centerline, with ownship starting at `(0,-40)` on heading 180 and Ben at `(0,-130)` on heading 0. Passes as soon as `COLREGS_AVOID_IX_BEN=10` appears before the 70-second timeout while `COLLISION_TOTAL=0`.
+- `head_on_cpa_fallback_pass`: Sends ownship south from `(0,-70)` while Ben approaches from `(0,-120)` on heading 28, placing the encounter outside the head-on angular bucket. Passes as soon as CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
+- `head_on_port_offset_pass`: Starts ownship at `(-6,-40)` heading south and Ben at `(6,-130)` heading north, with their destinations crossing the 12-meter lateral offset. Passes as soon as head-on index 10 appears before timeout while `COLLISION_TOTAL=0`.
+- `head_on_starboard_offset_pass`: Mirrors the offset geometry with ownship at `(6,-40)` and Ben at `(-6,-130)`. Passes as soon as head-on index 10 appears before timeout while `COLLISION_TOTAL=0`.
+- `crossing_starboard_giveway_pass`: Sends ownship east from `(-70,-80)` at 1.4 m/s while Ben moves north from `(10,-130)` at 1.3 m/s, placing Ben on ownship's starboard side. Passes as soon as give-way-stern index 20 appears before timeout while `COLLISION_TOTAL=0`.
+- `crossing_starboard_giveway_far_pass`: Moves the same crossing starts outward to ownship `(-80,-80)` and Ben `(10,-150)`. Passes as soon as give-way-stern index 20 appears before timeout while `COLLISION_TOTAL=0`.
+- `crossing_starboard_giveway_close_pass`: Moves the same crossing starts inward to ownship `(-60,-80)` and Ben `(10,-115)`. Passes as soon as give-way-stern index 20 appears before timeout while `COLLISION_TOTAL=0`.
+- `crossing_port_standon_pass`: Sends ownship east from `(-70,-80)` while Ben moves south from `(10,-20)`, placing Ben on ownship's port side. Passes when the evolving encounter reaches stand-on-bow index 32 before timeout while `COLLISION_TOTAL=0`.
+- `crossing_port_standon_unsure_bow_pass`: Uses the same geometry as `crossing_port_standon_pass` but grades the earlier stand-on transition. Passes as soon as `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
+- `crossing_port_standon_stern_pass`: Starts Ben farther north at `(10,15)` and slower at 1.2 m/s against eastbound ownship at `(-70,-80)`. Passes as soon as stand-on-stern index 30 appears before timeout while `COLLISION_TOTAL=0`.
+- `crossing_port_standon_far_pass`: Maps to the execution-far geometry: ownship starts eastbound at `(-76,-80)` and Ben southbound at `(10,-12)`. Passes when the encounter reaches stand-on-bow index 32 before timeout while `COLLISION_TOTAL=0`.
+- `crossing_port_standon_close_pass`: Moves the port-crossing starts inward to ownship `(-60,-80)` and Ben `(10,-30)`. Passes when the encounter reaches stand-on-bow index 32 before timeout while `COLLISION_TOTAL=0`.
+- `crossing_port_standon_close_unsure_bow_pass`: Uses the same close geometry as `crossing_port_standon_close_pass` but grades its earlier transition. Passes as soon as `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
+- `crossing_port_standon_unsure_pass`: Offsets ownship's eastbound track to `y=-72`, starting at `(-55,-72)`, while Ben moves south from `(10,-18)`. Passes as soon as generic `standon:unsure` index 38 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_starboard_pass`: Sends 1.6 m/s ownship east from `(-90,-80)` behind 1.0 m/s Ben at `(-35,-84)`, a four-meter pass on Ben's port side. Passes as soon as `overtaking:port` index 43 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_starboard_small_gap_pass`: Narrows the same-side overtaking gap to two meters by placing Ben on `y=-82`. Passes as soon as `overtaking:port` index 43 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_starboard_large_gap_pass`: Widens the same-side overtaking gap to eight meters by placing Ben on `y=-88`. Passes as soon as `overtaking:port` index 43 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_starboard_mirror_pass`: Mirrors the four-meter geometry with ownship on `y=-84` and Ben on `y=-80`. Passes as soon as `overtaking:starboard` index 47 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_starboard_mirror_small_gap_pass`: Narrows the mirrored overtaking gap to two meters with ownship on `y=-82`. Passes as soon as `overtaking:starboard` index 47 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_starboard_mirror_large_gap_pass`: Widens the mirrored overtaking gap to eight meters with ownship on `y=-88`. Passes as soon as `overtaking:starboard` index 47 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_port_standon_pass`: Sends 1.0 m/s ownship east from `(-35,-80)` while 1.6 m/s Ben overtakes from `(-70,-76)` on ownship's port side. Passes as soon as `COLREGS_AVOID_MODE_BEN=standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_starboard_standon_pass`: Mirrors the overtaken geometry with Ben starting at `(-70,-84)` on ownship's starboard side. Passes as soon as `COLREGS_AVOID_MODE_BEN=standon_ot:starboard` appears before timeout while `COLLISION_TOTAL=0`.
 
 Primary intent:
 - prove the correct COLREGS mode is selected for a given encounter geometry
-- prove the behavior stays collision-free in the canonical two-vessel cases
+- require that no collision has been recorded when the expected classification first appears
 - record geometry in a way that makes manual runs visually intuitive
 
 ## How This Harness Works
@@ -74,7 +74,7 @@ Primary intent:
 - the shared stem mission supplies the geometry and manual `--mmod` path
 - this harness applies case-owned shoreside `nspatch` overlays
 - each case passes when the expected live COLREGS classification appears
-  without collision or timeout
+  before timeout with no collision recorded at that evaluation point
 
 For example:
 - `head_on_colregs_pass` expects `COLREGS_AVOID_IX_BEN = 10`

@@ -1,0 +1,15 @@
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File     = LOG_$(MMOD)
+  PATH     = ./
+  AsyncLog = true
+
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = SPOOF @ 0 nosync
+  Log = SPOOF_CANCEL @ 0 nosync
+  Log = NODE_REPORT @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+}

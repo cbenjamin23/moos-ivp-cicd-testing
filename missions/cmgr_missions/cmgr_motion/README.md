@@ -45,7 +45,7 @@ Implementation notes:
 - the companion harness patches `pContactMgrV20`, `uTimerScript`, and
   `pMissionEval` to vary encounter geometry, timing, and grading rules
 - the companion harness is
-  [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/cmgr_harnesses/H02-cmgr_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/cmgr_harnesses/H02-cmgr_motion)
+  [`harnesses/cmgr_harnesses/H02-cmgr_motion`](../../../harnesses/cmgr_harnesses/H02-cmgr_motion)
 
 Current moving harness summary:
 

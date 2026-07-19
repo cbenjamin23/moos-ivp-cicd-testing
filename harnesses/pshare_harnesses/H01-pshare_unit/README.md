@@ -12,19 +12,47 @@ configuration and launch ports.
 
 ## Cases
 
-- `pshare_direct_route_pass` Shares one variable directly and expects the receiver to grade the routed value.
-- `pshare_rename_route_pass` Shares one variable under a different destination name and expects only the renamed destination to be graded.
-- `pshare_max_shares_one_pass` Configures `max_shares=1`, publishes two values, and expects the receiver to retain the first routed value.
-- `pshare_wildcard_route_pass` Routes a wildcard source pattern and expects the matching sender mail to arrive under its original variable name.
-- `pshare_duration_expiry_pass` Configures a short route duration and expects mail after expiry not to replace the first routed value.
-- `pshare_shorthand_route_pass` Uses pShare shorthand output syntax and expects the renamed destination mail to arrive.
-- `pshare_multi_dest_route_pass` Fans one source variable out to two destination names and expects both receiver variables to arrive.
-- `pshare_frequency_throttle_pass` Configures a low share frequency, publishes two quick updates, and expects the receiver to retain the first value.
-- `pshare_cli_output_route_pass` Starts pShare with a command-line `-o` route and expects the routed destination mail to arrive.
-- `pshare_wildcard_source_app_pass` Routes a wildcard variable pattern qualified by source app and expects the matching timer-script mail to arrive.
-- `pshare_multicast_alias_pass` Routes mail through a `multicast_N` channel alias and expects the receiver to grade the multicast delivery.
-- `pshare_wildcard_prefix_rename_pass` Routes a wildcard source pattern with a destination prefix and expects the original variable name appended to that prefix.
-- `pshare_wildcard_caret_rename_pass` Routes a single-star wildcard source pattern with `dest_name=^` and expects only the wildcard-matched substring as the receiver variable.
+- `pshare_direct_route_pass`
+  Routes `ROUTE_TEST=alpha` by unicast to destination `ROUTE_TEST_RX`; passes
+  when shoreside receives `ROUTE_TEST_RX=alpha`.
+- `pshare_rename_route_pass`
+  Routes `ROUTE_TEST=bravo` to renamed destination `ROUTE_RENAMED`; passes when
+  shoreside receives `ROUTE_RENAMED=bravo`.
+- `pshare_max_shares_one_pass`
+  Configures `max_shares=1` and posts `LIMITED_SRC=first` then `second` four
+  seconds later; passes when `LIMITED_RX` remains `first` at evaluation.
+- `pshare_wildcard_route_pass`
+  Routes `src_name=WILD_*` and posts `WILD_SRC=wildcard`; passes when shoreside
+  receives the same variable name and value.
+- `pshare_duration_expiry_pass`
+  Configures `duration=3`, posts `DURATION_SRC=first` at two seconds and
+  `second` at eight, then evaluates at eleven; passes when `DURATION_RX`
+  remains `first` after route expiry.
+- `pshare_shorthand_route_pass`
+  Configures shorthand route `SHORT_SRC->SHORT_RX` and posts value `short`;
+  passes when shoreside receives `SHORT_RX=short`.
+- `pshare_multi_dest_route_pass`
+  Uses one shorthand route list to fan `MULTI_SRC=fanout` to `MULTI_A` and
+  `MULTI_B`; passes when both destination variables equal `fanout`.
+- `pshare_frequency_throttle_pass`
+  Configures `frequency=0.25` Hz and posts `FREQ_SRC=first` then `second` one
+  second later; passes when `FREQ_RX` retains `first`.
+- `pshare_cli_output_route_pass`
+  Launches pShare with command-line route `-o=CLI_SRC->CLI_RX` and posts
+  `CLI_SRC=cli_route`; passes when shoreside receives `CLI_RX=cli_route`.
+- `pshare_wildcard_source_app_pass`
+  Routes `APPWILD_*` only from `uTimerScript` and has that app post
+  `APPWILD_SRC=appwild`; passes when shoreside receives the matching mail.
+- `pshare_multicast_alias_pass`
+  Routes `MCAST_SRC` to `MCAST_RX` over `multicast_17`; passes when shoreside
+  receives `MCAST_RX=multicast` on the alias-derived multicast input.
+- `pshare_wildcard_prefix_rename_pass`
+  Routes `PFX_*` with destination prefix `RENAMED_` and posts
+  `PFX_ONE=prefixed`; passes when shoreside receives
+  `RENAMED_PFX_ONE=prefixed`.
+- `pshare_wildcard_caret_rename_pass`
+  Routes `CARET_*` with `dest_name=^` and posts `CARET_DELTA=caret`; passes
+  when shoreside receives only the matched suffix as `DELTA=caret`.
 
 Typical commands:
 

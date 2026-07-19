@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Custom Hash Vars</h3>
-          <p>Description: Custom variable case. pMissionHash publishes non-default long and short hash variables, and the evaluator expands them into the report row.</p>
+          <p>Description: Sets mission_hash_var=CUSTOM_MISSION_HASH and mhash_short_var=CUSTOM_MHASH_SHORT, testing non-default publication names; passes when the evaluator grades pass and reports a full mhash=...,utc=... value plus a two-word short hash through those custom variables.</p>
         </div>
       </article>
 
@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Hash Reset</h3>
-          <p>Description: Hash reset case. A scripted RESET_MHASH=true must cause more than one distinct mission hash publication during the run.</p>
+          <p>Description: Posts RESET_MHASH=true, testing runtime regeneration of the mission hash; passes when the evaluator grades pass and the .alog contains at least two distinct mhash= values published on MISSION_HASH.</p>
         </div>
       </article>
 
@@ -89,25 +89,25 @@
 
         <article class="case-row">
           <code>hash_custom_vars_pass</code>
-          <p>Custom variable case. pMissionHash publishes non-default long and short hash variables, and the evaluator expands them into the report row.</p>
+          <p>Sets mission_hash_var=CUSTOM_MISSION_HASH and mhash_short_var=CUSTOM_MHASH_SHORT, testing non-default publication names; passes when the evaluator grades pass and reports a full mhash=...,utc=... value plus a two-word short hash through those custom variables.</p>
         </article>
 
 
         <article class="case-row">
           <code>hash_short_off_pass</code>
-          <p>Short-hash disable case. pMissionHash publishes only MISSION_HASH, while the evaluator still derives the short hash from the full hash payload.</p>
+          <p>Sets mhash_short_var=off while retaining MISSION_HASH, testing suppression of the standalone short-hash post and pMissionEval&#x27;s derivation of $[MHASH_SHORT] from the full payload; passes when no MHASH mail appears and the row contains both a full hash and a derived two-word short hash.</p>
         </article>
 
 
         <article class="case-row">
           <code>hash_long_off_pass</code>
-          <p>Long-hash disable case. pMissionHash is configured with mission_hash_var=off, so neither long nor short hash mail should be published.</p>
+          <p>Sets mission_hash_var=off while leaving mhash_short_var=MHASH, testing the long-hash disable path; passes when the evaluator grades pass and neither MISSION_HASH nor MHASH appears in the .alog.</p>
         </article>
 
 
         <article class="case-row">
           <code>hash_reset_changes_pass</code>
-          <p>Hash reset case. A scripted RESET_MHASH=true must cause more than one distinct mission hash publication during the run.</p>
+          <p>Posts RESET_MHASH=true, testing runtime regeneration of the mission hash; passes when the evaluator grades pass and the .alog contains at least two distinct mhash= values published on MISSION_HASH.</p>
         </article>
 
       </div>

@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Static Station</h3>
-          <p>Description: Baseline station point, default radii, and default settle grading.</p>
+          <p>Description: Configures station point (12,-121), inner radius 4, outer radius 15, outer speed 1.2, and the stock transit speed; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Hibernation Settle</h3>
-          <p>Description: Enables hibernation and waits for PSKEEP_MODE=HIBERNATING.</p>
+          <p>Description: Sets hibernation_radius=25, exercising transition into the no-objective hibernation state; passes at 45 seconds when DIST_TO_STATION&lt;=25, PSKEEP_MODE=HIBERNATING, and no BHV_ERROR occurred.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Radius Expand</h3>
-          <p>Description: Expands station-keeping radii through runtime updates.</p>
+          <p>Description: Posts inner_radius=10 and outer_radius=28 at 12 and 13 seconds, exercising live ring expansion; passes at 35 seconds when DIST_TO_STATION&lt;=10 and no BHV_ERROR occurred.</p>
         </div>
       </article>
 
@@ -98,205 +98,205 @@
 
         <article class="case-row">
           <code>static_station_pass</code>
-          <p>Baseline station point, default radii, and default settle grading.</p>
+          <p>Configures station point (12,-121), inner radius 4, outer radius 15, outer speed 1.2, and the stock transit speed; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>station_pt_alias_pass</code>
-          <p>Uses the station_pt parameter alias instead of point.</p>
+          <p>Supplies (12,-121) through the station_pt alias instead of point, exercising alias parsing; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>start_inside_hold_pass</code>
-          <p>Starts at the configured station point and verifies it can hold immediately.</p>
+          <p>Places the station at the vehicle&#x27;s initial position (-45,-121), exercising immediate hold without a transit; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>center_activate_hold_pass</code>
-          <p>Exercises center_activate=true with the station anchored at activation.</p>
+          <p>Omits a fixed point and sets center_activate=true, exercising creation of the station at activation; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>center_activate_swing_pass</code>
-          <p>Combines center_activate=true with swing behavior.</p>
+          <p>Sets center_activate=true and swing_time=8, exercising the activation-centered swing path; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>wide_radius_pass</code>
-          <p>Expands the inner and outer station-keeping rings.</p>
+          <p>Sets inner_radius=10 and outer_radius=28, exercising widened station rings; passes at 35 seconds when DIST_TO_STATION&lt;=10 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>tight_radius_pass</code>
-          <p>Tightens the station-keeping rings and grades tighter station proximity.</p>
+          <p>Sets inner_radius=2, outer_radius=8, and outer_speed=1.4, exercising tighter station rings; passes at 35 seconds when DIST_TO_STATION&lt;=9 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>inner_gt_outer_pass</code>
-          <p>Uses an inner radius greater than the outer radius and verifies StationKeep still handles the configuration cleanly.</p>
+          <p>Sets inner_radius=18 and outer_radius=8, exercising the behavior&#x27;s handling of an inner radius larger than the outer radius; passes at 35 seconds when DIST_TO_STATION&lt;=18 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>outer_speed_slow_pass</code>
-          <p>Slows the outer correction speed and verifies bounded progress.</p>
+          <p>Sets outer_speed=0.35, exercising slow correction inside the outer ring; passes at 50 seconds when DIST_TO_STATION&lt;=20 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>outer_speed_update_slow_pass</code>
-          <p>Slows the outer correction speed through STATIONKEEP_UPDATES and grades a farther bounded approach than the default controller would produce.</p>
+          <p>Posts outer_speed=0.35 through STATIONKEEP_UPDATES at two seconds, exercising a live correction-speed change; passes at 50 seconds when 10&lt;DIST_TO_STATION&lt;=22 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>transit_speed_fast_pass</code>
-          <p>Raises transit speed and verifies quicker station arrival.</p>
+          <p>Sets transit_speed=3.0, exercising a faster approach from (-45,-121) to (12,-121); passes at 35 seconds when DIST_TO_STATION&lt;=8 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>extra_speed_alias_pass</code>
-          <p>Uses the extra_speed alias for transit speed and evaluates early arrival.</p>
+          <p>Sets legacy alias extra_speed=3.0, exercising its use as the transit speed; passes at 20 seconds when DIST_TO_STATION&lt;=25 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>transit_speed_slow_in_progress_pass</code>
-          <p>Lowers transit speed and evaluates early to confirm the vehicle is still seeking the station.</p>
+          <p>Sets transit_speed=0.5, exercising a slow approach; the harness passes at 15 seconds when DIST_TO_STATION&gt;20 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>hibernation_seek_pass</code>
-          <p>Enables hibernation and evaluates early while PSKEEP_MODE=SEEKING_STATION.</p>
+          <p>Sets hibernation_radius=25, exercising the approach state outside that radius; passes at eight seconds when DIST_TO_STATION&gt;25, PSKEEP_MODE=SEEKING_STATION, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>hibernation_settle_pass</code>
-          <p>Enables hibernation and waits for PSKEEP_MODE=HIBERNATING.</p>
+          <p>Sets hibernation_radius=25, exercising transition into the no-objective hibernation state; passes at 45 seconds when DIST_TO_STATION&lt;=25, PSKEEP_MODE=HIBERNATING, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>hibernation_radius_update_settle_pass</code>
-          <p>Enables hibernation through STATIONKEEP_UPDATES and waits for PSKEEP_MODE=HIBERNATING.</p>
+          <p>Posts hibernation_radius=25 through STATIONKEEP_UPDATES at two seconds, exercising runtime hibernation enablement; passes at 45 seconds when DIST_TO_STATION&lt;=25, PSKEEP_MODE=HIBERNATING, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>hibernation_off_pass</code>
-          <p>Explicitly disables hibernation and verifies clean station arrival.</p>
+          <p>Sets hibernation_radius=off, exercising the explicit disabled form; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>point_update_retarget_pass</code>
-          <p>Retargets the station point through STATIONKEEP_UPDATES.</p>
+          <p>Changes the station from (12,-121) to (24,-121) through STATIONKEEP_UPDATES at eight seconds, exercising live retargeting; passes at 35 seconds when the behavior-owned DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>radius_update_expand_pass</code>
-          <p>Expands station-keeping radii through runtime updates.</p>
+          <p>Posts inner_radius=10 and outer_radius=28 at 12 and 13 seconds, exercising live ring expansion; passes at 35 seconds when DIST_TO_STATION&lt;=10 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>radius_update_shrink_pass</code>
-          <p>Shrinks station-keeping radii through runtime updates.</p>
+          <p>Posts inner_radius=2 and outer_radius=8 at 12 and 13 seconds, exercising live ring contraction; passes at 35 seconds when DIST_TO_STATION&lt;=9 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>speed_update_slow_progress_pass</code>
-          <p>Slows speed through runtime updates and grades early in-progress behavior.</p>
+          <p>Posts transit_speed=0.45 at two seconds, exercising a live slowdown during approach; the harness passes at 15 seconds when DIST_TO_STATION&gt;20 and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_point_update_recover_pass</code>
-          <p>Sends a malformed update, then confirms the behavior continues with warning visibility and no fatal error.</p>
+          <p>Posts malformed point=bad_point at three seconds and valid point=x=12,y=-121 at six seconds, exercising recovery after a rejected update; passes at 35 seconds when any warning was observed, DIST_TO_STATION&lt;=8, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>visual_hints_pass</code>
-          <p>Exercises StationKeep visual-hint configuration.</p>
+          <p>Changes the station visualization to yellow vertices, cyan edges, and size 2, exercising visual-hint parsing; passes with the unchanged DIST_TO_STATION&lt;=8 and no-warning/no-error motion grade.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_point_fail</code>
-          <p>Removes the station point and expects mission failure.</p>
+          <p>Omits both point and center_activate, exercising a stationless configuration; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_point_fail</code>
-          <p>Provides malformed point configuration and expects mission failure.</p>
+          <p>Sets point=not_a_point, exercising malformed point rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_update_fail</code>
-          <p>Starts without a valid point, sends a malformed update, and expects failure.</p>
+          <p>Starts without a station point and posts malformed point=bad_point at three seconds, exercising failed runtime initialization; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_outer_radius_fail</code>
-          <p>Provides malformed outer radius configuration and expects failure.</p>
+          <p>Sets outer_radius=-3, exercising negative-radius rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_inner_radius_fail</code>
-          <p>Provides malformed inner radius configuration and expects failure.</p>
+          <p>Sets inner_radius=bad_radius, exercising nonnumeric-radius rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_hibernation_radius_fail</code>
-          <p>Provides malformed hibernation radius configuration and expects failure.</p>
+          <p>Sets hibernation_radius=zero, exercising invalid hibernation-radius rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_outer_speed_fail</code>
-          <p>Provides malformed outer speed configuration and expects failure.</p>
+          <p>Sets outer_speed=zero, exercising nonnumeric correction-speed rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_transit_speed_fail</code>
-          <p>Provides malformed transit speed configuration and expects failure.</p>
+          <p>Sets transit_speed=-2, exercising negative transit-speed rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_extra_speed_fail</code>
-          <p>Provides malformed extra_speed alias configuration and expects failure.</p>
+          <p>Sets alias extra_speed=-2, exercising negative alias-value rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_center_activate_fail</code>
-          <p>Provides non-boolean center_activate configuration and expects failure.</p>
+          <p>Sets center_activate=maybe, exercising non-boolean activation-mode rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_swing_time_fail</code>
-          <p>Provides malformed swing-time configuration and expects failure.</p>
+          <p>Sets center_activate=true with swing_time=slow, exercising nonnumeric swing-time rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
         </article>
 
       </div>

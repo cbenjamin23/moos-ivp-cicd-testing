@@ -11,10 +11,16 @@ expansion, mediated node-message bridge selection, vnode shore discovery
 publication, shoreside and node-side auto-bridge suppression, and default
 alias/default vnode-port handling.
 
+Logging defaults to `--log=minimal`. Because the supplemental route checks
+grade selected `.alog` evidence, minimal keeps one asynchronous logger per
+community with only the required broker/pShare variables. `--log=full`
+restores the original wildcard loggers for every selected case.
+
 Run one case:
 
 ```sh
 ./zlaunch.sh --case=broker_handshake_pass --port_base=4000
+./zlaunch.sh --log=full --case=broker_handshake_pass --port_base=4000
 ```
 
 Run the group:
@@ -25,15 +31,15 @@ Run the group:
 
 ## Current Matrix
 
-- `broker_handshake_pass` Requires both vehicle brokers to ping shoreside, receive `status=ok` broker acks, publish `NODE_PSHARE_VARS`, and register as two shoreside nodes.
-- `shore_qbridge_expansion_pass` Requires `uFldShoreBroker` to expand qbridge variables into per-node pShare output requests for both vehicles.
-- `shore_custom_bridge_pass` Adds a custom `bridge = src=DEPLOY_$V, alias=DEPLOY` and requires expanded `DEPLOY_ABE` and `DEPLOY_BEN` pShare output requests.
-- `node_custom_bridge_pass` Adds a custom node-side bridge and requires both node brokers to publish the custom pShare command and advertise the alias in `NODE_PSHARE_VARS`.
-- `keyword_mismatch_status_pass` Requires a shoreside keyword mismatch to appear in broker ack payloads while registration still reaches both nodes.
-- `shore_bridge_tokens_pass` Adds `$v` and `$N` shoreside bridge sources and requires lowercase-community and node-index pShare output requests for both vehicles.
-- `node_mediated_bridge_pass` Replaces the unmediated node-message bridge with the mediated bridge and requires mediated pShare commands while suppressing the unmediated command.
-- `shore_try_vnode_pass` Adds a vnode route and requires both the outbound `TRY_SHORE_HOST` pShare route and the local shore-host advertisement.
-- `shore_minimal_autobridge_pass` Disables optional shoreside auto bridges and requires the core qbridge variables without realmcast, appcast, or mission-hash bridge advertisement.
-- `node_minimal_autobridge_pass` Disables optional node broker auto bridges and requires only the core node aliases without pShare export of `NODE_PSHARE_VARS`.
-- `shore_default_alias_pass` Adds a shoreside bridge with no explicit alias and requires the source variable to be used as the destination alias.
-- `shore_try_vnode_default_port_pass` Adds a vnode route without a port and requires `uFldShoreBroker` to publish the default `9200` pShare route.
+- `broker_handshake_pass` Runs the ordinary Abe and Ben brokers; passes when shoreside logs both `NODE_BROKER_PING` communities, `status=ok,key=0` acknowledgements and vehicle acknowledgements for both nodes, both names on `NODE_BROKER_VACK`, exact normal bridge summaries, and `UFSB_NODE_COUNT>=2` with ordinary traffic still flowing.
+- `shore_qbridge_expansion_pass` Configures the normal `NODE_REPORT`, `NODE_MESSAGE`, and `ACK_MESSAGE` qbridge set; passes when the exact qbridge summary includes those core and automatic request variables and shoreside logs the expected all/Abe/Ben report, Ben message, and Abe acknowledgement `PSHARE_CMD` expansions.
+- `shore_custom_bridge_pass` Adds `bridge=src=DEPLOY_$V,alias=DEPLOY`; passes when the exact bridge summary contains the template plus `DEPLOY_ABE` and `DEPLOY_BEN`, and shoreside logs both corresponding `src_name=DEPLOY_<V>,dest_name=DEPLOY` commands.
+- `node_custom_bridge_pass` Adds `src=CUSTOM_LOCAL,alias=CUSTOM_SHARED` to both node brokers; passes when the exact node alias summary begins with `CUSTOM_SHARED` and each vehicle log contains its `CUSTOM_LOCAL` to `CUSTOM_SHARED` pShare command.
+- `keyword_mismatch_status_pass` Gives the shore broker keyword `shoreside_only` while the node brokers use their normal handshake; passes when shore and vehicle logs contain `status=keyword_mismatch` acknowledgements for both Abe and Ben, node count still reaches two, and the ordinary bridge and traffic summaries remain valid.
+- `shore_bridge_tokens_pass` Adds `STATUS_$v -> STATUS` and `INDEX_$N -> INDEXED_STATUS`; passes when the exact bridge summary contains the templates and expansions and shoreside logs commands for `STATUS_abe`, `STATUS_ben`, `INDEX_1`, and `INDEX_2` with their expected aliases.
+- `node_mediated_bridge_pass` Replaces each node broker's `NODE_MESSAGE_LOCAL` bridge with `MEDIATED_MESSAGE_LOCAL` and runs `pMediator`; passes when both vehicle logs contain the mediated command and lack the unmediated command, the exact node alias summary names `MEDIATED_MESSAGE`, and a mediated Abe-to-Ben message is delivered with ordinary reports and acknowledgement.
+- `shore_try_vnode_pass` Configures `try_vnode=route=127.0.0.1:4999`; passes when shoreside logs the exact `TRY_SHORE_HOST` pShare route to that endpoint and the mission summary also contains the ordinary local `TRY_SHORE_HOST=pshare_route=localhost:<vehicle-port>` advertisement.
+- `shore_minimal_autobridge_pass` Disables automatic realmcast, appcast, and mission-hash bridges at shoreside; passes when the exact qbridge summary is only `ACK_MESSAGE,NODE_MESSAGE,NODE_REPORT` and the exact expanded bridge summary contains only broker-ack, message, report, and all/Abe/Ben variants while ordinary traffic still flows.
+- `node_minimal_autobridge_pass` Disables node-side realmcast, appcast, and `NODE_PSHARE_VARS` auto bridges; passes when both vehicle logs advertise exactly `ACK_MESSAGE,NODE_MESSAGE,NODE_REPORT`, neither emits a `NODE_PSHARE_VARS` pShare command, and the core traffic remains intact.
+- `shore_default_alias_pass` Adds `bridge=src=FLEET_ALERT` without an alias; passes when `FLEET_ALERT` appears in the exact bridge summary and shoreside logs a command with both `src_name` and `dest_name` equal to `FLEET_ALERT`.
+- `shore_try_vnode_default_port_pass` Configures `try_vnode=route=127.0.0.1` without a port; passes when shoreside logs `TRY_SHORE_HOST` routed to `127.0.0.1:9200` and the ordinary broker/bridge summary and local shore-host advertisement remain valid.

@@ -162,7 +162,7 @@ launchers.
 | Dedicated stems | 45 | 45 |
 | Shared stems | 5 | 5 |
 | Targets using shared stems | 22 | 22 |
-| Targets running `pLogger` by default | 67 | 32 |
+| Targets running `pLogger` by default | 67 | 17 |
 | Targets with wildcard logging | 49 | 49 |
 | Explicit-only logging targets | 18 | 18 |
 | Targets enabling asynchronous logging | 67 | 67 |
@@ -173,10 +173,10 @@ launchers.
 | Audited `G`: narrow grading logger required | n/a | 15 |
 | Audited `S`: subject/special behavior | n/a | 2 |
 | Baseline-classification scans complete | n/a | 67 |
-| Migrated targets | 0 | 36 |
-| Minimal-mode validated targets | 0 | 36 |
-| Full-mode regression-validated targets | 0 | 37 |
-| CPU/concurrency benchmarked targets | 0 | 36 |
+| Migrated targets | 0 | 67 |
+| Minimal-mode validated targets | 0 | 67 |
+| Full-mode regression-validated targets | 0 | 68 |
+| CPU/concurrency benchmarked targets | 0 | 67 |
 | Pre-migration scratch-benchmarked targets | n/a | 4 |
 
 Definitions:
@@ -1255,6 +1255,359 @@ Correctness and patch-overlap findings:
   count, no warning/error lines were found in successful run logs, and no
   grading threshold or case contract changed.
 
+### Behavior Follow-On Cohort — Complete
+
+Targets: `loiter_h01`, `obstacle_behavior_h01`, `opregion_h01`, `shadow_h01`,
+`stationkeep_h01`, `trail_h01`, and `waypoint_h01`. Implementation date:
+July 18, 2026. All seven stems now default to minimal logging and have separate
+full patches that restore their original shoreside and vehicle ANTLER blocks.
+Static mission and harness checks passed for all seven, and generated targets
+proved zero active loggers in minimal mode and the original 2 or 3 processes
+in full mode.
+
+Complete matrices used jobs 4. CPU is user plus system seconds. Full diagnostic
+log counts and bytes are from the post-migration regression; minimal mode
+produced no `.alog` or `.slog` files.
+
+| Target | Cases | Full pre wall / CPU | Full diagnostic logs (files / bytes) | Minimal wall / CPU | Minimal logs | Wall / CPU reduction | Full post wall / CPU | Result |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `loiter_h01` | 34 | 93.56 / 77.13 | 68 / 19,566,080 | 74.78 / 33.94 | 0 / 0 | 20.1% / 56.0% | 91.89 / 76.33 | 34/34 both modes |
+| `obstacle_behavior_h01` | 21 | 66.22 / 45.13 | 63 / 30,366,679 | 60.03 / 21.49 | 0 / 0 | 9.3% / 52.4% | 63.17 / 41.94 | 21/21 both modes |
+| `opregion_h01` | 25 | 64.91 / 54.71 | 75 / 50,645,937 | 57.82 / 25.67 | 0 / 0 | 10.9% / 53.1% | 67.33 / 52.30 | 25/25 both modes |
+| `shadow_h01` | 35 | 109.94 / 76.72 | 105 / 51,720,865 | 94.08 / 35.56 | 0 / 0 | 14.4% / 53.6% | 111.53 / 77.30 | 35/35 both modes |
+| `stationkeep_h01` | 34 | 94.84 / 72.99 | 68 / 17,639,815 | 78.46 / 32.93 | 0 / 0 | 17.3% / 54.9% | 96.02 / 72.45 | 34/34 both modes |
+| `trail_h01` | 42 | 136.74 / 97.11 | 126 / 143,658,093 | 114.38 / 42.73 | 0 / 0 | 16.4% / 56.0% | 135.23 / 90.23 | 42/42 both modes |
+| `waypoint_h01` | 43 | 111.11 / 93.08 | 129 / 35,682,092 | 89.21 / 41.72 | 0 / 0 | 19.7% / 55.2% | 109.53 / 86.23 | 43/43 both modes |
+
+Across the seven targets, untouched full totals were 677.32 wall seconds and
+516.87 CPU seconds. Minimal totals were 568.76 wall and 234.04 CPU seconds:
+reductions of 16.0% wall and 54.7% CPU. Full post totals were 674.70 wall and
+496.78 CPU seconds, matching the untouched full envelope. Full mode produced
+634 logger files totaling 349,279,561 bytes; minimal mode produced zero.
+
+Correctness and exception findings:
+
+- `obstacle_behavior_h01` has one vehicle ANTLER replacement. Its normal patch
+  is logger-free and its separate full patch is byte-for-byte equivalent to
+  the pre-migration patch. The untouched baseline's `no_refinery_pass` missed
+  once, then passed alone and in a clean 21/21 jobs-4 repeat.
+- `stationkeep_h01` had one untouched-baseline timeout in
+  `outer_speed_slow_pass`; that case passed alone and the clean jobs-4 repeat
+  passed 34/34. Both post-migration matrices also passed 34/34.
+- the first Waypoint full regression reached 42/43 before the shoreside
+  MOOSDB for `no_points_timeout_fail` failed to start on high port 62870. Its
+  retained log showed `uMayFinish` retrying that absent server rather than a
+  grading failure. A complete ordinary-port full repeat passed 43/43; no case
+  edit was warranted.
+- all fourteen complete post-edit matrices produced the exact expected result
+  count, no warning/error lines were found in successful run logs, and no
+  grading threshold, behavior patch, or verdict contract changed.
+
+### Shared uField App Cohort — Complete
+
+Targets: `ufld_pathcheck_h01`, `ufld_message_handler_h01`,
+`ufld_contact_range_sensor_h01`, `ufld_beacon_range_sensor_h01`,
+`ufld_collision_detect_h01`, `ufld_collob_detect_h01`, and `ufld_scope_h01`.
+Implementation date: July 18, 2026. The seven targets share
+`ufield_app_unit`, so they migrated as one family. The six `N` consumers now
+run without an active `pLogger`; the `G10` Scope consumer retains one narrow
+asynchronous logger containing only `APPCAST`. Full mode activates the
+original wildcard logger configuration.
+
+Complete matrices used jobs 4. CPU is user plus system seconds. The full
+artifact columns are from the untouched baseline. All minimal and full
+matrices passed with the expected row counts.
+
+| Target | Cases | Full pre wall / CPU | Full artifacts (files / bytes) | Minimal wall / CPU | Minimal artifacts | Wall / CPU reduction | Result |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `ufld_pathcheck_h01` | 17 | 29.14 / 28.55 | 34 / 3,149,006 | 26.47 / 16.65 | 0 / 0 | 9.2% / 41.7% | 17/17 both modes |
+| `ufld_message_handler_h01` | 26 | 46.51 / 43.61 | 52 / 4,322,556 | 38.99 / 24.71 | 0 / 0 | 16.2% / 43.3% | 26/26 both modes |
+| `ufld_contact_range_sensor_h01` | 34 | 53.52 / 54.62 | 68 / 6,418,100 | 45.24 / 31.13 | 0 / 0 | 15.5% / 43.0% | 34/34 both modes |
+| `ufld_beacon_range_sensor_h01` | 20 | 31.58 / 33.14 | 40 / 3,726,671 | 30.94 / 19.16 | 0 / 0 | 2.0% / 42.2% | 20/20 both modes |
+| `ufld_collision_detect_h01` | 20 | 31.68 / 36.92 | 40 / 5,316,107 | 29.48 / 19.58 | 0 / 0 | 6.9% / 47.0% | 20/20 both modes |
+| `ufld_collob_detect_h01` | 14 | 26.01 / 26.35 | 28 / 2,480,168 | 22.15 / 13.74 | 0 / 0 | 14.8% / 47.9% | 14/14 both modes |
+| `ufld_scope_h01` | 8 | 14.41 / 15.51 | 16 / 1,260,799 | 15.10 / 14.99 | 8 / 24,696 | -4.8% / 3.4% | 8/8 both modes; APPCAST grading retained |
+
+Across the family, untouched full totals were 232.85 wall seconds and 238.70
+CPU seconds. Minimal totals were 208.37 wall and 139.96 CPU seconds: reductions
+of 10.5% wall and 41.4% CPU. For the six `N` targets alone, the reductions were
+11.5% wall and 44.0% CPU. Full mode reproduced all 278 artifact files and all
+139 case verdicts. The final full-path spot repeat for PathCheck was 30.14 wall
+and 29.33 CPU seconds, close to its untouched 29.14 / 28.55 envelope.
+
+Implementation and correctness notes:
+
+- Existing case patches contain many full ANTLER replacements. They remain
+  unchanged. A shared post-overlay helper removes the one active logger line
+  for `N` minimal mode or replaces the dormant logger config with Scope's
+  APPCAST-only configuration. Full mode stays on the original overlay path.
+- Representative generated-target checks covered ordinary common overlays and
+  the special ANTLER replacements in PathCheck, BeaconRangeSensor,
+  CollisionDetect, and CollObDetect. Every `N` minimal target had zero active
+  loggers; Scope minimal had exactly one APPCAST-only logger; full targets had
+  exactly one wildcard logger.
+- No case, threshold, result schema, or app configuration changed. Successful
+  minimal and full run logs contained no warning/error lines.
+
+### uFldObstacleSim `N` Target — Complete
+
+Target: `ufld_obstacle_sim_h01` (49 cases). Audit, implementation, and
+validation date: July 19, 2026.
+
+The dedicated single-community stem grades entirely through `pMissionEval`.
+Neither the harness nor any of its 48 case overlays reads logger artifacts,
+asserts a pLogger process, or changes ANTLER/pLogger configuration. Minimal
+mode therefore leaves the existing logger block dormant and removes its one
+active ANTLER launch; full mode applies one stem-local ANTLER restoration
+patch before the case overlay.
+
+Complete jobs-4 measurements used `/usr/bin/time -l` and retained isolated
+workdirs for artifact inspection:
+
+| Mode | Port | Result | Wall | User | System | CPU | Max RSS | `.alog` files / bytes | Retained run |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| full pre | 10000 | 49/49 | 76.06 | 22.37 | 58.12 | 80.49 | 8,110,080 | 49 / 1,035,541 | `run_20260718T235611_60246` |
+| minimal | 14000 | 49/49 | 60.99 | 12.53 | 30.39 | 42.92 | 8,044,544 | 0 / 0 | `run_20260719T000034_99875` |
+| full post | 16000 | 49/49 | 76.30 | 21.84 | 58.16 | 80.00 | 8,044,544 | 49 / 1,038,222 | `run_20260719T000145_12436` |
+
+Minimal reduced wall time by 19.8%, CPU time by 46.7%, and logger artifacts by
+100% relative to the untouched full baseline. The post-edit full regression
+returned to the untouched timing and CPU envelope and restored all 49 logs.
+Generated-target checks covered the nominal configuration and a nondefault
+reset case in both modes: minimal had zero active loggers, full had exactly
+one, and the full nominal target differed from the untouched target only by a
+trailing blank line. Both complete run-log scans had zero warning/error lines.
+No case patch, grading threshold, result schema, or app configuration changed.
+
+### Dedicated Grading-Logger Cohort — Complete
+
+Targets: `pechovar_h01` (`G1`, 33 cases), `utimerscript_h01` (`G2`, 33
+cases), `pdeadmanpost_h01` (`G3`, 20 cases), `pspoofnode_h01` (`G4`, 33
+cases), and `psearchgrid_h01` (`G5`, 23 cases). Audit, implementation, and
+validation date: July 19, 2026.
+
+Each dedicated single-community stem still launches one asynchronous logger
+in minimal mode because its harness grades bounded history, count, absence, or
+structured-payload evidence from the completed `.alog`. The minimal logger
+allowlists contain only the `G1` through `G5` variables documented in the
+classification matrix above. Full mode applies a separate stem-local
+`ProcessConfig = pLogger` patch before case generation and restores the
+pre-migration configuration. Direct mission and harness launchers both accept
+only `--log=minimal|full`, defaulting to minimal. No case patch, grading rule,
+threshold, result schema, or app-under-test configuration changed.
+
+Complete jobs-4 measurements used `/usr/bin/time -l` and retained isolated
+workdirs long enough to count `.alog` files and bytes:
+
+| Target | Mode | Port | Result | Wall | User | System | CPU | Max RSS | `.alog` files / bytes |
+| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `pechovar_h01` | full pre | 21000 | 33/33 | 51.41 | 18.06 | 46.50 | 64.56 | 8,011,776 | 33 / 20,856 |
+| `pechovar_h01` | minimal | 35000 | 33/33 | 53.14 | 17.75 | 48.00 | 65.75 | 7,979,008 | 33 / 16,046 |
+| `pechovar_h01` | full post | 37000 | 33/33 | 54.36 | 17.87 | 49.12 | 66.99 | 7,929,856 | 33 / 20,856 |
+| `utimerscript_h01` | full pre | 23000 | 33/33 | 81.34 | 17.11 | 43.84 | 60.95 | 7,929,856 | 33 / 1,088,142 |
+| `utimerscript_h01` | minimal | 39000 | 33/33 | 81.07 | 17.18 | 43.87 | 61.05 | 7,962,624 | 33 / 40,935 |
+| `utimerscript_h01` | full post | 44000 | 33/33 | 81.03 | 17.15 | 41.99 | 59.14 | 7,880,704 | 33 / 1,104,101 |
+| `pdeadmanpost_h01` | full pre | 26000 | 20/20 | 31.05 | 10.50 | 28.01 | 38.51 | 7,946,240 | 20 / 34,064 |
+| `pdeadmanpost_h01` | minimal | 46000 | 20/20 | 31.49 | 10.76 | 29.33 | 40.09 | 7,946,240 | 20 / 31,790 |
+| `pdeadmanpost_h01` | full post | 48000 | 20/20 | 32.08 | 11.01 | 29.99 | 41.00 | 7,962,624 | 20 / 33,807 |
+| `pspoofnode_h01` | full pre | 28000 | 33/33 | 51.69 | 17.61 | 47.98 | 65.59 | 8,028,160 | 33 / 316,935 |
+| `pspoofnode_h01` | minimal | 50000 | 33/33 | 54.25 | 17.16 | 47.91 | 65.07 | 7,929,856 | 33 / 324,232 |
+| `pspoofnode_h01` | full post | 52000 | 33/33 | 52.69 | 17.34 | 48.59 | 65.93 | 7,929,856 | 33 / 320,995 |
+| `psearchgrid_h01` | full pre | 30000 | 23/23 | 38.12 | 12.69 | 34.50 | 47.19 | 7,946,240 | 23 / 112,290 |
+| `psearchgrid_h01` | minimal | 54000 | 23/23 | 37.27 | 12.63 | 34.24 | 46.87 | 7,946,240 | 23 / 104,994 |
+| `psearchgrid_h01` | full post | 56000 | 23/23 | 37.51 | 12.66 | 34.52 | 47.18 | 7,962,624 | 23 / 109,835 |
+
+The cohort confirms the expected G-class profile: all 142 cases pass in both
+modes, while wall and CPU changes are within run noise. Log-volume savings are
+concentrated in uTimerScript, whose wildcard full logger falls from about 1.09
+MB to 40.9 KB (96.2%). pEchoVar saves 23.1%, pDeadManPost 6.7%, and
+pSearchGrid 6.5%; pSpoofNode is unchanged within runtime variation because
+the required `NODE_REPORT` history dominates both modes.
+
+The first uTimerScript full regression exposed that an empty logger block
+moved through `nspatch` did not retain its former implicit wildcard behavior.
+The full restoration now states `WildCardLogging=true` explicitly. Two focused
+artifact-heavy cases and the repeated 33-case full matrix passed, and full log
+volume returned to the untouched envelope. The harness artifact checks caught
+the problem; no case or verdict was weakened. Successful complete-run logs
+contained no warning/error lines, and no scoped MOOS process remained after
+teardown.
+
+### Shared Mission-Utility Grading Cohort — Complete
+
+Targets: `pmissioneval_h01` (`G6`, 17 cases), `pmissionhash_h01` (`G7`, four
+cases), and `umayfinish_h01` (`G8`, four cases). Audit, implementation, and
+validation date: July 19, 2026. All three consume `mission_utility_unit` and
+were migrated atomically.
+
+The shared minimal stem retains one asynchronous logger with wildcard and
+synchronous logging disabled. Its twelve-variable union contains only the
+evaluation flags/stages, mission-hash variables, `CUSTOM_DONE`, and the
+evaluation cutoff used by the three harnesses. Full mode restores the original
+wildcard synchronous/asynchronous logger before case overlays. The existing
+no-hash ANTLER replacement continues to launch exactly one logger in both
+modes. Six representative generated targets covered all consumers and the
+special ANTLER case.
+
+Complete jobs-4 measurements used `/usr/bin/time -l`:
+
+| Target | Mode | Port | Result | Wall | User | System | CPU | Max RSS | `.alog` files / bytes |
+| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `pmissioneval_h01` | full pre | 10000 | 17/17 | 32.11 | 8.82 | 22.39 | 31.21 | 8,110,080 | 17 / 4,032,423 |
+| `pmissioneval_h01` | minimal | 28000 | 17/17 | 32.33 | 8.64 | 23.77 | 32.41 | 8,060,928 | 17 / 13,133 |
+| `pmissioneval_h01` | full post | 30000 | 17/17 | 31.85 | 8.96 | 22.92 | 31.88 | 8,044,544 | 17 / 3,998,491 |
+| `pmissionhash_h01` | full pre | 12000 | 4/4 | 10.66 | 2.00 | 5.21 | 7.21 | 7,929,856 | 4 / 989,505 |
+| `pmissionhash_h01` | minimal | 32000 | 4/4 | 11.11 | 2.12 | 5.50 | 7.62 | 7,962,624 | 4 / 2,292 |
+| `pmissionhash_h01` | full post | 34000 | 4/4 | 10.72 | 2.00 | 5.00 | 7.00 | 7,995,392 | 4 / 987,946 |
+| `umayfinish_h01` | corrected full pre | 24000 | 4/4 | 6.26 | 0.63 | 1.34 | 1.97 | 8,028,160 | 4 / 877,056 |
+| `umayfinish_h01` | minimal | 36000 | 4/4 | 6.15 | 0.61 | 1.31 | 1.92 | 8,028,160 | 4 / 2,435 |
+| `umayfinish_h01` | full post | 38000 | 4/4 | 6.30 | 0.64 | 1.34 | 1.98 | 7,995,392 | 4 / 878,664 |
+
+All 25 cases pass in both modes. Combined minimal log volume is 17,860 bytes,
+down 99.7% from the corrected 5,898,984-byte full baseline. Wall and CPU
+changes remain within the short-run noise envelope, and full post restores the
+original artifact volume.
+
+The untouched uMayFinish baseline exposed an existing test-only defect. The
+harness passed `--max_time` and `--alias` before `targ_shoreside.moos`, although
+uMayFinish requires the mission file as its first argument. The app therefore
+warned that its mission file was missing and ran on fallback/default behavior;
+the custom-finish artifact check passed only when pLogger happened to flush the
+unrelated result post before teardown. The harness now passes the mission file
+first and waits 0.5 real seconds for the logger to commit the finish evidence
+before stopping the community. The custom-success case passed three focused
+repeats, the mismatch-timeout case passed two, and the complete matrix passed
+in minimal and full modes. No case was removed or weakened. Successful
+complete-run logs contained no warning/error lines.
+
+### Shared uField Comms Cohort — Complete
+
+Targets: `ufield_comms_h01` (`N`, 35 cases), `ufield_comms_h02` (`G11`, 12
+cases), and `ufield_comms_h03` (`G12`, 25 cases). Audit, implementation, and
+validation date: July 19, 2026. All three consume `ufield_comms_unit` and were
+migrated atomically.
+
+H01 grades only from mission-owned results and now runs with no active logger
+in minimal mode. H02/H03 retain one asynchronous logger per community with the
+union of only their supplemental route evidence: broker ping/ack/vack,
+`PSHARE_CMD`, `NODE_PSHARE_VARS`, and `TRY_SHORE_HOST` as applicable. Full
+mode restores the original wildcard shore and vehicle loggers before case
+overlays. The one H02 vehicle ANTLER replacement remains authoritative and
+retains its pMediator process in both modes.
+
+Complete jobs-4 measurements used `/usr/bin/time -l`:
+
+| Target | Mode | Port | Result | Wall | User | System | CPU | `.alog` files / bytes | Retained run |
+| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `ufield_comms_h01` | full pre | 24000 | 35/35 | 302.24 | 23.09 | 59.10 | 82.19 | 105 / 51,429,285 | `run_20260719T001437_6320` |
+| `ufield_comms_h01` | minimal | 36000 | 35/35 | 285.56 | 11.34 | 25.70 | 37.04 | 0 / 0 | `run_20260719T003239_51519` |
+| `ufield_comms_h01` | full post | 42000 | 35/35 | 302.09 | 23.84 | 61.03 | 84.87 | 105 / 51,201,476 | `run_20260719T004407_40201` |
+| `ufield_comms_h02` | full pre | 26000 | 12/12 | 102.95 | 8.83 | 21.84 | 30.67 | 36 / 17,510,042 | `run_20260719T001954_33205` |
+| `ufield_comms_h02` | minimal | 38000 | 12/12 | 104.13 | 8.80 | 21.29 | 30.09 | 36 / 4,484,595 | `run_20260719T003744_92911` |
+| `ufield_comms_h02` | full post | 44000 | 12/12 | 102.91 | 8.84 | 21.36 | 30.20 | 36 / 17,567,645 | `run_20260719T004914_67295` |
+| `ufield_comms_h03` | full pre | 28000 | 25/25 | 232.58 | 18.55 | 45.07 | 63.62 | 75 / 32,231,346 | `run_20260719T002153_42832` |
+| `ufield_comms_h03` | minimal | 40000 | 25/25 | 237.65 | 18.12 | 45.63 | 63.75 | 75 / 7,922,203 | `run_20260719T003953_5656` |
+| `ufield_comms_h03` | full post | 46000 | 25/25 | 232.21 | 18.65 | 45.06 | 63.71 | 75 / 32,287,044 | `run_20260719T005102_86716` |
+
+H01 minimal reduced wall time by 5.5%, CPU by 54.9%, and logger artifacts by
+100%. H02/H03 retained their expected G-class wall/CPU envelope while reducing
+log bytes by 74.4% and 75.4%. Across the full family, minimal reduced wall time
+1.6%, CPU 25.8%, and log bytes 87.7%; full post returned to the untouched
+envelope and restored all 216 logs.
+
+The first untouched H01 baseline failed three shared runtime-control cases.
+Investigation showed their supposed after-control message and ack were posted
+at times 1040/1120, before the control at 1300; the patch's later node reports
+at 1500/1540 already expressed the intended ordering. The test-only vehicle
+overlay now posts the after message/ack at 1640/1720. All three focused cases,
+the corrected untouched full baseline, minimal, and full regression pass. No
+case was removed or weakened; the edit makes the existing before/after claims
+temporally true. Successful complete-run logs contained no warning/error
+lines.
+
+### pLogger and pAntler Subject Harnesses — Complete
+
+Targets: `plogger_h01` (`S1`, 10 cases) and `pantler_h01` (`S2`, 6 cases).
+Audit, implementation, and validation date: July 19, 2026.
+
+These targets intentionally make `minimal` and `full` behaviorally identical.
+Every pLogger case replaces or defines the logger configuration whose files,
+formats, wildcard behavior, dynamic requests, precision, or copy operation are
+graded. The pAntler cases define the ANTLER launch topology and aliases under
+test, including their logger processes. Applying an ordinary minimal allowlist
+or restoration patch would alter the subject contract. The migration therefore
+adds only the common option parsing, validation, forwarding, and summary field;
+it does not add a patch asset or modify any case overlay, ANTLER block, logger
+block, condition, artifact check, or result row.
+
+Complete jobs-4 measurements used `/usr/bin/time -l`:
+
+| Target | Mode | Port | Result | Wall | User | System | CPU | Max RSS | Logger files / bytes | Retained run |
+| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `plogger_h01` | full pre | 40000 | 10/10 | 19.08 | 4.92 | 14.03 | 18.95 | 7,864,320 | 13 / 175,585 | `run_20260719T014520_41686` |
+| `plogger_h01` | minimal | 44000 | 10/10 | 19.37 | 5.06 | 14.15 | 19.21 | 7,864,320 | 13 / 165,917 | `run_20260719T014837_66320` |
+| `plogger_h01` | full post | 46000 | 10/10 | 18.72 | 5.10 | 13.91 | 19.01 | 7,864,320 | 13 / 167,451 | `run_20260719T014907_76038` |
+| `pantler_h01` | full pre | 42000 | 6/6 | 12.87 | 2.98 | 8.66 | 11.64 | 7,847,936 | 6 / 2,477 | `run_20260719T014556_52544` |
+| `pantler_h01` | minimal | 48000 | 6/6 | 12.78 | 3.02 | 8.87 | 11.89 | 7,880,704 | 6 / 2,477 | `run_20260719T014934_85483` |
+| `pantler_h01` | full post | 50000 | 6/6 | 13.05 | 3.12 | 8.81 | 11.93 | 7,880,704 | 6 / 2,477 | `run_20260719T014952_93145` |
+
+All 32 post-edit result rows passed. The small timing, CPU, and pLogger byte
+differences are ordinary run-to-run variation rather than a mode effect.
+Representative wildcard/omit and multi-alias generated targets were byte-for-
+byte identical between modes at matched ports. Both harnesses reject an unknown
+mode with exit 2, and successful complete-run logs contained no warning/error
+lines. This closes the two documented subject exceptions without weakening or
+removing a case.
+
+### Performance `G9` Cohort — Complete
+
+Targets: `p01_obstacle` (3 cases), `p02_colregs` (3 cases), and `p03_colregs`
+(4 cases). Audit, implementation, and validation date: July 19, 2026.
+
+The shell-side performance verdict requires at least one vehicle `.alog` and
+scans `APP_LOG` for disallowed planner/runtime warnings. Minimal mode therefore
+keeps one asynchronous pLogger per vehicle with only `APP_LOG`; the shoreside
+logger is inactive. Full mode restores the complete original shoreside and
+vehicle ANTLER/logger blocks before the existing scenario evaluator patch.
+Performance cases remain serial by design, so `--jobs` testing is not
+applicable: concurrent load would invalidate their wall-time gates.
+
+Each target received three complete resource observations in each mode. The
+first full observation is the untouched baseline; the other two use restored
+full mode. Values below are repetitions followed by their median:
+
+| Target | Mode | Results | Wall seconds (median) | CPU seconds (median) | Logger files / median bytes |
+| --- | --- | --- | --- | --- | --- |
+| `p01_obstacle` | full | 3/3, 3/3, 3/3 | 219.85, 219.10, 219.50 (219.50) | 7.22, 7.39, 7.56 (7.39) | 15 / 45,739,214 |
+| `p01_obstacle` | minimal | 3/3, 3/3, 3/3 | 218.67, 220.85, 217.23 (218.67) | 6.77, 6.25, 6.49 (6.49) | 6 / 1,264,128 |
+| `p02_colregs` | full | 3/3, 3/3, 3/3 | 219.09, 218.81, 218.37 (218.81) | 9.53, 9.31, 9.27 (9.31) | 22 / 146,460,403 |
+| `p02_colregs` | minimal | 3/3, 3/3, 2/3 | 216.18, 215.84, 217.10 (216.18) | 7.09, 6.61, 7.47 (7.09) | 16 / 722,726 |
+| `p03_colregs` | full | 4/4, 3/4, 4/4 | 225.81, 225.36, 226.05 (225.81) | 18.27, 18.21, 18.42 (18.27) | 48 / 296,932,294 |
+| `p03_colregs` | minimal | 4/4, 4/4, 4/4 | 220.15, 220.21, 220.16 (220.16) | 13.50, 13.42, 13.33 (13.42) | 40 / 1,383,817 |
+
+Median minimal reductions versus full were:
+
+| Target | Wall | CPU | Logger bytes |
+| --- | ---: | ---: | ---: |
+| `p01_obstacle` | 0.4% | 12.2% | 97.2% |
+| `p02_colregs` | 1.2% | 23.8% | 99.5% |
+| `p03_colregs` | 2.5% | 26.5% | 99.5% |
+
+All complete runs retained the required vehicle logs and reported zero warning
+matches. P02's third minimal endurance sample remained collision-free but
+posted closest range 4.126 below its substantive minimum of 6; two subsequent
+focused minimal endurance repeats passed at 9.027 and 9.501. The test and
+threshold remain unchanged. P03's second full endurance sample recorded one
+collision; the retained untouched and restored targets are semantically
+identical at matched ports, and two focused full repeats plus the third full
+matrix all passed with zero collisions. This is consistent with the mission's
+documented asynchronous assignment ordering, not a restoration difference.
+
+All generated matrices passed in both modes. Direct full `--just_make`
+followed by default minimal generation passed for every stem and removed stale
+sidecars. Unknown modes fail with exit 2. No scenario patch, condition,
+performance threshold, warning pattern, or case was changed.
+
 ## Migration Tracking
 
 Use one row per registered target. Shared-stem changes may advance several rows
@@ -1287,12 +1640,12 @@ mixed-shared-stem deferrals.
 | `upokedb_h01` | `upokedb_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | external-stimulus checker limitation; shared mission-file readiness race fixed | complete |
 | `uxms_h01` | `uxms_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `uquerydb_h01` | `uquerydb_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | CLI-result grading exception preserved | complete |
-| `pechovar_h01` | `pechovar_unit` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `utimerscript_h01` | `utimerscript_unit` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `pdeadmanpost_h01` | `pdeadmanpost_unit` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `pspoofnode_h01` | `pspoofnode_unit` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
+| `pechovar_h01` | `pechovar_unit` | no | `G` | complete | complete | pass (generated both modes) | pass (33/33, jobs 4) | pass (33/33, jobs 4) | 2026-07-19 paired | `G1`: 6-variable minimal grading logger | complete |
+| `utimerscript_h01` | `utimerscript_unit` | no | `G` | complete | complete | pass (2 artifact cases, full) | pass (33/33, jobs 4) | pass (33/33, jobs 4) | 2026-07-19 paired | `G2`: 7-variable minimal logger; full wildcard made explicit | complete |
+| `pdeadmanpost_h01` | `pdeadmanpost_unit` | no | `G` | complete | complete | pass (generated both modes) | pass (20/20, jobs 4) | pass (20/20, jobs 4) | 2026-07-19 paired | `G3`: 12 count-evidence variables plus evaluation cutoff | complete |
+| `pspoofnode_h01` | `pspoofnode_unit` | no | `G` | complete | complete | pass (generated both modes) | pass (33/33, jobs 4) | pass (33/33, jobs 4) | 2026-07-19 paired | `G4`: NODE_REPORT, cancellation marker, and evaluation cutoff | complete |
 | `utermcommand_h01` | `utermcommand_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | external-stimulus checker limitation | complete |
-| `psearchgrid_h01` | `psearchgrid_unit` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
+| `psearchgrid_h01` | `psearchgrid_unit` | no | `G` | complete | complete | pass (generated both modes) | pass (23/23, jobs 4) | pass (23/23, jobs 4) | 2026-07-19 paired | `G5`: 6-variable minimal grading logger | complete |
 | `depth_constant_h01` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `depth_goto_h02` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `depth_periodic_surface_h03` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
@@ -1317,32 +1670,32 @@ mixed-shared-stem deferrals.
 | `processwatch_h01` | `processwatch_unit` | no | `N` | complete | complete | pass (focused both modes) | pass (7/7, jobs 4) | pass (7/7, jobs 4) | 2026-07-18 paired | none found | complete |
 | `pshare_h01` | `pshare_unit` | no | `N` | complete | complete | pass (CLI case both modes) | pass (13/13, jobs 4) | pass (13/13, jobs 4) | 2026-07-18 paired | CLI peer ANTLER replacement has separate minimal/full case patches | complete |
 | `pshare_h02` | `pshare_topology` | no | `N` | complete | complete | pass (all generated overlays both modes) | pass (12/12, jobs 4) | pass (12/12, jobs 4) | 2026-07-18 paired | four ANTLER replacements have separate minimal/full case patches | complete |
-| `plogger_h01` | `plogger_unit` | no | `S` | not started | pending | pending | pending | pending | pending | subject harness (`S1`) | not started |
-| `pantler_h01` | `pantler_unit` | no | `S` | not started | pending | pending | pending | pending | pending | subject harness (`S2`) | not started |
-| `pmissioneval_h01` | `mission_utility_unit` | yes (3) | `G` | not started | pending | pending | pending | pending | pending | `ANTLER`/`pLogger` patch (`G6`) | not started |
-| `pmissionhash_h01` | `mission_utility_unit` | yes (3) | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `umayfinish_h01` | `mission_utility_unit` | yes (3) | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `loiter_h01` | `loiter_behavior_motion` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `obstacle_behavior_h01` | `obstacle_behavior_motion` | no | `N` | not started | pending | pending | pending | pending | pending | `ANTLER`/`pLogger` patch | not started |
-| `opregion_h01` | `opregion_motion` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `p01_obstacle` | `P01-obstacle_gauntlet` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `shadow_h01` | `shadow_behavior_motion` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `stationkeep_h01` | `stationkeep_behavior_motion` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `trail_h01` | `trail_behavior_motion` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `waypoint_h01` | `waypoint_behavior_motion` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `p02_colregs` | `P02-colregs_joust` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `p03_colregs` | `P03-colregs_traffic_ring` | no | `G` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `ufld_pathcheck_h01` | `ufield_app_unit` | yes (7) | `N` | not started | pending | pending | pending | pending | pending | defer with `G10`; `ANTLER`/`pLogger` patch | not started |
-| `ufld_message_handler_h01` | `ufield_app_unit` | yes (7) | `N` | not started | pending | pending | pending | pending | pending | defer with `G10`; `ANTLER`/`pLogger` patch | not started |
-| `ufld_contact_range_sensor_h01` | `ufield_app_unit` | yes (7) | `N` | not started | pending | pending | pending | pending | pending | defer with `G10`; `ANTLER`/`pLogger` patch | not started |
-| `ufld_beacon_range_sensor_h01` | `ufield_app_unit` | yes (7) | `N` | not started | pending | pending | pending | pending | pending | defer with `G10`; `ANTLER`/`pLogger` patch | not started |
-| `ufld_collision_detect_h01` | `ufield_app_unit` | yes (7) | `N` | not started | pending | pending | pending | pending | pending | defer with `G10`; `ANTLER`/`pLogger` patch | not started |
-| `ufld_collob_detect_h01` | `ufield_app_unit` | yes (7) | `N` | not started | pending | pending | pending | pending | pending | defer with `G10`; `ANTLER`/`pLogger` patch | not started |
-| `ufld_scope_h01` | `ufield_app_unit` | yes (7) | `G` | not started | pending | pending | pending | pending | pending | mixed shared stem; patch (`G10`) | not started |
-| `ufield_comms_h01` | `ufield_comms_unit` | yes (3) | `N` | not started | pending | pending | pending | pending | pending | defer with `G11`/`G12` shared stem | not started |
-| `ufield_comms_h02` | `ufield_comms_unit` | yes (3) | `G` | not started | pending | pending | pending | pending | pending | mixed shared stem; patch (`G11`) | not started |
-| `ufield_comms_h03` | `ufield_comms_unit` | yes (3) | `G` | not started | pending | pending | pending | pending | pending | mixed shared stem (`G12`) | not started |
-| `ufld_obstacle_sim_h01` | `ufld_obstacle_sim_unit` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
+| `plogger_h01` | `plogger_unit` | no | `S` | complete | complete | pass (generated representative, both modes) | pass (10/10, jobs 4) | pass (10/10, jobs 4) | 2026-07-19 paired | `S1`: modes intentionally preserve case-defined logger behavior and artifacts | complete |
+| `pantler_h01` | `pantler_unit` | no | `S` | complete | complete | pass (generated representative, both modes) | pass (6/6, jobs 4) | pass (6/6, jobs 4) | 2026-07-19 paired | `S2`: modes intentionally preserve case-defined ANTLER/logger topology | complete |
+| `pmissioneval_h01` | `mission_utility_unit` | yes (3) | `G` | complete | complete | pass (generated special ANTLER case) | pass (17/17, jobs 4) | pass (17/17, jobs 4) | 2026-07-19 paired | `G6`: shared 12-variable union; no-hash ANTLER preserved | complete |
+| `pmissionhash_h01` | `mission_utility_unit` | yes (3) | `G` | complete | complete | pass (generated hash reset case) | pass (4/4, jobs 4) | pass (4/4, jobs 4) | 2026-07-19 paired | `G7`: shared union includes MISSION_HASH and MHASH | complete |
+| `umayfinish_h01` | `mission_utility_unit` | yes (3) | `G` | complete | complete | pass (custom success 3x; mismatch 2x) | pass (4/4, jobs 4) | pass (4/4, jobs 4) | 2026-07-19 paired | `G8`: uMayFinish CLI order fixed; bounded logger flush before teardown | complete |
+| `loiter_h01` | `loiter_behavior_motion` | no | `N` | complete | complete | pass (generated both modes) | pass (34/34, jobs 4) | pass (34/34, jobs 4) | 2026-07-18 paired | none found | complete |
+| `obstacle_behavior_h01` | `obstacle_behavior_motion` | no | `N` | complete | complete | pass (generated special overlay) | pass (21/21, jobs 4) | pass (21/21, jobs 4) | 2026-07-18 paired | separate minimal/full two-obstacle ANTLER patches; untouched timing miss passed focused and repeat | complete |
+| `opregion_h01` | `opregion_motion` | no | `N` | complete | complete | pass (generated both modes) | pass (25/25, jobs 4) | pass (25/25, jobs 4) | 2026-07-18 paired | none found | complete |
+| `p01_obstacle` | `P01-obstacle_gauntlet` | no | `G` | complete | complete | pass (3/3, three serial repetitions) | n/a (serial performance) | pass (3/3, three serial observations) | 2026-07-19 three repetitions | `G9`: minimal vehicle loggers retain only APP_LOG; no shoreside logger | complete |
+| `shadow_h01` | `shadow_behavior_motion` | no | `N` | complete | complete | pass (generated both modes) | pass (35/35, jobs 4) | pass (35/35, jobs 4) | 2026-07-18 paired | full mode restores three loggers | complete |
+| `stationkeep_h01` | `stationkeep_behavior_motion` | no | `N` | complete | complete | pass (generated both modes) | pass (34/34, jobs 4) | pass (34/34, jobs 4) | 2026-07-18 paired | untouched timing miss passed focused and repeat | complete |
+| `trail_h01` | `trail_behavior_motion` | no | `N` | complete | complete | pass (generated both modes) | pass (42/42, jobs 4) | pass (42/42, jobs 4) | 2026-07-18 paired | full mode restores three loggers | complete |
+| `waypoint_h01` | `waypoint_behavior_motion` | no | `N` | complete | complete | pass (generated both modes) | pass (43/43, jobs 4) | pass (43/43, jobs 4 low ports) | 2026-07-18 paired | high-port shoreside MOOSDB startup failure; no case edit | complete |
+| `p02_colregs` | `P02-colregs_joust` | no | `G` | complete | complete | pass (all cases; endurance focus 2/2 after one envelope miss) | n/a (serial performance) | pass (3/3 serial) | 2026-07-19 three repetitions | `G9`: APP_LOG-only vehicle loggers; one closest-range miss retained without threshold change | complete |
+| `p03_colregs` | `P03-colregs_traffic_ring` | no | `G` | complete | complete | pass (4/4, three serial repetitions) | n/a (serial performance) | pass (all cases; endurance focus 2/2 after one collision) | 2026-07-19 three repetitions | `G9`: APP_LOG-only vehicle loggers; one full endurance collision did not repeat and restored targets match baseline | complete |
+| `ufld_pathcheck_h01` | `ufield_app_unit` | yes (7) | `N` | complete | complete | pass (generated both modes) | pass (17/17, jobs 4) | pass (17/17, jobs 4) | 2026-07-18 paired | shared post-overlay helper; zero active minimal loggers | complete |
+| `ufld_message_handler_h01` | `ufield_app_unit` | yes (7) | `N` | complete | complete | pass (generated both modes) | pass (26/26, jobs 4) | pass (26/26, jobs 4) | 2026-07-18 paired | shared post-overlay helper; zero active minimal loggers | complete |
+| `ufld_contact_range_sensor_h01` | `ufield_app_unit` | yes (7) | `N` | complete | complete | pass (generated both modes) | pass (34/34, jobs 4) | pass (34/34, jobs 4) | 2026-07-18 paired | shared post-overlay helper; zero active minimal loggers | complete |
+| `ufld_beacon_range_sensor_h01` | `ufield_app_unit` | yes (7) | `N` | complete | complete | pass (generated both modes) | pass (20/20, jobs 4) | pass (20/20, jobs 4) | 2026-07-18 paired | shared post-overlay helper; zero active minimal loggers | complete |
+| `ufld_collision_detect_h01` | `ufield_app_unit` | yes (7) | `N` | complete | complete | pass (generated both modes) | pass (20/20, jobs 4) | pass (20/20, jobs 4) | 2026-07-18 paired | shared post-overlay helper; zero active minimal loggers | complete |
+| `ufld_collob_detect_h01` | `ufield_app_unit` | yes (7) | `N` | complete | complete | pass (generated both modes) | pass (14/14, jobs 4) | pass (14/14, jobs 4) | 2026-07-18 paired | shared post-overlay helper; zero active minimal loggers | complete |
+| `ufld_scope_h01` | `ufield_app_unit` | yes (7) | `G` | complete | complete | pass (generated both modes) | pass (8/8, jobs 4) | pass (8/8, jobs 4) | 2026-07-18 paired | `G10`: APPCAST-only minimal logger; 8 files / 24,696 bytes | complete |
+| `ufield_comms_h01` | `ufield_comms_unit` | yes (3) | `N` | complete | complete | pass (3 runtime cases focused) | pass (35/35, jobs 4) | pass (35/35, jobs 4) | 2026-07-19 paired | shared before/after event ordering corrected; zero active minimal loggers | complete |
+| `ufield_comms_h02` | `ufield_comms_unit` | yes (3) | `G` | complete | complete | pass (generated special ANTLER case) | pass (12/12, jobs 4) | pass (12/12, jobs 4) | 2026-07-19 paired | `G11`: narrow broker/pShare logger; custom pMediator ANTLER preserved | complete |
+| `ufield_comms_h03` | `ufield_comms_unit` | yes (3) | `G` | complete | complete | pass (generated rendered route case) | pass (25/25, jobs 4) | pass (25/25, jobs 4) | 2026-07-19 paired | `G12`: narrow broker/pShare/try-host logger | complete |
+| `ufld_obstacle_sim_h01` | `ufld_obstacle_sim_unit` | no | `N` | complete | complete | pass (generated both modes) | pass (49/49, jobs 4) | pass (49/49, jobs 4) | 2026-07-19 paired | none found | complete |
 
 For every exception, record:
 

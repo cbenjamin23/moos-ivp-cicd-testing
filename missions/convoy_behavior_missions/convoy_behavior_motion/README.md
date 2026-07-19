@@ -67,4 +67,4 @@ shoreside and two-vehicle `pLogger` configuration for diagnostic runs.
 
 Named cases are implemented in the paired harness:
 
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion)
+[`harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion`](../../../harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion)

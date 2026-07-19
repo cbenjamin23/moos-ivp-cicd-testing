@@ -1,7 +1,7 @@
 # NSPATCH Notes
 
 This harness patches an isolated copy of the moving stem in
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/obmgr_missions/obmgr_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/obmgr_missions/obmgr_motion)
+[`missions/obmgr_missions/obmgr_motion`](../../../missions/obmgr_missions/obmgr_motion)
 for every selected case. The source stem is never patched in place.
 
 The patch flow is:

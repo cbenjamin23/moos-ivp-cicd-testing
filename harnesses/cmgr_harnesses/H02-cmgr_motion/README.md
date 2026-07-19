@@ -12,67 +12,69 @@ and running a short `70m` eastbound corridor.
 
 ## Current Matrix
 
-- `baseline_crossing_pass`
-  Default on-lane contact. The vehicle should detect it early enough to route
-  around it, arrive cleanly, and finish with zero collisions.
-- `offset_clear_pass`
-  A farther north stationary contact should stay clear enough that the mission
-  arrives cleanly without registering an encounter.
-- `delayed_crossing_pass`
-  A similar on-lane contact appears later in the transit. This keeps the
-  motion suite from depending only on a very early contact appearance.
-- `head_on_pass`
-  The intruder approaches head-on along the lane. This is a stronger geometry
-  than the default crossing case but should still finish safely.
-- `runtime_alert_add_pass`
-  The moving mission starts without a static alert and posts a
-  `BCM_ALERT_REQUEST` at runtime. The dynamic alert should create the spawned
-  avoid-collision update, detect the contact, and finish without collision or
-  encounter.
-- `runtime_alert_reenable_pass`
-  The configured alert is disabled and then re-enabled by runtime
-  `BCM_ALERT_REQUEST` messages before the contact arrives. The re-enabled alert
-  should behave like the static path and support a clean detected arrival.
-- `hold_alerts_for_helm_pass`
-  This case sets `hold_alerts_for_helm=true` in contact manager. The alert should
-  remain held until the helm reaches `DRIVE`, then release in time for the
-  spawned avoid behavior to complete the transit safely.
-- `no_detect_clear_pass`
-  A benign far-off contact should remain fully irrelevant. This case is useful
-  because it proves the moving mission can stay clean without contact manager
-  ever triggering at all.
-- `filter_match_type_clear_pass`
-  The contact is a default kayak while the alert requires `match_type=ship`.
-  The vehicle should still arrive cleanly, and the mission grades this case by
-  confirming the filtered contact does not trip `CONTACT_DETECTED`.
-- `stale_reappear_pass`
-  A short-lived contact with the same name is retired through
-  `contact_max_age`, then reappears on the lane. The mission requires both the
-  retire flag and the later successful alert/avoid path.
-- `two_contact_pass`
-  One avoid-worthy contact plus one irrelevant background contact should still
-  result in a clean arrival. This extends the motion layer into multi-contact
-  territory without making the grade depend on brittle exact count/list
-  assertions. The case still reports `count` and `list`.
-- `tight_alert_fail`
-  This case delays the `pContactMgrV20` alert. In the tuned geometry this
-  should still arrive cleanly, but without the contact alert path firing in
-  time. The case grades `pass` when that expected no-detection evidence is
-  observed.
-- `avoid_disabled_fail`
-  Contact manager still detects the contact, but this case redirects the alert
-  away from `CONTACT_INFO`, so the avoid-collision behavior never spawns. In
-  the tuned case the vehicle still arrives without collision, and the case
-  grades `pass` when the expected encounter-without-avoid evidence appears.
-- `runtime_alert_disable_fail`
-  The configured alert is disabled by a runtime `BCM_ALERT_REQUEST` before a
-  harsh contact arrives. The case grades `pass` when the vehicle still arrives
-  without collision, the encounter occurs, and the contact alert path remains
-  disabled.
-- `fast_intruder_fail`
-  A faster head-on intruder creates a harsher encounter. The case grades `pass`
-  when contact manager detects the intruder and the expected encounter evidence
-  is observed without an actual collision.
+- `baseline_crossing_pass`: Posts a stationary `intruder` at `(39,-60)` two
+  seconds after deploy under the static 20-meter range and 28-meter CPA alert,
+  testing the normal `CONTACT_INFO` spawn path; passes when `ARRIVED=true`,
+  `CONTACT_DETECTED=true`, and `COLLISION_TOTAL=0`.
+- `offset_clear_pass`: Moves the stationary contact to `(45,-42)`, 18 meters
+  north of the route, testing the clear trajectory outcome for off-lane
+  geometry; passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=0`, and
+  `COLLISION_TOTAL=0`.
+- `no_detect_clear_pass`: Moves the contact to `(45,-34)` and reduces the alert
+  thresholds to 10 and 12 meters, exercising out-of-range non-detection;
+  passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=0`,
+  `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
+- `delayed_crossing_pass`: Posts a stationary on-lane contact at `(51,-60)`
+  after 12 seconds and evaluates at 52 seconds, testing late alert and avoidance
+  during transit; passes when `ARRIVED=true`, `CONTACT_DETECTED=true`, and
+  `COLLISION_TOTAL=0`.
+- `head_on_pass`: Posts `intruder` at `(71,-60)` moving west at `1.4`, testing
+  alert-driven avoidance against an oncoming contact; passes when
+  `ARRIVED=true`, `CONTACT_DETECTED=true`, and `COLLISION_TOTAL=0`.
+- `runtime_alert_add_pass`: Starts without a static alert, adds the `avoid`
+  alert by `BCM_ALERT_REQUEST` at one second, and posts the on-lane contact at
+  two seconds, testing runtime alert creation; passes when `ARRIVED=true`,
+  `CONTACT_DETECTED=true`, and `COLLISION_TOTAL=0`.
+- `runtime_alert_reenable_pass`: Disables the static alert at one second,
+  enables it at two seconds, and posts the contact at three seconds, exercising
+  runtime alert re-enable; the current evaluator requires only the final
+  `ARRIVED=true`, `CONTACT_DETECTED=true`, and `COLLISION_TOTAL=0` outcome and
+  does not prove the disable step took effect.
+- `hold_alerts_for_helm_pass`: Sets `hold_alerts_for_helm=true` for the baseline
+  contact, exercising delayed alert release until the helm is driving; the
+  current evaluator passes on `ARRIVED=true`, `CONTACT_DETECTED=true`, and
+  `COLLISION_TOTAL=0` without checking when the alert was released.
+- `filter_match_type_clear_pass`: Requires `match_type=ship` while posting the
+  default `kayak` contact at `(45,-42)`, exercising type-filtered
+  non-detection; passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=0`,
+  `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
+- `stale_reappear_pass`: Sets `contact_max_age=5`, posts a three-second
+  `intruder` at one second, then posts the same name on the route at 12 seconds,
+  exercising retirement and reappearance; the evaluator passes when
+  `ARRIVED=true`, `CONTACT_RETIRED=intruder`, `CONTACT_DETECTED=true`, and
+  `COLLISION_TOTAL=0`, but does not tie the detection flag specifically to the
+  second report.
+- `two_contact_pass`: Posts avoid-worthy `alpha` at `(39,-56)` and background
+  `bravo` at `(53,-34)`, exercising multi-contact tracking during avoidance;
+  the current evaluator passes when `ARRIVED=true`, `CONTACT_DETECTED=true`,
+  `ENCOUNTER_TOTAL=0`, and `COLLISION_TOTAL=0` while recording, but not grading,
+  `CONTACTS_COUNT` and `CONTACTS_LIST`.
+- `tight_alert_fail`: Reduces the baseline alert thresholds to 8 and 10 meters,
+  exercising the late-alert/no-detection outcome; passes when `ARRIVED=true`,
+  `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
+- `avoid_disabled_fail`: Sends the alert update to `DISABLED_INFO` instead of
+  the behavior's `CONTACT_INFO` variable and posts an oncoming contact at
+  `(67,-60)` moving west at `1.8`, testing detection without behavior spawn;
+  passes when `ARRIVED=true`, `CONTACT_DETECTED=true`,
+  `ENCOUNTER_TOTAL=1`, and `COLLISION_TOTAL=0`.
+- `runtime_alert_disable_fail`: Disables the static alert at one second before
+  posting the same oncoming contact at two seconds, testing runtime alert
+  suppression; passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=1`,
+  `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
+- `fast_intruder_fail`: Posts an oncoming contact at `(57,-60)` moving west at
+  `3.0`, testing detection under a faster encounter geometry; passes when
+  `ARRIVED=true`, `CONTACT_DETECTED=true`, `ENCOUNTER_TOTAL>=1`, and
+  `COLLISION_TOTAL=0`.
 
 ## Results Lines
 

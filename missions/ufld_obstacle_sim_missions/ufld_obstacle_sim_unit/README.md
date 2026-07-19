@@ -2,8 +2,12 @@
 
 Headless shoreside mission for app-level `uFldObstacleSim` checks. The stem
 runs one MOOS community with `uFldObstacleSim`, scripted input mail,
-`pMissionEval`, `pMissionHash`, logging, and a narrow upstream `pEchoVar`
+`pMissionEval`, `pMissionHash`, and a narrow upstream `pEchoVar`
 adapter.
+
+Logging defaults to `--log=minimal`, which leaves the dormant pLogger
+configuration in place but does not launch the process. Use `--log=full` to
+restore the pre-migration logger for direct diagnostic runs.
 
 The default scenario loads a fixed obstacle field and uses `PMV_CONNECT` to
 trigger publication. Its evaluator grades exact truth and vehicle-facing
@@ -44,6 +48,7 @@ Run the default case directly:
 
 ```sh
 ./zlaunch.sh --max_time=30 --nogui 10
+./zlaunch.sh --log=full --max_time=30 --nogui 10
 ```
 
 Harness overlays are applied by the H01 launcher for nondefault cases; passing

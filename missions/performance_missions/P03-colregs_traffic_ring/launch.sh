@@ -13,6 +13,10 @@ TIME_WARP=1
 VERBOSE=""
 JUST_MAKE=""
 LOG_CLEAN=""
+LOG_MODE="minimal"
+if [ "${LOG_MODE_PREPARED:-no}" = yes ] && [ -n "${LOG_MODE_PREPARED_VALUE:-}" ]; then
+  LOG_MODE="$LOG_MODE_PREPARED_VALUE"
+fi
 SCENARIO="baseline_circle"
 MAX_SPD="2.5"
 SHORE_MPORT="9000"
@@ -50,6 +54,7 @@ for ARGI; do
     echo "  --shore_pshare=<n> Shoreside pShare port"
     echo "  --veh_pshare=<n>   Base vehicle pShare port"
     echo "  --just_make, -j    Only create targ files"
+    echo "  --log=<mode>       minimal (default) or full"
     echo "  --log_clean, -lc   Run clean.sh before launch"
     echo "  --verbose, -v      Verbose"
     echo "  --nogui, -ng       Headless launch"
@@ -61,6 +66,8 @@ for ARGI; do
     VERBOSE="yes"
   elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
     JUST_MAKE="yes"
+  elif [ "${ARGI:0:6}" = "--log=" ]; then
+    LOG_MODE="${ARGI#--log=*}"
   elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
     LOG_CLEAN="yes"
   elif [ "${ARGI:0:11}" = "--scenario=" ]; then
@@ -86,6 +93,16 @@ for ARGI; do
     exit 1
   fi
 done
+
+case "$LOG_MODE" in
+  minimal|full) ;;
+  *) echo "$ME: --log must be minimal or full" >&2; exit 2 ;;
+esac
+if [ "${LOG_MODE_PREPARED:-no}" != yes ]; then
+  ./prepare_logging_mode.sh "$LOG_MODE"
+fi
+export LOG_MODE_PREPARED=yes
+export LOG_MODE_PREPARED_VALUE="$LOG_MODE"
 
 case "$SCENARIO" in
   baseline_circle)

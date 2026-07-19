@@ -1,0 +1,13 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = pMissionHash    @ NewConsole = false
+  Run = pMissionEval    @ NewConsole = false
+  Run = pEchoVar        @ NewConsole = false
+  Run = uFldObstacleSim @ NewConsole = false
+  Run = uTimerScript    @ NewConsole = false
+}

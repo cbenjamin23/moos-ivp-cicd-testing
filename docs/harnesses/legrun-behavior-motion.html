@@ -58,7 +58,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Cycle</h3>
-          <p>Description: Exercises the stock leg-run pattern and requires the first leg, first turn, second leg, behavior completion, mid-leg, and mid-turn flags without behavior errors.</p>
+          <p>Description: Runs the stock 60-meter leg centered at (7,-57) on heading 64.64 degrees, with 8-meter alternating turns at 1.6 m/s; passes when leg 1, turn 1, leg 2, mid-leg, mid-turn, and completion flags fire without a behavior error.</p>
         </div>
       </article>
 
@@ -68,7 +68,7 @@
         </div>
         <div class="gif-meta">
           <h3>Far Turn Init</h3>
-          <p>Description: Starts from the far-turn initialization mode and verifies the behavior selects the far leg path and completes cleanly.</p>
+          <p>Description: Sets init_leg_mode=far_turn to begin on the opposite leg; passes when leg 2 and LR_DONE fire without a behavior error.</p>
         </div>
       </article>
 
@@ -78,7 +78,7 @@
         </div>
         <div class="gif-meta">
           <h3>Individual Turn Params</h3>
-          <p>Description: Uses separate turn-one and turn-two radius, bias, direction, and extension settings and verifies the asymmetric turn geometry remains usable.</p>
+          <p>Description: Configures asymmetric turns with radii 7 and 10, biases 80 and 95, extensions 3 and 6, and opposite directions; passes on the baseline progression flags through turn 1 and leg 2, with no behavior error.</p>
         </div>
       </article>
 
@@ -95,199 +95,199 @@
 
         <article class="case-row">
           <code>baseline_cycle_pass</code>
-          <p>Exercises the stock leg-run pattern and requires the first leg, first turn, second leg, behavior completion, mid-leg, and mid-turn flags without behavior errors.</p>
+          <p>Runs the stock 60-meter leg centered at (7,-57) on heading 64.64 degrees, with 8-meter alternating turns at 1.6 m/s; passes when leg 1, turn 1, leg 2, mid-leg, mid-turn, and completion flags fire without a behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>finite_complete_pass</code>
-          <p>Runs the same pattern with perpetual=false and requires the behavior completion end flag after one traversal.</p>
+          <p>Sets perpetual=false on the stock pattern to exercise finite completion; passes when leg 1, turn 1, leg 2, and LR_DONE fire without a behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>colon_leg_format_pass</code>
-          <p>Supplies the leg geometry in x:y:ang:len form and verifies it produces the same clean cycle as the keyword form.</p>
+          <p>Supplies the stock geometry as leg=7:-57:64.64:60 instead of named fields, exercising the colon parser; passes on the full baseline flag set and no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>vertex_points_pass</code>
-          <p>Supplies explicit p1 and p2 vertices instead of a center/angle/length leg and verifies clean completion.</p>
+          <p>defines the leg by p1=-20.12,-69.82 and p2=34.12,-44.18 instead of center, heading, and length; passes on the full baseline flag set and no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>init_close_turn_pass</code>
-          <p>Starts from the closest-turn initialization mode and requires a clean full cycle.</p>
+          <p>Sets init_leg_mode=close_turn to choose the initial leg from the nearer turn; passes on the full baseline leg, turn, midpoint, completion, and no-error evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>init_far_turn_pass</code>
-          <p>Starts from the far-turn initialization mode and verifies the behavior selects the far leg path and completes cleanly.</p>
+          <p>Sets init_leg_mode=far_turn to begin on the opposite leg; passes when leg 2 and LR_DONE fire without a behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_rad_alias_pass</code>
-          <p>Uses the shared turn_rad, turn_bias, and turn_dir aliases and verifies both turn generators remain usable.</p>
+          <p>Configures both turns through shared aliases turn_bias=100, turn_dir=port, turn_rad=8, and turn_ext=4; passes on the baseline progression flags through turn 1 and leg 2, with no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_bias_ext_gap_pass</code>
-          <p>Exercises shared turn bias, extension, and turn-point-gap shaping while preserving clean progression.</p>
+          <p>Sets shared turn_bias=85, turn_rad=9, turn_ext=8, and turn_pt_gap=18 to exercise shaped turn generation; passes on the baseline progression flags through turn 1 and leg 2, with no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>individual_turn_params_pass</code>
-          <p>Uses separate turn-one and turn-two radius, bias, direction, and extension settings and verifies the asymmetric turn geometry remains usable.</p>
+          <p>Configures asymmetric turns with radii 7 and 10, biases 80 and 95, extensions 3 and 6, and opposite directions; passes on the baseline progression flags through turn 1 and leg 2, with no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_rad_min_clip_pass</code>
-          <p>Sets turn_rad_min before a too-small turn_rad and verifies the behavior clips into a valid maneuver.</p>
+          <p>Sets turn_rad_min=9 before shared turn_rad=2, exercising minimum-radius clipping; passes on the baseline progression flags through turn 1 and leg 2, with no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>capture_radius_alias_pass</code>
-          <p>Uses the radius alias for waypoint capture radius and verifies arrival and turn progression remain clean.</p>
+          <p>Replaces capture_radius=5 with the equivalent radius=5 alias; passes on the full baseline progression, midpoint, completion, and no-error evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>capture_line_absolute_pass</code>
-          <p>Enables absolute capture-line semantics and verifies the vehicle still progresses through the cycle.</p>
+          <p>Sets capture_line=absolute instead of true; passes on the full baseline progression, midpoint, completion, and no-error evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_capture_line_pass</code>
-          <p>Disables capture-line use with radius-based capture and verifies the behavior still completes.</p>
+          <p>Disables capture lines and uses capture_radius=6 and slip_radius=16 for radius-only endpoint capture; passes on the full baseline progression, midpoint, completion, and no-error evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>leg_speed_schedule_pass</code>
-          <p>Adds a finite leg_spds schedule and verifies the behavior still completes leg and turn progression cleanly.</p>
+          <p>Configures the finite schedule leg_spds=1.2,1.0,0.8,1.4; passes on the ordinary progression, midpoint, completion, and no-error evidence, without grading the scheduled speeds.</p>
         </article>
 
 
         <article class="case-row">
           <code>leg_speed_onturn_pass</code>
-          <p>Enables scheduled speeds during turns with repeat enabled and verifies clean progression.</p>
+          <p>Configures repeating speeds 1.1,0.9,1.3 with leg_spds_onturn=true so schedule entries also apply during turns; passes on ordinary progression, midpoint, completion, and no-error evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>leg_speed_count_repeat_pass</code>
-          <p>Uses count-expanded speed schedule syntax with repeat enabled and verifies clean progression.</p>
+          <p>Configures repeating count-expanded schedule leg_spds=2:1.0,1.4; passes on ordinary progression, midpoint, completion, and no-error evidence, without grading the expanded speed sequence.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_length_angle_update_pass</code>
-          <p>Posts runtime leg length and angle updates through LEG_UPDATE and verifies the behavior keeps cycling cleanly.</p>
+          <p>Posts leg_len_mod=8 at six seconds and leg_ang_mod=-5 at eight seconds; passes on ordinary progression, midpoint, completion, and no-error evidence, without measuring the updated leg geometry.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_turn_radius_update_pass</code>
-          <p>Posts runtime turn radius and extension updates through LEG_UPDATE on a compact leg and verifies turn progression remains clean.</p>
+          <p>Uses a 44-meter leg and posts turn_rad_mod=2 and turn_ext_mod=1 before the first turn; passes on ordinary progression, midpoint, completion, and no-error evidence, without measuring the updated turn.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_speed_replace_reset_pass</code>
-          <p>Posts replace, reset, and clear speed-schedule updates through LEG_UPDATE on a compact leg and verifies the behavior continues cleanly.</p>
+          <p>Applies leg_spds replace, reset, clear, and final replace,1.2 updates at two-second intervals on a 44-meter leg; passes on ordinary progression, midpoint, completion, and no-error evidence, without grading update history or final speed.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_shift_point_pass</code>
-          <p>Posts a runtime shift_pt update and verifies the leg-run center can move without breaking completion.</p>
+          <p>Posts shift_pt=9,-55 four seconds after deployment to move the leg center; passes on ordinary progression, midpoint, completion, and no-error evidence, without measuring the shifted endpoints.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_turn_bias_gap_update_pass</code>
-          <p>Posts runtime turn-bias, turn-extension, and turn-point-gap updates and verifies clean turn progression.</p>
+          <p>Posts turn_bias_mod=-10, turn_ext_mod=2, and turn_pt_gap=15 during the run; passes on ordinary progression, midpoint, completion, and no-error evidence, without measuring the resulting turn geometry.</p>
         </article>
 
 
         <article class="case-row">
           <code>flag_aliases_pass</code>
-          <p>Uses the underscore flag aliases for leg, turn, mid-leg, and mid-turn events and requires those alias flags to reach shoreside.</p>
+          <p>Adds leg_end_flag, turn_end_flag, mid_leg_flag, and mid_turn_flag alongside the canonical flag names; passes when every canonical and alias flag reaches shoreside, the behavior completes, and no behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>mid_pct_late_pass</code>
-          <p>Moves mid-leg and mid-turn flag thresholds later in each segment and verifies those events still fire before completion.</p>
+          <p>Moves mid_leg_pct and mid_turn_pct from 30 to 70; passes when both midpoint flags eventually fire with the ordinary progression and completion flags and no behavior error, without grading when they fired.</p>
         </article>
 
 
         <article class="case-row">
           <code>patience_clip_pass</code>
-          <p>Supplies an above-range patience value and verifies the clipped objective weighting still completes the leg-run cycle cleanly.</p>
+          <p>Supplies patience=150, which the behavior reports as the clipped value 99; passes on ordinary progression, midpoint, completion, and no-error evidence, while the reported clipped setting is not itself graded.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_leg_config_fail</code>
-          <p>Supplies malformed leg geometry and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets nonnumeric len=bad in the leg specification; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_schedule_fail</code>
-          <p>Supplies a malformed speed schedule and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets malformed leg_spds=1.0,fast; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_init_mode_fail</code>
-          <p>Supplies an invalid init_leg_mode and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets unsupported init_leg_mode=sideways; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_mid_pct_fail</code>
-          <p>Supplies an out-of-range mid-leg percentage and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets out-of-range mid_leg_pct=101; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_radius_fail</code>
-          <p>Supplies a zero turn radius and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets invalid shared turn_rad=0; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_ext_fail</code>
-          <p>Supplies a negative turn extension and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets invalid shared turn_ext=-1; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_dir_fail</code>
-          <p>Supplies an invalid shared turn direction and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets unsupported shared turn_dir=sideways; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_high_fail</code>
-          <p>Supplies a cruise speed above the helm domain maximum and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets speed=9, above the helm speed domain; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_count_fail</code>
-          <p>Supplies a zero-count speed schedule entry and passes when the expected no-progress timeout evidence is observed.</p>
+          <p>Sets invalid zero-count schedule entry leg_spds=0:1.0; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
         </article>
 
       </div>

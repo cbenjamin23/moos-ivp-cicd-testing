@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Broker Comms</h3>
-          <p>Description: Confirms both vehicles register through the node and shore brokers, exchange node reports, and produce a visible comms pulse.</p>
+          <p>Description: Places Abe and Ben 60 meters apart with a 200-meter communication range; passes when both brokers register, Abe&#x27;s broadcast message reaches Ben, Ben&#x27;s acknowledgement reaches Abe, both directed node-report variables and a comms pulse appear, and no shared report is published.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Range Extend</h3>
-          <p>Description: Starts below communication range, posts UNC_COMMS_RANGE=200, and requires delivery to recover at runtime.</p>
+          <p>Description: Starts at a 60-meter separation with comms_range=10, posts UNC_COMMS_RANGE=200 before the scripted traffic begins, and passes when the ordinary message, acknowledgement, bidirectional reports, and pulse are subsequently delivered.</p>
         </div>
       </article>
 
@@ -87,211 +87,211 @@
 
         <article class="case-row">
           <code>baseline_broker_comms_pass</code>
-          <p>Confirms both vehicles register through the node and shore brokers, exchange node reports, and produce a visible comms pulse.</p>
+          <p>Places Abe and Ben 60 meters apart with a 200-meter communication range; passes when both brokers register, Abe&#x27;s broadcast message reaches Ben, Ben&#x27;s acknowledgement reaches Abe, both directed node-report variables and a comms pulse appear, and no shared report is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>critical_range_override_pass</code>
-          <p>Sets a small nominal comms range but a critical range large enough to still allow report exchange.</p>
+          <p>Keeps the vehicles 60 meters apart but sets comms_range=10 and critical_range=100; passes when both directed node reports and a pulse are delivered while the direct message and acknowledgement remain blocked by the nominal range.</p>
         </article>
 
 
         <article class="case-row">
           <code>shared_node_reports_pass</code>
-          <p>Enables shared_node_reports and requires NODE_REPORT_UNC in addition to the bidirectional vehicle reports.</p>
+          <p>Sets shared_node_reports=true at the ordinary 60-meter geometry; passes when the baseline deliveries occur and at least one NODE_REPORT_UNC is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>pulse_disabled_pass</code>
-          <p>Disables node-report pulse rendering while preserving report delivery.</p>
+          <p>Sets view_node_rpt_pulses=false and pulse_duration=0; passes when messages, acknowledgements, and both directed reports are delivered but no VIEW_COMMS_PULSE is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>range_block_pass</code>
-          <p>Sets both comms and critical ranges below the vehicle separation and requires report delivery to stay blocked.</p>
+          <p>Sets comms_range=10 and critical_range=5 for vehicles 60 meters apart; passes when neither message, acknowledgement, directed report, nor comms pulse is delivered despite both nodes registering.</p>
         </article>
 
 
         <article class="case-row">
           <code>zero_range_block_pass</code>
-          <p>Sets comms_range=0 and critical_range=0, requiring all range-gated reports, direct messages, acks, and pulses to stay blocked.</p>
+          <p>Sets both ranges to zero at the same 60-meter separation; passes when all message, acknowledgement, directed-report, shared-report, and pulse latches remain false.</p>
         </article>
 
 
         <article class="case-row">
           <code>drop_all_reports_pass</code>
-          <p>Uses drop_percentage=100 to deterministically block all inter-vehicle report delivery.</p>
+          <p>Sets drop_percentage=100 inside otherwise valid range; passes when all inter-vehicle messages, acknowledgements, reports, and report pulses are absent while both nodes remain registered.</p>
         </article>
 
 
         <article class="case-row">
           <code>far_range_block_pass</code>
-          <p>Moves the vehicles far apart under finite range and requires report delivery to stay blocked.</p>
+          <p>Places Abe and Ben 600 meters apart with comms_range=200 and critical_range=5; passes when all range-gated message, acknowledgement, report, and pulse latches remain false.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_limit_far_pass</code>
-          <p>Keeps the far geometry but uses comms_range=nolimit and requires bidirectional report delivery.</p>
+          <p>Keeps the 600-meter geometry but sets comms_range=nolimit; passes when Abe&#x27;s message, Ben&#x27;s acknowledgement, both directed reports, and a comms pulse are delivered.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_msg_length_block_pass</code>
-          <p>Sets max_msg_length below the scripted payload and requires direct message delivery to be blocked while ack delivery remains available.</p>
+          <p>Sets max_msg_length=4 while Abe sends the ordinary longer string payload; passes when no direct message reaches Ben but Ben&#x27;s acknowledgement and both node reports still arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>dest_specific_message_pass</code>
-          <p>Sends the direct message with dest_node=ben and requires delivery through the named-destination path.</p>
+          <p>Sends dest_node=ben with var_name=UFC_DEST and string_val=hello_ben; passes when NODE_MESSAGE_BEN exactly preserves the destination, source, app, variable, value, and acknowledgement id, alongside the ordinary ack/report traffic.</p>
         </article>
 
 
         <article class="case-row">
           <code>dest_group_message_pass</code>
-          <p>Sends the direct message with dest_group=red and requires delivery through group destination resolution.</p>
+          <p>Keeps both vehicles in group red and sends dest_group=red; passes when Ben receives the exact group-addressed UFC_GROUP=hello_group payload and the ordinary ack/report traffic remains available.</p>
         </article>
 
 
         <article class="case-row">
           <code>ack_requested_mediated_pass</code>
-          <p>Sends a message with ack=true and requires uFldNodeComms to route it as MEDIATED_MESSAGE_BEN.</p>
+          <p>Sends Abe&#x27;s named message with ack=true; passes when the exact payload appears on MEDIATED_MESSAGE_BEN, no NODE_MESSAGE_BEN is posted, and the independent acknowledgement and report traffic still arrives.</p>
         </article>
 
 
         <article class="case-row">
           <code>double_val_message_pass</code>
-          <p>Sends a direct message with double_val instead of string_val and requires the numeric payload to be preserved.</p>
+          <p>Sends double_val=3.1415 instead of string_val; passes when NODE_MESSAGE_BEN exactly preserves the numeric field and all routing metadata.</p>
         </article>
 
 
         <article class="case-row">
           <code>unknown_dest_block_pass</code>
-          <p>Sends a valid message to an unknown destination and requires it to be ignored while normal reports and acks still flow.</p>
+          <p>Sends Abe&#x27;s otherwise valid message to unregistered destination zed; passes when no message reaches Ben while the independent acknowledgement, both directed reports, and pulse still arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>ghost_source_block_pass</code>
-          <p>Sends a valid message from an unknown source node and requires it to be ignored while normal reports and acks still flow.</p>
+          <p>Sends an otherwise valid Ben-directed message with unregistered src_node=ghost; passes when no message reaches Ben while the independent acknowledgement, both directed reports, and pulse still arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>invalid_ack_block_pass</code>
-          <p>Sends an ack missing its required id and requires ACK_MESSAGE_abe to stay absent while direct messages and reports still flow.</p>
+          <p>Sends Ben&#x27;s acknowledgement without an id while Abe sends a valid broadcast; passes when no ACK_MESSAGE_abe appears but the direct message, both reports, and pulse do.</p>
         </article>
 
 
         <article class="case-row">
           <code>msg_group_filter_pass</code>
-          <p>Splits the vehicles into different groups and enables msg_groups, requiring messages to be blocked while reports still flow.</p>
+          <p>Places Abe in red and Ben in blue with msg_groups=true; passes when Abe&#x27;s message is blocked while Ben&#x27;s acknowledgement, both directed reports, and pulse still arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>report_group_filter_pass</code>
-          <p>Splits the vehicles into different groups and enables groups, requiring reports to be blocked while messages still flow.</p>
+          <p>Places Abe in red and Ben in blue with groups=true; passes when both directed node reports are blocked while the direct message, acknowledgement, and a pulse still arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>stealth_range_block_pass</code>
-          <p>Applies stealth to abe, requiring outbound traffic from abe to be blocked while reverse traffic still flows.</p>
+          <p>Sets comms_range=100 and stealth=0.4 for Abe at a 60-meter separation; passes when Abe&#x27;s outbound message and report to Ben are blocked while Ben&#x27;s acknowledgement and report to Abe still arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>earange_extend_pass</code>
-          <p>Gives ben extended receive range, requiring abe to reach ben while the reverse direction remains blocked.</p>
+          <p>Sets comms_range=40 and gives Ben earange=2.0 at a 60-meter separation; passes when Abe&#x27;s message and report reach Ben but Ben&#x27;s acknowledgement and report cannot reach Abe.</p>
         </article>
 
 
         <article class="case-row">
           <code>stale_message_block_pass</code>
-          <p>Publishes stale node-report timestamps and requires messages and acks to be blocked while report fanout still reflects recently received records.</p>
+          <p>Repeatedly receives node reports whose embedded TIME=1 is stale under stale_time=1; passes when the exact stale Abe report is still fanned out to Ben and both report directions and a pulse appear, but the later message and acknowledgement are blocked.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_msg_interval_filter_pass</code>
-          <p>Sends two fast direct messages with a long min_msg_interval, requiring the first delivery to pass and the follow-up payload to be suppressed.</p>
+          <p>Sets min_msg_interval=5000 and sends two Abe messages five seconds apart in mission time; passes when exactly one NODE_MESSAGE_BEN is delivered and it exactly matches the first UFC_DIRECT=hello_ben payload.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_range_extend_pass</code>
-          <p>Starts below communication range, posts UNC_COMMS_RANGE=200, and requires delivery to recover at runtime.</p>
+          <p>Starts at a 60-meter separation with comms_range=10, posts UNC_COMMS_RANGE=200 before the scripted traffic begins, and passes when the ordinary message, acknowledgement, bidirectional reports, and pulse are subsequently delivered.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_stealth_block_pass</code>
-          <p>Starts with deliverable traffic, posts UNC_STEALTH for abe, and requires later outbound traffic from abe to be blocked while reverse acks still flow.</p>
+          <p>Starts with comms_range=100, delivers Abe&#x27;s UFC_BEFORE message, posts UNC_STEALTH=vname=abe,stealth=0.4, and sends UFC_AFTER; passes when Ben receives exactly one message—the exact before-update payload—while both reverse acknowledgements arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_earange_extend_pass</code>
-          <p>Starts below communication range, posts UNC_EARANGE for ben, and requires later abe to ben traffic to recover asymmetrically.</p>
+          <p>Starts at 60 meters with comms_range=40, posts UNC_EARANGE=vname=ben,earange=2.0, and sends messages before and after the update; passes when only the exact after-update Abe message reaches Ben, Abe&#x27;s later report reaches Ben, and reverse acknowledgement/report traffic remains blocked.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_drop_all_pass</code>
-          <p>Starts with deliverable traffic, posts UNC_DROP_PCT=100, and requires later direct messages and acks to be dropped.</p>
+          <p>Delivers one message and acknowledgement, posts UNC_DROP_PCT=100, and sends a second pair; passes when the final counts remain one each and Ben&#x27;s only message is the exact before-update payload.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_pulse_disabled_pass</code>
-          <p>Starts with visible report pulses, posts UNC_VIEW_NODE_RPT_PULSES=false, and requires later report delivery to continue without later pulse output.</p>
+          <p>Observes early report delivery and pulses, posts UNC_VIEW_NODE_RPT_PULSES=false, resets a late-pulse latch, and sends reports again; passes when report delivery remains present but no pulse is observed after the reset.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_shared_reports_pass</code>
-          <p>Starts with shared reports disabled, posts UNC_SHARED_NODE_REPORTS=true, and requires NODE_REPORT_UNC to appear.</p>
+          <p>Starts with sharing disabled, posts UNC_SHARED_NODE_REPORTS=true before the first vehicle reports, and passes when the baseline deliveries plus at least one NODE_REPORT_UNC appear.</p>
         </article>
 
 
         <article class="case-row">
           <code>shared_node_reports_numeric_pass</code>
-          <p>Enables shared reports with a numeric interval and requires NODE_REPORT_UNC through the interval-based config path.</p>
+          <p>Configures shared_node_reports=0.1; passes when the baseline deliveries occur and at least one NODE_REPORT_UNC is published through the numeric configuration path.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_rpt_interval_filter_pass</code>
-          <p>Sets a long min_rpt_interval and requires first report delivery to pass while repeated report posts are rate-limited.</p>
+          <p>Sets min_rpt_interval=1000 while each vehicle posts ten reports over 480 mission seconds; passes when exactly one report is delivered in each direction and the ordinary message, acknowledgement, and pulse still arrive.</p>
         </article>
 
 
         <article class="case-row">
           <code>stale_time_unlimited_pass</code>
-          <p>Publishes old report timestamps with stale_time=-1 and requires reports, direct messages, and acks to remain deliverable.</p>
+          <p>Uses the same TIME=1 reports with stale_time=-1; passes when the exact Abe report reaches Ben and the message, acknowledgement, both report directions, and pulse all remain deliverable.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_msg_length_unlimited_pass</code>
-          <p>Sets max_msg_length=0 and requires a deliberately long direct message payload to be delivered.</p>
+          <p>Sets max_msg_length=0 and sends a 119-character UFC_LONG value; passes when NODE_MESSAGE_BEN exactly preserves the entire long payload and routing metadata.</p>
         </article>
 
 
         <article class="case-row">
           <code>earrange_alias_extend_pass</code>
-          <p>Uses the accepted earrange spelling alias and requires the same asymmetric enhanced acoustic range outcome as earange.</p>
+          <p>Configures Ben&#x27;s enhancement with the accepted earrange=2.0 spelling under the earange record; passes at 60 meters with a 40-meter base range when Abe&#x27;s message and report reach Ben but reverse acknowledgement/report traffic does not.</p>
         </article>
 
 
         <article class="case-row">
           <code>critical_group_override_pass</code>
-          <p>Splits vehicle groups while setting a large critical range, requiring report delivery to bypass group filtering while range-gated messages remain blocked.</p>
+          <p>Places Abe and Ben in different groups with groups=true, comms_range=10, and critical_range=100; passes when the critical-range path delivers both directed reports and a pulse across the group boundary while the direct message and acknowledgement remain blocked.</p>
         </article>
 
       </div>

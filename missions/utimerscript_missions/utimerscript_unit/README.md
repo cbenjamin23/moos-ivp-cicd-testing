@@ -6,6 +6,9 @@ the live MOOSDB, and uses external `uPokeDB` only for runtime control mail such 
 pause, forward, reset, and condition variables. This avoids using `uTimerScript` as
 its own test driver.
 
+Direct `zlaunch.sh` runs default to the minimal grading allowlist. Pass
+`--log=full` to enable wildcard diagnostic logging.
+
 Typical harness run:
 
 ```sh

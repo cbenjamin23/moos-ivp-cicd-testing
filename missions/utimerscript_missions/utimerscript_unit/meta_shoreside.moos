@@ -22,6 +22,26 @@ ProcessConfig = ANTLER
   Run = pMissionEval  @ NewConsole = false
 }
 
-#include plugs.moos <pLogger>
+//----------------------------------------------------
+// Minimal pLogger grading evidence
+
+ProcessConfig = pLogger
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  AsyncLog = true
+  File    = LOG_SHORESIDE
+  PATH    = ./
+
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = UTS_PAYLOAD @ 0 nosync
+  Log = UTS_MACRO @ 0 nosync
+  Log = UTS_COUNT @ 0 nosync
+  Log = UTS_CUSTOM_STATUS @ 0 nosync
+  Log = UTS_STATUS @ 0 nosync
+  Log = UTS_DELAY_RESET @ 0 nosync
+}
+
 #include case_utimerscript.moos
 #include case_eval.moos

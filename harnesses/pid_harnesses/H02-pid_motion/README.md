@@ -10,19 +10,19 @@ that those publications can drive simulated motion.
 
 ## Current Matrix
 
-- `baseline_transit_pass` - default straight-line transit must arrive inside the target corridor with eastbound heading and bounded speed.
-- `turn_recover_pass` - starting north of the eastbound leg must still recover to arrival inside a wider cross-track corridor.
-- `hard_turn_recover_pass` - starting nearly opposite the desired leg must unwind and arrive with bounded speed and acceptable final heading.
-- `rudder_bias_recover_pass` - simulated rudder bias must be corrected strongly enough to arrive despite a wider heading tolerance.
-- `speed_pid_transit_pass` - `speed_factor=0` must still complete the transit through speed PID control and bounded final speed.
-- `runtime_speed_factor_update_pass` - an underway `SPEED_FACTOR` update must restore actuator authority and still complete the transit.
-- `depth_step_pass` - depth control must descend during transit and finish in the commanded depth band while holding eastbound heading.
-- `override_release_pass` - startup manual override must release cleanly, reacquire helm/nav mail, and still satisfy the arrival gate.
-- `low_rudder_authority_fail` - intentionally low `maxrudder` should pass when the vehicle remains far from the arrival corridor with low rudder authority.
-- `low_thrust_authority_fail` - intentionally low `maxthrust` should pass when the vehicle remains short of the arrival corridor with low speed and low thrust.
-- `low_elevator_authority_fail` - intentionally low `maxelevator` should pass when the vehicle moves east but remains below the aggressive depth-response band.
-- `depth_control_disabled_fail` - a depth behavior with `depth_control=false` should pass when the vehicle moves east but depth remains near zero.
-- `manual_override_fail` - holding manual override should pass when the vehicle remains stopped with zero thrust.
+- `baseline_transit_pass`: Starts at `(0,-60)` heading east and follows a `BHV_Waypoint` to `(70,-60)` using `speed_factor=20`, testing the normal helm-to-PID-to-simulator chain; passes on `ARRIVED=true` with `55<=x<=80`, `-72<=y<=-48`, heading in `[85,95]`, and speed at most `3.0`.
+- `turn_recover_pass`: Starts at `(0,-60)` heading north while the waypoint remains east at `(70,-60)`, testing closed-loop correction from a 90-degree initial heading error; passes on arrival with `55<=x<=80`, `-76<=y<=-44`, heading in `[80,115]`, and speed at most `3.0`.
+- `hard_turn_recover_pass`: Starts at `(0,-60)` heading west, opposite the eastbound waypoint, testing recovery from a 180-degree initial heading error; passes on arrival with `55<=x<=80`, `-76<=y<=-44`, heading in `[70,115]`, and speed at most `3.0`.
+- `rudder_bias_recover_pass`: Sets `sim_instability=18` in `pMarinePIDV22`, exercising the controller's simulated rudder disturbance while following the eastbound waypoint; passes on arrival with `55<=x<=80`, `-76<=y<=-44`, heading in `[75,125]`, and speed at most `3.0`.
+- `speed_pid_transit_pass`: Sets `speed_factor=0` and `speed_pid_kp=40`, selecting closed-loop speed PID control for the eastbound transit; passes on arrival with `55<=x<=80`, `-72<=y<=-48`, heading in `[85,95]`, and speed at most `3.0`.
+- `runtime_speed_factor_update_pass`: Starts with `speed_factor=4` and posts `SPEED_FACTOR=20` at eight seconds, testing that an underway factor update restores enough speed to reach `(70,-60)` by the 48-second deadline; passes on arrival with `55<=x<=80`, `-72<=y<=-48`, heading in `[85,95]`, and speed at most `3.0`.
+- `depth_step_pass`: Extends the waypoint to `(140,-60)`, enables PID depth control, and commands `BHV_ConstantDepth` to `10` meters, testing closed-loop elevator and depth response during transit; at 45 seconds, passes with `x>=50`, `-74<=y<=-46`, heading in `[85,95]`, and depth in `[8,13]`.
+- `override_release_pass`: Starts deployed under manual override, releases `MOOS_MANUAL_OVERRIDE_ALL` at eight seconds, and continues toward `(70,-60)`, exercising post-override control reacquisition; passes on arrival with `55<=x<=80`, `-72<=y<=-48`, heading in `[85,95]`, and speed at most `3.0`. The evaluator does not grade pre-release immobility.
+- `low_rudder_authority_fail`: Starts heading north and limits `maxrudder=2`, testing the degraded turn response under insufficient rudder authority; at 42 seconds, the harness passes when `x<55`, `y>-48`, heading is below `80`, and `DESIRED_RUDDER<=2.5`.
+- `low_thrust_authority_fail`: Limits `maxthrust=8` on the eastbound transit, testing the degraded progress caused by insufficient thrust authority; at the inherited 45-second evaluation, the harness passes when `x<55`, speed is at most `0.8`, and `DESIRED_THRUST<=8.5`.
+- `low_elevator_authority_fail`: Extends the waypoint to `(140,-60)`, commands depth `30`, and limits `maxelevator=0.25`, testing the degraded dive under insufficient elevator authority; at 45 seconds, the harness passes with `x>=50`, `-74<=y<=-46`, heading in `[85,95]`, depth below `25`, and `DESIRED_ELEVATOR>=-0.5`.
+- `depth_control_disabled_fail`: Extends the waypoint to `(140,-60)` and commands depth `10` while `pMarinePIDV22` keeps `depth_control=false`, testing that the helm's depth request cannot move the simulator vertically without PID elevator control; at 45 seconds, the harness passes with `x>=50`, `-74<=y<=-46`, heading in `[85,95]`, and depth at most `1`.
+- `manual_override_fail`: Deploys the helm while holding `MOOS_MANUAL_OVERRIDE_ALL=true`, testing the expected no-motion state under sustained override; at the inherited 45-second evaluation, the harness passes when `x<=5`, speed is at most `0.1`, and `DESIRED_THRUST=0`.
 
 ## Edge Audit
 

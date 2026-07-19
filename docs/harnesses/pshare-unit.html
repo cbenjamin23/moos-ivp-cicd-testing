@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Direct Route</h3>
-          <p>Description: Shares one variable directly and expects the receiver to grade the routed value.</p>
+          <p>Description: Routes ROUTE_TEST=alpha by unicast to destination ROUTE_TEST_RX; passes when shoreside receives ROUTE_TEST_RX=alpha.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Wildcard Route</h3>
-          <p>Description: Routes a wildcard source pattern and expects the matching sender mail to arrive under its original variable name.</p>
+          <p>Description: Routes src_name=WILD_* and posts WILD_SRC=wildcard; passes when shoreside receives the same variable name and value.</p>
         </div>
       </article>
 
@@ -87,79 +87,79 @@
 
         <article class="case-row">
           <code>pshare_direct_route_pass</code>
-          <p>Shares one variable directly and expects the receiver to grade the routed value.</p>
+          <p>Routes ROUTE_TEST=alpha by unicast to destination ROUTE_TEST_RX; passes when shoreside receives ROUTE_TEST_RX=alpha.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_rename_route_pass</code>
-          <p>Shares one variable under a different destination name and expects only the renamed destination to be graded.</p>
+          <p>Routes ROUTE_TEST=bravo to renamed destination ROUTE_RENAMED; passes when shoreside receives ROUTE_RENAMED=bravo.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_max_shares_one_pass</code>
-          <p>Configures max_shares=1, publishes two values, and expects the receiver to retain the first routed value.</p>
+          <p>Configures max_shares=1 and posts LIMITED_SRC=first then second four seconds later; passes when LIMITED_RX remains first at evaluation.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_wildcard_route_pass</code>
-          <p>Routes a wildcard source pattern and expects the matching sender mail to arrive under its original variable name.</p>
+          <p>Routes src_name=WILD_* and posts WILD_SRC=wildcard; passes when shoreside receives the same variable name and value.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_duration_expiry_pass</code>
-          <p>Configures a short route duration and expects mail after expiry not to replace the first routed value.</p>
+          <p>Configures duration=3, posts DURATION_SRC=first at two seconds and second at eight, then evaluates at eleven; passes when DURATION_RX remains first after route expiry.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_shorthand_route_pass</code>
-          <p>Uses pShare shorthand output syntax and expects the renamed destination mail to arrive.</p>
+          <p>Configures shorthand route SHORT_SRC-&gt;SHORT_RX and posts value short; passes when shoreside receives SHORT_RX=short.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_multi_dest_route_pass</code>
-          <p>Fans one source variable out to two destination names and expects both receiver variables to arrive.</p>
+          <p>Uses one shorthand route list to fan MULTI_SRC=fanout to MULTI_A and MULTI_B; passes when both destination variables equal fanout.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_frequency_throttle_pass</code>
-          <p>Configures a low share frequency, publishes two quick updates, and expects the receiver to retain the first value.</p>
+          <p>Configures frequency=0.25 Hz and posts FREQ_SRC=first then second one second later; passes when FREQ_RX retains first.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_cli_output_route_pass</code>
-          <p>Starts pShare with a command-line -o route and expects the routed destination mail to arrive.</p>
+          <p>Launches pShare with command-line route -o=CLI_SRC-&gt;CLI_RX and posts CLI_SRC=cli_route; passes when shoreside receives CLI_RX=cli_route.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_wildcard_source_app_pass</code>
-          <p>Routes a wildcard variable pattern qualified by source app and expects the matching timer-script mail to arrive.</p>
+          <p>Routes APPWILD_* only from uTimerScript and has that app post APPWILD_SRC=appwild; passes when shoreside receives the matching mail.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_multicast_alias_pass</code>
-          <p>Routes mail through a multicast_N channel alias and expects the receiver to grade the multicast delivery.</p>
+          <p>Routes MCAST_SRC to MCAST_RX over multicast_17; passes when shoreside receives MCAST_RX=multicast on the alias-derived multicast input.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_wildcard_prefix_rename_pass</code>
-          <p>Routes a wildcard source pattern with a destination prefix and expects the original variable name appended to that prefix.</p>
+          <p>Routes PFX_* with destination prefix RENAMED_ and posts PFX_ONE=prefixed; passes when shoreside receives RENAMED_PFX_ONE=prefixed.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_wildcard_caret_rename_pass</code>
-          <p>Routes a single-star wildcard source pattern with dest_name=^ and expects only the wildcard-matched substring as the receiver variable.</p>
+          <p>Routes CARET_* with dest_name=^ and posts CARET_DELTA=caret; passes when shoreside receives only the matched suffix as DELTA=caret.</p>
         </article>
 
       </div>

@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Head-on Closure</h3>
-          <p>Description: Starts the target head-on and grades the rapid approach under opposing headings.</p>
+          <p>Description: Starts Ben at (90,-80) heading west at a configured 1.4 m/s toward (-170,-80); passes at 60 seconds when pursuit is true, closest range is at most 45 meters, both vehicles are moving at least 0.8, and no settled warning or behavior error was observed.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Crossing Closure</h3>
-          <p>Description: Starts the target on a northbound crossing leg and verifies CutRange still produces meaningful closure.</p>
+          <p>Description: Starts Ben at (20,-140) heading north toward (20,60) while Abe begins at (-70,-80) heading east; passes at 70 seconds when pursuit remains true without giveup, closest range is at most 60 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>S-turn Target</h3>
-          <p>Description: Sends the target through a multi-leg S-shaped route and only evaluates after the target is on the southbound middle leg.</p>
+          <p>Description: Sends Ben through 55,-80:85,-45:115,-105:150,-80; evaluation waits until Ben is at X&gt;=100, Y&lt;=-88, and heading 115 through 205 degrees, then passes when pursuit is true without giveup, current range is at most 75 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.</p>
         </div>
       </article>
 
@@ -98,235 +98,235 @@
 
         <article class="case-row">
           <code>startup_no_warning_pass</code>
-          <p>Verifies the default CutRange behavior enters pursuit shortly after deployment without behavior warning or error.</p>
+          <p>Uses the stock configuration, clears the accumulated warning flag at 42 seconds, and evaluates three seconds later; passes when pursuit has started and no warning or behavior error was observed after that reset.</p>
         </article>
 
 
         <article class="case-row">
           <code>static_cutrange_pass</code>
-          <p>Baseline eastbound closure where the chaser reduces target range below the default threshold.</p>
+          <p>Starts Abe and Ben 90 meters apart on the same eastbound line with stock pwt_inner_dist=15, pwt_outer_dist=70, and giveup_range=160; passes at 65 seconds when pursuit is true, giveup is false, closest range is at most 50 meters, Ben&#x27;s speed is at least 0.6, and no warning or behavior error was observed after the 55-second warning reset.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_cutrange_pass</code>
-          <p>Starts the target on a northbound crossing leg and verifies CutRange still produces meaningful closure.</p>
+          <p>Starts Ben at (20,-140) heading north toward (20,60) while Abe begins at (-70,-80) heading east; passes at 70 seconds when pursuit remains true without giveup, closest range is at most 60 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>headon_cutrange_pass</code>
-          <p>Starts the target head-on and grades the rapid approach under opposing headings.</p>
+          <p>Starts Ben at (90,-80) heading west at a configured 1.4 m/s toward (-170,-80); passes at 60 seconds when pursuit is true, closest range is at most 45 meters, both vehicles are moving at least 0.8, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>angled_entry_pass</code>
-          <p>Starts both vehicles at offset positions/headings and verifies recovery into an active closure maneuver.</p>
+          <p>Starts Abe at (-95,-125) heading 45 degrees and Ben at (10,-80) heading 80 degrees toward (180,-40); passes at 70 seconds when pursuit remains true without giveup, closest range is at most 60 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>right_turn_target_pass</code>
-          <p>Sends the target through an east-to-north dogleg and only evaluates after the target is on the northbound leg.</p>
+          <p>Sends Ben through 115,-80:115,-10; evaluation waits until Ben is within 105&lt;=X&lt;=125, Y&gt;=-45, and heading at most 45 degrees, then passes when pursuit is true without giveup, current range is at most 70 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>s_turn_target_pass</code>
-          <p>Sends the target through a multi-leg S-shaped route and only evaluates after the target is on the southbound middle leg.</p>
+          <p>Sends Ben through 55,-80:85,-45:115,-105:150,-80; evaluation waits until Ben is at X&gt;=100, Y&lt;=-88, and heading 115 through 205 degrees, then passes when pursuit is true without giveup, current range is at most 75 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>slow_target_pass</code>
-          <p>Slows the target and requires close approach while confirming the target is in the slower speed regime.</p>
+          <p>Sets Ben&#x27;s waypoint speed to 0.5 m/s toward (120,-80); passes at 65 seconds when pursuit is true, closest range is at most 35 meters, Abe is moving at least 0.8, Ben is moving at most 0.9, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>fast_target_pass</code>
-          <p>Speeds the target up and gives the chaser longer to demonstrate range reduction without warnings.</p>
+          <p>Sets Ben&#x27;s waypoint speed to 2.1 m/s toward (220,-80); passes at 75 seconds when pursuit is true, closest range is at most 80 meters, Abe is moving at least 0.8, Ben is moving at least 1.7, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>stationary_target_pass</code>
-          <p>Holds the target nearly stationary and verifies the chaser can close on a low-speed contact.</p>
+          <p>Sets Ben&#x27;s waypoint speed to 0.1 m/s toward (45,-80); passes at 50 seconds when pursuit is true, closest range is at most 45 meters, Abe is moving at least 0.8, Ben is moving at most 0.35, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>short_time_on_leg_pass</code>
-          <p>Uses a short time_on_leg horizon and verifies closure remains valid.</p>
+          <p>Sets time_on_leg=5; passes under the stock 65-second pursuit, no-giveup, closest-range-at-most-50, moving-target, and settled no-warning/no-error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>long_time_on_leg_pass</code>
-          <p>Uses a long time_on_leg horizon and verifies closure remains valid.</p>
+          <p>Sets time_on_leg=45; passes under the same stock closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>low_patience_pass</code>
-          <p>Uses low patience weighting while still reducing target range.</p>
+          <p>Sets patience=5 with max_patience=85; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>high_patience_pass</code>
-          <p>Uses high patience weighting with a wider max_patience while still reducing target range.</p>
+          <p>Sets patience=85 and max_patience=95; passes at 45 seconds when pursuit is true and no warning or behavior error was observed after the 42-second warning reset, without a graded range condition.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_patience_clamp_pass</code>
-          <p>Sets patience higher than max_patience and verifies the behavior clamps cleanly.</p>
+          <p>Sets patience=90 above max_patience=45, exercising the clamp path; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_patience_100_pass</code>
-          <p>Sets both patience and max_patience to 100 and verifies the old 85 cap can be overridden cleanly.</p>
+          <p>Sets both patience and max_patience to 100 to exercise the configurable upper limit; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_outer_active_pass</code>
-          <p>Raises pwt_outer_dist and verifies active CutRange closure remains valid.</p>
+          <p>Raises pwt_outer_dist from 70 to 100 while retaining pwt_inner_dist=15; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_inner_zero_relevance_pass</code>
-          <p>Sets the inner range above the starting contact range and verifies zero-relevance stopped behavior without warnings.</p>
+          <p>Sets pwt_inner_dist=105 and pwt_outer_dist=120, placing the initial 90-meter contact inside the zero-relevance region; passes at 50 seconds when pursuit is latched true but Abe&#x27;s speed is at most 0.35, Ben is moving at least 0.6, closest range remains at least 70 meters, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>pwt_equal_zero_relevance_pass</code>
-          <p>Sets equal inner/outer relevance distances and verifies the zero-total-range case stays clean and inactive.</p>
+          <p>Sets both relevance distances to 90, exercising the zero-width relevance interval; passes under the same stopped-Abe, moving-Ben, minimum-range-at-least-70, and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveup_start_far_pass</code>
-          <p>Starts the target beyond giveup_range and verifies CutRange never enters pursuit or posts giveup from a cold start.</p>
+          <p>Sets giveup_range=120 and starts Ben at (125,-80), 195 meters from Abe; passes at 45 seconds when pursuit and giveup are both false, Abe&#x27;s speed is at most 0.35, closest range remains at least 150 meters, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveup_dist_alias_pass</code>
-          <p>Uses the giveup_dist alias accepted by BHV_CutRange and verifies it behaves like giveup_range.</p>
+          <p>Replaces stock giveup_range=160 with the legacy alias giveup_dist=160; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>giveup_hysteresis_pass</code>
-          <p>Starts pursuit near the one-meter giveup buffer and verifies the behavior remains in pursuit without posting giveup, allowing a small range tolerance for startup timing.</p>
+          <p>Sets giveup_range=89.5 while stationary Ben begins 90 meters from Abe; passes at 30.5 seconds when pursuit is true, giveup is false, current range is 88 through 91 meters, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_pwt_on_pass</code>
-          <p>Starts relevance gated off, then lowers the inner/outer distances through CUTRANGE_UPDATES and verifies recovered closure.</p>
+          <p>Starts with pwt_inner_dist=105,pwt_outer_dist=120, enables CutRange at 30 seconds, then posts pwt_inner_dist=15 and pwt_outer_dist=70 at 37 and 38 seconds; passes at 80 seconds when pursuit is true without giveup, closest range is at most 65 meters, Abe is moving at least 0.6, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_pwt_off_pass</code>
-          <p>Starts active, then raises inner/outer distances through CUTRANGE_UPDATES and verifies relevance shuts off cleanly.</p>
+          <p>Starts with the stock active relevance band, then posts pwt_outer_dist=120 and pwt_inner_dist=105 at 34 and 35 seconds; passes at 50 seconds when pursuit remains latched true but Abe is moving at most 0.35, Ben is moving at least 0.6, closest range remains at least 70 meters, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_patience_update_pass</code>
-          <p>Starts with low patience, updates it at runtime, and verifies the behavior continues to close range.</p>
+          <p>Starts with patience=5 and posts CUTRANGE_UPDATES=patience=80 at 37 seconds; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_giveup_update_pass</code>
-          <p>Lowers giveup_range at runtime and requires the behavior to post the configured giveup flag and stop pursuing.</p>
+          <p>Enables pursuit at 30 seconds and posts giveup_range=20 at 34 seconds; passes at 55 seconds when both the earlier pursuit flag and the giveup flag are true, Abe&#x27;s speed is at most 0.6, and no settled warning or behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_bad_update_recover_warn_pass</code>
-          <p>Sends one rejected runtime update, then valid recovery updates, and requires warning-only recovery with range closure.</p>
+          <p>Starts relevance off, posts invalid pwt_outer_dist=-5 at 32 seconds, then restores pwt_inner_dist=15,pwt_outer_dist=70 at 42 and 43 seconds; passes at 85 seconds when pursuit is true without giveup, current range is at most 90 meters, closest range is at most 65, Abe is moving at least 0.6, some behavior warning was observed, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>no_extrapolate_pass</code>
-          <p>Verifies normal closure when contact extrapolation is disabled.</p>
+          <p>Sets extrapolate=false while Ben continues publishing fresh motion reports; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_warn_pass</code>
-          <p>Uses a missing contact with on_no_contact_ok=true and requires warning-only behavior with no behavior error.</p>
+          <p>Sets contact=ghost with on_no_contact_ok=true; passes at 20 seconds when some behavior warning and no behavior error were observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_fail</code>
-          <p>Uses a missing contact with on_no_contact_ok=false and expects the mission grade to fail.</p>
+          <p>Sets contact=ghost with on_no_contact_ok=false; this expected-negative harness verdict passes at 15 seconds when pursuit and giveup are false, closest range remains at least 80 meters, Abe&#x27;s speed is at most 0.1, and Ben&#x27;s is at least 0.6—warning and error mail are not graded.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_param_fail</code>
-          <p>Omits the required contact setting and expects the mission grade to fail.</p>
+          <p>Omits contact and sets on_no_contact_ok=false; this expected-negative verdict uses the same 15-second pre-pursuit inactivity and separation criteria, without requiring warning or error evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>Negative pwt_outer_dist should be rejected and the mission should fail.</p>
+          <p>Sets pwt_outer_dist=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring evidence that the parameter was rejected.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_inner_dist_fail</code>
-          <p>Rejects an inner relevance distance greater than the outer distance.</p>
+          <p>Sets pwt_inner_dist=90 above pwt_outer_dist=70; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_giveup_range_fail</code>
-          <p>Negative giveup_range should be rejected and the mission should fail.</p>
+          <p>Sets giveup_range=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_patience_fail</code>
-          <p>Negative patience should be rejected and the mission should fail.</p>
+          <p>Sets patience=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_patience_fail</code>
-          <p>Out-of-range max_patience should be rejected and the mission should fail.</p>
+          <p>Sets max_patience=100, which the current source accepts as valid; the named expected-negative verdict nevertheless passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>Negative inherited time_on_leg should be rejected and the mission should fail.</p>
+          <p>Sets time_on_leg=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Malformed inherited decay input should be rejected and the mission should fail.</p>
+          <p>Sets decay=nope; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_legacy_util_param_fail</code>
-          <p>Confirms legacy AOF-only utility parameters are not accepted as top-level BHV_CutRange config.</p>
+          <p>Adds unsupported top-level min_util_cpa_dist=10; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
         </article>
 
       </div>

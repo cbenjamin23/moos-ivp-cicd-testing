@@ -1,5 +1,8 @@
 # loiter_behavior_motion
 
+Logging is minimal by default in both communities and launches no `pLogger`.
+Add `--log=full` to either launcher to restore both original loggers.
+
 Deterministic one-vehicle motion stem for `BHV_Loiter`.
 
 The vehicle starts west of a compact loiter polygon centered near `(12,-121)`.
@@ -39,7 +42,7 @@ Entry points:
 
 Companion harness:
 
-- [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion)
+- [`harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion`](../../../harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion)
 
 The local `zlaunch.sh` keeps the stem mission convenient for default runs, but
 forwards named cases and wave runs to the companion harness. In wave mode, the

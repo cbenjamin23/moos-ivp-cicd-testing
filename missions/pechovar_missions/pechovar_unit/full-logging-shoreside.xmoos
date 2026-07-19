@@ -1,0 +1,27 @@
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File     = LOG_$(MMOD)
+  PATH     = ./
+  AsyncLog = true
+
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = ECHO_SRC_NUM @ 0 nosync
+  Log = ECHO_SRC_STR @ 0 nosync
+  Log = ECHO_SRC_BOOL @ 0 nosync
+  Log = ECHO_SRC_MULTI @ 0 nosync
+  Log = ECHO_SRC_LATEST @ 0 nosync
+  Log = FLIP_SRC @ 0 nosync
+  Log = CYCLE_A @ 0 nosync
+  Log = CYCLE_B @ 0 nosync
+  Log = ECHO_OUT_NUM @ 0 nosync
+  Log = ECHO_OUT_STR @ 0 nosync
+  Log = ECHO_OUT_BOOL @ 0 nosync
+  Log = ECHO_OUT_A @ 0 nosync
+  Log = ECHO_OUT_B @ 0 nosync
+  Log = ECHO_OUT_LATEST @ 0 nosync
+  Log = FLIP_OUT @ 0 nosync
+}

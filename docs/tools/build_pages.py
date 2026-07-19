@@ -2810,7 +2810,7 @@ def render_index() -> str:
         <h2>Two complementary ways to catch regressions</h2>
         <p>CTest coverage checks component behavior directly, while mission harnesses check live MOOS process behavior and motion outcomes.</p>
       </div>
-      <div class="technical-grid">
+      <div class="technical-grid technical-grid--two">
         <article class="technical-card">
           <h3>CTest Coverage</h3>
           <p>Fast GoogleTest/CTest targets for MOOS-IvP components/libraries such as geometry, behaviors, contacts, utilities, viewers, and IvP construction.</p>
@@ -2820,11 +2820,6 @@ def render_index() -> str:
           <h3>Mission Harnesses</h3>
           <p>Patch-driven MOOS mission matrices that exercise app postings, behavior lifecycle, vehicle motion, timing, and multi-process outcomes.</p>
           <a class="text-link" href="#families">Browse harness catalog</a>
-        </article>
-        <article class="technical-card">
-          <h3>Choosing A Layer</h3>
-          <p>Use CTest for local C++ contracts. Use a harness when the behavior depends on live MOOS mail, helm state, simulator motion, or ports.</p>
-          <a class="text-link" href="technical.html">Read the technical overview</a>
         </article>
       </div>
     </section>

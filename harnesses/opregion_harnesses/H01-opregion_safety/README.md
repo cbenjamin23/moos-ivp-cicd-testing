@@ -1,7 +1,10 @@
 # H01-opregion_safety
 
+Logging is minimal by default in both communities. Use `--log=full` for the
+whole matrix or with `--case=NAME` for one diagnostic case.
+
 Patch-driven moving correctness harness for
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/opregion_missions/opregion_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/opregion_missions/opregion_motion).
+[`missions/opregion_missions/opregion_motion`](../../../missions/opregion_missions/opregion_motion).
 
 This harness focuses on `BHV_OpRegionV24` as the behavior under test. The stem
 mission keeps the vehicle motion simple and grades on behavior-owned safety
@@ -27,93 +30,31 @@ signals:
 
 ## Current Matrix
 
-- `inside_region_pass`
-  Baseline case. The vehicle remains inside the save and halt envelopes and
-  arrives cleanly.
-- `save_recover_pass`
-  The vehicle briefly leaves the save region, posts save/recovery flags, and
-  returns without breaching the halt region.
-- `save_dist_buffer_pass`
-  The vehicle leaves a small core polygon but stays inside generated positive
-  `save_dist` and `halt_dist` buffers. The case should pass with no save flag.
-- `save_dist_buffer_fail`
-  The vehicle uses the same positive `save_dist` setup, but drives beyond the
-  generated save buffer while staying inside the generated halt buffer. The case
-  should pass when the save-region breach evidence is observed without a halt
-  or time breach.
-- `halt_breach_fail`
-  The vehicle is driven outside a tight halt region. The case should pass when
-  halt-breach and behavior-error evidence are observed.
-- `entry_gate_start_outside_pass`
-  The configured halt polygon starts to the east of the vehicle, so the vehicle
-  launches outside the halt envelope, enters it, and finishes safely. With
-  `trigger_on_poly_entry=true`, the initial outside state should not fail.
-- `entry_gate_disabled_fail`
-  Same start-outside geometry, but with `trigger_on_poly_entry=false`. The case
-  should pass when halt-breach and behavior-error evidence are observed quickly.
-- `trigger_exit_debounce_pass`
-  The vehicle briefly leaves the halt region, but the configured
-  `trigger_exit_time` is long enough that no halt breach should be declared.
-  This case grades the debounce contract rather than late transit completion.
-- `trigger_exit_strict_fail`
-  Companion case using the same short excursion shape, but with the stock
-  short `trigger_exit_time`. The case should pass when halt-breach and
-  behavior-error evidence are observed.
-- `trigger_entry_delay_pass`
-  The vehicle leaves the halt envelope before the long `trigger_entry_time`
-  matures, so the later outside state should not count as a breach.
-- `reset_before_exit_pass`
-  The vehicle would normally fail on halt exit, but a vehicle-side
-  `OPREGION_UPDATES=reset=true` is posted during the exit debounce window and
-  clears the entry state before breach declaration. The case should pass with
-  no halt breach.
-- `max_time_fail`
-  A short `max_time` should expire before the transit finishes. The case should
-  pass when time-breach and behavior-error evidence are observed.
-- `max_depth_breach_fail`
-  Vehicle-side sensor input posts `NAV_DEPTH` beyond a configured `max_depth`.
-  The case should pass when the OpRegion depth-breach behavior error is
-  observed.
-- `min_altitude_breach_fail`
-  Vehicle-side sensor input posts `NAV_ALTITUDE` below a configured
-  `min_altitude`. The case should pass when the OpRegion altitude-breach
-  behavior error is observed.
-- `bad_save_dist_fail`
-  The behavior is configured with a negative `save_dist`. The case should pass
-  when `pHelmIvP` reports `MALCONFIG`.
-- `bad_halt_dist_fail`
-  The behavior is configured with a negative `halt_dist`. The case should pass
-  when `pHelmIvP` reports `MALCONFIG`.
-- `bad_max_depth_fail`
-  The behavior is configured with a negative `max_depth`. The case should pass
-  when `pHelmIvP` reports `MALCONFIG`.
-- `bad_min_altitude_fail`
-  The behavior is configured with a negative `min_altitude`. The case should
-  pass when `pHelmIvP` reports `MALCONFIG`.
-- `bad_recover_spd_fail`
-  The behavior is configured with zero `recover_spd`. The case should pass when
-  `pHelmIvP` reports `MALCONFIG`.
-- `bad_trigger_on_poly_entry_fail`
-  The behavior is configured with an invalid `trigger_on_poly_entry` boolean.
-  The case should pass when `pHelmIvP` reports `MALCONFIG`.
-- `bad_trigger_entry_time_fail`
-  The behavior is configured with a negative `trigger_entry_time`. The case
-  should pass when `pHelmIvP` reports `MALCONFIG`.
-- `bad_trigger_exit_time_fail`
-  The behavior is configured with a negative `trigger_exit_time`. The case
-  should pass when `pHelmIvP` reports `MALCONFIG`.
-- `dynamic_region_expand_pass`
-  The behavior starts with a narrow dynamic-region core, then receives an early
-  vehicle-side `OPREGION_CORE_POLY` expansion before the vehicle reaches the
-  narrow boundary. The case should pass without save or halt breach.
-- `dynamic_region_update_pass`
-  A timer-posted `OPREGION_CORE_POLY` update shrinks the operating region at
-  runtime from the vehicle community. The vehicle should post save-region
-  recovery flags and still finish without a halt breach.
-- `dynamic_region_halt_fail`
-  A timer-posted update shrinks the operating region far enough that the
-  vehicle should breach the recomputed halt region. The case should pass when
-  halt-breach and behavior-error evidence are observed.
+- `inside_region_pass` Sends the vehicle from `(-18,-121)` through `(42,-121)` and back to `(12,-121)` inside the core box `[-23,47]×[-152,-90]`, testing nominal containment; passes on arrival with no save-, halt-, or time-breach flag and no `BHV_ERROR` mail.
+- `save_recover_pass` Narrows the core's east edge to `x=27`, keeps the halt edge at `x=49`, and routes through `x=34` before returning to `x=10`, testing save-region recovery without a halt; passes on arrival with `SAVE_REGION_BREACHED=true`, no halt/time breach, and no behavior error, while `SAVE_REGION_RECOVERING` is only reported.
+- `save_dist_buffer_pass` Uses core east edge `x=32`, `save_dist=16`, and `halt_dist=24` on the stock route to `x=42`, testing that the generated save buffer contains a point outside the core; passes on arrival with all breach flags false and no behavior error.
+- `save_dist_buffer_fail` Uses the same core with `save_dist=16`, enlarges `halt_dist` to 36, and routes through `x=58`, testing a save-buffer exit that remains inside the halt buffer; the harness passes when `SAVE_REGION_BREACHED=true` while halt/time breach and behavior error remain false.
+- `halt_breach_fail` Uses a core ending at `x=10` with `halt_dist=4`, placing the eastbound route outside the halt envelope; the harness passes when `HALT_REGION_BREACHED=true`, `TIME_LIMIT_BREACHED=false`, and any `BHV_ERROR` mail has appeared.
+- `entry_gate_start_outside_pass` Places the core's west edge at `x=-10` with `halt_dist=5`, so the vehicle starts three meters outside the halt envelope, and sets `trigger_on_poly_entry=true`; passes after the vehicle enters and completes the route with no save-, halt-, or time-breach flag and no behavior error.
+- `entry_gate_disabled_fail` Uses the same start-outside geometry with `trigger_on_poly_entry=false`, testing immediate enforcement before polygon entry; the harness passes when `HALT_REGION_BREACHED=true`, time breach remains false, and any behavior error has appeared.
+- `trigger_exit_debounce_pass` Routes to `x=58` and back across a halt edge at `x=50` with `trigger_exit_time=80`, exercising exit debounce during the short excursion; passes at 44 seconds when no halt/time breach or behavior error is present, without requiring arrival.
+- `trigger_exit_strict_fail` Uses the same out-and-back route and halt geometry with `trigger_exit_time=0.5`, testing strict exit enforcement; the harness passes when the excursion produces `HALT_REGION_BREACHED=true` and a behavior error without a time breach.
+- `trigger_entry_delay_pass` Uses the same route with `trigger_entry_time=80` and `trigger_exit_time=0.5`, exercising delayed recognition of initial polygon entry; passes at 44 seconds when no halt/time breach or behavior error is present, without requiring arrival.
+- `reset_before_exit_pass` Uses the same route with `trigger_exit_time=20` and posts `OPREGION_UPDATES="reset=true"` at 34 seconds, exercising runtime entry-state reset during the exit window; passes at 44 seconds when no halt/time breach or behavior error is present, without directly grading update acceptance.
+- `max_time_fail` Sets `max_time=8` while keeping the region large enough for the route, testing the behavior's mission timer; the harness passes when `TIME_LIMIT_BREACHED=true` and a behavior error appear while save and halt breach remain false.
+- `max_depth_breach_fail` Sets `max_depth=1` and posts `NAV_DEPTH=5` once per second from times two through six, exercising the maximum-depth safety path; the harness passes when any `BHV_ERROR` mail appears while save-, halt-, and time-breach flags remain false.
+- `min_altitude_breach_fail` Sets `min_altitude=10` and posts `NAV_ALTITUDE=2` once per second from times two through six, exercising the minimum-altitude safety path; the harness passes when any `BHV_ERROR` mail appears while save-, halt-, and time-breach flags remain false.
+- `bad_save_dist_fail` Sets `save_dist=-1`, exercising invalid buffer configuration; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_halt_dist_fail` Sets `halt_dist=-1`, exercising invalid buffer configuration; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_max_depth_fail` Sets `max_depth=-1`, exercising invalid depth-limit configuration; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_min_altitude_fail` Sets `min_altitude=-1`, exercising invalid altitude-limit configuration; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_recover_spd_fail` Sets `recover_spd=0`, exercising rejection of a nonpositive recovery speed; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_trigger_on_poly_entry_fail` Sets `trigger_on_poly_entry=maybe`, exercising rejection of a non-boolean entry gate; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_trigger_entry_time_fail` Sets `trigger_entry_time=-1`, exercising rejection of a negative entry delay; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_trigger_exit_time_fail` Sets `trigger_exit_time=-1`, exercising rejection of a negative exit delay; the harness passes when any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `dynamic_region_expand_pass` Starts with a dynamic core ending at `x=21`, then posts an expanded core ending at `x=60` after three seconds, testing expansion before the vehicle reaches the narrow save boundary; passes on arrival with all breach flags false and no behavior error.
+- `dynamic_region_update_pass` Starts with a core ending at `x=47`, posts a shrink to `x=21` after six seconds, and routes through `x=34` before returning to `x=4`, testing runtime enforcement of a new save boundary; passes on arrival with `SAVE_REGION_BREACHED=true`, no halt/time breach, and no behavior error.
+- `dynamic_region_halt_fail` Posts a shrink from east edge `x=47` to `x=5` after six seconds while retaining the stock eight-meter halt distance, testing immediate enforcement of a recomputed halt boundary; the harness passes when `HALT_REGION_BREACHED=true` and a behavior error appear without a time breach.
 
 ## Running
 

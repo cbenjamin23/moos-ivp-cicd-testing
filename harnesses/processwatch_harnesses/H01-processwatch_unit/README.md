@@ -10,13 +10,33 @@ apps as watched subjects.
 
 ## Current Matrix
 
-- `processwatch_all_present_pass` Watches the default peer set and expects `PROC_WATCH_ALL_OK=true` with an `All Present` summary.
-- `processwatch_custom_present_post_pass` Maps present status to a custom post variable and expects the watched app to be reported present.
-- `processwatch_multi_present_pass` Watches multiple peer apps and expects a complete full-summary payload.
-- `processwatch_post_mapping_pass` Maps the all-ok summary post and expects the mapped summary plus full process counts.
-- `processwatch_full_summary_mapping_pass` Maps the full-summary post and expects the mapped payload to carry the watched process counts.
-- `processwatch_event_mapping_present_pass` Maps event output and expects a present event for the watched app.
-- `processwatch_missing_awol_fail` Watches a nonexistent app long enough to cross the AWOL delay; this case passes when `PROC_WATCH_ALL_OK=false`, `GHOST_PRESENT=false`, and the AWOL summary names the missing app.
+- `processwatch_all_present_pass`
+  Enables `watch_all=true` while excluding the command-line utility patterns;
+  passes when `PROC_WATCH_ALL_OK=true` and `PROC_WATCH_SUMMARY` is nonempty,
+  without comparing its reported `All Present` text.
+- `processwatch_custom_present_post_pass`
+  Watches `pHostInfo:HOSTINFO_PRESENT`; passes when both
+  `PROC_WATCH_ALL_OK` and the custom `HOSTINFO_PRESENT` post are true.
+- `processwatch_multi_present_pass`
+  Watches `pHostInfo`, `pMissionEval`, and `uLoadWatch`; passes when
+  `PROC_WATCH_ALL_OK=true` and both summary variables are nonempty, without
+  comparing the per-process counts.
+- `processwatch_post_mapping_pass`
+  Maps `PROC_WATCH_SUMMARY` to `UTIL_PROC_SUMMARY` while watching the three
+  peer apps; passes when all-watch health is true and the mapped summary and
+  ordinary full summary are nonempty.
+- `processwatch_full_summary_mapping_pass`
+  Maps `PROC_WATCH_FULL_SUMMARY` to `UTIL_PROC_FULL_SUMMARY`; passes when
+  all-watch health is true and the ordinary short summary and mapped full
+  summary are nonempty.
+- `processwatch_event_mapping_present_pass`
+  Watches `pHostInfo` and maps `PROC_WATCH_EVENT` to `UTIL_PROC_EVENT`;
+  passes when all-watch health is true and both the mapped event and ordinary
+  full summary are nonempty.
+- `processwatch_missing_awol_fail`
+  Watches nonexistent `pGhost:GHOST_PRESENT` for 125 seconds; the harness
+  passes with `expected=watch_awol` when `PROC_WATCH_ALL_OK=false` and
+  `GHOST_PRESENT=false`, while the reported AWOL summary text is not graded.
 
 ## Run
 

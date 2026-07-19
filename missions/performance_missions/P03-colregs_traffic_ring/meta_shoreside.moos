@@ -20,7 +20,6 @@ Processconfig = ANTLER
 #else
   Run = pMissionHash        @ NewConsole = false
 #endif
-  Run = pLogger             @ NewConsole = false
   Run = pShare              @ NewConsole = false
   Run = pHostInfo           @ NewConsole = false
   Run = uFldShoreBroker     @ NewConsole = false

@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Field</h3>
-          <p>Description: Baseline obstacle-field traversal. The vehicle should complete one full loop with zero collisions, bounded near misses/encounters, no timeout, and clean warning logs.</p>
+          <p>Description: Traverses the checked-in six-obstacle baseline_field.txt for one waypoint loop, testing the deterministic reference gauntlet; passes with one cycle, zero collisions, 0–6 near misses, 1–8 encounters, OBAVOIDING=end, no timeout, zero scanned warning matches, and wall time in 16.5–20.0 seconds locally or 80–95 seconds under the CI profile.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Dense Field</h3>
-          <p>Description: Denser fixed-field traversal. The vehicle should still complete one full loop with zero collisions and clean logs under heavier obstacle pressure.</p>
+          <p>Description: Traverses the checked-in eight-obstacle dense_field.txt for one waypoint loop, exercising a denser deterministic fixture; passes on the same one-cycle, zero-collision, 0–6 near-miss, 1–8 encounter, lifecycle-end, no-timeout, zero-warning, and profile-specific wall-time conditions as the baseline.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Endurance Random</h3>
-          <p>Description: Longer randomized obstacle-field run. The vehicle should complete 10 full loops with zero collisions and bounded encounter/near-miss totals before the fail-safe timeout.</p>
+          <p>Description: Generates seven obstacles at launch and repeats the loop until at least ten cycles, exercising a long randomized avoidance sample; passes with zero collisions, 20–70 near misses, 50–80 encounters, OBAVOIDING=end, DB_UPTIME&lt;=1800, no timeout, zero scanned warnings, and wall time in 145–180 seconds locally or 780–900 seconds under the CI profile.</p>
         </div>
       </article>
 
@@ -98,19 +98,19 @@
 
         <article class="case-row">
           <code>baseline_field_pass</code>
-          <p>Baseline obstacle-field traversal. The vehicle should complete one full loop with zero collisions, bounded near misses/encounters, no timeout, and clean warning logs.</p>
+          <p>Traverses the checked-in six-obstacle baseline_field.txt for one waypoint loop, testing the deterministic reference gauntlet; passes with one cycle, zero collisions, 0–6 near misses, 1–8 encounters, OBAVOIDING=end, no timeout, zero scanned warning matches, and wall time in 16.5–20.0 seconds locally or 80–95 seconds under the CI profile.</p>
         </article>
 
 
         <article class="case-row">
           <code>dense_field_pass</code>
-          <p>Denser fixed-field traversal. The vehicle should still complete one full loop with zero collisions and clean logs under heavier obstacle pressure.</p>
+          <p>Traverses the checked-in eight-obstacle dense_field.txt for one waypoint loop, exercising a denser deterministic fixture; passes on the same one-cycle, zero-collision, 0–6 near-miss, 1–8 encounter, lifecycle-end, no-timeout, zero-warning, and profile-specific wall-time conditions as the baseline.</p>
         </article>
 
 
         <article class="case-row">
           <code>endurance_random_pass</code>
-          <p>Longer randomized obstacle-field run. The vehicle should complete 10 full loops with zero collisions and bounded encounter/near-miss totals before the fail-safe timeout.</p>
+          <p>Generates seven obstacles at launch and repeats the loop until at least ten cycles, exercising a long randomized avoidance sample; passes with zero collisions, 20–70 near misses, 50–80 encounters, OBAVOIDING=end, DB_UPTIME&lt;=1800, no timeout, zero scanned warnings, and wall time in 145–180 seconds locally or 780–900 seconds under the CI profile.</p>
         </article>
 
       </div>

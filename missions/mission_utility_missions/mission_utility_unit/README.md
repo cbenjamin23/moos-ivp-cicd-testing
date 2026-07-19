@@ -13,6 +13,9 @@ standalone runs and performs canonical root-scoped teardown. The mission-level
 `launch.sh` still supports direct target generation for the `uMayFinish`
 harness, where the utility's own return code is the subject evidence.
 
+Direct runs default to the shared twelve-variable grading logger. Pass
+`--log=full` to restore wildcard synchronous/asynchronous diagnostic logging.
+
 Typical commands:
 
 ```bash

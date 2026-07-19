@@ -1,5 +1,8 @@
 # shadow_behavior_motion
 
+Logging is minimal by default in both communities and launches no `pLogger`.
+Add `--log=full` to either launcher to restore both original loggers.
+
 Deterministic two-vehicle motion stem for `BHV_Shadow`.
 
 `abe` runs `BHV_Shadow` against contact `ben`. `ben` runs waypoint transits
@@ -39,4 +42,4 @@ Run from this directory:
 
 Named cases are implemented in the paired harness:
 
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion)
+[`harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion`](../../../harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion)

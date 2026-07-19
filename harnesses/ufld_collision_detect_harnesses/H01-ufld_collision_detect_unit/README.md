@@ -11,23 +11,27 @@ Each case runs in an isolated copy of the shared uField app stem, and
 
 ## Cases
 
-- `collision_event_pass` Verifies a closing/opening contact pair below the collision range posts collision totals, report, and pulse evidence.
-- `near_miss_event_pass` Verifies the same CPA event path ranks a wider miss as `near_miss`.
-- `clear_encounter_report_pass` Verifies `report_all_encounters=true` publishes clear encounter reports.
-- `closest_range_posts_pass` Verifies closest-range and closest-range-ever telemetry are published from live node reports.
-- `reset_closest_range_ever_pass` Verifies `UCD_RESET` clears closest-range-ever before later range tracking.
-- `pulse_render_false_pass` Verifies collision reports can be generated while range-pulse visuals are suppressed.
-- `ignore_group_blocks_pass` Verifies contacts in an ignored group do not generate encounter reports.
-- `reject_group_blocks_pass` Verifies rejected-group contacts are removed before encounter evaluation.
-- `condition_blocks_pass` Verifies an unsatisfied logic condition blocks generated CPA events.
-- `condition_allows_pass` Verifies a satisfied logic condition allows the same CPA event path.
-- `collision_flag_macro_pass` Verifies collision flag variable/value macros expand with contact names and CPA.
-- `near_miss_flag_macro_pass` Verifies near-miss flag value macros expand on a non-collision encounter.
-- `encounter_flag_density_pass` Verifies encounter flags can expand contact-density macros at encounter completion.
-- `outside_encounter_range_blocks_pass` Verifies CPA events outside the configured encounter range are not reported.
-- `closest_posts_disabled_absent_pass` Verifies disabling closest-range posting suppresses closest-range mail while reports still occur.
-- `clear_encounter_default_suppressed_pass` Verifies clear encounters increment totals but suppress `UCD_REPORT` unless `report_all_encounters=true`.
-- `collision_flag_numeric_cpa_pass` Verifies `$CPA` can be posted as a numeric collision flag value.
-- `encounter_rings_true_posts_pass` Verifies default encounter-ring rendering posts per-contact `VIEW_CIRCLE` mail.
-- `encounter_rings_false_absent_pass` Verifies `encounter_rings=false` suppresses per-contact `VIEW_CIRCLE` mail.
-- `range_normalization_params_pass` Verifies invalid range ordering publishes its parameter summary and makes a five-meter CPA rank as a collision under the normalized six-meter range.
+- `collision_event_pass` Holds Alpha at `x=0` while Bravo closes to 2 meters and opens again with `collision_range=3`; passes when `COLLISION_TOTAL=1`, `UCD_REPORT` is exactly `cpa=2,vname1=bravo,vname2=alpha,rank=collision`, and a range pulse is published.
+- `near_miss_event_pass` Sets `collision_range=1` and `near_miss_range=6`, then closes Bravo to 3 meters from Alpha before reopening; passes when `NEAR_MISS_TOTAL=1` and the exact report ranks the 3-meter CPA as `near_miss`.
+- `clear_encounter_report_pass` Sets `report_all_encounters=true` and moves Bravo from 30 to 10 meters from Alpha and back outside the 20-meter encounter range; passes when `ENCOUNTER_TOTAL=1` and the exact report ranks the 10-meter CPA as `clear`.
+- `closest_range_posts_pass` Posts stationary Alpha and Bravo node reports 8 meters apart without completing an encounter; passes when both `UCD_CLOSEST_RANGE` and `UCD_CLOSEST_RANGE_EVER` equal `8`.
+- `reset_closest_range_ever_pass` Establishes an 8-meter closest range, posts `UCD_RESET=true`, then places Bravo 12 meters from Alpha; passes when `UCD_CLOSEST_RANGE_EVER` is `12`, proving the pre-reset minimum was cleared.
+- `pulse_render_false_pass` Sets `pulse_render=false` and completes a 2-meter collision; passes when the exact collision report is published and no `VIEW_RANGE_PULSE` is observed.
+- `ignore_group_blocks_pass` Sets `ignore_group=red` and drives two red-group contacts through a 2-meter CPA; passes when no `UCD_REPORT` is published.
+- `reject_group_blocks_pass` Sets `reject_group=blue` and drives blue Bravo through a 2-meter CPA with red Alpha; passes when no `UCD_REPORT` is published.
+- `condition_blocks_pass` Configures `condition=TEST_GATE=true` but never posts `TEST_GATE`, then drives the ordinary 2-meter collision sequence; passes when no `UCD_REPORT` is published.
+- `condition_allows_pass` Configures the same condition, posts `TEST_GATE=true` before the node reports, and drives the 2-meter collision sequence; passes when `COLLISION_TOTAL=1` and the exact collision report is published.
+- `collision_flag_macro_pass` Configures `collision_flag=UCD_HIT=hit_$V2_$CPA` and completes the 2-meter Alpha/Bravo collision; passes when the expanded flag is exactly `UCD_HIT=hit_alpha_2`.
+- `near_miss_flag_macro_pass` Configures `near_miss_flag=UCD_NEAR=near_$V2_$CPA` and completes a 3-meter near miss; passes when the expanded flag is exactly `UCD_NEAR=near_alpha_3`.
+- `encounter_flag_density_pass` Configures `encounter_flag=UCD_DENSITY=$[V1@40]` and completes a clear Alpha/Bravo encounter; passes when the contact-density macro posts numeric `UCD_DENSITY=1` for Bravo's contacts within 40 meters.
+- `outside_encounter_range_blocks_pass` Sets all three event ranges to 1 meter and drives a 3-meter CPA; passes when no `UCD_REPORT` is published even though `report_all_encounters=true`.
+- `closest_posts_disabled_absent_pass` Disables both closest-range publications and completes a 2-meter collision; passes when the exact collision report is still published while neither `UCD_CLOSEST_RANGE` nor `UCD_CLOSEST_RANGE_EVER` appears.
+- `clear_encounter_default_suppressed_pass` Completes a 10-meter clear encounter with the default `report_all_encounters=false`; passes when `ENCOUNTER_TOTAL=1` but no `UCD_REPORT` is published.
+- `collision_flag_numeric_cpa_pass` Configures `collision_flag=UCD_COLLISION_CPA=$CPA` and completes a 2-meter collision; passes when `UCD_COLLISION_CPA` is posted as numeric value `2`.
+- `encounter_rings_true_posts_pass` Leaves encounter rings enabled, posts Alpha at `(0,0)` and Bravo at `(10,0)`, and checks each publication before the next node arrives; passes when the two exact 20-meter white `VIEW_CIRCLE` payloads are published with labels `alpharng` and `bravorng`.
+- `encounter_rings_false_absent_pass` Sets `encounter_rings=false` and posts Alpha and Bravo 10 meters apart; passes when no `VIEW_CIRCLE` is published.
+- `range_normalization_params_pass` Configures collision, near-miss, and encounter ranges as `6`, `3`, and `4`, then completes a 5-meter CPA; passes when any `COLLISION_DETECT_PARAMS` post is observed, `COLLISION_TOTAL=1`, and the exact report ranks the CPA as a collision, demonstrating that the smaller outer ranges were expanded enough to admit the event.
+
+Logging is minimal by default and runs without `pLogger`. Use `--log=full` for
+the complete matrix, or combine it with `--case=NAME` for one fully logged
+diagnostic case.

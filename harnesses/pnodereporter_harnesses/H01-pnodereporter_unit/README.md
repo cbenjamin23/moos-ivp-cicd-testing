@@ -13,39 +13,39 @@ contains dynamic fields that `pMissionEval` cannot match directly.
 
 ## Current Matrix
 
-- `nav_report_baseline_pass` Baseline CSP node report; expects scripted NAV fields, platform color/type/length, helm mode, and first-report publication.
-- `platform_metadata_pass` Overrides platform metadata and expects group, color, type, length, beam, and custom platform aspects to ride in the report.
-- `helm_nohelm_mode_pass` Withholds helm state and expects the generated report mode to mark the helm as absent.
-- `helm_standby_switch_pass` Sends standby helm state and expects the standby state to become the visible report mode.
-- `helm_stale_threshold_pass` Lowers the no-helm threshold and expects a once-valid helm state to age into `NOHELM`.
-- `color_change_blocked_pass` Posts a runtime color change without enabling it and expects the configured color to remain.
-- `color_change_allowed_pass` Enables runtime color changes and expects `NODE_COLOR_CHANGE` to update the report color.
-- `platform_report_pass` Configures platform-report inputs and expects aliased telemetry to publish through `PLATFORM_REPORT_LOCAL`.
-- `platform_report_gap_pass` Adds a platform-report post gap and expects the later telemetry value to be held until the gap expires.
-- `rider_payload_pass` Adds rider fields and expects additional mail values to ride along in the node report.
-- `custom_output_var_pass` Routes node reports to a custom output variable and expects the default report variable to stay unused.
-- `json_only_report_pass` Enables JSON-only reporting and expects the node report variable to carry JSON instead of CSP.
-- `json_dual_report_pass` Enables dual CSP/JSON output and expects both report variables to publish.
-- `alt_nav_report_pass` Enables alternate navigation reporting and expects a second `_GT` node report with the alternate group and NAV_GT values.
-- `alt_nav_named_absolute_pass` Uses an absolute alternate-node name and expects depth and altitude from the alternate nav stream.
-- `coord_policy_global_pass` Enables global-coordinate report policy and expects LAT/LON while suppressing X/Y fields.
-- `heading_error_pass` Adds a heading error and expects the report heading to shift without changing the input NAV mail.
-- `crossfill_local_to_global_pass` Uses local X/Y as authoritative and expects LAT/LON to be filled from the mission origin.
-- `crossfill_global_to_local_pass` Uses global LAT/LON as authoritative and expects X/Y to be filled from the mission origin.
-- `crossfill_global_terse_pass` Uses global-terse cross-fill and expects global coordinates to remain while local X/Y is synthesized from them.
-- `node_group_update_pass` Posts `NODE_GROUP_UPDATE` at runtime and expects the node report group to change.
-- `platform_color_mail_pass` Posts `PLATFORM_COLOR` at runtime and expects the report color to update.
-- `reverse_load_warning_pass` Posts reverse-thrust mode and a load warning and expects both fields to ride in the report.
-- `blackout_interval_reset_fail` Enables a two-second blackout interval and expects mission-owned evidence that the current posting gap remains below the sustained blackout threshold.
-- `mhash_odometer_pass` Moves the node after mission-hash startup and expects `PNR_MHASH` odometry evidence.
-- `report_cog_pass` Enables course-over-ground reporting and expects the report to include a computed COG field.
-- `terse_reports_pass` Enables terse reports and expects depth, lat/lon, and yaw details to be omitted while core position remains.
-- `vsource_aux_allstop_pass` Configures a vehicle source and posts aux/all-stop mail, expecting all three report fields.
-- `pause_resume_pass` Starts paused, resumes at runtime, and expects the first visible report to carry the post-resume navigation update.
-- `crossfill_fill_empty_pass` Uses `fill-empty` with only global coordinates and expects local X/Y to be synthesized.
-- `crossfill_use_latest_local_pass` Uses `use-latest` and expects later local X/Y mail to override older global coordinates.
-- `extrap_gap_metric_pass` Enables extrapolation checks and expects the extrapolation position/heading gap metrics to publish.
-- `extrap_prune_pass` Sets permissive extrapolation thresholds and expects a predictable update to be pruned from node-report output.
+- `nav_report_baseline_pass`: Posts the complete baseline nav, platform, helm, all-stop, altitude, yaw, transparency, and trajectory inputs, testing normal CSP report assembly and the first-report variable; passes when both report variables publish and the shell finds `NAME=reporter`, `X=10`, `Y=-5`, `SPD=2.5`, `HDG=123`, `DEP=7`, `TYPE=kayak`, `COLOR=red`, `LENGTH=4.2`, `BEAM=1.4`, and `MODE=MODE@ACTIVE:TRANSIT`.
+- `platform_metadata_pass`: Configures type `uuv`, color `blue`, length `9.5`, beam `2.1`, group `survey`, and platform aspects `PAYLOAD=ctd` and `ROLE=lead`, testing static metadata insertion; passes when every exact field is present in `NODE_REPORT_LOCAL`.
+- `helm_nohelm_mode_pass`: Omits all helm-state mail while supplying valid navigation, testing the never-seen helm mode; passes when a node report publishes with `NAME=reporter` and `MODE=NOHELM-EVER`.
+- `helm_standby_switch_pass`: Posts `IVPHELM_STATE=DRIVE+` with summary mode `MODE@ACTIVE:STANDBY_TRACK`, testing helm-summary mode extraction during standby; passes when the node report contains `MODE=MODE@ACTIVE:STANDBY_TRACK`.
+- `helm_stale_threshold_pass`: Sets `nohelm_threshold=1`, posts `IVPHELM_STATE=DRIVE` once at 0.5 seconds, and evaluates at four seconds, testing stale helm-state labeling; passes when the node report mode begins `NOHELM-`.
+- `color_change_blocked_pass`: Starts with configured color `red` and posts `NODE_COLOR_CHANGE=yellow` without enabling runtime color changes, testing the default rejection path; passes when the report contains `COLOR=red` and not `COLOR=yellow`.
+- `color_change_allowed_pass`: Sets `allow_color_change=true` and posts `NODE_COLOR_CHANGE=yellow`, testing the permitted runtime color path; passes when the report contains `COLOR=yellow`.
+- `platform_report_pass`: Maps `BATTERY_VOLTAGE` to `batt` and `GPS_SATS` to `sats` with zero gaps, then posts `12.7` and `9`, testing `PLATFORM_REPORT_LOCAL` field aliasing; passes when a platform report publishes with `platform=reporter`, `batt=12.7`, and `sats=9`.
+- `platform_report_gap_pass`: Maps battery voltage to `batt` with `gap=2`, posts `12.7` at one second and `12.8` at two seconds, exercising the platform-report update gap; at five seconds, passes when the final platform report contains `batt=12.8` and not `batt=12.7`. The evaluator does not observe when the second value became eligible.
+- `rider_payload_pass`: Defines always-on riders for battery voltage with one-decimal precision and payload state, then posts `12.74` and `armed`, testing rider formatting and insertion; passes when the node report contains `batt=12.7` and `payload=armed`.
+- `custom_output_var_pass`: Sets `node_report_output=MY_NODE_REPORT`, testing custom current and first-report variable names; passes when both `MY_NODE_REPORT` variables publish with `NAME=reporter` and the final result does not contain a CSP payload from `NODE_REPORT_LOCAL`.
+- `json_only_report_pass`: Sets `json_report=true`, testing JSON replacement on the normal node-report variable; passes when `NODE_REPORT_LOCAL` begins a JSON object containing `"NAME":"reporter"` and `"TYPE":"kayak"`, and no CSP `NAME=reporter` form is present.
+- `json_dual_report_pass`: Sets `json_report=NODE_REPORT_JSON`, testing simultaneous CSP and JSON output; passes when `NODE_REPORT_LOCAL` contains CSP `NAME=reporter` and `NODE_REPORT_JSON` contains JSON `"NAME":"reporter"`.
+- `alt_nav_report_pass`: Configures alternate prefix `NAV_GT`, suffix name `_GT`, and group `truth`, then repeatedly posts `(20,-15)`, speed `3.1`, and heading `210`, testing alternate-report construction; passes when a current result or retained report contains `NAME=reporter_GT`, `GROUP=truth`, and every exact alternate nav value.
+- `alt_nav_named_absolute_pass`: Configures alternate prefix `NAV_TRUTH`, absolute name `truth_node`, and group `truth_abs`, then posts position `(22,-12)`, depth `4`, and altitude `40`, testing absolute alternate naming plus vertical fields; passes when a current or retained report contains all those exact fields.
+- `coord_policy_global_pass`: Sets `coord_policy_global=true` with baseline local and global nav mail, exercising global-only report formatting; passes when the report contains `LAT=43.82535` and `LON=-70.33045` and does not contain the exact baseline `X=10` or `Y=-5` fields.
+- `heading_error_pass`: Configures `hdg_error=5` while the input remains `NAV_HEADING=123`, testing report-only heading bias; passes when the report contains `HDG=128` and not `HDG=123`.
+- `crossfill_local_to_global_pass`: Sets `cross_fill_policy=local` and supplies only local position `(12,-8)`, testing origin-based generation of global coordinates; passes when the report retains `X=12,Y=-8` and contains a latitude beginning `43.825`.
+- `crossfill_global_to_local_pass`: Sets `cross_fill_policy=global` and supplies only `LAT=43.825360,LON=-70.330460`, testing origin-based generation of local coordinates; passes when the exact global fields and some `X=` field appear. The shell does not compare the generated x/y values.
+- `crossfill_global_terse_pass`: Sets `cross_fill_policy=global-terse` with authoritative global coordinates and conflicting local `(99,99)`, exercising replacement of local coordinates from the global pair; passes when the exact global fields and some `X=` field appear. The shell does not reject the conflicting local values.
+- `node_group_update_pass`: Posts `NODE_GROUP_UPDATE=dynamic` after startup, testing runtime group replacement; passes when the node report contains `GROUP=dynamic`.
+- `platform_color_mail_pass`: Posts `PLATFORM_COLOR=orange`, testing the platform-color mail path distinct from `NODE_COLOR_CHANGE`; passes when the node report contains `COLOR=orange`.
+- `reverse_load_warning_pass`: Repeats `THRUST_MODE_REVERSE=true` and `LOAD_WARNING="app=pHelmIvP,maxgap=5"` before pausing, testing report riders for reverse mode and the normalized load warning; passes when a current or retained node report contains `THRUST_MODE_REVERSE=true` and `LOAD_WARNING=pHelmIvP:5`.
+- `blackout_interval_reset_fail`: Configures `blackout_interval=2.0`, preserving a known bug in which the interval resets to zero after a post instead of sustaining the blackout; the harness passes only while a report is seen and `PNR_POST_GAP<1.8`.
+- `mhash_odometer_pass`: Moves `NAV_X` from `0` through `8` to `20` after mission-hash startup, exercising `PNR_MHASH` odometer reporting; passes when `PNR_MHASH` publishes and contains an `mhash=` field. The traveled-distance extension is reported but not graded.
+- `report_cog_pass`: Enables `report_cog`, moves from `(0,0)` to `(8,0)`, and retains heading `90`, exercising course-over-ground calculation; passes when the node report contains a `COG=` field, without checking its numeric value.
+- `terse_reports_pass`: Enables `terse_reports` with the full baseline input set, testing omission of non-terse nav details; passes when core name, x/y, speed, heading, type, and color fields remain while every `DEP=`, `LAT=`, `LON=`, and `YAW=` field is absent.
+- `vsource_aux_allstop_pass`: Configures `vsource=ais`, posts `AUX_MODE=survey`, and posts helm all-stop reason `manual`, testing those three optional report fields; passes when the report contains `VSOURCE=ais`, `MODE_AUX=survey`, and `ALLSTOP=manual`.
+- `pause_resume_pass`: Starts `pNodeReporter` paused, posts initial nav `(1,1)`, resumes with `PNR_PAUSE=false` at two seconds, and posts `(30,-10)` afterward, exercising pause/resume publication; passes when the final report contains `X=30,Y=-10` and not the exact initial `X=1,Y=1` pair. Report history before resume is not checked.
+- `crossfill_fill_empty_pass`: Sets `cross_fill_policy=fill-empty` and supplies only `LAT=43.825370,LON=-70.330470`, exercising generation of missing local coordinates; passes when the exact global fields and some `X=` field appear. The generated x/y values are not compared.
+- `crossfill_use_latest_local_pass`: Sets `cross_fill_policy=use-latest`, posts global coordinates first, then local `(25,5)` one second later, testing selection of the newer coordinate source; passes when the report contains `X=25,Y=5` and a latitude beginning `43.825`.
+- `extrap_gap_metric_pass`: Enables extrapolation with zero position/heading thresholds, posts an eastbound state, then updates `NAV_X` to `3`, exercising extrapolation-gap publication; passes when both gap metrics are present and nonnegative. Their expected numeric values are not graded.
+- `extrap_prune_pass`: Enables extrapolation with position and heading thresholds `10`, posts an eastbound state at `(0,0)`, then posts the predictable `NAV_X=12` update at 12 seconds, exercising report pruning; passes when the final report still contains `X=0,Y=0`, does not contain `X=12`, and both extrapolation-gap metrics are present and nonnegative.
 
 ## Run
 

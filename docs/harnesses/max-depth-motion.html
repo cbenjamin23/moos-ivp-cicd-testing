@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Max Depth Guard</h3>
-          <p>Description: Commands an unsafe deeper target while BHV_MaxDepth constrains the vehicle near the guard depth.</p>
+          <p>Description: Commands 30 meters while setting max_depth=12 and tolerance=4. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
         </div>
       </article>
 
@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Unconstrained Shallow</h3>
-          <p>Description: Commands a target shallower than the max-depth limit and verifies the guard does not interfere.</p>
+          <p>Description: Commands eight meters below a max_depth=20 guard to exercise the inactive side of the constraint. Passes after x&gt;=45 when 6&lt;=NAV_DEPTH&lt;=10, DEPTH_SLACK&gt;=8, and no behavior error is observed.</p>
         </div>
       </article>
 
@@ -89,91 +89,91 @@
 
         <article class="case-row">
           <code>max_depth_guard_pass</code>
-          <p>Commands an unsafe deeper target while BHV_MaxDepth constrains the vehicle near the guard depth.</p>
+          <p>Commands 30 meters while setting max_depth=12 and tolerance=4. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_zero_guard_pass</code>
-          <p>Commands a dive while the guard clamps the allowed depth to the surface boundary.</p>
+          <p>Commands 20 meters while setting max_depth=0 and tolerance=2. Passes after x&gt;=45 when NAV_DEPTH&lt;=2, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_negative_clip_pass</code>
-          <p>Supplies a negative guard depth and verifies clipping to the surface boundary.</p>
+          <p>Commands 20 meters while configuring max_depth=-5 to test clamping the guard to the surface. Passes after x&gt;=45 when NAV_DEPTH&lt;=2, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_tight_tolerance_pass</code>
-          <p>Uses a tight tolerance and verifies the vehicle remains near the constrained depth.</p>
+          <p>Commands 30 meters while setting max_depth=10 and tolerance=1 to exercise a narrow guard transition. Passes after x&gt;=45 when NAV_DEPTH&lt;=12, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_basewidth_alias_pass</code>
-          <p>Uses the basewidth parameter alias and verifies it constrains the over-depth command like tolerance.</p>
+          <p>Commands 30 meters while using basewidth=4 as the alias for the 12-meter guard tolerance. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_no_slack_var_pass</code>
-          <p>Omits the optional slack telemetry variable and verifies the guard still constrains maximum depth.</p>
+          <p>Commands 30 meters with a 12-meter guard but omits the optional depth_slack_var. Passes after x&gt;=45 when NAV_DEPTH&lt;=16 and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_unconstrained_shallow_pass</code>
-          <p>Commands a target shallower than the max-depth limit and verifies the guard does not interfere.</p>
+          <p>Commands eight meters below a max_depth=20 guard to exercise the inactive side of the constraint. Passes after x&gt;=45 when 6&lt;=NAV_DEPTH&lt;=10, DEPTH_SLACK&gt;=8, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_zero_tolerance_pass</code>
-          <p>Uses exact zero tolerance and verifies the max-depth guard remains stable at the boundary.</p>
+          <p>Commands 30 meters while setting a 12-meter guard with tolerance=0. Passes after x&gt;=45 when NAV_DEPTH&lt;=14, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_config_fail</code>
-          <p>Supplies malformed max-depth config and expects the normal good-case verdict to fail.</p>
+          <p>Sets max_depth=deep to exercise rejection of a nonnumeric guard depth. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_tolerance_fail</code>
-          <p>Supplies malformed tolerance config and expects the normal good-case verdict to fail.</p>
+          <p>Sets tolerance=wide to exercise rejection of a nonnumeric tolerance. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_basewidth_fail</code>
-          <p>Supplies malformed basewidth config and expects the normal good-case verdict to fail.</p>
+          <p>Sets the basewidth alias to wide to exercise rejection of a nonnumeric tolerance alias. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_slack_var_fail</code>
-          <p>Supplies a whitespace-bearing depth-slack variable name and expects the normal good-case verdict to fail.</p>
+          <p>Sets depth_slack_var=BAD VAR to exercise rejection of a MOOS variable name containing whitespace. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_ascent_field_fail</code>
-          <p>Supplies unsupported ascent fields from legacy mission style and expects helm configuration failure.</p>
+          <p>Adds unsupported ascent_speed=1.0 and ascent_grade=fullspeed fields to an otherwise valid max-depth guard. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_missing_nav_depth_fail</code>
-          <p>Removes usable ownship depth mail and expects the max-depth verdict to fail.</p>
+          <p>Changes the simulator output prefix to SIM, leaving the helm without NAV_X or NAV_DEPTH. The harness passes at 45 seconds when both navigation variables remain absent, DESIRED_ELEVATOR=0, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_domain_missing_fail</code>
-          <p>Removes the helm depth domain and expects the max-depth verdict to fail.</p>
+          <p>Removes depth from the IvP helm domain while retaining the max-depth behavior. The harness passes when ABE_BHV_ERROR is observed.</p>
         </article>
 
       </div>

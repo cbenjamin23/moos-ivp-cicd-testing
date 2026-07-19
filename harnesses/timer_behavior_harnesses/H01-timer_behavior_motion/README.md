@@ -16,24 +16,78 @@ owned by `pMissionEval` and uses timer-posted duration counters:
 
 ## Current Matrix
 
-- `baseline_idle_running_pass` Baseline case. The timer starts idle, then activates and must post both stock suffixed duration counters with sane elapsed values.
-- `custom_status_vars_pass` Custom variable case. The timer uses custom idle and running variable names plus a suffix, and those custom counters must be populated.
-- `default_suffix_pass` Default variable case. The timer keeps the stock `TIMER_IDLE` and `TIMER_RUNNING` names while using a pre-underscored suffix.
-- `custom_no_suffix_pass` Unsuffixed custom-variable case. The timer uses custom idle and running variable names with no suffix, and the raw custom counters must be populated.
-- `default_no_suffix_pass` Unsuffixed default-variable case. The timer uses the stock `TIMER_IDLE` and `TIMER_RUNNING` outputs with no suffix.
-- `active_at_start_pass` Active-at-start timing case. `TIMER_ACTIVE` is asserted almost immediately after deploy, so the running counter should dominate by evaluation time.
-- `delayed_activation_pass` Delayed activation case. The timer is held idle longer than the baseline before activation, so the idle counter must dominate while still proving nonzero running time.
-- `pause_resume_pass` Pause/resume case. `TIMER_ACTIVE` is toggled true, false, then true again, and the final counters must show accumulated idle and running time across both intervals.
-- `repeated_status_param_pass` Repeated-parameter case. Earlier status variable and suffix settings are replaced by later valid settings, and the final stock suffixed counters must be populated.
-- `post_mapping_pass` Post-mapping case. The timer posts stock suffixed counter names, inherited `post_mapping` remaps them, and evaluation requires the remapped counters.
-- `duration_complete_pass` Duration-complete case. The timer uses inherited duration support, posts an end flag, and stops with a bounded running counter and zero remaining time.
-- `runtime_update_pass` Runtime update case. The timer starts with stock suffixed counters, then receives `TIMER_UPDATES` that change both status variable names and suffix; both pre-update and post-update counters must be present.
-- `never_active_fail` Never-active case. The timer remains idle through evaluation, and the case passes when the idle counter grows while the running counter stays zero.
-- `bad_idle_var_fail` Invalid idle-variable case. The timer is configured with a whitespace-bearing idle status variable, and the case passes when no stock status counters are emitted.
-- `bad_running_var_fail` Invalid running-variable case. The timer is configured with a whitespace-bearing running status variable, and the case passes when no stock status counters are emitted.
-- `bad_suffix_fail` Invalid suffix case. The timer is configured with a whitespace-bearing suffix, and the case passes when no stock status counters are emitted.
-- `post_mapping_silent_fail` Silent post-mapping case. The running counter is remapped to `silent`, and the case passes when the idle counter is present while the stock running counter is absent.
-- `unknown_param_fail` Unknown-parameter case. The timer receives an unsupported behavior parameter, and the case passes when no stock status counters are emitted.
+- `baseline_idle_running_pass`
+  Uses `TIMER_IDLE_SECONDS_base` and `TIMER_RUNNING_SECONDS_base`, activates the
+  timer after four seconds, and evaluates at ten seconds; passes when both
+  counters exceed two seconds and no behavior error occurs.
+- `custom_status_vars_pass`
+  Sets `var_status_idle=IDLE_SECONDS`, `var_status_running=RUN_SECONDS`, and
+  `status_suffix=custom`; passes when `IDLE_SECONDS_custom` and
+  `RUN_SECONDS_custom` both exceed two seconds and no behavior error occurs.
+- `default_suffix_pass`
+  Omits both status-variable parameters and sets `status_suffix=_survey`;
+  passes when default outputs `TIMER_IDLE_survey` and `TIMER_RUNNING_survey`
+  both exceed two seconds and no behavior error occurs.
+- `custom_no_suffix_pass`
+  Sets custom outputs `IDLE_RAW` and `RUN_RAW` with no suffix; passes when both
+  counters exceed two seconds and no behavior error occurs.
+- `default_no_suffix_pass`
+  Omits status-variable and suffix parameters; passes when default unsuffixed
+  outputs `TIMER_IDLE` and `TIMER_RUNNING` both exceed two seconds and no
+  behavior error occurs.
+- `active_at_start_pass`
+  Posts `TIMER_ACTIVE=true` at 0.5 seconds and evaluates at eight seconds;
+  passes when `TIMER_RUNNING_SECONDS_base>5` and no behavior error occurs.
+- `delayed_activation_pass`
+  Delays `TIMER_ACTIVE=true` until seven seconds and evaluates at twelve;
+  passes when idle time exceeds five seconds, running time exceeds two seconds,
+  and no behavior error occurs.
+- `pause_resume_pass`
+  Activates at two seconds, pauses at five, resumes at eight, and evaluates at
+  thirteen; passes when accumulated idle time exceeds three seconds, running
+  time exceeds five seconds, and no behavior error occurs.
+- `repeated_status_param_pass`
+  Sets unused status names and suffix first, then replaces them with
+  `TIMER_IDLE_SECONDS`, `TIMER_RUNNING_SECONDS`, and `base`; passes when the
+  final suffixed counters both exceed two seconds and no behavior error occurs.
+- `post_mapping_pass`
+  Maps the stock suffixed counters to `TIMER_IDLE_MAPPED` and
+  `TIMER_RUNNING_MAPPED`; passes when both mapped counters exceed two seconds
+  and no behavior error occurs.
+- `duration_complete_pass`
+  Sets `duration=2`, `duration_status=TIMER_REMAINING`, and end flag
+  `TIMER_DONE=true`; passes when the end flag is true, remaining time is below
+  0.5 seconds, running time is between one and four seconds, and no behavior
+  error occurs.
+- `runtime_update_pass`
+  Activates at four seconds, then at six changes both status names and suffix
+  through `TIMER_UPDATES`; passes when the original idle/running counters
+  exceed two/one seconds, the updated suffixed counters both exceed two
+  seconds, and no behavior error occurs.
+- `never_active_fail`
+  Removes the vehicle-side activation event so the behavior condition remains
+  false through evaluation; the harness passes when idle time exceeds six
+  seconds, running time equals zero, and no behavior error occurs.
+- `bad_idle_var_fail`
+  Sets whitespace-bearing `var_status_idle=BAD VAR`; the harness passes when
+  evaluation occurs with `TIMER_ACTIVE=true`, no stock suffixed idle or running
+  counter has appeared, and no behavior error occurs.
+- `bad_running_var_fail`
+  Sets whitespace-bearing `var_status_running=BAD VAR`; the harness passes when
+  evaluation occurs with `TIMER_ACTIVE=true`, no stock suffixed idle or running
+  counter has appeared, and no behavior error occurs.
+- `bad_suffix_fail`
+  Sets whitespace-bearing `status_suffix=bad suffix`; the harness passes when
+  evaluation occurs with `TIMER_ACTIVE=true`, no stock suffixed idle or running
+  counter has appeared, and no behavior error occurs.
+- `post_mapping_silent_fail`
+  Maps `TIMER_RUNNING_SECONDS_base` to `silent`; the harness passes when the
+  idle counter exceeds two seconds, the stock running counter never appears,
+  and no behavior error occurs.
+- `unknown_param_fail`
+  Adds unsupported `unsupported_timer_param=true`; the harness passes when
+  evaluation occurs with `TIMER_ACTIVE=true`, no stock suffixed idle or running
+  counter has appeared, and no behavior error occurs.
 
 ## Running
 

@@ -1,0 +1,11 @@
+ProcessConfig = pLogger
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  AsyncLog = true
+  File    = LOG_SHORESIDE
+  PATH    = ./
+
+  WildCardLogging = true
+}

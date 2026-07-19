@@ -1,0 +1,64 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pLogger        @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pMarinePIDV22  @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+  Run = uSimMarineV22  @ NewConsole = false
+  Run = pObstacleMgr   @ NewConsole = false
+  Run = uTimerScript   @ NewConsole = false
+}
+
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  obstacles_color = green
+  post_view_polys = true
+
+  given_max_duration = 1000
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  event = var=GIVEN_OBSTACLE, val="pts={19,-66:24,-66:24,-61:19,-61},label=ob_one,duration=1000", time=1
+  event = var=GIVEN_OBSTACLE, val="pts={55,-57:60,-57:60,-52:55,-52},label=ob_two,duration=1000", time=2
+}
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=ARRIVED
+  bridge = src=OBAVOIDING
+  bridge = src=OBM_ALERT_REQUEST
+  bridge = src=OBSTACLE_ALERT
+  bridge = src=OBSTACLE_SPAWNED
+  bridge = src=OBM_RESOLVED
+  bridge = src=AVOID_RANGE_SEEN
+  bridge = src=AVOID_CPA_SEEN
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+}

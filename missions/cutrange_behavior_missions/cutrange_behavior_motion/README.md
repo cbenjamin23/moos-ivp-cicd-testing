@@ -26,4 +26,4 @@ Logging is minimal by default. Add `--log=full` to restore the original
 shoreside and two-vehicle `pLogger` configuration for diagnostic runs.
 
 Named cases are forwarded to
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion).
+[`harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion`](../../../harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion).

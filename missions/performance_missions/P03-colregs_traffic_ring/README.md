@@ -48,4 +48,9 @@ Typical runs:
 ./launch.sh --scenario=baseline_circle --nogui 10
 ./launch.sh --scenario=mixed_speed_circle --nogui 10
 ./launch.sh --scenario=endurance_circle --nogui 10
+./zlaunch.sh --log=full --scenario=endurance_circle --nogui 10
 ```
+
+Direct launches default to `--log=minimal`, with only vehicle `APP_LOG`
+evidence retained for performance warning scans. `--log=full` restores the
+original shoreside and vehicle wildcard logging.

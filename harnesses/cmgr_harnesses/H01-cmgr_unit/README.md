@@ -16,99 +16,123 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 ### Single-contact cases
 
-- `detect_baseline_pass`
-  Default geometry should see the spoofed contact before the checkpoint.
-- `detect_strict_absent_pass`
-  Tighter alert thresholds should keep the same spoof unseen.
-- `detect_edge_pass`
-  Near-threshold geometry should still detect the contact before the
-  checkpoint.
-- `detect_edge_absent_pass`
-  Slightly tighter near-threshold geometry should stay unseen.
-- `detect_delayed_spoof_pass`
-  A later spoof and later checkpoint should still detect.
-- `detect_short_duration_absent_pass`
-  A short-lived distant spoof should stay unseen.
-- `detect_early_checkpoint_absent_pass`
-  An intentionally early checkpoint should occur before detection.
-- `detect_far_spoof_absent_pass`
-  A farther spoof should stay outside the alert window.
-- `detect_near_spoof_pass`
-  A nearer spoofed contact should be detected quickly and reported by the
-  checkpoint.
-- `detect_cpa_only_pass`
-  This is a CPA-specific case rather than just another range threshold case.
-  The contact is still outside `alert_range` at grading time, but it is on a
-  closing course tight enough that `cpa_range` should still make the alert
-  fire.
-- `closest_contact_pass`
-  The closest-contact report should identify `intruder`.
-- `post_all_ranges_pass`
-  This case turns on the `CONTACT_RANGES` report. The mission should publish
-  the full list of current alerted ranges instead of only the closest one.
-- `post_closest_relbng_pass`
-  This turns on the closest-relative-bearing report. The mission should publish
-  `CONTACT_CLOSEST_RELBNG`, proving that bearing output works as well as the
-  closest-contact selection itself.
-- `runtime_alert_add_pass`
-  No static alert is configured in this case. Instead
-  the harness posts a `BCM_ALERT_REQUEST` at runtime and expects that dynamic
-  alert definition to drive normal contact detection.
-- `runtime_alert_disable_absent_pass`
-  A runtime `BCM_ALERT_REQUEST` disables the normal alert before the spoofed
-  contact arrives. The correct outcome is non-detection.
-- `filter_match_type_absent_pass`
-  This is a representative alert-filter case. The alert is constrained to
-  `match_type=ship`, while the spoofed contact remains the default `kayak`, so
-  the contact should still be tracked but should not count as alerted.
-- `disable_contact_pass`
-  The contact is already seen before the disable request is posted, so this
-  case checks that contact manager emits the expected `BHV_ABLE_FILTER`
-  disable message. It is not trying to suppress an alert that already fired.
-- `enable_contact_pass`
-  The matching enable case should emit the expected `BHV_ABLE_FILTER` enable
-  request for a named contact under controlled timing.
-- `early_warning_pass`
-  The configured warning flag should post before the main contact evaluation
-  completes.
-- `count_one_pass`
-  The alerted-contact count should be exactly `1`.
-- `list_intruder_pass`
-  The known-contact list should contain only `intruder`.
-- `range_report_pass`
-  `CONTACT_CLOSEST_RANGE` should land in a reasonable broad band.
-- `report_request_pass`
-  This exercises the separate `BCM_REPORT_REQUEST` subsystem. The case asks
-  contact manager to publish a custom range-limited contact list variable and
-  verifies that the requested report contains `intruder`.
-- `range_tight_pass`
-  `CONTACT_CLOSEST_RANGE` should land in a tighter band around the baseline.
+- `detect_baseline_pass`: Posts `intruder` at `(20,-44)` four seconds after
+  deploy under the static `track` alert with `alert_range=80` and
+  `cpa_range=100`, testing the normal alert `on_flag`; passes when
+  `CONTACT_SEEN=true` at the 12-second checkpoint.
+- `detect_strict_absent_pass`: Keeps the baseline contact but reduces both
+  alert thresholds to 10 meters, exercising range/CPA exclusion; passes when
+  the checkpoint is reached without `CONTACT_SEEN=true`.
+- `detect_edge_pass`: Sets both alert thresholds to 18 meters for the baseline
+  contact, testing admission near the threshold; passes when
+  `CONTACT_SEEN=true`.
+- `detect_edge_absent_pass`: Sets both alert thresholds to 14 meters while the
+  reported closest range is 14 meters, exercising the alert boundary; the
+  current evaluator passes when `CONTACT_SEEN` remains false but does not grade
+  the reported range.
+- `detect_delayed_spoof_pass`: Delays the baseline `SPOOF` from four to eight
+  seconds and moves the checkpoint to 16 seconds, testing late contact intake;
+  passes when `CONTACT_SEEN=true`.
+- `detect_short_duration_absent_pass`: Sets the spoof duration to two seconds,
+  posts `intruder` at `(50,-44)`, and uses 20-meter alert thresholds,
+  exercising short-lived contact input; the current evaluator passes when
+  `CONTACT_SEEN` remains false, but the reported 34-meter range also places the
+  contact outside both thresholds.
+- `detect_early_checkpoint_absent_pass`: Evaluates at two seconds before the
+  baseline spoof is posted at four seconds, testing pre-contact state; passes
+  when `TEST_EVAL_READY=true` and `CONTACT_SEEN` has not become true.
+- `detect_far_spoof_absent_pass`: Posts `intruder` at `(20,-30)` with
+  20-meter alert thresholds, exercising an out-of-range tracked contact;
+  passes when `CONTACT_SEEN` remains false.
+- `detect_near_spoof_pass`: Moves `intruder` to `(20,-50)` under the baseline
+  alert, exercising close-range detection; passes when `CONTACT_SEEN=true`.
+- `detect_cpa_only_pass`: Posts a closing contact at `(35,-35)` with speed
+  `2.0`, `alert_range=20`, and `cpa_range=40`, testing CPA-based detection
+  while the current range remains outside the alert range; passes when
+  `CONTACT_SEEN=true`, `CONTACT_CLOSEST=intruder`, and
+  `CONTACT_CLOSEST_RANGE>20`.
+- `closest_contact_pass`: Uses the baseline contact to test closest-contact
+  naming; passes when `CONTACT_SEEN=true` and
+  `CONTACT_CLOSEST=intruder`.
+- `post_all_ranges_pass`: Enables `post_all_ranges=true` for alerted contacts
+  `alpha` and `bravo`, exercising `CONTACT_RANGES` publication; the current
+  evaluator passes on `CONTACTS_COUNT=2` and
+  `CONTACTS_LIST=alpha,bravo` while recording, but not comparing, the ranges.
+- `post_closest_relbng_pass`: Enables `post_closest_relbng=true` for the same
+  two-contact geometry, exercising `CONTACT_CLOSEST_RELBNG` publication; the
+  current evaluator passes on `CONTACTS_COUNT=2` and
+  `CONTACT_CLOSEST=alpha` while recording, but not grading, the bearing.
+- `runtime_alert_add_pass`: Removes the static alert, posts a complete
+  `BCM_ALERT_REQUEST` at two seconds, and posts `intruder` at four seconds,
+  testing runtime alert creation; passes when `CONTACT_SEEN=true` and
+  `CONTACT_CLOSEST=intruder`.
+- `runtime_alert_disable_absent_pass`: Disables the static `track` alert with
+  `BCM_ALERT_REQUEST` at two seconds before posting `intruder` at four seconds,
+  exercising runtime alert disable; passes when `CONTACT_SEEN` remains false.
+- `filter_match_type_absent_pass`: Adds `match_type=ship` to the alert while
+  the spoofed contact retains the default `kayak` type, exercising type
+  filtering; the current evaluator passes when `CONTACT_SEEN` remains false
+  and records, but does not require, `CONTACTS_LIST=intruder`.
+- `disable_contact_pass`: Detects `intruder` at four seconds and posts
+  `CONTACT_DISABLE=intruder` at six seconds, exercising translation to a
+  `BHV_ABLE_FILTER` disable message; the current evaluator requires
+  `CONTACT_SEEN=true` and any filter mail, but does not compare the payload.
+- `enable_contact_pass`: Detects `intruder` at four seconds and posts
+  `CONTACT_ENABLE=intruder` at six seconds, exercising translation to a
+  `BHV_ABLE_FILTER` enable message; the current evaluator requires
+  `CONTACT_SEEN=true` and any filter mail, but does not compare the payload.
+- `early_warning_pass`: Configures `early_warning_time=3`, disables warning
+  radii, and sets `early_warning_flag=CONTACT_WARN=true`, testing the warning
+  flag path; passes when `CONTACT_WARN=true` at the checkpoint.
+- `count_one_pass`: Uses the baseline contact to test alerted-contact counting;
+  passes when `CONTACT_SEEN=true` and `CONTACTS_COUNT=1`.
+- `list_intruder_pass`: Uses the baseline contact to test the known-contact
+  list; passes when `CONTACT_SEEN=true` and
+  `CONTACTS_LIST=intruder`.
+- `range_report_pass`: Uses the baseline contact to test the closest-range
+  report; passes when `CONTACT_SEEN=true`, `CONTACT_CLOSEST=intruder`, and
+  `10 < CONTACT_CLOSEST_RANGE < 30`.
+- `report_request_pass`: Posts
+  `BCM_REPORT_REQUEST=var=BCM_CONTACTS_20,range=20` two seconds before the
+  baseline contact, testing the custom range-limited report subsystem; passes
+  when `BCM_CONTACTS_20=intruder`.
+- `range_tight_pass`: Applies a tighter check to the baseline closest-range
+  report; passes when `CONTACT_SEEN=true`, `CONTACT_CLOSEST=intruder`, and
+  `12 < CONTACT_CLOSEST_RANGE < 16`.
 
 ### Multi-contact cases on the same stem
 
-- `count_two_pass`
-  The alerted-contact count should be exactly `2`.
-- `list_alpha_bravo_pass`
-  The known-contact list should be `alpha,bravo`.
-- `closest_alpha_pass`
-  The closest-contact report should identify `alpha`.
-- `closest_bravo_pass`
-  The closest-contact report should identify `bravo`.
-- `bravo_far_count_one_pass`
-  The contact `bravo` should remain tracked, but it should stay outside the
-  alert count.
-- `late_bravo_count_two_pass`
-  The contact `bravo` arrives later, and the delayed checkpoint should still
-  catch both contacts.
-- `stale_bravo_drop_pass`
-  The contact `bravo` should expire and drop out of the tracked list before
-  grading.
-- `reject_range_retire_pass`
-  The contact is accepted first, then a very small `reject_range` should cause
-  contact manager to retire it and post `CONTACTS_RETIRED=intruder`.
-- `alpha_far_bravo_only_pass`
-  The contact `alpha` should remain tracked, but only `bravo` should qualify as
-  alerted and closest.
+- `count_two_pass`: Posts `alpha` at `(20,-50)` and `bravo` at `(20,-40)`
+  under 30-meter range and 35-meter CPA thresholds, testing alerted-contact
+  counting; passes when `CONTACTS_COUNT=2`.
+- `list_alpha_bravo_pass`: Uses the same two contacts to test known-contact
+  list construction; passes when `CONTACTS_COUNT=2` and
+  `CONTACTS_LIST=alpha,bravo`.
+- `closest_alpha_pass`: Uses the same geometry, where `alpha` is nearer, to
+  test closest-contact selection; passes when `CONTACTS_COUNT=2` and
+  `CONTACT_CLOSEST=alpha`.
+- `closest_bravo_pass`: Moves `alpha` to `(20,-36)` while placing `bravo` at
+  `(20,-50)`, testing closest-contact reselection; passes when
+  `CONTACTS_COUNT=2` and `CONTACT_CLOSEST=bravo`.
+- `bravo_far_count_one_pass`: Places `alpha` at `(20,-50)` and `bravo` at
+  `(20,-20)`, testing the distinction between tracked and alerted contacts;
+  passes when `CONTACTS_COUNT=1`, `CONTACTS_LIST=alpha,bravo`, and
+  `CONTACT_CLOSEST=alpha`.
+- `late_bravo_count_two_pass`: Posts `alpha` at four seconds, `bravo` at nine
+  seconds, and evaluates at 16 seconds, testing delayed multi-contact intake;
+  passes when `CONTACTS_COUNT=2` and `CONTACTS_LIST=alpha,bravo`.
+- `stale_bravo_drop_pass`: Sets `contact_max_age=6`, gives `bravo` a
+  three-second spoof duration, and evaluates at 18 seconds, testing stale
+  contact removal while `alpha` remains current; passes when
+  `CONTACTS_COUNT=1`, `CONTACTS_LIST=alpha`, and
+  `CONTACT_CLOSEST=alpha`.
+- `reject_range_retire_pass`: Sets `reject_range=12` and posts `intruder` at
+  `(20,-30)`, testing range-based retirement after contact intake; passes when
+  `CONTACTS_RETIRED=intruder`.
+- `alpha_far_bravo_only_pass`: Places tracked `alpha` at `(20,-20)` and alerted
+  `bravo` at `(20,-50)`, testing alert-count and closest-contact selection with
+  a farther background contact; passes when `CONTACTS_COUNT=1`,
+  `CONTACTS_LIST=alpha,bravo`, and `CONTACT_CLOSEST=bravo`.
 
 ## Typical Runs
 

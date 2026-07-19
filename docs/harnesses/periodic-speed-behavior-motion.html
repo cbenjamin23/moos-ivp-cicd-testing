@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Lazy/Busy Cycle</h3>
-          <p>Description: Baseline lazy/busy cycle. Requires two busy transitions and positive vehicle speed during the second busy window.</p>
+          <p>Description: Uses period_lazy=4, period_busy=4, and period_speed=1.4; at the scheduled 18.5-second sample, passes when at least two busy transitions have been counted and NAV_SPEED&gt;0.4.</p>
         </div>
       </article>
 
@@ -89,145 +89,145 @@
 
         <article class="case-row">
           <code>baseline_cycle_pass</code>
-          <p>Baseline lazy/busy cycle. Requires two busy transitions and positive vehicle speed during the second busy window.</p>
+          <p>Uses period_lazy=4, period_busy=4, and period_speed=1.4; at the scheduled 18.5-second sample, passes when at least two busy transitions have been counted and NAV_SPEED&gt;0.4.</p>
         </article>
 
 
         <article class="case-row">
           <code>lazy_wait_pass</code>
-          <p>Samples the initial lazy window. Requires no busy transition, positive pending-active time, zero pending-inactive time, and near-zero speed.</p>
+          <p>Samples the stock four-second initial lazy window at 3.5 seconds; passes when PS_BUSY_COUNT=0, pending-active time is positive, pending-inactive time is zero, and NAV_SPEED&lt;0.3.</p>
         </article>
 
 
         <article class="case-row">
           <code>first_busy_pass</code>
-          <p>Samples the first busy window. Requires one busy transition, positive pending-inactive time, and positive vehicle speed.</p>
+          <p>Samples the stock first busy window at seven seconds; passes when PS_BUSY_COUNT=1, pending-inactive time is positive, and NAV_SPEED&gt;0.4.</p>
         </article>
 
 
         <article class="case-row">
           <code>busy_to_lazy_pass</code>
-          <p>Starts busy with reset_upon_running=false and samples after the initial busy window returns to lazy. Requires pending-active evidence without depending on vehicle deceleration dynamics.</p>
+          <p>Sets initially_busy=true, reset_upon_running=false, period_busy=2, period_lazy=6, and speed 1.2, then samples at 5.5 seconds; passes when the initial busy state has returned to lazy with busy count zero, pending-active time at least three seconds, and pending-inactive time zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>deprecated_zaic_aliases_pass</code>
-          <p>Uses deprecated ZAIC alias parameters and requires the behavior to enter busy mode with positive vehicle speed.</p>
+          <p>Uses period_lazy=2, period_busy=8, period_speed=1.5, plus deprecated period_basewidth=0.2, zaic_peakwidth=0, and zaic_summit_delta=25; passes at 6.5 seconds when busy count is one, pending-inactive time is positive, and speed exceeds 0.4.</p>
         </article>
 
 
         <article class="case-row">
           <code>short_cycle_three_count_pass</code>
-          <p>Uses short lazy/busy periods and requires at least three busy transitions plus speed evidence in the third busy window.</p>
+          <p>Sets both periods to 1.5 seconds and speed to 1.3; passes at 12.5 seconds when at least three busy transitions have occurred and speed exceeds 0.4.</p>
         </article>
 
 
         <article class="case-row">
           <code>explicit_initially_lazy_pass</code>
-          <p>Sets initially_busy=false explicitly and verifies the behavior starts in the lazy window with pending-active evidence and near-zero speed.</p>
+          <p>Explicitly sets initially_busy=false on the stock four-second cycle; passes at 3.5 seconds when busy count is zero, pending-active time is positive, pending-inactive time is zero, and speed is below 0.3.</p>
         </article>
 
 
         <article class="case-row">
           <code>zaic_base_period_peak_aliases_pass</code>
-          <p>Uses the zaic_basewidth and period_peakwidth aliases and requires the behavior to enter busy mode with positive vehicle speed.</p>
+          <p>Uses period_lazy=2, period_busy=8, period_speed=1.5, zaic_basewidth=0.2, period_peakwidth=0, and summit_delta=25; passes at 6.5 seconds when busy count is one, pending-inactive time is positive, and speed exceeds 0.4.</p>
         </article>
 
 
         <article class="case-row">
           <code>reset_on_reactivation_pass</code>
-          <p>Temporarily disables the behavior condition and verifies the default reset_upon_running=true policy restarts the lazy timer on reactivation.</p>
+          <p>With default reset behavior, disables RUN_PS_ALL at one second and re-enables it at 5.5 seconds; passes at 7.2 seconds when the restarted lazy window still has busy count zero, pending-active time above one second, pending-inactive time zero, and speed below 0.3.</p>
         </article>
 
 
         <article class="case-row">
           <code>reset_false_continuous_pass</code>
-          <p>Temporarily disables the behavior condition with reset_upon_running=false and verifies idle time continues to advance the periodic state.</p>
+          <p>Sets reset_upon_running=false, period_lazy=8, and period_busy=10, disables the behavior from three through 12 seconds, then samples at 15 seconds; passes when the periodic clock advanced through the inactive interval far enough to produce at least one busy transition and speed above 0.4.</p>
         </article>
 
 
         <article class="case-row">
           <code>initially_busy_pass</code>
-          <p>Sets initially_busy=true with reset_upon_running=false, then requires immediate speed evidence while the busy counter remains at zero. The separate reset_on_reactivation_pass case owns the default reset policy.</p>
+          <p>Sets initially_busy=true, reset_upon_running=false, five-second periods, and speed 1.6; passes at 3.5 seconds when the initial busy window has busy count zero, pending-inactive time is positive, and speed exceeds 0.4.</p>
         </article>
 
 
         <article class="case-row">
           <code>zero_speed_pass</code>
-          <p>Starts busy with reset_upon_running=false and period_speed=0, proving zero is accepted and the vehicle remains effectively stopped while the behavior is active.</p>
+          <p>Starts busy with reset_upon_running=false, five-second periods, and period_speed=0; passes at 3.5 seconds when busy count remains zero, pending-inactive time is positive, and speed is below 0.3.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_period_lazy_fail</code>
-          <p>Expected negative for period_lazy=0. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets period_lazy=0; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_period_lazy_nonnumeric_fail</code>
-          <p>Expected negative for a nonnumeric period_lazy value. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets period_lazy=soon; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_period_busy_fail</code>
-          <p>Expected negative for period_busy=0. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets period_busy=0; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_period_speed_fail</code>
-          <p>Expected negative for negative period_speed. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets period_speed=-1; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_initially_busy_fail</code>
-          <p>Expected negative for a non-boolean initially_busy value. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets initially_busy=maybe; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_reset_upon_running_fail</code>
-          <p>Expected negative for a non-boolean reset_upon_running value. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets reset_upon_running=maybe; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_basewidth_fail</code>
-          <p>Expected negative for negative basewidth. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets basewidth=-0.1; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_zaic_basewidth_fail</code>
-          <p>Expected negative for negative zaic_basewidth. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets zaic_basewidth=-0.1; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_peakwidth_fail</code>
-          <p>Expected negative for negative peakwidth. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets peakwidth=-0.1; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_period_peakwidth_fail</code>
-          <p>Expected negative for negative period_peakwidth. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets period_peakwidth=-0.1; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_summit_delta_fail</code>
-          <p>Expected negative for negative summit_delta. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets summit_delta=-1; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_zaic_summit_delta_fail</code>
-          <p>Expected negative for negative zaic_summit_delta. Passes only when the helm reports HELM_MALCONFIG=true.</p>
+          <p>Sets zaic_summit_delta=-1; this expected-negative case passes when helm malconfiguration is reported.</p>
         </article>
 
       </div>

@@ -9,24 +9,24 @@ target-depth crossings, malformed launch-time config, and missing depth inputs.
 
 ## Current Matrix
 
-- `goto_depth_sequence_pass` Hits a three-level depth sequence and requires the behavior-owned arrival counter to reach the final level.
-- `goto_depth_repeat_pass` Exercises repeated depth sequencing and grades on the repeated arrival counter.
-- `goto_depth_crossing_pass` Commands a down-then-up depth sequence and requires crossing-triggered arrival evidence in both directions.
-- `goto_depth_zero_delta_crossing_pass` Sets `arrival_delta=0` so target-depth crossings, not proximity tolerance, must produce arrival evidence.
-- `goto_depth_single_level_pass` Holds a single long-plateau target and verifies one arrival without requiring sequence rollover.
-- `goto_depth_time_gate_pass` Uses a long first-level dwell time and verifies the behavior does not advance early by time alone.
-- `goto_depth_capture_delta_alias_pass` Uses the `capture_delta` alias while retaining the normal arrival flag evidence.
-- `goto_depth_capture_flag_alias_pass` Uses the `capture_flag` alias while retaining the normal arrival counter evidence.
-- `goto_depth_repeat_exhaustion_pass` Runs one finite repeat and requires both exactly four arrivals and the behavior's own completion flag.
-- `goto_depth_bad_update_preserve_pass` Posts malformed runtime update mail and verifies the original depth sequence remains active.
-- `goto_depth_bad_sequence_fail` Supplies malformed level syntax and expects the normal good-case verdict to fail.
-- `goto_depth_negative_depth_fail` Supplies a negative level target and expects the normal good-case verdict to fail.
-- `goto_depth_bad_repeat_fail` Supplies an invalid repeat count and expects the normal good-case verdict to fail.
-- `goto_depth_bad_arrival_delta_fail` Supplies a negative arrival delta and expects the normal good-case verdict to fail.
-- `goto_depth_bad_tuple_fail` Supplies too many fields in a depth tuple and expects the normal good-case verdict to fail.
-- `goto_depth_bad_perpetual_fail` Supplies unsupported base `perpetual=true` config and expects helm configuration failure.
-- `goto_depth_missing_nav_depth_fail` Removes usable ownship depth mail and expects the depth-sequence verdict to fail.
-- `goto_depth_domain_missing_fail` Removes the helm depth domain and expects the depth-sequence verdict to fail.
+- `goto_depth_sequence_pass` Runs `depth=6,1:14,1:9,999` with a one-meter arrival delta to exercise three ordered target levels. Passes after `x>=60` when `GTD_LEVEL_HIT>=3`, `7<=NAV_DEPTH<=11`, and the vehicle remains in the transit corridor.
+- `goto_depth_repeat_pass` Runs the two-level sequence `6,1:10,1` with `repeat=1` to exercise a second traversal. Passes after `x>=70` when `GTD_LEVEL_HIT>=4`.
+- `goto_depth_crossing_pass` Runs `12,0:4,0:12,999` with a one-meter arrival delta to exercise downward and upward target crossings without plateau delay. Passes after `x>=60` in the transit corridor when `GTD_LEVEL_HIT>=2`.
+- `goto_depth_zero_delta_crossing_pass` Runs the same 12-to-4-to-12 sequence with `arrival_delta=0`, requiring target crossings rather than proximity to increment the arrival flag. Passes after `x>=60` when `GTD_LEVEL_HIT>=2`.
+- `goto_depth_single_level_pass` Configures the single long-plateau level `depth=8,999`. Passes after `x>=45` when `GTD_LEVEL_HIT>=1`, `6<=NAV_DEPTH<=10`, and the vehicle remains in the transit corridor.
+- `goto_depth_time_gate_pass` Configures `depth=4,25:16,999` to test that the first level remains active for its 25-second plateau. Passes at 18 seconds after `x>=25` when `GTD_LEVEL_HIT=1`, `2<=NAV_DEPTH<=6`, and no behavior error is observed.
+- `goto_depth_capture_delta_alias_pass` Uses `capture_delta=1.0` instead of `arrival_delta` on the three-level 6-to-14-to-9 sequence. Passes after `x>=60` when `GTD_LEVEL_HIT>=3` and `7<=NAV_DEPTH<=11`.
+- `goto_depth_capture_flag_alias_pass` Uses `capture_flag=LEVEL_HIT` instead of `arrival_flag` on the three-level 6-to-14-to-9 sequence. Passes after `x>=60` when the resulting `GTD_LEVEL_HIT` counter reaches at least three and `7<=NAV_DEPTH<=11`.
+- `goto_depth_repeat_exhaustion_pass` Runs `depth=6,1:10,1` with `repeat=1` and `endflag=GTD_DONE=true` to test finite repeat exhaustion. Passes after `x>=70` when `GTD_LEVEL_HIT=4` and `GTD_DONE=true`.
+- `goto_depth_bad_update_preserve_pass` Posts malformed `GTD_UPDATE="depth=bad"` at 12 seconds while running `6,1:14,1:9,999`, testing preservation of the configured sequence. Passes after `x>=60` when `GTD_LEVEL_HIT>=3` and `7<=NAV_DEPTH<=11`.
+- `goto_depth_bad_sequence_fail` Configures `depth=5,1:bogus` to exercise rejection of a nonnumeric sequence entry. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `goto_depth_negative_depth_fail` Configures `depth=-5,1` to exercise rejection of a negative target depth. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `goto_depth_bad_repeat_fail` Configures the single timed level `depth=5,1` with `repeat=0`. The harness currently passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`; this fixture does not contain the invalid repeat value implied by its name.
+- `goto_depth_bad_arrival_delta_fail` Configures `arrival_delta=-1` on a two-level sequence to exercise rejection of a negative capture tolerance. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `goto_depth_bad_tuple_fail` Configures `depth=6,1,extra:14,1` to exercise rejection of a depth tuple with three fields. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `goto_depth_bad_perpetual_fail` Adds `perpetual=true` to a single-level `BHV_GoToDepth` configuration. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `goto_depth_missing_nav_depth_fail` Changes the simulator output prefix to `SIM`, leaving the helm without `NAV_X` or `NAV_DEPTH`. The harness passes at 45 seconds when both navigation variables remain absent, `DESIRED_ELEVATOR=0`, and no behavior error is observed.
+- `goto_depth_domain_missing_fail` Removes `depth` from the IvP helm domain while retaining the three-level behavior. The harness passes when `ABE_BHV_ERROR` is observed.
 
 ## Running
 

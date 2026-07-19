@@ -10,30 +10,30 @@ inputs.
 
 ## Current Matrix
 
-- `periodic_surface_pass` Requires ascent and at-surface timeout evidence while a lower-priority constant-depth behavior keeps the UUV submerged between surfacing cycles.
-- `periodic_surface_status_vars_pass` Uses custom pending and at-surface status variables and verifies they bridge to shoreside.
-- `periodic_surface_status_variable_alias_pass` Uses the long-form status-variable parameter names and verifies they bridge to shoreside.
-- `periodic_surface_wait_window_pass` Uses a long surface period and verifies the behavior remains in its pending wait window before ascent.
-- `periodic_surface_acomms_extend_pass` Posts the acoustic-comms mark variable and verifies the pending surface window is extended.
-- `periodic_surface_mark_variable_reset_pass` Posts a custom mark variable update and verifies it resets the pending surface timer before ascent.
-- `periodic_surface_quadratic_ascent_pass` Uses the quadratic ascent grade and requires surfacing evidence.
-- `periodic_surface_fullspeed_ascent_pass` Uses explicit fullspeed ascent and requires surfacing and at-surface timeout evidence.
-- `periodic_surface_timeout_reset_pass` Verifies the behavior posts an at-surface timeout and resets surface dwell time before continuing the next cycle.
-- `periodic_surface_current_speed_pass` Uses `ascent_speed=current` with a non-default grade and requires surfacing evidence.
-- `periodic_surface_speed_alias_pass` Uses the `speed_to_surface` alias with linear ascent and requires surfacing evidence.
-- `periodic_surface_bad_period_fail` Supplies an invalid surface period and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_ascent_grade_fail` Supplies an invalid ascent grade and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_ascent_speed_fail` Supplies an invalid ascent-speed value and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_zero_speed_depth_fail` Supplies a negative zero-speed depth and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_max_time_fail` Supplies a negative max-at-surface time and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_acomms_mark_fail` Supplies an invalid acoustic-comms mark tuple and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_acomms_interval_fail` Supplies a zero acoustic-comms extension interval and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_acomms_max_fail` Supplies an acoustic-comms max extension shorter than the interval and expects the normal good-case verdict to fail.
-- `periodic_surface_bad_mark_variable_fail` Supplies an empty mark variable and expects helm configuration failure.
-- `periodic_surface_bad_pending_status_var_fail` Supplies an empty pending-status variable and expects helm configuration failure.
-- `periodic_surface_bad_atsurface_status_var_fail` Supplies an empty at-surface status variable and expects helm configuration failure.
-- `periodic_surface_missing_nav_fail` Removes usable ownship depth/speed mail and expects the surfacing verdict to fail.
-- `periodic_surface_domain_missing_fail` Removes the helm depth domain and expects the surfacing verdict to fail.
+- `periodic_surface_pass` Configures an eight-second period, two-meter zero-speed depth, three-second surface dwell, and full-speed ascent while a lower-weight constant-depth behavior keeps the UUV submerged between cycles. Passes when both `PERIODIC_ASCEND` and `PSF_AT_SURFACE_TIMEOUT` have been observed with no behavior error.
+- `periodic_surface_status_vars_pass` Binds the short-form parameters to `SURFACE_WAIT` and `SURFACE_DWELL`. Passes after a surfacing cycle and timeout when `SURFACE_WAIT<=8`, `SURFACE_DWELL>=0`, and no behavior error is observed.
+- `periodic_surface_status_variable_alias_pass` Binds the long-form aliases to `SURFACE_WAIT_LONG` and `SURFACE_DWELL_LONG`. Passes after a surfacing cycle and timeout when `SURFACE_WAIT_LONG<=8`, `SURFACE_DWELL_LONG>=0`, and no behavior error is observed.
+- `periodic_surface_wait_window_pass` Sets `period=30` and evaluates at 12 seconds to test the pre-ascent wait window. Passes when neither `PERIODIC_ASCEND` nor `PSF_AT_SURFACE_TIMEOUT` has appeared and no behavior error is observed.
+- `periodic_surface_acomms_extend_pass` Configures `acomms_mark_variable=ACOMMS_UPDATE,5,10` and posts `ACOMMS_UPDATE=ping` at eight seconds, just before the ten-second period expires. Passes at 15 seconds when neither ascent nor surface-timeout evidence has appeared and no behavior error is observed.
+- `periodic_surface_mark_variable_reset_pass` Configures `period=20`, binds `mark_variable=SURFACE_RESET_MARK`, and posts marks at zero and eight seconds. Passes at 24 seconds when no ascent or surface timeout has occurred, `PENDING_SURFACE>=1`, and no behavior error is observed.
+- `periodic_surface_quadratic_ascent_pass` Configures `ascent_grade=quadratic` with an eight-second period and one-meter-per-second ascent. Passes when both `PERIODIC_ASCEND` and `PSF_AT_SURFACE_TIMEOUT` have been observed with no behavior error.
+- `periodic_surface_fullspeed_ascent_pass` Configures `ascent_grade=fullspeed` with an eight-second period and one-meter-per-second ascent. Passes when both `PERIODIC_ASCEND` and `PSF_AT_SURFACE_TIMEOUT` have been observed with no behavior error.
+- `periodic_surface_timeout_reset_pass` Uses a four-second period, two-second maximum surface dwell, and two-meter-per-second full-speed ascent. After `PSF_AT_SURFACE_TIMEOUT` appears, the harness passes when `TIME_AT_SURFACE<=1` before the 45-second deadline and no behavior error is observed.
+- `periodic_surface_current_speed_pass` Configures `ascent_speed=current` and `ascent_grade=quasi`. Passes when both `PERIODIC_ASCEND` and `PSF_AT_SURFACE_TIMEOUT` have been observed with no behavior error.
+- `periodic_surface_speed_alias_pass` Configures the `speed_to_surface=1.2` alias with linear ascent. Passes when both `PERIODIC_ASCEND` and `PSF_AT_SURFACE_TIMEOUT` have been observed with no behavior error.
+- `periodic_surface_bad_period_fail` Sets `period=0` to exercise rejection of a nonpositive surfacing period. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_ascent_grade_fail` Sets `ascent_grade=rocket` to exercise rejection of an unknown ascent profile. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_ascent_speed_fail` Sets `ascent_speed=-1` to exercise rejection of a negative ascent speed. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_zero_speed_depth_fail` Sets `zero_speed_depth=-2` to exercise rejection of a negative transition depth. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_max_time_fail` Sets `max_time_at_surface=-1` to exercise rejection of a negative surface dwell limit. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_acomms_mark_fail` Configures `acomms_mark_variable=ACOMMS_MARK,20,10`, where the extension interval exceeds its maximum. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`; this is the same fixture used by `periodic_surface_bad_acomms_max_fail`.
+- `periodic_surface_bad_acomms_interval_fail` Configures `acomms_mark_variable=ACOMMS_MARK,0,10` to exercise rejection of a zero extension interval. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_acomms_max_fail` Configures `acomms_mark_variable=ACOMMS_MARK,20,10`, where the maximum extension is shorter than one interval. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`; this duplicates `periodic_surface_bad_acomms_mark_fail`.
+- `periodic_surface_bad_mark_variable_fail` Supplies an empty `mark_variable` value. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_pending_status_var_fail` Supplies an empty `pending_status_var` value. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_bad_atsurface_status_var_fail` Supplies an empty `atsurface_status_var` value. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `periodic_surface_missing_nav_fail` Changes the simulator output prefix to `SIM`, leaving the helm without `NAV_X` or `NAV_DEPTH`. The harness passes at 45 seconds when both navigation variables remain absent, `DESIRED_ELEVATOR=0`, and no behavior error is observed.
+- `periodic_surface_domain_missing_fail` Removes `depth` from the IvP helm domain while retaining the periodic-surface behavior. The harness passes when `ABE_BHV_ERROR` is observed.
 
 ## Running
 

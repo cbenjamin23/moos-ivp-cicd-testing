@@ -15,18 +15,18 @@ complete matrix, or combine it with `--case=<name>` for one fully logged case.
 
 ## Cases
 
-- `numeric_command_pass` Verifies a numeric command posts a numeric MOOS variable.
-- `quoted_string_command_pass` Verifies a quoted string command posts a string payload.
-- `unique_partial_command_pass` Verifies a unique partial key can select a configured command.
-- `duplicate_key_first_wins_pass` Verifies duplicate command keys preserve the first configured mapping.
-- `multiple_commands_pass` Verifies two configured commands can be posted from deterministic terminal sessions.
-- `arrow_syntax_command_pass` Verifies `CMD = key-->var-->value` syntax is normalized and posts the configured string.
-- `unquoted_string_command_pass` Verifies unquoted nonnumeric payloads are posted as string mail.
-- `negative_numeric_command_pass` Verifies negative numeric payloads are posted as numeric mail.
-- `config_key_case_normalized_pass` Verifies configured command keys are normalized to lowercase for matching.
-- `uppercase_input_absent_pass` Verifies uppercase terminal input does not accidentally match a lowercase command key.
-- `exact_over_ambiguous_pass` Verifies an exact key wins even when it is also a prefix of another command.
-- `ambiguous_partial_absent_pass` Verifies an ambiguous partial key does not post either matching command.
-- `delete_edit_command_pass` Verifies delete/backspace editing can correct a typed key before posting.
-- `invalid_command_config_ignored_pass` Verifies malformed command configuration is ignored without blocking later valid commands.
-- `unknown_command_absent_pass` Verifies an unknown key does not post a configured variable.
+- `numeric_command_pass`: Configures `num -> TERM_NUM=42` and enters `num`, testing numeric command-value parsing; passes when pMissionEval observes `TERM_NUM=42`.
+- `quoted_string_command_pass`: Configures quoted payload `str -> TERM_STR="alpha007"` and enters `str`, testing quote removal without numeric coercion; passes when `TERM_STR=alpha007`.
+- `unique_partial_command_pass`: Configures only key `panic` and enters unique prefix `pan`, testing partial-key completion; passes when `TERM_PARTIAL=true`.
+- `duplicate_key_first_wins_pass`: Configures `dup` twice with values `first` then `second`, testing duplicate-key precedence; passes when `TERM_DUP=first` and never equals `second`.
+- `multiple_commands_pass`: Configures `aa -> TERM_A=11` and `bb -> TERM_B=bravo`, then enters each in a separate terminal session; passes when both exact values are present.
+- `arrow_syntax_command_pass`: Configures `arrow-->TERM_ARROW-->ok`, testing normalization of arrow-delimited command syntax; passes when entering `arrow` produces `TERM_ARROW=ok`.
+- `unquoted_string_command_pass`: Configures unquoted nonnumeric `raw -> TERM_RAW=bravo`; passes when entering `raw` produces string value `bravo`.
+- `negative_numeric_command_pass`: Configures `neg -> TERM_NEG=-3.5`, testing negative numeric parsing; passes when pMissionEval observes `TERM_NEG=-3.5`.
+- `config_key_case_normalized_pass`: Configures mixed-case key `MiXeD` and enters lowercase `mixed`, testing lowercase normalization of configured keys; passes when `TERM_MIXED=ok`.
+- `uppercase_input_absent_pass`: Configures lowercase key `lower` but enters uppercase `LOWER`, testing case-sensitive terminal matching; passes when readiness is reached without `TERM_UPPER=true`.
+- `exact_over_ambiguous_pass`: Configures keys `pan` and `panic`, then enters exact `pan`, testing exact-match precedence over prefix ambiguity; passes when `TERM_EXACT=yes` and `TERM_LONG=no` remains absent.
+- `ambiguous_partial_absent_pass`: Configures `pan` and `pat`, then enters shared prefix `pa`, testing ambiguous-prefix rejection; passes when neither target variable becomes true.
+- `delete_edit_command_pass`: Types `raww`, sends DEL, and submits corrected key `raw`, testing terminal line editing; passes when `TERM_DELETE=edited`.
+- `invalid_command_config_ignored_pass`: Places malformed `CMD=novar` before valid `good -> TERM_GOOD=ok`, testing per-entry rejection without aborting later configuration; passes when entering `good` posts `ok`.
+- `unknown_command_absent_pass`: Configures key `good` but enters `bogus`, testing unknown-key rejection; passes when readiness is reached without `TERM_BAD=true`.

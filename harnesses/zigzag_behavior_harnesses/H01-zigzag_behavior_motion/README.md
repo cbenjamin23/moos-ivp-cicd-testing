@@ -11,103 +11,142 @@ and expected malformed-configuration failures.
 ## Current Matrix
 
 - `baseline_port_first_pass`
-  Baseline port-first zigzag. Requires approach completion, behavior
-  completion, at least four zig legs, at least two zags, both side-entry flags,
-  both side-exit flags, and no behavior error.
+  Runs a 1.4 m/s, port-first zigzag about a 45-degree stem with a 25-degree
+  angle and three-leg limit; passes when the approach and behavior complete,
+  at least four zig and two zag flags fire, both sides are entered and exited,
+  the last side is starboard, and no behavior error occurs.
 - `star_first_pass`
-  Mirrors the baseline with `zig_first=star`.
+  Changes `zig_first` from `port` to `star`, exercising the starboard-first
+  sequence; passes on the baseline completion and side-transition evidence
+  with the last side reported as port and no behavior error.
 - `zig_first_right_alias_pass`
-  Verifies the `right` alias for starboard-first selection.
+  Uses `zig_first=right` as an alias for starboard-first selection; passes on
+  the same completion, side-transition, and final-port-side evidence as the
+  canonical `star` case, with no behavior error.
 - `zig_first_starboard_alias_pass`
-  Verifies the full `starboard` alias for starboard-first selection.
+  Uses `zig_first=starboard` as an alias for starboard-first selection; passes
+  on the same completion, side-transition, and final-port-side evidence as the
+  canonical `star` case, with no behavior error.
 - `stem_hdg_wrap_pass`
-  Sets `stem_hdg=405` and requires the behavior macro to report the wrapped
-  heading near `45`.
+  Sets `stem_hdg=405` to exercise positive heading normalization; passes when
+  the behavior completes, `ZZ_STEM_HDG` is between 44 and 46 degrees, and no
+  behavior error occurs.
 - `stem_hdg_negative_wrap_pass`
-  Sets `stem_hdg=-315` and requires the same wrapped heading near `45`.
+  Sets `stem_hdg=-315` to exercise negative heading normalization; passes when
+  the behavior completes, `ZZ_STEM_HDG` is between 44 and 46 degrees, and no
+  behavior error occurs.
 - `hdg_thresh_loose_pass`
-  Uses a loose `hdg_thresh=40` while still requiring normal completion and
-  side-transition evidence.
+  Raises `hdg_thresh` from 8 to 40 degrees so each leg is accepted well before
+  the requested heading; passes when the approach and behavior complete with
+  at least four zigs, two zags, a final starboard side, less than 8 meters of
+  stem odometry, and no behavior error.
 - `small_angle_pass`
-  Exercises the lower accepted `zig_angle=1` boundary with a tight heading
-  threshold.
+  Sets the accepted lower boundary `zig_angle=1` with `hdg_thresh=1`; passes
+  when four zigs and two zags complete, the final heading is 43 to 47 degrees,
+  final stem distance is below 2 meters, and no behavior error occurs.
 - `wide_angle_pass`
-  Exercises the upper accepted `zig_angle=75` boundary with a shorter
-  completion gate so the case tests angle acceptance rather than duration.
+  Sets the accepted upper boundary `zig_angle=75` with a two-leg limit;
+  passes when both sides are entered, at least three zig and one zag flags fire,
+  final stem distance exceeds 8 meters, and the behavior completes without an
+  error.
 - `max_zig_zags_pass`
-  Uses `max_zig_zags=2` and checks the derived leg-limit path.
+  Uses `max_zig_zags=2` instead of `max_zig_legs`, exercising conversion from
+  complete zigzags to a leg limit; passes when the behavior completes with at
+  least five zigs, two zags, a final port side, and no behavior error.
 - `single_leg_complete_pass`
-  Uses a one-leg limit and grades early behavior completion with side flags.
+  Sets `max_zig_legs=1` to exercise early leg-limit completion; passes when the
+  approach and behavior complete, at least one zig flag and the port entry and
+  exit flags fire, and no behavior error occurs.
 - `zero_leg_limit_pass`
-  Uses `max_zig_legs=0`, verifying the valid zero-limit edge completes after
-  the first leg.
+  Sets the accepted edge `max_zig_legs=0`; passes on the same broad early-
+  completion evidence as the one-leg case: completed approach and behavior,
+  at least one zig, port entry and exit, and no behavior error.
 - `stem_odo_complete_pass`
-  Uses a high leg limit and `max_stem_odo=22`, proving odometry-based
-  completion can end the behavior before leg exhaustion.
+  Sets `max_zig_legs=99` and `max_stem_odo=22` so stem odometry, rather than
+  leg count, ends the behavior; passes when final stem odometry is between 18
+  and 35 meters and the approach and behavior complete without an error.
 - `short_stem_odo_complete_pass`
-  Uses `max_stem_odo=2`, proving near-immediate odometry completion occurs
-  before the first full zig leg is required.
+  Sets `max_zig_legs=99` and `max_stem_odo=2` to exercise the short odometry
+  cutoff; passes when final stem odometry is between 1 and 8 meters, no more
+  than one zig flag fires, and the approach and behavior complete without an
+  error.
 - `stem_on_active_pass`
-  Starts with a mismatched configured stem heading and requires
-  `stem_on_active=true` to capture the live vehicle heading.
+  Configures `stem_hdg=120` with `stem_on_active=true`, requiring activation to
+  replace the configured heading with the vehicle's live approach heading;
+  passes when `ZZ_STEM_HDG` is between 30 and 60 degrees and the behavior
+  completes without an error.
 - `speed_on_active_pass`
-  Starts with a low configured behavior speed and requires
-  `speed_on_active=true` to capture the live vehicle speed.
+  Configures `speed=0.4` with `speed_on_active=true`, requiring activation to
+  capture the faster live approach speed; passes when `ZZ_STEM_SPEED` exceeds
+  0.8 m/s and the behavior completes without an error.
 - `mod_speed_increase_pass`
-  Posts a runtime `ZIG_UPDATE` with `mod_speed=0.8` and requires the vehicle to
-  finish with higher speed evidence.
+  Posts `ZIG_UPDATE="mod_speed=0.8"` three seconds after deployment;
+  passes when the behavior completes with final `NAV_SPEED>1.45` and no
+  behavior error.
 - `mod_speed_reset_pass`
-  Posts `mod_speed=0.8` followed by `mod_speed=reset`, requiring the final
-  speed evidence to return to the baseline branch.
+  Captures the live activation speed, posts `mod_speed=0.8`, then posts
+  `mod_speed=reset` five seconds later; passes when the behavior completes with
+  final `NAV_SPEED` between 1.0 and 1.9 m/s and no behavior error.
 - `mod_speed_clip_high_pass`
-  Posts a very large positive speed modifier and requires high-speed evidence,
-  exercising the domain-clipping path.
+  Posts `ZIG_UPDATE="mod_speed=9.0"` to exercise upper speed-domain clipping;
+  passes when the behavior completes with final `NAV_SPEED>2.35` and no
+  behavior error.
 - `mod_speed_clip_low_pass`
-  Posts a very large negative speed modifier and requires near-zero speed
-  evidence, exercising the low-clipping path.
+  Posts `ZIG_UPDATE="mod_speed=-9.0"` to exercise lower speed-domain clipping;
+  passes at the mission timeout when the approach had completed, `NAV_SPEED`
+  is below 0.15 m/s, and no behavior error occurred.
 - `bad_runtime_update_recover_pass`
-  Posts an invalid runtime `zig_angle=0` update, then a valid speed modifier,
-  proving a rejected update does not poison later valid updates.
+  Posts invalid `zig_angle=0` and then valid `mod_speed=0.4` runtime updates;
+  passes when the behavior later completes with `NAV_SPEED>1.45` and no
+  behavior error, exercising recovery without directly grading the rejection.
 - `fierce_zigging_pass`
-  Enables fierce zigging with a separate fierce heading delta.
+  Sets `zig_angle=20`, `zig_angle_fierce=45`, and `fierce_zigging=true` to
+  exercise the wider fierce turn; passes when both sides are entered, at least
+  four zigs and two zags complete, final stem odometry is below 25 meters, and
+  no behavior error occurs.
 - `delta_heading_alias_pass`
-  Uses the `delta_heading` alias for the fierce heading delta.
+  Sets `zig_angle=15`, `delta_heading=40`, and `fierce_zigging=true` to
+  exercise the alias for `zig_angle_fierce`; passes on the same two-sided,
+  four-zig, two-zag, sub-25-meter completion evidence as the canonical fierce
+  case, with no behavior error.
 - `visual_hints_off_pass`
-  Verifies valid visual-hint disabling does not break behavior execution.
+  Sets `draw_set_hdg=false` and `draw_req_hdg=false`, exercising visual-hint
+  parser acceptance; passes only on the ordinary port-first completion,
+  side-transition, final-side, and no-error evidence.
 - `visual_hints_custom_pass`
-  Verifies valid custom `set_hdg_color` and `req_hdg_color` visual hints are
-  accepted while the behavior still completes normally.
+  Sets `set_hdg_color=green` and `req_hdg_color=orange`, exercising custom
+  visual-hint parser acceptance; passes only on the ordinary port-first
+  completion, side-transition, final-side, and no-error evidence.
 - `bad_zig_angle_low_fail`
-  Expected-negative case for `zig_angle=0`; requires helm malconfiguration
-  evidence.
+  Sets the invalid lower value `zig_angle=0`; the harness passes when
+  `IVPHELM_STATE` reports a helm malconfiguration.
 - `bad_zig_angle_high_fail`
-  Expected-negative case for `zig_angle=76`; requires helm malconfiguration
-  evidence.
+  Sets the invalid upper value `zig_angle=76`; the harness passes when
+  `IVPHELM_STATE` reports a helm malconfiguration.
 - `bad_zig_first_fail`
-  Expected-negative case for an unsupported first-side value; requires helm
-  malconfiguration evidence.
+  Sets the unsupported `zig_first=upward`; the harness passes when
+  `IVPHELM_STATE` reports a helm malconfiguration.
 - `bad_max_zig_zags_fail`
-  Expected-negative case for `max_zig_zags=0`; requires helm malconfiguration
-  evidence.
+  Sets the invalid `max_zig_zags=0`; the harness passes when `IVPHELM_STATE`
+  reports a helm malconfiguration.
 - `bad_max_stem_odo_fail`
-  Expected-negative case for `max_stem_odo=0`; requires helm malconfiguration
-  evidence.
+  Sets the invalid `max_stem_odo=0`; the harness passes when `IVPHELM_STATE`
+  reports a helm malconfiguration.
 - `bad_speed_fail`
-  Expected-negative case for negative speed; requires helm malconfiguration
-  evidence.
+  Sets the invalid `speed=-1`; the harness passes when `IVPHELM_STATE` reports
+  a helm malconfiguration.
 - `bad_delta_heading_fail`
-  Expected-negative case for `delta_heading=0`; requires helm malconfiguration
-  evidence.
+  Enables fierce zigging with invalid `delta_heading=0`; the harness passes
+  when `IVPHELM_STATE` reports a helm malconfiguration.
 - `bad_stale_nav_thresh_fail`
-  Expected-negative case documenting that `stale_nav_thresh` is not accepted as
-  a `BHV_ZigZag` configuration parameter even though the behavior has an
-  internal stale-nav threshold; requires helm malconfiguration evidence.
+  Adds unsupported configuration parameter `stale_nav_thresh=5`; the harness
+  passes when `IVPHELM_STATE` reports a helm malconfiguration.
 - `bad_hdg_thresh_fail`
-  Expected-negative case for negative `hdg_thresh`; requires helm
-  malconfiguration evidence.
+  Sets the invalid `hdg_thresh=-1`; the harness passes when `IVPHELM_STATE`
+  reports a helm malconfiguration.
 - `bad_visual_hint_fail`
-  Expected-negative case for malformed visual-hint boolean input; requires helm
-  malconfiguration evidence.
+  Sets invalid visual hint `draw_set_hdg=maybe`; the harness passes when
+  `IVPHELM_STATE` reports a helm malconfiguration.
 
 ## Manual Commands
 

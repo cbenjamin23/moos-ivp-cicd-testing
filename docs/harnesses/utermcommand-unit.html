@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Numeric Command</h3>
-          <p>Description: Verifies a numeric command posts a numeric MOOS variable.</p>
+          <p>Description: Configures num -&gt; TERM_NUM=42 and enters num, testing numeric command-value parsing; passes when pMissionEval observes TERM_NUM=42.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Arrow Syntax</h3>
-          <p>Description: Verifies CMD = key--&gt;var--&gt;value syntax is normalized and posts the configured string.</p>
+          <p>Description: Configures arrow--&gt;TERM_ARROW--&gt;ok, testing normalization of arrow-delimited command syntax; passes when entering arrow produces TERM_ARROW=ok.</p>
         </div>
       </article>
 
@@ -87,91 +87,91 @@
 
         <article class="case-row">
           <code>numeric_command_pass</code>
-          <p>Verifies a numeric command posts a numeric MOOS variable.</p>
+          <p>Configures num -&gt; TERM_NUM=42 and enters num, testing numeric command-value parsing; passes when pMissionEval observes TERM_NUM=42.</p>
         </article>
 
 
         <article class="case-row">
           <code>quoted_string_command_pass</code>
-          <p>Verifies a quoted string command posts a string payload.</p>
+          <p>Configures quoted payload str -&gt; TERM_STR=&quot;alpha007&quot; and enters str, testing quote removal without numeric coercion; passes when TERM_STR=alpha007.</p>
         </article>
 
 
         <article class="case-row">
           <code>unique_partial_command_pass</code>
-          <p>Verifies a unique partial key can select a configured command.</p>
+          <p>Configures only key panic and enters unique prefix pan, testing partial-key completion; passes when TERM_PARTIAL=true.</p>
         </article>
 
 
         <article class="case-row">
           <code>duplicate_key_first_wins_pass</code>
-          <p>Verifies duplicate command keys preserve the first configured mapping.</p>
+          <p>Configures dup twice with values first then second, testing duplicate-key precedence; passes when TERM_DUP=first and never equals second.</p>
         </article>
 
 
         <article class="case-row">
           <code>multiple_commands_pass</code>
-          <p>Verifies two configured commands can be posted from deterministic terminal sessions.</p>
+          <p>Configures aa -&gt; TERM_A=11 and bb -&gt; TERM_B=bravo, then enters each in a separate terminal session; passes when both exact values are present.</p>
         </article>
 
 
         <article class="case-row">
           <code>arrow_syntax_command_pass</code>
-          <p>Verifies CMD = key--&gt;var--&gt;value syntax is normalized and posts the configured string.</p>
+          <p>Configures arrow--&gt;TERM_ARROW--&gt;ok, testing normalization of arrow-delimited command syntax; passes when entering arrow produces TERM_ARROW=ok.</p>
         </article>
 
 
         <article class="case-row">
           <code>unquoted_string_command_pass</code>
-          <p>Verifies unquoted nonnumeric payloads are posted as string mail.</p>
+          <p>Configures unquoted nonnumeric raw -&gt; TERM_RAW=bravo; passes when entering raw produces string value bravo.</p>
         </article>
 
 
         <article class="case-row">
           <code>negative_numeric_command_pass</code>
-          <p>Verifies negative numeric payloads are posted as numeric mail.</p>
+          <p>Configures neg -&gt; TERM_NEG=-3.5, testing negative numeric parsing; passes when pMissionEval observes TERM_NEG=-3.5.</p>
         </article>
 
 
         <article class="case-row">
           <code>config_key_case_normalized_pass</code>
-          <p>Verifies configured command keys are normalized to lowercase for matching.</p>
+          <p>Configures mixed-case key MiXeD and enters lowercase mixed, testing lowercase normalization of configured keys; passes when TERM_MIXED=ok.</p>
         </article>
 
 
         <article class="case-row">
           <code>uppercase_input_absent_pass</code>
-          <p>Verifies uppercase terminal input does not accidentally match a lowercase command key.</p>
+          <p>Configures lowercase key lower but enters uppercase LOWER, testing case-sensitive terminal matching; passes when readiness is reached without TERM_UPPER=true.</p>
         </article>
 
 
         <article class="case-row">
           <code>exact_over_ambiguous_pass</code>
-          <p>Verifies an exact key wins even when it is also a prefix of another command.</p>
+          <p>Configures keys pan and panic, then enters exact pan, testing exact-match precedence over prefix ambiguity; passes when TERM_EXACT=yes and TERM_LONG=no remains absent.</p>
         </article>
 
 
         <article class="case-row">
           <code>ambiguous_partial_absent_pass</code>
-          <p>Verifies an ambiguous partial key does not post either matching command.</p>
+          <p>Configures pan and pat, then enters shared prefix pa, testing ambiguous-prefix rejection; passes when neither target variable becomes true.</p>
         </article>
 
 
         <article class="case-row">
           <code>delete_edit_command_pass</code>
-          <p>Verifies delete/backspace editing can correct a typed key before posting.</p>
+          <p>Types raww, sends DEL, and submits corrected key raw, testing terminal line editing; passes when TERM_DELETE=edited.</p>
         </article>
 
 
         <article class="case-row">
           <code>invalid_command_config_ignored_pass</code>
-          <p>Verifies malformed command configuration is ignored without blocking later valid commands.</p>
+          <p>Places malformed CMD=novar before valid good -&gt; TERM_GOOD=ok, testing per-entry rejection without aborting later configuration; passes when entering good posts ok.</p>
         </article>
 
 
         <article class="case-row">
           <code>unknown_command_absent_pass</code>
-          <p>Verifies an unknown key does not post a configured variable.</p>
+          <p>Configures key good but enters bogus, testing unknown-key rejection; passes when readiness is reached without TERM_BAD=true.</p>
         </article>
 
       </div>

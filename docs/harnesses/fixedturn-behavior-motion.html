@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Starboard 90</h3>
-          <p>Description: Baseline case. The vehicle runs the approach leg, activates BHV_FixedTurn, turns starboard by about 90 degrees, and must finish with FT_DONE=true, heading between 105 and 170, positive turn time/distance, and no behavior error.</p>
+          <p>Description: After the approach leg leaves the vehicle heading about 45 degrees, runs the stock fix_turn=90, mod_hdg=25, turn_dir=star, and speed=1.4; passes when FT_DONE=true, final heading is 105 through 170 degrees, turn time exceeds one second, turn distance exceeds three meters, and no behavior error was observed.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Port 360</h3>
-          <p>Description: Long-turn mirror case. The vehicle completes a near-full port circle with the same timing and distance thresholds as the starboard long-turn case, proving the port direction is covered separately.</p>
+          <p>Description: Uses the same 355-degree configuration with turn_dir=port; passes on the same completion, time, distance, and no-error conditions, without a graded direction, heading, or radius assertion.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Turn Spec Sequence</h3>
-          <p>Description: Scheduled-turn case. The behavior runs two turn_spec entries, and success requires both TURN_ONE=true and TURN_TWO=true, the final FT_DONE=true flag from the second scheduled turn, positive turn time/distance, and no behavior error.</p>
+          <p>Description: Queues a 45-degree starboard turn followed by a 45-degree port turn, both at speed 1.4 and mod_hdg=45; passes when TURN_ONE, TURN_TWO, and FT_DONE are true, the final reported turn has time above one second and distance above three meters, and no behavior error was observed.</p>
         </div>
       </article>
 
@@ -98,145 +98,145 @@
 
         <article class="case-row">
           <code>starboard_90_pass</code>
-          <p>Baseline case. The vehicle runs the approach leg, activates BHV_FixedTurn, turns starboard by about 90 degrees, and must finish with FT_DONE=true, heading between 105 and 170, positive turn time/distance, and no behavior error.</p>
+          <p>After the approach leg leaves the vehicle heading about 45 degrees, runs the stock fix_turn=90, mod_hdg=25, turn_dir=star, and speed=1.4; passes when FT_DONE=true, final heading is 105 through 170 degrees, turn time exceeds one second, turn distance exceeds three meters, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>port_90_pass</code>
-          <p>Mirrored 90-degree case. The same approach leg activates a port turn, and the case must finish with FT_DONE=true, final heading above 285, positive turn time/distance, and no behavior error.</p>
+          <p>Changes only turn_dir=port; passes when FT_DONE=true, final heading is above 285 degrees, turn time exceeds one second, turn distance exceeds three meters, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>starboard_360_pass</code>
-          <p>Long-turn starboard case. The behavior uses a stronger mod_hdg to complete a near-full starboard circle, and the case requires FT_DONE=true, TURNING_TIME &gt; 15, TURNING_DIST &gt; 25, and a populated FT_REPORT with radius data.</p>
+          <p>Sets fix_turn=355, mod_hdg=90, turn_dir=star, and speed=1.8; passes when FT_DONE=true, turn time exceeds 15 seconds, turn distance exceeds 25 meters, and no behavior error was observed, while heading and radial FT_REPORT contents are report-only.</p>
         </article>
 
 
         <article class="case-row">
           <code>port_360_pass</code>
-          <p>Long-turn mirror case. The vehicle completes a near-full port circle with the same timing and distance thresholds as the starboard long-turn case, proving the port direction is covered separately.</p>
+          <p>Uses the same 355-degree configuration with turn_dir=port; passes on the same completion, time, distance, and no-error conditions, without a graded direction, heading, or radius assertion.</p>
         </article>
 
 
         <article class="case-row">
           <code>speed_auto_pass</code>
-          <p>Automatic speed case. The fixed-turn behavior uses speed=auto, so FT_REPORT should show the inherited stem speed while the mission still completes the baseline starboard 90-degree success criteria.</p>
+          <p>Sets speed=auto for the stock starboard 90-degree turn; passes on the stock completion, 105-to-170-degree heading, positive time/distance, and no-error conditions, while the inherited speed shown in FT_REPORT is report-only.</p>
         </article>
 
 
         <article class="case-row">
           <code>fixed_speed_pass</code>
-          <p>Explicit speed case. The fixed-turn behavior uses speed=1.3, which is distinct from both the default and speed=auto cases, and must still complete the baseline starboard 90-degree success criteria.</p>
+          <p>Sets speed=1.3 for the stock starboard 90-degree turn; passes on the same completion, heading, time/distance, and no-error conditions without grading the selected speed.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_delay_pass</code>
-          <p>Delay case. The behavior holds its current heading briefly before turning, then must complete normally with FT_DONE=true, positive turn time/distance, and no behavior error.</p>
+          <p>Adds turn_delay=4 to the stock starboard 90-degree turn; passes when the turn eventually completes with time above one second, distance above three meters, and no behavior error, without grading the four-second hold interval.</p>
         </article>
 
 
         <article class="case-row">
           <code>timeout_complete_pass</code>
-          <p>Timeout completion case. The behavior is configured with a long turn and a short timeout=4; success requires timeout-driven completion with FT_DONE=true, TURNING_TIME between 3 and 8, positive distance, and no behavior error.</p>
+          <p>Configures fix_turn=355, mod_hdg=10, speed=1, and behavior timeout=4; passes when timeout-driven FT_DONE=true arrives with turn time between three and eight seconds, turn distance above two meters, and no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_sequence_pass</code>
-          <p>Scheduled-turn case. The behavior runs two turn_spec entries, and success requires both TURN_ONE=true and TURN_TWO=true, the final FT_DONE=true flag from the second scheduled turn, positive turn time/distance, and no behavior error.</p>
+          <p>Queues a 45-degree starboard turn followed by a 45-degree port turn, both at speed 1.4 and mod_hdg=45; passes when TURN_ONE, TURN_TWO, and FT_DONE are true, the final reported turn has time above one second and distance above three meters, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_fallback_pass</code>
-          <p>Scheduled-turn fallback case. A turn_spec entry leaves speed, fixed turn, and mod_hdg unset so the behavior must fall back to the static behavior parameters, post TURN_ONE=true, complete the baseline starboard turn, and avoid behavior errors.</p>
+          <p>Queues spd=-1,mhdg=-1,fix=-1,turn=auto so the entry inherits static speed=1.4,mod_hdg=25,fix_turn=90,turn_dir=star; passes when TURN_ONE and FT_DONE are true, heading is 105 through 170 degrees, turn time and distance are positive, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_key_update_pass</code>
-          <p>Runtime keyed-update case. The first scheduled turn is replaced by a keyed runtime update before activation, and success requires the updated port turn to complete with FT_DONE=true, TURN_ONE=true, TURN_TWO=true, final heading above 285, positive turn time/distance, and no behavior error. The original TURN_ONE flag also remains true because keyed turn_spec updates append flags onto the keyed entry.</p>
+          <p>Starts with keyed entry alpha, then at one second replaces it with a 45-degree port turn at speed 1.4 and mod_hdg=45, appending TURN_TWO and FT_DONE flags; passes when retained TURN_ONE, appended TURN_TWO, and FT_DONE are true, heading is above 285 degrees, time and distance are positive, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_bad_update_recover_pass</code>
-          <p>Runtime recovery case. The vehicle receives one malformed keyed update and then a valid replacement before activation; success requires the valid replacement to run, both recovery flags to be posted, final heading between 70 and 130, positive turn time/distance, and no behavior error.</p>
+          <p>Sends malformed keyed update key=alpha,bogus=oops at one second and a valid 45-degree starboard replacement at two seconds; passes when TURN_ONE, TURN_TWO, and FT_DONE are true, heading is 70 through 130 degrees, time and distance are positive, and no behavior error was observed, without grading a rejection warning for the malformed update.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_clear_pass</code>
-          <p>Runtime clear case. A queued scheduled turn is cleared before activation so the behavior must ignore TURN_ONE, fall back to the static starboard turn, complete with FT_DONE=true, and keep behavior state clean.</p>
+          <p>Queues a near-full TURN_ONE entry, then posts turn_spec=clear at one second so the static starboard 90-degree turn runs instead; passes when TURN_ONE=false, FT_DONE=true, heading is 105 through 170 degrees, time and distance are positive, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_timeout_pass</code>
-          <p>Scheduled timeout case. A turn_spec entry defines its own long turn and short timeout; success requires the scheduled turn to complete by timeout, post TURN_ONE=true, finish with FT_DONE=true, and report a short positive turn time/distance.</p>
+          <p>Queues a 355-degree starboard turn with mod_hdg=10, speed 1, and entry timeout=4; passes when TURN_ONE and FT_DONE are true, turn time is three through eight seconds, turn distance exceeds two meters, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>zero_fix_turn_pass</code>
-          <p>Zero-turn case. The behavior is configured with fix_turn=0; success requires immediate completion with FT_DONE=true, zero turn time/distance, and no behavior error.</p>
+          <p>Sets fix_turn=0; passes when FT_DONE=true, turn time is below two seconds, and no behavior error was observed, while turn distance and heading are report-only.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_static_update_pass</code>
-          <p>Generic runtime-update case. The stem behavior starts as a starboard turn, then receives FTURN_UPDATE messages changing turn_dir and speed before activation; success requires the updated port turn to complete with FT_DONE=true, final heading above 285, positive turn time/distance, and no behavior error.</p>
+          <p>Posts turn_dir=port at one second and speed=1.6 at 1.2 seconds before the static turn activates; passes when FT_DONE=true, heading is above 285 degrees, time and distance are positive, and no behavior error was observed, without grading the updated speed.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_clear_add_pass</code>
-          <p>Runtime clear-and-add case. A queued scheduled turn is replaced by a single turn_spec=clear,... runtime update; success requires TURN_ONE=false, TURN_TWO=true, FT_DONE=true, positive turn time/distance, and no behavior error.</p>
+          <p>Replaces a queued near-full TURN_ONE entry with turn_spec=clear plus a 45-degree port TURN_TWO entry at one second; passes when TURN_ONE=false, TURN_TWO=true, FT_DONE=true, heading is above 285 degrees, time and distance are positive, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_spec_aliases_pass</code>
-          <p>Scheduled-turn alias case. The scheduled turn uses fhdg and tdir aliases instead of fix and turn; success requires the alias-defined starboard turn to post TURN_ONE=true, complete with FT_DONE=true, and avoid behavior errors.</p>
+          <p>Queues fhdg=90,tdir=star instead of fix and turn, overriding opposite static values; passes when TURN_ONE and FT_DONE are true, heading is 105 through 170 degrees, time and distance are positive, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_fix_turn_fail</code>
-          <p>Invalid fixed-turn case. this case sets an invalid negative fix_turn; the case passes when the mission observes the expected rejection evidence: FT_DONE=false, timeout reached, no vehicle motion, unchanged heading, and no behavior runtime error.</p>
+          <p>Sets fix_turn=-5; this expected-negative case passes at the 15-second mission timeout when FT_DONE=false, speed is below 0.1, heading remains 44 through 46 degrees, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_stale_nav_thresh_fail</code>
-          <p>Invalid stale-navigation threshold case. this case sets an invalid stale_nav_thresh; the case passes when the behavior does not run to completion and the mission observes timeout, no motion, unchanged heading, and FT_DONE=false.</p>
+          <p>Sets stale_nav_thresh=0; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_dir_fail</code>
-          <p>Invalid turn-direction case. this case sets an unsupported turn_dir; the case passes when the behavior does not complete and the mission observes timeout, no motion, unchanged heading, and FT_DONE=false.</p>
+          <p>Sets turn_dir=banana; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_fail</code>
-          <p>Invalid speed case. this case sets a negative fixed speed; the case passes when the behavior rejects the configuration, never posts FT_DONE, and the vehicle remains stationary until the evaluation timeout.</p>
+          <p>Sets speed=-1; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_spec_fail</code>
-          <p>Invalid scheduled-turn case. this case provides a malformed turn_spec; the case passes when no valid turn completes before the evaluation timeout and the vehicle remains at the initial heading and speed.</p>
+          <p>Adds bogus=oops to a scheduled turn; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_schedule_repeat_fail</code>
-          <p>Invalid schedule-repeat case. this case sets schedule_repeat to a non-boolean token; the case passes when the behavior rejects the configuration, never posts FT_DONE, and the vehicle remains stationary until the evaluation timeout.</p>
+          <p>Sets schedule_repeat=maybe; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
         </article>
 
       </div>

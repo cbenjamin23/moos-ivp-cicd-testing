@@ -15,6 +15,7 @@ TIME_WARP=1
 VERBOSE=""
 JUST_MAKE=""
 LOG_CLEAN=""
+LOG_MODE="minimal"
 MOOS_PORT="12000"
 PSHARE_PORT="12010"
 MMOD=""
@@ -27,6 +28,7 @@ for ARGI; do
     if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ]; then
         echo "$ME [OPTIONS] [time_warp]"
         echo "  --just_make, -j      Only create targ files"
+        echo "  --log=<mode>         minimal (default) or full"
         echo "  --mport=N            MOOSDB port"
         echo "  --pshare=N           pShare port"
         echo "  --shore_mport=N      MOOSDB port alias for xlaunch"
@@ -41,6 +43,8 @@ for ARGI; do
         VERBOSE=$ARGI
     elif [ "${ARGI}" = "--just_make" -o "${ARGI}" = "-j" ]; then
         JUST_MAKE=$ARGI
+    elif [ "${ARGI:0:6}" = "--log=" ]; then
+        LOG_MODE="${ARGI#--log=*}"
     elif [ "${ARGI}" = "--log_clean" -o "${ARGI}" = "-lc" ]; then
         LOG_CLEAN=$ARGI
     elif [ "${ARGI:0:8}" = "--mport=" ]; then
@@ -66,6 +70,11 @@ for ARGI; do
         exit 1
     fi
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) echo "$ME: --log must be minimal or full" >&2; exit 2 ;;
+esac
 
 if [ "$LOG_CLEAN" != "" ]; then
     ./clean.sh

@@ -4,17 +4,9 @@ Performance harness for the first deterministic gauntlet mission family.
 
 ## Current Matrix
 
-- `baseline_field_pass`
-  Baseline obstacle-field traversal. The vehicle should complete one full loop
-  with zero collisions, bounded near misses/encounters, no timeout, and clean
-  warning logs.
-- `dense_field_pass`
-  Denser fixed-field traversal. The vehicle should still complete one full loop
-  with zero collisions and clean logs under heavier obstacle pressure.
-- `endurance_random_pass`
-  Longer randomized obstacle-field run. The vehicle should complete 10 full
-  loops with zero collisions and bounded encounter/near-miss totals before the
-  fail-safe timeout.
+- `baseline_field_pass` Traverses the checked-in six-obstacle `baseline_field.txt` for one waypoint loop, testing the deterministic reference gauntlet; passes with one cycle, zero collisions, 0–6 near misses, 1–8 encounters, `OBAVOIDING=end`, no timeout, zero scanned warning matches, and wall time in 16.5–20.0 seconds locally or 80–95 seconds under the CI profile.
+- `dense_field_pass` Traverses the checked-in eight-obstacle `dense_field.txt` for one waypoint loop, exercising a denser deterministic fixture; passes on the same one-cycle, zero-collision, 0–6 near-miss, 1–8 encounter, lifecycle-end, no-timeout, zero-warning, and profile-specific wall-time conditions as the baseline.
+- `endurance_random_pass` Generates seven obstacles at launch and repeats the loop until at least ten cycles, exercising a long randomized avoidance sample; passes with zero collisions, 20–70 near misses, 50–80 encounters, `OBAVOIDING=end`, `DB_UPTIME<=1800`, no timeout, zero scanned warnings, and wall time in 145–180 seconds locally or 780–900 seconds under the CI profile.
 
 The harness currently expects the gauntlet mission to:
 
@@ -40,9 +32,15 @@ It preserves the mission-owned report columns and wraps them in the usual harnes
 PERF_PROFILE=ci ./zlaunch.sh
 ./zlaunch.sh --profile=ci
 ./zlaunch.sh --port_base=30000 10
+./zlaunch.sh --log=full --port_base=30000 10
 ./zlaunch.sh --case=baseline_field_pass 10
 ./zlaunch.sh --just_make 10
 ```
+
+Logging defaults to `minimal`: the shoreside logger is inactive and each
+vehicle logs only `APP_LOG`, the artifact required by the warning scan. Use
+`--log=full` for the original shoreside and vehicle wildcard logs. The mode
+applies to the whole serial matrix or one explicit `--case`.
 
 ## Notes
 
@@ -92,6 +90,6 @@ PERF_PROFILE=ci ./zlaunch.sh
     - `baseline_field_pass`: `wall_time` in `[80.0,95.0]`, warning count `0`
     - `dense_field_pass`: `wall_time` in `[80.0,95.0]`, warning count `0`
     - `endurance_random_pass`: `wall_time` in `[780.0,900.0]`, warning count `0`
-- See [BASELINES.md](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/performance_harnesses/P01-obstacle_gauntlet/BASELINES.md) for why wall time and warning scans stay in shell.
-- See [NSPATCH.md](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/performance_harnesses/P01-obstacle_gauntlet/NSPATCH.md) for the current split between stem-owned scenario defaults and harness-owned semantic overrides.
+- See [BASELINES.md](BASELINES.md) for why wall time and warning scans stay in shell.
+- See [NSPATCH.md](NSPATCH.md) for the current split between stem-owned scenario defaults and harness-owned semantic overrides.
 - GitHub Actions runs this harness with `PERF_PROFILE=ci`.

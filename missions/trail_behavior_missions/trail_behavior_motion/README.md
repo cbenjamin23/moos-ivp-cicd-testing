@@ -1,5 +1,8 @@
 # trail_behavior_motion
 
+Logging is minimal by default in both communities and launches no `pLogger`.
+Add `--log=full` to either launcher to restore both original loggers.
+
 Deterministic two-vehicle motion stem for `BHV_Trail`.
 
 `abe` runs `BHV_Trail` as the chaser. `ben` is a moving target on a short
@@ -35,4 +38,4 @@ Run from this directory:
 
 Named cases are implemented in the paired harness:
 
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/trail_behavior_harnesses/H01-trail_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/trail_behavior_harnesses/H01-trail_behavior_motion)
+[`harnesses/trail_behavior_harnesses/H01-trail_behavior_motion`](../../../harnesses/trail_behavior_harnesses/H01-trail_behavior_motion)

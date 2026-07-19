@@ -46,7 +46,7 @@ Implementation notes:
 - the companion harness patches `pObstacleMgr`, `pAutoPoke`, `uTimerScript`,
   and `pMissionEval` to vary obstacle geometry, alert timing, and grading rules
 - the companion harness is
-  [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obmgr_harnesses/H02-obmgr_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/obmgr_harnesses/H02-obmgr_motion)
+  [`harnesses/obmgr_harnesses/H02-obmgr_motion`](../../../harnesses/obmgr_harnesses/H02-obmgr_motion)
 
 Entry points:
 

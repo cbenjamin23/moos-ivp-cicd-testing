@@ -36,6 +36,7 @@ XPOS="0"
 YPOS="0"
 HDG="90"
 VGROUP="red"
+VEHICLE_MOOS="meta_vehicle.moos"
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -146,7 +147,11 @@ if [ "${AUTO_LAUNCHED}" = "no" ]; then
     NSFLAGS="--interactive --force -x"
 fi
 
-nsplug meta_vehicle.moos targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \
+if [ -f "meta_vehicle.moosx" ]; then
+    VEHICLE_MOOS="meta_vehicle.moosx"
+fi
+
+nsplug "$VEHICLE_MOOS" targ_$VNAME.moos $NSFLAGS WARP=$TIME_WARP \
        IP_ADDR=$IP_ADDR             MOOS_PORT=$MOOS_PORT \
        PSHARE_PORT=$PSHARE_PORT     SHORE_IP=$SHORE_IP   \
        SHORE_PSHARE=$SHORE_PSHARE   VNAME=$VNAME         \

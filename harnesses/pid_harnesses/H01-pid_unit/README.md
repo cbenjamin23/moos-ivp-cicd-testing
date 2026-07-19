@@ -10,40 +10,40 @@ input/output contract before introducing a vehicle simulator or helm behavior.
 
 ## Current Matrix
 
-- `rudder_starboard_pass` - default stem; desired heading east from north must yield positive rudder and thrust near `40`.
-- `rudder_port_pass` - desired heading west from north must yield negative rudder while maintaining thrust near `40`.
-- `heading_wrap_pass` - desired `5` degrees from current `355` degrees must take the short positive wrap and produce rudder near `10`.
-- `speed_factor_update_pass` - runtime `SPEED_FACTOR=10` must map desired speed `3` to thrust near `30` with near-zero rudder.
-- `speed_pid_control_pass` - `speed_factor=0` must switch to speed PID control and reach the configured thrust cap.
-- `max_thrust_limit_pass` - high speed-factor demand must be clipped at `maxthrust=60` while still producing a steering command.
-- `depth_elevator_pass` - depth control must combine desired depth, current depth, and pitch into a non-saturated elevator command near `11.5`.
-- `manual_override_zero_pass` - active manual override must release PID control and publish zero rudder/thrust commands.
-- `stale_nav_pass` - stale nav mail must zero actuator output and report a stale-input reason.
-- `nav_yaw_used_pass` - `NAV_YAW` must be converted to heading when `NAV_HEADING` is absent, yielding the expected rudder sign.
-- `ignore_nav_yaw_pass` - `ignore_nav_yaw=true` must keep `NAV_HEADING` authoritative even when `NAV_YAW` is present.
-- `heading_debug_saturation_pass` - heading debug output must be posted while rudder clips at `maxrudder=10`.
-- `speed_zero_allstop_pass` - desired speed `0` must suppress thrust and rudder even with a heading error.
-- `speed_negative_allstop_pass` - negative desired speed must be clipped to all-stop output.
-- `output_suffix_alt_pass` - alternate `output_suffix=_ALT` must move actuator output to `DESIRED_*_ALT`.
-- `manual_overide_alias_zero_pass` - legacy `MOOS_MANUAL_OVERIDE` must still zero output and drop PID control.
-- `override_release_needs_fresh_mail_pass` - releasing override after old mail must keep output at zero until fresh desired/nav mail arrives.
-- `override_recover_fresh_mail_pass` - fresh desired/nav mail after override release must restore rudder and thrust output.
-- `stale_helm_pass` - stale desired heading/speed mail must zero actuator output and report `PID_STALE`.
-- `stale_recover_pass` - fresh desired/nav mail after a stale interval must restore rudder and thrust output.
-- `depth_negative_elevator_pass` - the opposite depth error sign must produce a negative elevator command.
-- `depth_debug_pass` - `depth_debug=true` must publish depth debug text alongside nonzero elevator output.
-- `max_elevator_limit_pass` - `maxelevator=5` must clip otherwise larger elevator output at the configured limit.
-- `speed_debug_pass` - `speed_debug=true` must publish speed debug text alongside thrust output.
-- `nav_heading_after_yaw_pass` - a later `NAV_HEADING` update must override an earlier `NAV_YAW`-derived heading.
-- `simulation_mode_fail` - current-bug coverage for `simulation=true`, where actuator output stays zero despite a misleading control flag.
-- `thrust_cap_runtime_fail` - current-bug coverage for runtime `PID_THRUST_CAP`, which computes a cap but still posts uncapped thrust.
-- `heading_wrap_negative_pass` - desired `355` degrees from current `5` degrees must take the short negative wrap, with bounded negative rudder.
-- `nav_heading_normalize_pass` - out-of-range `NAV_HEADING=-90` must be normalized before rudder calculation.
-- `runtime_speed_factor_zero_pid_pass` - runtime `SPEED_FACTOR=0` must switch from factor mapping to PID speed control.
-- `runtime_speed_factor_negative_pass` - runtime negative `SPEED_FACTOR` must be accepted and clip thrust to zero.
-- `missing_desired_speed_zero_pass` - missing initial desired-speed mail must keep actuator output at the all-stop publication.
-- `missing_nav_speed_zero_pass` - missing initial nav-speed mail must keep actuator output at the all-stop publication.
-- `depth_missing_pitch_zero_pass` - depth control must wait for `NAV_PITCH` before publishing nonzero rudder, thrust, or elevator.
+- `rudder_starboard_pass`: Requests heading `90` from `NAV_HEADING=0` with desired speed `2`, testing the positive-rudder course correction; passes when `DESIRED_RUDDER_PID>1` and `39<=DESIRED_THRUST_PID<=41`.
+- `rudder_port_pass`: Requests heading `270` from `NAV_HEADING=0` with desired speed `2`, testing the negative-rudder course correction; passes when `DESIRED_RUDDER_PID<-1` and `39<=DESIRED_THRUST_PID<=41`.
+- `heading_wrap_pass`: Requests heading `5` from `NAV_HEADING=355`, testing the positive 10-degree path across north instead of a 350-degree turn; passes when `9.5<=DESIRED_RUDDER_PID<=10.5` and `39<=DESIRED_THRUST_PID<=41`.
+- `speed_factor_update_pass`: Posts `SPEED_FACTOR=10` before requesting speed `3` with no heading error, testing runtime factor-based thrust scaling; passes when rudder remains within `[-0.1,0.1]` and thrust is in `[29,31]`.
+- `speed_pid_control_pass`: Configures `speed_factor=0` with desired speed `2` and `NAV_SPEED=0`, selecting the speed PID instead of direct factor scaling; passes when positive rudder is produced and thrust reaches the configured `[99,100]` cap band.
+- `max_thrust_limit_pass`: Configures `speed_factor=50` and `maxthrust=60` for a speed demand that would otherwise produce thrust `100`, testing the configured thrust limit; passes when rudder is positive and thrust is in `[59,60]`.
+- `depth_elevator_pass`: Enables depth control with desired depth `6`, `NAV_DEPTH=5`, and `NAV_PITCH=0`, testing the depth-to-pitch and pitch-to-elevator cascade; passes when rudder is positive, thrust is in `[39,41]`, and elevator is in `[11.3,11.7]`.
+- `manual_override_zero_pass`: Establishes nonzero PID inputs, then posts `MOOS_MANUAL_OVERRIDE=true`, testing the normal override input; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=false`.
+- `stale_nav_pass`: Sets both tardy thresholds to one second and stops refreshing all helm and nav inputs after one second, exercising the stale-input all-stop path; passes when rudder and thrust are each within `[-0.1,0.1]`. `PID_STALE` is reported but is not graded.
+- `nav_yaw_used_pass`: Omits `NAV_HEADING` and posts `NAV_YAW=-1.5708` with desired heading `0`, testing conversion from yaw radians to heading; passes when rudder is negative and thrust is in `[39,41]`.
+- `ignore_nav_yaw_pass`: Posts conflicting `NAV_YAW=-1.5708` and `NAV_HEADING=0` with `ignore_nav_yaw=true`, testing that heading mail remains authoritative; passes when rudder is positive and thrust is in `[39,41]`.
+- `heading_debug_saturation_pass`: Enables `heading_debug`, requests heading `180` from `0`, and sets `maxrudder=10`, exercising heading diagnostics during rudder saturation; passes when rudder is in `[-10,-9]` and thrust is in `[39,41]`. `PID_HDG_DEBUG` is reported but is not graded.
+- `speed_zero_allstop_pass`: Requests `DESIRED_SPEED=0` while retaining a 90-degree heading error, testing the zero-speed all-stop branch; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
+- `speed_negative_allstop_pass`: Requests `DESIRED_SPEED=-1` while retaining a 90-degree heading error, testing clipping of a negative speed request to all-stop; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
+- `output_suffix_alt_pass`: Configures `output_suffix=_ALT`, testing publication on the alternate actuator names; passes when `DESIRED_RUDDER_ALT>1`, `39<=DESIRED_THRUST_ALT<=41`, and `PID_HAS_CONTROL=true`. The evaluator does not check that the unsuffixed variables are absent.
+- `manual_overide_alias_zero_pass`: Establishes nonzero PID inputs, then posts the legacy misspelled `MOOS_MANUAL_OVERIDE=true`, testing compatibility with that alias; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=false`.
+- `override_release_needs_fresh_mail_pass`: Posts complete helm/nav inputs while override is active and releases override two seconds later without refreshing them, testing the fresh-mail gate after release; passes when rudder and thrust remain within `[-0.1,0.1]`.
+- `override_recover_fresh_mail_pass`: Releases override, then posts fresh desired heading, desired speed, heading, and speed mail one second later, testing control reacquisition; passes when rudder is positive, thrust is in `[39,41]`, and `PID_HAS_CONTROL=true`.
+- `stale_helm_pass`: Sets the helm tardy threshold to one second, leaves desired heading and speed at their one-second values, and refreshes nav mail at five seconds, isolating stale helm input; passes when rudder and thrust are within `[-0.1,0.1]` and `PID_STALE` is present.
+- `stale_recover_pass`: Lets all helm/nav inputs exceed three-second tardy thresholds, then refreshes them at 4.5 seconds, exercising recovery from the stale all-stop state; passes when rudder is positive, thrust is in `[39,41]`, and `PID_HAS_CONTROL=true`.
+- `depth_negative_elevator_pass`: Enables depth control with desired depth `5`, `NAV_DEPTH=10`, and zero pitch, testing the opposite depth-error sign; passes when rudder is positive, thrust is in `[39,41]`, and `DESIRED_ELEVATOR_PID<-1`.
+- `depth_debug_pass`: Enables `depth_debug` with desired depth `10`, `NAV_DEPTH=5`, and zero pitch, testing depth diagnostic publication during elevator control; passes when `DESIRED_ELEVATOR_PID>1` and `PID_DEP_DEBUG` is present.
+- `max_elevator_limit_pass`: Enables depth control with a five-meter depth error and `maxelevator=5`, testing elevator saturation; passes when `DESIRED_ELEVATOR_PID` is in `[4.9,5.0]`.
+- `speed_debug_pass`: Enables `speed_debug` with desired speed `2` and `NAV_SPEED=0`, testing speed diagnostic publication during factor-based thrust control; passes when thrust is in `[39,41]` and `PID_SPD_DEBUG` is present.
+- `nav_heading_after_yaw_pass`: Posts `NAV_YAW=-1.5708`, then posts `NAV_HEADING=0` half a second later for desired heading `90`, testing that later heading mail replaces the yaw-derived value; passes when rudder is positive and thrust is in `[39,41]`.
+- `simulation_mode_fail`: Configures `simulation=true` with otherwise valid steering and speed inputs, preserving a known bug in which the app claims control without actuator output; the harness passes only while rudder and thrust remain within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
+- `thrust_cap_runtime_fail`: Posts `PID_THRUST_CAP=50` before a factor-based demand of `100`, preserving a known bug in which the runtime cap is ignored; the harness passes only while rudder is positive and thrust remains in `[99,100]`.
+- `heading_wrap_negative_pass`: Requests heading `355` from `NAV_HEADING=5`, testing the negative 10-degree path across north; passes when rudder is between `-20` and `-1` and thrust is in `[39,41]`.
+- `nav_heading_normalize_pass`: Posts `NAV_HEADING=-90` with desired heading `0`, testing normalization of an out-of-range heading before error calculation; passes when rudder is between `80` and `100` and thrust is in `[39,41]`.
+- `runtime_speed_factor_zero_pid_pass`: Posts `SPEED_FACTOR=0` before requesting speed `2` from `NAV_SPEED=0`, testing the runtime switch from factor mapping to speed PID control; passes when rudder is positive and thrust is in `[99,100]`.
+- `runtime_speed_factor_negative_pass`: Posts `SPEED_FACTOR=-10` before requesting speed `2`, exercising the accepted negative-factor path and its zero-clipped output; passes when rudder and thrust are each within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
+- `missing_desired_speed_zero_pass`: Supplies desired heading and both nav inputs but never posts `DESIRED_SPEED`, testing the initial desired-speed gate; passes when rudder and thrust remain within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
+- `missing_nav_speed_zero_pass`: Supplies desired heading, desired speed, and nav heading but never posts `NAV_SPEED`, testing the initial nav-speed gate; passes when rudder and thrust remain within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
+- `depth_missing_pitch_zero_pass`: Enables depth control and supplies every normal input except `NAV_PITCH`, testing the depth-mode pitch gate; passes when rudder, thrust, and elevator remain within `[-0.1,0.1]` and `PID_HAS_CONTROL=true`.
 
 ## Edge Audit
 

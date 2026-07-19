@@ -195,30 +195,9 @@ ProcessConfig = pLogger
   AsyncLog  = true
   FileTimeStamp = true
 
-  Log = IVPHELM_LIFE_EVENT @ 0 nosync
-  Log = HD @ 0 nosync
+  Log = APP_LOG @ 0 nosync
 
-  // Log it all!!!!!
-  LogAuxSrc = true
-  WildCardLogging = true 
-
-	// Except these fellas
-	WildCardOmitPattern = *_STATUS
-  WildCardOmitPattern = APPCAST
-  //WildCardOmitPattern = *_ITER_GAP
-  //WildCardOmitPattern = *_ITER_LEN
-  WildCardOmitPattern = PSHARE_OUTPUT_SUMMARY
-  WildCardOmitPattern = DB_VARSUMMARY
-  WildCardOmitPattern = DB_RWSUMMARY
-  WildCardOmitPattern = NAV_SPEED_OVER_GROUND
-  WildCardOmitPattern = SIMULATION_MODE
-  WildCardOmitPattern = TRUE_X
-  WildCardOmitPattern = TRUE_Y
-  WildCardOmitPattern = NAV_PITCH
-  WildCardOmitPattern = NAV_YAW
-  WildCardOmitPattern = NAV_Z
-  WildCardOmitPattern = NODE_PSHARE_VARS
-  WildCardOmitPattern = NODE_BROKER_ACK
+  WildCardLogging = false
 
   CompressAlogs = false
 }

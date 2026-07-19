@@ -35,76 +35,30 @@ any case geometry, stimulus, evaluator condition, or timing ceiling.
 
 ## Cases
 
-- `head_on_execution_pass`
-  Head-on encounter used to check the realized head-on maneuver through
-  completion.
-- `head_on_cpa_fallback_execution_pass`
-  Near-head-on geometry expected to complete through the CPA fallback path
-  rather than true head-on.
-- `head_on_port_offset_execution_pass`
-  Offset head-on encounter on the port side; expected to preserve the head-on
-  execution shape through completion.
-- `head_on_starboard_offset_execution_pass`
-  Offset head-on encounter on the starboard side; expected to preserve the
-  head-on execution shape through completion.
-- `crossing_starboard_giveway_execution_pass`
-  Starboard crossing where ownship should take the give-way role and complete
-  on the expected side.
-- `crossing_starboard_giveway_far_execution_pass`
-  Longer-range starboard crossing where ownship should still give way and
-  complete inside the expected CPA/side envelope.
-- `crossing_starboard_giveway_close_execution_pass`
-  Tighter starboard crossing where ownship should still give way and complete
-  cleanly.
-- `crossing_port_standon_execution_pass`
-  Port-side crossing where ownship should stand on and complete with the
-  expected side relationship.
-- `crossing_port_standon_unsure_bow_execution_pass`
-  Port-side crossing that enters the stand-on unsure-bow branch before
-  completion; expected to preserve a clean stand-on execution outcome.
-- `crossing_port_standon_stern_execution_pass`
-  Port-side crossing that settles to the stand-on stern branch and completes in
-  the expected CPA/side envelope.
-- `crossing_port_standon_far_execution_pass`
-  Longer-range port-side stand-on setup tuned for completion-style execution
-  grading.
-- `crossing_port_standon_close_execution_pass`
-  Tighter port-side stand-on setup expected to complete without crossing or
-  collision.
-- `crossing_port_standon_close_unsure_bow_execution_pass`
-  Tighter port-side setup that enters unsure-bow before completing with a clean
-  stand-on outcome.
-- `crossing_port_standon_unsure_execution_pass`
-  Port-side crossing that enters the generic stand-on unsure branch and
-  completes inside its narrower CPA envelope.
-- `overtaking_starboard_execution_pass`
-  Ownship overtakes on the starboard passing side and should maintain the
-  expected safe-side execution shape.
-- `overtaking_starboard_range_far_execution_pass`
-  Longer-range overtaking setup on the starboard passing side, used to
-  strengthen completion-side evidence.
-- `overtaking_starboard_small_gap_execution_pass`
-  Overtaking setup with a smaller lateral gap; expected to keep the same safe
-  side and CPA band.
-- `overtaking_starboard_mirror_execution_pass`
-  Mirrored overtaking setup on the opposite passing side; expected to preserve
-  the mirrored safe-side relationship.
-- `overtaking_starboard_mirror_range_far_execution_pass`
-  Longer-range mirrored overtaking setup, used to strengthen completion-side
-  evidence on the mirrored side.
-- `overtaking_starboard_mirror_small_gap_execution_pass`
-  Mirrored overtaking setup with a smaller lateral gap; expected to keep the
-  mirrored safe side and CPA band.
-- `overtaking_starboard_mirror_large_gap_execution_pass`
-  Mirrored overtaking setup with a larger lateral gap; expected to remain in
-  the supported mirrored execution envelope.
-- `overtaken_port_standon_midrange_execution_pass`
-  Ownship is being overtaken on its port side with a midrange live-encounter
-  setup; expected to preserve the stand-on overtaken role through completion.
-- `overtaken_starboard_standon_midrange_execution_pass`
-  Ownship is being overtaken on its starboard side with a midrange
-  live-encounter setup; expected to preserve the stand-on overtaken role
-  through completion.
+- `head_on_execution_pass`: Runs the centerline head-on geometry through Ben's arrival. Passes within 12 wall seconds when `16<=UCD_CLOSEST_RANGE_EVER<=20`, Ben finishes on ownship's port and aft sides (`cn_port=1`, `cn_fore=0`), no side crossing occurs, and timeout and collisions remain false/zero.
+- `head_on_cpa_fallback_execution_pass`: Runs the heading-28 near-head-on CPA fallback through Ben's arrival. Passes within 12 wall seconds on the same 16-to-20-meter CPA, port/aft, no-crossing, no-timeout, and zero-collision envelope.
+- `head_on_port_offset_execution_pass`: Runs the crossing 12-meter offset head-on geometry from ownship `(-6,-40)` and Ben `(6,-130)` through completion. Passes within 12 wall seconds on the 16-to-20-meter CPA, `cn_port=1`, `cn_fore=0`, `cn_crossed=0`, no-timeout, zero-collision envelope.
+- `head_on_starboard_offset_execution_pass`: Mirrors the offset starts to ownship `(6,-40)` and Ben `(-6,-130)`. Passes within 12 wall seconds on the same 16-to-20-meter CPA and final port/aft/no-crossing envelope with no timeout or collision.
+- `crossing_starboard_giveway_execution_pass`: Runs eastbound ownship from `(-70,-80)` against northbound Ben from `(10,-130)` through Ben's arrival. Passes within 12 wall seconds when closest range is 18–24 meters, Ben finishes port and aft (`1,0`), `cn_crossed=0`, and no timeout or collision occurs.
+- `crossing_starboard_giveway_far_execution_pass`: Moves the same crossing starts outward to ownship `(-80,-80)` and Ben `(10,-150)`. Passes within 13 wall seconds when closest range is 17.7–24 meters with the same port/aft/no-crossing and no-timeout/no-collision outcome.
+- `crossing_starboard_giveway_close_execution_pass`: Moves the starts inward to ownship `(-60,-80)` and Ben `(10,-115)`. Passes within 12 wall seconds when closest range is 18–24 meters with the same port/aft/no-crossing and no-timeout/no-collision outcome.
+- `crossing_port_standon_execution_pass`: Runs eastbound ownship from `(-70,-80)` against southbound Ben from `(10,-20)` through arrival. Passes within 12 wall seconds when closest range is 14–20 meters, Ben finishes starboard and aft (`cn_port=0`, `cn_fore=0`), `cn_crossed=0`, and no timeout or collision occurs.
+- `crossing_port_standon_unsure_bow_execution_pass`: Uses the same geometry as the preceding case, whose classification history includes `standon:unsure_bow`. Passes on the same 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds with no timeout or collision; the transient mode is not graded here.
+- `crossing_port_standon_stern_execution_pass`: Starts southbound Ben farther north at `(10,15)` and 1.2 m/s. Passes within 16 wall seconds when closest range is 18.9–21 meters, Ben finishes starboard and aft without crossing, and no timeout or collision occurs.
+- `crossing_port_standon_far_execution_pass`: Uses the execution-tuned far fixture with ownship `(-76,-80)` and Ben `(10,-12)`. Passes within 13 wall seconds when closest range is 14–20 meters and the final relationship is starboard/aft with no crossing, timeout, or collision.
+- `crossing_port_standon_close_execution_pass`: Uses the closer starts ownship `(-60,-80)` and Ben `(10,-30)`. Passes within 12 wall seconds on the 14–20-meter, starboard/aft/no-crossing envelope with no timeout or collision.
+- `crossing_port_standon_close_unsure_bow_execution_pass`: Uses the same close geometry but identifies its earlier `standon:unsure_bow` transition. Passes on the same 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds; the transient mode itself is not graded.
+- `crossing_port_standon_unsure_execution_pass`: Uses ownship `(-55,-72)` and Ben `(10,-18)`, whose classification history includes `standon:unsure`. Passes within 12.1 wall seconds when closest range is 10–13 meters and Ben finishes starboard and aft without crossing, timeout, or collision; the transient mode is not graded.
+- `overtaking_starboard_execution_pass`: Sends 1.6 m/s ownship from `(-90,-80)` past 1.0 m/s Ben at `(-35,-84)`. Passes within 12 wall seconds when closest range is 17–21 meters, Ben finishes starboard (`cn_port=0`), `cn_crossed=0`, and arrival occurs without timeout or collision; fore/aft state is not graded.
+- `overtaking_starboard_range_far_execution_pass`: Moves ownship back to `(-105,-80)` while retaining Ben at `(-35,-84)`. Passes within 12 wall seconds when closest range is 20–24 meters and Ben finishes starboard and fore (`cn_port=0`, `cn_fore=1`) without crossing, timeout, or collision.
+- `overtaking_starboard_small_gap_execution_pass`: Uses the long-range sibling, not the compact case: ownship starts `(-105,-80)` and Ben `(-35,-82)` with a two-meter gap. Passes within 12 wall seconds when closest range is 21.7–22.8 meters and Ben finishes starboard/fore without crossing, timeout, or collision.
+- `overtaking_starboard_mirror_execution_pass`: Mirrors the compact tracks with ownship at `(-90,-84)` and Ben at `(-35,-80)`. Passes within 12 wall seconds when closest range is 17–21 meters and Ben finishes port/fore (`1,1`) without crossing, timeout, or collision.
+- `overtaking_starboard_mirror_range_far_execution_pass`: Moves mirrored ownship back to `(-105,-84)`. Passes within 12 wall seconds when closest range is 20–24 meters and Ben finishes port/fore without crossing, timeout, or collision.
+- `overtaking_starboard_mirror_small_gap_execution_pass`: Uses long-range ownship at `(-105,-81)` and Ben at `(-35,-80)`, a one-meter gap. Passes within 12 wall seconds when closest range is 21.8–22.8 meters and Ben finishes port/fore without crossing, timeout, or collision.
+- `overtaking_starboard_mirror_large_gap_execution_pass`: Uses long-range ownship at `(-105,-88)` and Ben at `(-35,-80)`, an eight-meter gap. Passes within 12 wall seconds when closest range is 20.7–22.1 meters and Ben finishes port/fore without crossing, timeout, or collision.
+- `overtaken_port_standon_midrange_execution_pass`: Sends 1.6 m/s Ben from `(-75,-76)` past 1.0 m/s ownship at `(-35,-80)`. Passes within 12 wall seconds when closest range is 17.7–18.4 meters, Ben finishes port/fore without crossing, final mode remains `standon_ot:port`, and no timeout or collision occurs.
+- `overtaken_starboard_standon_midrange_execution_pass`: Sends 1.6 m/s Ben from `(-85,-85)` past 1.0 m/s ownship at `(-35,-80)`. Passes within 12 wall seconds when closest range is 18.15–18.30 meters, Ben finishes starboard/fore without crossing, final mode remains `standon_ot:starboard`, and no timeout or collision occurs.
+- `overtaken_port_standon_execution_pass`: This explicitly selected compact comparison sends Ben from `(-70,-76)` past ownship at `(-35,-80)`. Passes within 12 wall seconds when closest range is 17–21 meters, Ben finishes port/fore without crossing, final mode remains `standon_ot:port`, and no timeout or collision occurs.
 
 Current mission-side assertions:
 - every H03 case patch still requires `ARRIVED_ben = true`, `COLLISION_TOTAL = 0`, and `MISSION_TIMEOUT = false`

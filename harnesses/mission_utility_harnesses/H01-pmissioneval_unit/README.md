@@ -9,6 +9,9 @@ pokes the case mail. The subject grade comes from `pMissionEval` through its
 single `results.txt` row plus selected publication evidence for flag and macro
 contracts.
 
+Logging defaults to the shared grading allowlist. Use `--log=full` to restore
+the original wildcard diagnostic logger for every selected case.
+
 Exported harness rows use the mission-utility edge shape:
 `grade=<pass|fail>` is the harness case verdict, while the pMissionEval row is
 reported as `subject_grade=<pass|fail>`. Negative pMissionEval cases therefore
@@ -17,23 +20,23 @@ grades fail.
 
 ## Current Matrix
 
-- `eval_baseline_pass` Baseline `pMissionEval` case. Scripted mail satisfies the lead and pass conditions, writes a pass row, expands ordinary macros, and terminates through the default mission-evaluated flag.
-- `eval_false_condition_fail` Negative `pMissionEval` case. The lead condition fires while `PASS_INPUT=false`, so the mission row must grade fail.
-- `eval_builtin_finish_pass` Built-in finish publication case. `pMissionEval` omits an explicit `MISSION_EVALUATED` result flag, so the default `uMayFinish` exit proves the app's built-in finish publication path.
-- `eval_numeric_multi_pass` Multi-condition and numeric macro case. Two lead/pass conditions must be satisfied, and a numeric MOOS value must expand into both a report row and a result flag.
-- `eval_sequence_two_stage_pass` Two-stage sequence case. A second lead condition starts a new `LogicAspect`, and both stages must pass before the mission is evaluated.
-- `eval_sequence_first_stage_fail` Sequence short-circuit case. The first stage fails and the mission must grade fail without waiting for second-stage mail.
-- `eval_sequence_second_stage_fail` Later-stage sequence failure case. The first stage passes, the second stage fails, and the mission must grade fail after reaching the later `LogicAspect`.
-- `eval_numeric_literal_flag_pass` Literal numeric flag case. A numeric `result_flag` must publish through the non-string flag path while the mission grades pass.
-- `eval_lead_only_pass` Lead-only evaluator case. A valid evaluator with no pass or fail conditions must grade pass once the lead condition is met.
-- `eval_numeric_partial_fail` Multi-condition partial failure case. The lead conditions are satisfied but one numeric pass condition is below threshold, so the mission must grade fail.
-- `eval_fail_only_condition_fail` Fail-only evaluator case. A valid evaluator with no pass conditions must still grade fail when a fail condition is met.
-- `eval_fail_condition_fail` Explicit fail-condition case. A true `FORCE_FAIL` variable must override an otherwise passing input set and produce a fail row.
-- `eval_flags_and_mail_pass` Flag publication case. The baseline pass must also emit result/pass flags and react to configured mailflag input in the alog.
-- `eval_csp_report_pass` Report-format case. `pMissionEval` must honor `report_line_format=csp` by writing comma-separated report columns.
-- `eval_mhash_macros_pass` Mission-hash macro case. `pMissionEval` must expand short, long-short, UTC, full hash, and mission-hash aliases from `MISSION_HASH` mail.
-- `eval_clock_macros_pass` Clock macro case. `pMissionEval` must expand month, day, hour, minute, second, date, and time macros without leaving raw macro tokens in the report row.
-- `eval_no_hash_report_pass` No-hash evaluator case. The stem omits `pMissionHash`, and `pMissionEval` must still evaluate and write a report row.
+- `eval_baseline_pass` Posts `TEST_EVAL_READY=true` and `PASS_INPUT=true`, testing the basic one-lead, one-pass-condition evaluator; passes when `pMissionEval` writes exactly one result row with `subject_grade=pass` and the mission launcher exits successfully.
+- `eval_false_condition_fail` Posts `TEST_EVAL_READY=true` with `PASS_INPUT=false`, testing a false pass condition after the lead condition opens evaluation; the harness passes when `pMissionEval` writes `subject_grade=fail` with `pass_input=false`.
+- `eval_builtin_finish_pass` Removes the explicit `MISSION_EVALUATED` result flag while satisfying the normal lead and pass conditions, testing pMissionEval's built-in completion post; passes when the subject grades pass, the `.alog` contains `MISSION_EVALUATED`, no `EVAL_RESULT_FLAG` line contains `result:`, and the mission launcher exits successfully.
+- `eval_numeric_multi_pass` Requires both `TEST_EVAL_READY=true` and `CASE_PHASE=ready`, plus `PASS_INPUT=true` and `NUM_SCORE>40`, testing multiple lead/pass conditions and numeric macro expansion; passes with `subject_grade=pass`, `phase=ready`, `score=42.5`, and `EVAL_SCORE_FLAG=score:42.5` in the `.alog`.
+- `eval_sequence_two_stage_pass` Defines consecutive stages requiring `STAGE1_READY/STAGE1_PASS` and then `STAGE2_READY/STAGE2_PASS`, testing ordered `LogicAspect` evaluation; passes when both ready posts appear and the result row records `subject_grade=pass`, `stage1=true`, and `stage2=true`.
+- `eval_sequence_first_stage_fail` Posts `STAGE1_READY=true` with `STAGE1_PASS=false` and never posts stage-two mail, testing failure at the first `LogicAspect`; the harness passes when the result records `subject_grade=fail` and `stage1=false`, `EVAL_FAIL_FLAG=stage1_failed` appears, and no `STAGE2_READY` mail appears.
+- `eval_sequence_second_stage_fail` Passes stage one, then posts `STAGE2_READY=true` with `STAGE2_PASS=false`, testing failure after advancing to the second `LogicAspect`; the harness passes when the result records `subject_grade=fail`, `stage1=true`, and `stage2=false`, and the `.alog` contains both `STAGE2_READY=true` and `EVAL_FAIL_FLAG=stage2_failed`.
+- `eval_numeric_literal_flag_pass` Configures `result_flag=EVAL_LITERAL_NUM=17.25`, testing numeric-literal publication through the non-string flag path; passes when the subject grades pass with `case_value=literalnum` and the `.alog` contains `EVAL_LITERAL_NUM=17.25`.
+- `eval_lead_only_pass` Configures only `lead_condition=TEST_EVAL_READY=true`, testing an evaluator with no pass or fail conditions; passes when the ready post produces `subject_grade=pass`, `eval=true`, and `case_value=leadonly`.
+- `eval_numeric_partial_fail` Satisfies both lead conditions and `PASS_INPUT=true` but posts `NUM_SCORE=39` against `NUM_SCORE>40`, testing partial failure in a multi-condition evaluator; the harness passes when the result records `subject_grade=fail`, `phase=ready`, and `score=39`, and the `.alog` contains `EVAL_FAIL_FLAG=partial_numeric_fail`.
+- `eval_fail_only_condition_fail` Configures no pass conditions and posts `FORCE_FAIL=true` after the lead condition, testing a fail-only evaluator; the harness passes when the result records `subject_grade=fail`, `eval=true`, and `force_fail=true`, and the `.alog` contains `EVAL_FAIL_FLAG=fail_only`.
+- `eval_fail_condition_fail` Posts `PASS_INPUT=true` and `FORCE_FAIL=true`, testing that an explicit fail condition overrides a satisfied pass condition; the harness passes when the result records `subject_grade=fail` and `force_fail=true`, and the `.alog` contains `EVAL_FAIL_FLAG`.
+- `eval_flags_and_mail_pass` Satisfies the baseline evaluator and posts `CASE_MAIL=baseline`, exercising configured `result_flag`, `pass_flag`, and `mailflag` publications; passes when the subject grades pass and the `.alog` contains `EVAL_RESULT_FLAG`, `EVAL_PASS_FLAG`, and `EVAL_MAIL_SEEN` entries.
+- `eval_csp_report_pass` Sets `report_line_format=csp` and satisfies the baseline conditions, testing comma-and-space report formatting; passes when the subject grades pass and the result row contains the ordered comma-separated fields `form`, `mmod`, `grade=pass`, and `eval=true`.
+- `eval_mhash_macros_pass` Places `$[MHASH_SHORT]`, `$[MHASH_LSHORT]`, `$[MHASH_UTC]`, `$[MHASH]`, and `$[MISSION_HASH]` in report columns, testing mission-hash macro expansion; passes when the row matches the expected short-word, timestamp, and full-hash formats for every macro.
+- `eval_clock_macros_pass` Places `$[MONTH]`, `$[DAY]`, `$[HOUR]`, `$[MIN]`, `$[SEC]`, `$[DATE]`, and `$[TIME]` in report columns, testing clock macro expansion; passes when every field has its expected numeric format and no raw `$[` token remains.
+- `eval_no_hash_report_pass` Removes `pMissionHash` from ANTLER and writes a report with no hash columns, testing evaluation without mission-hash mail; passes when the subject grades pass with `eval=true` and `case_value=nohash`, and no `MISSION_HASH` publication appears in the `.alog`.
 
 ## Running
 

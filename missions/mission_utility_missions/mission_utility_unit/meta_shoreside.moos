@@ -24,7 +24,34 @@ ProcessConfig = ANTLER
 }
 
 #include plugs.moos <uProcessWatch>
-#include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// Minimal pLogger grading evidence
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  WildCardLogging = false
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = EVAL_RESULT_FLAG @ 0 nosync
+  Log = EVAL_PASS_FLAG @ 0 nosync
+  Log = EVAL_MAIL_SEEN @ 0 nosync
+  Log = EVAL_FAIL_FLAG @ 0 nosync
+  Log = EVAL_SCORE_FLAG @ 0 nosync
+  Log = STAGE1_READY @ 0 nosync
+  Log = STAGE2_READY @ 0 nosync
+  Log = EVAL_LITERAL_NUM @ 0 nosync
+  Log = MISSION_HASH @ 0 nosync
+  Log = MHASH @ 0 nosync
+  Log = CUSTOM_DONE @ 0 nosync
+}
 
 ProcessConfig = uTimerScript
 {

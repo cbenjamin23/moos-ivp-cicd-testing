@@ -53,6 +53,7 @@ PORT_STRIDE=30
 PSHARE_OFFSET=$((PORT_STRIDE / 2))
 CASE=""
 JUST_MAKE=no
+LOG_MODE=minimal
 KEEP_WORKDIRS=no
 VERBOSE=no
 DISPLAY_ARGS=(--nogui)
@@ -74,6 +75,7 @@ usage() {
     echo "  --port_base=<n>    Base MOOS port for isolated case blocks"
     echo "  --max_time=<secs>  Maximum real time for mission completion"
     echo "  --just_make, -j    Prepare each case without launching it"
+    echo "  --log=<mode>       Logging mode: minimal (default) or full"
     echo "  --keep_workdirs    Keep this invocation's isolated case directories"
     echo "  --verbose, -v     Show scheduler events"
     echo "  --gui              Accepted only for one selected case"
@@ -98,6 +100,7 @@ for arg in "$@"; do
         --jobs=*) JOBS="${arg#--jobs=}" ;;
         --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
@@ -108,6 +111,11 @@ for arg in "$@"; do
         *) TIME_WARP="$arg" ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
 is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
@@ -368,6 +376,9 @@ apply_case_patch_in_dir() {
     local case_dir="$1"
     local patch_file
     local patches=()
+    if [ "$LOG_MODE" = full ]; then
+        patches+=("$case_dir/full-logging-shoreside.xmoos")
+    fi
     if [ "$SHORE_PATCH" != "" ]; then
         patches+=("$SHORE_PATCH")
     fi
@@ -665,7 +676,7 @@ evaluate_mission_subject() {
             --shore_pshare="$((case_base + PSHARE_OFFSET))"
             "$TIME_WARP"
         )
-        ./zlaunch.sh "${launch_args[@]}"
+        LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
     ) &
     stem_pid=$!
     poke_case_mail "$case_base" || poke_rc=$?
@@ -739,7 +750,8 @@ evaluate_mayfinish_subject() {
     (
         cd "$workdir" || exit 1
         : > results.txt
-        ./launch.sh --just_make --xlaunched --nogui \
+        LOG_MODE_PREPARED=yes ./launch.sh --log="$LOG_MODE" \
+            --just_make --xlaunched --nogui \
             --shore_mport="$case_base" \
             --shore_pshare="$((case_base + PSHARE_OFFSET))" \
             "$TIME_WARP" >/dev/null || exit $?
@@ -748,9 +760,11 @@ evaluate_mayfinish_subject() {
         sleep 0.75
         poke_case_mail "$case_base" &
         poker_pid=$!
-        uMayFinish --max_time="$CASE_MAX_TIME" --alias="$mayfinish_alias" \
-            targ_shoreside.moos || subject_rc=$?
+        uMayFinish targ_shoreside.moos --max_time="$CASE_MAX_TIME" \
+            --alias="$mayfinish_alias" || subject_rc=$?
         wait "$poker_pid" || poke_rc=$?
+        # Let pLogger commit the finish mail before stopping the community.
+        sleep 0.5
         kill "$antler_pid" 2>/dev/null || true
         wait "$antler_pid" 2>/dev/null || true
         printf '%s %s\n' "$subject_rc" "$poke_rc" > direct_status.txt
@@ -849,7 +863,7 @@ run_case() {
                 --shore_pshare="$((case_base + PSHARE_OFFSET))"
                 "$TIME_WARP"
             )
-            ./zlaunch.sh "${launch_args[@]}"
+            LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
         ) || launch_rc=$?
         write_just_make_result "$case_name" "$result_file" "$launch_rc" "$subject"
     elif [ "$subject" = uMayFinish ]; then
@@ -1098,7 +1112,7 @@ fi
 trap - EXIT INT TERM PIPE
 
 cat "$RESULTS_FILE"
-printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
-    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]

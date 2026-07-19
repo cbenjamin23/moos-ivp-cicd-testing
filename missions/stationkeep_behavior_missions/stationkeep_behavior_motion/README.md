@@ -1,5 +1,8 @@
 # stationkeep_behavior_motion
 
+Logging is minimal by default in both communities and launches no `pLogger`.
+Add `--log=full` to either launcher to restore both original loggers.
+
 Deterministic one-vehicle motion stem for `BHV_StationKeep`.
 
 The vehicle starts west of a station point centered at `(12,-121)`. The default
@@ -48,4 +51,4 @@ The wrapper forwards named cases and wave-mode options to the paired harness.
 
 ## Paired Harness
 
-- [`/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion)
+- [`harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion`](../../../harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion)

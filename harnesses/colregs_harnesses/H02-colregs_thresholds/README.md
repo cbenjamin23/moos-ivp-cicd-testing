@@ -58,174 +58,64 @@ of the threshold the geometry is expected to land on.
 
 ## Cases
 
-- `giveway_turngap_edge_pass`
-  Probes the calibrated give-way turn-gap edge; expected classification should
-  stay on the stock stern-side branch.
-- `giveway_turngap_above_pass`
-  Probes just beyond the give-way turn-gap edge; expected classification should
-  flip to the stock bow-side branch.
-- `giveway_turngap_edge_mirror_pass`
-  Mirrored turn-gap edge case; expected classification should match the
-  non-mirrored edge behavior.
-- `giveway_turngap_above_mirror_pass`
-  Mirrored turn-gap above-edge case; expected classification should match the
-  non-mirrored bow-side behavior.
-- `head_on_thresh_below_pass`
-  Probes below the head-on entry cutoff; expected classification should remain
-  true head-on.
-- `head_on_thresh_edge_pass`
-  Probes the calibrated head-on entry edge; expected classification should land
-  on the calibrated edge behavior.
-- `head_on_thresh_above_pass`
-  Probes above the head-on entry cutoff; expected classification should fall
-  back to CPA.
-- `head_on_thresh_below_mirror_pass`
-  Mirrored below-threshold head-on case; expected classification should remain
-  true head-on.
-- `head_on_thresh_edge_mirror_pass`
-  Mirrored head-on edge case; expected classification should match the
-  non-mirrored edge behavior.
-- `head_on_thresh_above_mirror_pass`
-  Mirrored above-threshold head-on case; expected classification should fall
-  back to CPA.
-- `overtaking_thresh_below_pass`
-  Probes below the overtaking classification threshold; expected behavior
-  should remain on the calibrated pre-flip side.
-- `overtaking_thresh_edge_pass`
-  Probes the overtaking threshold edge; expected behavior should match the
-  calibrated edge branch.
-- `overtaking_thresh_above_pass`
-  Probes above the overtaking threshold; expected behavior should land on the
-  post-flip side.
-- `overtaking_thresh_below_mirror_pass`
-  Mirrored below-threshold overtaking case; expected behavior should match the
-  non-mirrored pre-flip side.
-- `overtaking_thresh_edge_mirror_pass`
-  Mirrored overtaking edge case; expected behavior should match the calibrated
-  edge branch.
-- `overtaking_thresh_above_mirror_pass`
-  Mirrored above-threshold overtaking case; expected behavior should land on
-  the post-flip side.
-- `overtaken_thresh_below_pass`
-  Probes below the overtaken-vessel threshold; expected behavior should remain
-  on the calibrated stand-on overtaken side.
-- `overtaken_thresh_edge_pass`
-  Probes the overtaken-vessel threshold edge; expected behavior should match
-  the calibrated edge branch.
-- `overtaken_thresh_above_pass`
-  Probes above the overtaken-vessel threshold; expected behavior should land on
-  the calibrated fallback side.
-- `overtaken_thresh_below_mirror_pass`
-  Mirrored below-threshold overtaken-vessel case; expected behavior should
-  match the non-mirrored stand-on overtaken side.
-- `overtaken_thresh_edge_mirror_pass`
-  Mirrored overtaken-vessel edge case; expected behavior should match the
-  calibrated edge branch.
-- `overtaken_thresh_above_mirror_pass`
-  Mirrored above-threshold overtaken-vessel case; expected behavior should land
-  on the calibrated fallback side.
-- `giveway_bowdist_below_pass`
-  Probes below the give-way bow-distance split; expected classification should
-  stay in `giveway:stern`.
-- `giveway_bowdist_edge_pass`
-  Probes the calibrated give-way bow-distance edge; expected classification
-  should still stay in `giveway:stern`.
-- `giveway_bowdist_above_pass`
-  Probes above the give-way bow-distance split; expected classification should
-  flip to `giveway:bow`.
-- `giveway_bowdist_below_mirror_pass`
-  Mirrored below-threshold bow-distance case; expected classification should
-  stay in `giveway:stern`.
-- `giveway_bowdist_edge_mirror_pass`
-  Mirrored bow-distance edge case; expected classification should still stay in
-  `giveway:stern`.
-- `giveway_bowdist_above_mirror_pass`
-  Mirrored above-threshold bow-distance case; expected classification should
-  flip to `giveway:bow`.
-- `giveway_turngap_below_pass`
-  Probes below the give-way turn-gap split; expected classification should stay
-  on the stern-side branch.
-- `giveway_turngap_below_mirror_pass`
-  Mirrored below-threshold turn-gap case; expected classification should stay
-  on the stern-side branch.
-- `standon_unsurebow_below_pass`
-  Probes below the stand-on unsure-bow transition; expected classification
-  should remain on the calibrated pre-flip side.
-- `standon_unsurebow_edge_pass`
-  Probes the stand-on unsure-bow edge; expected classification should match the
-  calibrated edge behavior.
-- `standon_unsurebow_above_pass`
-  Probes above the stand-on unsure-bow transition; expected classification
-  should land on the post-flip side.
-- `standon_band270_stern_pass`
-  Band-270 stand-on geometry expected to resolve to the stern branch.
-- `standon_band350_unsurebow_pass`
-  Band-350 stand-on geometry expected to remain in the unsure-bow branch.
-- `standon_band350_unsurebow_alt_pass`
-  Alternate band-350 geometry that should also remain in the unsure-bow branch.
-- `standon_band350_bow_pass`
-  Band-350 stand-on geometry expected to resolve to the bow branch.
-- `standon_band315_unsure_pass`
-  Exploratory Band-315 geometry expected to enter the generic unsure branch;
-  run it explicitly with `--case` because the expected slice is not stable
-  enough for the parallel gate.
-- `standon_band315_unsure_bow_pass`
-  Exploratory Band-315 geometry expected to enter the unsure-bow branch; run
-  it explicitly with `--case` because the expected slice is not stable enough
-  for the parallel gate.
-- `standon_band315_bow_pass`
-  Band-315 stand-on geometry expected to resolve to the bow branch.
-- `standon_southwest_unsurebow_pass`
-  Southwest stand-on probe expected to enter the unsure-bow branch.
-- `standon_southwest_unsure_pass`
-  Southwest stand-on probe expected to enter the generic unsure branch.
-- `standon_southwest_stern_pass`
-  Southwest stand-on probe expected to resolve to the stern branch.
-- `outer_dist_below_pass`
-  Probes below the COLREGS outer-distance relevance gate; expected behavior
-  should remain inactive or fallback as calibrated.
-- `outer_dist_edge_pass`
-  Probes the outer-distance relevance edge; expected behavior should match the
-  calibrated edge branch.
-- `outer_dist_above_pass`
-  Probes above the outer-distance relevance gate; expected COLREGS behavior
-  should activate.
-- `standon_inextremis_range_below_pass`
-  Probes below the stand-on in-extremis range cutoff; expected classification
-  should follow the calibrated range branch.
-- `standon_inextremis_range_edge_pass`
-  Probes the stand-on in-extremis range edge; expected classification should
-  match the calibrated edge branch.
-- `standon_inextremis_range_above_pass`
-  Probes above the stand-on in-extremis range cutoff; expected classification
-  should follow the post-edge range branch.
-- `standon_inextremis_cpa_below_pass`
-  Probes below the stand-on in-extremis CPA cutoff; expected classification
-  should follow the calibrated CPA branch.
-- `standon_inextremis_cpa_edge_pass`
-  Probes the stand-on in-extremis CPA edge; expected classification should
-  match the calibrated edge branch.
-- `standon_inextremis_cpa_above_pass`
-  Probes above the stand-on in-extremis CPA cutoff; expected classification
-  should follow the post-edge CPA branch.
-- `standon_ot_inextremis_range_below_pass`
-  Probes below the overtaken-vessel in-extremis range cutoff; expected
-  classification should follow the calibrated range branch.
-- `standon_ot_inextremis_range_edge_pass`
-  Probes the overtaken-vessel in-extremis range edge; expected classification
-  should match the calibrated edge branch.
-- `standon_ot_inextremis_range_above_pass`
-  Probes above the overtaken-vessel in-extremis range cutoff; expected
-  classification should follow the post-edge range branch.
-- `standon_ot_inextremis_cpa_below_pass`
-  Probes below the overtaken-vessel in-extremis CPA cutoff; expected
-  classification should follow the calibrated CPA branch.
-- `standon_ot_inextremis_cpa_edge_pass`
-  Probes the overtaken-vessel in-extremis CPA edge; expected classification
-  should match the calibrated edge branch.
-- `standon_ot_inextremis_cpa_above_pass`
-  Probes above the overtaken-vessel in-extremis CPA cutoff; expected
-  classification should follow the post-edge CPA branch.
+- `head_on_thresh_below_pass`: Ben approaches ownship with an eight-degree heading offset (`B_HEADING=8`). Passes when head-on index 10 appears before timeout while `COLLISION_TOTAL=0`.
+- `head_on_thresh_edge_pass`: Increases Ben's heading offset to 12 degrees at the calibrated edge. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
+- `head_on_thresh_above_pass`: Increases Ben's heading offset to 16 degrees. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
+- `head_on_thresh_below_mirror_pass`: Mirrors the below-edge heading to 352 degrees. Passes when head-on index 10 appears before timeout while `COLLISION_TOTAL=0`.
+- `head_on_thresh_edge_mirror_pass`: Mirrors the edge heading to 348 degrees. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
+- `head_on_thresh_above_mirror_pass`: Mirrors the above-edge heading to 344 degrees. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_thresh_below_pass`: Runs parallel eastbound tracks with 1.6 m/s ownship on `y=-48` and 1.0 m/s Ben on `y=-84`, a 36-meter offset. Passes when `overtaking:port` index 43 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_thresh_edge_pass`: Moves ownship to `y=-47`, increasing the offset to 37 meters. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_thresh_above_pass`: Moves ownship to `y=-46`, increasing the offset to 38 meters. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_thresh_below_mirror_pass`: Places ownship on `y=-122` and Ben on `y=-84`, a 38-meter mirrored offset. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_thresh_edge_mirror_pass`: Moves mirrored ownship to `y=-121`, a 37-meter offset. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaking_thresh_above_mirror_pass`: Moves mirrored ownship to `y=-120`, a 36-meter offset. Passes when `overtaking:starboard` index 47 appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_thresh_below_pass`: Sends 1.6 m/s Ben from `(-70,-58)` past 1.0 m/s ownship on `y=-80`, a 22-meter port-side offset. Passes when `COLREGS_AVOID_MODE_BEN=cpa` appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_thresh_edge_pass`: Moves Ben to `y=-62`, an 18-meter port-side offset. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_thresh_above_pass`: Moves Ben to `y=-66`, a 14-meter port-side offset. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_thresh_below_mirror_pass`: Mirrors the 22-meter offset with Ben on `y=-102`. Passes when CPA mode appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_thresh_edge_mirror_pass`: Moves mirrored Ben to `y=-96.5`, 16.5 meters from ownship. Passes when `standon_ot:starboard` appears before timeout while `COLLISION_TOTAL=0`.
+- `overtaken_thresh_above_mirror_pass`: Moves mirrored Ben to `y=-94`, 14 meters from ownship. Passes when `standon_ot:starboard` appears before timeout while `COLLISION_TOTAL=0`.
+- `giveway_bowdist_below_pass`: Starts eastbound ownship at `(-71,-48)` against northbound Ben at `(10,-130)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
+- `giveway_bowdist_edge_pass`: Moves ownship one meter forward to `(-70,-48)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
+- `giveway_bowdist_above_pass`: Moves ownship to `(-61,-48)`. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
+- `giveway_bowdist_below_mirror_pass`: Rotates the below fixture 180 degrees, with ownship at `(71,48)` and Ben at `(-10,130)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
+- `giveway_bowdist_edge_mirror_pass`: Rotates the edge fixture, placing ownship at `(70,48)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
+- `giveway_bowdist_above_mirror_pass`: Rotates the above fixture, placing ownship at `(61,48)`. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
+- `giveway_turngap_below_pass`: Starts ownship at `(-25.377,11.833)` on heading 115 at 1.4 m/s and Ben at `(41.652,-50.428)` on heading 330 at 1.3 m/s. Passes on index 20 with `XCN_BOW_DIST_BEN<10` and `XCN_BOW_TURN_GAP_BEN>10`, before timeout and with zero collisions.
+- `giveway_turngap_edge_pass`: Moves Ben slightly to `(41.600,-50.480)` and raises its speed to 1.4 m/s. Passes on index 20 with bow distance below 10 and turn gap above 10, before timeout and with zero collisions.
+- `giveway_turngap_above_pass`: Changes ownship to 1.2 m/s and moves Ben to `(39.46,-52.627)` at 1.4 m/s. Passes on index 22 with both bow distance and turn gap below 10, before timeout and with zero collisions.
+- `giveway_turngap_below_mirror_pass`: Rotates the below fixture 180 degrees, using ownship `(25.377,-11.833)` heading 295 and Ben `(-41.652,50.428)` heading 150. Passes on index 20 with bow distance below 10 and turn gap above 10, before timeout and with zero collisions.
+- `giveway_turngap_edge_mirror_pass`: Rotates the edge fixture and uses equal 1.4 m/s speeds. Passes on index 20 with bow distance below 10 and turn gap above 10, before timeout and with zero collisions.
+- `giveway_turngap_above_mirror_pass`: Rotates the above fixture, with 1.2 m/s ownship and 1.4 m/s Ben. Passes on index 22 with both bow distance and turn gap below 10, before timeout and with zero collisions.
+- `standon_unsurebow_below_pass`: Uses eastbound ownship at `(-55,-72)` and southbound Ben at `(10,-18)`. Passes when generic `standon:unsure` index 38 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_unsurebow_edge_pass`: Uses ownship at `(-60,-80)` and Ben at `(10,-30)`. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_unsurebow_above_pass`: Uses the execution-far fixture with ownship at `(-76,-80)` and Ben at `(10,-12)`. Passes when `standon:bow` index 32 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_band270_stern_pass`: Uses eastbound ownship at `(-70,-80)` and 1.2 m/s southbound Ben at `(10,15)`. Passes when `standon:stern` index 30 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_band350_unsurebow_pass`: Starts ownship at `(-35,-80)` and southbound Ben at `(10,-70)`. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_band350_unsurebow_alt_pass`: Moves Ben two meters north to `(10,-68)` in the same Band-350 fixture. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_band350_bow_pass`: Moves Ben to `(10,-60)` in the same Band-350 fixture. Passes when `standon:bow` index 32 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_band315_bow_pass`: Starts eastbound ownship at `(-35,-80)` and southbound Ben at `(0,-64)`. Passes when `standon:bow` index 32 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_southwest_unsurebow_pass`: Starts ownship eastbound at `(-30,-90)` and Ben southwest-bound from `(10,-82)` on heading 225. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_southwest_unsure_pass`: Moves the southwest-bound Ben start to `(10,-76)`. Passes when generic `standon:unsure` index 38 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_southwest_stern_pass`: Moves the southwest-bound Ben start to `(10,-70)`. Passes when `standon:stern` index 30 appears before timeout while `COLLISION_TOTAL=0`.
+- `outer_dist_below_pass`: Uses the southwest fixture with Ben starting at `(10,-70.5)`. Passes when `COLREGS_AVOID_MODE_BEN=standon:stern` appears before timeout while `COLLISION_TOTAL=0`.
+- `outer_dist_edge_pass`: Moves Ben to `(10,-70)`. Passes when `standon:stern` appears before timeout while `COLLISION_TOTAL=0`.
+- `outer_dist_above_pass`: Moves Ben to `(10,-69)`. Passes when CPA mode appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_inextremis_range_below_pass`: Uses the wide stand-on-stern geometry: ownship `(-70,-80)` and Ben `(10,15)`. Passes when stand-on-stern index 30 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_inextremis_range_edge_pass`: Uses ownship `(-30,-90)` and Ben `(-6,-87)` on heading 246. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_inextremis_range_above_pass`: Moves Ben half a meter to `(-6,-87.5)` in the same fixture. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_inextremis_cpa_below_pass`: Reuses the same wide stand-on-stern geometry as the range-below case. Passes when stand-on-stern index 30 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_inextremis_cpa_edge_pass`: Starts ownship at `(-30,-90)` and Ben at `(-6,-88)` on heading 244. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_inextremis_cpa_above_pass`: Moves Ben to `(-6,-86)` in the same CPA fixture. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_ot_inextremis_range_below_pass`: Sends 1.6 m/s Ben from `(-105,-76)` toward 1.0 m/s ownship at `(-35,-80)`. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_ot_inextremis_range_edge_pass`: Moves Ben forward to `(-52,-76)`. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_ot_inextremis_range_above_pass`: Moves Ben forward to `(-50,-76)`. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_ot_inextremis_cpa_below_pass`: Uses Ben at `(-70,-64)`, a 16-meter lateral offset from ownship's `y=-80` track. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_ot_inextremis_cpa_edge_pass`: Uses Ben at `(-50,-75)`, five meters from ownship's track. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_ot_inextremis_cpa_above_pass`: Uses Ben at `(-50,-76)`, four meters from ownship's track. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_band315_unsure_pass`: This explicitly selected exploratory case starts ownship at `(-30,-90)` and southwest-bound Ben at `(0,-82)`. Passes when generic `standon:unsure` index 38 appears before timeout while `COLLISION_TOTAL=0`.
+- `standon_band315_unsure_bow_pass`: This explicitly selected exploratory case moves Ben to `(0,-80)` and lowers its speed to 1.2 m/s. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
 
 ## Scope Boundary
 

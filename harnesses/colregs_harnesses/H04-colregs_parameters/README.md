@@ -89,102 +89,38 @@ Every mode uses isolated mission copies and compact per-case port blocks:
 
 ## Cases
 
-- `min_util_cpa_low_pass`
-  Runs fixed stand-on geometry with low `min_util_cpa_dist`; expected
-  classification should remain on the low/default CPA-distance side.
-- `min_util_cpa_default_pass`
-  Runs the same fixed stand-on geometry with default `min_util_cpa_dist`;
-  expected classification should match the baseline.
-- `min_util_cpa_high_pass`
-  Runs the same fixed stand-on geometry with high `min_util_cpa_dist`;
-  expected classification should shift to the higher CPA-distance branch.
-- `headon_only_false_pass`
-  Runs crossing geometry with `headon_only=false`; the non-head-on encounter
-  should still be admitted as give-way.
-- `headon_only_true_pass`
-  Runs the same crossing geometry with `headon_only=true`; the non-head-on
-  encounter should be demoted to CPA.
-- `giveway_bow_dist_default_pass`
-  Runs fixed give-way bow-distance geometry with the default threshold and
-  expects the stock give-way bow classification.
-- `giveway_bow_dist_high_pass`
-  Runs the same geometry with high `giveway_bow_dist`; expected classification
-  should reflect the widened bow-distance threshold.
-- `max_util_cpa_default_pass`
-  Runs fixed stand-on geometry with default `max_util_cpa_dist`; expected
-  classification should match the baseline.
-- `max_util_cpa_high_pass`
-  Runs the same geometry with high `max_util_cpa_dist`; expected
-  classification should move to the higher CPA envelope branch.
-- `velocity_filter_off_pass`
-  Runs fixed stand-on geometry with velocity filtering off; expected
-  classification should match the unfiltered baseline.
-- `velocity_filter_on_pass`
-  Runs the same geometry with velocity filtering on; expected classification
-  should show the filter's effect on CPA evaluation.
-- `eval_tol_default_pass`
-  Runs fixed overtaking geometry with default `eval_tol`; expected execution
-  quality should remain in the baseline CPA band.
-- `eval_tol_short_pass`
-  Runs the same overtaking geometry with short `eval_tol`; expected execution
-  quality should widen as configured.
-- `eval_tol_long_pass`
-  Runs the same overtaking geometry with long `eval_tol`; expected execution
-  quality should remain stable.
-- `pwt_outer_dist_default_pass`
-  Runs fixed range-gate geometry with default `pwt_outer_dist`; expected
-  relevance should match the stock gate.
-- `pwt_outer_dist_high_pass`
-  Runs the same range-gate geometry with high `pwt_outer_dist`; expected
-  relevance should admit COLREGS behavior earlier.
-- `pwt_inner_dist_low_pass`
-  Runs fixed stand-on geometry with low `pwt_inner_dist`; expected posted
-  priority weight should follow the low inner-distance band.
-- `pwt_inner_dist_default_pass`
-  Runs the same geometry with default `pwt_inner_dist`; expected posted
-  priority weight should match the baseline curve.
-- `pwt_inner_dist_high_pass`
-  Runs the same geometry with high `pwt_inner_dist`; expected posted priority
-  weight should move toward the saturated band.
-- `pwt_grade_linear_pass`
-  Runs fixed relevance geometry with `pwt_grade=linear` and checks the linear
-  priority-weight curve.
-- `pwt_grade_quasi_pass`
-  Runs fixed relevance geometry with `pwt_grade=quasi` and checks the quasi
-  priority-weight curve.
-- `pwt_grade_quadratic_pass`
-  Runs fixed relevance geometry with `pwt_grade=quadratic` and checks the
-  quadratic priority-weight curve.
-- `pts_port_turns_ok_true_pass`
-  Runs fixed give-way geometry with `pts_port_turns_ok=true` and checks the
-  early side relationship.
-- `pts_port_turns_ok_false_pass`
-  Runs the same give-way geometry with `pts_port_turns_ok=false` and checks
-  that the early side relationship flips as expected.
-- `turn_radius_default_pass`
-  Runs fixed give-way turn-gap geometry with default `turn_radius`; expected
-  classification should match the stock branch.
-- `turn_radius_high_pass`
-  Runs the same geometry with high `turn_radius`; expected classification
-  should flip to the high-radius branch.
-- `check_plateaus_false_pass`
-  Runs CPA fallback geometry with `check_plateaus=false`; refinery diagnostics
-  should remain at their initialized values.
-- `check_plateaus_true_pass`
-  Runs the same geometry with `check_plateaus=true`; refinery diagnostics
-  should post the expected plateau/basin signature.
-- `completed_dist_default_pass`
-  Runs CPA fallback geometry with default `completed_dist`; the encounter
-  should already be complete at the shared checkpoint.
-- `completed_dist_high_pass`
-  Runs the same geometry with high `completed_dist`; the encounter should
-  still be active at the shared checkpoint.
-- `refinery_on_pass`
-  Runs CPA fallback geometry with refinery enabled; classification should
-  remain CPA while diagnostics are posted.
-- `refinery_off_pass`
-  Runs the same geometry with refinery disabled; classification should remain
-  CPA while refinery diagnostics stay initialized.
+- `min_util_cpa_low_pass`: On `crossing_port_standon_band350_bow_pass`, sets `min_util_cpa_dist=6` to keep the encounter in the stand-on bow branch; passes when `COLREGS_AVOID_IX_BEN=32` appears before timeout with zero collisions and `CLOSEST_RANGE_EVER>10`.
+- `min_util_cpa_default_pass`: On the same geometry, uses the stock `min_util_cpa_dist=10`; passes when index 32 appears before timeout with zero collisions and closest range above 10 meters.
+- `min_util_cpa_high_pass`: On the same geometry, raises `min_util_cpa_dist` to 14 so the encounter enters the stand-on unsure-bow branch; passes when index 36 appears before timeout with zero collisions and closest range above 10 meters.
+- `headon_only_false_pass`: On `crossing_starboard_giveway_pass`, leaves `headon_only=false` so the crossing is handled as give-way; passes when index 20 appears before timeout with zero collisions and closest range above 10 meters.
+- `headon_only_true_pass`: On the same crossing, sets `headon_only=true` so a non-head-on encounter falls back to CPA; passes when index 50 appears before timeout with zero collisions and closest range above 10 meters.
+- `giveway_bow_dist_default_pass`: On `giveway_bowdist_above_pass`, uses the stock `giveway_bow_dist=10`; passes when the encounter remains give-way at index 22 before timeout with zero collisions and closest range above 10 meters.
+- `giveway_bow_dist_high_pass`: On the same geometry, raises `giveway_bow_dist` to 12 so the contact is excluded from the give-way bow branch; passes when index 50 appears before timeout with zero collisions and closest range above 10 meters.
+- `max_util_cpa_default_pass`: On `crossing_port_standon_band315_bow_pass`, uses the stock `max_util_cpa_dist=18`; passes when the encounter enters stand-on bow at index 32 before timeout with zero collisions and closest range above 10 meters.
+- `max_util_cpa_high_pass`: On the same geometry, raises `max_util_cpa_dist` to 24 so the encounter enters stand-on unsure-bow; passes when index 36 appears before timeout with zero collisions and closest range above 10 meters.
+- `velocity_filter_off_pass`: On `crossing_port_standon_band350_bow_pass`, leaves velocity filtering disabled; passes when the encounter reaches stand-on bow index 32 before timeout with zero collisions and closest range above 10 meters.
+- `velocity_filter_on_pass`: On the same geometry, enables `velocity_filter=min_spd=1.0,max_spd=2.0,pct=40`, changing the projected CPA enough to enter stand-on unsure-bow; passes when index 36 appears before timeout with zero collisions and closest range above 10 meters.
+- `eval_tol_default_pass`: On `overtaking_starboard_range_far_pass`, uses the stock evaluation horizon and exercises the complete maneuver; passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 22.1 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
+- `eval_tol_short_pass`: On the same overtaking geometry, sets `eval_tol=30`; passes when index 43 is observed and Ben arrives with zero collisions, no timeout, closest range from 23.5 through 24.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
+- `eval_tol_long_pass`: On the same overtaking geometry, sets `eval_tol=240`; passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 21.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
+- `pwt_outer_dist_default_pass`: On `crossing_port_standon_southwest_outer_above_pass`, uses `pwt_outer_dist=40`; passes when the out-of-range encounter remains at CPA index 50 before timeout with zero collisions and closest range above 10 meters.
+- `pwt_outer_dist_high_pass`: On the same geometry, raises `pwt_outer_dist` to 45 so the contact enters the COLREGS relevance gate; passes when stand-on stern index 30 appears before timeout with zero collisions and closest range above 10 meters.
+- `pwt_inner_dist_low_pass`: On `crossing_port_standon_southwest_outer_above_pass`, sets `pwt_inner_dist=10`; passes when index 30 appears by 30 meters of contact range, priority weight is 45 through 60, and the mission has zero collisions, no timeout, and closest range above 10 meters.
+- `pwt_inner_dist_default_pass`: On the same geometry, uses `pwt_inner_dist=20`; passes when index 30 appears by 30 meters, priority weight is 70 through 90, and the mission has zero collisions, no timeout, and closest range above 10 meters.
+- `pwt_inner_dist_high_pass`: On the same geometry, sets `pwt_inner_dist=30`; passes when index 30 appears by 30 meters, priority weight is 145 through 150.1, and the mission has zero collisions, no timeout, and closest range above 10 meters.
+- `pwt_grade_linear_pass`: On `crossing_port_standon_southwest_outer_above_pass`, uses `pwt_grade=linear`; passes when index 30 appears by 35 meters, priority weight is 35 through 55, and the mission has zero collisions, no timeout, and closest range above 10 meters.
+- `pwt_grade_quasi_pass`: On the same geometry, sets `pwt_grade=quasi`; passes when index 30 appears by 35 meters, priority weight is 18 through 36, and the mission has zero collisions, no timeout, and closest range above 10 meters.
+- `pwt_grade_quadratic_pass`: On the same geometry, sets `pwt_grade=quadratic`; the current evaluator passes when index 30 appears at 30 through 33 meters with priority weight 15 through 30, zero collisions, no timeout, and closest range above 10 meters.
+- `pts_port_turns_ok_true_pass`: On `giveway_turngap_edge_pass`, leaves `pts_port_turns_ok=true` so the generated give-way maneuver may pass to port; passes when index 20 appears by 20 meters, Claire is port and fore of Ben without crossing tracks, and there are zero collisions, near misses, or timeouts with closest range above 10 meters.
+- `pts_port_turns_ok_false_pass`: On the same geometry, sets `pts_port_turns_ok=false` to reject the port-turn solution; passes when index 20 appears by 20 meters, Claire is not port but remains fore of Ben without crossing tracks, and there are zero collisions, near misses, or timeouts with closest range above 10 meters.
+- `turn_radius_default_pass`: On `giveway_turngap_edge_pass`, uses the stock turn radius; passes when the encounter remains give-way at index 20 before timeout with zero collisions and closest range above 10 meters.
+- `turn_radius_high_pass`: On the same geometry, sets `turn_radius=8` so the turn-gap check rejects the give-way branch; passes when index 22 appears before timeout with zero collisions and closest range above 10 meters.
+- `check_plateaus_false_pass`: On `head_on_cpa_fallback_pass`, enables the refinery but sets `check_plateaus=false`; passes at CPA index 50 when `REFINERY_PLATEAU_OK_BEN=false`, `REFINERY_BASIN_OK_BEN=false`, and `REFINERY_LOGIC_BEN=none`, with zero collisions, no timeout, and closest range above 10 meters.
+- `check_plateaus_true_pass`: On the same geometry, enables both the refinery and plateau checking; passes at CPA index 50 when plateau is false, basin is true, and refinery logic is `aft`, with zero collisions, no timeout, and closest range above 10 meters.
+- `completed_dist_default_pass`: On `head_on_cpa_fallback_pass`, uses `completed_dist=45`; the harness intentionally waits for the shared timeout checkpoint and passes when timeout is true, mode is `complete`, collisions are zero, and closest range is above 10 meters.
+- `completed_dist_high_pass`: On the same geometry, raises `completed_dist` to 80; the harness intentionally waits for the same checkpoint and passes when timeout is true, mode remains `none`, collisions are zero, and closest range is above 10 meters.
+- `refinery_on_pass`: On `head_on_cpa_fallback_pass`, sets `use_refinery=true` with plateau checking enabled; passes at CPA index 50 when plateau is false, basin is true, and refinery logic is `aft`, with zero collisions, no timeout, and closest range above 10 meters.
+- `refinery_off_pass`: On the same geometry, sets `use_refinery=false`; passes at CPA index 50 when plateau and basin are false and refinery logic is `none`, with zero collisions, no timeout, and closest range above 10 meters.
 
 Current assertion styles:
 - classification-time checks

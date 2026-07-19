@@ -53,6 +53,7 @@ PSHARE_OFFSET=$((PORT_STRIDE / 2))
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 CASE=""
 HAVE_LOCK=no
@@ -101,6 +102,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show rolling scheduler events
   --just_make, -j    Prepare each case without launching it
+  --log=<mode>       Logging mode: minimal (default) or full
   --max_time=<secs>  Maximum time passed to each mission wrapper
   --case=<name>      Run one named case
   --jobs=<n>         Run up to n cases concurrently with rolling scheduling
@@ -134,6 +136,7 @@ for arg in "$@"; do
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --gui) DISPLAY_ARGS=() ;;
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --help|-h) usage; exit 0 ;;
@@ -156,6 +159,10 @@ MAX_TIME=$((10#$MAX_TIME))
 [ "$JOBS" -gt 0 ] || die "--jobs must be a positive integer"
 [ "$PORT_BASE" -gt 0 ] && [ "$PORT_BASE" -le 65535 ] || die "--port_base must be an integer from 1 through 65535"
 [ "$MAX_TIME" -gt 0 ] || die "--max_time must be a positive integer"
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 [ -d "$MISSION_DIR" ] || die "mission directory not found: $MISSION_DIR"
 [ -f "$TEARDOWN_HELPER" ] || die "missing teardown helper: $TEARDOWN_HELPER"
 
@@ -439,6 +446,8 @@ prepare_case() {
     local case_base="$3"
     local shore_patch=""
     local vehicle_patch=""
+    local -a shore_patches=()
+    local -a vehicle_patches=()
 
     get_case_config "$case_name" || return 1
     shore_patch="$SHORE_PATCH"
@@ -460,12 +469,21 @@ prepare_case() {
         render_patch "$vehicle_patch" "$workdir/case-vehicle.xmoos" "$case_base" || return 1
         vehicle_patch="$workdir/case-vehicle.xmoos"
     fi
-    if [ -n "$shore_patch" ]; then
-        nspatch --stem="$workdir/meta_shoreside.moos" \
-            "$shore_patch" --targ="$workdir/meta_shoreside.moosx" || return 1
-    fi
+    shore_patches+=("$workdir/full-logging-shoreside.xmoos")
+    vehicle_patches+=("$workdir/full-logging-vehicle.xmoos")
+    [ -z "$shore_patch" ] || shore_patches+=("$shore_patch")
+    vehicle_patches+=("$vehicle_patch")
+    nspatch --stem="$workdir/meta_shoreside.moos" \
+        "${shore_patches[@]}" --targ="$workdir/meta_shoreside.moosx" || return 1
     nspatch --stem="$workdir/meta_vehicle.moos" \
-        "$vehicle_patch" --targ="$workdir/meta_vehicle.moosx" || return 1
+        "${vehicle_patches[@]}" --targ="$workdir/meta_vehicle.moosx" || return 1
+    if [ "$LOG_MODE" = minimal ]; then
+        (
+            cd "$workdir" || exit 1
+            ./prepare_logging_mode.sh minimal grading \
+                meta_shoreside.moosx meta_vehicle.moosx
+        ) || return 1
+    fi
 }
 
 shore_alog() {
@@ -804,7 +822,8 @@ run_case() {
             "$TIME_WARP"
         )
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
-        ./zlaunch.sh "${launch_args[@]}"
+        LOG_MODE_PREPARED=yes LOG_MODE_PREPARED_VALUE="$LOG_MODE" \
+            ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
     ) || launch_rc=$?
 
     write_result "$case_name" "$result_file" "$launch_rc" "$workdir"
@@ -978,7 +997,7 @@ elapsed_seconds=$SECONDS
 [ "$CLEANUP_FAILED" != yes ] || FINAL_FAILURES=$((FINAL_FAILURES + 1))
 trap - EXIT INT TERM PIPE
 
-printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
-    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]

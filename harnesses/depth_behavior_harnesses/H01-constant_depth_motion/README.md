@@ -10,25 +10,25 @@ and integration evidence from `pMarinePIDV22`.
 
 ## Current Matrix
 
-- `constant_depth_hold_pass` Baseline hold at the stock target depth with bounded mismatch and clean behavior state.
-- `constant_depth_surface_pass` Holds the lower depth boundary at the surface and verifies zero-depth mismatch.
-- `constant_depth_negative_clip_pass` Supplies a negative configured depth and verifies mission-time clipping to the surface.
-- `constant_depth_shape_params_pass` Uses tight ZAIC shaping parameters and verifies the vehicle still settles inside the intended depth band.
-- `constant_depth_summitdelta_clip_pass` Supplies an over-range summit delta and verifies the behavior clips it while still holding depth.
-- `constant_depth_no_mismatch_var_pass` Omits the optional mismatch telemetry variable and verifies the behavior still controls depth.
-- `constant_depth_update_pass` Posts a runtime `DEPTH_VALUE` update and requires the behavior to settle near the updated target.
-- `constant_depth_bad_update_preserve_pass` Posts a valid runtime update followed by malformed update mail and verifies the valid target remains in force.
-- `constant_depth_duration_complete_pass` Gives the behavior a finite duration and verifies its completion flag is posted in the moving mission.
-- `constant_depth_bad_depth_fail` Supplies malformed depth config and expects the normal good-case verdict to fail.
-- `constant_depth_bad_peakwidth_fail` Supplies malformed ZAIC width config and expects the normal good-case verdict to fail.
-- `constant_depth_bad_basewidth_fail` Supplies malformed ZAIC basewidth config and expects the normal good-case verdict to fail.
-- `constant_depth_bad_summitdelta_fail` Supplies malformed summit-delta config and expects the normal good-case verdict to fail.
-- `constant_depth_bad_mismatch_var_fail` Supplies a whitespace-bearing mismatch variable name and expects the normal good-case verdict to fail.
-- `constant_depth_missing_duration_fail` Omits the required duration override and expects the behavior to time out before holding depth.
-- `constant_depth_missing_nav_depth_fail` Removes usable ownship depth mail and expects the constant-depth good-case verdict to fail.
-- `constant_depth_domain_missing_fail` Removes the helm depth domain and expects the constant-depth good-case verdict to fail.
-- `constant_depth_low_elevator_authority_fail` Limits PID elevator authority while commanding a deep target; the good-case depth band should not be reached.
-- `constant_depth_control_disabled_fail` Disables PID depth control while commanding a dive; the good-case depth band should not be reached.
+- `constant_depth_hold_pass` Commands the baseline 12-meter depth with `peakwidth=4`, `basewidth=10`, and `summitdelta=15`. Passes after the eastbound transit reaches `x>=45` with `10<=NAV_DEPTH<=14`, `DEPTH_MISMATCH<=4`, the expected corridor and heading, and no behavior error.
+- `constant_depth_surface_pass` Commands the valid lower boundary `depth=0` with a one-meter peak width and four-meter base width. Passes after `x>=40` with `NAV_DEPTH<=2`, `DEPTH_MISMATCH<=2`, and no behavior error.
+- `constant_depth_negative_clip_pass` Configures `depth=-5` to test clamping a negative target to the surface. Passes after `x>=40` with `NAV_DEPTH<=2`, `DEPTH_MISMATCH<=2`, and no behavior error.
+- `constant_depth_shape_params_pass` Configures `depth=10`, `peakwidth=0`, `basewidth=2`, and `summitdelta=100` to exercise the narrowest accepted ZAIC shape. Passes after `x>=45` with `8<=NAV_DEPTH<=12`, `DEPTH_MISMATCH<=2`, the expected corridor and heading, and no behavior error.
+- `constant_depth_summitdelta_clip_pass` Configures `summitdelta=250` at an 11-meter target to exercise the over-range summit-delta path. Passes after `x>=45` with `9<=NAV_DEPTH<=13`, `DEPTH_MISMATCH<=3`, and no behavior error.
+- `constant_depth_no_mismatch_var_pass` Omits the optional `depth_mismatch_var` while retaining the baseline 12-meter target. Passes after `x>=45` with `10<=NAV_DEPTH<=14`, the expected transit corridor, and no behavior error.
+- `constant_depth_update_pass` Posts `DEPTH_VALUE="depth=18"` at 10 seconds to change the active target from 12 to 18 meters. Passes after `x>=55` with `16<=NAV_DEPTH<=20`, `DEPTH_MISMATCH<=4`, the expected corridor and heading, and no behavior error.
+- `constant_depth_bad_update_preserve_pass` Posts the valid 18-meter update at 10 seconds and malformed `depth=bad` mail at 22 seconds to test preservation of the last valid target. Passes after `x>=55` with `16<=NAV_DEPTH<=20`, `DEPTH_MISMATCH<=4`, the expected corridor and heading, and no behavior error.
+- `constant_depth_duration_complete_pass` Sets `duration=8` and `endflag=CD_DONE=true` to exercise finite behavior completion during the transit. Passes at 22 seconds when `CD_DONE=true` and `NAV_X>=20`; behavior-error state is recorded but not graded.
+- `constant_depth_bad_depth_fail` Sets `depth=deep` to exercise rejection of a nonnumeric depth. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `constant_depth_bad_peakwidth_fail` Sets `peakwidth=wide` to exercise rejection of a nonnumeric peak width. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `constant_depth_bad_basewidth_fail` Sets `basewidth=wide` to exercise rejection of a nonnumeric base width. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `constant_depth_bad_summitdelta_fail` Sets `summitdelta=wide` to exercise rejection of a nonnumeric summit delta. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `constant_depth_bad_mismatch_var_fail` Sets `depth_mismatch_var=BAD VAR` to exercise rejection of a MOOS variable name containing whitespace. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `constant_depth_missing_duration_fail` Omits the required `duration` parameter from `BHV_ConstantDepth`. The harness passes when `ABE_BHV_ERROR` is observed.
+- `constant_depth_missing_nav_depth_fail` Changes the simulator output prefix to `SIM`, leaving the helm without `NAV_X` or `NAV_DEPTH`. The harness passes at 45 seconds when both navigation variables remain absent, `DESIRED_ELEVATOR=0`, and no behavior error is observed.
+- `constant_depth_domain_missing_fail` Removes `depth` from the IvP helm domain while retaining the constant-depth behavior. The harness passes when `ABE_BHV_ERROR` is observed.
+- `constant_depth_low_elevator_authority_fail` Commands 24 meters while limiting `pMarinePIDV22` to `maxelevator=0.05`, exercising an underpowered depth controller. The harness passes after `x>=45` when `NAV_DEPTH<=22`, `DESIRED_ELEVATOR<=0.05`, and no behavior error is observed; reaching `NAV_DEPTH>=22.5` fails the case.
+- `constant_depth_control_disabled_fail` Commands 16 meters with `depth_control=false` in `pMarinePIDV22`. The harness passes after `x>=45` when `NAV_DEPTH<=2`, `DEPTH_MISMATCH>=14`, and no behavior error is observed; reaching `NAV_DEPTH>=14` fails the case.
 
 ## Running
 

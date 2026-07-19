@@ -7,9 +7,14 @@ the requested ports, mission label, display mode, time warp, and maximum time,
 requires exactly one valid pMissionEval result row, and applies scoped cleanup
 when run directly.
 
+The direct launchers accept `--log=minimal|full` and default to `minimal`.
+Because pLogger configuration is the subject of this mission, both modes keep
+the selected case's logger behavior unchanged.
+
 Typical commands:
 
 ```sh
 ./launch.sh --just_make --nogui 10
 ./zlaunch.sh --max_time=20 --nogui 10
+./zlaunch.sh --log=full --max_time=20 --nogui 10
 ```

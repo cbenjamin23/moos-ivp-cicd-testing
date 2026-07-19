@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Baseline Traffic Ring</h3>
-          <p>Description: Baseline fixed-seed five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
+          <p>Description: Uses seed 17, five vehicles at speed 1.75, a 36-meter field ring, and a 300-second assignment window, testing the fixed-seed traffic-ring baseline; passes with mission completion, no timeout or collision, closest range in (0,30], at least 25 assignment batches, zero scanned warnings, and wall time in 30–32 seconds locally or 58–70 seconds in CI.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Mixed-Speed Traffic Ring</h3>
-          <p>Description: Traffic ring with mixed vehicle speeds. The mission should keep assignments active and remain collision-free despite speed asymmetry.</p>
+          <p>Description: Uses seed 23 and five speeds from 1.55 through 2.03 over the same 300-second window, exercising assignment and COLREGS behavior under speed asymmetry; passes with completion, no timeout or collision, closest range in (0,30], at least 25 batches, zero scanned warnings, and the baseline profile-specific wall-time band.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Non-Cooperative Traffic Ring</h3>
-          <p>Description: Non-cooperative traffic-ring variant. Vehicle eve runs with AVOID=false, while the overall traffic ring should still remain collision-free.</p>
+          <p>Description: Uses seed 41, five vehicles at speed 1.5, and launches eve with AVOID=false, exercising a non-cooperative participant in the 300-second ring; passes on the same completion, no-timeout, zero-collision, closest-range, 25-batch, zero-warning, and profile-specific wall-time conditions as the short cooperative cases, while DUMB_VNAME=eve is only reported.</p>
         </div>
       </article>
 
@@ -98,25 +98,25 @@
 
         <article class="case-row">
           <code>baseline_circle_pass</code>
-          <p>Baseline fixed-seed five-vehicle traffic ring. The mission should maintain assignment activity, run warning-free, and finish the fixed window with zero collisions.</p>
+          <p>Uses seed 17, five vehicles at speed 1.75, a 36-meter field ring, and a 300-second assignment window, testing the fixed-seed traffic-ring baseline; passes with mission completion, no timeout or collision, closest range in (0,30], at least 25 assignment batches, zero scanned warnings, and wall time in 30–32 seconds locally or 58–70 seconds in CI.</p>
         </article>
 
 
         <article class="case-row">
           <code>mixed_speed_circle_pass</code>
-          <p>Traffic ring with mixed vehicle speeds. The mission should keep assignments active and remain collision-free despite speed asymmetry.</p>
+          <p>Uses seed 23 and five speeds from 1.55 through 2.03 over the same 300-second window, exercising assignment and COLREGS behavior under speed asymmetry; passes with completion, no timeout or collision, closest range in (0,30], at least 25 batches, zero scanned warnings, and the baseline profile-specific wall-time band.</p>
         </article>
 
 
         <article class="case-row">
           <code>endurance_circle_pass</code>
-          <p>Longer traffic-ring run. The mission should sustain repeated assignments over the endurance window with zero collisions and clean warning logs. This case uses a wider assignment ring and stricter predicted-CPA filtering than the shorter cases to keep the long CI soak stable.</p>
+          <p>Uses seed 31, the five mixed speeds, a 42-meter field ring, 45-meter assignment radius, minimum target separation 18, predicted CPA 14, and a 900-second window, exercising a longer and wider traffic-ring soak; passes with completion, no timeout or collision, closest range in (0,30], at least 80 batches, zero scanned warnings, and wall time in 89.5–92.5 seconds locally or 175–190 seconds in CI.</p>
         </article>
 
 
         <article class="case-row">
           <code>noncoop_circle_pass</code>
-          <p>Non-cooperative traffic-ring variant. Vehicle eve runs with AVOID=false, while the overall traffic ring should still remain collision-free.</p>
+          <p>Uses seed 41, five vehicles at speed 1.5, and launches eve with AVOID=false, exercising a non-cooperative participant in the 300-second ring; passes on the same completion, no-timeout, zero-collision, closest-range, 25-batch, zero-warning, and profile-specific wall-time conditions as the short cooperative cases, while DUMB_VNAME=eve is only reported.</p>
         </article>
 
       </div>

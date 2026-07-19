@@ -51,7 +51,7 @@
         </div>
         <div class="gif-meta">
           <h3>Burn Gap Detection</h3>
-          <p>Description: Busy-wait case. failure_type=burn,2.0 must create a measurable helm iteration gap while leaving pHelmIvP alive.</p>
+          <p>Description: Completes immediately with failure_type=burn,2.0, busy-waiting inside the helm for two seconds; passes when a PHELMIVP_ITER_GAP&gt;1.5 is latched, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
         </div>
       </article>
 
@@ -62,7 +62,7 @@
         </div>
         <div class="gif-meta">
           <h3>Crash Process Loss</h3>
-          <p>Description: Crash case. failure_type=crash must make pHelmIvP disappear and produce a passing mission row with expected=process_loss.</p>
+          <p>Description: Completes immediately with failure_type=crash, triggering the behavior&#x27;s assertion; the harness passes with expected=process_loss when pHelmIvP disappears, process-watch health becomes false, and load breach count is zero.</p>
         </div>
       </article>
 
@@ -79,55 +79,55 @@
 
         <article class="case-row">
           <code>baseline_armed_no_trigger_pass</code>
-          <p>Baseline case. The behavior is armed but has a long duration, so the mission must evaluate before any failure is triggered.</p>
+          <p>Arms failure_type=burn,0 behind duration=50 and evaluates at eight seconds, before completion; passes while pHelmIvP remains healthy, load breach count is zero, and TEST_FAILURE_DONE remains false.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_gap_detected_pass</code>
-          <p>Busy-wait case. failure_type=burn,2.0 must create a measurable helm iteration gap while leaving pHelmIvP alive.</p>
+          <p>Completes immediately with failure_type=burn,2.0, busy-waiting inside the helm for two seconds; passes when a PHELMIVP_ITER_GAP&gt;1.5 is latched, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>hang_alias_gap_detected_pass</code>
-          <p>Alias busy-wait case. failure_type=hang,2.0 must behave like burn and create a measurable helm iteration gap.</p>
+          <p>Completes immediately with failure_type=hang,2.0, exercising hang as the burn alias; passes when a greater-than-1.5-second helm iteration gap is latched, the end flag fires, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_default_time_gap_pass</code>
-          <p>Default-duration burn case. failure_type=burn must use the default burn time and create a measurable helm iteration gap.</p>
+          <p>Uses failure_type=burn with no time field, exercising the three-second constructor default; passes when a greater-than-1.5-second helm iteration gap is latched, the end flag fires, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_malformed_time_default_gap_pass</code>
-          <p>Malformed-duration burn case. failure_type=burn,not_a_number must preserve the default burn time and create a measurable helm iteration gap.</p>
+          <p>Uses failure_type=burn,not_a_number, which leaves the three-second default unchanged; passes when a greater-than-1.5-second helm iteration gap is latched, the end flag fires, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_negative_time_complete_pass</code>
-          <p>Negative-duration burn case. failure_type=burn,-1 must complete without process loss or load breach.</p>
+          <p>Uses failure_type=burn,-1, causing the completion loop&#x27;s elapsed-time test to succeed immediately; passes when TEST_FAILURE_DONE=true, all watched processes remain present, and load breach count stays zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_zero_complete_pass</code>
-          <p>Immediate-completion case. failure_type=burn,0 must complete without process loss or load breach.</p>
+          <p>Uses failure_type=burn,0, exercising the zero-duration completion loop; passes when TEST_FAILURE_DONE=true, all watched processes remain present, and load breach count stays zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>crash_on_complete_fail</code>
-          <p>Crash case. failure_type=crash must make pHelmIvP disappear and produce a passing mission row with expected=process_loss.</p>
+          <p>Completes immediately with failure_type=crash, triggering the behavior&#x27;s assertion; the harness passes with expected=process_loss when pHelmIvP disappears, process-watch health becomes false, and load breach count is zero.</p>
         </article>
 
 
         <article class="case-row">
           <code>unknown_type_default_crash_fail</code>
-          <p>Default-crash case. An unsupported failure_type leaves the behavior&#x27;s default crash mode in force and must pass by observed process loss.</p>
+          <p>Sets failure_type=unsupported_mode, which is accepted without changing the constructor&#x27;s default crash mode; the harness passes with expected=process_loss when pHelmIvP disappears, process-watch health becomes false, and load breach count is zero.</p>
         </article>
 
       </div>

@@ -13,88 +13,34 @@ the end of the line.
 
 ## Current Matrix
 
-- `baseline_cycle_pass`
-  Baseline lazy/busy cycle. Requires two busy transitions and positive vehicle
-  speed during the second busy window.
-- `lazy_wait_pass`
-  Samples the initial lazy window. Requires no busy transition, positive
-  pending-active time, zero pending-inactive time, and near-zero speed.
-- `first_busy_pass`
-  Samples the first busy window. Requires one busy transition, positive
-  pending-inactive time, and positive vehicle speed.
-- `busy_to_lazy_pass`
-  Starts busy with `reset_upon_running=false` and samples after the initial
-  busy window returns to lazy. Requires pending-active evidence without
-  depending on vehicle deceleration dynamics.
-- `deprecated_zaic_aliases_pass`
-  Uses deprecated ZAIC alias parameters and requires the behavior to enter busy
-  mode with positive vehicle speed.
-- `short_cycle_three_count_pass`
-  Uses short lazy/busy periods and requires at least three busy transitions plus
-  speed evidence in the third busy window.
-- `explicit_initially_lazy_pass`
-  Sets `initially_busy=false` explicitly and verifies the behavior starts in the
-  lazy window with pending-active evidence and near-zero speed.
-- `zaic_base_period_peak_aliases_pass`
-  Uses the `zaic_basewidth` and `period_peakwidth` aliases and requires the
-  behavior to enter busy mode with positive vehicle speed.
-- `reset_on_reactivation_pass`
-  Temporarily disables the behavior condition and verifies the default
-  `reset_upon_running=true` policy restarts the lazy timer on reactivation.
-- `reset_false_continuous_pass`
-  Temporarily disables the behavior condition with `reset_upon_running=false`
-  and verifies idle time continues to advance the periodic state.
-- `initially_busy_pass`
-  Sets `initially_busy=true` with `reset_upon_running=false`, then requires
-  immediate speed evidence while the busy counter remains at zero. The
-  separate `reset_on_reactivation_pass` case owns the default reset policy.
-- `zero_speed_pass`
-  Starts busy with `reset_upon_running=false` and `period_speed=0`, proving
-  zero is accepted and the vehicle remains effectively stopped while the
-  behavior is active.
-- `bad_period_lazy_fail`
-  Expected negative for `period_lazy=0`. Passes only when the helm reports
-  `HELM_MALCONFIG=true`.
-- `bad_period_lazy_nonnumeric_fail`
-  Expected negative for a nonnumeric `period_lazy` value. Passes only when the
-  helm reports `HELM_MALCONFIG=true`.
-- `bad_period_busy_fail`
-  Expected negative for `period_busy=0`. Passes only when the helm reports
-  `HELM_MALCONFIG=true`.
-- `bad_period_speed_fail`
-  Expected negative for negative `period_speed`. Passes only when the helm
-  reports `HELM_MALCONFIG=true`.
-- `bad_initially_busy_fail`
-  Expected negative for a non-boolean `initially_busy` value. Passes only when
-  the helm reports `HELM_MALCONFIG=true`.
-- `bad_reset_upon_running_fail`
-  Expected negative for a non-boolean `reset_upon_running` value. Passes only
-  when the helm reports `HELM_MALCONFIG=true`.
-- `bad_basewidth_fail`
-  Expected negative for negative `basewidth`. Passes only when the helm reports
-  `HELM_MALCONFIG=true`.
-- `bad_zaic_basewidth_fail`
-  Expected negative for negative `zaic_basewidth`. Passes only when the helm
-  reports `HELM_MALCONFIG=true`.
-- `bad_peakwidth_fail`
-  Expected negative for negative `peakwidth`. Passes only when the helm reports
-  `HELM_MALCONFIG=true`.
-- `bad_period_peakwidth_fail`
-  Expected negative for negative `period_peakwidth`. Passes only when the helm
-  reports `HELM_MALCONFIG=true`.
-- `bad_summit_delta_fail`
-  Expected negative for negative `summit_delta`. Passes only when the helm
-  reports `HELM_MALCONFIG=true`.
-- `bad_zaic_summit_delta_fail`
-  Expected negative for negative `zaic_summit_delta`. Passes only when the helm
-  reports `HELM_MALCONFIG=true`.
+- `baseline_cycle_pass`: Uses `period_lazy=4`, `period_busy=4`, and `period_speed=1.4`; at the scheduled 18.5-second sample, passes when at least two busy transitions have been counted and `NAV_SPEED>0.4`.
+- `lazy_wait_pass`: Samples the stock four-second initial lazy window at 3.5 seconds; passes when `PS_BUSY_COUNT=0`, pending-active time is positive, pending-inactive time is zero, and `NAV_SPEED<0.3`.
+- `first_busy_pass`: Samples the stock first busy window at seven seconds; passes when `PS_BUSY_COUNT=1`, pending-inactive time is positive, and `NAV_SPEED>0.4`.
+- `busy_to_lazy_pass`: Sets `initially_busy=true`, `reset_upon_running=false`, `period_busy=2`, `period_lazy=6`, and speed 1.2, then samples at 5.5 seconds; passes when the initial busy state has returned to lazy with busy count zero, pending-active time at least three seconds, and pending-inactive time zero.
+- `deprecated_zaic_aliases_pass`: Uses `period_lazy=2`, `period_busy=8`, `period_speed=1.5`, plus deprecated `period_basewidth=0.2`, `zaic_peakwidth=0`, and `zaic_summit_delta=25`; passes at 6.5 seconds when busy count is one, pending-inactive time is positive, and speed exceeds 0.4.
+- `short_cycle_three_count_pass`: Sets both periods to 1.5 seconds and speed to 1.3; passes at 12.5 seconds when at least three busy transitions have occurred and speed exceeds 0.4.
+- `explicit_initially_lazy_pass`: Explicitly sets `initially_busy=false` on the stock four-second cycle; passes at 3.5 seconds when busy count is zero, pending-active time is positive, pending-inactive time is zero, and speed is below 0.3.
+- `zaic_base_period_peak_aliases_pass`: Uses `period_lazy=2`, `period_busy=8`, `period_speed=1.5`, `zaic_basewidth=0.2`, `period_peakwidth=0`, and `summit_delta=25`; passes at 6.5 seconds when busy count is one, pending-inactive time is positive, and speed exceeds 0.4.
+- `reset_on_reactivation_pass`: With default reset behavior, disables `RUN_PS_ALL` at one second and re-enables it at 5.5 seconds; passes at 7.2 seconds when the restarted lazy window still has busy count zero, pending-active time above one second, pending-inactive time zero, and speed below 0.3.
+- `reset_false_continuous_pass`: Sets `reset_upon_running=false`, `period_lazy=8`, and `period_busy=10`, disables the behavior from three through 12 seconds, then samples at 15 seconds; passes when the periodic clock advanced through the inactive interval far enough to produce at least one busy transition and speed above 0.4.
+- `initially_busy_pass`: Sets `initially_busy=true`, `reset_upon_running=false`, five-second periods, and speed 1.6; passes at 3.5 seconds when the initial busy window has busy count zero, pending-inactive time is positive, and speed exceeds 0.4.
+- `zero_speed_pass`: Starts busy with `reset_upon_running=false`, five-second periods, and `period_speed=0`; passes at 3.5 seconds when busy count remains zero, pending-inactive time is positive, and speed is below 0.3.
+- `bad_period_lazy_fail`: Sets `period_lazy=0`; this expected-negative case passes when `IVPHELM_STATE` reports `HELM_MALCONFIG=true`.
+- `bad_period_lazy_nonnumeric_fail`: Sets `period_lazy=soon`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_period_busy_fail`: Sets `period_busy=0`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_period_speed_fail`: Sets `period_speed=-1`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_initially_busy_fail`: Sets `initially_busy=maybe`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_reset_upon_running_fail`: Sets `reset_upon_running=maybe`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_basewidth_fail`: Sets `basewidth=-0.1`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_zaic_basewidth_fail`: Sets `zaic_basewidth=-0.1`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_peakwidth_fail`: Sets `peakwidth=-0.1`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_period_peakwidth_fail`: Sets `period_peakwidth=-0.1`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_summit_delta_fail`: Sets `summit_delta=-1`; this expected-negative case passes when helm malconfiguration is reported.
+- `bad_zaic_summit_delta_fail`: Sets `zaic_summit_delta=-1`; this expected-negative case passes when helm malconfiguration is reported.
 
 ## Manual Inspection
 
-- `reset_false_visual_pass`
-  Slower visual version of the reset-false case. `RUN_PS_ALL` is turned off at
-  5 seconds, back on at 20 seconds, and the mission evaluates at 27 seconds.
-  The case is meant for `--gui` runs and is not part of the default CI matrix.
+- `reset_false_visual_pass`: Manual-only `reset_upon_running=false` case with 14-second lazy and 16-second busy periods; disables `RUN_PS_ALL` from five through 20 seconds and passes at 27 seconds when at least one busy transition occurred and speed exceeds 0.4.
 
 ## Manual Commands
 

@@ -1,0 +1,13 @@
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  WildCardLogging = false
+  Log = APPCAST @ 0 nosync
+}

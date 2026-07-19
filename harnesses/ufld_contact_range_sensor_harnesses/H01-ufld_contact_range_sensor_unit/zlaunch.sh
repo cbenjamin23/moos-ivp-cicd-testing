@@ -54,6 +54,7 @@ PSHARE_OFFSET=$((PORT_STRIDE / 2))
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 CASE=""
 HAVE_LOCK=no
 CLEANED=no
@@ -110,6 +111,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show rolling scheduler events
   --just_make, -j    Prepare each case without launching it
+  --log=minimal|full Select logging mode (default: minimal)
   --max_time=<secs>  Maximum time passed to each mission wrapper
   --case=<name>      Run one named case
   --jobs=<n>         Run up to n cases concurrently with rolling scheduling
@@ -141,11 +143,17 @@ for arg in "$@"; do
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --help|-h) usage; exit 0 ;;
         *[!0-9]*|'') die "bad argument: $arg" ;;
         *) TIME_WARP="$arg" ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
 is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
@@ -361,6 +369,12 @@ prepare_case() {
         "$COMMON_PATCH" --targ="$workdir/meta_shoreside.common.moos" || return 1
     nspatch --stem="$workdir/meta_shoreside.common.moos" \
         "$CASE_PATCH" --targ="$workdir/meta_shoreside.moosx" || return 1
+    if [ "$LOG_MODE" = minimal ]; then
+        (
+            cd "$workdir" || exit 1
+            ./prepare_logging_mode.sh "$LOG_MODE" none meta_shoreside.moosx
+        ) || return 1
+    fi
 }
 
 write_result() {
@@ -437,7 +451,8 @@ run_case() {
             "$TIME_WARP"
         )
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
-        ./zlaunch.sh "${launch_args[@]}"
+        LOG_MODE_PREPARED=yes LOG_MODE_PREPARED_VALUE="$LOG_MODE" \
+            ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
     ) || launch_rc=$?
 
     write_result "$case_name" "$result_file" "$launch_rc" "$workdir"
@@ -611,7 +626,7 @@ elapsed_seconds=$SECONDS
 [ "$CLEANUP_FAILED" != yes ] || FINAL_FAILURES=$((FINAL_FAILURES + 1))
 trap - EXIT INT TERM PIPE
 
-printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
-    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]

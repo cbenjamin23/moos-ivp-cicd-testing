@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Obstacle Collision</h3>
-          <p>Description: Verifies a vehicle crossing through a known obstacle posts collision and encounter flags.</p>
+          <p>Description: Defines square obstacle obs from x=-5 to 5, moves Alpha from 20 meters outside it to 0.5 meters from its edge and back out, and uses 1/5/15-meter collision, near-miss, and encounter thresholds; passes when the exact collision and encounter flags both report alpha:obs:0.5:1.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Encounter Only</h3>
-          <p>Description: Verifies a wider obstacle pass posts an encounter flag without near-miss or collision flags.</p>
+          <p>Description: Moves Alpha to 9 meters from the obstacle edge and back out; passes when COD_ENCOUNTER=alpha:obs:9:1 and neither a near-miss nor collision flag is published.</p>
         </div>
       </article>
 
@@ -87,85 +87,85 @@
 
         <article class="case-row">
           <code>collision_flag_pass</code>
-          <p>Verifies a vehicle crossing through a known obstacle posts collision and encounter flags.</p>
+          <p>Defines square obstacle obs from x=-5 to 5, moves Alpha from 20 meters outside it to 0.5 meters from its edge and back out, and uses 1/5/15-meter collision, near-miss, and encounter thresholds; passes when the exact collision and encounter flags both report alpha:obs:0.5:1.</p>
         </article>
 
 
         <article class="case-row">
           <code>near_miss_flag_pass</code>
-          <p>Verifies an obstacle pass inside the near-miss band posts near-miss and encounter flags.</p>
+          <p>Moves Alpha to 3 meters from the same obstacle edge and back outside the encounter range; passes when the exact near-miss and encounter flags both report alpha:obs:3:1.</p>
         </article>
 
 
         <article class="case-row">
           <code>encounter_only_flag_pass</code>
-          <p>Verifies a wider obstacle pass posts an encounter flag without near-miss or collision flags.</p>
+          <p>Moves Alpha to 9 meters from the obstacle edge and back out; passes when COD_ENCOUNTER=alpha:obs:9:1 and neither a near-miss nor collision flag is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>global_min_distance_pass</code>
-          <p>Verifies OB_GLOBAL_MIN tracks the closest vehicle-to-obstacle distance.</p>
+          <p>Places Alpha at x=12, 7 meters from the right edge of the square obstacle; passes when OB_GLOBAL_MIN=7 without requiring a completed encounter.</p>
         </article>
 
 
         <article class="case-row">
           <code>invalid_obstacle_absent_pass</code>
-          <p>Verifies a non-convex obstacle spec is rejected without distance or flag output.</p>
+          <p>Posts a non-convex polygon labeled bad and places Alpha inside its footprint; passes when no encounter, near-miss, collision, or global-minimum output is published.</p>
         </article>
 
 
         <article class="case-row">
           <code>obstacle_clear_blocks_later_pass</code>
-          <p>Verifies an aged KNOWN_OBSTACLE_CLEAR=all removes the obstacle before later node reports.</p>
+          <p>Posts KNOWN_OBSTACLE_CLEAR=all 4.6 seconds after creating obs, then places Alpha inside the former obstacle and moves it away; passes when no encounter flags or global-minimum distance are published, showing the obstacle older than the four-second clear threshold was removed.</p>
         </article>
 
 
         <article class="case-row">
           <code>upper_macro_flag_pass</code>
-          <p>Verifies $UP_VNAME, $ID, and count macros expand in collision flag output.</p>
+          <p>Configures collision_flag=COD_COLLISION_$UP_VNAME=$ID:$COLL_CNT and completes Alpha&#x27;s 0.5-meter collision with obs; passes when the expanded variable and value are exactly COD_COLLISION_ALPHA=obs:1.</p>
         </article>
 
 
         <article class="case-row">
           <code>fresh_clear_keeps_obstacle_pass</code>
-          <p>Verifies a too-fresh obstacle clear is ignored and the obstacle remains active.</p>
+          <p>Posts KNOWN_OBSTACLE_CLEAR=all only 1.6 seconds after creating obs, then completes a 0.5-meter collision; passes when the exact collision and encounter flags show the obstacle survived the four-second clear-age guard.</p>
         </article>
 
 
         <article class="case-row">
           <code>encounter_double_flag_pass</code>
-          <p>Verifies $DIST can be posted as a numeric encounter flag value.</p>
+          <p>Configures encounter_flag=COD_ENCOUNTER_DIST=$DIST and completes a 9-meter clear encounter; passes when COD_ENCOUNTER_DIST is posted as numeric value 9.</p>
         </article>
 
 
         <article class="case-row">
           <code>near_miss_upper_macro_flag_pass</code>
-          <p>Verifies near-miss flags expand uppercase vehicle-name and count macros.</p>
+          <p>Configures near_miss_flag=COD_NEAR_$UP_VNAME=$ID:$MISS_CNT and completes Alpha&#x27;s 3-meter near miss with obs; passes when the expanded variable and value are exactly COD_NEAR_ALPHA=obs:1.</p>
         </article>
 
 
         <article class="case-row">
           <code>collision_boundary_counts_near_pass</code>
-          <p>Verifies a distance exactly on collision_dist is treated as near-miss, not collision.</p>
+          <p>Completes an encounter whose minimum distance is exactly the 1-meter collision_dist; passes when near-miss and encounter flags report alpha:obs:1:1 and no collision flag is published, demonstrating the collision comparison is strict &lt;.</p>
         </article>
 
 
         <article class="case-row">
           <code>near_boundary_counts_encounter_pass</code>
-          <p>Verifies a distance exactly on near_miss_dist is treated as encounter-only.</p>
+          <p>Completes an encounter whose minimum distance is exactly the 5-meter near_miss_dist; passes when the encounter flag reports alpha:obs:5:1 and neither near-miss nor collision flags are published, demonstrating the near-miss comparison is strict &lt;.</p>
         </article>
 
 
         <article class="case-row">
           <code>named_clear_only_removes_target_pass</code>
-          <p>Verifies a named obstacle clear removes only the requested obstacle and leaves another obstacle active.</p>
+          <p>Creates obs1 near x=0 and obs2 near x=40, clears only obs1 after both are old enough for deletion, then completes a 0.5-meter collision with obs2; passes when the exact collision and encounter flags still identify obs2.</p>
         </article>
 
 
         <article class="case-row">
           <code>range_normalization_collision_pass</code>
-          <p>Verifies invalid obstacle range ordering is normalized so collision-distance encounters remain reportable.</p>
+          <p>Configures collision, near-miss, and encounter distances as 6, 3, and 4, then moves Alpha to 5.5 meters from the obstacle and back out; passes when exact collision and encounter flags report alpha:obs:5.5:1, demonstrating the outer encounter distance was expanded enough to admit the collision-range event.</p>
         </article>
 
       </div>

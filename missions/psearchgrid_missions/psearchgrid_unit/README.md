@@ -10,6 +10,9 @@ the configured `VIEW_GRID` publication that pSearchGrid produces at startup.
 Harness cases replace the generated case fixtures and retain their own
 case-specific variable and payload contracts, including node-report deltas.
 
+Direct `zlaunch.sh` runs default to minimal grading logging. Pass
+`--log=full` to restore the original diagnostic variable set.
+
 Typical harness run:
 
 ```sh

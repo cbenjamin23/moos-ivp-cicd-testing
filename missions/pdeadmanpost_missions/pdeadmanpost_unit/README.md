@@ -10,6 +10,9 @@ variables, zero-threshold posting, `once`/`repeat`/`reset` post policies with
 posting-count checks, invalid policy fallback, numeric/string/false deadflags,
 and multiple deadflags.
 
+Direct `zlaunch.sh` runs default to minimal count-evidence logging. Pass
+`--log=full` to restore the original diagnostic variable set.
+
 The mission's `pMissionEval` configuration writes the live verdict. Its thin
 `zlaunch.sh` forwards the requested ports, mission label, display mode, time
 warp, and maximum time to shared `xlaunch.sh`, requires exactly one valid result

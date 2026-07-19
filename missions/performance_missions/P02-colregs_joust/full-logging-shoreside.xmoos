@@ -1,0 +1,44 @@
+Processconfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+#ifdef LAUNCH_GUI yes
+  Run = pMarineViewer   @ NewConsole = false
+#else
+  Run = pMissionHash    @ NewConsole = false
+#endif
+
+  Run = pLogger         @ NewConsole = false
+  Run = pShare          @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+  Run = uFldCollisionDetect @ NewConsole = false
+  Run = uTimerScript     @ NewConsole = false
+  Run = pMissionEval     @ NewConsole = false
+  Run = pAutoPoke        @ NewConsole = false
+  Run = uProcessWatch   @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+}
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  Log = GIVEN_OBSTACLE @ 0 nosync
+
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = *_ITER_GAP
+  WildCardOmitPattern = *_ITER_LEN
+  WildCardOmitPattern = APPCAST
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+}

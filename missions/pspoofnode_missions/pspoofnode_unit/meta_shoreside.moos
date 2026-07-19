@@ -23,7 +23,23 @@ ProcessConfig = ANTLER
   Run = pMissionHash  @ NewConsole = false
 }
 
-#include plugs.moos <pLogger>
+//----------------------------------------------------
+// Minimal pLogger grading evidence
+
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File     = LOG_$(MMOD)
+  PATH     = ./
+  AsyncLog = true
+
+  Log = SPOOF_CANCEL @ 0 nosync
+  Log = NODE_REPORT @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+}
+
 #include case_spoof.moos
 #include case_timer.moos
 #include case_eval.moos

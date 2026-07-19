@@ -9,19 +9,19 @@ constant-depth behavior commands unsafe deeper targets.
 
 ## Current Matrix
 
-- `min_altitude_guard_pass` Sets a shallow simulated bottom and requires the behavior to preserve bottom clearance.
-- `min_altitude_shallow_bottom_pass` Sets clearance tighter than water depth and verifies the behavior clamps the allowed depth near the surface.
-- `min_altitude_zero_min_pass` Sets zero minimum altitude and verifies the behavior allows the deeper target down to the bottom estimate.
-- `min_altitude_low_threshold_pass` Sets a low positive clearance and verifies the behavior allows a near-bottom but nonzero altitude.
-- `min_altitude_noncritical_available_pass` Sets `missing_altitude_critical=false` with valid altitude mail and verifies normal clearance guarding still works.
-- `min_altitude_unconstrained_deep_bottom_pass` Uses ample simulated water depth and verifies the clearance guard does not interfere with a normal deep target.
-- `min_altitude_clearance_boundary_pass` Commands past the bottom-clearance limit and verifies the vehicle settles near the computed clearance boundary.
-- `min_altitude_zero_altitude_fail` Sets zero simulated altitude while commanding a dive, and passes when the mission observes zero-depth rejection evidence and a behavior error.
-- `min_altitude_bad_config_fail` Supplies malformed minimum-altitude config, and passes when the helm reports `MALCONFIG`.
-- `min_altitude_negative_min_fail` Supplies a negative minimum altitude, and passes when the helm reports `MALCONFIG`.
-- `min_altitude_bad_critical_bool_fail` Supplies an invalid `missing_altitude_critical` value, and passes when the helm reports `MALCONFIG`.
-- `min_altitude_missing_nav_fail` Removes usable ownship depth/altitude mail, and passes when depth/nav data stays absent and the vehicle does not command elevator authority.
-- `min_altitude_noncritical_missing_altitude_fail` Sets `missing_altitude_critical=false` while depth/altitude mail is unavailable, and passes when the current no-depth-data failure path remains caught.
+- `min_altitude_guard_pass` Commands 30 meters over a 20-meter bottom while requiring `min_altitude=8`. Passes after `x>=45` when `NAV_DEPTH<=16`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
+- `min_altitude_shallow_bottom_pass` Commands 30 meters over a six-meter bottom while requiring ten meters of clearance, placing the computed depth limit above the surface. Passes after `x>=45` when `NAV_DEPTH<=2`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
+- `min_altitude_zero_min_pass` Commands 30 meters over a 20-meter bottom with `min_altitude=0`, exercising the disabled-clearance boundary. Passes after `x>=45` when `16<=NAV_DEPTH<=31`, `NAV_ALTITUDE<=4`, and no behavior error is observed.
+- `min_altitude_low_threshold_pass` Commands 30 meters over a 20-meter bottom with `min_altitude=1`. Passes after `x>=45` when `16<=NAV_DEPTH<=21`, `NAV_ALTITUDE<=4`, and no behavior error is observed.
+- `min_altitude_noncritical_available_pass` Sets `missing_altitude_critical=false` while valid altitude mail remains available, with a 30-meter target, 20-meter bottom, and eight-meter clearance. Passes after `x>=45` when `NAV_DEPTH<=16`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
+- `min_altitude_unconstrained_deep_bottom_pass` Commands 22 meters over an 80-meter bottom while requiring eight meters of clearance, leaving the guard inactive. Passes after `x>=45` when `16<=NAV_DEPTH<=26`, `NAV_ALTITUDE>=40`, and no behavior error is observed.
+- `min_altitude_clearance_boundary_pass` Commands 30 meters over a 20-meter bottom while requiring eight meters of clearance, targeting the computed 12-meter depth boundary. Passes after `x>=45` when `10<=NAV_DEPTH<=14`, `6<=NAV_ALTITUDE<=10`, and no behavior error is observed.
+- `min_altitude_zero_altitude_fail` Configures a zero-meter water depth while commanding 30 meters with `min_altitude=8`. The harness passes at 45 seconds when `NAV_DEPTH<1` and `ABE_BHV_ERROR` has been observed.
+- `min_altitude_bad_config_fail` Sets `min_altitude=deep` to exercise rejection of a nonnumeric clearance. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `min_altitude_negative_min_fail` Sets `min_altitude=-1` to exercise rejection of a negative clearance. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `min_altitude_bad_critical_bool_fail` Sets `missing_altitude_critical=maybe` to exercise rejection of an invalid Boolean. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
+- `min_altitude_missing_nav_fail` Changes the simulator output prefix to `SIM`, leaving the helm without `NAV_X` or `NAV_DEPTH`. The harness passes at 45 seconds when both variables remain absent, `DESIRED_ELEVATOR=0`, and no behavior error is observed.
+- `min_altitude_noncritical_missing_altitude_fail` Also changes the simulator prefix to `SIM`, but its behavior fixture currently sets `missing_altitude_critical=true`, not `false`. The harness passes on the same evidence as `min_altitude_missing_nav_fail`: absent `NAV_X` and `NAV_DEPTH`, `DESIRED_ELEVATOR=0`, and no behavior error at 45 seconds.
 
 ## Running
 

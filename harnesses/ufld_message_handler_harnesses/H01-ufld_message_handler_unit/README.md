@@ -8,32 +8,32 @@ case runs in an isolated copy of the shared uField app stem, and
 
 ## Current Matrix
 
-- `dest_all_string_pass` Verifies a broad `dest_node=all` string message is forwarded when strict addressing is disabled.
-- `dest_all_uppercase_pass` Verifies uppercase `dest_node=ALL` is normalized and forwarded.
-- `dest_specific_self_pass` Verifies a message addressed to the local community is forwarded.
-- `dest_mismatch_reject_pass` Verifies a message addressed to another node is counted as rejected and not forwarded.
-- `strict_all_reject_pass` Verifies strict addressing rejects broad `dest_node=all` mail.
-- `strict_group_reject_pass` Verifies strict addressing rejects group-only mail.
-- `strict_specific_accept_pass` Verifies strict addressing still accepts mail addressed to the local community.
-- `numeric_payload_pass` Verifies numeric `double_val` payloads are forwarded as numeric MOOS mail.
-- `double_zero_payload_pass` Verifies a zero-valued numeric payload is forwarded instead of being treated as unset.
-- `mixed_payload_invalid_pass` Verifies messages carrying both string and double payload fields are counted invalid and not forwarded.
-- `quoted_string_unquoted_pass` Verifies quoted string payloads are forwarded in the parser-normalized form.
-- `src_app_forward_pass` Verifies messages with `src_app` metadata still forward the requested payload.
-- `invalid_payload_reject_pass` Verifies structurally invalid node messages are counted invalid and not forwarded.
-- `missing_destination_invalid_pass` Verifies a message without `dest_node` or `dest_group` is counted invalid and not forwarded.
-- `invalid_no_bad_flag_pass` Verifies invalid messages do not trigger `bad_msg_flag` postings reserved for valid rejected mail.
-- `msg_flag_macro_pass` Verifies `msg_flag` macro expansion after accepted mail.
-- `msg_flag_numeric_pass` Verifies numeric `msg_flag` postings after accepted mail.
-- `bad_msg_flag_macro_pass` Verifies `bad_msg_flag` macro expansion after rejected mail.
-- `bad_msg_flag_numeric_pass` Verifies numeric `bad_msg_flag` postings after rejected mail.
-- `multiple_bad_summary_pass` Verifies repeated valid rejected messages advance bad counters and summary totals.
-- `aux_info_node_app_forward_pass` Verifies `aux_info=node+app` configuration still forwards source-app messages correctly.
-- `dest_group_accept_pass` Verifies group-addressed mail without a node destination is accepted in non-strict mode.
-- `dest_node_overrides_group_reject_pass` Verifies an explicit mismatched `dest_node` rejects mail even when `dest_group` is present.
-- `dest_all_mixedcase_reject_pass` Verifies mixed-case `dest_node=All` is not normalized like exact `ALL`.
-- `multiple_good_summary_pass` Verifies summary counters across two accepted messages.
-- `mixed_valid_rejected_summary_pass` Verifies summary counters distinguish one accepted and one rejected valid message.
+- `dest_all_string_pass` Posts `dest_node=all` with `string_val=all_ok` under `strict_addressing=false`, exercising the lowercase broadcast token; passes when `HANDLED_RESULT=all_ok` and the summary is exactly `total=1,valid=1,rejected=0`.
+- `dest_all_uppercase_pass` Posts `dest_node=ALL` with `all_upper_ok`, exercising uppercase broadcast normalization; passes on that exact forwarded value and summary `total=1,valid=1,rejected=0`.
+- `dest_specific_self_pass` Addresses `string_val=self_ok` directly to `shoreside`, exercising local-node delivery; passes when `HANDLED_RESULT=self_ok`.
+- `dest_mismatch_reject_pass` Addresses `wrong_node` to `bravo`, exercising valid-mail rejection for a different node; passes when no `HANDLED_RESULT` is posted and the summary is exactly `total=1,valid=1,rejected=1`.
+- `strict_all_reject_pass` Enables strict addressing and posts `dest_node=all`, exercising rejection of broad node mail; passes when no result is forwarded and the summary is exactly `total=1,valid=1,rejected=1`.
+- `strict_group_reject_pass` Enables strict addressing and posts only `dest_group=red`, exercising rejection of group-only mail; passes when no result is forwarded and the summary is exactly `total=1,valid=1,rejected=1`.
+- `strict_specific_accept_pass` Enables strict addressing and targets `shoreside` with `strict_accept`, exercising the permitted exact-address path; passes on that exact value and summary `total=1,valid=1,rejected=0`.
+- `numeric_payload_pass` Posts `double_val=42.5` to `HANDLED_NUMERIC`, exercising numeric MOOS publication; passes when the resulting numeric value equals `42.5`.
+- `double_zero_payload_pass` Posts `double_val=0`, exercising preservation of zero rather than treating it as unset; passes when `HANDLED_NUMERIC=0`.
+- `mixed_payload_invalid_pass` Includes both `string_val=string_wins` and `double_val=99`, exercising ambiguous-payload rejection; passes when neither target variable is posted and the summary is exactly `total=1,valid=0,rejected=0`.
+- `quoted_string_unquoted_pass` Posts `string_val="quoted ok"`, exercising parser normalization of a quoted string containing a space; passes when `HANDLED_RESULT` equals the exact normalized value `"quotedok"`.
+- `src_app_forward_pass` Adds `src_app=pHelmIvP` to an otherwise ordinary self-addressed message, exercising source-app metadata parsing; passes when `HANDLED_RESULT=src_app_ok` and the summary is exactly `total=1,valid=1,rejected=0`.
+- `invalid_payload_reject_pass` Omits `var_name` while supplying `string_val=missing_var`, exercising structural invalidation; passes when no result is forwarded and the summary is exactly `total=1,valid=0,rejected=0`.
+- `missing_destination_invalid_pass` Supplies a variable and payload but neither `dest_node` nor `dest_group`, exercising destination validation; passes when no result is forwarded and the summary is exactly `total=1,valid=0,rejected=0`.
+- `invalid_no_bad_flag_pass` Configures `bad_msg_flag=UMH_BAD=bad_$[BAD_CTR]_of_$[CTR]` and posts the missing-`var_name` message, exercising the distinction between invalid and valid-rejected mail; passes when neither result nor bad flag is posted and the summary is exactly `total=1,valid=0,rejected=0`.
+- `msg_flag_macro_pass` Configures `msg_flag=UMH_GOOD=good_$[GOOD_CTR]_of_$[CTR]` and accepts one message; passes when the payload is `flagged` and the expanded flag is exactly `good_1_of_1`.
+- `msg_flag_numeric_pass` Configures numeric `msg_flag=UMH_GOOD_NUM=7` and accepts one message; passes when the payload is `flagged_num` and `UMH_GOOD_NUM=7`.
+- `bad_msg_flag_macro_pass` Configures `bad_msg_flag=UMH_BAD=bad_$[BAD_CTR]_of_$[CTR]` and rejects one message addressed to Bravo; passes when no payload is forwarded and the expanded flag is exactly `bad_1_of_1`.
+- `bad_msg_flag_numeric_pass` Configures numeric `bad_msg_flag=UMH_BAD_NUM=11` and rejects one message addressed to Bravo; passes when no payload is forwarded and `UMH_BAD_NUM=11`.
+- `multiple_bad_summary_pass` Posts two valid messages to nonlocal nodes with the macro bad flag enabled, exercising cumulative rejection counters; passes when neither payload is forwarded, `UMH_BAD=bad_2_of_2`, and the summary is exactly `total=2,valid=2,rejected=2`.
+- `aux_info_node_app_forward_pass` Sets `aux_info=node+app` and posts a `src_app=pHelmIvP` message, exercising node-and-app auxiliary source annotation; passes when `HANDLED_RESULT=aux_ok` and the summary is exactly `total=1,valid=1,rejected=0`.
+- `dest_group_accept_pass` Posts `dest_group=red` without `dest_node` under non-strict addressing, exercising group-only acceptance; passes when `HANDLED_RESULT=group_ok`.
+- `dest_node_overrides_group_reject_pass` Posts `dest_node=bravo,dest_group=red`, exercising node precedence over an otherwise acceptable group; passes when no result is forwarded and the summary is exactly `total=1,valid=1,rejected=1`.
+- `dest_all_mixedcase_reject_pass` Posts mixed-case `dest_node=All`, exercising the case-sensitive distinction from `all|ALL`; passes when no result is forwarded and the summary is exactly `total=1,valid=1,rejected=1`.
+- `multiple_good_summary_pass` Posts two accepted self-addressed messages, exercising cumulative good counters; passes when the final payload is `second_ok` and the summary is exactly `total=2,valid=2,rejected=0`.
+- `mixed_valid_rejected_summary_pass` Posts one accepted self-addressed message and one valid message to `charlie`, exercising mixed counter accounting; passes when `first_ok` is forwarded, the rejected variable is absent, and the summary is exactly `total=2,valid=2,rejected=1`.
 
 Typical runs:
 
@@ -41,3 +41,7 @@ Typical runs:
 ./zlaunch.sh --jobs=4
 ./zlaunch.sh --case=strict_all_reject_pass --keep_workdirs
 ```
+
+Logging is minimal by default and runs without `pLogger`. Use `--log=full` for
+the complete matrix, or combine it with `--case=NAME` for one fully logged
+diagnostic case.

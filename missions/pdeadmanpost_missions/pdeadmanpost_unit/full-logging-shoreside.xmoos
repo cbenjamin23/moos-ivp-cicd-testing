@@ -1,0 +1,35 @@
+ProcessConfig = pLogger
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  File     = LOG_$(MMOD)
+  PATH     = ./
+  AsyncLog = true
+
+  Log = TEST_EVAL_READY @ 0 nosync
+  Log = DEAD_ONCE @ 0 nosync
+  Log = DEAD_NO_START @ 0 nosync
+  Log = DEAD_KEEPALIVE @ 0 nosync
+  Log = DEAD_STOP @ 0 nosync
+  Log = DEAD_AFTER_FIRST @ 0 nosync
+  Log = DEAD_NUM @ 0 nosync
+  Log = DEAD_STR @ 0 nosync
+  Log = DEAD_MULTI_A @ 0 nosync
+  Log = DEAD_MULTI_B @ 0 nosync
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = DEAD_ONCE_SINGLE @ 0 nosync
+  Log = DEAD_REPEAT @ 0 nosync
+  Log = DEAD_RESET @ 0 nosync
+  Log = DEAD_REPEAT_AFTER_FIRST @ 0 nosync
+  Log = DEAD_RESET_SINGLE @ 0 nosync
+  Log = DEAD_ACTIVE_KEEPALIVE @ 0 nosync
+  Log = DEAD_ALT_HEART @ 0 nosync
+  Log = DEAD_NEG @ 0 nosync
+  Log = DEAD_ZERO_MAX @ 0 nosync
+  Log = DEAD_FALSE @ 0 nosync
+  Log = DEAD_INVALID_POLICY @ 0 nosync
+  Log = DEAD_RESET_MULTI @ 0 nosync
+  Log = HEARTBEAT @ 0 nosync
+  Log = ALT_HEART @ 0 nosync
+}

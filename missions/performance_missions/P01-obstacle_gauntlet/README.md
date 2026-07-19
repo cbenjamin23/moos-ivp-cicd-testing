@@ -50,13 +50,18 @@ after `MISSION_EVALUATED=true` before teardown finishes.
 ```bash
 ./launch.sh 10
 ./zlaunch.sh --scenario=baseline_field 10
+./zlaunch.sh --log=full --scenario=baseline_field 10
 ./zlaunch.sh --just_make 10
 ```
+
+Direct launches default to `--log=minimal`, with only vehicle `APP_LOG`
+evidence retained for performance warning scans. `--log=full` restores the
+original shoreside and vehicle wildcard logging.
 
 ## Notes
 
 - The course layout and viewer framing are derived from `missions-auto/02-obavoid`.
-- The fixed field layouts now live in [obstacles/](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/performance_missions/P01-obstacle_gauntlet/obstacles/README.md), and `init_field.sh` stages the selected one into the mission root as `obstacles.txt`.
+- The fixed field layouts now live in [obstacles/](obstacles/README.md), and `init_field.sh` stages the selected one into the mission root as `obstacles.txt`.
 - `endurance_random` generates a fresh random `obstacles.txt` at launch and enables obstacle reset behavior in `uFldObstacleSim`.
 - Mission `zlaunch.sh` automatically raises its default `--max_time` for `endurance_random` so `uMayFinish` does not cut the run off at the short fixed-case budget.
 - The current named mission scenarios are `baseline_field`, `dense_field`, and `endurance_random`.

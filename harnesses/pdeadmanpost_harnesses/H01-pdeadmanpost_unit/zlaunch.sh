@@ -53,6 +53,7 @@ PSHARE_OFFSET=$((PORT_STRIDE / 2))
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 CASE=""
 HAVE_LOCK=no
@@ -94,6 +95,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show rolling scheduler events
   --just_make, -j    Prepare each case without launching it
+  --log=<mode>       Logging mode: minimal (default) or full
   --max_time=<secs>  Maximum time passed to each stem mission
   --case=<name>      Run one named case
   --jobs=<n>         Run up to n cases concurrently with rolling scheduling
@@ -135,6 +137,7 @@ for arg in "$@"; do
         --jobs=*) JOBS="${arg#--jobs=}" ;;
         --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
@@ -145,6 +148,11 @@ for arg in "$@"; do
         *) TIME_WARP="$arg" ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
 is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
@@ -609,6 +617,11 @@ prepare_case() {
         cd "$workdir" || exit 1
         ./clean.sh >/dev/null 2>&1
     ) || return 1
+    if [ "$LOG_MODE" = full ]; then
+        nspatch --stem="$workdir/meta_shoreside.moos" \
+            "$workdir/full-logging-shoreside.xmoos" \
+            --targ="$workdir/meta_shoreside.moosx" || return 1
+    fi
     get_case_config "$case_name" || return 1
     write_case_files "$workdir"
 }
@@ -722,7 +735,7 @@ run_case() {
             "$TIME_WARP"
         )
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
-        ./zlaunch.sh "${launch_args[@]}"
+        LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
     ) || launch_rc=$?
 
     if [ "$JUST_MAKE" != yes ] && [ "$launch_rc" -eq 0 ]; then
@@ -921,7 +934,7 @@ if [ "$CLEANUP_FAILED" = yes ]; then
 fi
 trap - EXIT INT TERM PIPE
 
-printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
-    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]

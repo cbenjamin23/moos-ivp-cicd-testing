@@ -1,7 +1,10 @@
 # H01-loiter_behavior_motion
 
+Logging is minimal by default in both communities. Use `--log=full` for the
+whole matrix or with `--case=NAME` for one diagnostic case.
+
 Patch-driven moving correctness harness for
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/loiter_behavior_missions/loiter_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/loiter_behavior_missions/loiter_behavior_motion).
+[`missions/loiter_behavior_missions/loiter_behavior_motion`](../../../missions/loiter_behavior_missions/loiter_behavior_motion).
 
 This harness focuses on `BHV_Loiter` as the behavior under test. The stem
 mission keeps one simulated vehicle near a compact loiter polygon and grades on
@@ -18,89 +21,40 @@ behavior-owned outputs:
 
 ## Current Matrix
 
-- `radial_clockwise_pass`
-  Baseline radial polygon, clockwise loiter, stable acquisition.
-- `radial_counterclockwise_pass`
-  Uses the same radial polygon with `clockwise=false` and verifies stable
-  counterclockwise loiter.
-- `clockwise_best_pass`
-  Dynamic clockwise selection through `clockwise=best`.
-- `polygon_box_pass`
-  Uses an explicit rectangular polygon and verifies the vehicle acquires stable
-  loiter.
-- `triangle_polygon_pass`
-  Uses an explicit triangular polygon and verifies the vehicle acquires stable
-  loiter.
-- `start_inside_loiter_pass`
-  Starts inside the loiter area and stabilizes without a long approach.
-- `acquire_from_far_pass`
-  Starts well outside the polygon, then enters stable loiter.
-- `early_acquire_mode_pass`
-  Evaluates early and requires `LOITER_ACQUIRE=1` while outside the polygon.
-- `center_activate_pass`
-  Exercises `center_activate=true`, centering the loiter on activation.
-- `capture_radius_large_pass`
-  Uses a large capture radius while still stabilizing cleanly.
-- `slip_radius_pass`
-  Exercises nonmonotonic/slip-radius capture behavior.
-- `speed_alt_update_pass`
-  Starts slow, then enables alternate speed through `LOITER_UPDATES`.
-- `use_alt_speed_static_pass`
-  Uses static `use_alt_speed=true`; without the alternate speed the case would
-  not reach stable loiter by the evaluation gate.
-- `center_assign_xy_pass`
-  Updates the center through `xcenter_assign` and `ycenter_assign`.
-- `center_assign_pair_pass`
-  Starts with the loiter center near the approach path, then shifts the center
-  east through combined `center_assign`.
-- `xcenter_ycenter_update_pass`
-  Updates the polygon center through runtime x/y center mail.
-- `mod_poly_rad_expand_pass`
-  Expands polygon radius at runtime and verifies loiter remains stable.
-- `mod_poly_rad_shrink_pass`
-  Shrinks polygon radius at runtime and verifies loiter remains stable.
-- `slingshot_bearing_pass`
-  Exercises slingshot completion and grades on accumulated bearing.
-- `post_suffix_outputs_pass`
-  Uses `post_suffix` and verifies suffixed status outputs.
-- `eta_output_pass`
-  Grades on `LOITER_ETA_TO_POLY` and records `LOITER_REPORT`.
-- `ipf_zaic_spd_pass`
-  Uses the ZAIC speed IvP function while still acquiring stable loiter.
-- `slow_speed_acquire_pass`
-  Evaluates while a deliberately slow vehicle is still acquiring.
-- `empty_polygon_fail`
-  Empty polygon configuration should put the helm in `MALCONFIG`; the case
-  grades `pass` when that rejection evidence is observed.
-- `bad_polygon_fail`
-  Malformed polygon configuration should put the helm in `MALCONFIG`; the case
-  grades `pass` when that rejection evidence is observed.
-- `bad_update_fail`
-  Malformed runtime update should be rejected with a behavior warning while the
-  stock loiter remains stable; the case grades `pass` on that evidence.
-- `bad_clockwise_fail`
-  Malformed `clockwise` input outside the accepted boolean/`best` values should
-  be rejected with helm `MALCONFIG`; the case grades `pass` on that evidence.
-- `bad_use_alt_speed_fail`
-  Non-boolean `use_alt_speed` should be rejected with helm `MALCONFIG`; the
-  case grades `pass` on that evidence.
-- `bad_patience_fail`
-  Rejects `patience` outside the accepted 1..99 course/speed ZAIC ratio range
-  with helm `MALCONFIG`; the case grades `pass` on that evidence.
-- `bad_capture_radius_fail`
-  Negative `capture_radius` should be rejected with helm `MALCONFIG`; the case
-  grades `pass` on that evidence.
-- `center_bad_update_recover_pass`
-  Bad center update followed by valid recovery update.
-- `spiral_factor_pass`
-  Uses a nondefault `spiral_factor` and verifies the loiter still acquires and
-  stabilizes without behavior errors.
-- `patience_low_pass`
-  Uses low `patience` to exercise faster loiter-point switching while still
-  reaching stable loiter.
-- `patience_high_pass`
-  Uses high `patience` to exercise slower loiter-point switching while still
-  reaching stable loiter.
+- `radial_clockwise_pass` Configures an eight-point radial polygon centered at `(12,-121)` with radius 18 and `clockwise=true`, exercising the stock clockwise loiter at the late 45-second gate; passes with a nonnegative index, `LOITER_MODE=stable`, `LOITER_ACQUIRE=0`, distance to polygon at most 10, and no `BHV_ERROR` mail.
+- `radial_counterclockwise_pass` Uses the same radial geometry with `clockwise=false`, exercising counterclockwise configuration; passes at 25 seconds with a nonnegative index, stable mode, acquisition off, distance to polygon at most 10, and no behavior error.
+- `clockwise_best_pass` Sets `clockwise=best`, exercising automatic direction selection from the vehicle's approach; passes at 25 seconds on the same nonnegative-index, stable-mode, acquisition-off, distance-at-most-10, and no-error conditions.
+- `polygon_box_pass` Replaces the radial polygon with the rectangle `{-6,-139:-6,-103:30,-103:30,-139}`, exercising explicit four-vertex geometry; passes at 25 seconds when the loiter reports a nonnegative index, stable mode, acquisition off, distance to that reported polygon at most 10, and no behavior error.
+- `triangle_polygon_pass` Uses the triangle `{0,-139:34,-121:0,-103}`, exercising explicit three-vertex geometry; passes at 25 seconds when the loiter reports a nonnegative index, stable mode, acquisition off, distance to polygon at most 10, and no behavior error.
+- `start_inside_loiter_pass` Centers the radius-18 polygon on the vehicle's initial position `(-45,-121)`, exercising activation from inside the loiter area; passes at 25 seconds with a nonnegative index, stable mode, acquisition off, distance to polygon at most 10, and no behavior error.
+- `acquire_from_far_pass` Places a radius-16 polygon at `(6,-121)`, 51 meters east of the starting position, exercising an external approach; passes at 25 seconds after the final outputs show a nonnegative index, stable mode, acquisition off, distance to polygon at most 10, and no behavior error.
+- `early_acquire_mode_pass` Uses the far polygon but evaluates after six seconds, testing the external-acquisition flag before arrival; passes with a nonnegative loiter index, `LOITER_ACQUIRE=1`, distance to polygon greater than 10, and no behavior error.
+- `center_activate_pass` Sets `center_activate=true` on the stock polygon, exercising recentering when the behavior activates; passes at 25 seconds on the standard stable-loiter conditions: nonnegative index, acquisition off, distance at most 10, and no behavior error.
+- `capture_radius_large_pass` Raises `capture_radius` from 4 to 12 and `slip_radius` from 12 to 18, exercising the larger capture/slip thresholds; passes at 25 seconds on the standard stable-loiter conditions.
+- `slip_radius_pass` Lowers `capture_radius` to 0.5 while leaving `slip_radius=12`, exercising the path in which a point can be accepted through the wider slip/nonmonotonic rule; passes at 25 seconds on the standard stable-loiter conditions.
+- `speed_alt_update_pass` Configures `speed=0.9` and `speed_alt=2.2`, then posts `LOITER_UPDATES="use_alt_speed=true"` at three seconds, exercising runtime alternate-speed selection; passes at 25 seconds on the standard stable-loiter conditions.
+- `use_alt_speed_static_pass` Configures `speed=0.8`, `speed_alt=2.8`, and `use_alt_speed=true`, testing static alternate-speed selection against a 25-second arrival gate; passes on the standard stable-loiter conditions.
+- `center_assign_xy_pass` Posts `LOITER_UPDATES="center_assign=x=18,y=-121"` at four seconds, exercising keyed pair syntax for a runtime center assignment; passes at 25 seconds on the standard stable-loiter conditions.
+- `center_assign_pair_pass` Starts with the radius-18 center at `(2,-121)`, posts `center_assign=32,-121` at 22 seconds, and evaluates at 45 seconds, exercising unkeyed pair syntax and a 30-meter eastward shift; passes on the standard stable-loiter conditions.
+- `xcenter_ycenter_update_pass` Posts `xcenter_assign=18` and then `ycenter_assign=-121` at four and five seconds, exercising separate runtime center-coordinate updates; passes at 25 seconds on the standard stable-loiter conditions.
+- `mod_poly_rad_expand_pass` Posts `mod_poly_rad=6` at 20 seconds to expand the stock radius from 18 to 24, exercising positive runtime radius modification; passes at 45 seconds on the standard stable-loiter conditions.
+- `mod_poly_rad_shrink_pass` Posts `mod_poly_rad=-5` at 14 seconds to shrink the stock radius from 18 to 13, exercising negative runtime radius modification; passes at 25 seconds on the standard stable-loiter conditions.
+- `slingshot_bearing_pass` Sets `slingshot=5`, testing bearing-based completion after the vehicle accumulates the configured angular travel; passes at 35 seconds when `LOITER_DONE=true`, `LOITER_BNG_TOTAL>=5`, mode is stable, acquisition is off, and no behavior error occurred.
+- `post_suffix_outputs_pass` Sets `post_suffix=custom`, testing suffixed status publication; passes when `LOITER_INDEX_CUSTOM>=0`, `LOITER_MODE_CUSTOM=stable`, `LOITER_ACQUIRE_CUSTOM=0`, `LOITER_DIST_TO_POLY_CUSTOM<=10`, and no behavior error occurred.
+- `eta_output_pass` Uses the stock loiter to test ETA publication; passes at 25 seconds when the stable-loiter conditions hold and `LOITER_ETA_TO_POLY>=0`, while `LOITER_REPORT` is recorded but not graded.
+- `ipf_zaic_spd_pass` Sets `ipf_type=zaic_spd`, exercising the ZAIC speed objective instead of the default loiter IvP-function type; passes at 25 seconds on the standard stable-loiter conditions.
+- `slow_speed_acquire_pass` Sets `speed=0.25` and evaluates after ten seconds, testing acquisition status during a deliberately slow approach; passes with a nonnegative index, `LOITER_ACQUIRE=1`, distance to polygon greater than 10, and no behavior error.
+- `empty_polygon_fail` Omits the required `polygon` parameter, exercising invalid behavior initialization; the harness passes as soon as any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_polygon_fail` Supplies the self-intersecting point sequence `{0,-121:20,-101:0,-101:20,-121}`, exercising rejection of invalid polygon geometry; the harness passes as soon as any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_update_fail` Posts the same self-intersecting polygon through `LOITER_UPDATES` at two seconds, exercising malformed runtime-update rejection while the original loiter continues; the harness passes at 25 seconds when any `BHV_WARNING` has appeared and the stock loiter satisfies the standard stable-loiter conditions without a `BHV_ERROR`.
+- `bad_clockwise_fail` Sets `clockwise=sideways`, exercising rejection of a value outside the boolean/`best` forms; the harness passes as soon as any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_use_alt_speed_fail` Sets `use_alt_speed=maybe`, exercising rejection of a non-boolean alternate-speed selector; the harness passes as soon as any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_patience_fail` Sets `patience=100`, exercising rejection above the accepted 1–99 range; the harness passes as soon as any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `bad_capture_radius_fail` Sets `capture_radius=-1`, exercising rejection of a negative capture radius; the harness passes as soon as any `IVPHELM_STATE` publication latches `HELM_MALCONFIG=true`.
+- `center_bad_update_recover_pass` Posts `center_assign=bad_center` at three seconds and the valid `center_assign=x=18,y=-121` at five seconds, exercising recovery after a malformed center update; passes at 25 seconds on the standard stable-loiter conditions, without requiring a warning for the bad update.
+- `spiral_factor_pass` Sets `spiral_factor=0.4`, exercising a nondefault acquisition spiral; passes at 25 seconds on the standard stable-loiter conditions.
+- `patience_low_pass` Sets `patience=15`, exercising the low course/speed ZAIC ratio used during point switching; passes at 25 seconds on the standard stable-loiter conditions.
+- `patience_high_pass` Sets `patience=90`, exercising the high course/speed ZAIC ratio used during point switching; passes at 25 seconds on the standard stable-loiter conditions.
 
 ## Running
 

@@ -1,7 +1,11 @@
 # H01-obstacle_behavior_motion
 
+Logging is minimal by default in both communities. Use `--log=full` for the
+whole matrix or with `--case=NAME` for one diagnostic case.
+The two-obstacle ANTLER replacement has separate minimal and full patches.
+
 Patch-driven moving correctness harness for
-[`/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/obstacle_behavior_missions/obstacle_behavior_motion`](/Users/charlesbenjamin/moos-ivp-cicd-testing/missions/obstacle_behavior_missions/obstacle_behavior_motion).
+[`missions/obstacle_behavior_missions/obstacle_behavior_motion`](../../../missions/obstacle_behavior_missions/obstacle_behavior_motion).
 
 This harness focuses on `BHV_AvoidObstacleV24` itself rather than re-testing
 `pObstacleMgr`. The stem mission keeps obstacle-manager input deterministic,
@@ -18,82 +22,27 @@ the ownship starts at `(0,-60)` and drives east along a short corridor to
 
 ## Current Matrix
 
-- `default_auto_request_pass`
-  Baseline one-obstacle case. The behavior should request alerts, engage,
-  complete, and still arrive with zero collisions.
-- `rng_flag_pass`
-  This case adds `rng_flag=<20 AVOID_RANGE_SEEN=true`. The
-  mission passes only if that behavior-owned range flag is actually seen.
-- `cpa_flag_pass`
-  This case adds `cpa_flag=AVOID_CPA_SEEN=true`. This is a more
-  focused case because the flag only posts after a real CPA event is observed.
-  It grades the CPA flag plus basic safety, not late transit completion, so the
-  verdict stays behavior-owned.
-- `offlane_no_engagement_pass`
-  The obstacle is moved well above the lane. The behavior should still request
-  alerts, but it should never receive an obstacle alert or run.
-- `no_refinery_pass`
-  Disables the IvP refinery while keeping the obstacle geometry unchanged.
-  The case should still complete avoidance, proving the non-refinery objective
-  path remains valid.
-- `two_obstacles_clean_pass`
-  Two obstacles are injected after deploy so both obstacle-alert spawn paths
-  are exercised. The evaluator requires two `OBSTACLE_ALERT` deliveries and
-  the behavior's spawn flag must identify the second obstacle as `ob_two`, so
-  a single spawned avoidance behavior is no longer enough to pass. The vehicle
-  uses a case-specific speed of `1.6` to retain avoidance control margin under
-  rolling load, while still having to route through the corridor, arrive, and
-  finish with zero collisions.
-- `static_polygon_pass`
-  The behavior is configured with a launch-time `polygon` instead of the
-  templated `OBSTACLE_ALERT` input. It should still complete avoidance and
-  arrive without collision.
-- `poly_alias_pass`
-  The same launch-time obstacle is configured through the `poly` alias. It
-  should behave like `polygon` and complete cleanly.
-- `rng_flag_no_threshold_pass`
-  The behavior uses `rng_flag=AVOID_RANGE_SEEN=true` with no threshold. The
-  mission passes only if the no-threshold range flag is posted during a clean
-  avoidance run.
-- `avoid_disabled_fail`
-  This case makes the `AVOID=true` condition impossible to satisfy. The
-  alert request still happens, but avoidance is disabled and the mission should
-  grade pass only when the expected collision evidence is observed.
-- `bad_polygon_fail`
-  The launch-time `polygon` is non-convex. The behavior configuration should be
-  rejected and the mission should grade pass on helm malconfig evidence.
-- `bad_pwt_inner_dist_fail`
-  `pwt_inner_dist` is set above `pwt_outer_dist`. The mission should grade pass
-  on helm malconfig evidence.
-- `bad_pwt_outer_dist_fail`
-  `pwt_outer_dist` is set below `pwt_inner_dist`. The mission should grade
-  pass on helm malconfig evidence.
-- `bad_completed_dist_fail`
-  `completed_dist` is set below the configured outer relevance distance. The
-  mission should grade pass on helm malconfig evidence.
-- `bad_min_util_cpa_dist_fail`
-  `min_util_cpa_dist` is set above `max_util_cpa_dist`. The mission should
-  grade pass on helm malconfig evidence.
-- `bad_max_util_cpa_dist_fail`
-  `max_util_cpa_dist` is set below `min_util_cpa_dist`. The mission should
-  grade pass on helm malconfig evidence.
-- `bad_allowable_ttc_fail`
-  `allowable_ttc` is set negative. The behavior configuration should be
-  rejected and the mission should grade pass on helm malconfig evidence.
-- `bad_rng_flag_fail`
-  `rng_flag` is given a malformed threshold. The behavior configuration should
-  be rejected and the mission should grade pass on helm malconfig evidence.
-- `bad_cpa_flag_fail`
-  `cpa_flag` is missing an assignment payload. The behavior configuration
-  should be rejected and the mission should grade pass on helm malconfig
-  evidence.
-- `bad_use_refinery_fail`
-  `use_refinery` is set to a non-boolean token. The mission should grade pass
-  on helm malconfig evidence.
-- `bad_pwt_grade_fail`
-  `pwt_grade` is present in the source state but is not accepted by the current
-  `setParam()` surface. The mission should grade pass on helm malconfig
-  evidence if someone configures it.
+- `default_auto_request_pass` Posts the lane-blocking polygon `ob_lane` through `KNOWN_OBSTACLE`, testing the spawned behavior's automatic alert request and one-obstacle lifecycle; passes at 68 seconds when alert-request and obstacle-alert mail have appeared, `OBAVOIDING=end`, `ARRIVED=true`, and collisions remain zero.
+- `rng_flag_pass` Adds `rng_flag=<20 AVOID_RANGE_SEEN=true`, testing the thresholded range flag during the stock one-obstacle avoidance; passes when alert request, obstacle alert, and range-flag mail have appeared, the behavior reaches `OBAVOIDING=end`, the vehicle arrives, and collisions remain zero.
+- `cpa_flag_pass` Adds `cpa_flag=AVOID_CPA_SEEN=true`, testing publication after the behavior records a closest-point-of-approach event; passes when alert request, obstacle alert, and CPA-flag mail have appeared and collisions remain zero, without requiring final arrival or `OBAVOIDING=end`.
+- `offlane_no_engagement_pass` Moves the obstacle to the box `(32,-8)`–`(44,4)`, well north of the eastbound lane, testing that automatic alert requests do not force engagement with an irrelevant obstacle; passes when a request was seen, no obstacle alert was ever seen, the vehicle arrives collision-free, and the final `OBAVOIDING` value is not `active`, `running`, or `end`.
+- `no_refinery_pass` Sets `use_refinery=false` for the same lane obstacle, exercising direct objective construction without the IvP refinery; passes when request and alert mail appear, `OBAVOIDING=end`, the vehicle arrives, and collisions remain zero.
+- `two_obstacles_clean_pass` Posts `ob_one` near `(19,-66)` at one second and `ob_two` near `(55,-57)` at two seconds, lowers transit speed to 1.6, and adds `spawnxflag=OBSTACLE_SPAWNED=$[OID]`, testing two independent spawned avoiders; passes with an alert request, at least two `OBSTACLE_ALERT` deliveries, final spawn ID `ob_two`, arrival, and zero collisions.
+- `static_polygon_pass` Configures the lane box directly with the behavior's `polygon` parameter instead of using `OBSTACLE_ALERT` templating, testing a launch-time obstacle; passes when the static behavior reaches `OBAVOIDING=end`, the vehicle arrives, and collisions remain zero.
+- `poly_alias_pass` Configures the same launch-time lane box through the `poly` alias, testing equivalence with `polygon`; passes when the behavior reaches `OBAVOIDING=end`, the vehicle arrives, and collisions remain zero.
+- `rng_flag_no_threshold_pass` Sets `rng_flag=AVOID_RANGE_SEEN=true` without a range predicate, testing the unconditional range-flag form; passes when request, obstacle-alert, and range-flag mail appear, `OBAVOIDING=end`, the vehicle arrives, and collisions remain zero.
+- `avoid_disabled_fail` Changes the spawned behavior condition to `AVOID=false` while `AVOID` remains initialized true, testing the no-avoidance outcome after normal request and alert delivery; the harness passes when the vehicle still arrives with exactly one encounter and one collision and `OBAVOIDING=end`.
+- `bad_polygon_fail` Supplies the crossed polygon `{29,-53:43,-67:29,-67:43,-53}`, exercising invalid launch-time geometry; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`, while the raw state is only reported.
+- `bad_pwt_inner_dist_fail` Sets `pwt_inner_dist=40` above `pwt_outer_dist=28` while raising `completed_dist` to 42, isolating the invalid relevance-distance ordering; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_pwt_outer_dist_fail` Sets `pwt_outer_dist=8` below `pwt_inner_dist=14`, exercising the opposite invalid relevance-distance ordering; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_completed_dist_fail` Sets `completed_dist=20` below `pwt_outer_dist=28`, exercising invalid completion/relevance ordering; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_min_util_cpa_dist_fail` Sets `min_util_cpa_dist=20` above `max_util_cpa_dist=16`, exercising invalid CPA utility bounds; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_max_util_cpa_dist_fail` Sets `max_util_cpa_dist=6` below `min_util_cpa_dist=8`, exercising the opposite invalid CPA utility ordering; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_allowable_ttc_fail` Sets `allowable_ttc=-1`, exercising rejection of a negative time-to-collision limit; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_rng_flag_fail` Sets `rng_flag=<bogus AVOID_RANGE_SEEN=true`, exercising rejection of a nonnumeric range threshold; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_cpa_flag_fail` Sets `cpa_flag=AVOID_CPA_SEEN` without an assignment value, exercising malformed flag syntax; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_use_refinery_fail` Sets `use_refinery=maybe`, exercising rejection of a non-boolean refinery selector; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
+- `bad_pwt_grade_fail` Sets the unsupported parameter `pwt_grade=quadratic`, exercising the current `setParam()` rejection surface; the harness passes when any `IVPHELM_STATE` mail latches `HELM_MALCONFIG=true`.
 
 ## Results Lines
 

@@ -1,0 +1,19 @@
+ProcessConfig = pLogger
+{
+  AppTick       = 5
+  CommsTick     = 5
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+  LogAuxSrc     = true
+
+  WildCardLogging = false
+  Log = NODE_BROKER_PING @ 0 nosync
+  Log = NODE_BROKER_ACK_ABE @ 0 nosync
+  Log = NODE_BROKER_ACK_BEN @ 0 nosync
+  Log = NODE_BROKER_VACK @ 0 nosync
+  Log = PSHARE_CMD @ 0 nosync
+  Log = TRY_SHORE_HOST @ 0 nosync
+}

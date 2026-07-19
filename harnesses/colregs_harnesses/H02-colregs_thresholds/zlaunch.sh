@@ -310,6 +310,7 @@ select_cases() {
     esac
     [ "${#SELECTED_CASES[@]}" -gt 0 ] || die "no cases selected"
 }
+
 field_value() {
     local line="$1"
     local key="$2"

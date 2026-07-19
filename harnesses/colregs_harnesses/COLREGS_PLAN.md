@@ -3,7 +3,7 @@
 This document outlines the intended correctness-harness structure for the
 COLREGS family built around `BHV_AvdColregsV22`.
 
-Working follow-on items are tracked in [TODO.md](/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/colregs_harnesses/TODO.md).
+Working follow-on items are tracked in [TODO.md](TODO.md).
 
 ## Current Status
 
