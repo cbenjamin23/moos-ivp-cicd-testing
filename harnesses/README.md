@@ -21,10 +21,11 @@ cleanup as the normal harness path.
 
 The three launchers under `mission_utility_harnesses/H01-*`, `H02-*`, and
 `H03-*` are intentionally thin wrappers. Each declares its own case list and
-then sources `mission_utility_harnesses/mission_utility_common.sh`, which owns
-their shared argument parsing, scheduling, result aggregation, and cleanup
-against the common mission-utility stem.
+then sources `mission_utility_harnesses/mission_utility_runner.sh` and calls
+`mission_utility_main "$@"`. Sourcing the runner only defines that entry point;
+the explicit call starts shared argument parsing, scheduling, result
+aggregation, and cleanup against the common mission-utility stem.
 
 This avoids maintaining three copies of the same large runner, but it also
-means a change to `mission_utility_common.sh` changes all three harnesses.
+means a change to `mission_utility_runner.sh` changes all three harnesses.
 Validate all three wrappers whenever that shared file changes.

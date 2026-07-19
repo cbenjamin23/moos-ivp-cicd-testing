@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 #------------------------------------------------------------
-#   Script: mission_utility_common.sh
+#   Script: mission_utility_runner.sh
 #  Purpose: Shared runner for mission utility harnesses
 #   Author: Charles Benjamin
-#   LastEd: May 2026
+#   LastEd: Jul 2026
 #------------------------------------------------------------
+mission_utility_main() {
 need_bash=5.1
 if [ -z "${BASH_VERSION:-}" ]; then
     echo "zlaunch.sh: run this harness as ./zlaunch.sh with Bash >= $need_bash." >&2
@@ -214,6 +215,8 @@ cleanup_runtime() {
     CLEANING=no
 }
 
+# Invoked indirectly by the signal traps installed below.
+# shellcheck disable=SC2329
 on_signal() {
     exit 130
 }
@@ -1105,3 +1108,4 @@ printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s b
     "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]
+}

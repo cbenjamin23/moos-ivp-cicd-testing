@@ -28,4 +28,7 @@ ALL_CASES=(
     eval_no_hash_report_pass
 )
 
-source "$(cd "$(dirname "$0")/.." && pwd)/mission_utility_common.sh" "$@"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=../mission_utility_runner.sh
+source "$(cd "$(dirname "$0")/.." && pwd)/mission_utility_runner.sh"
+mission_utility_main "$@"

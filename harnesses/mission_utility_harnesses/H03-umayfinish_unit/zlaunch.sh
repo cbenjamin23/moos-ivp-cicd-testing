@@ -15,4 +15,7 @@ ALL_CASES=(
     mayfinish_timeout_fail
 )
 
-source "$(cd "$(dirname "$0")/.." && pwd)/mission_utility_common.sh" "$@"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=../mission_utility_runner.sh
+source "$(cd "$(dirname "$0")/.." && pwd)/mission_utility_runner.sh"
+mission_utility_main "$@"
