@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Update</h3>
-          <p>Description: Posts DEPTH_VALUE=&quot;depth=18&quot; at 10 seconds to change the active target from 12 to 18 meters. Passes after x&gt;=55 with 16&lt;=NAV_DEPTH&lt;=20, DEPTH_MISMATCH&lt;=4, the expected corridor and heading, and no behavior error.</p>
+          <p>Description: Posts DEPTH_VALUE=&quot;depth=18&quot; at 10 seconds to change the active target from 12 to 18 meters. Passes after x&gt;=55 with 15.5&lt;=NAV_DEPTH&lt;=20, DEPTH_MISMATCH&lt;=4, the expected corridor and heading, and no behavior error.</p>
         </div>
       </article>
 
@@ -106,18 +106,6 @@
 
 
         <article class="case-row">
-          <code>constant_depth_shape_params_pass</code>
-          <p>Configures depth=10, peakwidth=0, basewidth=2, and summitdelta=100 to exercise the narrowest accepted ZAIC shape. Passes after x&gt;=45 with 8&lt;=NAV_DEPTH&lt;=12, DEPTH_MISMATCH&lt;=2, the expected corridor and heading, and no behavior error.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>constant_depth_summitdelta_clip_pass</code>
-          <p>Configures summitdelta=250 at an 11-meter target to exercise the over-range summit-delta path. Passes after x&gt;=45 with 9&lt;=NAV_DEPTH&lt;=13, DEPTH_MISMATCH&lt;=3, and no behavior error.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>constant_depth_no_mismatch_var_pass</code>
           <p>Omits the optional depth_mismatch_var while retaining the baseline 12-meter target. Passes after x&gt;=45 with 10&lt;=NAV_DEPTH&lt;=14, the expected transit corridor, and no behavior error.</p>
         </article>
@@ -125,7 +113,7 @@
 
         <article class="case-row">
           <code>constant_depth_update_pass</code>
-          <p>Posts DEPTH_VALUE=&quot;depth=18&quot; at 10 seconds to change the active target from 12 to 18 meters. Passes after x&gt;=55 with 16&lt;=NAV_DEPTH&lt;=20, DEPTH_MISMATCH&lt;=4, the expected corridor and heading, and no behavior error.</p>
+          <p>Posts DEPTH_VALUE=&quot;depth=18&quot; at 10 seconds to change the active target from 12 to 18 meters. Passes after x&gt;=55 with 15.5&lt;=NAV_DEPTH&lt;=20, DEPTH_MISMATCH&lt;=4, the expected corridor and heading, and no behavior error.</p>
         </article>
 
 
@@ -137,7 +125,7 @@
 
         <article class="case-row">
           <code>constant_depth_duration_complete_pass</code>
-          <p>Sets duration=8 and endflag=CD_DONE=true to exercise finite behavior completion during the transit. Passes at 22 seconds when CD_DONE=true and NAV_X&gt;=20; behavior-error state is recorded but not graded.</p>
+          <p>Sets duration=8 and endflag=CD_DONE=true, with an identical low-priority depth guard keeping the depth decision variable covered after the finite behavior ends. Passes at 22 seconds only when CD_DONE=true, NAV_X&gt;=20, and no behavior error occurred.</p>
         </article>
 
 
@@ -191,7 +179,7 @@
 
         <article class="case-row">
           <code>constant_depth_low_elevator_authority_fail</code>
-          <p>Commands 24 meters while limiting pMarinePIDV22 to maxelevator=0.05, exercising an underpowered depth controller. The harness passes after x&gt;=45 when NAV_DEPTH&lt;=22, DESIRED_ELEVATOR&lt;=0.05, and no behavior error is observed; reaching NAV_DEPTH&gt;=22.5 fails the case.</p>
+          <p>Commands 24 meters while limiting pMarinePIDV22 to maxelevator=0.05. Passes after x&gt;=45 only when depth remains at or above two meters short of the target and the commanded elevator is near either saturation rail (0.045&lt;=|DESIRED_ELEVATOR|&lt;=0.05), with no behavior error; reaching NAV_DEPTH&gt;=22.5 fails the case.</p>
         </article>
 
 

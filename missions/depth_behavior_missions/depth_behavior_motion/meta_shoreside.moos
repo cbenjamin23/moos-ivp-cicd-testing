@@ -89,12 +89,10 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = depth_behavior_motion
-  mission_mod  = $(MMOD:=constant_depth_hold_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = arrived=$[ARRIVED]
   report_column = x=$[ABE_NAV_X]

@@ -64,8 +64,6 @@ CASES=(
     constant_depth_hold_pass
     constant_depth_surface_pass
     constant_depth_negative_clip_pass
-    constant_depth_shape_params_pass
-    constant_depth_summitdelta_clip_pass
     constant_depth_no_mismatch_var_pass
     constant_depth_update_pass
     constant_depth_bad_update_preserve_pass
@@ -83,8 +81,6 @@ CASES=(
 )
 
 SOLO_CASES=(
-    constant_depth_shape_params_pass
-    constant_depth_summitdelta_clip_pass
     constant_depth_no_mismatch_var_pass
     constant_depth_bad_update_preserve_pass
     constant_depth_low_elevator_authority_fail
@@ -327,12 +323,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "constant_depth_negative_clip_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/constant-depth-negative-clip-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/constant-depth-negative-clip-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "constant_depth_shape_params_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/constant-depth-shape-params-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/constant-depth-shape-params-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "constant_depth_summitdelta_clip_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/constant-depth-summitdelta-clip-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/constant-depth-summitdelta-clip-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "constant_depth_no_mismatch_var_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/constant-depth-no-mismatch-var-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/constant-depth-no-mismatch-var-pass-vehicle.xbhv"

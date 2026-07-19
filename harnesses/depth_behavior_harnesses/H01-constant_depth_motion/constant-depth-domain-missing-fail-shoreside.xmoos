@@ -29,12 +29,10 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = depth_behavior_motion
-  mission_mod  = constant_depth_domain_missing_fail
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[BHV_ERROR_SEEN]
   report_column = expected=bhv_error
   report_column = depth=$[ABE_NAV_DEPTH]

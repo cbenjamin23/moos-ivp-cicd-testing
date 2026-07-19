@@ -33,12 +33,10 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = depth_behavior_motion
-  mission_mod  = constant_depth_control_disabled_fail
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = expected=depth_control_disabled
   report_column = x=$[ABE_NAV_X]

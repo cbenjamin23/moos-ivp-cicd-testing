@@ -34,3 +34,19 @@ Behavior = BHV_ConstantDepth
   summitdelta        = 15
   depth_mismatch_var = DEPTH_MISMATCH
 }
+
+// Keep the depth decision variable covered after the finite behavior posts
+// CD_DONE. The lower priority has no effect while const_depth is active, and
+// the identical target avoids a command discontinuity at completion.
+Behavior = BHV_ConstantDepth
+{
+  name      = depth_guard
+  pwt       = 20
+  condition = MODE == TRANSITING
+  duration  = no-time-limit
+
+  depth       = 12
+  peakwidth   = 4
+  basewidth   = 10
+  summitdelta = 15
+}

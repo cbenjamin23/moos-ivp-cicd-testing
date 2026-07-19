@@ -2045,7 +2045,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 39
+        "file_count": 35
       },
       "path": "harnesses/depth_behavior_harnesses/H01-constant_depth_motion",
       "perf_profile": "",
@@ -2068,14 +2068,12 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 19,
+        "case_count": 17,
         "case_parse_error": "",
         "cases": [
           "constant_depth_hold_pass",
           "constant_depth_surface_pass",
           "constant_depth_negative_clip_pass",
-          "constant_depth_shape_params_pass",
-          "constant_depth_summitdelta_clip_pass",
           "constant_depth_no_mismatch_var_pass",
           "constant_depth_update_pass",
           "constant_depth_bad_update_preserve_pass",
@@ -7030,11 +7028,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 518,
-      ".xmoos": 1323,
+      ".xbhv": 516,
+      ".xmoos": 1321,
       "[none]": 7
     },
-    "harness_patch_count": 1736,
+    "harness_patch_count": 1732,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

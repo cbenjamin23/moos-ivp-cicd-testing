@@ -6,7 +6,8 @@
 #include "BehaviorMarineTestUtils.h"
 #include "InfoBuffer.h"
 
-// Covers BHV constant depth behavior: builds depth objective and posts mismatch telemetry.
+// Applies configured peak/base widths and summit delta to the depth objective,
+// and posts the absolute difference between NAV_DEPTH and the target.
 TEST(BHVConstantDepthTest, BuildsDepthObjectiveAndPostsMismatchTelemetry)
 {
   InfoBuffer info;
@@ -26,12 +27,40 @@ TEST(BHVConstantDepthTest, BuildsDepthObjectiveAndPostsMismatchTelemetry)
   std::unique_ptr<IvPFunction> ipf(behavior.onRunState());
   ASSERT_NE(ipf, nullptr);
 
-  EXPECT_GT(evalOneDimPoint(*ipf, 20), evalOneDimPoint(*ipf, 5));
+  EXPECT_DOUBLE_EQ(evalOneDimPoint(*ipf, 20), 100);
+  EXPECT_DOUBLE_EQ(evalOneDimPoint(*ipf, 21), 85);
+  EXPECT_NEAR(evalOneDimPoint(*ipf, 22), 74.375, 1e-9);
+  EXPECT_DOUBLE_EQ(evalOneDimPoint(*ipf, 29), 0);
 
   VarDataPair mismatch;
   ASSERT_TRUE(findBehaviorMessage(behavior.getMessages(), "DEPTH_ERR", mismatch));
   EXPECT_FALSE(mismatch.is_string());
   EXPECT_DOUBLE_EQ(mismatch.get_ddata(), 7.75);
+}
+
+// Clips summitdelta=250 to the 100-point utility range before constructing
+// the depth objective: utility falls from 100 at the summit to zero two
+// meters away across the configured peak width.
+TEST(BHVConstantDepthTest, ClipsSummitDeltaInConstructedDepthObjective)
+{
+  InfoBuffer info;
+  info.setValue("NAV_DEPTH", 20);
+
+  BHV_ConstantDepth behavior(makeDepthDomain());
+  behavior.setInfoBuffer(&info);
+
+  ASSERT_TRUE(behavior.setParam("depth", "20"));
+  ASSERT_TRUE(behavior.setParam("peakwidth", "2"));
+  ASSERT_TRUE(behavior.setParam("basewidth", "8"));
+  ASSERT_TRUE(behavior.setParam("summitdelta", "250"));
+
+  std::unique_ptr<IvPFunction> ipf(behavior.onRunState());
+  ASSERT_NE(ipf, nullptr);
+
+  EXPECT_DOUBLE_EQ(evalOneDimPoint(*ipf, 20), 100);
+  EXPECT_DOUBLE_EQ(evalOneDimPoint(*ipf, 21), 50);
+  EXPECT_DOUBLE_EQ(evalOneDimPoint(*ipf, 22), 0);
+  EXPECT_DOUBLE_EQ(evalOneDimPoint(*ipf, 23), 0);
 }
 
 // Covers BHV constant depth behavior: clips negative depth and ZAIC widths from mission config.

@@ -29,12 +29,10 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = depth_behavior_motion
-  mission_mod  = constant_depth_bad_mismatch_var_fail
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[HELM_MALCONFIG]
   report_column = expected=helm_malconfig
   report_column = helm_malconfig=$[HELM_MALCONFIG]
