@@ -1414,19 +1414,16 @@
         "pMissionEval"
       ],
       "zlaunch": {
-        "case_count": 28,
+        "case_count": 23,
         "case_parse_error": "",
         "cases": [
           "numeric_direct_pass",
           "string_forced_pass",
-          "multiple_mixed_pass",
           "overwrite_existing_pass",
           "cache_config_pass",
           "mission_file_connection_pass",
-          "quiet_mode_pass",
           "negative_double_pass",
           "boolean_true_pass",
-          "repeated_batch_pass",
           "mixed_numeric_string_batch_pass",
           "cache_string_numeric_pass",
           "host_alias_args_pass",
@@ -1439,11 +1436,9 @@
           "large_double_pass",
           "cache_forced_string_pass",
           "cache_boolean_pass",
-          "utc_macro_pass",
-          "moostime_macro_pass",
+          "time_macros_alias_pass",
           "forced_utc_string_pass",
           "duplicate_same_invocation_pass",
-          "cache_duplicate_first_wins_pass",
           "cache_cli_mixed_pass"
         ],
         "helpers": [

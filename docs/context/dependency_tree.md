@@ -90,7 +90,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `pid_h02` | `pid` | `harnesses/pid_harnesses/H02-pid_motion/zlaunch.sh` | `missions/pid_missions/pid_motion` | 13 | - | `pid-motion` |
 | `usim_marine_h01` | `usim_marine` | `harnesses/usim_marine_harnesses/H01-usim_marine_motion/zlaunch.sh` | `missions/usim_marine_missions/usim_marine_motion` | 36 | - | `usim-marine-motion` |
 | `pnodereporter_h01` | `pnodereporter` | `harnesses/pnodereporter_harnesses/H01-pnodereporter_unit/zlaunch.sh` | `missions/pnodereporter_missions/pnodereporter_unit` | 33 | - | `pnodereporter-unit` |
-| `upokedb_h01` | `upokedb` | `harnesses/upokedb_harnesses/H01-upokedb_unit/zlaunch.sh` | `missions/upokedb_missions/upokedb_unit` | 28 | - | `upokedb-unit` |
+| `upokedb_h01` | `upokedb` | `harnesses/upokedb_harnesses/H01-upokedb_unit/zlaunch.sh` | `missions/upokedb_missions/upokedb_unit` | 23 | - | `upokedb-unit` |
 | `uxms_h01` | `uxms` | `harnesses/uxms_harnesses/H01-uxms_unit/zlaunch.sh` | `missions/uxms_missions/uxms_unit` | 32 | `uXMS` | `uxms-unit` |
 | `uquerydb_h01` | `uquerydb` | `harnesses/uquerydb_harnesses/H01-uquerydb_unit/zlaunch.sh` | `missions/uquerydb_missions/uquerydb_unit` | 30 | `uQueryDB` | `uquerydb-unit` |
 | `pechovar_h01` | `pechovar` | `harnesses/pechovar_harnesses/H01-pechovar_unit/zlaunch.sh` | `missions/pechovar_missions/pechovar_unit` | 33 | `pEchoVar` | `pechovar-unit` |

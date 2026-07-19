@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Direct Numeric Poke</h3>
-          <p>Description: Runs uPokeDB --host=localhost --port=&lt;case-port&gt; with POKE_NUM=42.5, testing an explicitly addressed numeric poke; passes when POKE_NUM=42.5.</p>
+          <p>Description: Runs uPokeDB --quiet --host=localhost --port=&lt;case-port&gt; with POKE_NUM=42.5, testing the ordinary long-form quiet, connection, and numeric-assignment path; passes when POKE_NUM=42.5.</p>
         </div>
       </article>
 
@@ -87,19 +87,13 @@
 
         <article class="case-row">
           <code>numeric_direct_pass</code>
-          <p>Runs uPokeDB --host=localhost --port=&lt;case-port&gt; with POKE_NUM=42.5, testing an explicitly addressed numeric poke; passes when POKE_NUM=42.5.</p>
+          <p>Runs uPokeDB --quiet --host=localhost --port=&lt;case-port&gt; with POKE_NUM=42.5, testing the ordinary long-form quiet, connection, and numeric-assignment path; passes when POKE_NUM=42.5.</p>
         </article>
 
 
         <article class="case-row">
           <code>string_forced_pass</code>
-          <p>Posts POKE_STR:=0012, testing forced-string parsing of a numeric-looking token; passes when the DB value remains the exact string 0012.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>multiple_mixed_pass</code>
-          <p>Posts POKE_A=7 and POKE_B:=bravo in one invocation, testing mixed numeric and forced-string arguments; passes when both exact values are present.</p>
+          <p>Posts POKE_STR:=0012, testing forced-string parsing of a numeric-looking token; passes when pMissionEval reports the exact four-character value 0012.</p>
         </article>
 
 
@@ -122,12 +116,6 @@
 
 
         <article class="case-row">
-          <code>quiet_mode_pass</code>
-          <p>Posts POKE_QUIET:=silent through the harness&#x27;s ordinary --quiet command path, exercising a quiet poke; passes when POKE_QUIET=silent. This path is also used by most other non-cache cases.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>negative_double_pass</code>
           <p>Posts POKE_NEG=-13.25, testing signed floating-point parsing; passes when POKE_NEG=-13.25.</p>
         </article>
@@ -140,14 +128,8 @@
 
 
         <article class="case-row">
-          <code>repeated_batch_pass</code>
-          <p>Posts POKE_REPEAT:=first, waits 0.5 seconds, then posts POKE_REPEAT:=second in a second invocation, testing sequential replacement; passes when the final value is second.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>mixed_numeric_string_batch_pass</code>
-          <p>Posts POKE_MIXED_NUM=31 and POKE_MIXED_STR:=031 together, testing numeric parsing alongside preservation of a leading-zero string; passes when the values are exactly 31 and 031.</p>
+          <p>Posts POKE_MIXED_NUM=31 and POKE_MIXED_STR:=031 together, testing numeric parsing alongside preservation of a leading-zero string; passes when pMissionEval reports 31 and the exact three-character value 031.</p>
         </article>
 
 
@@ -207,7 +189,7 @@
 
         <article class="case-row">
           <code>cache_forced_string_pass</code>
-          <p>Caches POKE_CACHE_FORCED:=0007, testing forced-string syntax inside a poke= config entry; passes when the four-character string 0007 is preserved.</p>
+          <p>Caches POKE_CACHE_FORCED:=0007, testing forced-string syntax inside a poke= config entry; passes when pMissionEval reports the exact four-character value 0007.</p>
         </article>
 
 
@@ -218,14 +200,8 @@
 
 
         <article class="case-row">
-          <code>utc_macro_pass</code>
-          <p>Posts POKE_UTC=@UTC, exercising UTC macro expansion; passes when the resulting value is greater than zero.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>moostime_macro_pass</code>
-          <p>Posts POKE_MOOSTIME=@MOOSTIME, exercising MOOS-time macro expansion; passes when the resulting value is greater than zero.</p>
+          <code>time_macros_alias_pass</code>
+          <p>Posts TIME_BEFORE=@MOOSTIME, POKE_UTC=@UTC, POKE_MOOSTIME=@MOOSTIME, and TIME_AFTER=@MOOSTIME in one invocation, testing the source-defined @UTC alias and both macro spellings together; passes when all four values fall in the broad 10^9 to 10^11 MOOS-time range, rejecting unchanged tokens and arbitrary small constants without depending on run timing.</p>
         </article>
 
 
@@ -238,12 +214,6 @@
         <article class="case-row">
           <code>duplicate_same_invocation_pass</code>
           <p>Supplies POKE_DUP:=first POKE_DUP:=second in one command, testing duplicate command-line arguments; passes when the later value second wins.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>cache_duplicate_first_wins_pass</code>
-          <p>Places POKE_CACHE_DUP:=first and then POKE_CACHE_DUP:=second in one cache block, preserving the cache parser&#x27;s current duplicate behavior; passes when the first value first wins.</p>
         </article>
 
 

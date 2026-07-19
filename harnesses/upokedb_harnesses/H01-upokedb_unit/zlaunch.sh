@@ -63,14 +63,11 @@ FINISH_FATAL_REASON=""
 CASES=(
     numeric_direct_pass
     string_forced_pass
-    multiple_mixed_pass
     overwrite_existing_pass
     cache_config_pass
     mission_file_connection_pass
-    quiet_mode_pass
     negative_double_pass
     boolean_true_pass
-    repeated_batch_pass
     mixed_numeric_string_batch_pass
     cache_string_numeric_pass
     host_alias_args_pass
@@ -83,11 +80,9 @@ CASES=(
     large_double_pass
     cache_forced_string_pass
     cache_boolean_pass
-    utc_macro_pass
-    moostime_macro_pass
+    time_macros_alias_pass
     forced_utc_string_pass
     duplicate_same_invocation_pass
-    cache_duplicate_first_wins_pass
     cache_cli_mixed_pass
 )
 
@@ -306,6 +301,7 @@ get_case_config() {
     POKE_BATCHES=()
     PASS_CONDITIONS=()
     REPORT_COLUMNS=()
+    EXPECTED_RESULT_FIELDS=()
     CACHE_POKES=()
 
     case "$CASE_NAME" in
@@ -318,11 +314,7 @@ get_case_config() {
             POKE_BATCHES=("POKE_STR:=0012 TEST_EVAL_READY=true")
             PASS_CONDITIONS=("POKE_STR = 0012")
             REPORT_COLUMNS=("poke_str=\$[POKE_STR]")
-            ;;
-        multiple_mixed_pass)
-            POKE_BATCHES=("POKE_A=7 POKE_B:=bravo TEST_EVAL_READY=true")
-            PASS_CONDITIONS=("POKE_A = 7" "POKE_B = bravo")
-            REPORT_COLUMNS=("poke_a=\$[POKE_A]" "poke_b=\$[POKE_B]")
+            EXPECTED_RESULT_FIELDS=("poke_str=0012")
             ;;
         overwrite_existing_pass)
             POKE_BATCHES=("POKE_OVER:=old" "__SLEEP__=0.5" "POKE_OVER:=new TEST_EVAL_READY=true")
@@ -341,11 +333,6 @@ get_case_config() {
             PASS_CONDITIONS=("POKE_FILE = from_file")
             REPORT_COLUMNS=("poke_file=\$[POKE_FILE]")
             ;;
-        quiet_mode_pass)
-            POKE_BATCHES=("POKE_QUIET:=silent TEST_EVAL_READY=true")
-            PASS_CONDITIONS=("POKE_QUIET = silent")
-            REPORT_COLUMNS=("poke_quiet=\$[POKE_QUIET]")
-            ;;
         negative_double_pass)
             POKE_BATCHES=("POKE_NEG=-13.25 TEST_EVAL_READY=true")
             PASS_CONDITIONS=("POKE_NEG = -13.25")
@@ -356,15 +343,11 @@ get_case_config() {
             PASS_CONDITIONS=("POKE_BOOL = true")
             REPORT_COLUMNS=("poke_bool=\$[POKE_BOOL]")
             ;;
-        repeated_batch_pass)
-            POKE_BATCHES=("POKE_REPEAT:=first" "__SLEEP__=0.5" "POKE_REPEAT:=second TEST_EVAL_READY=true")
-            PASS_CONDITIONS=("POKE_REPEAT = second")
-            REPORT_COLUMNS=("poke_repeat=\$[POKE_REPEAT]")
-            ;;
         mixed_numeric_string_batch_pass)
             POKE_BATCHES=("POKE_MIXED_NUM=31 POKE_MIXED_STR:=031 TEST_EVAL_READY=true")
             PASS_CONDITIONS=("POKE_MIXED_NUM = 31" "POKE_MIXED_STR = 031")
             REPORT_COLUMNS=("mixed_num=\$[POKE_MIXED_NUM]" "mixed_str=\$[POKE_MIXED_STR]")
+            EXPECTED_RESULT_FIELDS=("mixed_str=031")
             ;;
         cache_string_numeric_pass)
             POKE_MODE="cache"
@@ -422,6 +405,7 @@ get_case_config() {
             CACHE_POKES=("POKE_CACHE_FORCED:=0007" "TEST_EVAL_READY=true")
             PASS_CONDITIONS=("POKE_CACHE_FORCED = 0007")
             REPORT_COLUMNS=("cache_forced=\$[POKE_CACHE_FORCED]")
+            EXPECTED_RESULT_FIELDS=("cache_forced=0007")
             ;;
         cache_boolean_pass)
             POKE_MODE="cache"
@@ -429,15 +413,24 @@ get_case_config() {
             PASS_CONDITIONS=("POKE_CACHE_BOOL = true")
             REPORT_COLUMNS=("cache_bool=\$[POKE_CACHE_BOOL]")
             ;;
-        utc_macro_pass)
-            POKE_BATCHES=("POKE_UTC=@UTC TEST_EVAL_READY=true")
-            PASS_CONDITIONS=("POKE_UTC > 0")
-            REPORT_COLUMNS=("poke_utc=\$[POKE_UTC]")
-            ;;
-        moostime_macro_pass)
-            POKE_BATCHES=("POKE_MOOSTIME=@MOOSTIME TEST_EVAL_READY=true")
-            PASS_CONDITIONS=("POKE_MOOSTIME > 0")
-            REPORT_COLUMNS=("poke_moostime=\$[POKE_MOOSTIME]")
+        time_macros_alias_pass)
+            POKE_BATCHES=("TIME_BEFORE=@MOOSTIME POKE_UTC=@UTC POKE_MOOSTIME=@MOOSTIME TIME_AFTER=@MOOSTIME TEST_EVAL_READY=true")
+            PASS_CONDITIONS=(
+                "TIME_BEFORE > 1000000000"
+                "TIME_BEFORE < 100000000000"
+                "POKE_UTC > 1000000000"
+                "POKE_UTC < 100000000000"
+                "POKE_MOOSTIME > 1000000000"
+                "POKE_MOOSTIME < 100000000000"
+                "TIME_AFTER > 1000000000"
+                "TIME_AFTER < 100000000000"
+            )
+            REPORT_COLUMNS=(
+                "time_before=\$[TIME_BEFORE]"
+                "poke_utc=\$[POKE_UTC]"
+                "poke_moostime=\$[POKE_MOOSTIME]"
+                "time_after=\$[TIME_AFTER]"
+            )
             ;;
         forced_utc_string_pass)
             POKE_BATCHES=("POKE_UTC_STRING:=@UTC TEST_EVAL_READY=true")
@@ -448,12 +441,6 @@ get_case_config() {
             POKE_BATCHES=("POKE_DUP:=first POKE_DUP:=second TEST_EVAL_READY=true")
             PASS_CONDITIONS=("POKE_DUP = second")
             REPORT_COLUMNS=("poke_dup=\$[POKE_DUP]")
-            ;;
-        cache_duplicate_first_wins_pass)
-            POKE_MODE="cache"
-            CACHE_POKES=("POKE_CACHE_DUP:=first" "POKE_CACHE_DUP:=second" "TEST_EVAL_READY=true")
-            PASS_CONDITIONS=("POKE_CACHE_DUP = first")
-            REPORT_COLUMNS=("cache_dup=\$[POKE_CACHE_DUP]")
             ;;
         cache_cli_mixed_pass)
             POKE_MODE="cache_cli"
@@ -618,6 +605,10 @@ write_result() {
     local mission_grade
     local mission_rows
     local provenance
+    local expected_field
+    local expected_key
+    local expected_value
+    local actual_value
 
     if [ "$JUST_MAKE" = yes ]; then
         if [ "$launch_rc" -eq 0 ]; then
@@ -665,6 +656,21 @@ write_result() {
         printf 'case=%s grade=fail reason=malformed_result mission_grade=%s\n' \
             "$case_name" "${mission_grade:-missing}" > "$result_file"
         return 0
+    fi
+
+    if [ "$mission_grade" = pass ]; then
+        for expected_field in "${EXPECTED_RESULT_FIELDS[@]}"; do
+            expected_key=${expected_field%%=*}
+            expected_value=${expected_field#*=}
+            actual_value=$(field_value "$line" "$expected_key" || true)
+            if [ "$actual_value" != "$expected_value" ]; then
+                provenance=$(runner_provenance "$line")
+                printf 'case=%s grade=fail reason=result_field_mismatch expected_%s=%s actual_%s=%s%s\n' \
+                    "$case_name" "$expected_key" "$expected_value" "$expected_key" \
+                    "${actual_value:-missing}" "${provenance:+ $provenance}" > "$result_file"
+                return 0
+            fi
+        done
     fi
 
     if [ "$stimulus_rc" -ne 0 ]; then
