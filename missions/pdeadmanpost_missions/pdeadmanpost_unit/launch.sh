@@ -6,10 +6,11 @@
 #   LastEd: May 2026
 #------------------------------------------------------------
 vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
+# shellcheck disable=SC2329  # Invoked through the SIGINT trap.
 on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
 trap on_exit SIGINT
 
-ME=`basename "$0"`
+ME=$(basename "$0")
 TIME_WARP=10
 VERBOSE=""
 JUST_MAKE=""
@@ -21,8 +22,6 @@ fi
 MOOS_PORT="9000"
 PSHARE_PORT="9200"
 XLAUNCHED="no"
-NOGUI=""
-MMOD="active_start_once_posts_pass"
 SHORE_MOOS="meta_shoreside.moos"
 
 for ARGI; do
@@ -43,12 +42,10 @@ for ARGI; do
         MOOS_PORT="${ARGI#--shore_mport=*}"
     elif [ "${ARGI:0:15}" = "--shore_pshare=" ]; then
         PSHARE_PORT="${ARGI#--shore_pshare=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
     elif [ "${ARGI}" = "--xlaunched" ] || [ "${ARGI}" = "-x" ]; then
         XLAUNCHED="yes"
     elif [ "${ARGI}" = "--nogui" ] || [ "${ARGI}" = "-ng" ]; then
-        NOGUI="--nogui"
+        :
     else
         echo "$ME: Bad arg: $ARGI"
         exit 1
@@ -69,17 +66,17 @@ if [ "$LOG_CLEAN" != "" ]; then
     ./clean.sh
 fi
 
-NSFLAGS="--strict --force -x"
+NSFLAGS=(--strict --force -x)
 if [ "${XLAUNCHED}" != "yes" ]; then
-    NSFLAGS="--interactive --force -x"
+    NSFLAGS=(--interactive --force -x)
 fi
 
 if [ -f meta_shoreside.moosx ]; then
     SHORE_MOOS="meta_shoreside.moosx"
 fi
 
-nsplug "$SHORE_MOOS" targ_shoreside.moos $NSFLAGS \
-       WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT MMOD=$MMOD
+nsplug "$SHORE_MOOS" targ_shoreside.moos "${NSFLAGS[@]}" \
+       "WARP=$TIME_WARP" "MOOS_PORT=$MOOS_PORT" "PSHARE_PORT=$PSHARE_PORT"
 
 if [ "${JUST_MAKE}" != "" ]; then
     echo "$ME: Targ files made; exiting without launch."

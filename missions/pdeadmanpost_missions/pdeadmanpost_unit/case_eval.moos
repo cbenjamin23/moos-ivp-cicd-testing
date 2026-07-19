@@ -13,10 +13,8 @@ ProcessConfig = pMissionEval
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pdeadmanpost_unit
-  mission_mod  = $(MMOD:=active_start_once_posts_pass)
 
   report_column    = form=$[MISSION_FORM]
-  report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = dead_once=$[DEAD_ONCE]

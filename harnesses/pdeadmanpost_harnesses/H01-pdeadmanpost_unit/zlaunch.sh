@@ -299,6 +299,8 @@ get_case_config() {
     REPORT_COLUMNS=()
     MIN_COUNTS=()
     MAX_COUNTS=()
+    AFTER_LAST_TIMINGS=()
+    CLIENT_TIMINGS=()
     HEART_VAR="HEARTBEAT"
     MAX_NOHEART="0.5"
     ACTIVE_AT_START="true"
@@ -330,12 +332,14 @@ get_case_config() {
             REPORT_COLUMNS=("dead_keepalive=\$[DEAD_KEEPALIVE]")
             ;;
         stop_heartbeat_posts_pass)
+            ACTIVE_AT_START="false"
             MAX_NOHEART="0.45"
             DEADFLAGS=("DEAD_STOP=true")
             HEARTBEAT_EVENTS=("0.2" "0.4")
             EVAL_TIME="1.2"
             PASS_CONDITIONS=("DEAD_STOP = true")
             REPORT_COLUMNS=("dead_stop=\$[DEAD_STOP]")
+            AFTER_LAST_TIMINGS=("HEARTBEAT:DEAD_STOP:0.35:0.70")
             ;;
         active_false_after_first_heartbeat_posts_pass)
             ACTIVE_AT_START="false"
@@ -387,6 +391,7 @@ get_case_config() {
             PASS_CONDITIONS=("DEAD_RESET = true")
             REPORT_COLUMNS=("dead_reset=\$[DEAD_RESET]")
             MIN_COUNTS=("DEAD_RESET:2")
+            MAX_COUNTS=("DEAD_RESET:2")
             ;;
         repeat_policy_inactive_reposts_pass)
             ACTIVE_AT_START="false"
@@ -442,6 +447,7 @@ get_case_config() {
             PASS_CONDITIONS=("DEAD_ZERO_MAX = true")
             REPORT_COLUMNS=("dead_zero_max=\$[DEAD_ZERO_MAX]")
             MIN_COUNTS=("DEAD_ZERO_MAX:1")
+            CLIENT_TIMINGS=("pDeadManPost:DEAD_ZERO_MAX:0.00:0.90")
             ;;
         false_deadflag_pass)
             DEADFLAGS=("DEAD_FALSE=false")
@@ -522,10 +528,8 @@ write_case_files() {
         echo ""
         echo "  result_flag  = MISSION_EVALUATED = true"
         echo "  mission_form = pdeadmanpost_unit"
-        echo "  mission_mod  = $CASE_NAME"
         echo ""
         echo "  report_column = form=\$[MISSION_FORM]"
-        echo "  report_column = mmod=\$[MMOD]"
         echo "  report_column    = grade=\$[GRADE]"
         echo "  report_column    = eval=\$[TEST_EVAL_READY]"
         for item in "${REPORT_COLUMNS[@]}"; do
@@ -561,12 +565,71 @@ count_alog_posts() {
     printf '%s\n' "$total"
 }
 
+alog_post_time() {
+    local root="$1"
+    local var="$2"
+    local which="$3"
+    local alog
+    local cutoff
+    local found=no
+    local -a times=()
+
+    while IFS= read -r -d '' alog; do
+        cutoff=$(aloggrep MISSION_EVALUATED "$alog" 2>/dev/null |
+            awk '$2 == "MISSION_EVALUATED" && $4 == "true" {print $1; exit}')
+        [ -n "$cutoff" ] || return 1
+        while IFS= read -r timestamp; do
+            [ -n "$timestamp" ] && times+=("$timestamp")
+        done < <(aloggrep "$var" "$alog" 2>/dev/null |
+            awk -v v="$var" -v end="$cutoff" '$2 == v && $1 <= end {print $1}')
+        found=yes
+    done < <(find "$root" -type f -name '*.alog' -print0)
+
+    [ "$found" = yes ] && [ "${#times[@]}" -gt 0 ] || return 1
+    if [ "$which" = first ]; then
+        printf '%s\n' "${times[@]}" | sort -n | head -1
+    else
+        printf '%s\n' "${times[@]}" | sort -n | tail -1
+    fi
+}
+
+alog_client_time() {
+    local root="$1"
+    local client="$2"
+    local alog
+    local cutoff
+    local found=no
+    local -a times=()
+
+    while IFS= read -r -d '' alog; do
+        cutoff=$(aloggrep MISSION_EVALUATED "$alog" 2>/dev/null |
+            awk '$2 == "MISSION_EVALUATED" && $4 == "true" {print $1; exit}')
+        [ -n "$cutoff" ] || return 1
+        while IFS= read -r timestamp; do
+            [ -n "$timestamp" ] && times+=("$timestamp")
+        done < <(aloggrep DB_CLIENTS "$alog" 2>/dev/null |
+            awk -v client="$client" -v end="$cutoff" \
+                '$2 == "DB_CLIENTS" && $1 <= end && index($0, client) {print $1}')
+        found=yes
+    done < <(find "$root" -type f -name '*.alog' -print0)
+
+    [ "$found" = yes ] && [ "${#times[@]}" -gt 0 ] || return 1
+    printf '%s\n' "${times[@]}" | sort -n | head -1
+}
+
 check_deadman_counts() {
     local root="$1"
     local check
     local var
     local limit
     local observed
+    local source_var
+    local target_var
+    local source_time
+    local target_time
+    local min_delta
+    local max_delta
+    local delta
     local evidence="evidence=count_contract"
     local required=no
     local ok=yes
@@ -592,6 +655,36 @@ check_deadman_counts() {
             [ "$observed" -le "$limit" ] || ok=no
         else
             evidence="$evidence max_${var}=$limit count_${var}=missing"
+            ok=no
+        fi
+    done
+    for check in "${AFTER_LAST_TIMINGS[@]}"; do
+        required=yes
+        IFS=: read -r source_var target_var min_delta max_delta <<< "$check"
+        source_time=$(alog_post_time "$root" "$source_var" last || true)
+        target_time=$(alog_post_time "$root" "$target_var" first || true)
+        if [ -n "$source_time" ] && [ -n "$target_time" ]; then
+            delta=$(awk -v start="$source_time" -v end="$target_time" 'BEGIN {printf "%.3f", end-start}')
+            evidence="$evidence last_${source_var}=$source_time first_${target_var}=$target_time delta_${source_var}_${target_var}=$delta min_delta=$min_delta max_delta=$max_delta"
+            awk -v d="$delta" -v min="$min_delta" -v max="$max_delta" \
+                'BEGIN {exit !(d >= min && d <= max)}' || ok=no
+        else
+            evidence="$evidence last_${source_var}=${source_time:-missing} first_${target_var}=${target_time:-missing}"
+            ok=no
+        fi
+    done
+    for check in "${CLIENT_TIMINGS[@]}"; do
+        required=yes
+        IFS=: read -r source_var target_var min_delta max_delta <<< "$check"
+        source_time=$(alog_client_time "$root" "$source_var" || true)
+        target_time=$(alog_post_time "$root" "$target_var" first || true)
+        if [ -n "$source_time" ] && [ -n "$target_time" ]; then
+            delta=$(awk -v start="$source_time" -v end="$target_time" 'BEGIN {printf "%.3f", end-start}')
+            evidence="$evidence connected_${source_var}=$source_time first_${target_var}=$target_time delta_${source_var}_${target_var}=$delta min_delta=$min_delta max_delta=$max_delta"
+            awk -v d="$delta" -v min="$min_delta" -v max="$max_delta" \
+                'BEGIN {exit !(d >= min && d <= max)}' || ok=no
+        else
+            evidence="$evidence connected_${source_var}=${source_time:-missing} first_${target_var}=${target_time:-missing}"
             ok=no
         fi
     done

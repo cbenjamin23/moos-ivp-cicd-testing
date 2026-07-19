@@ -105,7 +105,7 @@
 
         <article class="case-row">
           <code>stop_heartbeat_posts_pass</code>
-          <p>Starts active with a 0.45-second timeout, sends heartbeats at 0.2 and 0.4, then stops, exercising stale detection after heartbeat loss; passes when DEAD_STOP=true is present by time 1.2.</p>
+          <p>Starts inactive, uses the heartbeat at 0.2 to arm the watchdog and the heartbeat at 0.4 to refresh its 0.45-second timeout, then stops sending mail; passes when DEAD_STOP=true is first published 0.35-0.70 seconds after the second heartbeat.</p>
         </article>
 
 
@@ -147,7 +147,7 @@
 
         <article class="case-row">
           <code>reset_policy_reposts_after_heartbeat_pass</code>
-          <p>Uses post_policy=reset, allows an initial trip, sends a heartbeat at 0.8, and goes stale again; passes when DEAD_RESET=true and at least two publications occur.</p>
+          <p>Uses post_policy=reset, allows one initial stale-timeout post, sends a heartbeat at 0.8 to clear the posting latch, and goes stale once more; passes when the alog contains exactly two DEAD_RESET=true publications before evaluation.</p>
         </article>
 
 
@@ -183,7 +183,7 @@
 
         <article class="case-row">
           <code>zero_max_noheart_posts_pass</code>
-          <p>Sets max_noheart=0 on an active watchdog, exercising the zero-timeout configuration; passes when DEAD_ZERO_MAX=true is published by time 0.8.</p>
+          <p>Sets max_noheart=0 on an active watchdog, testing that zero is accepted as an immediate timeout rather than replaced by the positive default; passes when DEAD_ZERO_MAX=true is published once and its first publication is no more than 0.90 seconds after pDeadManPost appears in DB_CLIENTS.</p>
         </article>
 
 

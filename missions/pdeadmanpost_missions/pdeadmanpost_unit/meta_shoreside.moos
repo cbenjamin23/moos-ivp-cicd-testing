@@ -31,11 +31,14 @@ ProcessConfig = pLogger
   AppTick   = 10
   CommsTick = 10
 
-  File     = LOG_$(MMOD)
+  File     = LOG_pdeadmanpost_unit
   PATH     = ./
   AsyncLog = true
 
   Log = MISSION_EVALUATED @ 0 nosync
+  Log = DB_CLIENTS @ 0 nosync
+  Log = HEARTBEAT @ 0 nosync
+  Log = DEAD_STOP @ 0 nosync
   Log = DEAD_ONCE_SINGLE @ 0 nosync
   Log = DEAD_REPEAT @ 0 nosync
   Log = DEAD_RESET @ 0 nosync
