@@ -41,6 +41,8 @@ ProcessConfig = pMissionEval
   pass_condition = NAV_HEADING >= 178
   pass_condition = NAV_HEADING <= 182
   pass_condition = NAV_SPEED >= 0.8
+  pass_condition = NAV_DEPTH >= 2.8
+  pass_condition = NAV_DEPTH <= 3.2
 
   result_flag  = MISSION_EVALUATED = true
   pass_flag    = SAY_MOOS = pass

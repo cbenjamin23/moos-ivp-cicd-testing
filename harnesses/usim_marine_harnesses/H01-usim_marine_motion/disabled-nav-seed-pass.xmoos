@@ -9,7 +9,10 @@ ProcessConfig = uTimerScript
   event = var=NAV_X, val=42, time=1.0
   event = var=NAV_Y, val=-17, time=1.0
   event = var=NAV_HEADING, val=275, time=1.0
-  event = var=TEST_EVAL_READY, val=true, time=3.0
+  event = var=USM_ENABLED, val=true, time=1.5
+  event = var=DESIRED_THRUST, val=20, time=1.6
+  event = var=DESIRED_RUDDER, val=0, time=1.6
+  event = var=TEST_EVAL_READY, val=true, time=4.0
 }
 
 ProcessConfig = pMissionEval
@@ -18,12 +21,14 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = NAV_X >= 41
-  pass_condition = NAV_X <= 43
+  pass_condition = NAV_X >= 38
+  pass_condition = NAV_X <= 41
   pass_condition = NAV_Y >= -18
-  pass_condition = NAV_Y <= -16
+  pass_condition = NAV_Y <= -15
   pass_condition = NAV_HEADING >= 274
   pass_condition = NAV_HEADING <= 276
+  pass_condition = NAV_SPEED >= 0.8
+  pass_condition = NAV_SPEED <= 1.2
 
   result_flag  = MISSION_EVALUATED = true
   pass_flag    = SAY_MOOS = pass

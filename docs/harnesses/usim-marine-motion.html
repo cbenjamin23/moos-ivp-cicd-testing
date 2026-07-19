@@ -107,7 +107,7 @@
 
         <article class="case-row">
           <code>start_pos_seed_pass</code>
-          <p>Configures start_pos=x=20,y=-10,heading=180,speed=1,depth=3 and applies thrust 20, testing nonzero planar state and speed initialization before southbound motion; at three seconds, passes with 18&lt;=NAV_X&lt;=22, NAV_Y&lt;=-12, heading in [178,182], and speed at least 0.8. Initial depth is reported but not graded.</p>
+          <p>Configures start_pos=x=20,y=-10,heading=180,speed=1,depth=3 and applies thrust 20, testing all five configured start fields before southbound motion; at three seconds, passes with 18&lt;=NAV_X&lt;=22, NAV_Y&lt;=-12, heading in [178,182], speed at least 0.8, and depth in [2.8,3.2].</p>
         </article>
 
 
@@ -149,7 +149,7 @@
 
         <article class="case-row">
           <code>disabled_nav_seed_pass</code>
-          <p>Posts USM_ENABLED=false, followed by NAV_X=42, NAV_Y=-17, and NAV_HEADING=275, exercising the disabled-state nav-seeding inputs; at three seconds, passes when those same MOOS variables remain within one unit and heading is in [274,276]. Because the evaluator sees the injected mail directly, it does not prove the simulator consumed it.</p>
+          <p>Disables the simulator, posts NAV_X=42, NAV_Y=-17, and NAV_HEADING=275, then reenables it and applies thrust 20; at four seconds, it passes only after simulator-owned motion moves west to 38&lt;=NAV_X&lt;=41 with -18&lt;=NAV_Y&lt;=-15, heading in [274,276], and speed in [0.8,1.2].</p>
         </article>
 
 
@@ -245,7 +245,7 @@
 
         <article class="case-row">
           <code>dual_state_reset_nav_pass</code>
-          <p>Enables dual-state mode with drift_x=1 and posts USM_RESET_NAV=true at three seconds, exercising resynchronization of navigation state to ground truth; at 3.4 seconds, passes with both NAV_X and NAV_GT_X in their configured [4.8,7.5] bands, y near zero, and speed near zero. The evaluator does not observe the pre-reset separation.</p>
+          <p>Enables dual-state mode with drift_x=1, first requiring ordinary NAV_X near zero while NAV_GT_X has advanced at least three meters, then posts USM_RESET_NAV=true and stops the drift; at 3.5 seconds, it passes with both x states in [3,8], y near zero, and speed near zero.</p>
         </article>
 
 

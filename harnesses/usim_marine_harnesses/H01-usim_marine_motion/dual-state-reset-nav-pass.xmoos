@@ -31,8 +31,10 @@ ProcessConfig = uTimerScript
 
   event = var=DESIRED_THRUST, val=0, time=0.5
   event = var=DESIRED_RUDDER, val=0, time=0.5
+  event = var=USM_PRE_RESET_READY, val=true, time=2.5
   event = var=USM_RESET_NAV, val=true, time=3.0
-  event = var=TEST_EVAL_READY, val=true, time=3.4
+  event = var=DRIFT_X, val=0, time=3.05
+  event = var=TEST_EVAL_READY, val=true, time=3.5
 }
 
 ProcessConfig = pMissionEval
@@ -40,11 +42,17 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  lead_condition = USM_PRE_RESET_READY = true
+  pass_condition = NAV_X >= -0.25
+  pass_condition = NAV_X <= 0.25
+  pass_condition = NAV_GT_X >= 3.0
+  pass_condition = NAV_GT_X <= 8.0
+
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = NAV_X >= 4.8
-  pass_condition = NAV_X <= 7.0
-  pass_condition = NAV_GT_X >= 5.0
-  pass_condition = NAV_GT_X <= 7.5
+  pass_condition = NAV_X >= 3.0
+  pass_condition = NAV_X <= 8.0
+  pass_condition = NAV_GT_X >= 3.0
+  pass_condition = NAV_GT_X <= 8.0
   pass_condition = NAV_Y >= -0.5
   pass_condition = NAV_Y <= 0.5
   pass_condition = NAV_SPEED >= -0.1
@@ -60,6 +68,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = pre_reset=$[USM_PRE_RESET_READY]
   report_column    = x=$[NAV_X]
   report_column    = gt_x=$[NAV_GT_X]
   report_column    = y=$[NAV_Y]
