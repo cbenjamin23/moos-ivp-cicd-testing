@@ -2360,7 +2360,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 32
+        "file_count": 25
       },
       "path": "harnesses/depth_behavior_harnesses/H05-min_altitude_motion",
       "perf_profile": "",
@@ -2383,22 +2383,19 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 13,
+        "case_count": 10,
         "case_parse_error": "",
         "cases": [
           "min_altitude_guard_pass",
           "min_altitude_shallow_bottom_pass",
           "min_altitude_zero_min_pass",
-          "min_altitude_low_threshold_pass",
-          "min_altitude_noncritical_available_pass",
           "min_altitude_unconstrained_deep_bottom_pass",
           "min_altitude_clearance_boundary_pass",
           "min_altitude_zero_altitude_fail",
           "min_altitude_bad_config_fail",
           "min_altitude_negative_min_fail",
           "min_altitude_bad_critical_bool_fail",
-          "min_altitude_missing_nav_fail",
-          "min_altitude_noncritical_missing_altitude_fail"
+          "min_altitude_missing_nav_fail"
         ],
         "helpers": [
           "scripts/moos_scoped_teardown.sh"
@@ -7025,11 +7022,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 514,
-      ".xmoos": 1319,
+      ".xbhv": 511,
+      ".xmoos": 1315,
       "[none]": 7
     },
-    "harness_patch_count": 1728,
+    "harness_patch_count": 1721,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

@@ -9,19 +9,16 @@ constant-depth behavior commands unsafe deeper targets.
 
 ## Current Matrix
 
-- `min_altitude_guard_pass` Commands 30 meters over a 20-meter bottom while requiring `min_altitude=8`. Passes after `x>=45` when `NAV_DEPTH<=16`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
-- `min_altitude_shallow_bottom_pass` Commands 30 meters over a six-meter bottom while requiring ten meters of clearance, placing the computed depth limit above the surface. Passes after `x>=45` when `NAV_DEPTH<=2`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
-- `min_altitude_zero_min_pass` Commands 30 meters over a 20-meter bottom with `min_altitude=0`, exercising the disabled-clearance boundary. Passes after `x>=45` when `16<=NAV_DEPTH<=31`, `NAV_ALTITUDE<=4`, and no behavior error is observed.
-- `min_altitude_low_threshold_pass` Commands 30 meters over a 20-meter bottom with `min_altitude=1`. Passes after `x>=45` when `16<=NAV_DEPTH<=21`, `NAV_ALTITUDE<=4`, and no behavior error is observed.
-- `min_altitude_noncritical_available_pass` Sets `missing_altitude_critical=false` while valid altitude mail remains available, with a 30-meter target, 20-meter bottom, and eight-meter clearance. Passes after `x>=45` when `NAV_DEPTH<=16`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
-- `min_altitude_unconstrained_deep_bottom_pass` Commands 22 meters over an 80-meter bottom while requiring eight meters of clearance, leaving the guard inactive. Passes after `x>=45` when `16<=NAV_DEPTH<=26`, `NAV_ALTITUDE>=40`, and no behavior error is observed.
-- `min_altitude_clearance_boundary_pass` Commands 30 meters over a 20-meter bottom while requiring eight meters of clearance, targeting the computed 12-meter depth boundary. Passes after `x>=45` when `10<=NAV_DEPTH<=14`, `6<=NAV_ALTITUDE<=10`, and no behavior error is observed.
-- `min_altitude_zero_altitude_fail` Configures a zero-meter water depth while commanding 30 meters with `min_altitude=8`. The harness passes at 45 seconds when `NAV_DEPTH<1` and `ABE_BHV_ERROR` has been observed.
-- `min_altitude_bad_config_fail` Sets `min_altitude=deep` to exercise rejection of a nonnumeric clearance. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
-- `min_altitude_negative_min_fail` Sets `min_altitude=-1` to exercise rejection of a negative clearance. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
-- `min_altitude_bad_critical_bool_fail` Sets `missing_altitude_critical=maybe` to exercise rejection of an invalid Boolean. The harness passes when `IVPHELM_STATE` reports `HELM_MALCONFIG`.
-- `min_altitude_missing_nav_fail` Changes the simulator output prefix to `SIM`, leaving the helm without `NAV_X` or `NAV_DEPTH`. The harness passes at 45 seconds when both variables remain absent, `DESIRED_ELEVATOR=0`, and no behavior error is observed.
-- `min_altitude_noncritical_missing_altitude_fail` Also changes the simulator prefix to `SIM`, but its behavior fixture currently sets `missing_altitude_critical=true`, not `false`. The harness passes on the same evidence as `min_altitude_missing_nav_fail`: absent `NAV_X` and `NAV_DEPTH`, `DESIRED_ELEVATOR=0`, and no behavior error at 45 seconds.
+- `min_altitude_guard_pass` Opposes a 30-meter depth command over a 20-meter bottom with `min_altitude=8`, testing that the computed 12-meter maximum-depth objective stops the dive; passes at `x>=80` when `NAV_DEPTH<=16`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
+- `min_altitude_shallow_bottom_pass` Opposes a 30-meter command over a six-meter bottom with `min_altitude=10`, testing that a negative computed depth limit is clipped to the surface; passes at `x>=80` when `NAV_DEPTH<=2`, `NAV_ALTITUDE>=4`, and no behavior error is observed.
+- `min_altitude_zero_min_pass` Commands 30 meters over a 20-meter bottom with `min_altitude=0`, testing that the boundary setting permits descent near the bottom rather than retaining the ordinary eight-meter guard; passes when the vehicle reaches `x>=45`, `NAV_DEPTH>=16`, and `NAV_ALTITUDE<=4`, with 75 seconds used only as a missing-state deadline.
+- `min_altitude_unconstrained_deep_bottom_pass` Commands 22 meters over an 80-meter bottom with `min_altitude=8`, testing that the one-sided constraint does not disturb a target far above the computed 72-meter limit; passes when `x>=100`, `NAV_DEPTH>=20`, and `NAV_ALTITUDE>=40`, with 60 seconds used only as a missing-state deadline.
+- `min_altitude_clearance_boundary_pass` Commands 30 meters over a 20-meter bottom with `min_altitude=8`, testing control near the computed 12-meter depth boundary; passes when `x>=45` and `NAV_DEPTH>=10`, with depth constrained to 10–14 meters, altitude to 6–10 meters, and 75 seconds used only as a missing-state deadline.
+- `min_altitude_zero_altitude_fail` Configures a zero-meter water depth while commanding 30 meters with `min_altitude=8`, testing the behavior's no-objective path when reported altitude is zero; passes when `ABE_BHV_ERROR` is observed with `NAV_DEPTH<1`, with 45 seconds used only as a missing-error deadline.
+- `min_altitude_bad_config_fail` Sets `min_altitude=deep`, testing rejection of a nonnumeric clearance; passes only when the helm reports the exact state `IVPHELM_STATE=MALCONFIG` before the 12-second missing-state deadline.
+- `min_altitude_negative_min_fail` Sets `min_altitude=-1`, testing rejection of a negative clearance; passes only when the helm reports the exact state `IVPHELM_STATE=MALCONFIG` before the 12-second missing-state deadline.
+- `min_altitude_bad_critical_bool_fail` Sets `missing_altitude_critical=maybe`, testing rejection of an invalid Boolean; passes only when the helm reports the exact state `IVPHELM_STATE=MALCONFIG` before the 12-second missing-state deadline.
+- `min_altitude_missing_nav_fail` Changes the simulator prefix to `SIM`, withholding `NAV_X` and `NAV_DEPTH` from the helm; passes at the 45-second absence deadline when both variables and depth-mismatch mail remain absent, `DESIRED_ELEVATOR=0`, and no behavior error is observed.
 
 ## Running
 
@@ -35,48 +32,24 @@ The Bash 5.1 wrapper creates an isolated mission copy for every serial and
 rolling case, refills rolling slots as cases finish, aggregates one strict
 mission-owned result row per selected case, and performs root-scoped cleanup.
 
-### Migration evidence
+## Validation
 
-Two clean untouched legacy `--jobs=4` matrices passed 26/26 rows in 59.42 and
-52.89 seconds, for a 56.16-second mean. A third untouched matrix finished in
-51.83 seconds but sampled `min_altitude_low_threshold_pass` before its required
-near-bottom state; that unchanged case passed 9/10 focused legacy repetitions.
-The untouched serial matrix passed 13/13 in 118.51 seconds.
+The 10-case live matrix passes with ordinary motion cases evaluated on vehicle
+state, malformed cases evaluated on the exact helm state, and timers retained
+only as missing-state or missing-input deadlines. Direct
+`BHVMinAltitudeXTest` coverage computes a known 20-meter bottom and proves that
+`min_altitude=1` places the utility drop between depths 19 and 20; changing the
+minimum to zero fails that assertion.
 
-Three timing-sensitive positive cases now use existing navigation state as
-their pMissionEval trigger, with the existing timer moved to 75 mission seconds
-as a failure deadline. `zero_min_pass` waits for depth at least 16 and x at
-least 45; `low_threshold_pass` waits for altitude at most 4 and x at least 45;
-and `clearance_boundary_pass` waits for depth at least 10 and x at least 45.
-Their original pass windows, behavior parameters, stimuli, and error checks are
-unchanged. Each final form passed 10/10 focused repetitions.
-
-The simple intermediate idea of moving the low-threshold snapshot from 45 to
-60 seconds was rejected after it passed only 8/10. A depth-only boundary
-trigger was also rejected because it could fire before the original x
-requirement. These failed experiments are not present in the final design.
-
-The unconstrained-deep-bottom case sometimes reports its existing sticky
-`bhv_error=true` field while still passing because that field has never been a
-pass condition for this case. It did so in every legacy baseline matrix but
-not every migrated run. The migration leaves that pre-existing coverage choice
-unchanged for later case-quality review.
-
-After the three repairs, three rolling matrices passed 39/39 rows in 43.86,
-44.24, and 42.76 seconds, for a 43.62-second mean. The final consistency edit
-added the already-required x condition to the low-threshold trigger; an exact
-final-source rolling confirmation passed 13/13 in 43.55 seconds. The exact
-final-source serial matrix passed 13/13 in 132.98 seconds, 14.47 seconds or
-about 12.2 percent slower than legacy, roughly 1.11 seconds per case for
-isolated copying, xlaunch lifecycle, and verified scoped cleanup.
-
-Validation covered final-source generation and live execution, focused sweeps,
-full rolling and serial matrices, exact README/case/patch-map reconciliation,
-rolling refill, 26 unique MOOSDB ports, 26 unique pShare ports, unknown-case
-rejection, Homebrew Bash re-execution, and explicit Bash
-3.2 rejection. Bash syntax, ShellCheck, the harness checker, and all thirteen
-generated-case evaluator checks pass. No tested MOOS process survived cleanup,
-and the shared depth stem was not changed.
+Replacing malformed `missing_altitude_critical=maybe` with valid `true` reaches
+`DRIVE` and fails the exact-state evaluator. The former one-meter motion case
+was removed because its checkpoint varied between roughly one and five meters
+with controller phase and could not prove the utility boundary. Both
+noncritical live cases were also removed: the flag is irrelevant while altitude
+mail is present, and the current upstream implementation posts the same error
+when altitude is absent for either Boolean value. That upstream discrepancy is
+tracked in the repository review plan while the direct test records current
+behavior.
 
 Logging is minimal by default. Use `--log=full` for the complete matrix, or
 combine it with `--case=NAME` for one fully logged diagnostic case.

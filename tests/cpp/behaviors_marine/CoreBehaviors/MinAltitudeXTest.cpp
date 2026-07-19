@@ -27,6 +27,23 @@ TEST(BHVMinAltitudeXTest, ConvertsAltitudeClearanceIntoMaximumAllowedDepth)
   EXPECT_GT(evalOneDimPoint(*ipf, 25), evalOneDimPoint(*ipf, 40));
 }
 
+// Covers BHV min altitude x behavior: one-meter clearance sets the exact depth limit.
+TEST(BHVMinAltitudeXTest, OneMeterClearanceStopsAtNineteenMeterDepth)
+{
+  InfoBuffer info;
+  info.setValue("NAV_DEPTH", 15);
+  info.setValue("NAV_ALTITUDE", 5);
+
+  BHV_MinAltitudeX behavior(makeDepthDomain());
+  behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(behavior.setParam("min_altitude", "1"));
+
+  std::unique_ptr<IvPFunction> ipf(behavior.onRunState());
+  ASSERT_NE(ipf, nullptr);
+
+  EXPECT_GT(evalOneDimPoint(*ipf, 19), evalOneDimPoint(*ipf, 20));
+}
+
 // Covers BHV min altitude x behavior: clips allowed depth at surface when bottom is too shallow.
 TEST(BHVMinAltitudeXTest, ClipsAllowedDepthAtSurfaceWhenBottomIsTooShallow)
 {

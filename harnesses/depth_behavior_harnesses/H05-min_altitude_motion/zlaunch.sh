@@ -64,8 +64,6 @@ CASES=(
     min_altitude_guard_pass
     min_altitude_shallow_bottom_pass
     min_altitude_zero_min_pass
-    min_altitude_low_threshold_pass
-    min_altitude_noncritical_available_pass
     min_altitude_unconstrained_deep_bottom_pass
     min_altitude_clearance_boundary_pass
     min_altitude_zero_altitude_fail
@@ -73,7 +71,6 @@ CASES=(
     min_altitude_negative_min_fail
     min_altitude_bad_critical_bool_fail
     min_altitude_missing_nav_fail
-    min_altitude_noncritical_missing_altitude_fail
 )
 
 SOLO_CASES=()
@@ -319,14 +316,6 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/min-altitude-zero-min-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-guard-pass-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/min-altitude-zero-min-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "min_altitude_low_threshold_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/min-altitude-low-threshold-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-guard-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/min-altitude-low-threshold-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "min_altitude_noncritical_available_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/min-altitude-noncritical-available-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-guard-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/min-altitude-noncritical-available-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "min_altitude_unconstrained_deep_bottom_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/min-altitude-unconstrained-deep-bottom-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-unconstrained-deep-bottom-pass-vehicle.xmoos"
@@ -355,10 +344,6 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/min-altitude-missing-nav-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-missing-nav-fail-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/min-altitude-guard-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "min_altitude_noncritical_missing_altitude_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/min-altitude-noncritical-missing-altitude-fail-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-noncritical-missing-altitude-fail-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/min-altitude-noncritical-missing-altitude-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"
         return 1

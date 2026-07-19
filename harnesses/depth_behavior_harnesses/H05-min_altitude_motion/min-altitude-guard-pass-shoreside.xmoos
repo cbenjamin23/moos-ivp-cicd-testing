@@ -11,7 +11,6 @@ ProcessConfig = uTimerScript
   condition = DEPLOY_ALL = true
 
   event = var=BHV_ERROR_SEEN, val=false, time=0
-  event = var=TEST_EVAL_READY, val=true, time=45
 }
 
 ProcessConfig = pMissionEval
@@ -21,8 +20,7 @@ ProcessConfig = pMissionEval
 
   mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = ABE_NAV_X >= 45
+  lead_condition = ABE_NAV_X >= 80
   pass_condition = ABE_NAV_DEPTH <= 16
   pass_condition = ABE_NAV_ALTITUDE >= 4
   pass_condition = BHV_ERROR_SEEN = false
@@ -38,7 +36,6 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
   report_column = x=$[ABE_NAV_X]
   report_column = depth=$[ABE_NAV_DEPTH]
   report_column = altitude=$[ABE_NAV_ALTITUDE]

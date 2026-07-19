@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Min Altitude Guard</h3>
-          <p>Description: Commands 30 meters over a 20-meter bottom while requiring min_altitude=8. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, NAV_ALTITUDE&gt;=4, and no behavior error is observed.</p>
+          <p>Description: Opposes a 30-meter depth command over a 20-meter bottom with min_altitude=8, testing that the computed 12-meter maximum-depth objective stops the dive; passes at x&gt;=80 when NAV_DEPTH&lt;=16, NAV_ALTITUDE&gt;=4, and no behavior error is observed.</p>
         </div>
       </article>
 
@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Deep Bottom</h3>
-          <p>Description: Commands 22 meters over an 80-meter bottom while requiring eight meters of clearance, leaving the guard inactive. Passes after x&gt;=45 when 16&lt;=NAV_DEPTH&lt;=26, NAV_ALTITUDE&gt;=40, and no behavior error is observed.</p>
+          <p>Description: Commands 22 meters over an 80-meter bottom with min_altitude=8, testing that the one-sided constraint does not disturb a target far above the computed 72-meter limit; passes when x&gt;=100, NAV_DEPTH&gt;=20, and NAV_ALTITUDE&gt;=40, with 60 seconds used only as a missing-state deadline.</p>
         </div>
       </article>
 
@@ -89,79 +89,61 @@
 
         <article class="case-row">
           <code>min_altitude_guard_pass</code>
-          <p>Commands 30 meters over a 20-meter bottom while requiring min_altitude=8. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, NAV_ALTITUDE&gt;=4, and no behavior error is observed.</p>
+          <p>Opposes a 30-meter depth command over a 20-meter bottom with min_altitude=8, testing that the computed 12-meter maximum-depth objective stops the dive; passes at x&gt;=80 when NAV_DEPTH&lt;=16, NAV_ALTITUDE&gt;=4, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_shallow_bottom_pass</code>
-          <p>Commands 30 meters over a six-meter bottom while requiring ten meters of clearance, placing the computed depth limit above the surface. Passes after x&gt;=45 when NAV_DEPTH&lt;=2, NAV_ALTITUDE&gt;=4, and no behavior error is observed.</p>
+          <p>Opposes a 30-meter command over a six-meter bottom with min_altitude=10, testing that a negative computed depth limit is clipped to the surface; passes at x&gt;=80 when NAV_DEPTH&lt;=2, NAV_ALTITUDE&gt;=4, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_zero_min_pass</code>
-          <p>Commands 30 meters over a 20-meter bottom with min_altitude=0, exercising the disabled-clearance boundary. Passes after x&gt;=45 when 16&lt;=NAV_DEPTH&lt;=31, NAV_ALTITUDE&lt;=4, and no behavior error is observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>min_altitude_low_threshold_pass</code>
-          <p>Commands 30 meters over a 20-meter bottom with min_altitude=1. Passes after x&gt;=45 when 16&lt;=NAV_DEPTH&lt;=21, NAV_ALTITUDE&lt;=4, and no behavior error is observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>min_altitude_noncritical_available_pass</code>
-          <p>Sets missing_altitude_critical=false while valid altitude mail remains available, with a 30-meter target, 20-meter bottom, and eight-meter clearance. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, NAV_ALTITUDE&gt;=4, and no behavior error is observed.</p>
+          <p>Commands 30 meters over a 20-meter bottom with min_altitude=0, testing that the boundary setting permits descent near the bottom rather than retaining the ordinary eight-meter guard; passes when the vehicle reaches x&gt;=45, NAV_DEPTH&gt;=16, and NAV_ALTITUDE&lt;=4, with 75 seconds used only as a missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_unconstrained_deep_bottom_pass</code>
-          <p>Commands 22 meters over an 80-meter bottom while requiring eight meters of clearance, leaving the guard inactive. Passes after x&gt;=45 when 16&lt;=NAV_DEPTH&lt;=26, NAV_ALTITUDE&gt;=40, and no behavior error is observed.</p>
+          <p>Commands 22 meters over an 80-meter bottom with min_altitude=8, testing that the one-sided constraint does not disturb a target far above the computed 72-meter limit; passes when x&gt;=100, NAV_DEPTH&gt;=20, and NAV_ALTITUDE&gt;=40, with 60 seconds used only as a missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_clearance_boundary_pass</code>
-          <p>Commands 30 meters over a 20-meter bottom while requiring eight meters of clearance, targeting the computed 12-meter depth boundary. Passes after x&gt;=45 when 10&lt;=NAV_DEPTH&lt;=14, 6&lt;=NAV_ALTITUDE&lt;=10, and no behavior error is observed.</p>
+          <p>Commands 30 meters over a 20-meter bottom with min_altitude=8, testing control near the computed 12-meter depth boundary; passes when x&gt;=45 and NAV_DEPTH&gt;=10, with depth constrained to 10–14 meters, altitude to 6–10 meters, and 75 seconds used only as a missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_zero_altitude_fail</code>
-          <p>Configures a zero-meter water depth while commanding 30 meters with min_altitude=8. The harness passes at 45 seconds when NAV_DEPTH&lt;1 and ABE_BHV_ERROR has been observed.</p>
+          <p>Configures a zero-meter water depth while commanding 30 meters with min_altitude=8, testing the behavior&#x27;s no-objective path when reported altitude is zero; passes when ABE_BHV_ERROR is observed with NAV_DEPTH&lt;1, with 45 seconds used only as a missing-error deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_bad_config_fail</code>
-          <p>Sets min_altitude=deep to exercise rejection of a nonnumeric clearance. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets min_altitude=deep, testing rejection of a nonnumeric clearance; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 12-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_negative_min_fail</code>
-          <p>Sets min_altitude=-1 to exercise rejection of a negative clearance. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets min_altitude=-1, testing rejection of a negative clearance; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 12-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_bad_critical_bool_fail</code>
-          <p>Sets missing_altitude_critical=maybe to exercise rejection of an invalid Boolean. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets missing_altitude_critical=maybe, testing rejection of an invalid Boolean; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 12-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>min_altitude_missing_nav_fail</code>
-          <p>Changes the simulator output prefix to SIM, leaving the helm without NAV_X or NAV_DEPTH. The harness passes at 45 seconds when both variables remain absent, DESIRED_ELEVATOR=0, and no behavior error is observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>min_altitude_noncritical_missing_altitude_fail</code>
-          <p>Also changes the simulator prefix to SIM, but its behavior fixture currently sets missing_altitude_critical=true, not false. The harness passes on the same evidence as min_altitude_missing_nav_fail: absent NAV_X and NAV_DEPTH, DESIRED_ELEVATOR=0, and no behavior error at 45 seconds.</p>
+          <p>Changes the simulator prefix to SIM, withholding NAV_X and NAV_DEPTH from the helm; passes at the 45-second absence deadline when both variables and depth-mismatch mail remain absent, DESIRED_ELEVATOR=0, and no behavior error is observed.</p>
         </article>
 
       </div>
