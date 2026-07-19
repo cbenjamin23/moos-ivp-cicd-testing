@@ -6,9 +6,11 @@ Patch-driven instrumentation harness for
 This harness focuses on `BHV_TestFailure` as the behavior under test. The stem
 mission runs a single `pHelmIvP` community and evaluates failure behavior through
 mission-owned health signals: `uProcessWatch` process presence for
-crash/default-crash cases, `PHELMIVP_ITER_GAP` for burn and hang completion
-stalls, `TEST_FAILURE_DONE` endflags for immediate-completion and burn/hang
-cases, and `pMissionEval` result rows in `results.txt`. Expected crash cases
+crash/default-crash cases, a high-rate `pGapLatch` evaluator that turns a
+transient `PHELMIVP_ITER_GAP` breach into durable `TEST_GAP_SEEN` evidence for
+burn and hang completion stalls, `TEST_FAILURE_DONE` endflags for behavior
+lifecycle completion, and `pMissionEval` result rows in `results.txt`. Expected
+crash cases
 now grade `pass` when process loss is observed, so the harness can report the
 mission result row directly.
 

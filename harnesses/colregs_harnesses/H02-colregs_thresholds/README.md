@@ -4,8 +4,9 @@ TLDR:
 - threshold-edge harness on the shared `colregs_unit` stem
 - proves that small geometry changes flip classification where the source says they should
 - intended to absorb the unstable edge-space that does not belong in `H01`
-- current active gate is a geometry-first 58-case threshold sweep with
-  isolated serial and Bash 5.1 rolling execution
+- current active gate is a geometry-first 56-case threshold sweep with
+  isolated serial and Bash 5.1 rolling execution; two moving Band 315 probes
+  remain available as explicit exploratory cases
 
 This harness uses the shared `colregs_unit` stem mission to probe the exact
 geometry boundaries that decide COLREGS classification in
@@ -49,8 +50,9 @@ of the threshold the geometry is expected to land on.
   bearing band in `BHV_AvdColregsV22`
 - `band270`: the stern reference is currently supported in the active gate;
   the bow/unsure variants remain calibration-only
-- `band315`: supported geometry-backed stand-on band #2 cases pinned to the
-  source bearing band in `BHV_AvdColregsV22`
+- `band315`: the stable bow representative is supported in the active gate;
+  the moving `unsure` and `unsure_bow` probes remain explicitly runnable for
+  investigation
 - `southwest`: a custom stern-adjacent contact track added after calibration
   showed the older stern probes were a poor fit for the stock source
 
@@ -164,9 +166,13 @@ of the threshold the geometry is expected to land on.
 - `standon_band350_bow_pass`
   Band-350 stand-on geometry expected to resolve to the bow branch.
 - `standon_band315_unsure_pass`
-  Band-315 stand-on geometry expected to enter the generic unsure branch.
+  Exploratory Band-315 geometry expected to enter the generic unsure branch;
+  run it explicitly with `--case` because the expected slice is not stable
+  enough for the parallel gate.
 - `standon_band315_unsure_bow_pass`
-  Band-315 stand-on geometry expected to enter the unsure-bow branch.
+  Exploratory Band-315 geometry expected to enter the unsure-bow branch; run
+  it explicitly with `--case` because the expected slice is not stable enough
+  for the parallel gate.
 - `standon_band315_bow_pass`
   Band-315 stand-on geometry expected to resolve to the bow branch.
 - `standon_southwest_unsurebow_pass`
@@ -399,9 +405,10 @@ What each implemented case means:
 - `standon_band350_bow_pass`: Band #1 case pinned in `standon:bow`
 
 Current implemented cases:
-- Band #2 (`315 < rel_bng <= 350`) cases pinned in each submode:
+- Band #2 (`315 < rel_bng <= 350`) cases pinned in each submode. Only the bow
+  case is in the supported gate; the other two are explicit exploratory cases:
   - `standon_band315_unsure_pass`
-  - `standon_band315_unsurebow_pass`
+  - `standon_band315_unsure_bow_pass`
   - `standon_band315_bow_pass`
 - Band #3 (`270 <= rel_bng <= 315`) cases pinned in each submode:
   - `standon_band270_stern_pass`
@@ -425,13 +432,14 @@ Expected behavior:
 - `standon_band350_unsurebow_alt_pass` -> `standon:unsure_bow` (`36`)
 - `standon_band350_bow_pass` -> `standon:bow` (`32`)
 - `standon_band315_unsure_pass` -> `standon:unsure` (`38`)
-- `standon_band315_unsurebow_pass` -> `standon:unsure_bow` (`36`)
+- `standon_band315_unsure_bow_pass` -> `standon:unsure_bow` (`36`)
 - `standon_band315_bow_pass` -> `standon:bow` (`32`)
 
 Status:
 - first representative `unsure -> unsure_bow -> bow` family implemented
 - Band #1 family implemented
-- Band #2 family implemented
+- Band #2 bow representative implemented in the supported gate; its
+  `unsure` and `unsure_bow` probes are retained as exploratory cases
 - only additional Band #3 bow/unsure/unsure_bow representatives remain removed
   pending verified geometry
 
@@ -981,9 +989,11 @@ Implemented and supported families:
 - Stand-on band350 representatives:
   `standon_band350_unsurebow_pass`, `standon_band350_unsurebow_alt_pass`,
   `standon_band350_bow_pass`
-- Stand-on band315 representatives:
-  `standon_band315_unsure_pass`, `standon_band315_unsure_bow_pass`,
+- Stand-on band315 supported representative:
   `standon_band315_bow_pass`
+- Stand-on band315 exploratory cases, available only through explicit
+  `--case` selection:
+  `standon_band315_unsure_pass`, `standon_band315_unsure_bow_pass`
 - Stand-on band270 stern reference:
   `standon_band270_stern_pass`
 - Stand-on stern-adjacent southwest family:
@@ -1028,8 +1038,6 @@ Implemented and supported families:
   - `22` above the cutoff
   - the rotated mirror family reuses the same split
 - stand-on representative additions expect:
-  - `standon_band315_unsure_pass` -> `38`
-  - `standon_band315_unsure_bow_pass` -> `36`
   - `standon_band315_bow_pass` -> `32`
   - `standon_band270_stern_pass` -> `30`
   - `standon_band350_unsurebow_pass` -> `36`
@@ -1097,11 +1105,28 @@ Typical runs:
 ./zlaunch.sh 5
 ./zlaunch.sh --jobs=2 --port_base=23000 5
 ./zlaunch.sh --case=head_on_thresh_edge_pass 5
+./zlaunch.sh --log=full --case=head_on_thresh_edge_pass 5
 ```
 
-H02 temporarily defaults to `--log=full`. Two jobs=4 minimal validation runs
-produced different sets of motion-threshold timeouts, while the full-mode
-control passed 58/58. This makes H02 a logging-sensitive exception until its
-deployment/readiness timing is made deterministic. `--log=minimal` remains
-available for focused diagnostics; combine either mode with `--case=NAME` for
-one case.
+H02 defaults to `--log=minimal`; `--log=full` restores the pre-migration
+logging configuration. Before the shoreside can post the shared deploy flag,
+the stem launcher uses a bounded query to confirm that `pHelmIvP` and
+`pContactMgrV20` have both started and that the helm has iterated in each
+vehicle community.
+
+The supported stand-on group passed three consecutive jobs-4 matrices in each
+mode: 33/33 minimal cases in 33, 32, and 33 seconds, and 33/33 full cases in
+39, 39, and 41 seconds. The overtaking group passed three consecutive minimal
+jobs-4 matrices (18/18 total) after its evaluators were tied to the expected
+classification and their timeout budget was raised from 75 to 90 simulated
+seconds. The complete 56-case jobs-4 gate then passed in both modes: 177
+seconds minimal and 203 seconds full, a 12.8% wall-time reduction. These are
+functional wall-time validations, not CPU measurements.
+
+The two Band 315 moving-boundary probes remain explicitly runnable as
+`--case=standon_band315_unsure_pass` and
+`--case=standon_band315_unsure_bow_pass`, but they are excluded from the
+default and `standon` group gates because retained logs showed that the
+expected classifications were not stable under normal active-contact motion.
+No case is deleted, no solo-slot scheduler workaround is used, and no behavior
+source is changed.

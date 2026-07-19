@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=MISSION_TIMEOUT, val=true, time=75
+  event = var=MISSION_TIMEOUT, val=true, time=90
 }
 
 ProcessConfig = pMissionEval

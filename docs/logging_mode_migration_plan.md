@@ -162,21 +162,21 @@ launchers.
 | Dedicated stems | 45 | 45 |
 | Shared stems | 5 | 5 |
 | Targets using shared stems | 22 | 22 |
-| Targets running `pLogger` by default | 67 | 38 |
+| Targets running `pLogger` by default | 67 | 37 |
 | Targets with wildcard logging | 49 | 49 |
 | Explicit-only logging targets | 18 | 18 |
 | Targets enabling asynchronous logging | 67 | 67 |
 | Targets with synchronous logging | 67 | 67 |
 | Apparent log-artifact-dependent targets | 16 | 16 |
 | Initial candidates for no `pLogger` in minimal mode | 51 | 51 |
-| Audited `N`: no `pLogger` in minimal mode | n/a | 49 |
+| Audited `N`: no `pLogger` in minimal mode | n/a | 50 |
 | Audited `G`: narrow grading logger required | n/a | 15 |
-| Audited `S`: subject/special behavior | n/a | 3 |
+| Audited `S`: subject/special behavior | n/a | 2 |
 | Baseline-classification scans complete | n/a | 67 |
-| Migrated targets | 0 | 30 |
-| Minimal-mode validated targets | 0 | 30 |
-| Full-mode regression-validated targets | 0 | 31 |
-| CPU/concurrency benchmarked targets | 0 | 30 |
+| Migrated targets | 0 | 31 |
+| Minimal-mode validated targets | 0 | 31 |
+| Full-mode regression-validated targets | 0 | 32 |
+| CPU/concurrency benchmarked targets | 0 | 31 |
 | Pre-migration scratch-benchmarked targets | n/a | 4 |
 
 Definitions:
@@ -232,9 +232,9 @@ not mark the target's full pre-implementation audit complete.
 
 | Class | Meaning | Targets |
 | --- | --- | ---: |
-| `N` | No `pLogger` required in minimal mode | 49 |
+| `N` | No `pLogger` required in minimal mode | 50 |
 | `G` | A narrow grading logger is required | 15 |
-| `S` | Logging/launcher subject or logging-sensitive special behavior | 3 |
+| `S` | Logging/launcher subject or logging-sensitive special behavior | 2 |
 | **Total** |  | **67** |
 
 The implementation passes are:
@@ -274,7 +274,17 @@ weakened.
 | `G13` | `pnodereporter_h01` | Shoreside `NODE_REPORT_LOCAL` history required by `reverse_load_warning_pass`; the other cases continue to grade from mission-owned result rows. |
 | `S1` | `plogger_h01` | Case-defined `.alog`, `.slog`, `.xlog`, datatype/precision, wildcard/omit, dynamic request, timestamp, and copy-file artifacts. Minimal mode preserves the behavior under test rather than imposing an ordinary allowlist. |
 | `S2` | `pantler_h01` | Case-defined `ANTLER` launch lists and aliases. Five case patches include `pLogger`; their process topology must remain the behavior under test. |
-| `S3` | `colregs_h02` | Motion-threshold results are logging/timing sensitive at jobs 4. The harness temporarily defaults to full restoration; explicit minimal mode remains diagnostic until deployment/readiness and transient threshold sampling are deterministic. |
+
+### Resolved Special Exception `S3`
+
+`colregs_h02` was temporarily classified `S3` while parallel failures were
+investigated in both logging modes. Retained full logs showed that logging was
+not the dependency: the failures came from startup readiness, an unintended
+reciprocal 10 m bow-distance boundary, moving Band 315 classifications, and
+time-based overtaking checkpoints. The test-level fixes are documented in the
+July 18 cohort notes below. The stable 56-case gate passes jobs 4 in both modes
+and now defaults to minimal, so the target is reclassified `N`. The two moving
+Band 315 cases remain explicitly runnable exploratory cases; none was deleted.
 
 ### Resolved No-Logger Exception `N1`
 
@@ -674,16 +684,16 @@ Interpretation:
 2. Pilot `G` with `pechovar_h01` to prove a narrow grading allowlist. This is a
    mechanism pilot, not the start of the main `G` batch.
 3. Complete the ordinary `N` queue in small reviewed batches. Shared
-   `depth_behavior_motion` consumers move atomically. The `colregs_unit`
-   consumers share one minimal stem, but `colregs_h02` remains the documented
-   `S3` full-default exception until its motion-threshold timing is stable.
+   `depth_behavior_motion` consumers move atomically. The four `colregs_unit`
+   consumers now share the same minimal-default stem contract; the resolved
+   `colregs_h02` `S3` investigation is retained in the cohort notes.
 4. Complete the `G` queue. Treat `mission_utility_unit` as one three-consumer
    group. Move the entire mixed `ufield_app_unit` and `ufield_comms_unit`
    consumer groups here, including their `N` consumers.
 5. Complete the three `G9` performance targets with their warning-log contract
    and repeated resource measurements.
-6. Complete the `S` queue: resolve `colregs_h02` readiness/timing, then migrate
-   `plogger_h01` and `pantler_h01` with explicit exception notes.
+6. Complete the remaining `S` queue: migrate `plogger_h01` and `pantler_h01`
+   with explicit exception notes.
 7. Run selected CPU and stable-concurrency scaling benchmarks only after the
    corresponding correctness validation; never exceed `--jobs=8`.
 
@@ -1086,25 +1096,28 @@ Correctness, exceptions, and hygiene:
   are treated as transport/port-run anomalies, not concurrency or logging
   regressions. Its untouched/minimal performance comparison remains the
   matched jobs-4 pair;
-- the initially selected `testfailure_h01` was deferred before edits after its
+- the initially selected `testfailure_h01` was deferred before logging edits after its
   untouched jobs-4 baseline missed two of nine result rows
   (`hang_alias_gap_detected_pass` and `burn_default_time_gap_pass`).
   Retained logs prove both behaviors completed and posted very large one-cycle
   `PHELMIVP_ITER_GAP` values (815.76 and 1218.01), but `pMissionEval` missed the
-  transient values and never emitted a verdict. This target needs a separate
-  case-instrumentation redesign that makes gap evidence sticky; it remains
-  untouched and deferred. `hostinfo_h01` replaced it in this ten-target batch;
+  transient values and never emitted a verdict. That prerequisite is now
+  resolved without a source change: a high-rate auxiliary `pMissionEval`
+  latches `TEST_GAP_SEEN=true`, and the four burn/hang evaluators grade the
+  durable latch plus `TEST_FAILURE_DONE` and process health. The nine-case
+  baseline passed jobs 1 and three consecutive jobs-4 matrices. Its logging
+  migration remains pending; `hostinfo_h01` still supplied the original tenth
+  performance pair;
 - launcher warning/error scans of retained successful matrices found zero
   matches; post-run checks found no relevant MOOS processes or listeners, and
   generated result snapshots and Python bytecode were removed.
 
-### PID, pNodeReporter, Depth, And COLREGS Cohort — Complete With One Exception
+### PID, pNodeReporter, Depth, And COLREGS Cohort — Complete
 
 Targets: `pid_h02`, `pnodereporter_h01`, all five `depth_behavior_motion`
-consumers, and `colregs_h01`, `colregs_h03`, and `colregs_h04`. Audit,
-implementation, and validation date: July 18, 2026. `colregs_h02` was audited
-and given the common interface, but is excluded from the completed migration
-count as the `S3` full-default exception described below.
+consumers, and all four `colregs_unit` consumers. Audit, implementation, and
+validation date: July 18, 2026. The `colregs_h02` exception was resolved at the
+test level and is included in the completed migration count.
 
 Configuration audit and implementation:
 
@@ -1117,9 +1130,8 @@ Configuration audit and implementation:
   ANTLER block because it also adds `uTimerScript`; its separate full logging
   case patch restores the pre-migration logger and preserves that case-only
   process without duplicating either process;
-- direct and harness launchers accept only `--log=minimal|full`; the four
-  checked-in stems default to minimal, except the `colregs_h02` harness
-  launcher, which temporarily defaults to full;
+- direct and harness launchers accept only `--log=minimal|full`; all four
+  checked-in stems and every harness in this cohort default to minimal;
 - generated minimal targets contain zero active loggers for PID, depth, and
   ordinary COLREGS; pNodeReporter contains one logger with one `Log` variable.
   Full targets restore the untouched active logger counts and configurations;
@@ -1152,6 +1164,14 @@ of 12.9% wall, 45.2% CPU, and 99.89% logger bytes. The full post totals were
 Maximum RSS remained near 8 MB and is not interpreted as aggregate child
 memory.
 
+H02's exception follow-up used functional jobs-4 wall-time validation rather
+than `/usr/bin/time` CPU collection. The stable stand-on group passed 33/33 in
+three repetitions per mode (minimal: 33, 32, 33 seconds; full: 39, 39, 41
+seconds). The overtaking group passed 18/18 across three minimal repetitions
+(45, 44, 42 seconds). The complete 56-case gate passed in 177 seconds minimal
+and 203 seconds full, a 12.8% minimal wall-time reduction. These values are
+kept separate from the ten-target CPU aggregate above.
+
 Correctness and exception findings:
 
 - pNodeReporter's no-logger audit exception fired: `reverse_load_warning_pass`
@@ -1163,12 +1183,24 @@ Correctness and exception findings:
   `min_altitude_clearance_boundary_pass` at altitude `10.183`; a focused replay
   and clean full baseline passed, and both post-edit matrices passed. No case
   edit was made;
-- `colregs_h02` minimal jobs-4 runs failed different timeout sets (52/58 in
-  212.55 seconds and 54/58 in 227.05 seconds), while the full restoration
-  control passed 58/58 in 201.58 seconds. Logging is masking a deployment or
-  transient-threshold timing dependency. H02 therefore defaults to full and is
-  `S3`; explicit minimal remains diagnostic and the target is not counted as
-  migrated;
+- `colregs_h02` minimal jobs-4 runs initially failed different timeout sets
+  (52/58 in 212.55 seconds and 54/58 in 227.05 seconds), while one full
+  restoration control passed 58/58 in 201.58 seconds. A bounded vehicle-stack
+  readiness gate fixed the affected give-way startup family. Retained logs
+  then separated three independent test-contract problems from logging: the
+  `standon_unsurebow_above_pass` reciprocal track straddled the unintended
+  10 m give-way bow-distance split and now uses the existing stable
+  `crossing_port_standon_exec_far_pass` geometry; the Band 350 bow fixture was
+  moved from y=-64 to y=-60 to stay inside its intended classification; and
+  the two moving Band 315 `unsure`/`unsure_bow` probes were unstable in both
+  logging modes and are now explicit exploratory cases rather than default
+  gate cases. They were not deleted. The overtaking mirror evaluator now waits
+  for its expected classification instead of an arbitrary timer, and all five
+  overtaking threshold evaluators use a 90 rather than 75 simulated-second
+  timeout. Staged-deploy, reduced-warp, passive-contact, and exclusive-slot
+  experiments did not provide an acceptable general fix and were reverted.
+  The final 56-case jobs-4 matrix passed in both modes with minimal as the
+  default; no solo-slot workaround or behavior source edit remains;
 - two full `colregs_h04` matrices exposed independent evaluator sampling
   boundaries. `eval_tol_default_pass` observed CPA `21.939` against a `21.8`
   ceiling, and `pwt_grade_quasi_pass` observed PWT `33.664` after its intended
@@ -1224,7 +1256,7 @@ mixed-shared-stem deferrals.
 | `depth_max_h04` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `depth_min_altitude_h05` | `depth_behavior_motion` | yes (5) | `N` | complete | complete | pass (boundary focused) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | untouched boundary miss passed focused and clean repeats; no edit | complete |
 | `colregs_h01` | `colregs_unit` | yes (4) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
-| `colregs_h02` | `colregs_unit` | yes (4) | `S` | complete | complete (interface) | mixed focused results | fail (jobs 4 minimal, two sets) | pass (jobs 4) | 2026-07-18 exception comparison | `S3`: defaults full; minimal timing/readiness redesign deferred | blocked |
+| `colregs_h02` | `colregs_unit` | yes (4) | `N` | complete | complete | pass (focused families) | pass (56/56, jobs 4) | pass (56/56, jobs 4) | 2026-07-18 wall-only exception follow-up | resolved `S3`: readiness and evaluator contracts fixed; two moving Band 315 probes retained as explicit exploratory cases; no solo slot or source edit | complete |
 | `colregs_h03` | `colregs_unit` | yes (4) | `N` | complete | complete | pass (covered by matrix) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `colregs_h04` | `colregs_unit` | yes (4) | `N` | complete | complete | pass (2 sampling cases, both modes) | pass (jobs 4) | pass post-fix (jobs 4) | 2026-07-18 paired | two evaluator sampling bands widened without overlapping adjacent contracts | complete |
 | `collision_h01` | `collision_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
@@ -1236,7 +1268,7 @@ mixed-shared-stem deferrals.
 | `legrun_h01` | `legrun_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4 low ports; jobs 2 high ports) | 2026-07-18 paired jobs 4 | high-port pShare handshake anomaly; no case edit | complete |
 | `memoryturnlimit_h01` | `memoryturnlimit_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `timer_h01` | `timer_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
-| `testfailure_h01` | `testfailure_behavior_unit` | no | `N` | not started | pending | pending | pending | pending | pending | transient helm-gap evidence needs sticky case-instrumentation redesign | not started |
+| `testfailure_h01` | `testfailure_behavior_unit` | no | `N` | not started | pending | pending (baseline 9/9 jobs 1) | pending (baseline 9/9 jobs 4, 3x) | pending | pending | sticky gap latch prerequisite resolved; logging migration not started | ready |
 | `hostinfo_h01` | `hostinfo_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | replacement for deferred `testfailure_h01`; none found | complete |
 | `loadwatch_h01` | `loadwatch_unit` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
 | `processwatch_h01` | `processwatch_unit` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |

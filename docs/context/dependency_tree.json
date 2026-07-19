@@ -2560,7 +2560,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 58,
+        "case_count": 56,
         "case_parse_error": "",
         "cases": [
           "head_on_thresh_below_pass",
@@ -2600,8 +2600,6 @@
           "standon_band350_unsurebow_pass",
           "standon_band350_unsurebow_alt_pass",
           "standon_band350_bow_pass",
-          "standon_band315_unsure_pass",
-          "standon_band315_unsure_bow_pass",
           "standon_band315_bow_pass",
           "standon_southwest_unsurebow_pass",
           "standon_southwest_unsure_pass",
@@ -3664,6 +3662,7 @@
         "testfailure_behavior"
       ],
       "focus_process_apps": [
+        "pGapLatch",
         "pHelmIvP"
       ],
       "harness": "H01-testfailure_behavior_unit",
@@ -3679,6 +3678,7 @@
       "process_apps": [
         "ANTLER",
         "pAutoPoke",
+        "pGapLatch",
         "pHelmIvP",
         "pLogger",
         "pMissionEval",
@@ -6244,6 +6244,9 @@
       "pEchoVar": [
         "pechovar_h01",
         "ufld_obstacle_sim_h01"
+      ],
+      "pGapLatch": [
+        "testfailure_h01"
       ],
       "pHelmIvP": [
         "cmgr_h01",

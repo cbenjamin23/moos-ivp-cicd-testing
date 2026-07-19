@@ -21,6 +21,7 @@ ProcessConfig = ANTLER
   Run = uLoadWatch    @ NewConsole = false
   Run = pHelmIvP      @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false ~ pGapLatch
   Run = pMissionEval  @ NewConsole = false
   Run = pAutoPoke     @ NewConsole = false
   Run = pMissionHash  @ NewConsole = false
@@ -46,6 +47,7 @@ ProcessConfig = pAutoPoke
   flag = NAV_SPEED=0
   flag = TEST_EVAL_READY=false
   flag = TEST_FAILURE_DONE=false
+  flag = TEST_GAP_SEEN=false
 }
 
 //----------------------------------------------------
@@ -79,6 +81,23 @@ ProcessConfig = pHelmIvP
 }
 
 //----------------------------------------------------
+// pGapLatch Config Block
+
+ProcessConfig = pGapLatch
+{
+  AppTick   = 50
+  CommsTick = 50
+
+  lead_condition = TEST_EVAL_READY = true
+  lead_condition = PHELMIVP_ITER_GAP > 1.5
+  pass_condition = PHELMIVP_ITER_GAP > 1.5
+
+  pass_flag   = TEST_GAP_SEEN = true
+  result_flag = TEST_GAP_LATCHED = true
+  mission_form = testfailure_behavior_gap_latch
+}
+
+//----------------------------------------------------
 // pMissionEval Config Block
 
 ProcessConfig = pMissionEval
@@ -108,4 +127,3 @@ ProcessConfig = pMissionEval
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }
-

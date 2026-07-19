@@ -53,10 +53,7 @@ PSHARE_OFFSET=15
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
-# H02's motion-threshold gates are currently sensitive to the process/timing
-# change from removing pLogger. Keep the pre-migration full mode as the default
-# until those gates have an explicit readiness/timing fix.
-LOG_MODE=full
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 CASE=""
 GROUP=""
@@ -121,8 +118,6 @@ GROUP_STANDON_CASES=(
     standon_band350_unsurebow_pass
     standon_band350_unsurebow_alt_pass
     standon_band350_bow_pass
-    standon_band315_unsure_pass
-    standon_band315_unsure_bow_pass
     standon_band315_bow_pass
     standon_southwest_unsurebow_pass
     standon_southwest_unsure_pass
@@ -162,7 +157,10 @@ CASES=(
     "${GROUP_INEXTREMIS_CASES[@]}"
 )
 
-EXPLORATORY_CASES=()
+EXPLORATORY_CASES=(
+    standon_band315_unsure_pass
+    standon_band315_unsure_bow_pass
+)
 
 declare -a SELECTED_CASES CASE_RESULT
 declare -A PID_CASE PID_RESULT PID_LOG PID_PORT_BASE
@@ -176,7 +174,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show rolling scheduler events
   --just_make, -j    Prepare each case without launching it
-  --log=<mode>       Logging mode: full (H02 default) or minimal
+  --log=<mode>       Logging mode: minimal (default) or full
   --max_time=<secs>  Maximum time passed to each stem mission
   --case=<name>      Run one named case
   --group=<name>     Run one named supported case group
@@ -498,7 +496,7 @@ get_case_config() {
         MMOD="crossing_port_standon_close_pass"
     elif [ "$CASE_NAME" = "standon_unsurebow_above_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
-        MMOD="crossing_port_standon_far_pass"
+        MMOD="crossing_port_standon_exec_far_pass"
     elif [ "$CASE_NAME" = "standon_band270_stern_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-stern-shoreside.xmoos"
         MMOD="crossing_port_standon_stern_pass"

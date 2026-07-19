@@ -105,7 +105,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `depth_max_h04` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H04-max_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 15 | - | `max-depth-motion` |
 | `depth_min_altitude_h05` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H05-min_altitude_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 13 | - | `min-altitude-motion` |
 | `colregs_h01` | `colregs` | `harnesses/colregs_harnesses/H01-colregs_classification/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 22 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-classification` |
-| `colregs_h02` | `colregs` | `harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 58 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-thresholds` |
+| `colregs_h02` | `colregs` | `harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 56 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-thresholds` |
 | `colregs_h03` | `colregs` | `harnesses/colregs_harnesses/H03-colregs_execution/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 23 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-execution` |
 | `colregs_h04` | `colregs` | `harnesses/colregs_harnesses/H04-colregs_parameters/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 32 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-parameters` |
 | `collision_h01` | `collision_behavior` | `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh` | `missions/collision_behavior_missions/collision_behavior_motion` | 21 | `pSpoofNode`, `uFldCollisionDetect`, `pContactMgrV20` | `collision-behavior-motion` |
@@ -117,7 +117,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `legrun_h01` | `legrun_behavior` | `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/zlaunch.sh` | `missions/legrun_behavior_missions/legrun_behavior_motion` | 33 | - | `legrun-behavior-motion` |
 | `memoryturnlimit_h01` | `memoryturnlimit_behavior` | `harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion/zlaunch.sh` | `missions/memoryturnlimit_behavior_missions/memoryturnlimit_behavior_motion` | 21 | - | `memoryturnlimit-behavior-motion` |
 | `timer_h01` | `timer_behavior` | `harnesses/timer_behavior_harnesses/H01-timer_behavior_motion/zlaunch.sh` | `missions/timer_behavior_missions/timer_behavior_motion` | 18 | - | `timer-behavior-motion` |
-| `testfailure_h01` | `testfailure_behavior` | `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh` | `missions/testfailure_behavior_missions/testfailure_behavior_unit` | 9 | - | `testfailure-behavior-unit` |
+| `testfailure_h01` | `testfailure_behavior` | `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh` | `missions/testfailure_behavior_missions/testfailure_behavior_unit` | 9 | `pGapLatch` | `testfailure-behavior-unit` |
 | `hostinfo_h01` | `hostinfo` | `harnesses/hostinfo_harnesses/H01-hostinfo_unit/zlaunch.sh` | `missions/hostinfo_missions/hostinfo_unit` | 7 | - | `hostinfo-unit` |
 | `loadwatch_h01` | `loadwatch` | `harnesses/loadwatch_harnesses/H01-loadwatch_unit/zlaunch.sh` | `missions/loadwatch_missions/loadwatch_unit` | 12 | - | `loadwatch-unit` |
 | `processwatch_h01` | `processwatch` | `harnesses/processwatch_harnesses/H01-processwatch_unit/zlaunch.sh` | `missions/processwatch_missions/processwatch_unit` | 7 | - | `processwatch-unit` |
@@ -173,6 +173,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
 - `pEchoVar`: `pechovar_h01`, `ufld_obstacle_sim_h01`
+- `pGapLatch`: `testfailure_h01`
 - `pMediator`: `ufield_comms_h02`
 - `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`
 - `pObstacleMgr`: `obmgr_h01`, `obmgr_h02`, `obstacle_behavior_h01`, `p01_obstacle`

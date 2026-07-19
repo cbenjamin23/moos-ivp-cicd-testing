@@ -12,6 +12,21 @@ vecho() { if [ "$VERBOSE" != "" ]; then echo "$ME: $1"; fi }
 on_exit() { echo; echo "$ME: Halting all apps"; kill -- -$$; }
 trap on_exit SIGINT
 
+wait_for_vehicle_stack() {
+    local vname="$1"
+    local mport="$2"
+    local target="targ_${vname}.moos"
+
+    if ! uQueryDB "$target" \
+        --condition="PHELMIVP_PID > 0" \
+        --condition="PCONTACTMGRV20_PID > 0" \
+        --condition="((IVPHELM_STATE = PARK) or (IVPHELM_STATE = DRIVE))" \
+        --wait=10 >/dev/null 2>&1; then
+        echo "$ME: vehicle $vname did not become ready on MOOS port $mport" >&2
+        return 1
+    fi
+}
+
 #------------------------------------------------------------
 #  Part 2: Set global variable default values
 #------------------------------------------------------------
@@ -323,6 +338,14 @@ do
     eval $CMD
     sleep 0.5
 done
+
+if [ "${JUST_MAKE}" = "" ]; then
+    for IX in `seq 1 $VAMT`;
+    do
+        IXX=$(($IX - 1))
+        wait_for_vehicle_stack "${VNAMES[$IXX]}" "$((VEH_MPORT + IXX))"
+    done
+fi
 
 #------------------------------------------------------------
 #  Part 7: Launch the Shoreside mission file

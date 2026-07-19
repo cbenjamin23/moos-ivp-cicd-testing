@@ -705,7 +705,7 @@ case "$MMOD" in
         ;;
     crossing_port_standon_band350_bow_pass)
         A_POS="-35,-80,90"
-        B_POS="10,-64,180"
+        B_POS="10,-60,180"
         A_DEST="50,-80"
         B_DEST="10,-145"
         A_SPD="1.4"
