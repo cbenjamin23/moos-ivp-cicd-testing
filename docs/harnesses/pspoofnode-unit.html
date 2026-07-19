@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Static Spoof</h3>
-          <p>Description: Configures static alpha at (10,20) with explicit type, group, color, source, heading, and zero speed; passes when report history contains NAME=alpha, TYPE=heron, GROUP=red, COLOR=green, VSOURCE=ais, and HDG=90.</p>
+          <p>Description: Configures stationary alpha at (10,20) with explicit heron/red/green/AIS fields and heading 90; passes when one Alpha report contains the exact X=10, Y=20, SPD=0, HDG=90, TYPE=heron, GROUP=red, COLOR=green, and VSOURCE=ais fields together.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Cancel By Name</h3>
-          <p>Description: Creates foxtrot and golf, then sends SPOOF_CANCEL=vname=foxtrot; passes when both existed before cancellation and no foxtrot report appears more than 1.3 seconds after the cancel mail.</p>
+          <p>Description: Creates red-group foxtrot and golf, then sends SPOOF_CANCEL=vname=foxtrot; passes when Foxtrot is absent 0.4 seconds after cancellation while Golf still reports in that same post-cancel window.</p>
         </div>
       </article>
 
@@ -87,31 +87,31 @@
 
         <article class="case-row">
           <code>config_static_report_pass</code>
-          <p>Configures static alpha at (10,20) with explicit type, group, color, source, heading, and zero speed; passes when report history contains NAME=alpha, TYPE=heron, GROUP=red, COLOR=green, VSOURCE=ais, and HDG=90.</p>
+          <p>Configures stationary alpha at (10,20) with explicit heron/red/green/AIS fields and heading 90; passes when one Alpha report contains the exact X=10, Y=20, SPD=0, HDG=90, TYPE=heron, GROUP=red, COLOR=green, and VSOURCE=ais fields together.</p>
         </article>
 
 
         <article class="case-row">
           <code>mail_spoof_report_pass</code>
-          <p>Posts runtime SPOOF for bravo at (5,-3) with kayak/yellow/heading-180 fields; passes when report history contains NAME=bravo, TYPE=kayak, COLOR=yellow, and HDG=180.</p>
+          <p>Posts runtime SPOOF for stationary bravo at (5,-3) with kayak/yellow/heading-180 fields; passes when one Bravo report contains the exact position, zero speed, heading, type, and color together.</p>
         </article>
 
 
         <article class="case-row">
           <code>mail_group_vsource_pass</code>
-          <p>Posts runtime papa with group=team, type=ship, color=yellow, vsource=radar, and heading 270; passes when all six named fields appear in report history.</p>
+          <p>Posts runtime papa at (4,6) with zero speed, heading 270, group=team, type=ship, color=yellow, and vsource=radar; passes when one Papa report contains every supplied field together.</p>
         </article>
 
 
         <article class="case-row">
           <code>default_fields_pass</code>
-          <p>Configures defaults for type, group, color, source, heading, speed, and length, then declares charlie with position only; passes when its history contains TYPE=ship, COLOR=orange, HDG=135, SPD=0.4, and LENGTH=8, while group/source are not graded.</p>
+          <p>Configures ship/orange/heading-135/speed-0.4/length-8 defaults, then declares charlie with position only; passes when one Charlie report contains all five inherited fields together.</p>
         </article>
 
 
         <article class="case-row">
           <code>generated_name_pass</code>
-          <p>Declares an unnamed AUV, testing automatic contact naming; passes when a report contains a name beginning with C, plus TYPE=auv and COLOR=blue.</p>
+          <p>Declares unnamed blue AUVs at (1,2) and (3,4), testing automatic name generation and counter advancement; passes when both position-specific reports exist under two distinct names matching C[0-9]{4}.</p>
         </article>
 
 
@@ -141,25 +141,25 @@
 
         <article class="case-row">
           <code>cancel_vname_pass</code>
-          <p>Creates foxtrot and golf, then sends SPOOF_CANCEL=vname=foxtrot; passes when both existed before cancellation and no foxtrot report appears more than 1.3 seconds after the cancel mail.</p>
+          <p>Creates red-group foxtrot and golf, then sends SPOOF_CANCEL=vname=foxtrot; passes when Foxtrot is absent 0.4 seconds after cancellation while Golf still reports in that same post-cancel window.</p>
         </article>
 
 
         <article class="case-row">
           <code>cancel_group_pass</code>
-          <p>Creates red-group hotel and blue-group india, then cancels group=red; passes when both existed initially and no hotel report appears after the cancellation window.</p>
+          <p>Creates red-group hotel and blue-group india, then cancels group=red; passes when Hotel is absent 0.4 seconds after cancellation while India still reports in that same post-cancel window.</p>
         </article>
 
 
         <article class="case-row">
           <code>cancel_contact_alias_pass</code>
-          <p>Creates kilo and lima, then sends the contact=kilo cancel alias; passes when both existed initially and no kilo report appears after the cancellation window.</p>
+          <p>Creates kilo and lima, then sends the contact=kilo cancellation alias; passes when Kilo is absent 0.4 seconds after cancellation while Lima still reports in that same post-cancel window.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_defaults_pass</code>
-          <p>Configures runtime defaults and then posts position-only mike; passes when its history contains TYPE=ship, COLOR=orange, HDG=135, SPD=0.4, and LENGTH=8, while configured group/source are not graded.</p>
+          <p>Configures ship/orange/heading-135/speed-0.4/length-8 defaults and then posts position-only mike; passes when one Mike report contains all five inherited fields together.</p>
         </article>
 
 
@@ -219,7 +219,7 @@
 
         <article class="case-row">
           <code>negative_speed_accepted_pass</code>
-          <p>Posts runtime backward with spd=-1 and heading 90, testing acceptance of negative numeric speed; passes when both exact fields appear in its report.</p>
+          <p>Posts runtime backward from (3,3) with spd=-1 and heading 90, testing acceptance and westward propagation of a negative speed; passes when its first report contains Y=3, SPD=-1, and HDG=90 together with X between 2.4 and 3.0.</p>
         </article>
 
 

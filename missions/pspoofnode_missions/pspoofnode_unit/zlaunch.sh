@@ -31,7 +31,6 @@ Options:
   --max_time=<secs>    Maximum time passed to xlaunch
   --shore_mport=<n>    Shoreside MOOSDB port
   --shore_pshare=<n>   Reserved shoreside pShare port
-  --mmod=<name>        Mission modification label
 EOF
 }
 
@@ -56,7 +55,7 @@ for arg in "$@"; do
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --gui) DISPLAY_ARGS=() ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
-        --shore_mport=*|--shore_pshare=*|--mmod=*) FLOW_ARGS+=("$arg") ;;
+        --shore_mport=*|--shore_pshare=*) FLOW_ARGS+=("$arg") ;;
         *)
             is_uint "$arg" || die "bad argument: $arg"
             TIME_WARP="$arg"

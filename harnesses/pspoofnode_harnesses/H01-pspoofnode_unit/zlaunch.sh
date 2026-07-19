@@ -271,6 +271,11 @@ get_case_config() {
     SPOOF_LINES=()
     TIMER_EVENTS=()
     REQUIRED_TOKENS=()
+    REQUIRED_REPORT_ROWS=()
+    FIRST_REPORT_NAME=""
+    FIRST_REPORT_TOKENS=()
+    FIRST_REPORT_RANGES=()
+    GENERATED_NAME_COUNT=0
     ABSENT_TOKENS=()
     ABSENT_AFTER_TIME=""
     ABSENT_AFTER_MARKER=""
@@ -286,23 +291,24 @@ get_case_config() {
     case "$CASE_NAME" in
         config_static_report_pass)
             SPOOF_LINES=("spoof = x=10,y=20,name=alpha,type=heron,group=red,color=green,vsource=ais,hdg=90,spd=0")
-            REQUIRED_TOKENS=("NAME=alpha" "TYPE=heron" "GROUP=red" "COLOR=green" "VSOURCE=ais" "HDG=90")
+            REQUIRED_REPORT_ROWS=("NAME=alpha|X=10|Y=20|SPD=0|HDG=90|TYPE=heron|GROUP=red|COLOR=green|VSOURCE=ais")
             ;;
         mail_spoof_report_pass)
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=5,y=-3,name=bravo,type=kayak,color=yellow,hdg=180,spd=0\", time=0.3")
-            REQUIRED_TOKENS=("NAME=bravo" "TYPE=kayak" "COLOR=yellow" "HDG=180")
+            REQUIRED_REPORT_ROWS=("NAME=bravo|X=5|Y=-3|SPD=0|HDG=180|TYPE=kayak|COLOR=yellow")
             ;;
         mail_group_vsource_pass)
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=4,y=6,name=papa,group=team,type=ship,color=yellow,vsource=radar,hdg=270,spd=0\", time=0.3")
-            REQUIRED_TOKENS=("NAME=papa" "GROUP=team" "TYPE=ship" "COLOR=yellow" "VSOURCE=radar" "HDG=270")
+            REQUIRED_REPORT_ROWS=("NAME=papa|X=4|Y=6|SPD=0|HDG=270|TYPE=ship|GROUP=team|COLOR=yellow|VSOURCE=radar")
             ;;
         default_fields_pass)
-            SPOOF_LINES=("default_vtype = ship" "default_group = fleet" "default_color = orange" "default_vsource = radar" "default_hdg = 135" "default_spd = 0.4" "default_length = 8" "spoof = x=0,y=0,name=charlie")
-            REQUIRED_TOKENS=("NAME=charlie" "TYPE=ship" "COLOR=orange" "HDG=135" "SPD=0.4" "LENGTH=8")
+            SPOOF_LINES=("default_vtype = ship" "default_color = orange" "default_hdg = 135" "default_spd = 0.4" "default_length = 8" "spoof = x=0,y=0,name=charlie")
+            REQUIRED_REPORT_ROWS=("NAME=charlie|TYPE=ship|COLOR=orange|HDG=135|SPD=0.4|LENGTH=8")
             ;;
         generated_name_pass)
-            SPOOF_LINES=("spoof = x=1,y=2,type=auv,color=blue")
-            REQUIRED_TOKENS=("NAME=C" "TYPE=auv" "COLOR=blue")
+            SPOOF_LINES=("spoof = x=1,y=2,type=auv,color=blue" "spoof = x=3,y=4,type=auv,color=blue")
+            REQUIRED_REPORT_ROWS=("X=1|Y=2|TYPE=auv|COLOR=blue" "X=3|Y=4|TYPE=auv|COLOR=blue")
+            GENERATED_NAME_COUNT=2
             ;;
         moving_contact_advances_pass)
             SPOOF_LINES=("spoof = x=0,y=0,name=delta,hdg=90,spd=2")
@@ -336,28 +342,37 @@ get_case_config() {
         cancel_vname_pass)
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=2,y=2,name=foxtrot,group=red\", time=0.2" "event = var=SPOOF, val=\"x=4,y=4,name=golf,group=red\", time=0.2" "event = var=SPOOF_CANCEL, val=\"vname=foxtrot\", time=0.9")
             REQUIRED_TOKENS=("NAME=foxtrot" "NAME=golf")
-            ABSENT_AFTER_TIME="1.3"
+            ABSENT_AFTER_TIME="0.4"
             ABSENT_AFTER_MARKER="SPOOF_CANCEL"
             ABSENT_AFTER_TOKENS=("NAME=foxtrot")
+            REQUIRED_AFTER_TIME="0.4"
+            REQUIRED_AFTER_MARKER="SPOOF_CANCEL"
+            REQUIRED_AFTER_TOKENS=("NAME=golf")
             ;;
         cancel_group_pass)
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=2,y=2,name=hotel,group=red\", time=0.2" "event = var=SPOOF, val=\"x=4,y=4,name=india,group=blue\", time=0.2" "event = var=SPOOF_CANCEL, val=\"group=red\", time=0.9")
             REQUIRED_TOKENS=("NAME=hotel" "NAME=india")
-            ABSENT_AFTER_TIME="1.3"
+            ABSENT_AFTER_TIME="0.4"
             ABSENT_AFTER_MARKER="SPOOF_CANCEL"
             ABSENT_AFTER_TOKENS=("NAME=hotel")
+            REQUIRED_AFTER_TIME="0.4"
+            REQUIRED_AFTER_MARKER="SPOOF_CANCEL"
+            REQUIRED_AFTER_TOKENS=("NAME=india")
             ;;
         cancel_contact_alias_pass)
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=2,y=2,name=kilo,group=red\", time=0.2" "event = var=SPOOF, val=\"x=4,y=4,name=lima,group=red\", time=0.2" "event = var=SPOOF_CANCEL, val=\"contact=kilo\", time=0.9")
             REQUIRED_TOKENS=("NAME=kilo" "NAME=lima")
-            ABSENT_AFTER_TIME="1.3"
+            ABSENT_AFTER_TIME="0.4"
             ABSENT_AFTER_MARKER="SPOOF_CANCEL"
             ABSENT_AFTER_TOKENS=("NAME=kilo")
+            REQUIRED_AFTER_TIME="0.4"
+            REQUIRED_AFTER_MARKER="SPOOF_CANCEL"
+            REQUIRED_AFTER_TOKENS=("NAME=lima")
             ;;
         runtime_defaults_pass)
-            SPOOF_LINES=("default_vtype = ship" "default_group = runtime" "default_color = orange" "default_vsource = radar" "default_hdg = 135" "default_spd = 0.4" "default_length = 8")
+            SPOOF_LINES=("default_vtype = ship" "default_color = orange" "default_hdg = 135" "default_spd = 0.4" "default_length = 8")
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=6,y=7,name=mike\", time=0.3")
-            REQUIRED_TOKENS=("NAME=mike" "TYPE=ship" "COLOR=orange" "HDG=135" "SPD=0.4" "LENGTH=8")
+            REQUIRED_REPORT_ROWS=("NAME=mike|TYPE=ship|COLOR=orange|HDG=135|SPD=0.4|LENGTH=8")
             ;;
         default_after_spoof_order_pass)
             SPOOF_LINES=("spoof = x=4,y=5,name=orderly" "default_vtype = ship" "default_color = orange" "default_hdg = 222" "default_length = 9")
@@ -409,7 +424,9 @@ get_case_config() {
             ;;
         negative_speed_accepted_pass)
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=3,y=3,name=backward,spd=-1,hdg=90\", time=0.2")
-            REQUIRED_TOKENS=("NAME=backward" "SPD=-1" "HDG=90")
+            FIRST_REPORT_NAME="backward"
+            FIRST_REPORT_TOKENS=("NAME=backward" "Y=3" "SPD=-1" "HDG=90")
+            FIRST_REPORT_RANGES=("X:2.4:3.0")
             ;;
         invalid_request_absent_pass)
             TIMER_EVENTS=("event = var=SPOOF, val=\"x=9,name=juliet\", time=0.2")
@@ -499,11 +516,9 @@ write_case_files() {
         echo ""
         echo "  result_flag  = MISSION_EVALUATED = true"
         echo "  mission_form = pspoofnode_unit"
-        echo "  mission_mod  = $CASE_NAME"
         echo ""
         echo "  report_column    = grade=\$[GRADE]"
         echo "  report_column    = form=\$[MISSION_FORM]"
-        echo "  report_column    = mmod=\$[MMOD]"
         echo "  report_column    = eval=\$[TEST_EVAL_READY]"
         echo "  report_column    = mhash=\$[MHASH_SHORT]"
         echo "  report_file      = results.txt"
@@ -552,11 +567,57 @@ field_from_report() {
     echo "$report" | sed -n "s/.*$key=\\([^, ]*\\).*/\\1/p"
 }
 
+report_set_contains_row() {
+    local reports="$1"
+    local spec="$2"
+    local report
+    local token
+    local matches
+    local -a row_tokens=()
+
+    IFS='|' read -r -a row_tokens <<< "$spec"
+    while IFS= read -r report; do
+        [ -n "$report" ] || continue
+        matches=yes
+        for token in "${row_tokens[@]}"; do
+            if [[ "$report" != *"$token"* ]]; then
+                matches=no
+                break
+            fi
+        done
+        [ "$matches" = yes ] && return 0
+    done <<< "$reports"
+    return 1
+}
+
+generated_names_are_distinct() {
+    local reports="$1"
+    local expected_count="$2"
+    local report
+    local name
+    local -A names=()
+
+    while IFS= read -r report; do
+        [[ "$report" == *"TYPE=auv"* && "$report" == *"COLOR=blue"* ]] || continue
+        name=$(field_from_report "$report" NAME)
+        [[ "$name" =~ ^C[0-9]{4}$ ]] || return 1
+        names["$name"]=1
+    done <<< "$reports"
+
+    [ "${#names[@]}" -eq "$expected_count" ]
+}
+
 check_payloads() {
     local case_dir="$1"
     local reports="$2"
     local status="success"
     local token
+    local row_spec
+    local range_spec
+    local field
+    local min_value
+    local max_value
+    local observed
     local base_time
     local threshold
     local after_reports
@@ -570,6 +631,33 @@ check_payloads() {
             status="mismatch"
         fi
     done
+    for row_spec in "${REQUIRED_REPORT_ROWS[@]}"; do
+        if ! report_set_contains_row "$reports" "$row_spec"; then
+            status="mismatch"
+        fi
+    done
+    if [ "$FIRST_REPORT_NAME" != "" ]; then
+        first_report=$(echo "$reports" | grep -F "NAME=$FIRST_REPORT_NAME" | head -n 1)
+        if [ -z "$first_report" ]; then
+            status="mismatch"
+        else
+            for token in "${FIRST_REPORT_TOKENS[@]}"; do
+                [[ "$first_report" == *"$token"* ]] || status="mismatch"
+            done
+            for range_spec in "${FIRST_REPORT_RANGES[@]}"; do
+                IFS=: read -r field min_value max_value <<< "$range_spec"
+                observed=$(field_from_report "$first_report" "$field")
+                if [ -z "$observed" ] || ! awk -v value="$observed" -v min="$min_value" -v max="$max_value" \
+                    'BEGIN {exit !(value >= min && value <= max)}'; then
+                    status="mismatch"
+                fi
+            done
+        fi
+    fi
+    if [ "$GENERATED_NAME_COUNT" -gt 0 ] && \
+       ! generated_names_are_distinct "$reports" "$GENERATED_NAME_COUNT"; then
+        status="mismatch"
+    fi
     for token in "${ABSENT_TOKENS[@]}"; do
         if echo "$reports" | grep -Fq -- "$token"; then
             status="mismatch"

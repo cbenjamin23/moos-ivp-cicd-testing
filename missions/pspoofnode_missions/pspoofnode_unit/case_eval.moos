@@ -13,11 +13,9 @@ ProcessConfig = pMissionEval
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pspoofnode_unit
-  mission_mod  = $(MMOD:=config_static_report_pass)
 
   report_column    = grade=$[GRADE]
   report_column    = form=$[MISSION_FORM]
-  report_column    = mmod=$[MMOD]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
