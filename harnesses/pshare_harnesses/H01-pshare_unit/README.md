@@ -1,5 +1,10 @@
 # H01 pShare Unit Harness
 
+Logging is minimal by default in both communities. Use `--log=full` for the
+whole matrix or with `--case=NAME` for one diagnostic case. The CLI-output
+case keeps separate minimal and full ANTLER patches so its extra pShare
+arguments never reintroduce `pLogger` in minimal mode.
+
 This harness runs a pair of local MOOS communities and verifies that `pShare`
 routes controlled mail from the peer community into the shoreside community.
 The mission owns the pass/fail grade; the harness only varies the pShare

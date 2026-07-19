@@ -1,5 +1,9 @@
 # pShare Topology Mission
 
+Logging is minimal by default in all four communities and launches no
+`pLogger`. Add `--log=full` to either launcher to restore all four original
+loggers.
+
 This mission runs four small local MOOS communities: a shoreside evaluator,
 two independent sender peers, and one relay/listener peer. It is used by the
 H02 pShare topology harness for route behavior that needs more than one sender

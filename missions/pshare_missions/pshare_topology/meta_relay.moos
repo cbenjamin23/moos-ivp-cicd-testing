@@ -17,7 +17,6 @@ ProcessConfig = ANTLER
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
   Run = pShare        @ NewConsole = false
-  Run = pLogger       @ NewConsole = false
 }
 
 #include plugs.moos <pLogger>

@@ -24,3 +24,6 @@ behavior, while pMissionEval writes a passing harness verdict only after
 ./zlaunch.sh --just_make 10
 ./zlaunch.sh --max_time=150 10
 ```
+
+Logging is minimal by default and does not launch `pLogger`. Add
+`--log=full` to either launcher to restore the original shoreside logger.

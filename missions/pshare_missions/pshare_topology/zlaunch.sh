@@ -13,6 +13,7 @@ TIME_WARP=10
 MAX_TIME=65
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 FLOW_ARGS=()
 
@@ -24,6 +25,7 @@ Options:
   --help, -h           Show this help message
   --verbose, -v        Verbose launch output
   --just_make, -j      Only create targ files
+  --log=<mode>         Logging mode: minimal (default) or full
   --nogui, -ng         Headless launch, no GUI (default)
   --gui                Launch with GUI support
   --max_time=<secs>    Maximum time passed to xlaunch
@@ -56,6 +58,7 @@ for arg in "$@"; do
         --help|-h) usage; exit 0 ;;
         --verbose|-v) VERBOSE=yes; FLOW_ARGS+=(--verbose) ;;
         --just_make|-j) JUST_MAKE=yes ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --gui) DISPLAY_ARGS=() ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
@@ -66,6 +69,11 @@ for arg in "$@"; do
             ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 is_uint "$TIME_WARP" && [ "$TIME_WARP" -gt 0 ] || die "time warp must be a positive integer"
 is_uint "$MAX_TIME" && [ "$MAX_TIME" -gt 0 ] || die "--max_time must be a positive integer"
@@ -102,6 +110,12 @@ on_signal() {
 
 trap on_exit EXIT
 trap on_signal INT TERM
+
+if [ "${LOG_MODE_PREPARED:-no}" != yes ]; then
+    ./prepare_logging_mode.sh "$LOG_MODE" || die "unable to prepare --log=$LOG_MODE"
+fi
+export LOG_MODE_PREPARED=yes
+export LOG_MODE_PREPARED_VALUE="$LOG_MODE"
 
 : > results.txt
 [ "$VERBOSE" = yes ] && echo "$ME: launching with max_time=$MAX_TIME warp=$TIME_WARP"

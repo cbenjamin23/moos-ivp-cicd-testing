@@ -38,6 +38,7 @@ requested crash is observed.
 ```bash
 ./zlaunch.sh
 ./zlaunch.sh --case=burn_gap_detected_pass 10
+./zlaunch.sh --log=full --case=burn_gap_detected_pass 10
 ./zlaunch.sh --jobs=4 --port_base=9000 10
 ./zlaunch.sh --just_make --jobs=4 --port_base=9000 10
 ```
@@ -45,3 +46,7 @@ requested crash is observed.
 Grouped runs use 20-port case blocks from `--port_base`; this unit mission has
 one MOOSDB and no pShare route, but the wider block keeps the harness compatible
 with the repo's grouped validation conventions.
+
+The harness defaults to minimal logging, which launches no `pLogger`. Use
+`--log=full` for the whole matrix or combine it with `--case=NAME` to restore
+the stem's original logger for one diagnostic case.

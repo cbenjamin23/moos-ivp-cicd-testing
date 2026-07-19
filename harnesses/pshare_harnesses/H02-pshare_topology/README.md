@@ -1,5 +1,10 @@
 # H02 pShare Topology Harness
 
+Logging is minimal by default in all four communities. Use `--log=full` for
+the whole matrix or with `--case=NAME` for one diagnostic case. The four cases
+that replace alpha or relay ANTLER blocks keep separate minimal and full
+patches so minimal mode never reintroduces `pLogger`.
+
 This harness verifies pShare behavior that needs more than one sender or more
 than one receiver. It runs a four-community local topology: one shoreside
 evaluator, two sender peers, and one relay/listener peer.

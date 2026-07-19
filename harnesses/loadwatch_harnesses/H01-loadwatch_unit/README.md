@@ -1,5 +1,8 @@
 # H01-loadwatch_unit
 
+Logging is minimal by default and launches no `pLogger`. Use `--log=full` for
+the whole matrix or with `--case=NAME` for one diagnostic case.
+
 Patch-driven harness for
 [`missions/loadwatch_missions/loadwatch_unit`](../../../missions/loadwatch_missions/loadwatch_unit).
 It isolates `uLoadWatch` threshold handling with scripted `DB_UPTIME` mail.

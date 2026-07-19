@@ -162,7 +162,7 @@ launchers.
 | Dedicated stems | 45 | 45 |
 | Shared stems | 5 | 5 |
 | Targets using shared stems | 22 | 22 |
-| Targets running `pLogger` by default | 67 | 37 |
+| Targets running `pLogger` by default | 67 | 32 |
 | Targets with wildcard logging | 49 | 49 |
 | Explicit-only logging targets | 18 | 18 |
 | Targets enabling asynchronous logging | 67 | 67 |
@@ -173,10 +173,10 @@ launchers.
 | Audited `G`: narrow grading logger required | n/a | 15 |
 | Audited `S`: subject/special behavior | n/a | 2 |
 | Baseline-classification scans complete | n/a | 67 |
-| Migrated targets | 0 | 31 |
-| Minimal-mode validated targets | 0 | 31 |
-| Full-mode regression-validated targets | 0 | 32 |
-| CPU/concurrency benchmarked targets | 0 | 31 |
+| Migrated targets | 0 | 36 |
+| Minimal-mode validated targets | 0 | 36 |
+| Full-mode regression-validated targets | 0 | 37 |
+| CPU/concurrency benchmarked targets | 0 | 36 |
 | Pre-migration scratch-benchmarked targets | n/a | 4 |
 
 Definitions:
@@ -1212,6 +1212,49 @@ Correctness and exception findings:
   reported no teardown failure, and retained generated workdirs were removed
   after statistics were captured.
 
+### TestFailure, Watch, And pShare Cohort — Complete
+
+Targets: `testfailure_h01`, `loadwatch_h01`, `processwatch_h01`, `pshare_h01`,
+and `pshare_h02`. Audit, implementation, and validation date: July 18, 2026.
+All five are `N`: mission grading is synchronous and does not read log
+artifacts, so minimal mode launches no `pLogger`.
+
+Complete matrices used jobs 4. CPU is user plus system seconds. Log counts and
+bytes include `.alog` and `.slog` files retained under the harness-owned run
+root. Short pShare H01 cases may finish before every full-mode logger opens an
+artifact, so its file count is recorded as observed; generated full targets
+still restore exactly two active loggers in every case.
+
+| Target | Cases | Full pre wall / CPU | Full pre logs (files / bytes) | Minimal wall / CPU | Minimal logs | Wall / CPU reduction | Full post wall / CPU | Result |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `testfailure_h01` | 9 | 35.49 / 16.19 | 9 / 12,030,457 | 32.61 / 8.91 | 0 / 0 | 8.1% / 45.0% | 36.56 / 17.53 | 9/9 both modes |
+| `loadwatch_h01` | 12 | 20.37 / 21.20 | 12 / 7,676 | 16.30 / 11.14 | 0 / 0 | 20.0% / 47.5% | 19.69 / 21.54 | 12/12 both modes |
+| `processwatch_h01` | 7 | 25.10 / 12.39 | 7 / 42,831 | 23.11 / 6.64 | 0 / 0 | 7.9% / 46.4% | 25.61 / 13.00 | 7/7 both modes |
+| `pshare_h01` | 13 | 26.45 / 27.15 | 16 / 66,660 | 21.83 / 13.79 | 0 / 0 | 17.5% / 49.2% | 26.55 / 26.43 | 13/13 both modes |
+| `pshare_h02` | 12 | 34.36 / 29.73 | 48 / 398,923 | 28.48 / 13.38 | 0 / 0 | 17.1% / 55.0% | 34.74 / 29.66 | 12/12 both modes |
+
+Across the five targets, untouched full totals were 141.77 wall seconds,
+106.66 CPU seconds, and 12,546,547 logger bytes. Minimal totals were 122.33
+wall seconds, 53.86 CPU seconds, and zero logger bytes: reductions of 13.7%
+wall, 49.5% CPU, and 100% logger bytes. Full post totals were 143.15 wall and
+108.16 CPU seconds, matching the untouched full envelope.
+
+Correctness and patch-overlap findings:
+
+- the previously stabilized TestFailure gap latch remained effective: every
+  burn/hang and expected process-loss case passed in both modes;
+- load-watch and process-watch grading required no logger evidence or case
+  changes;
+- pShare H01 has one peer ANTLER replacement and H02 has three relay plus one
+  alpha ANTLER replacement. Each now has a minimal case patch without
+  `pLogger` and a separate full case patch that is byte-for-byte equivalent to
+  its pre-migration patch. Generated targets contain zero active loggers in
+  minimal mode and exactly 2 or 4 in full mode, while preserving every special
+  pShare argument and alias;
+- all ten complete post-edit matrices produced the exact expected result-row
+  count, no warning/error lines were found in successful run logs, and no
+  grading threshold or case contract changed.
+
 ## Migration Tracking
 
 Use one row per registered target. Shared-stem changes may advance several rows
@@ -1268,12 +1311,12 @@ mixed-shared-stem deferrals.
 | `legrun_h01` | `legrun_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4 low ports; jobs 2 high ports) | 2026-07-18 paired jobs 4 | high-port pShare handshake anomaly; no case edit | complete |
 | `memoryturnlimit_h01` | `memoryturnlimit_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
 | `timer_h01` | `timer_behavior_motion` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | none found | complete |
-| `testfailure_h01` | `testfailure_behavior_unit` | no | `N` | not started | pending | pending (baseline 9/9 jobs 1) | pending (baseline 9/9 jobs 4, 3x) | pending | pending | sticky gap latch prerequisite resolved; logging migration not started | ready |
+| `testfailure_h01` | `testfailure_behavior_unit` | no | `N` | complete | complete | pass (baseline jobs 1) | pass (9/9, jobs 4) | pass (9/9, jobs 4) | 2026-07-18 paired | sticky gap latch preserved transient iteration-gap evidence in both modes | complete |
 | `hostinfo_h01` | `hostinfo_unit` | no | `N` | complete | complete | pass (2 cases, both modes, jobs 1) | pass (jobs 4) | pass (jobs 4) | 2026-07-18 paired | replacement for deferred `testfailure_h01`; none found | complete |
-| `loadwatch_h01` | `loadwatch_unit` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `processwatch_h01` | `processwatch_unit` | no | `N` | not started | pending | pending | pending | pending | pending | none known | not started |
-| `pshare_h01` | `pshare_unit` | no | `N` | not started | pending | pending | pending | pending | pending | `ANTLER`/`pLogger` patch | not started |
-| `pshare_h02` | `pshare_topology` | no | `N` | not started | pending | pending | pending | pending | pending | `ANTLER`/`pLogger` patch | not started |
+| `loadwatch_h01` | `loadwatch_unit` | no | `N` | complete | complete | pass (focused both modes) | pass (12/12, jobs 4) | pass (12/12, jobs 4) | 2026-07-18 paired | none found | complete |
+| `processwatch_h01` | `processwatch_unit` | no | `N` | complete | complete | pass (focused both modes) | pass (7/7, jobs 4) | pass (7/7, jobs 4) | 2026-07-18 paired | none found | complete |
+| `pshare_h01` | `pshare_unit` | no | `N` | complete | complete | pass (CLI case both modes) | pass (13/13, jobs 4) | pass (13/13, jobs 4) | 2026-07-18 paired | CLI peer ANTLER replacement has separate minimal/full case patches | complete |
+| `pshare_h02` | `pshare_topology` | no | `N` | complete | complete | pass (all generated overlays both modes) | pass (12/12, jobs 4) | pass (12/12, jobs 4) | 2026-07-18 paired | four ANTLER replacements have separate minimal/full case patches | complete |
 | `plogger_h01` | `plogger_unit` | no | `S` | not started | pending | pending | pending | pending | pending | subject harness (`S1`) | not started |
 | `pantler_h01` | `pantler_unit` | no | `S` | not started | pending | pending | pending | pending | pending | subject harness (`S2`) | not started |
 | `pmissioneval_h01` | `mission_utility_unit` | yes (3) | `G` | not started | pending | pending | pending | pending | pending | `ANTLER`/`pLogger` patch (`G6`) | not started |

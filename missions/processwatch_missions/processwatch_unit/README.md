@@ -19,3 +19,5 @@ Run through the mission automation wrapper:
 ```sh
 ./zlaunch.sh --max_time=180 --nogui 10
 ```
+Logging is minimal by default and does not launch `pLogger`. Add
+`--log=full` to either launcher to restore the original shoreside logger.

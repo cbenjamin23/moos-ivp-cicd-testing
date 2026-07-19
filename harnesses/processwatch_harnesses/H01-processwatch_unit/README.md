@@ -1,5 +1,8 @@
 # H01-processwatch_unit
 
+Logging is minimal by default and launches no `pLogger`. Use `--log=full` for
+the whole matrix or with `--case=NAME` for one diagnostic case.
+
 Patch-driven harness for
 [`missions/processwatch_missions/processwatch_unit`](../../../missions/processwatch_missions/processwatch_unit).
 It isolates `uProcessWatch` process-presence reporting while using small peer

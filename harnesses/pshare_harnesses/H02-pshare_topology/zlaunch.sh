@@ -52,6 +52,7 @@ PORT_STRIDE=50
 KEEP_WORKDIRS=no
 VERBOSE=no
 JUST_MAKE=no
+LOG_MODE=minimal
 DISPLAY_ARGS=(--nogui)
 CASE=""
 HAVE_LOCK=no
@@ -86,6 +87,7 @@ Options:
   --help, -h         Show this help message
   --verbose, -v      Show rolling scheduler events
   --just_make, -j    Prepare each case without launching it
+  --log=<mode>       Logging mode: minimal (default) or full
   --max_time=<secs>  Maximum time passed to each stem mission
   --case=<name>      Run one named case
   --jobs=<n>         Run up to n cases concurrently with rolling scheduling
@@ -104,6 +106,7 @@ EOF
 Examples:
   ./$ME
   ./$ME --case=pshare_topology_fanin_pass
+  ./$ME --log=full --case=pshare_topology_fanin_pass
   ./$ME --jobs=2 --port_base=9000
   ./$ME --just_make --case=pshare_topology_multicast_multi_listener_pass
 EOF
@@ -130,6 +133,7 @@ for arg in "$@"; do
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
         --gui) DISPLAY_ARGS=() ;;
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --help|-h) usage; exit 0 ;;
@@ -137,6 +141,11 @@ for arg in "$@"; do
         *) TIME_WARP="$arg" ;;
     esac
 done
+
+case "$LOG_MODE" in
+    minimal|full) ;;
+    *) die "--log must be minimal or full" ;;
+esac
 
 is_uint "$TIME_WARP" && [ "${#TIME_WARP}" -le 9 ] || die "time warp must be a bounded positive integer"
 is_uint "$JOBS" && [ "${#JOBS}" -le 9 ] || die "--jobs must be a bounded positive integer"
@@ -287,6 +296,8 @@ get_case_config() {
     CASE_ALPHA_PATCH=""
     CASE_BRAVO_PATCH=""
     CASE_RELAY_PATCH=""
+    CASE_ALPHA_FULL_LOG_PATCH=""
+    CASE_RELAY_FULL_LOG_PATCH=""
 
     case "$case_name" in
         pshare_topology_fanin_pass)
@@ -310,6 +321,7 @@ get_case_config() {
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-topology-multicast-multi-listener-pass-shoreside.xmoos"
             CASE_ALPHA_PATCH="$HARNESS_DIR/pshare-topology-multicast-multi-listener-pass-alpha.xmoos"
             CASE_RELAY_PATCH="$HARNESS_DIR/pshare-topology-multicast-multi-listener-pass-relay.xmoos"
+            CASE_RELAY_FULL_LOG_PATCH="$HARNESS_DIR/pshare-topology-multicast-multi-listener-pass-full-logging-relay.xmoos"
             ;;
         pshare_topology_dynamic_input_route_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-topology-dynamic-input-route-pass-shoreside.xmoos"
@@ -327,15 +339,18 @@ get_case_config() {
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-topology-unicast-relay-branch-pass-shoreside.xmoos"
             CASE_ALPHA_PATCH="$HARNESS_DIR/pshare-topology-unicast-relay-branch-pass-alpha.xmoos"
             CASE_RELAY_PATCH="$HARNESS_DIR/pshare-topology-unicast-relay-branch-pass-relay.xmoos"
+            CASE_RELAY_FULL_LOG_PATCH="$HARNESS_DIR/pshare-topology-unicast-relay-branch-pass-full-logging-relay.xmoos"
             ;;
         pshare_topology_route_list_branch_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-topology-route-list-branch-pass-shoreside.xmoos"
             CASE_ALPHA_PATCH="$HARNESS_DIR/pshare-topology-route-list-branch-pass-alpha.xmoos"
             CASE_RELAY_PATCH="$HARNESS_DIR/pshare-topology-route-list-branch-pass-relay.xmoos"
+            CASE_RELAY_FULL_LOG_PATCH="$HARNESS_DIR/pshare-topology-route-list-branch-pass-full-logging-relay.xmoos"
             ;;
         pshare_topology_alias_cmd_route_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-topology-alias-cmd-route-pass-shoreside.xmoos"
             CASE_ALPHA_PATCH="$HARNESS_DIR/pshare-topology-alias-cmd-route-pass-alpha.xmoos"
+            CASE_ALPHA_FULL_LOG_PATCH="$HARNESS_DIR/pshare-topology-alias-cmd-route-pass-full-logging-alpha.xmoos"
             ;;
         pshare_topology_runtime_route_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-topology-runtime-route-pass-shoreside.xmoos"
@@ -348,28 +363,71 @@ get_case_config() {
 apply_case_overlays() {
     local case_name="$1"
     local workdir="$2"
+    local patch
+    local -a shore_patches=()
+    local -a alpha_patches=()
+    local -a bravo_patches=()
+    local -a relay_patches=()
 
     get_case_config "$case_name" || return 1
 
-    if [ -n "$CASE_SHORE_PATCH" ]; then
-        [ -f "$CASE_SHORE_PATCH" ] || return 1
-        nspatch --stem="$workdir/meta_shoreside.moos" \
-            "$CASE_SHORE_PATCH" --targ="$workdir/meta_shoreside.moosx" || return 1
+    if [ "$LOG_MODE" = full ]; then
+        shore_patches+=("$workdir/full-logging-shoreside.xmoos")
+        if [ -z "$CASE_ALPHA_FULL_LOG_PATCH" ]; then
+            alpha_patches+=("$workdir/full-logging-alpha.xmoos")
+        fi
+        bravo_patches+=("$workdir/full-logging-bravo.xmoos")
+        if [ -z "$CASE_RELAY_FULL_LOG_PATCH" ]; then
+            relay_patches+=("$workdir/full-logging-relay.xmoos")
+        fi
     fi
-    if [ -n "$CASE_ALPHA_PATCH" ]; then
-        [ -f "$CASE_ALPHA_PATCH" ] || return 1
-        nspatch --stem="$workdir/meta_alpha.moos" \
-            "$CASE_ALPHA_PATCH" --targ="$workdir/meta_alpha.moosx" || return 1
+    if [ -n "$CASE_SHORE_PATCH" ]; then
+        shore_patches+=("$CASE_SHORE_PATCH")
+    fi
+    if [ -n "$CASE_ALPHA_PATCH" ] && \
+       { [ "$LOG_MODE" != full ] || [ -z "$CASE_ALPHA_FULL_LOG_PATCH" ]; }; then
+        alpha_patches+=("$CASE_ALPHA_PATCH")
     fi
     if [ -n "$CASE_BRAVO_PATCH" ]; then
-        [ -f "$CASE_BRAVO_PATCH" ] || return 1
-        nspatch --stem="$workdir/meta_bravo.moos" \
-            "$CASE_BRAVO_PATCH" --targ="$workdir/meta_bravo.moosx" || return 1
+        bravo_patches+=("$CASE_BRAVO_PATCH")
     fi
-    if [ -n "$CASE_RELAY_PATCH" ]; then
-        [ -f "$CASE_RELAY_PATCH" ] || return 1
+    if [ -n "$CASE_RELAY_PATCH" ] && \
+       { [ "$LOG_MODE" != full ] || [ -z "$CASE_RELAY_FULL_LOG_PATCH" ]; }; then
+        relay_patches+=("$CASE_RELAY_PATCH")
+    fi
+    if [ "$LOG_MODE" = full ] && [ -n "$CASE_ALPHA_FULL_LOG_PATCH" ]; then
+        alpha_patches+=("$CASE_ALPHA_FULL_LOG_PATCH")
+    fi
+    if [ "$LOG_MODE" = full ] && [ -n "$CASE_RELAY_FULL_LOG_PATCH" ]; then
+        relay_patches+=("$CASE_RELAY_FULL_LOG_PATCH")
+    fi
+    if [ "${#shore_patches[@]}" -gt 0 ]; then
+        for patch in "${shore_patches[@]}"; do
+            [ -f "$patch" ] || return 1
+        done
+        nspatch --stem="$workdir/meta_shoreside.moos" \
+            "${shore_patches[@]}" --targ="$workdir/meta_shoreside.moosx" || return 1
+    fi
+    if [ "${#alpha_patches[@]}" -gt 0 ]; then
+        for patch in "${alpha_patches[@]}"; do
+            [ -f "$patch" ] || return 1
+        done
+        nspatch --stem="$workdir/meta_alpha.moos" \
+            "${alpha_patches[@]}" --targ="$workdir/meta_alpha.moosx" || return 1
+    fi
+    if [ "${#bravo_patches[@]}" -gt 0 ]; then
+        for patch in "${bravo_patches[@]}"; do
+            [ -f "$patch" ] || return 1
+        done
+        nspatch --stem="$workdir/meta_bravo.moos" \
+            "${bravo_patches[@]}" --targ="$workdir/meta_bravo.moosx" || return 1
+    fi
+    if [ "${#relay_patches[@]}" -gt 0 ]; then
+        for patch in "${relay_patches[@]}"; do
+            [ -f "$patch" ] || return 1
+        done
         nspatch --stem="$workdir/meta_relay.moos" \
-            "$CASE_RELAY_PATCH" --targ="$workdir/meta_relay.moosx" || return 1
+            "${relay_patches[@]}" --targ="$workdir/meta_relay.moosx" || return 1
     fi
 }
 
@@ -489,7 +547,7 @@ run_case() {
             "$TIME_WARP"
         )
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
-        ./zlaunch.sh "${launch_args[@]}"
+        LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
     ) || launch_rc=$?
 
     write_result "$case_name" "$result_file" "$launch_rc" "$workdir"
@@ -734,7 +792,7 @@ if [ "$CLEANUP_FAILED" = yes ]; then
 fi
 trap - EXIT INT TERM PIPE
 
-printf 'results=%s failures=%s total=%s jobs=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
-    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
+printf 'results=%s failures=%s total=%s jobs=%s log_mode=%s elapsed_seconds=%s bash=%s workdirs=%s\n' \
+    "$RESULTS_FILE" "$FINAL_FAILURES" "$total" "$JOBS" "$LOG_MODE" "$elapsed_seconds" "$BASH_VERSION" "$kept_root"
 
 [ "$FINAL_FAILURES" -eq 0 ]

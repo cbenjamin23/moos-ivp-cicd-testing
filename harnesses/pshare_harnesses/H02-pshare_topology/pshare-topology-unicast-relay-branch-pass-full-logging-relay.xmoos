@@ -5,6 +5,7 @@ ProcessConfig = ANTLER
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
   Run = pShare        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false
   Run = pMissionEval  @ NewConsole = false
 }
@@ -14,8 +15,8 @@ ProcessConfig = pShare
   AppTick   = 10
   CommsTick = 10
 
-  Input  = route=multicast_33
-  Output = src_name=RELAY_OK,dest_name=RELAY_SEEN,route=127.0.0.1:$(SHORE_PSHARE)
+  Input  = route=127.0.0.1:$(PSHARE_PORT)
+  Output = src_name=UNICAST_RELAY_OK,dest_name=UNICAST_RELAY_SEEN,route=127.0.0.1:$(SHORE_PSHARE)
 }
 
 ProcessConfig = uTimerScript
@@ -32,8 +33,8 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = RELAY_EVAL_READY = true
-  pass_condition = MCAST_TO_SHORE = multicast
+  pass_condition = DUAL_RELAY = branch
 
-  result_flag  = RELAY_OK = true
+  result_flag  = UNICAST_RELAY_OK = true
   report_file  = relay_results.txt
 }
