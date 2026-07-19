@@ -27,15 +27,31 @@ RUN_ROOT=""
 RUN_ROOT_PREFIX=${RUN_ROOT_PREFIX:-ufield_app}
 ALL_OK="yes"
 
-source "$REPO_DIR/scripts/harness_teardown.sh"
+TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
+if [ ! -f "$TEARDOWN_HELPER" ]; then
+    echo "$ME: Missing scoped teardown helper: $TEARDOWN_HELPER"
+    exit 1
+fi
+# shellcheck source=/dev/null
+source "$TEARDOWN_HELPER"
 
 cleanup() {
+    local status=$?
+    local teardown_ok="yes"
+    trap - EXIT
     if [ "$RUN_ROOT" != "" ]; then
-        harness_teardown_stop_root "$RUN_ROOT" >/dev/null 2>&1 || true
+        if ! moos_scoped_teardown_stop_root "$RUN_ROOT"; then
+            echo "$ME: Scoped teardown failed; preserving $RUN_ROOT" >&2
+            teardown_ok="no"
+            if [ "$status" -eq 0 ]; then
+                status=1
+            fi
+        fi
     fi
-    if [ "$RUN_ROOT" != "" ] && [ "$KEEP_WORKDIRS" != "yes" ]; then
+    if [ "$RUN_ROOT" != "" ] && [ "$KEEP_WORKDIRS" != "yes" ] && [ "$teardown_ok" = "yes" ]; then
         rm -rf "$RUN_ROOT"
     fi
+    exit "$status"
 }
 trap cleanup EXIT
 
@@ -1858,10 +1874,10 @@ alog_var_lines() {
     alog=$(find_alog "$case_dir")
     [ "$alog" != "" ] || return 1
     if [ "$var" = "APPCAST" ]; then
-        rg "^[[:space:]]*[0-9].*[[:space:]]$var[[:space:]]" "$alog"
+        rg "^[[:space:]]*[0-9].*[[:space:]]${var}[[:space:]]" "$alog"
         return $?
     fi
-    aloggrep "$alog" "$var" 2>/dev/null | rg "^[[:space:]]*[0-9].*[[:space:]]$var[[:space:]]"
+    aloggrep "$alog" "$var" 2>/dev/null | rg "^[[:space:]]*[0-9].*[[:space:]]${var}[[:space:]]"
 }
 
 alog_var_count() {
@@ -2517,9 +2533,16 @@ run_case_isolated() {
         launcher_pid=$!
         uMayFinish --max_time="$CASE_MAX_TIME" --alias="uMayFinish_${case_idx}" targ_shoreside.moos >/dev/null
         rc=$?
-        "$REPO_DIR/scripts/harness_teardown.sh" "$case_dir" >/dev/null 2>&1 || true
+        teardown_rc=0
+        if ! moos_scoped_teardown_stop_root "$case_dir"; then
+            echo "$ME: Scoped teardown failed for $case_dir" >&2
+            teardown_rc=1
+        fi
         kill "$launcher_pid" >/dev/null 2>&1 || true
         wait "$launcher_pid" >/dev/null 2>&1 || true
+        if [ "$rc" -eq 0 ] && [ "$teardown_rc" -ne 0 ]; then
+            exit "$teardown_rc"
+        fi
         exit "$rc"
     )
     rc=$?

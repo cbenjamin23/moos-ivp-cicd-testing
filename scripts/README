@@ -1,7 +1,7 @@
 # Repository Scripts
 
-These helpers support repository validation, GitHub Actions, harness execution,
-repeatability analysis, and standalone MOOS-IvP portability builds. Most are
+These helpers support repository validation, harness execution, cleanup, and
+standalone MOOS-IvP portability builds. Most are
 called by a top-level workflow or launcher; run a script directly only when its
 description below identifies it as a useful local entry point.
 
@@ -20,8 +20,6 @@ description below identifies it as a useful local entry point.
   families and targets.
 - `ci_harness_case_count.py` derives expected case counts from harness
   `zlaunch.sh` files so CI can reject incomplete `results.txt` files.
-- `ci_harness_results_summary.py` validates harness result rows and writes the
-  harness result table used in GitHub Actions summaries.
 - `ci_cpp_test_targets.py` selects CTest family jobs, runs their label targets,
   writes per-target JUnit XML, and appends C++ results to the GitHub Actions
   step summary.
@@ -37,22 +35,11 @@ description below identifies it as a useful local entry point.
   Reporting is the default. Use `--delete --older-than=<days>` for routine
   pruning or `--delete --all` for an explicit full cleanup; `--target=<key>`
   and repeatable `--exclude=<key>` options use `config/harness_targets.json`.
-- `harness_teardown.sh` provides shared harness cleanup for isolated case
-  workdirs and their process manifests.
 - `moos_scoped_teardown.sh` terminates MOOS processes within one explicitly
   identified mission scope without sweeping unrelated processes.
 
-These teardown helpers are launcher internals. Harness users should normally
+This teardown helper is a launcher internal. Harness users should normally
 run the relevant `zlaunch.sh`, not invoke teardown scripts directly.
-
-## Repeatability And Timing
-
-- `benchmark_parallel.sh` runs repeatable wall-clock sweeps for one harness
-  across multiple `--jobs` values and writes results under
-  `time_benchmarking/`.
-- `repeatability_sweep.py` reruns one harness at a fixed configuration, retains
-  raw logs and results, and writes a per-case stability summary under
-  `time_benchmarking/`.
 
 ## MOOS-IvP Build Portability
 

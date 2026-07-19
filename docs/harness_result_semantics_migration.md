@@ -193,8 +193,7 @@ Validated paths:
 
 - Serial full matrix: `./zlaunch.sh --port_base=18220 10`
 - Grouped full matrix: `./zlaunch.sh --jobs=4 --port_base=18660 10`
-- Focused summary compatibility on the new result shape:
-  `python3 ../../../scripts/ci_harness_results_summary.py --results results.txt --harness testfailure_behavior_unit_single --expected-count 1`
+- Focused validation confirmed the expected case count and new result shape.
 
 `harnesses/obmgr_harnesses/H02-obmgr_motion` has been migrated as the second
 pilot. The expected collision stress cases now produce `grade=pass` when the
@@ -205,8 +204,7 @@ Validated paths:
 
 - Serial full matrix: `./zlaunch.sh --port_base=18940 10`
 - Grouped full matrix: `./zlaunch.sh --jobs=4 --port_base=19260 10`
-- Summary compatibility on the new result shape:
-  `python3 ../../../scripts/ci_harness_results_summary.py --results results.txt --harness obmgr_motion --expected-count 10`
+- Focused validation confirmed the expected case count and new result shape.
 
 `harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion` has been
 migrated as the third pilot. Expected timeout/update-rejection cases now produce
@@ -454,14 +452,9 @@ For each pilot harness:
 
 ### Phase 3: Summary And Docs Compatibility
 
-Update summary tooling to accept the new minimal result shape:
-
-- `scripts/ci_harness_results_summary.py`
-- `scripts/repeatability_sweep.py`
-
-The summary scripts should treat rows with `grade=pass` as successful and rows
-without `grade=pass` as failed. They may continue to support historical rows
-with an explicit legacy harness-result field during migration.
+During the migration, summary tooling treated rows with `grade=pass` as
+successful and rows without `grade=pass` as failed. The workflow-only summary
+and repeatability helpers were later removed when their workflow was retired.
 
 ### Phase 4: Bulk Harness Migration
 
@@ -502,7 +495,7 @@ For changed harnesses:
 
 ```sh
 ./zlaunch.sh --jobs=4 --port_base=<unique_base> 10
-python3 scripts/ci_harness_results_summary.py results.txt
+test "$(grep -c 'grade=pass' results.txt)" -gt 0
 ```
 
 Do not run two harness batches at the same time if their MOOSDB or pShare port

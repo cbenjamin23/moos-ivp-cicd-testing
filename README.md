@@ -76,7 +76,7 @@ your shell's `PATH` and library path before running harnesses.
 | `missions/` | Reusable MOOS mission stems. These define the base app/behavior scenario. |
 | `harnesses/` | Patch-driven test matrices around mission stems. These own expected outcomes. |
 | `tests/cpp/` | Fast GoogleTest/CTest library-level tests. These do not launch missions. |
-| `scripts/` | Local and CI helpers, harness metadata checks, repeatability sweeps, timing tools. |
+| `scripts/` | Local and CI helpers, harness metadata checks, cleanup, and build tooling. |
 | `config/harness_targets.json` | Manual-dispatch harness target metadata used by CI helper scripts. |
 | `docs/` | Generated/static project documentation and harness pages. |
 | `time_benchmarking/` | Local timing and parallelization notes. |

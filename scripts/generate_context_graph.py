@@ -396,7 +396,7 @@ def render_markdown(graph: dict[str, Any]) -> str:
         "- `missions/`: reusable MOOS mission stems consumed by harnesses.",
         "- `tests/cpp/`: GoogleTest/CTest library-level tests.",
         "- `config/`: harness target registry metadata.",
-        "- `scripts/`: CI selection, validation, summaries, and generated-map tooling.",
+        "- `scripts/`: target selection, validation, cleanup, and generated-map tooling.",
         "- `docs/`: generated/static harness catalog and visual assets.",
         "- `src/`: legacy/example MOOS app code still built by the repo.",
         "",

@@ -78,12 +78,11 @@ failures do not stop the remaining selected cases from reporting.
 
 ### Teardown
 
-The project will adopt `scripts/moos_scoped_teardown.sh` and
+The project uses `scripts/moos_scoped_teardown.sh` and
 `moos_scoped_teardown_stop_root` as the canonical cleanup interface.
 
-`scripts/harness_teardown.sh` may remain temporarily as a compatibility wrapper
-while launchers are migrated. It will be removed after all callers have moved
-unless a verified external compatibility requirement is found.
+The legacy compatibility helper was removed after its remaining callers moved
+to the canonical scoped interface.
 
 No migration path may depend on global `ktm`, broad `pkill`, `killall`, or
 machine-wide cleanup.
@@ -165,10 +164,9 @@ that all configured harnesses were considered.
 ### Phase 2: Direct Legacy Baselines
 
 Run harnesses directly through their existing `zlaunch.sh` before editing them.
-Do not repair or extend `scripts/benchmark_parallel.sh` or
-`scripts/repeatability_sweep.py` for this migration. Treat those scripts as
-legacy and remove them in a reviewed migration batch after confirming that no
-current workflow depends on them.
+The legacy benchmark and repeatability helpers were removed in a reviewed
+cleanup after confirming that no current workflow depended on them. Baseline
+runs should invoke each harness directly and record the exact arguments used.
 
 Baseline runs are selected harness by harness. Time warp, `--max_time`, jobs,
 and port bases may vary when different combinations expose useful behavior.

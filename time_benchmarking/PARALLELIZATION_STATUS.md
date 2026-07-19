@@ -116,13 +116,9 @@ Measured timings and recommended `--jobs` values live under:
 
 - `time_benchmarking/parallel_jobs_2026-03-20/README.md`
 
-The helper script for future sweeps is:
-
-- `scripts/benchmark_parallel.sh`
-
-That script is for repeatable harness timing sweeps. It does not implement
-parallelism itself; it just runs a harness repeatedly at different `--jobs`
-values and records the results.
+For future sweeps, invoke the harness directly at each `--jobs` value and record
+the exact arguments and wall times with the results. No general benchmark
+wrapper is retained.
 
 ## Practical Guidance
 

@@ -156,16 +156,12 @@ Interpretation:
 - the shared `xlaunch.sh` wait could not be removed entirely, but `0.25s`
   stayed stable where `0s` did not
 
-The new helper script for future sweeps is:
-
-- [`scripts/benchmark_parallel.sh`](../../scripts/benchmark_parallel.sh)
-
-Typical usage:
+Future sweeps should invoke the harness directly and record each exact command.
+For example:
 
 ```bash
-./scripts/benchmark_parallel.sh \
-  --harness=/path/to/moos-ivp-cicd-testing/harnesses/cmgr_harnesses/H01-cmgr_unit \
-  --jobs=1,2,4,8,16,20
+cd /path/to/moos-ivp-cicd-testing/harnesses/cmgr_harnesses/H01-cmgr_unit
+/usr/bin/time -p ./zlaunch.sh --jobs=4 --port_base=24000 10
 ```
 
 Note:
