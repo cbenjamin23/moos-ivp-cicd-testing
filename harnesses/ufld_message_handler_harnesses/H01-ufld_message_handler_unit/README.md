@@ -1,5 +1,8 @@
 # H01-uFldMessageHandler Unit Harness
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 This harness tests `uFldMessageHandler` as an app-level message-routing
 contract. Cases post controlled `NODE_MESSAGE` strings and check forwarded
 payloads, rejection behavior, summary counters, and configured flags. Each

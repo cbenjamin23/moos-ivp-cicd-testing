@@ -109,6 +109,7 @@ Options:
   --jobs=<n>         Run up to n cases concurrently with rolling scheduling
   --port_base=<n>    Base MOOS port for per-case blocks
   --keep_workdirs    Keep this invocation's isolated case directories
+  GUI support:       Unavailable (non-visual stem)
 
 Cases:
 EOF

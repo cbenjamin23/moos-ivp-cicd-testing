@@ -1,5 +1,8 @@
 # H01-uFldContactRangeSensor Unit Harness
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 This harness tests `uFldContactRangeSensor` as a deterministic field-contact
 range reporter. Cases script contact reports and `CRS_RANGE_REQUEST` mail;
 mission-owned `pMissionEval` conditions then check range report variables,

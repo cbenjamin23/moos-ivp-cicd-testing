@@ -1,5 +1,8 @@
 # H01 uFldObstacleSim Unit Harness
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 This harness validates `uFldObstacleSim` as the obstacle-field source rather
 than as an obstacle consumer. The stem mission is a single shoreside community
 that starts the simulator, prompts refresh/reset events with `uTimerScript`,

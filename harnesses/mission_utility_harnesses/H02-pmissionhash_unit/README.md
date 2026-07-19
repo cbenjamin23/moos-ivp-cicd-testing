@@ -1,5 +1,8 @@
 # H02-pmissionhash_unit
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 Patch-driven unit harness for `pMissionHash`.
 
 The harness uses isolated copies of the stem mission at

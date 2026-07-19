@@ -1,5 +1,8 @@
 # H01-ufld_collision_detect_unit
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 Live `uFldCollisionDetect` harness for contact/contact CPA event reporting.
 Each case runs in an isolated copy of the shared uField app stem, and
 `pMissionEval` owns the substantive verdict from live MOOS variables.

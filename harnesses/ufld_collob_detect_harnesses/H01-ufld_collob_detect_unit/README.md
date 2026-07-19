@@ -1,5 +1,8 @@
 # H01-ufld_collob_detect_unit
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 Live `uFldCollObDetect` harness for vehicle/obstacle encounter reporting. Each
 case runs in an isolated copy of the shared uField app stem, and `pMissionEval`
 owns the substantive pass/fail verdict.

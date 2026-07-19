@@ -160,7 +160,14 @@ if [ "$JUST_MAKE" = yes ]; then
     rm -f targ_shoreside.moos
 fi
 
-launch_args=(--max_time="$MAX_TIME" "${DISPLAY_ARGS[@]}" "${FLOW_ARGS[@]}" "$TIME_WARP")
+launch_args=(--max_time="$MAX_TIME")
+if [ "${#DISPLAY_ARGS[@]}" -gt 0 ]; then
+    launch_args+=("${DISPLAY_ARGS[@]}")
+fi
+if [ "${#FLOW_ARGS[@]}" -gt 0 ]; then
+    launch_args+=("${FLOW_ARGS[@]}")
+fi
+launch_args+=("$TIME_WARP")
 [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
 
 launch_rc=0

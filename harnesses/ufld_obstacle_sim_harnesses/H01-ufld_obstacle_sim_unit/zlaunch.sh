@@ -133,6 +133,7 @@ Options:
   --port_base=<n>    Base MOOS port for per-case blocks
   --keep_workdirs    Keep this invocation's isolated case directories
   --nogui, -ng       Headless launch, no gui (default)
+  GUI support:       Unavailable (non-visual stem)
 
 Cases:
 EOF

@@ -1,5 +1,8 @@
 # H01-uFldPathCheck Unit Harness
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 This harness tests `uFldPathCheck` as a single-community app-level MOOS mail
 contract. Each case scripts `NODE_REPORT` or `NODE_REPORT_LOCAL` mail, and
 `pMissionEval` grades the resulting `UPC_ODOMETRY_REPORT` and

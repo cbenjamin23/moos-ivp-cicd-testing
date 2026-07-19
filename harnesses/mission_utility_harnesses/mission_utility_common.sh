@@ -78,8 +78,8 @@ usage() {
     echo "  --log=<mode>       Logging mode: minimal (default) or full"
     echo "  --keep_workdirs    Keep this invocation's isolated case directories"
     echo "  --verbose, -v     Show scheduler events"
-    echo "  --gui              Accepted only for one selected case"
-    echo "  --nogui, -ng       Headless launch (default)"
+    echo "  --nogui, -ng       Headless launch (only supported display mode)"
+    echo "  GUI support:       Unavailable (non-visual stem)"
 }
 
 die() {
@@ -104,7 +104,7 @@ for arg in "$@"; do
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
-        --gui) DISPLAY_ARGS=() ;;
+        --gui) die "--gui is unsupported: this non-visual stem has no pMarineViewer configuration" ;;
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --help|-h) usage; exit 0 ;;
         *[!0-9]*|'') die "bad argument: $arg" ;;
@@ -1047,9 +1047,6 @@ aggregate_results() {
 [ "${#ALL_CASES[@]}" -gt 0 ] || die "no ALL_CASES entries configured"
 select_cases
 total=${#SELECTED_CASES[@]}
-if [ "${#DISPLAY_ARGS[@]}" -eq 0 ] && [ "$total" -ne 1 ]; then
-    die "--gui requires one explicit --case"
-fi
 last_port=$((PORT_BASE + (total - 1) * PORT_STRIDE + PSHARE_OFFSET))
 [ "$last_port" -le 65535 ] || die "selected cases require ports through $last_port"
 

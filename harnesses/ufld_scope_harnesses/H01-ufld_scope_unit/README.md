@@ -1,5 +1,8 @@
 # H01-ufld_scope_unit
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 Live `uFldScope` harness for appcast table construction from scoped MOOS variables.
 
 Each mission records its normal pMissionEval result. Because `uFldScope` exposes

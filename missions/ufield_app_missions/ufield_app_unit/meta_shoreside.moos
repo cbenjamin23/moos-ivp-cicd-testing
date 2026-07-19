@@ -9,6 +9,8 @@ Community  = shoreside
 
 #include plugs.moos <origin_warp>
 
+// This unit stem is intentionally non-visual; pMarineViewer is omitted.
+
 //----------------------------------------------------
 ProcessConfig = ANTLER
 {

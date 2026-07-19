@@ -82,7 +82,7 @@ for arg in "$@"; do
         --case=*) CASE="${arg#--case=}" ;;
         --port_base=*) PORT_BASE="${arg#--port_base=}" ;;
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
-        --gui) DISPLAY_ARGS=() ;;
+        --gui) DISPLAY_ARGS=(--gui) ;;
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         *)
             is_uint "$arg" || die "bad argument: $arg"
@@ -403,6 +403,9 @@ RUN_CASES=("${ALL_CASES[@]}")
 if [ -n "$CASE" ]; then
     get_case_config "$CASE" || die "unknown case or missing case patch: $CASE"
     RUN_CASES=("$CASE")
+fi
+if [ "${DISPLAY_ARGS[0]}" = --gui ] && [ "${#RUN_CASES[@]}" -ne 1 ]; then
+    die "--gui requires one explicit --case"
 fi
 
 highest_port=$((PORT_BASE + (${#RUN_CASES[@]} - 1) * PORT_STRIDE + PSHARE_OFFSET + 3))

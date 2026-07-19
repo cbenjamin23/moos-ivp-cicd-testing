@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -42,6 +43,36 @@ def load_docs_harness_paths() -> set[str]:
     return {str(harness.path) for harness in module.HARNESSES}
 
 
+def harness_gui_contract_issues(zlaunch_text: str) -> list[str]:
+    if "--gui)" not in zlaunch_text:
+        return []
+
+    issues: list[str] = []
+    if "--gui) DISPLAY_ARGS=(--gui) ;;" not in zlaunch_text:
+        issues.append("--gui must forward an explicit --gui argument to the stem mission")
+    if '"${DISPLAY_ARGS[0]}" = --gui' not in zlaunch_text:
+        issues.append("--gui must require one explicit --case")
+    return issues
+
+
+def mission_launch_args_contract_issues(zlaunch_text: str) -> list[str]:
+    if "set -u" not in zlaunch_text:
+        return []
+
+    assignment = re.search(
+        r"(?ms)^\s*launch_args=\((.*?)\)\s*$",
+        zlaunch_text,
+    )
+    if assignment is None:
+        return []
+    if re.search(r'"\$\{[A-Za-z_][A-Za-z0-9_]*\[@\]\}"', assignment.group(1)):
+        return [
+            "launch_args must append optional arrays only after a nonempty length guard "
+            "for Bash 3.2 set -u compatibility"
+        ]
+    return []
+
+
 def check_harness_targets(targets: list[dict[str, object]]) -> list[CheckFailure]:
     failures: list[CheckFailure] = []
 
@@ -65,6 +96,10 @@ def check_harness_targets(targets: list[dict[str, object]]) -> list[CheckFailure
         if not zlaunch_path.stat().st_mode & 0o111:
             failures.append(CheckFailure(key, f"zlaunch.sh is not executable: {zlaunch_path}"))
 
+        zlaunch_text = zlaunch_path.read_text(encoding="utf-8", errors="replace")
+        for issue in harness_gui_contract_issues(zlaunch_text):
+            failures.append(CheckFailure(key, issue))
+
         try:
             case_count = ci_harness_case_count.derive_case_count(zlaunch_path)
         except ValueError as err:
@@ -74,6 +109,17 @@ def check_harness_targets(targets: list[dict[str, object]]) -> list[CheckFailure
         if case_count <= 0:
             failures.append(CheckFailure(key, "default case count must be greater than zero"))
 
+    return failures
+
+
+def check_mission_wrapper_contracts(_targets: list[dict[str, object]]) -> list[CheckFailure]:
+    failures: list[CheckFailure] = []
+    mission_root = REPO_ROOT / "missions"
+    for zlaunch_path in sorted(mission_root.glob("*_missions/*/zlaunch.sh")):
+        zlaunch_text = zlaunch_path.read_text(encoding="utf-8", errors="replace")
+        label = zlaunch_path.relative_to(REPO_ROOT).as_posix()
+        for issue in mission_launch_args_contract_issues(zlaunch_text):
+            failures.append(CheckFailure(label, issue))
     return failures
 
 
@@ -189,6 +235,7 @@ def main() -> int:
 
     check_steps = [
         check_harness_targets,
+        check_mission_wrapper_contracts,
         check_docs_catalog,
         check_context_graph_generated_clean,
         check_cpp_test_tree,

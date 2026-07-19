@@ -5,58 +5,73 @@ import unittest
 from scripts import check_repo_invariants
 
 
-WORKFLOW_SNIPPET = """
-on:
-  workflow_dispatch:
-    inputs:
-      dispatch_mode:
-        description: "Mode"
-        required: true
-        type: choice
-        default: none
-        options:
-          - none
-          - family_run
-      family:
-        description: "Family"
-        required: false
-        type: choice
-        default: colregs
-        options:
-          - cmgr
-          - colregs
-      targets:
-        description: "Targets"
-        required: false
-        default: "colregs_h01,cmgr_h01"
-"""
-
-
 class CheckRepoInvariantParsingTests(unittest.TestCase):
-    def test_workflow_choice_block_reads_named_input_options(self) -> None:
+    def test_gui_contract_requires_explicit_forwarding_and_case_guard(self) -> None:
+        old_launcher = """
+        --gui) DISPLAY_ARGS=() ;;
+        """
         self.assertEqual(
-            check_repo_invariants.workflow_choice_block("dispatch_mode", WORKFLOW_SNIPPET),
-            ["none", "family_run"],
-        )
-        self.assertEqual(
-            check_repo_invariants.workflow_choice_block("family", WORKFLOW_SNIPPET),
-            ["cmgr", "colregs"],
-        )
-
-    def test_workflow_default_reads_named_input_default(self) -> None:
-        self.assertEqual(
-            check_repo_invariants.workflow_default("dispatch_mode", WORKFLOW_SNIPPET),
-            "none",
-        )
-        self.assertEqual(
-            check_repo_invariants.workflow_default("targets", WORKFLOW_SNIPPET),
-            "colregs_h01,cmgr_h01",
+            check_repo_invariants.harness_gui_contract_issues(old_launcher),
+            [
+                "--gui must forward an explicit --gui argument to the stem mission",
+                "--gui must require one explicit --case",
+            ],
         )
 
-    def test_comma_list_ignores_empty_items_and_whitespace(self) -> None:
+    def test_gui_contract_accepts_explicit_forwarding_and_case_guard(self) -> None:
+        fixed_launcher = """
+        --gui) DISPLAY_ARGS=(--gui) ;;
+        if [ "${DISPLAY_ARGS[0]}" = --gui ] && [ "$total" -ne 1 ]; then
+        """
         self.assertEqual(
-            check_repo_invariants.comma_list(" cmgr_h01, , colregs_h01 "),
-            ["cmgr_h01", "colregs_h01"],
+            check_repo_invariants.harness_gui_contract_issues(fixed_launcher),
+            [],
+        )
+
+    def test_gui_contract_ignores_headless_only_harnesses(self) -> None:
+        self.assertEqual(
+            check_repo_invariants.harness_gui_contract_issues("--nogui|-ng) DISPLAY_ARGS=(--nogui) ;;"),
+            [],
+        )
+
+    def test_mission_launch_args_contract_rejects_direct_empty_array_expansion(self) -> None:
+        broken_launcher = '''
+        set -u
+        launch_args=(--max_time="$MAX_TIME" "${DISPLAY_ARGS[@]}" "${FLOW_ARGS[@]}" "$TIME_WARP")
+        '''
+        self.assertEqual(
+            check_repo_invariants.mission_launch_args_contract_issues(broken_launcher),
+            [
+                "launch_args must append optional arrays only after a nonempty length guard "
+                "for Bash 3.2 set -u compatibility"
+            ],
+        )
+
+    def test_mission_launch_args_contract_accepts_guarded_array_appends(self) -> None:
+        fixed_launcher = '''
+        set -u
+        launch_args=(--max_time="$MAX_TIME")
+        if [ "${#DISPLAY_ARGS[@]}" -gt 0 ]; then
+            launch_args+=("${DISPLAY_ARGS[@]}")
+        fi
+        '''
+        self.assertEqual(
+            check_repo_invariants.mission_launch_args_contract_issues(fixed_launcher),
+            [],
+        )
+
+    def test_mission_launch_args_contract_checks_multiline_initializers(self) -> None:
+        broken_launcher = '''
+        set -u
+        launch_args=(
+            --max_time="$MAX_TIME"
+            "${FLOW_ARGS[@]}"
+            "$TIME_WARP"
+        )
+        '''
+        self.assertEqual(
+            len(check_repo_invariants.mission_launch_args_contract_issues(broken_launcher)),
+            1,
         )
 
 

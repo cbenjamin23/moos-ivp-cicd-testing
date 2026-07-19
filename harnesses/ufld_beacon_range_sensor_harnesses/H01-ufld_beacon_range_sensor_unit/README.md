@@ -1,5 +1,8 @@
 # H01-ufld_beacon_range_sensor_unit
 
+This is an intentionally non-visual unit harness. `--gui` is unsupported
+because the stem has no `pMarineViewer` configuration.
+
 Live `uFldBeaconRangeSensor` harness for beacon range-report publication.
 Each case runs in an isolated mission copy, and `pMissionEval` owns the
 substantive grade from the sensor's existing reports, pulses, markers, and

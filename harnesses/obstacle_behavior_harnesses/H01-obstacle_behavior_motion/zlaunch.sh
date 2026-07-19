@@ -144,7 +144,8 @@ for arg in "$@"; do
         --keep_workdirs) KEEP_WORKDIRS=yes ;;
         --verbose|-v) VERBOSE=yes ;;
         --just_make|-j) JUST_MAKE=yes ;;
-        --gui) DISPLAY_ARGS=() ;;
+        --log=*) LOG_MODE="${arg#--log=}" ;;
+        --gui) DISPLAY_ARGS=(--gui) ;;
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --help|-h) usage; exit 0 ;;
         *[!0-9]*|'') die "bad argument: $arg" ;;
@@ -749,7 +750,7 @@ aggregate_results() {
 
 select_cases
 total=${#SELECTED_CASES[@]}
-if [ "${#DISPLAY_ARGS[@]}" -eq 0 ] && [ "$total" -ne 1 ]; then
+if [ "${DISPLAY_ARGS[0]}" = --gui ] && [ "$total" -ne 1 ]; then
     die "--gui requires one explicit --case"
 fi
 last_port=$((PORT_BASE + (total - 1) * PORT_STRIDE + PSHARE_OFFSET + 1))
