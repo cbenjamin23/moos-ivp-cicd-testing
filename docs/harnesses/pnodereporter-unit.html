@@ -137,7 +137,7 @@
 
         <article class="case-row">
           <code>platform_report_gap_pass</code>
-          <p>Maps battery voltage to batt with gap=2, posts 12.7 at one second and 12.8 at two seconds, exercising the platform-report update gap; at five seconds, passes when the final platform report contains batt=12.8 and not batt=12.7. The evaluator does not observe when the second value became eligible.</p>
+          <p>Maps battery voltage to batt with gap=2, then posts 12.7 at one second and 12.8 at two seconds, testing that pNodeReporter holds the changed value until the configured publication gap expires; passes when the log contains batt=12.7 followed 1.8–2.4 seconds later by batt=12.8.</p>
         </article>
 
 
@@ -179,7 +179,7 @@
 
         <article class="case-row">
           <code>coord_policy_global_pass</code>
-          <p>Sets coord_policy_global=true with baseline local and global nav mail, exercising global-only report formatting; passes when the report contains LAT=43.82535 and LON=-70.33045 and does not contain the exact baseline X=10 or Y=-5 fields.</p>
+          <p>Sets coord_policy_global=true while supplying both local (10,-5) and global (43.82535,-70.33045) navigation, testing that global-only reports retain the supplied latitude/longitude and omit local coordinates entirely; passes when those global values are within 0.000001 degrees and neither an X nor Y component exists.</p>
         </article>
 
 
@@ -191,19 +191,19 @@
 
         <article class="case-row">
           <code>crossfill_local_to_global_pass</code>
-          <p>Sets cross_fill_policy=local and supplies only local position (12,-8), testing origin-based generation of global coordinates; passes when the report retains X=12,Y=-8 and contains a latitude beginning 43.825.</p>
+          <p>Sets cross_fill_policy=local and supplies only local position (12,-8), testing conversion from the configured datum to global coordinates; passes when the report retains (12,-8) and generates latitude 43.82522971 and longitude -70.33024916 within 0.000001 degrees.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossfill_global_to_local_pass</code>
-          <p>Sets cross_fill_policy=global and supplies only LAT=43.825360,LON=-70.330460, testing origin-based generation of local coordinates; passes when the exact global fields and some X= field appear. The shell does not compare the generated x/y values.</p>
+          <p>Sets cross_fill_policy=global and supplies only latitude 43.825360 and longitude -70.330460, testing conversion from that global pair into the local datum; passes when the global inputs remain unchanged and the generated position is within 0.01 meters of (-4.72,6.74).</p>
         </article>
 
 
         <article class="case-row">
           <code>crossfill_global_terse_pass</code>
-          <p>Sets cross_fill_policy=global-terse with authoritative global coordinates and conflicting local (99,99), exercising replacement of local coordinates from the global pair; passes when the exact global fields and some X= field appear. The shell does not reject the conflicting local values.</p>
+          <p>Sets cross_fill_policy=global-terse with latitude 43.825360, longitude -70.330460, and conflicting local position (99,99), testing that the global pair overrides supplied local coordinates; passes when the report contains the global values and derived local position (-4.72,6.74) rather than (99,99).</p>
         </article>
 
 
@@ -233,13 +233,13 @@
 
         <article class="case-row">
           <code>mhash_odometer_pass</code>
-          <p>Moves NAV_X from 0 through 8 to 20 after mission-hash startup, exercising PNR_MHASH odometer reporting; passes when PNR_MHASH publishes and contains an mhash= field. The traveled-distance extension is reported but not graded.</p>
+          <p>Moves from (0,0) through (8,0) to (20,0) after mission-hash startup, testing that pNodeReporter accumulates the furthest displacement in PNR_MHASH; passes when the publication contains a hash and exact ext=20.</p>
         </article>
 
 
         <article class="case-row">
           <code>report_cog_pass</code>
-          <p>Enables report_cog, moves from (0,0) to (8,0), and retains heading 90, exercising course-over-ground calculation; passes when the node report contains a COG= field, without checking its numeric value.</p>
+          <p>Enables report_cog and moves from (0,0) to (8,0), testing course-over-ground derived from consecutive positions rather than the supplied heading field; passes when the report history contains the moved position with COG=90.</p>
         </article>
 
 
@@ -257,31 +257,31 @@
 
         <article class="case-row">
           <code>pause_resume_pass</code>
-          <p>Starts pNodeReporter paused, posts initial nav (1,1), resumes with PNR_PAUSE=false at two seconds, and posts (30,-10) afterward, exercising pause/resume publication; passes when the final report contains X=30,Y=-10 and not the exact initial X=1,Y=1 pair. Report history before resume is not checked.</p>
+          <p>Starts pNodeReporter paused, posts (1,1), updates the stored nav state to (30,-10) while still paused, and then posts PNR_PAUSE=false, testing both suppression and release of accumulated state; passes when no (1,1) report exists and the first report after resume contains (30,-10).</p>
         </article>
 
 
         <article class="case-row">
           <code>crossfill_fill_empty_pass</code>
-          <p>Sets cross_fill_policy=fill-empty and supplies only LAT=43.825370,LON=-70.330470, exercising generation of missing local coordinates; passes when the exact global fields and some X= field appear. The generated x/y values are not compared.</p>
+          <p>Sets cross_fill_policy=fill-empty and supplies only latitude 43.825370 and longitude -70.330470, testing that only the missing local pair is generated; passes when the global inputs remain unchanged and the generated position is within 0.01 meters of (-5.50,7.87).</p>
         </article>
 
 
         <article class="case-row">
           <code>crossfill_use_latest_local_pass</code>
-          <p>Sets cross_fill_policy=use-latest, posts global coordinates first, then local (25,5) one second later, testing selection of the newer coordinate source; passes when the report contains X=25,Y=5 and a latitude beginning 43.825.</p>
+          <p>Sets cross_fill_policy=use-latest, posts global coordinates first, then local (25,5) one second later, testing that the newer local source replaces and regenerates the older global source; passes when the local pair is exact and the regenerated latitude/longitude are within 0.000001 degrees of (43.82534865,-70.33009010).</p>
         </article>
 
 
         <article class="case-row">
           <code>extrap_gap_metric_pass</code>
-          <p>Enables extrapolation with zero position/heading thresholds, posts an eastbound state, then updates NAV_X to 3, exercising extrapolation-gap publication; passes when both gap metrics are present and nonnegative. Their expected numeric values are not graded.</p>
+          <p>Enables extrapolation with zero thresholds, establishes eastbound motion at one meter per second, then jumps NAV_X from 0 to 3, testing the discrepancy between the predicted and newly observed positions; passes when history records a position gap from 2.4 to 2.9 meters and a heading gap from 0 to 0.01 degrees.</p>
         </article>
 
 
         <article class="case-row">
           <code>extrap_prune_pass</code>
-          <p>Enables extrapolation with position and heading thresholds 10, posts an eastbound state at (0,0), then posts the predictable NAV_X=12 update at 12 seconds, exercising report pruning; passes when the final report still contains X=0,Y=0, does not contain X=12, and both extrapolation-gap metrics are present and nonnegative.</p>
+          <p>Enables extrapolation with ten-unit thresholds, establishes eastbound motion at (0,0), then posts NAV_X=12 after the extrapolator has capped its prediction at 5, testing that the seven-meter discrepancy is measured but the below-threshold report is pruned; passes when the final gap is 6.5–7.5, heading gap is below 0.1, and no report contains X=12.</p>
         </article>
 
       </div>

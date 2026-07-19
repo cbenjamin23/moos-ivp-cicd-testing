@@ -26,9 +26,9 @@ ProcessConfig = uTimerScript
   event = var=NAV_SPEED, val=1.0, time=0.5
   event = var=NAV_HEADING, val=90, time=0.5
   event = var=IVPHELM_STATE, val=DRIVE, time=0.5
+  event = var=NAV_X, val=30, time=1.8
+  event = var=NAV_Y, val=-10, time=1.8
   event = var=PNR_PAUSE, val=false, time=2.0
-  event = var=NAV_X, val=30, time=2.2
-  event = var=NAV_Y, val=-10, time=2.2
   event = var=TEST_EVAL_READY, val=true, time=5.0
 }
 

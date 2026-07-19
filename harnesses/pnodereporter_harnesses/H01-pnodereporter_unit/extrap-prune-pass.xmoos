@@ -43,8 +43,10 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = NODE_REPORT_SEEN = true
-  pass_condition = PNR_EXTRAP_POS_GAP >= 0
+  pass_condition = PNR_EXTRAP_POS_GAP > 6.5
+  pass_condition = PNR_EXTRAP_POS_GAP < 7.5
   pass_condition = PNR_EXTRAP_HDG_GAP >= 0
+  pass_condition = PNR_EXTRAP_HDG_GAP < 0.1
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pnodereporter_unit

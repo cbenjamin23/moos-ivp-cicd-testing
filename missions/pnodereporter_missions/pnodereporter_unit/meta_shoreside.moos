@@ -37,7 +37,11 @@ ProcessConfig = pLogger
   AsyncLog      = true
   FileTimeStamp = true
 
-  Log = NODE_REPORT_LOCAL @ 0 nosync
+  Log = NODE_REPORT_LOCAL      @ 0 nosync
+  Log = PLATFORM_REPORT_LOCAL  @ 0 nosync
+  Log = PNR_EXTRAP_POS_GAP     @ 0 nosync
+  Log = PNR_EXTRAP_HDG_GAP     @ 0 nosync
+  Log = PNR_MHASH              @ 0 nosync
 }
 
 //----------------------------------------------------

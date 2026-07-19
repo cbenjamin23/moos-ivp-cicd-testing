@@ -407,12 +407,180 @@ check_alog_payload() {
     return 1
 }
 
+payload_component_value() {
+    local payload="$1"
+    local key="$2"
+    local component
+    local -a components
+
+    IFS=',' read -r -a components <<< "$payload"
+    for component in "${components[@]}"; do
+        case "$component" in
+            "$key="*) printf '%s\n' "${component#*=}"; return 0 ;;
+        esac
+    done
+    return 1
+}
+
+numeric_in_range() {
+    local value="$1"
+    local lower="$2"
+    local upper="$3"
+
+    awk -v value="$value" -v lower="$lower" -v upper="$upper" \
+        'BEGIN {exit !(value ~ /^-?[0-9]+([.][0-9]+)?$/ && value >= lower && value <= upper)}'
+}
+
+require_component_range() {
+    local payload="$1"
+    local key="$2"
+    local lower="$3"
+    local upper="$4"
+    local value
+
+    value=$(payload_component_value "$payload" "$key" || true)
+    [ -n "$value" ] && numeric_in_range "$value" "$lower" "$upper"
+}
+
+reject_component() {
+    local payload="$1"
+    local key="$2"
+
+    ! payload_component_value "$payload" "$key" >/dev/null
+}
+
+check_coordinate_payload() {
+    local case_name="$1"
+    local line="$2"
+    local payload
+    local valid=no
+
+    payload=$(field_value "$line" node_report || true)
+    [ -n "$payload" ] || {
+        echo "fail:missing=node_report"
+        return 1
+    }
+
+    case "$case_name" in
+        coord_policy_global_pass)
+            require_component_range "$payload" LAT 43.825349 43.825351 &&
+                require_component_range "$payload" LON -70.330451 -70.330449 &&
+                reject_component "$payload" X && reject_component "$payload" Y &&
+                valid=yes
+            ;;
+        crossfill_local_to_global_pass)
+            require_component_range "$payload" X 12 12 &&
+                require_component_range "$payload" Y -8 -8 &&
+                require_component_range "$payload" LAT 43.825229 43.825231 &&
+                require_component_range "$payload" LON -70.330250 -70.330248 &&
+                valid=yes
+            ;;
+        crossfill_global_to_local_pass|crossfill_global_terse_pass)
+            require_component_range "$payload" LAT 43.825359 43.825361 &&
+                require_component_range "$payload" LON -70.330461 -70.330459 &&
+                require_component_range "$payload" X -4.73 -4.71 &&
+                require_component_range "$payload" Y 6.73 6.75 &&
+                valid=yes
+            ;;
+        crossfill_fill_empty_pass)
+            require_component_range "$payload" LAT 43.825369 43.825371 &&
+                require_component_range "$payload" LON -70.330471 -70.330469 &&
+                require_component_range "$payload" X -5.51 -5.49 &&
+                require_component_range "$payload" Y 7.86 7.88 &&
+                valid=yes
+            ;;
+        crossfill_use_latest_local_pass)
+            require_component_range "$payload" X 25 25 &&
+                require_component_range "$payload" Y 5 5 &&
+                require_component_range "$payload" LAT 43.825348 43.825350 &&
+                require_component_range "$payload" LON -70.330091 -70.330089 &&
+                valid=yes
+            ;;
+        *) return 1 ;;
+    esac
+    if [ "$valid" = yes ]; then
+        echo "pass"
+        return 0
+    fi
+
+    echo "fail:coordinate_contract"
+    return 1
+}
+
+check_alog_contract() {
+    local case_name="$1"
+    local mission_root="$2"
+    local alog
+
+    while IFS= read -r -d '' alog; do
+        case "$case_name" in
+            platform_report_gap_pass)
+                awk '
+                    $2 == "PLATFORM_REPORT_LOCAL" && index("," $4 ",", ",batt=12.7,") {
+                        first_time=$1; first_seen=1
+                    }
+                    $2 == "PLATFORM_REPORT_LOCAL" && first_seen &&
+                        index("," $4 ",", ",batt=12.8,") {
+                        delay=$1-first_time; second_seen=1
+                    }
+                    END {exit !(first_seen && second_seen && delay >= 1.8 && delay <= 2.4)}
+                ' "$alog" && { echo "pass"; return 0; }
+                ;;
+            report_cog_pass)
+                awk '
+                    $2 == "NODE_REPORT_LOCAL" {
+                        payload="," $4 ","
+                        if(index(payload, ",X=8,") && index(payload, ",Y=0,") &&
+                           index(payload, ",COG=90,"))
+                            found=1
+                    }
+                    END {exit !found}
+                ' "$alog" && { echo "pass"; return 0; }
+                ;;
+            pause_resume_pass)
+                awk '
+                    $2 == "NODE_REPORT_LOCAL" {
+                        payload="," $4 ","
+                        count++
+                        if(index(payload, ",X=1,") || index(payload, ",Y=1,"))
+                            paused_report=1
+                        if(count == 1 && index(payload, ",X=30,") &&
+                           index(payload, ",Y=-10,"))
+                            resumed_first=1
+                    }
+                    END {exit !(count > 0 && resumed_first && !paused_report)}
+                ' "$alog" && { echo "pass"; return 0; }
+                ;;
+            extrap_gap_metric_pass)
+                awk '
+                    $2 == "PNR_EXTRAP_POS_GAP" && $4 >= 2.4 && $4 <= 2.9 {pos_seen=1}
+                    $2 == "PNR_EXTRAP_HDG_GAP" && $4 >= 0 && $4 <= 0.01 {hdg_seen=1}
+                    END {exit !(pos_seen && hdg_seen)}
+                ' "$alog" && { echo "pass"; return 0; }
+                ;;
+        esac
+    done < <(find "$mission_root" -type f -name '*.alog' -print0)
+
+    echo "fail:history_contract"
+    return 1
+}
+
 check_case_payload() {
     local case_name="$1"
     local line="$2"
     local mission_root="$3"
 
     case "$case_name" in
+        coord_policy_global_pass|crossfill_local_to_global_pass|crossfill_global_to_local_pass|crossfill_global_terse_pass|crossfill_fill_empty_pass|crossfill_use_latest_local_pass)
+            check_coordinate_payload "$case_name" "$line"
+            ;;
+        platform_report_gap_pass|report_cog_pass|pause_resume_pass|extrap_gap_metric_pass)
+            if ! payload_matches "$line"; then
+                check_payload "$line"
+            else
+                check_alog_contract "$case_name" "$mission_root"
+            fi
+            ;;
         alt_nav_report_pass|alt_nav_named_absolute_pass|reverse_load_warning_pass)
             if payload_matches "$line"; then
                 echo "pass"
@@ -570,16 +738,15 @@ get_case_config() {
         CHECK_TOKENS="node_seen=true NAME=truth_node GROUP=truth_abs X=22 Y=-12 DEP=4 ALTITUDE=40"
     elif [ "$case_name" = "coord_policy_global_pass" ]; then
         CHECK_TOKENS="NAME=reporter LAT=43.82535 LON=-70.33045"
-        ABSENT_TOKENS="X=10 Y=-5"
     elif [ "$case_name" = "heading_error_pass" ]; then
         CHECK_TOKENS="NAME=reporter HDG=128"
         ABSENT_TOKENS="HDG=123"
     elif [ "$case_name" = "crossfill_local_to_global_pass" ]; then
-        CHECK_TOKENS="NAME=reporter X=12 Y=-8 LAT=43.825"
+        CHECK_TOKENS="NAME=reporter X=12 Y=-8"
     elif [ "$case_name" = "crossfill_global_to_local_pass" ]; then
-        CHECK_TOKENS="NAME=reporter LAT=43.82536 LON=-70.33046 X="
+        CHECK_TOKENS="NAME=reporter LAT=43.82536 LON=-70.33046"
     elif [ "$case_name" = "crossfill_global_terse_pass" ]; then
-        CHECK_TOKENS="NAME=reporter LAT=43.82536 LON=-70.33046 X="
+        CHECK_TOKENS="NAME=reporter LAT=43.82536 LON=-70.33046"
     elif [ "$case_name" = "node_group_update_pass" ]; then
         CHECK_TOKENS="NAME=reporter GROUP=dynamic"
     elif [ "$case_name" = "platform_color_mail_pass" ]; then
@@ -589,9 +756,9 @@ get_case_config() {
     elif [ "$case_name" = "blackout_interval_reset_fail" ]; then
         CHECK_TOKENS="evidence=blackout_gap_below_threshold node_seen=true pnr_gap="
     elif [ "$case_name" = "mhash_odometer_pass" ]; then
-        CHECK_TOKENS="pnr_mhash_seen=true pnr_mhash=mhash="
+        CHECK_TOKENS="pnr_mhash_seen=true pnr_mhash=mhash= ext=20"
     elif [ "$case_name" = "report_cog_pass" ]; then
-        CHECK_TOKENS="NAME=reporter COG="
+        CHECK_TOKENS="node_seen=true NAME=reporter X=8 Y=0"
     elif [ "$case_name" = "terse_reports_pass" ]; then
         CHECK_TOKENS="NAME=reporter X=10 Y=-5 SPD=2.5 HDG=123 TYPE=kayak COLOR=red"
         ABSENT_TOKENS="DEP= LAT= LON= YAW="
@@ -601,9 +768,9 @@ get_case_config() {
         CHECK_TOKENS="NAME=reporter X=30 Y=-10"
         ABSENT_TOKENS="X=1,Y=1"
     elif [ "$case_name" = "crossfill_fill_empty_pass" ]; then
-        CHECK_TOKENS="NAME=reporter LAT=43.82537 LON=-70.33047 X="
+        CHECK_TOKENS="NAME=reporter LAT=43.82537 LON=-70.33047"
     elif [ "$case_name" = "crossfill_use_latest_local_pass" ]; then
-        CHECK_TOKENS="NAME=reporter X=25 Y=5 LAT=43.825"
+        CHECK_TOKENS="NAME=reporter X=25 Y=5"
     elif [ "$case_name" = "extrap_gap_metric_pass" ]; then
         CHECK_TOKENS="node_seen=true extrap_pos= extrap_hdg="
     elif [ "$case_name" = "extrap_prune_pass" ]; then
