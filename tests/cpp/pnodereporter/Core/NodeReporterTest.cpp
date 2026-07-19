@@ -257,12 +257,14 @@ TEST(NodeReporterTest, CrossFillSynthesizesLocalAndGlobalCoordinates)
   reporter.initGeodesy();
 
   NodeRecord local("alpha", "kayak");
-  local.setX(12);
-  local.setY(-8);
+  local.setX(-4.717421778);
+  local.setY(6.741529793);
   ASSERT_TRUE(reporter.setCrossFillPolicy("local"));
   reporter.crossFillCoords(local, 10, 0);
   EXPECT_TRUE(local.valid("lat"));
   EXPECT_TRUE(local.valid("lon"));
+  EXPECT_NEAR(local.getLat(), 43.82536, 2e-5);
+  EXPECT_NEAR(local.getLon(), -70.33046, 2e-5);
 
   NodeRecord global("alpha", "kayak");
   global.setLat(43.82536);
@@ -271,6 +273,8 @@ TEST(NodeReporterTest, CrossFillSynthesizesLocalAndGlobalCoordinates)
   reporter.crossFillCoords(global, 0, 10);
   EXPECT_TRUE(global.valid("x"));
   EXPECT_TRUE(global.valid("y"));
+  EXPECT_NEAR(global.getX(), -4.717421778, 0.25);
+  EXPECT_NEAR(global.getY(), 6.741529793, 0.25);
 }
 
 // Covers pNodeReporter coordinate behavior: fill-empty and use-latest policies update only under their stated conditions.
