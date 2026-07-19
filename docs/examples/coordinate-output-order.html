@@ -30,9 +30,10 @@
   <main>
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="../examples.html">Back to examples</a>
-      <p class="eyebrow">Example 01 · C++ unit test</p>
+      <p class="eyebrow">Example 03 · C++ unit test · debugging</p>
       <h1>The coordinate cleanup that swaps X and Y</h1>
       <p class="lede">A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.</p>
+
       <div class="example-verification">
         <strong>Verified failure</strong>
         <span>Baseline <a href="https://github.com/moos-ivp/moos-ivp/commit/29ea136b6d489fd8dda093b6218a51e4022badeb"><code>29ea136b6d</code></a></span>
@@ -70,6 +71,7 @@
           <pre><code>cd tests/cpp
 ./ctests.sh --pnodereporter --jobs=4</code></pre>
         </article>
+
         <article class="example-baseline">
           <h3>Before the edit</h3>
           <pre><code>100% tests passed, 0 tests failed out of 17</code></pre>
@@ -112,8 +114,8 @@ Expected Y:  6.741529793   Actual Y: -4.810944792
 
     <section class="workflow example-next">
       <p class="eyebrow">Next example</p>
-      <h2>The stricter filter that drops valid messages</h2>
-      <a class="button secondary" href="strict-eflipper-filters.html">Continue</a>
+      <h2>The JSON reports that no consumer can read</h2>
+      <a class="button secondary" href="json-node-reports.html">Continue</a>
     </section>
   </main>
 

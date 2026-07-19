@@ -580,6 +580,7 @@ h3 {
 .example-code-panel,
 .example-baseline,
 .example-failure,
+.example-success,
 .example-lessons article {
   min-width: 0;
   background: var(--panel);
@@ -709,6 +710,29 @@ h3 {
   align-items: center;
   margin-top: 1rem;
   padding: 1.1rem;
+  border-color: var(--orange);
+}
+
+.example-success {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.55fr) minmax(0, 1.45fr);
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1.1rem;
+  border-color: #5c9f76;
+}
+
+.example-success .eyebrow {
+  margin-bottom: 0.4rem;
+  color: #0f6f3b;
+}
+
+.example-success pre {
+  width: 100%;
+}
+
+.example-baseline--red {
   border-color: var(--orange);
 }
 
@@ -1271,6 +1295,7 @@ tbody tr:last-child td {
   .example-run-grid,
   .example-lessons,
   .example-failure,
+  .example-success,
   .gif-grid,
   .family-harnesses,
   .case-matrix {

@@ -114,72 +114,15 @@ class Example:
     what_changed: str
     what_caught_it: str
     corrected_approach: str
+    feature_commits: tuple[tuple[str, str], ...] = ()
+    diff_label: str = ""
 
 
 EXAMPLES: tuple[Example, ...] = (
     Example(
-        slug="coordinate-output-order",
-        title="The coordinate cleanup that swaps X and Y",
-        category="C++ unit test",
-        summary="A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.",
-        source_path="ivp/src/pNodeReporter/NodeReporter.cpp",
-        test_path="tests/cpp/pnodereporter/Core/NodeReporterTest.cpp",
-        mutation="Treat the geodesy outputs as X then Y",
-        diff="""-  m_geodesy.LatLong2LocalGrid(nav_lat, nav_lon, nav_y, nav_x);
-+  m_geodesy.LatLong2LocalGrid(nav_lat, nav_lon, nav_x, nav_y);""",
-        command="""cd tests/cpp
-./ctests.sh --pnodereporter --jobs=4""",
-        baseline="100% tests passed, 0 tests failed out of 17",
-        failure="""CrossFillSynthesizesLocalAndGlobalCoordinates
-Expected X: -4.717421778   Actual X:  6.668403106
-Expected Y:  6.741529793   Actual Y: -4.810944792
-
-94% tests passed, 1 tests failed out of 17""",
-        why_it_looks_good="Most APIs return Cartesian coordinates in X/Y order. Reordering the two output arguments makes the call read the way a maintainer would expect, and the types provide no warning because both arguments are doubles.",
-        what_changed="This MOOSGeodesy call uses the less obvious Y/X output order. Swapping the arguments still produces finite, believable numbers, but pNodeReporter serializes the wrong local position.",
-        what_caught_it="The pNodeReporter CTest checks the numeric result in both conversion directions. Merely checking that X and Y exist would let this edit pass.",
-        corrected_approach="Keep the established Y/X argument order. If the call is wrapped for readability, give the wrapper named X and Y outputs and preserve a numeric round-trip test.",
-    ),
-    Example(
-        slug="strict-eflipper-filters",
-        title="The stricter filter that drops valid messages",
-        category="C++ unit test",
-        summary="Requiring every configured filter field to appear sounds safer, but changes EFlipper's contract: missing fields are allowed and only present mismatches suppress output.",
-        source_path="ivp/src/pEchoVar/EFlipper.cpp",
-        test_path="tests/cpp/pechovar/EFlipper/EFlipperTest.cpp",
-        mutation="Reject input when a configured filter field is absent",
-        diff="""+  map<string, bool> filters_seen;
-   ...
--    if((fmatch != \"\") && (fmatch != tolower(right)))
--      filtered = true;
-+    if(fmatch != \"\") {
-+      filters_seen[tolower(left)] = true;
-+      if(fmatch != tolower(right))
-+        filtered = true;
-+    }
-+  }
-+
-+  map<string,string>::iterator p;
-+  for(p=m_fmap.begin(); p!=m_fmap.end(); p++)
-+    if(!filters_seen[p->first])
-+      filtered = true;""",
-        command="""cd tests/cpp
-./ctests.sh --pechovar --jobs=4""",
-        baseline="100% tests passed, 0 tests failed out of 31",
-        failure="""MissingFiltersDoNotBlockMappedOutput
-Expected: xcenter_assign=10,ycenter_assign=20
-Actual:   \"\"
-
-97% tests passed, 1 tests failed out of 31""",
-        why_it_looks_good="A strict filter is easy to reason about: if configuration says mode must equal survey, an input without mode appears incomplete. Tracking all observed filters also looks like straightforward validation hardening.",
-        what_changed="EFlipper filters are conditional. A present field with the wrong value rejects the message; an absent field does not. The edit silently turns that conditional filter into a required-field schema.",
-        what_caught_it="The EFlipper CTest exercises a payload containing the mapped X and Y fields but no mode field. It expects the mapped output and fails immediately when the stricter code returns an empty string.",
-        corrected_approach="Preserve the missing-field behavior. If callers need required fields, add a separately named option with its own tests instead of changing the existing filter semantics.",
-    ),
-    Example(
         slug="global-obstacle-alert-deduplication",
         title="The deduplication that ignores the second obstacle",
-        category="Live mission harness",
+        category="Mission harness · debugging",
         summary="Suppressing repeated publications on one alert variable reduces traffic, but two different obstacle IDs legitimately share that channel.",
         source_path="ivp/src/pObstacleMgr/ObstacleManager.cpp",
         test_path="harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md",
@@ -206,31 +149,107 @@ failures=1 total=1 elapsed_seconds=12""",
         corrected_approach="Deduplicate by obstacle identity and payload version, not by output variable or lifetime alert count. Retain the two-obstacle mission as the integration guard.",
     ),
     Example(
-        slug="colregs-boundary-tolerance",
-        title="The safety tolerance that changes a COLREGS decision",
-        category="Threshold mission harness",
-        summary="Adding a one-meter tolerance seems conservative, but moves a calibrated give-way geometry onto the bow-crossing branch and changes the encounter state.",
-        source_path="ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp",
-        test_path="harnesses/colregs_harnesses/H02-colregs_thresholds/README.md",
-        mutation="Accept bow crossing within one meter of the configured cutoff",
-        diff="""-    if(m_cnos.os_crosses_cn_bow_dist() > acceptable_dist)
-+    if(m_cnos.os_crosses_cn_bow_dist() >= (acceptable_dist - 1))
-       m_avoid_submode = \"bow\";""",
-        command="""cd harnesses/colregs_harnesses/H02-colregs_thresholds
-./zlaunch.sh --case=giveway_bowdist_edge_pass \\
-  --port_base=43000 --log=minimal 10""",
-        baseline="grade=pass colregs_mode=giveway:stern colregs_ix=20 xcn_bow_dist=9.021",
-        failure="""grade=fail timeout=true
-colregs_mode=cpa colregs_ix=50
-xcn_bow_dist=9.036 xcn_turn_gap=24.3
-collisions=0
+        slug="dynamic-operating-region",
+        title="The geofence update that never takes effect",
+        category="Mission harness · new feature",
+        summary="Changing an operating boundary during deployment is a real MOOS-IvP feature. A plausible first implementation subscribes to the update but never rebuilds the active safety polygons.",
+        source_path="ivp/src/lib_behaviors-marine/BHV_OpRegionV24.cpp",
+        test_path="harnesses/opregion_harnesses/H01-opregion_safety/README.md",
+        mutation="Apply a new operating region while the mission is running",
+        diff="""+  else if(param == \"dynamic_region_var\") {
+    m_dynamic_region_var = val;
+    addInfoVars(m_dynamic_region_var);
+    return(true);
+  }
+  ...
+  if(getBufferVarUpdated(m_dynamic_region_var)) {
+    bool ok;
+    getBufferStringVal(m_dynamic_region_var, ok);
+  }""",
+        command="""cd harnesses/opregion_harnesses/H01-opregion_safety
+./zlaunch.sh --case=dynamic_region_update_pass \\
+  --port_base=45500 --log=minimal 10""",
+        baseline="""grade=fail arrived=true
+save_breached=false save_recovering=false
+halt_breached=false bhv_error=false
 
-failures=1 total=1 elapsed_seconds=15""",
-        why_it_looks_good="A small tolerance can appear to absorb sensor noise and choose an earlier, more conservative maneuver near a decision boundary.",
-        what_changed="The edge fixture is intentionally just below the configured 10-meter bow-distance cutoff. Moving the cutoff by one meter changes the initial submode and the encounter no longer satisfies the expected give-way-stern contract before timeout.",
-        what_caught_it="The COLREGS threshold harness grades the published mode and numeric index, not only collision count. The mutation remained collision-free, so an outcome-only test would have missed the decision regression.",
-        corrected_approach="Keep the documented cutoff unchanged. A noise policy should be designed explicitly—such as hysteresis with entry and exit thresholds—and validated across the full mirrored threshold family.",
+failures=1 total=1""",
+        failure="""grade=pass arrived=true
+save_breached=true save_recovering=true
+halt_breached=false bhv_error=false
+
+failures=0 total=1 elapsed_seconds=11""",
+        why_it_looks_good="Operators may need to shrink a permitted area when weather, traffic, or recovery constraints change, without restarting the helm. A runtime region variable makes that practical during a mission.",
+        what_changed="Nothing operational changed. The update payload was read and discarded, leaving the original core, save, and halt polygons in force even though the new boundary was displayed by the mission.",
+        what_caught_it="The harness shrinks the core polygon after six seconds and requires SAVE_REGION_BREACHED=true when the vehicle crosses the new save boundary. Arrival alone is deliberately insufficient.",
+        corrected_approach="The completed upstream implementation parses the new core polygon and calls onSetParamComplete(), which rebuilds the derived save and halt polygons before the next safety decision.",
+        feature_commits=(("5d7b2bb11", "dynamic region support"),),
+        diff_label="Reconstructed incomplete implementation",
     ),
+    Example(
+        slug="coordinate-output-order",
+        title="The coordinate cleanup that swaps X and Y",
+        category="C++ unit test · debugging",
+        summary="A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.",
+        source_path="ivp/src/pNodeReporter/NodeReporter.cpp",
+        test_path="tests/cpp/pnodereporter/Core/NodeReporterTest.cpp",
+        mutation="Treat the geodesy outputs as X then Y",
+        diff="""-  m_geodesy.LatLong2LocalGrid(nav_lat, nav_lon, nav_y, nav_x);
++  m_geodesy.LatLong2LocalGrid(nav_lat, nav_lon, nav_x, nav_y);""",
+        command="""cd tests/cpp
+./ctests.sh --pnodereporter --jobs=4""",
+        baseline="100% tests passed, 0 tests failed out of 17",
+        failure="""CrossFillSynthesizesLocalAndGlobalCoordinates
+Expected X: -4.717421778   Actual X:  6.668403106
+Expected Y:  6.741529793   Actual Y: -4.810944792
+
+94% tests passed, 1 tests failed out of 17""",
+        why_it_looks_good="Most APIs return Cartesian coordinates in X/Y order. Reordering the two output arguments makes the call read the way a maintainer would expect, and the types provide no warning because both arguments are doubles.",
+        what_changed="This MOOSGeodesy call uses the less obvious Y/X output order. Swapping the arguments still produces finite, believable numbers, but pNodeReporter serializes the wrong local position.",
+        what_caught_it="The pNodeReporter CTest checks the numeric result in both conversion directions. Merely checking that X and Y exist would let this edit pass.",
+        corrected_approach="Keep the established Y/X argument order. If the call is wrapped for readability, give the wrapper named X and Y outputs and preserve a numeric round-trip test.",
+    ),
+    Example(
+        slug="json-node-reports",
+        title="The JSON reports that no consumer can read",
+        category="C++ unit test · new feature",
+        summary="JSON node reports are a real interoperability feature. Publishing them is only half the change: every shared node-report parser must recognize the new representation.",
+        source_path="ivp/src/lib_contacts/NodeRecordUtils.cpp",
+        test_path="tests/cpp/contacts/NodeRecord/NodeRecordUtilsTest.cpp",
+        mutation="Accept JSON anywhere a node report is parsed",
+        diff=""" NodeRecord string2NodeRecord(const string& report)
+ {
++  if(isBraced(report))
++    return(string2NodeRecordJSON(report));
++
++  return(string2NodeRecordCSP(report));
+ }""",
+        command="""cd tests/cpp
+./ctests.sh --contacts --jobs=4""",
+        baseline="""ParsesJsonNodeReportsUsedByJsonPosters
+Value of: rec.valid()
+  Actual: false
+Expected: true
+Expected name: alpha
+  Actual: \"\"
+
+99% tests passed, 1 test failed out of 106""",
+        failure="100% tests passed, 0 tests failed out of 106",
+        why_it_looks_good="The first upstream change lets pNodeReporter publish JSON for dashboards and non-MOOS consumers. But existing MOOS-IvP components still call the shared string2NodeRecord() entry point, which previously understood only comma-separated reports.",
+        what_changed="After JSON publication was added, a receiving component could be handed a syntactically valid report that the shared parser interpreted as the legacy CSP format, yielding an invalid empty NodeRecord.",
+        what_caught_it="The CTest sends a complete JSON vehicle report through the same generic parser used by consumers and checks the resulting name, position, motion, mode, and status fields.",
+        corrected_approach="The follow-up upstream change dispatches brace-wrapped input to string2NodeRecordJSON() and retains the CSP path for existing reports, making the new format additive rather than a compatibility break.",
+        feature_commits=(
+            ("1ef6c1485", "JSON publication"),
+            ("6eb8fc3b9", "JSON parsing"),
+        ),
+        diff_label="Follow-up parser diff",
+    ),
+)
+
+STALE_EXAMPLE_SLUGS = (
+    "strict-eflipper-filters",
+    "colregs-boundary-tolerance",
 )
 
 
@@ -3064,11 +3083,43 @@ def render_harness(h: Harness) -> str:
     return page_shell(h.title, body, "../")
 
 
-def upstream_url(path: str) -> str:
-    return f"{UPSTREAM_BLOB}/{path}"
+def upstream_url(path: str, revision: str = UPSTREAM_REVISION) -> str:
+    return f"https://github.com/moos-ivp/moos-ivp/blob/{revision}/{path}"
+
+
+def render_feature_commit_links(example: Example) -> str:
+    links = []
+    for revision, label in example.feature_commits:
+        links.append(
+            f'<a href="https://github.com/moos-ivp/moos-ivp/commit/{revision}">'
+            f'<code>{escape(revision)}</code></a> {escape(label)}'
+        )
+    return " · ".join(links)
+
+
+def render_example_verification(example: Example) -> str:
+    if example.feature_commits:
+        return f"""
+      <div class="example-verification">
+        <strong>Real upstream feature</strong>
+        <span>{render_feature_commit_links(example)}</span>
+        <span>Controlled red stage; not a historical CI claim</span>
+      </div>"""
+
+    return f"""
+      <div class="example-verification">
+        <strong>Verified failure</strong>
+        <span>Baseline <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
+        <span>Local mutation; no commit created</span>
+      </div>"""
 
 
 def render_example_card(example: Example, number: int) -> str:
+    change_label = "Feature" if example.feature_commits else "Intentional edit"
+    if example.feature_commits:
+        result = '<span class="result-pass">Red → green</span>'
+    else:
+        result = '<span class="result-fail">Verified failure</span>'
     return f"""
       <article class="example-card">
         <div class="example-card-topline">
@@ -3079,12 +3130,12 @@ def render_example_card(example: Example, number: int) -> str:
         <p>{escape(example.summary)}</p>
         <dl class="example-card-facts">
           <div>
-            <dt>Intentional edit</dt>
+            <dt>{change_label}</dt>
             <dd>{escape(example.mutation)}</dd>
           </div>
           <div>
             <dt>Result</dt>
-            <dd><span class="result-fail">Verified failure</span></dd>
+            <dd>{result}</dd>
           </div>
         </dl>
         <a class="text-link" href="examples/{example.slug}.html">Read the full example</a>
@@ -3103,19 +3154,19 @@ def render_examples() -> str:
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Examples</p>
       <h1>Good-looking edits. Real test failures.</h1>
-      <p class="lede">Each example starts with a small, defensible change to MOOS-IvP, then shows the focused test that turns red and the behavior the test protects.</p>
+      <p class="lede">Two debugging stories show regressions caught in the act. Two feature stories reconstruct real upstream additions from a red acceptance test to a working implementation.</p>
       <div class="example-verification">
-        <strong>Reproduced locally</strong>
-        <span>Clean baseline at <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
-        <span>Intentional mutations only—none were committed</span>
+        <strong>Evidence, not anecdotes</strong>
+        <span>Debugging mutations verified at <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
+        <span>Feature stories link the real upstream commits</span>
       </div>
     </section>
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Four failure stories</p>
+        <p class="eyebrow">Four test stories</p>
         <h2>What this test workspace catches</h2>
-        <p>These are demonstrations, not historical upstream regressions. Each mutation was applied to a clean local checkout, tested, and removed after its failure was captured.</p>
+        <p>The harness examples come first because they show the operational outcome. The CTest examples then show the smaller contracts underneath. Reconstructed red stages are labeled explicitly and are not presented as historical upstream CI failures.</p>
       </div>
       <div class="example-grid">
         {cards}
@@ -3124,12 +3175,12 @@ def render_examples() -> str:
 
     <section class="workflow example-method">
       <p class="eyebrow">Method</p>
-      <h2>One mutation at a time</h2>
+      <h2>One change, one explicit contract</h2>
       <ol>
-        <li>Run the focused test against the unchanged MOOS-IvP checkout.</li>
-        <li>Apply one intentional source edit without creating a commit.</li>
-        <li>Rebuild only the affected target and capture the failing result.</li>
-        <li>Restore the source and rebuild the original target before continuing.</li>
+        <li>State the behavior the change must preserve or introduce.</li>
+        <li>Run the smallest CTest or mission harness that can prove it.</li>
+        <li>Capture the meaningful red result, not merely a compiler error.</li>
+        <li>Show the corrected implementation or real upstream feature commit.</li>
       </ol>
     </section>
   </main>
@@ -3140,6 +3191,48 @@ def render_examples() -> str:
 def render_example(example: Example) -> str:
     example_index = EXAMPLES.index(example)
     next_example = EXAMPLES[(example_index + 1) % len(EXAMPLES)]
+    is_feature = bool(example.feature_commits)
+    source_revision = example.feature_commits[-1][0] if is_feature else UPSTREAM_REVISION
+    story_eyebrow = "The feature" if is_feature else "The proposed edit"
+    rationale_heading = "Why someone would add it" if is_feature else "Why it looks reasonable"
+    source_link_label = (
+        "Open the source at the completed feature revision"
+        if is_feature
+        else "Open the source at the tested baseline"
+    )
+    if is_feature:
+        test_result = f"""
+        <article class="example-baseline example-baseline--red">
+          <h3>Red: incomplete feature</h3>
+          <pre><code>{escape(example.baseline)}</code></pre>
+        </article>
+      </div>
+      <article class="example-success">
+        <div>
+          <p class="eyebrow">Completed feature</p>
+          <h3>The focused test turns green</h3>
+        </div>
+        <pre><code>{escape(example.failure)}</code></pre>
+      </article>"""
+    else:
+        test_result = f"""
+        <article class="example-baseline">
+          <h3>Before the edit</h3>
+          <pre><code>{escape(example.baseline)}</code></pre>
+        </article>
+      </div>
+      <article class="example-failure">
+        <div>
+          <p class="eyebrow">After the edit</p>
+          <h3>The focused test turns red</h3>
+        </div>
+        <pre><code>{escape(example.failure)}</code></pre>
+      </article>"""
+    changed_heading = "What was missing" if is_feature else "What changed"
+    caught_heading = "What proved it" if is_feature else "What caught it"
+    approach_heading = "Completed implementation" if is_feature else "Safer approach"
+    explanation_heading = "What the red test tells us" if is_feature else "What the failure tells us"
+    diff_label = example.diff_label or example.source_path
     body = f"""
   <main>
     <section class="page-hero page-hero--wide-lede">
@@ -3147,26 +3240,22 @@ def render_example(example: Example) -> str:
       <p class="eyebrow">Example {example_index + 1:02d} · {escape(example.category)}</p>
       <h1>{escape(example.title)}</h1>
       <p class="lede">{escape(example.summary)}</p>
-      <div class="example-verification">
-        <strong>Verified failure</strong>
-        <span>Baseline <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
-        <span>Local mutation; no commit created</span>
-      </div>
+      {render_example_verification(example)}
     </section>
 
     <section class="content-section example-section">
       <div class="section-heading">
-        <p class="eyebrow">The proposed edit</p>
+        <p class="eyebrow">{story_eyebrow}</p>
         <h2>{escape(example.mutation)}</h2>
       </div>
       <div class="example-story-grid">
         <article class="example-explanation">
-          <h3>Why it looks reasonable</h3>
+          <h3>{rationale_heading}</h3>
           <p>{escape(example.why_it_looks_good)}</p>
-          <p><a class="text-link" href="{upstream_url(example.source_path)}">Open the source at the tested baseline</a></p>
+          <p><a class="text-link" href="{upstream_url(example.source_path, source_revision)}">{source_link_label}</a></p>
         </article>
         <article class="example-code-panel">
-          <p class="code-label">{escape(example.source_path)}</p>
+          <p class="code-label">{escape(diff_label)}</p>
           <pre class="mutation-diff"><code>{escape(example.diff)}</code></pre>
         </article>
       </div>
@@ -3182,37 +3271,26 @@ def render_example(example: Example) -> str:
           <h3>Command</h3>
           <pre><code>{escape(example.command)}</code></pre>
         </article>
-        <article class="example-baseline">
-          <h3>Before the edit</h3>
-          <pre><code>{escape(example.baseline)}</code></pre>
-        </article>
-      </div>
-      <article class="example-failure">
-        <div>
-          <p class="eyebrow">After the edit</p>
-          <h3>The focused test turns red</h3>
-        </div>
-        <pre><code>{escape(example.failure)}</code></pre>
-      </article>
+        {test_result}
     </section>
 
     <section class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Explanation</p>
-        <h2>What the failure tells us</h2>
+        <h2>{explanation_heading}</h2>
       </div>
       <div class="example-lessons">
         <article>
-          <h3>What changed</h3>
+          <h3>{changed_heading}</h3>
           <p>{escape(example.what_changed)}</p>
         </article>
         <article>
-          <h3>What caught it</h3>
+          <h3>{caught_heading}</h3>
           <p>{escape(example.what_caught_it)}</p>
           <p><a class="text-link" href="{repo_url(example.test_path)}">Open the protecting test</a></p>
         </article>
         <article>
-          <h3>Safer approach</h3>
+          <h3>{approach_heading}</h3>
           <p>{escape(example.corrected_approach)}</p>
         </article>
       </div>
@@ -3305,6 +3383,8 @@ def main() -> None:
     write(ROOT / "examples.html", render_examples())
     for example in EXAMPLES:
         write(ROOT / "examples" / f"{example.slug}.html", render_example(example))
+    for slug in STALE_EXAMPLE_SLUGS:
+        (ROOT / "examples" / f"{slug}.html").unlink(missing_ok=True)
     for harness in HARNESSES:
         write(ROOT / "harnesses" / f"{harness.slug}.html", render_harness(harness))
     write(ROOT / "assets" / "gifs" / "README.md", render_gif_manifest())

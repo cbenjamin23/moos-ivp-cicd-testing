@@ -32,68 +32,26 @@
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Examples</p>
       <h1>Good-looking edits. Real test failures.</h1>
-      <p class="lede">Each example starts with a small, defensible change to MOOS-IvP, then shows the focused test that turns red and the behavior the test protects.</p>
+      <p class="lede">Two debugging stories show regressions caught in the act. Two feature stories reconstruct real upstream additions from a red acceptance test to a working implementation.</p>
       <div class="example-verification">
-        <strong>Reproduced locally</strong>
-        <span>Clean baseline at <a href="https://github.com/moos-ivp/moos-ivp/commit/29ea136b6d489fd8dda093b6218a51e4022badeb"><code>29ea136b6d</code></a></span>
-        <span>Intentional mutations only—none were committed</span>
+        <strong>Evidence, not anecdotes</strong>
+        <span>Debugging mutations verified at <a href="https://github.com/moos-ivp/moos-ivp/commit/29ea136b6d489fd8dda093b6218a51e4022badeb"><code>29ea136b6d</code></a></span>
+        <span>Feature stories link the real upstream commits</span>
       </div>
     </section>
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Four failure stories</p>
+        <p class="eyebrow">Four test stories</p>
         <h2>What this test workspace catches</h2>
-        <p>These are demonstrations, not historical upstream regressions. Each mutation was applied to a clean local checkout, tested, and removed after its failure was captured.</p>
+        <p>The harness examples come first because they show the operational outcome. The CTest examples then show the smaller contracts underneath. Reconstructed red stages are labeled explicitly and are not presented as historical upstream CI failures.</p>
       </div>
       <div class="example-grid">
 
       <article class="example-card">
         <div class="example-card-topline">
           <span class="example-number">01</span>
-          <span class="example-category">C++ unit test</span>
-        </div>
-        <h2>The coordinate cleanup that swaps X and Y</h2>
-        <p>A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.</p>
-        <dl class="example-card-facts">
-          <div>
-            <dt>Intentional edit</dt>
-            <dd>Treat the geodesy outputs as X then Y</dd>
-          </div>
-          <div>
-            <dt>Result</dt>
-            <dd><span class="result-fail">Verified failure</span></dd>
-          </div>
-        </dl>
-        <a class="text-link" href="examples/coordinate-output-order.html">Read the full example</a>
-      </article>
-
-
-      <article class="example-card">
-        <div class="example-card-topline">
-          <span class="example-number">02</span>
-          <span class="example-category">C++ unit test</span>
-        </div>
-        <h2>The stricter filter that drops valid messages</h2>
-        <p>Requiring every configured filter field to appear sounds safer, but changes EFlipper&#x27;s contract: missing fields are allowed and only present mismatches suppress output.</p>
-        <dl class="example-card-facts">
-          <div>
-            <dt>Intentional edit</dt>
-            <dd>Reject input when a configured filter field is absent</dd>
-          </div>
-          <div>
-            <dt>Result</dt>
-            <dd><span class="result-fail">Verified failure</span></dd>
-          </div>
-        </dl>
-        <a class="text-link" href="examples/strict-eflipper-filters.html">Read the full example</a>
-      </article>
-
-
-      <article class="example-card">
-        <div class="example-card-topline">
-          <span class="example-number">03</span>
-          <span class="example-category">Live mission harness</span>
+          <span class="example-category">Mission harness · debugging</span>
         </div>
         <h2>The deduplication that ignores the second obstacle</h2>
         <p>Suppressing repeated publications on one alert variable reduces traffic, but two different obstacle IDs legitimately share that channel.</p>
@@ -113,22 +71,64 @@
 
       <article class="example-card">
         <div class="example-card-topline">
-          <span class="example-number">04</span>
-          <span class="example-category">Threshold mission harness</span>
+          <span class="example-number">02</span>
+          <span class="example-category">Mission harness · new feature</span>
         </div>
-        <h2>The safety tolerance that changes a COLREGS decision</h2>
-        <p>Adding a one-meter tolerance seems conservative, but moves a calibrated give-way geometry onto the bow-crossing branch and changes the encounter state.</p>
+        <h2>The geofence update that never takes effect</h2>
+        <p>Changing an operating boundary during deployment is a real MOOS-IvP feature. A plausible first implementation subscribes to the update but never rebuilds the active safety polygons.</p>
+        <dl class="example-card-facts">
+          <div>
+            <dt>Feature</dt>
+            <dd>Apply a new operating region while the mission is running</dd>
+          </div>
+          <div>
+            <dt>Result</dt>
+            <dd><span class="result-pass">Red → green</span></dd>
+          </div>
+        </dl>
+        <a class="text-link" href="examples/dynamic-operating-region.html">Read the full example</a>
+      </article>
+
+
+      <article class="example-card">
+        <div class="example-card-topline">
+          <span class="example-number">03</span>
+          <span class="example-category">C++ unit test · debugging</span>
+        </div>
+        <h2>The coordinate cleanup that swaps X and Y</h2>
+        <p>A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.</p>
         <dl class="example-card-facts">
           <div>
             <dt>Intentional edit</dt>
-            <dd>Accept bow crossing within one meter of the configured cutoff</dd>
+            <dd>Treat the geodesy outputs as X then Y</dd>
           </div>
           <div>
             <dt>Result</dt>
             <dd><span class="result-fail">Verified failure</span></dd>
           </div>
         </dl>
-        <a class="text-link" href="examples/colregs-boundary-tolerance.html">Read the full example</a>
+        <a class="text-link" href="examples/coordinate-output-order.html">Read the full example</a>
+      </article>
+
+
+      <article class="example-card">
+        <div class="example-card-topline">
+          <span class="example-number">04</span>
+          <span class="example-category">C++ unit test · new feature</span>
+        </div>
+        <h2>The JSON reports that no consumer can read</h2>
+        <p>JSON node reports are a real interoperability feature. Publishing them is only half the change: every shared node-report parser must recognize the new representation.</p>
+        <dl class="example-card-facts">
+          <div>
+            <dt>Feature</dt>
+            <dd>Accept JSON anywhere a node report is parsed</dd>
+          </div>
+          <div>
+            <dt>Result</dt>
+            <dd><span class="result-pass">Red → green</span></dd>
+          </div>
+        </dl>
+        <a class="text-link" href="examples/json-node-reports.html">Read the full example</a>
       </article>
 
       </div>
@@ -136,12 +136,12 @@
 
     <section class="workflow example-method">
       <p class="eyebrow">Method</p>
-      <h2>One mutation at a time</h2>
+      <h2>One change, one explicit contract</h2>
       <ol>
-        <li>Run the focused test against the unchanged MOOS-IvP checkout.</li>
-        <li>Apply one intentional source edit without creating a commit.</li>
-        <li>Rebuild only the affected target and capture the failing result.</li>
-        <li>Restore the source and rebuild the original target before continuing.</li>
+        <li>State the behavior the change must preserve or introduce.</li>
+        <li>Run the smallest CTest or mission harness that can prove it.</li>
+        <li>Capture the meaningful red result, not merely a compiler error.</li>
+        <li>Show the corrected implementation or real upstream feature commit.</li>
       </ol>
     </section>
   </main>
