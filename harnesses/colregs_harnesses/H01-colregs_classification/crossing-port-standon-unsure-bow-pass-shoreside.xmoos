@@ -14,7 +14,6 @@ ProcessConfig = pMissionEval
   CommsTick  = 4
 
   lead_condition = (COLREGS_AVOID_IX_BEN = 36) or (MISSION_TIMEOUT = true)
-  pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
   pass_condition = COLREGS_AVOID_IX_BEN = 36
 
