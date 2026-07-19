@@ -32,6 +32,79 @@ TEST(BHVMaxDepthTest, BuildsConstraintAndReportsDepthSlack)
   EXPECT_DOUBLE_EQ(slack.get_ddata(), -7.0);
 }
 
+// Covers BHV max depth behavior: tolerance sets the exact utility transition.
+TEST(BHVMaxDepthTest, ToleranceSetsExactObjectiveTransition)
+{
+  IvPDomain half_meter_domain;
+  half_meter_domain.addDomain("depth", 0, 50, 101);
+
+  InfoBuffer info;
+  info.setValue("NAV_DEPTH", 12.0);
+
+  BHV_MaxDepth behavior(half_meter_domain);
+  behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(behavior.setParam("max_depth", "12"));
+  ASSERT_TRUE(behavior.setParam("tolerance", "1"));
+
+  std::unique_ptr<IvPFunction> ipf(behavior.onRunState());
+  ASSERT_NE(ipf, nullptr);
+
+  EXPECT_NEAR(evalOneDimPoint(*ipf, 24), 100, 1e-3);
+  EXPECT_NEAR(evalOneDimPoint(*ipf, 25), 50, 1e-3);
+  EXPECT_NEAR(evalOneDimPoint(*ipf, 26), 0, 1e-3);
+}
+
+// Covers BHV max depth behavior: zero tolerance makes an immediate utility step.
+TEST(BHVMaxDepthTest, ZeroToleranceDropsAtFirstDeeperSample)
+{
+  IvPDomain half_meter_domain;
+  half_meter_domain.addDomain("depth", 0, 50, 101);
+
+  InfoBuffer info;
+  info.setValue("NAV_DEPTH", 12.0);
+
+  BHV_MaxDepth behavior(half_meter_domain);
+  behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(behavior.setParam("max_depth", "12"));
+  ASSERT_TRUE(behavior.setParam("tolerance", "0"));
+
+  std::unique_ptr<IvPFunction> ipf(behavior.onRunState());
+  ASSERT_NE(ipf, nullptr);
+
+  EXPECT_NEAR(evalOneDimPoint(*ipf, 24), 100, 1e-3);
+  EXPECT_NEAR(evalOneDimPoint(*ipf, 25), 0, 1e-3);
+}
+
+// Covers BHV max depth behavior: basewidth is an exact alias for tolerance.
+TEST(BHVMaxDepthTest, BasewidthAliasMatchesToleranceAtEveryDepth)
+{
+  IvPDomain half_meter_domain;
+  half_meter_domain.addDomain("depth", 0, 50, 101);
+
+  InfoBuffer info;
+  info.setValue("NAV_DEPTH", 12.0);
+
+  BHV_MaxDepth tolerance_behavior(half_meter_domain);
+  tolerance_behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(tolerance_behavior.setParam("max_depth", "12"));
+  ASSERT_TRUE(tolerance_behavior.setParam("tolerance", "1"));
+
+  BHV_MaxDepth basewidth_behavior(half_meter_domain);
+  basewidth_behavior.setInfoBuffer(&info);
+  ASSERT_TRUE(basewidth_behavior.setParam("max_depth", "12"));
+  ASSERT_TRUE(basewidth_behavior.setParam("basewidth", "1"));
+
+  std::unique_ptr<IvPFunction> tolerance_ipf(tolerance_behavior.onRunState());
+  std::unique_ptr<IvPFunction> basewidth_ipf(basewidth_behavior.onRunState());
+  ASSERT_NE(tolerance_ipf, nullptr);
+  ASSERT_NE(basewidth_ipf, nullptr);
+
+  for(unsigned int point = 0; point <= 100; ++point) {
+    EXPECT_DOUBLE_EQ(evalOneDimPoint(*basewidth_ipf, point),
+                     evalOneDimPoint(*tolerance_ipf, point));
+  }
+}
+
 // Covers BHV max depth behavior: clips negative max depth and tolerance from mission config.
 TEST(BHVMaxDepthTest, ClipsNegativeMaxDepthAndToleranceFromMissionConfig)
 {

@@ -64,11 +64,9 @@ CASES=(
     max_depth_guard_pass
     max_depth_zero_guard_pass
     max_depth_negative_clip_pass
-    max_depth_tight_tolerance_pass
     max_depth_basewidth_alias_pass
     max_depth_no_slack_var_pass
     max_depth_unconstrained_shallow_pass
-    max_depth_zero_tolerance_pass
     max_depth_bad_config_fail
     max_depth_bad_tolerance_fail
     max_depth_bad_basewidth_fail
@@ -318,9 +316,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "max_depth_negative_clip_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/max-depth-negative-clip-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/max-depth-negative-clip-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "max_depth_tight_tolerance_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/max-depth-tight-tolerance-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/max-depth-tight-tolerance-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "max_depth_basewidth_alias_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/max-depth-basewidth-alias-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/max-depth-basewidth-alias-pass-vehicle.xbhv"
@@ -330,9 +325,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "max_depth_unconstrained_shallow_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/max-depth-unconstrained-shallow-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/max-depth-unconstrained-shallow-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "max_depth_zero_tolerance_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/max-depth-zero-tolerance-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/max-depth-zero-tolerance-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "max_depth_bad_config_fail" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/max-depth-bad-config-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/max-depth-helm-malconfig-fail-vehicle.xmoos"

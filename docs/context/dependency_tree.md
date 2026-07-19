@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1732` under configured targets
+- Harness patch/config files: `1728` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -102,7 +102,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `depth_constant_h01` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H01-constant_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 17 | - | `constant-depth-motion` |
 | `depth_goto_h02` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H02-goto_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 17 | - | `goto-depth-motion` |
 | `depth_periodic_surface_h03` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H03-periodic_surface_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 24 | - | `periodic-surface-motion` |
-| `depth_max_h04` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H04-max_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 15 | - | `max-depth-motion` |
+| `depth_max_h04` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H04-max_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 13 | - | `max-depth-motion` |
 | `depth_min_altitude_h05` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H05-min_altitude_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 13 | - | `min-altitude-motion` |
 | `colregs_h01` | `colregs` | `harnesses/colregs_harnesses/H01-colregs_classification/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 22 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-classification` |
 | `colregs_h02` | `colregs` | `harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 56 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-thresholds` |

@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Max Depth Guard</h3>
-          <p>Description: Commands 30 meters while setting max_depth=12 and tolerance=4. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
+          <p>Description: Opposes a 30-meter constant-depth command with max_depth=12,tolerance=4, testing that the higher-priority max-depth objective stops the dive; passes at x&gt;=80 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
         </div>
       </article>
 
@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Unconstrained Shallow</h3>
-          <p>Description: Commands eight meters below a max_depth=20 guard to exercise the inactive side of the constraint. Passes after x&gt;=45 when 6&lt;=NAV_DEPTH&lt;=10, DEPTH_SLACK&gt;=8, and no behavior error is observed.</p>
+          <p>Description: Commands eight meters while setting max_depth=20, testing that the one-sided constraint does not pull an already-shallow target toward its boundary; passes at x&gt;=80 when 6&lt;=NAV_DEPTH&lt;=10, DEPTH_SLACK&gt;=8, and no behavior error is observed.</p>
         </div>
       </article>
 
@@ -89,91 +89,79 @@
 
         <article class="case-row">
           <code>max_depth_guard_pass</code>
-          <p>Commands 30 meters while setting max_depth=12 and tolerance=4. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
+          <p>Opposes a 30-meter constant-depth command with max_depth=12,tolerance=4, testing that the higher-priority max-depth objective stops the dive; passes at x&gt;=80 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_zero_guard_pass</code>
-          <p>Commands 20 meters while setting max_depth=0 and tolerance=2. Passes after x&gt;=45 when NAV_DEPTH&lt;=2, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
+          <p>Opposes a 20-meter command with max_depth=0,tolerance=2, testing that a guard at the domain minimum can hold the vehicle at the surface; passes at x&gt;=80 when NAV_DEPTH&lt;=2, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_negative_clip_pass</code>
-          <p>Commands 20 meters while configuring max_depth=-5 to test clamping the guard to the surface. Passes after x&gt;=45 when NAV_DEPTH&lt;=2, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>max_depth_tight_tolerance_pass</code>
-          <p>Commands 30 meters while setting max_depth=10 and tolerance=1 to exercise a narrow guard transition. Passes after x&gt;=45 when NAV_DEPTH&lt;=12, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
+          <p>Configures max_depth=-5 against a 20-meter command, testing that the negative boundary is accepted and clipped to zero; passes at x&gt;=80 when NAV_DEPTH&lt;=2, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_basewidth_alias_pass</code>
-          <p>Commands 30 meters while using basewidth=4 as the alias for the 12-meter guard tolerance. Passes after x&gt;=45 when NAV_DEPTH&lt;=16, DEPTH_SLACK&gt;=-4, and no behavior error is observed.</p>
+          <p>Uses nondefault basewidth=1 against a 30-meter command, testing that the alias creates a narrow max-depth guard rather than retaining the 100-meter default; passes at x&gt;=80 when NAV_DEPTH&lt;=13.25, DEPTH_SLACK&gt;=-1.25, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_no_slack_var_pass</code>
-          <p>Commands 30 meters with a 12-meter guard but omits the optional depth_slack_var. Passes after x&gt;=45 when NAV_DEPTH&lt;=16 and no behavior error is observed.</p>
+          <p>Omits the optional depth_slack_var from the ordinary 12-meter guard, testing that telemetry configuration is not required to build and apply the constraint; passes at x&gt;=80 when NAV_DEPTH&lt;=16 and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_unconstrained_shallow_pass</code>
-          <p>Commands eight meters below a max_depth=20 guard to exercise the inactive side of the constraint. Passes after x&gt;=45 when 6&lt;=NAV_DEPTH&lt;=10, DEPTH_SLACK&gt;=8, and no behavior error is observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>max_depth_zero_tolerance_pass</code>
-          <p>Commands 30 meters while setting a 12-meter guard with tolerance=0. Passes after x&gt;=45 when NAV_DEPTH&lt;=14, DEPTH_SLACK&gt;=-2, and no behavior error is observed.</p>
+          <p>Commands eight meters while setting max_depth=20, testing that the one-sided constraint does not pull an already-shallow target toward its boundary; passes at x&gt;=80 when 6&lt;=NAV_DEPTH&lt;=10, DEPTH_SLACK&gt;=8, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_config_fail</code>
-          <p>Sets max_depth=deep to exercise rejection of a nonnumeric guard depth. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets max_depth=deep, testing rejection of a nonnumeric guard depth; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 12-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_tolerance_fail</code>
-          <p>Sets tolerance=wide to exercise rejection of a nonnumeric tolerance. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets tolerance=wide, testing rejection of a nonnumeric tolerance; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 12-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_basewidth_fail</code>
-          <p>Sets the basewidth alias to wide to exercise rejection of a nonnumeric tolerance alias. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets basewidth=wide, testing rejection of a nonnumeric alias value; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 12-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_slack_var_fail</code>
-          <p>Sets depth_slack_var=BAD VAR to exercise rejection of a MOOS variable name containing whitespace. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Sets depth_slack_var=BAD VAR, testing rejection of a MOOS variable name containing whitespace; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 12-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_bad_ascent_field_fail</code>
-          <p>Adds unsupported ascent_speed=1.0 and ascent_grade=fullspeed fields to an otherwise valid max-depth guard. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Adds unsupported ascent_speed and ascent_grade fields to an otherwise valid guard, testing that unimplemented configuration is rejected rather than ignored; passes only when the helm reports the exact state IVPHELM_STATE=MALCONFIG before the 20-second missing-state deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_missing_nav_depth_fail</code>
-          <p>Changes the simulator output prefix to SIM, leaving the helm without NAV_X or NAV_DEPTH. The harness passes at 45 seconds when both navigation variables remain absent, DESIRED_ELEVATOR=0, and no behavior error is observed.</p>
+          <p>Changes the simulator prefix to SIM, withholding NAV_X and NAV_DEPTH from the helm; passes at the 45-second absence deadline when navigation and depth-mismatch mail remain absent, DESIRED_ELEVATOR=0, and no behavior error is observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>max_depth_domain_missing_fail</code>
-          <p>Removes depth from the IvP helm domain while retaining the max-depth behavior. The harness passes when ABE_BHV_ERROR is observed.</p>
+          <p>Removes depth from the helm domain while retaining BHV_MaxDepth, testing its explicit missing-domain error path; passes when ABE_BHV_ERROR is observed.</p>
         </article>
 
       </div>

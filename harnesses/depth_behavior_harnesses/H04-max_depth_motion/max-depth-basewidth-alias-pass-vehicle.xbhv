@@ -41,6 +41,6 @@ Behavior = BHV_MaxDepth
   condition = MODE == TRANSITING
 
   max_depth       = 12
-  basewidth       = 4
+  basewidth       = 1
   depth_slack_var = DEPTH_SLACK
 }

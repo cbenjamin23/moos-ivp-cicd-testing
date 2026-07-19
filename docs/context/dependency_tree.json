@@ -2286,7 +2286,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 31
+        "file_count": 27
       },
       "path": "harnesses/depth_behavior_harnesses/H04-max_depth_motion",
       "perf_profile": "",
@@ -2309,17 +2309,15 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 15,
+        "case_count": 13,
         "case_parse_error": "",
         "cases": [
           "max_depth_guard_pass",
           "max_depth_zero_guard_pass",
           "max_depth_negative_clip_pass",
-          "max_depth_tight_tolerance_pass",
           "max_depth_basewidth_alias_pass",
           "max_depth_no_slack_var_pass",
           "max_depth_unconstrained_shallow_pass",
-          "max_depth_zero_tolerance_pass",
           "max_depth_bad_config_fail",
           "max_depth_bad_tolerance_fail",
           "max_depth_bad_basewidth_fail",
@@ -7027,11 +7025,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 516,
-      ".xmoos": 1321,
+      ".xbhv": 514,
+      ".xmoos": 1319,
       "[none]": 7
     },
-    "harness_patch_count": 1732,
+    "harness_patch_count": 1728,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,
