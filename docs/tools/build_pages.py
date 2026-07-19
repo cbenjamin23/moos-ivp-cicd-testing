@@ -155,7 +155,7 @@ failures=1 total=1 elapsed_seconds=12""",
         summary="Changing an operating boundary during deployment is a real MOOS-IvP feature. A plausible first implementation subscribes to the update but never rebuilds the active safety polygons.",
         source_path="ivp/src/lib_behaviors-marine/BHV_OpRegionV24.cpp",
         test_path="harnesses/opregion_harnesses/H01-opregion_safety/README.md",
-        mutation="Apply a new operating region while the mission is running",
+        mutation="Add runtime geofence updates without rebuilding the active regions",
         diff="""+  else if(param == \"dynamic_region_var\") {
     m_dynamic_region_var = val;
     addInfoVars(m_dynamic_region_var);
@@ -169,17 +169,17 @@ failures=1 total=1 elapsed_seconds=12""",
         command="""cd harnesses/opregion_harnesses/H01-opregion_safety
 ./zlaunch.sh --case=dynamic_region_update_pass \\
   --port_base=45500 --log=minimal 10""",
-        baseline="""grade=fail arrived=true
-save_breached=false save_recovering=false
-halt_breached=false bhv_error=false
-
-failures=1 total=1""",
-        failure="""grade=pass arrived=true
+        baseline="""grade=pass arrived=true
 save_breached=true save_recovering=true
 halt_breached=false bhv_error=false
 
 failures=0 total=1 elapsed_seconds=11""",
-        why_it_looks_good="Operators may need to shrink a permitted area when weather, traffic, or recovery constraints change, without restarting the helm. A runtime region variable makes that practical during a mission.",
+        failure="""grade=fail arrived=true
+save_breached=false save_recovering=false
+halt_breached=false bhv_error=false
+
+failures=1 total=1""",
+        why_it_looks_good="Operators may need to shrink a permitted area without restarting the helm. Registering an information variable and consuming its latest value looks like the normal plumbing for that feature, and the mission still runs to completion.",
         what_changed="Nothing operational changed. The update payload was read and discarded, leaving the original core, save, and halt polygons in force even though the new boundary was displayed by the mission.",
         what_caught_it="The harness shrinks the core polygon after six seconds and requires SAVE_REGION_BREACHED=true when the vehicle crosses the new save boundary. Arrival alone is deliberately insufficient.",
         corrected_approach="The completed upstream implementation parses the new core polygon and calls onSetParamComplete(), which rebuilds the derived save and halt polygons before the next safety decision.",
@@ -214,19 +214,21 @@ Expected Y:  6.741529793   Actual Y: -4.810944792
         title="The JSON reports that no consumer can read",
         category="C++ unit test · new feature",
         summary="JSON node reports are a real interoperability feature. Publishing them is only half the change: every shared node-report parser must recognize the new representation.",
-        source_path="ivp/src/lib_contacts/NodeRecordUtils.cpp",
+        source_path="ivp/src/pNodeReporter/NodeReporter.cpp",
         test_path="tests/cpp/contacts/NodeRecord/NodeRecordUtilsTest.cpp",
-        mutation="Accept JSON anywhere a node report is parsed",
-        diff=""" NodeRecord string2NodeRecord(const string& report)
- {
-+  if(isBraced(report))
-+    return(string2NodeRecordJSON(report));
-+
-+  return(string2NodeRecordCSP(report));
- }""",
+        mutation="Publish JSON node reports without updating the shared parser",
+        diff="""+  else if(param == \"json_report\")
++    handled = setNonWhiteVarOnString(m_json_report, value);
+   ...
++  string json_report = cspToJson(report);
++  if(tolower(m_json_report) == \"true\")
++    Notify(m_node_report_var, json_report);
++  else
+     Notify(m_node_report_var, report);""",
         command="""cd tests/cpp
 ./ctests.sh --contacts --jobs=4""",
-        baseline="""ParsesJsonNodeReportsUsedByJsonPosters
+        baseline="100% tests passed, 0 tests failed out of 106",
+        failure="""ParsesJsonNodeReportsUsedByJsonPosters
 Value of: rec.valid()
   Actual: false
 Expected: true
@@ -234,8 +236,7 @@ Expected name: alpha
   Actual: \"\"
 
 99% tests passed, 1 test failed out of 106""",
-        failure="100% tests passed, 0 tests failed out of 106",
-        why_it_looks_good="The first upstream change lets pNodeReporter publish JSON for dashboards and non-MOOS consumers. But existing MOOS-IvP components still call the shared string2NodeRecord() entry point, which previously understood only comma-separated reports.",
+        why_it_looks_good="JSON output is useful for dashboards and non-MOOS consumers. Adding a configuration option and converting the outgoing report looks self-contained because pNodeReporter publishes valid JSON and its legacy output path remains intact.",
         what_changed="After JSON publication was added, a receiving component could be handed a syntactically valid report that the shared parser interpreted as the legacy CSP format, yielding an invalid empty NodeRecord.",
         what_caught_it="The CTest sends a complete JSON vehicle report through the same generic parser used by consumers and checks the resulting name, position, motion, mode, and status fields.",
         corrected_approach="The follow-up upstream change dispatches brace-wrapped input to string2NodeRecordJSON() and retains the CSP path for existing reports, making the new format additive rather than a compatibility break.",
@@ -243,7 +244,7 @@ Expected name: alpha
             ("1ef6c1485", "JSON publication"),
             ("6eb8fc3b9", "JSON parsing"),
         ),
-        diff_label="Follow-up parser diff",
+        diff_label="Reconstructed incomplete implementation",
     ),
 )
 
@@ -3101,25 +3102,20 @@ def render_example_verification(example: Example) -> str:
     if example.feature_commits:
         return f"""
       <div class="example-verification">
-        <strong>Real upstream feature</strong>
-        <span>{render_feature_commit_links(example)}</span>
-        <span>Controlled red stage; not a historical CI claim</span>
+        <strong>Focused failure</strong>
+        <span>Feature grounded in {render_feature_commit_links(example)}</span>
+        <span>Reconstructed incomplete edit; not a historical CI claim</span>
       </div>"""
 
     return f"""
       <div class="example-verification">
-        <strong>Verified failure</strong>
+        <strong>Focused failure</strong>
         <span>Baseline <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
         <span>Local mutation; no commit created</span>
       </div>"""
 
 
 def render_example_card(example: Example, number: int) -> str:
-    change_label = "Feature" if example.feature_commits else "Intentional edit"
-    if example.feature_commits:
-        result = '<span class="result-pass">Red → green</span>'
-    else:
-        result = '<span class="result-fail">Verified failure</span>'
     return f"""
       <article class="example-card">
         <div class="example-card-topline">
@@ -3130,12 +3126,12 @@ def render_example_card(example: Example, number: int) -> str:
         <p>{escape(example.summary)}</p>
         <dl class="example-card-facts">
           <div>
-            <dt>{change_label}</dt>
+            <dt>Seemingly benign edit</dt>
             <dd>{escape(example.mutation)}</dd>
           </div>
           <div>
             <dt>Result</dt>
-            <dd>{result}</dd>
+            <dd><span class="result-fail">Focused failure</span></dd>
           </div>
         </dl>
         <a class="text-link" href="examples/{example.slug}.html">Read the full example</a>
@@ -3154,19 +3150,19 @@ def render_examples() -> str:
       <a class="back-link" href="index.html">Back to overview</a>
       <p class="eyebrow">Examples</p>
       <h1>Good-looking edits. Real test failures.</h1>
-      <p class="lede">Two debugging stories show regressions caught in the act. Two feature stories reconstruct real upstream additions from a red acceptance test to a working implementation.</p>
+      <p class="lede">Each example starts with a small, defensible edit to MOOS-IvP, then shows the focused test that catches it and the behavior that test protects.</p>
       <div class="example-verification">
         <strong>Evidence, not anecdotes</strong>
         <span>Debugging mutations verified at <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
-        <span>Feature stories link the real upstream commits</span>
+        <span>Feature examples are grounded in real upstream implementations</span>
       </div>
     </section>
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Four test stories</p>
+        <p class="eyebrow">Four failure stories</p>
         <h2>What this test workspace catches</h2>
-        <p>The harness examples come first because they show the operational outcome. The CTest examples then show the smaller contracts underneath. Reconstructed red stages are labeled explicitly and are not presented as historical upstream CI failures.</p>
+        <p>The harness examples come first because they show the operational outcome. The CTest examples then show the smaller contracts underneath. Every story follows the same pattern: a reasonable edit, a focused failure, and the protected behavior.</p>
       </div>
       <div class="example-grid">
         {cards}
@@ -3175,12 +3171,12 @@ def render_examples() -> str:
 
     <section class="workflow example-method">
       <p class="eyebrow">Method</p>
-      <h2>One change, one explicit contract</h2>
+      <h2>One seemingly benign edit at a time</h2>
       <ol>
-        <li>State the behavior the change must preserve or introduce.</li>
-        <li>Run the smallest CTest or mission harness that can prove it.</li>
-        <li>Capture the meaningful red result, not merely a compiler error.</li>
-        <li>Show the corrected implementation or real upstream feature commit.</li>
+        <li>Start from a passing focused test or harness case.</li>
+        <li>Make one plausible change without committing it to MOOS-IvP.</li>
+        <li>Capture the meaningful failure, not merely a compiler error.</li>
+        <li>Explain the contract that caught the edit and the safer approach.</li>
       </ol>
     </section>
   </main>
@@ -3191,31 +3187,17 @@ def render_examples() -> str:
 def render_example(example: Example) -> str:
     example_index = EXAMPLES.index(example)
     next_example = EXAMPLES[(example_index + 1) % len(EXAMPLES)]
-    is_feature = bool(example.feature_commits)
-    source_revision = example.feature_commits[-1][0] if is_feature else UPSTREAM_REVISION
-    story_eyebrow = "The feature" if is_feature else "The proposed edit"
-    rationale_heading = "Why someone would add it" if is_feature else "Why it looks reasonable"
+    source_revision = (
+        example.feature_commits[-1][0]
+        if example.feature_commits
+        else UPSTREAM_REVISION
+    )
     source_link_label = (
         "Open the source at the completed feature revision"
-        if is_feature
+        if example.feature_commits
         else "Open the source at the tested baseline"
     )
-    if is_feature:
-        test_result = f"""
-        <article class="example-baseline example-baseline--red">
-          <h3>Red: incomplete feature</h3>
-          <pre><code>{escape(example.baseline)}</code></pre>
-        </article>
-      </div>
-      <article class="example-success">
-        <div>
-          <p class="eyebrow">Completed feature</p>
-          <h3>The focused test turns green</h3>
-        </div>
-        <pre><code>{escape(example.failure)}</code></pre>
-      </article>"""
-    else:
-        test_result = f"""
+    test_result = f"""
         <article class="example-baseline">
           <h3>Before the edit</h3>
           <pre><code>{escape(example.baseline)}</code></pre>
@@ -3228,10 +3210,6 @@ def render_example(example: Example) -> str:
         </div>
         <pre><code>{escape(example.failure)}</code></pre>
       </article>"""
-    changed_heading = "What was missing" if is_feature else "What changed"
-    caught_heading = "What proved it" if is_feature else "What caught it"
-    approach_heading = "Completed implementation" if is_feature else "Safer approach"
-    explanation_heading = "What the red test tells us" if is_feature else "What the failure tells us"
     diff_label = example.diff_label or example.source_path
     body = f"""
   <main>
@@ -3245,12 +3223,12 @@ def render_example(example: Example) -> str:
 
     <section class="content-section example-section">
       <div class="section-heading">
-        <p class="eyebrow">{story_eyebrow}</p>
+        <p class="eyebrow">The proposed edit</p>
         <h2>{escape(example.mutation)}</h2>
       </div>
       <div class="example-story-grid">
         <article class="example-explanation">
-          <h3>{rationale_heading}</h3>
+          <h3>Why it looks reasonable</h3>
           <p>{escape(example.why_it_looks_good)}</p>
           <p><a class="text-link" href="{upstream_url(example.source_path, source_revision)}">{source_link_label}</a></p>
         </article>
@@ -3277,20 +3255,20 @@ def render_example(example: Example) -> str:
     <section class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Explanation</p>
-        <h2>{explanation_heading}</h2>
+        <h2>What the failure tells us</h2>
       </div>
       <div class="example-lessons">
         <article>
-          <h3>{changed_heading}</h3>
+          <h3>What changed</h3>
           <p>{escape(example.what_changed)}</p>
         </article>
         <article>
-          <h3>{caught_heading}</h3>
+          <h3>What caught it</h3>
           <p>{escape(example.what_caught_it)}</p>
           <p><a class="text-link" href="{repo_url(example.test_path)}">Open the protecting test</a></p>
         </article>
         <article>
-          <h3>{approach_heading}</h3>
+          <h3>Safer approach</h3>
           <p>{escape(example.corrected_approach)}</p>
         </article>
       </div>
