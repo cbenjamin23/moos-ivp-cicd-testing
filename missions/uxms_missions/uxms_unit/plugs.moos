@@ -26,6 +26,7 @@ ProcessConfig = pLogger
   Log = XMS_LONG @ 0 nosync
   Log = XMS_HIST @ 0 nosync
   Log = XMS_NOISE @ 0 nosync
+  Log = XMS_PAUSE @ 0 nosync
   Log = XMS_SECONDARY @ 0 nosync
   Log = TEST_EVAL_READY @ 0 nosync
   Log = MISSION_EVALUATED @ 0 nosync

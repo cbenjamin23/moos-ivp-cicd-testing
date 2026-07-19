@@ -43,16 +43,15 @@ runner failure rather than being mistaken for a pMissionEval verdict.
 - `shortcut_source_time_pass`: Runs `-st` for `XMS_ALPHA`, testing the combined source-and-time shortcut; passes when one row contains `XMS_ALPHA`, `uTimerScript`, a numeric timestamp, and the exact `alpha` value in their displayed column order.
 - `filter_specific_pass`: Combines `--all` with the narrower `--filter=XMS_A`, testing selective prefix filtering; passes when `XMS_ALPHA=alpha` evidence appears and neither `XMS_NUM` nor `DB_UPTIME` appears.
 - `filter_no_match_absent_pass`: Combines `--all` with `--filter=NO_SUCH_PREFIX`, testing a filter with no matching variables; passes when a `SCOPING` report is produced without `XMS_ALPHA` or `DB_UPTIME`.
-- `colorany_pass`: Applies `--colorany=XMS_ALPHA` to the scoped variable, testing that the option is accepted without losing its row; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking terminal color codes.
-- `events_mode_pass`: Runs `XMS_ALPHA` with `--mode=events` while the publisher posts `alpha` once, exercising event-mode output; passes when the capture contains `XMS_ALPHA` and `alpha`.
-- `paused_shortcut_pass`: Runs `XMS_ALPHA` with `-p`, exercising the short alias for paused mode; passes when startup capture contains `XMS_ALPHA` and `alpha`, without checking that later refreshes remain paused.
+- `colorany_pass`: Applies `--colorany=XMS_ALPHA` to the scoped variable, testing automatic color assignment; passes when the row contains the expected blue ANSI sequence around `XMS_ALPHA` and its `alpha` value.
+- `paused_shortcut_pass`: Starts `-p` after `XMS_PAUSE=initial` is present and posts `XMS_PAUSE=later` during capture, testing that paused mode does not refresh on new mail; passes when the display says `PAUSED`, shows `initial`, and never shows `later`.
 - `shortcut_trunc_pass`: Scopes the 62-character `XMS_LONG` value with `-t`, testing the `--trunc=25` shortcut; passes when the capture contains `abcdefghijklmnopqrstuvwxyz` but not the complete payload.
-- `alll_mode_pass`: Runs with `--alll`, which requests even the variables normally excluded by `--all`; passes when the capture contains `DB_UPTIME` and `XMS_ALPHA`, the same evidence used for ordinary `--all`.
+- `alll_mode_pass`: Runs with `--alll`, testing inclusion of variables that ordinary `--all` excludes; passes when the capture contains an actual `APPCAST` row alongside `DB_UPTIME` and `XMS_ALPHA`.
 - `server_underscore_args_pass`: Connects with `--server_host=localhost` and `--server_port=<case-port>`, testing the underscore server aliases; passes when the capture contains `XMS_ALPHA` and `alpha` from that database.
 - `moos_alias_args_pass`: Connects with `--mooshost=localhost` and `--moosport=<case-port>`, testing the compact MOOS aliases; passes when the capture contains `XMS_ALPHA` and `alpha` from that database.
 - `moos_underscore_args_pass`: Connects with `--moos_host=localhost` and `--moos_port=<case-port>`, testing the underscore MOOS aliases; passes when the capture contains `XMS_ALPHA` and `alpha` from that database.
-- `alias_proc_name_pass`: Runs with `--alias=uXMS_ci` while scoping `XMS_ALPHA`, exercising custom process-name parsing; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking the registered process name.
-- `colormap_pair_pass`: Applies `--colormap=XMS_ALPHA,red` to the scoped variable, testing that a variable/color pair is accepted without losing its row; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking terminal color codes.
+- `alias_proc_name_pass`: Runs with `--alias=uXMS_ci` while scoping `XMS_ALPHA` and `DB_CLIENTS`, testing custom MOOS client registration; passes when the `DB_CLIENTS` row contains `uXMS_ci` and the normal `XMS_ALPHA=alpha` evidence remains visible.
+- `colormap_pair_pass`: Applies `--colormap=XMS_ALPHA,red` to the scoped variable, testing explicit color assignment; passes when the row contains the expected red ANSI sequence around `XMS_ALPHA` and its `alpha` value.
 - `clean_shortcut_scope_pass`: Loads the mission-file scope, then runs `-c XMS_NUM`, testing the short alias for ignoring all configured variables; passes when the capture contains `XMS_NUM=42` evidence and neither `XMS_ALPHA` nor `XMS_SECONDARY` appears.
 
 ## Run
@@ -93,3 +92,8 @@ passed 32/32 with four jobs in 59 seconds. Removing `--show=time`, omitting the
 middle history publication, and allowing only `XMS_SECONDARY` to leak from the
 mission-file scope were each rejected while the publisher mission still
 earned its normal pass grade.
+
+The follow-up display-mode review removed the redundant explicit-events case;
+the resulting 31-case matrix passed 31/31 with four jobs in 59 seconds.
+Mutations removing automatic color, paused mode, `--alll`, and the custom
+process alias each failed on their new option-specific terminal evidence.

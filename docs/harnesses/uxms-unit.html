@@ -213,19 +213,13 @@
 
         <article class="case-row">
           <code>colorany_pass</code>
-          <p>Applies --colorany=XMS_ALPHA to the scoped variable, testing that the option is accepted without losing its row; passes when the capture contains XMS_ALPHA and alpha, without checking terminal color codes.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>events_mode_pass</code>
-          <p>Runs XMS_ALPHA with --mode=events while the publisher posts alpha once, exercising event-mode output; passes when the capture contains XMS_ALPHA and alpha.</p>
+          <p>Applies --colorany=XMS_ALPHA to the scoped variable, testing automatic color assignment; passes when the row contains the expected blue ANSI sequence around XMS_ALPHA and its alpha value.</p>
         </article>
 
 
         <article class="case-row">
           <code>paused_shortcut_pass</code>
-          <p>Runs XMS_ALPHA with -p, exercising the short alias for paused mode; passes when startup capture contains XMS_ALPHA and alpha, without checking that later refreshes remain paused.</p>
+          <p>Starts -p after XMS_PAUSE=initial is present and posts XMS_PAUSE=later during capture, testing that paused mode does not refresh on new mail; passes when the display says PAUSED, shows initial, and never shows later.</p>
         </article>
 
 
@@ -237,7 +231,7 @@
 
         <article class="case-row">
           <code>alll_mode_pass</code>
-          <p>Runs with --alll, which requests even the variables normally excluded by --all; passes when the capture contains DB_UPTIME and XMS_ALPHA, the same evidence used for ordinary --all.</p>
+          <p>Runs with --alll, testing inclusion of variables that ordinary --all excludes; passes when the capture contains an actual APPCAST row alongside DB_UPTIME and XMS_ALPHA.</p>
         </article>
 
 
@@ -261,13 +255,13 @@
 
         <article class="case-row">
           <code>alias_proc_name_pass</code>
-          <p>Runs with --alias=uXMS_ci while scoping XMS_ALPHA, exercising custom process-name parsing; passes when the capture contains XMS_ALPHA and alpha, without checking the registered process name.</p>
+          <p>Runs with --alias=uXMS_ci while scoping XMS_ALPHA and DB_CLIENTS, testing custom MOOS client registration; passes when the DB_CLIENTS row contains uXMS_ci and the normal XMS_ALPHA=alpha evidence remains visible.</p>
         </article>
 
 
         <article class="case-row">
           <code>colormap_pair_pass</code>
-          <p>Applies --colormap=XMS_ALPHA,red to the scoped variable, testing that a variable/color pair is accepted without losing its row; passes when the capture contains XMS_ALPHA and alpha, without checking terminal color codes.</p>
+          <p>Applies --colormap=XMS_ALPHA,red to the scoped variable, testing explicit color assignment; passes when the row contains the expected red ANSI sequence around XMS_ALPHA and its alpha value.</p>
         </article>
 
 

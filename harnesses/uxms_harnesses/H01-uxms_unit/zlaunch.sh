@@ -85,7 +85,6 @@ ALL_CASES=(
     filter_specific_pass
     filter_no_match_absent_pass
     colorany_pass
-    events_mode_pass
     paused_shortcut_pass
     shortcut_trunc_pass
     alll_mode_pass
@@ -417,15 +416,12 @@ get_case_config() {
             ;;
         colorany_pass)
             XMS_ARGS=("--colorany=XMS_ALPHA" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "alpha")
-            ;;
-        events_mode_pass)
-            XMS_ARGS=("--mode=events" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "alpha")
+            CHECK_TOKENS=("XMS_ALPHA" "alpha" $'\033[34mXMS_ALPHA\033[0m')
             ;;
         paused_shortcut_pass)
-            XMS_ARGS=("-p" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "alpha")
+            XMS_ARGS=("-p" "--termint=0.2" "XMS_PAUSE")
+            CHECK_TOKENS=("PAUSED" "XMS_PAUSE" "initial")
+            ABSENT_TOKENS=("later")
             ;;
         shortcut_trunc_pass)
             XMS_ARGS=("-t" "--mode=streaming" "--termint=0.2" "XMS_LONG")
@@ -434,7 +430,8 @@ get_case_config() {
             ;;
         alll_mode_pass)
             XMS_ARGS=("--alll" "--mode=streaming" "--termint=0.2")
-            CHECK_TOKENS=("DB_UPTIME" "XMS_ALPHA")
+            CHECK_TOKENS=("DB_UPTIME" "XMS_ALPHA" "APPCAST")
+            CHECK_REGEXES=('appcast_row::^APPCAST[[:space:]]+')
             ;;
         server_underscore_args_pass)
             XMS_CONNECT_MODE="server_underscore"
@@ -452,12 +449,13 @@ get_case_config() {
             CHECK_TOKENS=("XMS_ALPHA" "alpha")
             ;;
         alias_proc_name_pass)
-            XMS_ARGS=("--alias=uXMS_ci" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "alpha")
+            XMS_ARGS=("--alias=uXMS_ci" "--mode=streaming" "--termint=0.2" "XMS_ALPHA" "DB_CLIENTS")
+            CHECK_TOKENS=("XMS_ALPHA" "alpha" "DB_CLIENTS" "uXMS_ci")
+            CHECK_REGEXES=('alias_client_row::^DB_CLIENTS[[:space:]]+.*uXMS_ci')
             ;;
         colormap_pair_pass)
             XMS_ARGS=("--colormap=XMS_ALPHA,red" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "alpha")
+            CHECK_TOKENS=("XMS_ALPHA" "alpha" $'\033[31mXMS_ALPHA\033[0m')
             ;;
         clean_shortcut_scope_pass)
             XMS_USE_FILE="yes"

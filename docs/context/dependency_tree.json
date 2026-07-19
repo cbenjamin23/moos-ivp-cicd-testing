@@ -1481,7 +1481,7 @@
         "uXMS"
       ],
       "zlaunch": {
-        "case_count": 32,
+        "case_count": 31,
         "case_parse_error": "",
         "cases": [
           "scoped_var_pass",
@@ -1506,7 +1506,6 @@
           "filter_specific_pass",
           "filter_no_match_absent_pass",
           "colorany_pass",
-          "events_mode_pass",
           "paused_shortcut_pass",
           "shortcut_trunc_pass",
           "alll_mode_pass",
