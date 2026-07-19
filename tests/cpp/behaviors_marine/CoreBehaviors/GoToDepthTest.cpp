@@ -211,8 +211,8 @@ TEST(BHVGoToDepthTest, CrossingTargetDepthTriggersArrivalInBothDirections)
   EXPECT_DOUBLE_EQ(second_arrival.get_ddata(), 2);
 }
 
-// Covers BHV go to depth behavior: base perpetual param is rejected and single level completes.
-TEST(BHVGoToDepthTest, BasePerpetualParamIsRejectedAndSingleLevelCompletes)
+// Covers BHV go to depth behavior: the common perpetual parameter restarts a completed sequence.
+TEST(BHVGoToDepthTest, BasePerpetualParamRestartsSequence)
 {
   InfoBuffer info;
   info.setCurrTime(0);
@@ -223,14 +223,32 @@ TEST(BHVGoToDepthTest, BasePerpetualParamIsRejectedAndSingleLevelCompletes)
 
   ASSERT_TRUE(behavior.setParam("depth", "10"));
   ASSERT_TRUE(behavior.setParam("arrival_delta", "0"));
-  EXPECT_FALSE(behavior.setParam("perpetual", "true"));
+  ASSERT_TRUE(behavior.setParam("arrival_flag", "LEVEL_HIT"));
+  ASSERT_TRUE(behavior.IvPBehavior::setParam("perpetual", "true"));
 
   std::unique_ptr<IvPFunction> arrival_ipf(behavior.onRunState());
   ASSERT_NE(arrival_ipf, nullptr);
   EXPECT_GT(evalOneDimPoint(*arrival_ipf, 10), evalOneDimPoint(*arrival_ipf, 20));
 
+  VarDataPair first_arrival;
+  ASSERT_TRUE(findBehaviorMessage(behavior.getMessages(), "GTD_LEVEL_HIT",
+                                  first_arrival));
+  EXPECT_DOUBLE_EQ(first_arrival.get_ddata(), 1);
+
+  behavior.clearMessages();
   info.setCurrTime(1);
   info.setValue("NAV_DEPTH", 10);
-  std::unique_ptr<IvPFunction> complete_ipf(behavior.onRunState());
-  EXPECT_EQ(complete_ipf, nullptr);
+  std::unique_ptr<IvPFunction> cycle_boundary_ipf(behavior.onRunState());
+  EXPECT_EQ(cycle_boundary_ipf, nullptr);
+
+  behavior.clearMessages();
+  info.setCurrTime(2);
+  info.setValue("NAV_DEPTH", 10);
+  std::unique_ptr<IvPFunction> restarted_ipf(behavior.onRunState());
+  ASSERT_NE(restarted_ipf, nullptr);
+
+  VarDataPair restarted_arrival;
+  ASSERT_TRUE(findBehaviorMessage(behavior.getMessages(), "GTD_LEVEL_HIT",
+                                  restarted_arrival));
+  EXPECT_DOUBLE_EQ(restarted_arrival.get_ddata(), 1);
 }

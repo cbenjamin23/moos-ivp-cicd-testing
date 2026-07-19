@@ -1,5 +1,5 @@
 //-------------------------------------------------
-// FILE: goto-depth-repeat-pass-vehicle.xbhv
+// FILE: goto-depth-perpetual-cycle-pass-vehicle.xbhv
 // NAME: Charles Benjamin
 //-------------------------------------------------
 
@@ -16,7 +16,7 @@ Behavior = BHV_Waypoint
   capture_line   = true
   capture_radius = 4.0
   slip_radius    = 12.0
-  points         = $(DEST_POS)
+  points         = 200,-60
   repeat         = 0
 }
 
@@ -29,5 +29,22 @@ Behavior = BHV_GoToDepth
   depth         = 6,1:10,1
   arrival_delta = 1.0
   arrival_flag  = LEVEL_HIT
-  repeat        = 1
+  repeat        = 0
+  perpetual     = true
+}
+
+// Supply depth while the arrival counter remains at two across the cycle
+// reset. Its lower priority leaves GoToDepth in control otherwise.
+Behavior = BHV_ConstantDepth
+{
+  name      = const_depth
+  pwt       = 20
+  condition = MODE == TRANSITING
+  condition = GTD_LEVEL_HIT == 2
+  duration  = no-time-limit
+
+  depth       = 10
+  peakwidth   = 4
+  basewidth   = 10
+  summitdelta = 15
 }

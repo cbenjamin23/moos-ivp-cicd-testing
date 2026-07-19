@@ -3,40 +3,25 @@
 // NAME: Charles Benjamin
 //-------------------------------------------------
 
-ProcessConfig = uTimerScript
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  condition = DEPLOY_ALL = true
-
-  event = var=TEST_EVAL_READY, val=true, time=12
-}
-
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
   CommsTick = 4
 
-  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
-  mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = HELM_MALCONFIG = true
-  pass_condition = HELM_MALCONFIG = true
+  lead_condition = (IVPHELM_STATE = MALCONFIG) or (IVPHELM_STATE = DRIVE)
+  pass_condition = IVPHELM_STATE = MALCONFIG
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
   fail_flag   = SAY_MOOS = fail
 
   mission_form = depth_behavior_motion
-  mission_mod  = goto_depth_negative_depth_fail
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
-  report_column = eval=$[HELM_MALCONFIG]
+  report_column = eval=$[IVPHELM_STATE]
   report_column = expected=helm_malconfig
-  report_column = helm_malconfig=$[HELM_MALCONFIG]
-  report_column = mhash=$[MHASH_SHORT]
+  report_column = helm_state=$[IVPHELM_STATE]
 }

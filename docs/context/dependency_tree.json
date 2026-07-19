@@ -2123,7 +2123,7 @@
         "path": "missions/depth_behavior_missions/depth_behavior_motion"
       },
       "patches": {
-        "file_count": 39
+        "file_count": 38
       },
       "path": "harnesses/depth_behavior_harnesses/H02-goto_depth_motion",
       "perf_profile": "",
@@ -2146,11 +2146,10 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 18,
+        "case_count": 17,
         "case_parse_error": "",
         "cases": [
           "goto_depth_sequence_pass",
-          "goto_depth_repeat_pass",
           "goto_depth_crossing_pass",
           "goto_depth_zero_delta_crossing_pass",
           "goto_depth_single_level_pass",
@@ -2164,7 +2163,7 @@
           "goto_depth_bad_repeat_fail",
           "goto_depth_bad_arrival_delta_fail",
           "goto_depth_bad_tuple_fail",
-          "goto_depth_bad_perpetual_fail",
+          "goto_depth_perpetual_cycle_pass",
           "goto_depth_missing_nav_depth_fail",
           "goto_depth_domain_missing_fail"
         ],
@@ -7029,10 +7028,10 @@
       ".sh": 365,
       ".txt": 302,
       ".xbhv": 516,
-      ".xmoos": 1321,
+      ".xmoos": 1320,
       "[none]": 7
     },
-    "harness_patch_count": 1732,
+    "harness_patch_count": 1731,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

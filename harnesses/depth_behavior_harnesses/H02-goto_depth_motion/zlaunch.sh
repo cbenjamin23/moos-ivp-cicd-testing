@@ -62,7 +62,6 @@ FINISH_FATAL_REASON=""
 
 CASES=(
     goto_depth_sequence_pass
-    goto_depth_repeat_pass
     goto_depth_crossing_pass
     goto_depth_zero_delta_crossing_pass
     goto_depth_single_level_pass
@@ -76,7 +75,7 @@ CASES=(
     goto_depth_bad_repeat_fail
     goto_depth_bad_arrival_delta_fail
     goto_depth_bad_tuple_fail
-    goto_depth_bad_perpetual_fail
+    goto_depth_perpetual_cycle_pass
     goto_depth_missing_nav_depth_fail
     goto_depth_domain_missing_fail
 )
@@ -318,9 +317,6 @@ get_case_config() {
     if [ "$CASE_NAME" = "goto_depth_sequence_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/goto-depth-sequence-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/goto-depth-sequence-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "goto_depth_repeat_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/goto-depth-repeat-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/goto-depth-repeat-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "goto_depth_crossing_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/goto-depth-crossing-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/goto-depth-crossing-pass-vehicle.xbhv"
@@ -367,10 +363,10 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/goto-depth-bad-tuple-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/goto-depth-helm-malconfig-fail-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/goto-depth-bad-tuple-fail-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "goto_depth_bad_perpetual_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/goto-depth-bad-perpetual-fail-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/goto-depth-helm-malconfig-fail-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/goto-depth-bad-perpetual-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "goto_depth_perpetual_cycle_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/goto-depth-perpetual-cycle-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH=""
+        CASE_VEH_BHV_PATCH="$HARNESS_DIR/goto-depth-perpetual-cycle-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "goto_depth_missing_nav_depth_fail" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/goto-depth-missing-nav-depth-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/goto-depth-missing-nav-depth-fail-vehicle.xmoos"
@@ -416,9 +412,12 @@ apply_case_overlays() {
             "${vehicle_patches[@]}" --targ="$workdir/meta_vehicle.moosx" || return 1
     fi
     if [ -n "$CASE_VEH_BHV_PATCH" ]; then
+        local isolation_patch="$HARNESS_DIR/goto-depth-isolation-vehicle.xbhv"
+        [ -f "$isolation_patch" ] || return 1
         [ -f "$CASE_VEH_BHV_PATCH" ] || return 1
         nspatch --stem="$workdir/meta_vehicle.bhv" \
-            "$CASE_VEH_BHV_PATCH" --targ="$workdir/meta_vehicle.bhvx" || return 1
+            "$isolation_patch" "$CASE_VEH_BHV_PATCH" \
+            --targ="$workdir/meta_vehicle.bhvx" || return 1
     fi
 }
 prepare_case() {

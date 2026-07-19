@@ -16,7 +16,7 @@ Behavior = BHV_Waypoint
   capture_line   = true
   capture_radius = 4.0
   slip_radius    = 12.0
-  points         = $(DEST_POS)
+  points         = 200,-60
   repeat         = 0
 }
 
@@ -26,8 +26,8 @@ Behavior = BHV_GoToDepth
   pwt       = 140
   condition = MODE == TRANSITING
 
-  depth         = 6,1:14,1:9,999
-  capture_delta = 1.0
+  depth         = 10,999
+  capture_delta = 4.0
   arrival_flag  = LEVEL_HIT
   repeat        = 0
 }

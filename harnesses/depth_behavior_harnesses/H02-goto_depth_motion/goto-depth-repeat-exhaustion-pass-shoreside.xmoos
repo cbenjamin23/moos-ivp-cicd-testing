@@ -3,21 +3,12 @@
 // NAME: Charles Benjamin
 //-------------------------------------------------
 
-ProcessConfig = uTimerScript
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  condition = DEPLOY_ALL = true
-
-  event = var=BHV_ERROR_SEEN, val=false, time=0
-}
-
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @DEPLOY_ALL#BHV_ERROR_SEEN=false
   mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
   lead_condition = GTD_DONE = true
@@ -25,18 +16,17 @@ ProcessConfig = pMissionEval
   pass_condition = ABE_NAV_X >= 70
   pass_condition = GTD_LEVEL_HIT = 4
   pass_condition = GTD_DONE = true
+  pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
   fail_flag   = SAY_MOOS = fail
 
   mission_form = depth_behavior_motion
-  mission_mod  = goto_depth_repeat_exhaustion_pass
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[GTD_DONE]
   report_column = x=$[ABE_NAV_X]
   report_column = depth=$[ABE_NAV_DEPTH]

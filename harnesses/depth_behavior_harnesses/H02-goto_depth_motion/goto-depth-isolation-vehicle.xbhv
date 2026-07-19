@@ -1,0 +1,25 @@
+//-------------------------------------------------
+// FILE: goto-depth-isolation-vehicle.xbhv
+// NAME: Charles Benjamin
+//-------------------------------------------------
+
+// The shared stem normally runs BHV_ConstantDepth. Keep it inactive while
+// BHV_GoToDepth owns the depth decision variable. On the finite repeat case,
+// activate the matching 10-meter hold at arrival four so depth remains covered
+// through GoToDepth's completion transition.
+initialize GTD_DONE      = false
+initialize GTD_LEVEL_HIT = 0
+
+Behavior = BHV_ConstantDepth
+{
+  name      = const_depth
+  pwt       = 20
+  condition = MODE == TRANSITING
+  condition = GTD_LEVEL_HIT >= 4
+  duration  = no-time-limit
+
+  depth       = 10
+  peakwidth   = 4
+  basewidth   = 10
+  summitdelta = 15
+}

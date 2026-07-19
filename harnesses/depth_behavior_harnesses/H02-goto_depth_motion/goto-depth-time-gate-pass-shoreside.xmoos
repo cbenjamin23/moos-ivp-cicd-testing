@@ -33,16 +33,13 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = depth_behavior_motion
-  mission_mod  = goto_depth_time_gate_pass
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = x=$[ABE_NAV_X]
   report_column = depth=$[ABE_NAV_DEPTH]
-  report_column = level=$[LEVEL_DEPTH]
   report_column = gtd_hit=$[GTD_LEVEL_HIT]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]

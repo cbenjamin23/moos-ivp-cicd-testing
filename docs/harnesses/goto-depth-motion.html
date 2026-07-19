@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Depth Sequence</h3>
-          <p>Description: Runs depth=6,1:14,1:9,999 with a one-meter arrival delta to exercise three ordered target levels. Passes after x&gt;=60 when GTD_LEVEL_HIT&gt;=3, 7&lt;=NAV_DEPTH&lt;=11, and the vehicle remains in the transit corridor.</p>
+          <p>Description: Runs depth=6,1:14,1:9,999 to require three ordered depth arrivals and hold the final nine-meter level. Passes when the third arrival and x&gt;=60 have both occurred, 7&lt;=NAV_DEPTH&lt;=11, the vehicle remains in the transit corridor, and no behavior error occurred.</p>
         </div>
       </article>
 
@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Crossing Arrivals</h3>
-          <p>Description: Runs 12,0:4,0:12,999 with a one-meter arrival delta to exercise downward and upward target crossings without plateau delay. Passes after x&gt;=60 in the transit corridor when GTD_LEVEL_HIT&gt;=2.</p>
+          <p>Description: Runs 12,0:4,0:12,999 with a one-meter arrival delta to require a downward arrival at 12 meters followed by an upward arrival at four meters without plateau delay. Passes when the second arrival and x&gt;=60 have both occurred, the vehicle remains in the transit corridor, and no behavior error occurred.</p>
         </div>
       </article>
 
@@ -89,31 +89,25 @@
 
         <article class="case-row">
           <code>goto_depth_sequence_pass</code>
-          <p>Runs depth=6,1:14,1:9,999 with a one-meter arrival delta to exercise three ordered target levels. Passes after x&gt;=60 when GTD_LEVEL_HIT&gt;=3, 7&lt;=NAV_DEPTH&lt;=11, and the vehicle remains in the transit corridor.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>goto_depth_repeat_pass</code>
-          <p>Runs the two-level sequence 6,1:10,1 with repeat=1 to exercise a second traversal. Passes after x&gt;=70 when GTD_LEVEL_HIT&gt;=4.</p>
+          <p>Runs depth=6,1:14,1:9,999 to require three ordered depth arrivals and hold the final nine-meter level. Passes when the third arrival and x&gt;=60 have both occurred, 7&lt;=NAV_DEPTH&lt;=11, the vehicle remains in the transit corridor, and no behavior error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_crossing_pass</code>
-          <p>Runs 12,0:4,0:12,999 with a one-meter arrival delta to exercise downward and upward target crossings without plateau delay. Passes after x&gt;=60 in the transit corridor when GTD_LEVEL_HIT&gt;=2.</p>
+          <p>Runs 12,0:4,0:12,999 with a one-meter arrival delta to require a downward arrival at 12 meters followed by an upward arrival at four meters without plateau delay. Passes when the second arrival and x&gt;=60 have both occurred, the vehicle remains in the transit corridor, and no behavior error occurred.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_zero_delta_crossing_pass</code>
-          <p>Runs the same 12-to-4-to-12 sequence with arrival_delta=0, requiring target crossings rather than proximity to increment the arrival flag. Passes after x&gt;=60 when GTD_LEVEL_HIT&gt;=2.</p>
+          <p>Runs the same 12-to-4-to-12 sequence with arrival_delta=0, so only crossing a target can post each arrival. Passes when the second crossing and x&gt;=60 have both occurred with no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_single_level_pass</code>
-          <p>Configures the single long-plateau level depth=8,999. Passes after x&gt;=45 when GTD_LEVEL_HIT&gt;=1, 6&lt;=NAV_DEPTH&lt;=10, and the vehicle remains in the transit corridor.</p>
+          <p>Configures the single long-plateau level depth=8,999. Passes after the first arrival and x&gt;=45 when 6&lt;=NAV_DEPTH&lt;=10, the vehicle remains in the transit corridor, and no behavior error occurred.</p>
         </article>
 
 
@@ -125,61 +119,61 @@
 
         <article class="case-row">
           <code>goto_depth_capture_delta_alias_pass</code>
-          <p>Uses capture_delta=1.0 instead of arrival_delta on the three-level 6-to-14-to-9 sequence. Passes after x&gt;=60 when GTD_LEVEL_HIT&gt;=3 and 7&lt;=NAV_DEPTH&lt;=11.</p>
+          <p>Uses the nondefault alias capture_delta=4.0 on a ten-meter target, testing that the alias changes the arrival threshold rather than being ignored in favor of the one-meter default. Passes when the first arrival is posted at 5.5&lt;=NAV_DEPTH&lt;=7.5 with no behavior error; changing the tolerance to one meter posts the arrival near nine meters and fails.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_capture_flag_alias_pass</code>
-          <p>Uses capture_flag=LEVEL_HIT instead of arrival_flag on the three-level 6-to-14-to-9 sequence. Passes after x&gt;=60 when the resulting GTD_LEVEL_HIT counter reaches at least three and 7&lt;=NAV_DEPTH&lt;=11.</p>
+          <p>Uses capture_flag=LEVEL_HIT instead of arrival_flag on the three-level 6-to-14-to-9 sequence. Passes as soon as the alias-generated GTD_LEVEL_HIT counter reaches three at the final depth with no behavior error; a 70-second deadline exists only to grade a missing alias publication as failure.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_repeat_exhaustion_pass</code>
-          <p>Runs depth=6,1:10,1 with repeat=1 and endflag=GTD_DONE=true to test finite repeat exhaustion. Passes after x&gt;=70 when GTD_LEVEL_HIT=4 and GTD_DONE=true.</p>
+          <p>Runs depth=6,1:10,1 with repeat=1 to require exactly two traversals and then post GTD_DONE=true; a matching ten-meter guard takes over after the fourth arrival. Passes when x&gt;=70, GTD_LEVEL_HIT=4, GTD_DONE=true, and no behavior error have all been observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_bad_update_preserve_pass</code>
-          <p>Posts malformed GTD_UPDATE=&quot;depth=bad&quot; at 12 seconds while running 6,1:14,1:9,999, testing preservation of the configured sequence. Passes after x&gt;=60 when GTD_LEVEL_HIT&gt;=3 and 7&lt;=NAV_DEPTH&lt;=11.</p>
+          <p>Posts malformed GTD_UPDATE=&quot;depth=bad&quot; at 12 seconds while running 6,1:14,1:9,999, testing that the helm reports the rejected update and preserves the configured sequence. Passes when the post-update warning is observed, the original three arrivals complete, x&gt;=60, 7&lt;=NAV_DEPTH&lt;=11, and no behavior error occurred; replacing the malformed update with a valid one fails the warning assertion.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_bad_sequence_fail</code>
-          <p>Configures depth=5,1:bogus to exercise rejection of a nonnumeric sequence entry. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Gives GoToDepth depth=5,1:bogus, testing rejection of a nonnumeric sequence entry. Passes only when the first operational helm state is MALCONFIG; an ordinary DRIVE state fails.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_negative_depth_fail</code>
-          <p>Configures depth=-5,1 to exercise rejection of a negative target depth. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Gives GoToDepth depth=-5,1, testing rejection of a negative target depth. Passes only when the first operational helm state is MALCONFIG; an ordinary DRIVE state fails.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_bad_repeat_fail</code>
-          <p>Configures the single timed level depth=5,1 with repeat=0. The harness currently passes when IVPHELM_STATE reports HELM_MALCONFIG; this fixture does not contain the invalid repeat value implied by its name.</p>
+          <p>Gives the waypoint its valid repeat=0 and GoToDepth the invalid repeat=-1, testing GoToDepth&#x27;s repeat validation rather than the waypoint parser. Passes only when the first operational helm state is MALCONFIG; changing GoToDepth to repeat=0 reaches DRIVE and fails.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_bad_arrival_delta_fail</code>
-          <p>Configures arrival_delta=-1 on a two-level sequence to exercise rejection of a negative capture tolerance. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Gives GoToDepth arrival_delta=-1, testing rejection of a negative capture tolerance. Passes only when the first operational helm state is MALCONFIG; an ordinary DRIVE state fails.</p>
         </article>
 
 
         <article class="case-row">
           <code>goto_depth_bad_tuple_fail</code>
-          <p>Configures depth=6,1,extra:14,1 to exercise rejection of a depth tuple with three fields. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <p>Gives GoToDepth depth=6,1,extra:14,1, testing rejection of a tuple with three fields. Passes only when the first operational helm state is MALCONFIG; an ordinary DRIVE state fails.</p>
         </article>
 
 
         <article class="case-row">
-          <code>goto_depth_bad_perpetual_fail</code>
-          <p>Adds perpetual=true to a single-level BHV_GoToDepth configuration. The harness passes when IVPHELM_STATE reports HELM_MALCONFIG.</p>
+          <code>goto_depth_perpetual_cycle_pass</code>
+          <p>Runs depth=6,1:10,1 with the valid base parameter perpetual=true, testing that GoToDepth resets its arrival counter and starts the sequence again after the second level. Passes when the ordered counter changes from 2 at the end of the first cycle to 1 in the second cycle with no behavior error; disabling perpetual fails at the bounded missing-restart deadline.</p>
         </article>
 
 

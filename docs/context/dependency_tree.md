@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1732` under configured targets
+- Harness patch/config files: `1731` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -100,7 +100,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `utermcommand_h01` | `utermcommand` | `harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh` | `missions/utermcommand_missions/utermcommand_unit` | 15 | `pEchoVar` | `utermcommand-unit` |
 | `psearchgrid_h01` | `psearchgrid` | `harnesses/psearchgrid_harnesses/H01-psearchgrid_unit/zlaunch.sh` | `missions/psearchgrid_missions/psearchgrid_unit` | 23 | `pSearchGrid` | `psearchgrid-unit` |
 | `depth_constant_h01` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H01-constant_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 17 | - | `constant-depth-motion` |
-| `depth_goto_h02` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H02-goto_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 18 | - | `goto-depth-motion` |
+| `depth_goto_h02` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H02-goto_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 17 | - | `goto-depth-motion` |
 | `depth_periodic_surface_h03` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H03-periodic_surface_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 24 | - | `periodic-surface-motion` |
 | `depth_max_h04` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H04-max_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 15 | - | `max-depth-motion` |
 | `depth_min_altitude_h05` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H05-min_altitude_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 13 | - | `min-altitude-motion` |

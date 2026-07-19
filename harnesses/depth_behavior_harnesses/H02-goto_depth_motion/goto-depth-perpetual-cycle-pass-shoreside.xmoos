@@ -1,5 +1,5 @@
 //-------------------------------------------------
-// FILE: goto-depth-capture-flag-alias-pass-shoreside.xmoos
+// FILE: goto-depth-perpetual-cycle-pass-shoreside.xmoos
 // NAME: Charles Benjamin
 //-------------------------------------------------
 
@@ -8,11 +8,10 @@ ProcessConfig = uTimerScript
   AppTick   = 2
   CommsTick = 2
 
-  condition = DEPLOY_ALL = true
-
-  // Success is driven by GTD_LEVEL_HIT. This deadline distinguishes a
-  // missing capture_flag alias from a slow but otherwise valid sequence.
-  event = var=CAPTURE_FLAG_DEADLINE, val=true, time=70
+  // The success path is driven by the next GTD_LEVEL_HIT. This deadline
+  // only makes the missing-restart mutation produce a mission-owned failure.
+  condition = GTD_LEVEL_HIT = 2
+  event = var=PERPETUAL_RESTART_DEADLINE, val=true, time=35
 }
 
 ProcessConfig = pMissionEval
@@ -21,13 +20,15 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @DEPLOY_ALL#BHV_ERROR_SEEN=false
-  mailflag = @DEPLOY_ALL#CAPTURE_FLAG_DEADLINE=false
+  mailflag = @DEPLOY_ALL#PERPETUAL_RESTART_DEADLINE=false
   mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = (GTD_LEVEL_HIT >= 3) or (CAPTURE_FLAG_DEADLINE = true)
-  pass_condition = ABE_NAV_DEPTH >= 7
-  pass_condition = ABE_NAV_DEPTH <= 11
-  pass_condition = GTD_LEVEL_HIT >= 3
+  lead_condition = GTD_LEVEL_HIT = 2
+  pass_condition = GTD_LEVEL_HIT = 2
+  pass_condition = BHV_ERROR_SEEN = false
+
+  lead_condition = (GTD_LEVEL_HIT = 1) or (PERPETUAL_RESTART_DEADLINE = true)
+  pass_condition = GTD_LEVEL_HIT = 1
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -40,11 +41,9 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = eval=$[GTD_LEVEL_HIT]
-  report_column = x=$[ABE_NAV_X]
-  report_column = depth=$[ABE_NAV_DEPTH]
-  report_column = level=$[LEVEL_DEPTH]
+  report_column = expected=arrival_counter_2_then_1
   report_column = gtd_hit=$[GTD_LEVEL_HIT]
-  report_column = deadline=$[CAPTURE_FLAG_DEADLINE]
+  report_column = restart_deadline=$[PERPETUAL_RESTART_DEADLINE]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }
