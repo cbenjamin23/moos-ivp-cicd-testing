@@ -35,7 +35,6 @@ Options:
   --max_time=<secs>     Maximum time passed to xlaunch
   --shore_mport=<n>     Shoreside MOOSDB port
   --shore_pshare=<n>    Reserved shoreside pShare port
-  --mmod=<name>         Mission modification label
   --external_stimulus   Let a harness invoke uTermCommand after startup
 EOF
 }
@@ -63,7 +62,7 @@ for arg in "$@"; do
         --gui) DISPLAY_ARGS=() ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
         --shore_mport=*) MOOS_PORT="${arg#--shore_mport=}"; FLOW_ARGS+=("$arg") ;;
-        --shore_pshare=*|--mmod=*) FLOW_ARGS+=("$arg") ;;
+        --shore_pshare=*) FLOW_ARGS+=("$arg") ;;
         *)
             is_uint "$arg" || die "bad argument: $arg"
             TIME_WARP="$arg"

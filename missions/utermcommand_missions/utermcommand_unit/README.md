@@ -3,8 +3,10 @@
 Headless single-community stem for exercising `uTermCommand` as an
 app-under-test. The harness runs `uTermCommand` externally with deterministic
 stdin keystrokes, posts the existing evaluation-ready event, and then
-`pMissionEval` grades the posted variables. The mission wrapper uses the shared
-`xlaunch.sh` lifecycle and scoped teardown helper.
+`pMissionEval` grades the posted variables. A small `pEchoVar` probe emits
+evidence only when either numeric command arrives as string-valued MOOS mail.
+The mission wrapper uses the shared `xlaunch.sh` lifecycle and scoped teardown
+helper.
 
 The stem can also validate its default numeric case directly:
 
@@ -24,6 +26,7 @@ Run one inspectable case:
 ../../../harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh --case=numeric_command_pass --port_base=16200 10
 ```
 
-Logging defaults to `minimal`, with no active `pLogger`; terminal stimulus and
-the mission result provide the grading evidence. Pass `--log=full` to either
-mission launcher to restore the previous logger configuration.
+Logging defaults to `minimal`, with no active `pLogger`; terminal stimulus, the
+harness's one-process check, and the mission result provide the grading
+evidence. Pass `--log=full` to either mission launcher to restore the previous
+logger configuration.

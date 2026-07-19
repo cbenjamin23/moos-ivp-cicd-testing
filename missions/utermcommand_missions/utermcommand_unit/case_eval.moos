@@ -10,14 +10,13 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TERM_NUM = 42
+  fail_condition = TERM_NUM_STRING_EVIDENCE != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = utermcommand_unit
-  mission_mod  = $(MMOD:=numeric_command_pass)
 
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
   report_column = term_num=$[TERM_NUM]
   report_column = mhash=$[MHASH_SHORT]

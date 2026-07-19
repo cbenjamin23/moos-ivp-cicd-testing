@@ -1905,7 +1905,9 @@
       "families": [
         "utermcommand"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "pEchoVar"
+      ],
       "harness": "H01-utermcommand_unit",
       "key": "utermcommand_h01",
       "mission": {
@@ -1918,6 +1920,7 @@
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
+        "pEchoVar",
         "pLogger",
         "pMissionEval"
       ],
@@ -6237,7 +6240,8 @@
       ],
       "pEchoVar": [
         "pechovar_h01",
-        "ufld_obstacle_sim_h01"
+        "ufld_obstacle_sim_h01",
+        "utermcommand_h01"
       ],
       "pGapLatch": [
         "testfailure_h01"
@@ -7021,6 +7025,7 @@
       ".mjo": 1,
       ".moos": 155,
       ".mp4": 149,
+      ".out": 3,
       ".png": 4,
       ".py": 38,
       ".sh": 365,

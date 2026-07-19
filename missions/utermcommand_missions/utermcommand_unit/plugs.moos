@@ -8,6 +8,24 @@ MOOSTimeWarp = $(WARP)
 LatOrigin  = 43.825300
 LongOrigin = -70.330400
 
+<tag><type_probe>
+//----------------------------------------------------
+// pEchoVar Config Block
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:1 = source_variable = TERM_NUM
+  FLIP:1 = dest_variable   = TERM_NUM_STRING_EVIDENCE
+  FLIP:1 = 42 -> numeric_string
+
+  FLIP:2 = source_variable = TERM_NEG
+  FLIP:2 = dest_variable   = TERM_NEG_STRING_EVIDENCE
+  FLIP:2 = -3.5 -> numeric_string
+}
+
 <tag><pLogger>
 //----------------------------------------------------
 // pLogger Config Block
@@ -17,12 +35,15 @@ ProcessConfig = pLogger
   AppTick   = 10
   CommsTick = 10
 
-  File     = LOG_$(MMOD)
+  File     = LOG_utermcommand_unit
   PATH     = ./
   AsyncLog = true
 
   Log = TEST_EVAL_READY @ 0 nosync
   Log = TERM_NUM @ 0 nosync
+  Log = TERM_NUM_STRING_EVIDENCE @ 0 nosync
+  Log = TERM_NEG @ 0 nosync
+  Log = TERM_NEG_STRING_EVIDENCE @ 0 nosync
   Log = TERM_STR @ 0 nosync
   Log = TERM_PARTIAL @ 0 nosync
   Log = TERM_DUP @ 0 nosync

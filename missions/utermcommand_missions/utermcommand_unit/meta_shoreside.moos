@@ -16,9 +16,11 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
+  Run = pEchoVar      @ NewConsole = false
   Run = pMissionEval  @ NewConsole = false
   Run = pMissionHash  @ NewConsole = false
 }
 
+#include plugs.moos <type_probe>
 #include plugs.moos <pLogger>
 #include case_eval.moos

@@ -293,7 +293,7 @@ get_case_config() {
     CASE_NAME="$1"
     CMD_LINES=()
     INPUT_BYTES=""
-    INPUT_EXTRA_BYTES=""
+    INPUT_NEXT_BYTES=""
     PASS_CONDITIONS=()
     FAIL_CONDITIONS=()
     REPORT_COLUMNS=()
@@ -303,6 +303,7 @@ get_case_config() {
             CMD_LINES=("CMD = num,TERM_NUM,42")
             INPUT_BYTES=$'num\n'
             PASS_CONDITIONS=("TERM_NUM = 42")
+            FAIL_CONDITIONS=('TERM_NUM_STRING_EVIDENCE != ""')
             REPORT_COLUMNS=("term_num=\$[TERM_NUM]")
             ;;
         quoted_string_command_pass)
@@ -327,7 +328,7 @@ get_case_config() {
         multiple_commands_pass)
             CMD_LINES=("CMD = aa,TERM_A,11" "CMD = bb,TERM_B,bravo")
             INPUT_BYTES=$'aa\n'
-            INPUT_EXTRA_BYTES=$'bb\n'
+            INPUT_NEXT_BYTES=$'bb\n'
             PASS_CONDITIONS=("TERM_A = 11" "TERM_B = bravo")
             REPORT_COLUMNS=("term_a=\$[TERM_A]" "term_b=\$[TERM_B]")
             ;;
@@ -347,6 +348,7 @@ get_case_config() {
             CMD_LINES=("CMD = neg,TERM_NEG,-3.5")
             INPUT_BYTES=$'neg\n'
             PASS_CONDITIONS=("TERM_NEG = -3.5")
+            FAIL_CONDITIONS=('TERM_NEG_STRING_EVIDENCE != ""')
             REPORT_COLUMNS=("term_neg=\$[TERM_NEG]")
             ;;
         config_key_case_normalized_pass)
@@ -440,11 +442,9 @@ write_case_files() {
         echo ""
         echo "  result_flag  = MISSION_EVALUATED = true"
         echo "  mission_form = utermcommand_unit"
-        echo "  mission_mod  = $CASE_NAME"
         echo ""
         echo "  report_column = grade=\$[GRADE]"
         echo "  report_column = form=\$[MISSION_FORM]"
-        echo "  report_column = mmod=\$[MMOD]"
         echo "  report_column = eval=\$[TEST_EVAL_READY]"
         for item in "${REPORT_COLUMNS[@]}"; do
             echo "  report_column = $item"
@@ -458,24 +458,21 @@ write_case_files() {
 run_terminal_session() {
     local case_dir="$1"
     local input_bytes="$2"
-    local output_mode="$3"
+    local next_bytes="$3"
     local term_pid
     local deadline
     local stop_attempt
 
-    if [ "$output_mode" = append ]; then
-        (
-            printf '%s' "$input_bytes"
-            sleep 0.8
-            printf 'q'
-        ) | uTermCommand "$case_dir/termcommand.moos" --verbose=false >> "$case_dir/termcommand.out" 2>&1 &
-    else
-        (
-            printf '%s' "$input_bytes"
-            sleep 0.8
-            printf 'q'
-        ) | uTermCommand "$case_dir/termcommand.moos" --verbose=false > "$case_dir/termcommand.out" 2>&1 &
-    fi
+    (
+        sleep 0.4
+        printf '%s' "$input_bytes"
+        if [ -n "$next_bytes" ]; then
+            sleep 0.4
+            printf '%s' "$next_bytes"
+        fi
+        sleep 0.8
+        printf 'q'
+    ) | uTermCommand "$case_dir/termcommand.moos" --verbose=false > "$case_dir/termcommand.out" 2>&1 &
     term_pid=$!
     deadline=$((SECONDS + TERMINAL_TIMEOUT))
     while kill -0 "$term_pid" 2>/dev/null; do
@@ -498,10 +495,7 @@ run_terminal_session() {
 
 run_termcommand() {
     local case_dir="$1"
-    run_terminal_session "$case_dir" "$INPUT_BYTES" replace || return $?
-    if [ -n "$INPUT_EXTRA_BYTES" ]; then
-        run_terminal_session "$case_dir" "$INPUT_EXTRA_BYTES" append || return $?
-    fi
+    run_terminal_session "$case_dir" "$INPUT_BYTES" "$INPUT_NEXT_BYTES" || return $?
 }
 
 run_ready_poke() {
@@ -572,6 +566,7 @@ write_result() {
     local mission_grade
     local mission_rows
     local provenance
+    local terminal_sessions
 
     if [ "$JUST_MAKE" = yes ]; then
         if [ "$launch_rc" -eq 0 ]; then
@@ -635,8 +630,17 @@ write_result() {
         return 0
     fi
 
+    terminal_sessions=$(grep -c 'uTermCommand launching as' "$workdir/termcommand.out" 2>/dev/null || true)
+    if [ "$terminal_sessions" -ne 1 ]; then
+        provenance=$(runner_provenance "$line")
+        printf 'case=%s grade=fail reason=terminal_session_count sessions=%s%s\n' \
+            "$case_name" "$terminal_sessions" "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
+
     line=$(without_case_field "$line")
-    printf 'case=%s %s\n' "$case_name" "$line" > "$result_file"
+    printf 'case=%s %s terminal_sessions=%s\n' \
+        "$case_name" "$line" "$terminal_sessions" > "$result_file"
 }
 
 run_case() {

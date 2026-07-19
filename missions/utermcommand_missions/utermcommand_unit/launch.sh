@@ -22,7 +22,6 @@ MOOS_PORT="9000"
 PSHARE_PORT="9200"
 XLAUNCHED="no"
 NOGUI=""
-MMOD="numeric_command_pass"
 
 for ARGI; do
     if [ "${ARGI}" = "--help" ] || [ "${ARGI}" = "-h" ]; then
@@ -43,8 +42,6 @@ for ARGI; do
         MOOS_PORT="${ARGI#--shore_mport=*}"
     elif [ "${ARGI:0:15}" = "--shore_pshare=" ]; then
         PSHARE_PORT="${ARGI#--shore_pshare=*}"
-    elif [ "${ARGI:0:7}" = "--mmod=" ]; then
-        MMOD="${ARGI#--mmod=*}"
     elif [ "${ARGI}" = "--xlaunched" ] || [ "${ARGI}" = "-x" ]; then
         XLAUNCHED="yes"
     elif [ "${ARGI}" = "--nogui" ] || [ "${ARGI}" = "-ng" ]; then
@@ -75,7 +72,7 @@ if [ "${XLAUNCHED}" != "yes" ]; then
 fi
 
 nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS \
-       WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT MMOD=$MMOD
+       WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT
 
 if [ "${JUST_MAKE}" != "" ]; then
     echo "$ME: Targ files made; exiting without launch."

@@ -4,6 +4,7 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
+  Run = pEchoVar      @ NewConsole = false
   Run = pLogger       @ NewConsole = false
   Run = pMissionEval  @ NewConsole = false
   Run = pMissionHash  @ NewConsole = false

@@ -97,7 +97,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `utimerscript_h01` | `utimerscript` | `harnesses/utimerscript_harnesses/H01-utimerscript_unit/zlaunch.sh` | `missions/utimerscript_missions/utimerscript_unit` | 33 | - | `utimerscript-unit` |
 | `pdeadmanpost_h01` | `pdeadmanpost` | `harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit/zlaunch.sh` | `missions/pdeadmanpost_missions/pdeadmanpost_unit` | 20 | `pDeadManPost` | `pdeadmanpost-unit` |
 | `pspoofnode_h01` | `pspoofnode` | `harnesses/pspoofnode_harnesses/H01-pspoofnode_unit/zlaunch.sh` | `missions/pspoofnode_missions/pspoofnode_unit` | 33 | `pSpoofNode` | `pspoofnode-unit` |
-| `utermcommand_h01` | `utermcommand` | `harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh` | `missions/utermcommand_missions/utermcommand_unit` | 15 | - | `utermcommand-unit` |
+| `utermcommand_h01` | `utermcommand` | `harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh` | `missions/utermcommand_missions/utermcommand_unit` | 15 | `pEchoVar` | `utermcommand-unit` |
 | `psearchgrid_h01` | `psearchgrid` | `harnesses/psearchgrid_harnesses/H01-psearchgrid_unit/zlaunch.sh` | `missions/psearchgrid_missions/psearchgrid_unit` | 23 | `pSearchGrid` | `psearchgrid-unit` |
 | `depth_constant_h01` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H01-constant_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 19 | - | `constant-depth-motion` |
 | `depth_goto_h02` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H02-goto_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 18 | - | `goto-depth-motion` |
@@ -148,7 +148,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `ufield_comms_h01` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H01-ufield_comms_unit/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 35 | - | `ufield-comms-unit` |
 | `ufield_comms_h02` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H02-ufield_broker_bridge/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 12 | `pMediator` | `ufield-broker-bridge` |
 | `ufield_comms_h03` | `ufield_comms` | `harnesses/ufield_comms_harnesses/H03-ufield_route_resilience/zlaunch.sh` | `missions/ufield_comms_missions/ufield_comms_unit` | 25 | - | `ufield-route-resilience` |
-| `ufld_obstacle_sim_h01` | `ufld_obstacle_sim` | `harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/zlaunch.sh` | `missions/ufld_obstacle_sim_missions/ufld_obstacle_sim_unit` | 49 | `pEchoVar`, `uFldObstacleSim` | `ufld-obstacle-sim-unit` |
+| `ufld_obstacle_sim_h01` | `ufld_obstacle_sim` | `harnesses/ufld_obstacle_sim_harnesses/H01-ufld_obstacle_sim_unit/zlaunch.sh` | `missions/ufld_obstacle_sim_missions/ufld_obstacle_sim_unit` | 49 | `uFldObstacleSim`, `pEchoVar` | `ufld-obstacle-sim-unit` |
 
 ## Shared Mission Stems
 
@@ -172,7 +172,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `iM300Health`: `p02_colregs`, `p03_colregs`
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
-- `pEchoVar`: `pechovar_h01`, `ufld_obstacle_sim_h01`
+- `pEchoVar`: `pechovar_h01`, `ufld_obstacle_sim_h01`, `utermcommand_h01`
 - `pGapLatch`: `testfailure_h01`
 - `pMediator`: `ufield_comms_h02`
 - `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`
