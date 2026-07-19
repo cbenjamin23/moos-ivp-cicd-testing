@@ -2267,13 +2267,13 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
   <header class="site-header">
     <a class="brand" href="{prefix}index.html">
       <span class="brand-mark">CI</span>
-      <span>MOOS-IvP Harnesses</span>
+      <span>MOOS-IvP CI/CD</span>
     </a>
     <div class="header-actions">
       <nav>
         <a href="{prefix}quick-start.html">Quick Start</a>
         <a href="{prefix}index.html#families">Harnesses</a>
-        <a href="{prefix}ctest-coverage.html">CTest Coverage</a>
+        <a href="{prefix}ctest-coverage.html">Unit Tests</a>
         <a href="{prefix}examples.html">Examples</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
@@ -2762,7 +2762,7 @@ def render_ctest_coverage() -> str:
   <main>
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
-      <p class="eyebrow">CTest Coverage</p>
+      <p class="eyebrow">Unit Tests</p>
       <h1>C++ unit tests for MOOS-IvP.</h1>
       <p class="lede">These tests check individual classes and functions without running a mission. CTest organizes them into focused groups for parsers, geometry, IvP functions, contact records, behavior helpers, app utilities, and other source-level logic.</p>
       <div class="hero-actions">
@@ -2819,7 +2819,7 @@ def render_ctest_coverage() -> str:
     </section>
   </main>
 """
-    return page_shell("CTest Coverage", body)
+    return page_shell("Unit Tests", body)
 
 
 def render_quick_start() -> str:
@@ -2956,13 +2956,12 @@ def render_index() -> str:
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">MOOS-IvP CI/CD Pipeline</p>
-        <h1>Regression tests for MOOS-IvP Apps, Behaviors, and Libraries</h1>
-        <p class="lede">This repository combines C++ unit tests for individual classes and functions with live mission harnesses for MOOS apps, behaviors, and vehicle motion.</p>
+        <h1>CI/CD Pipeline for MOOS-IvP Apps, Behaviors, and Libraries</h1>
+        <p class="lede">C++ unit tests check individual classes and functions, while mission harnesses test live MOOS processes, vehicle motion, and system-level outcomes.</p>
         <div class="hero-actions">
           <a class="button primary" href="quick-start.html">Developer quick start</a>
           <a class="button secondary" href="#families">Browse catalog</a>
-          <a class="button secondary" href="ctest-coverage.html">CTest coverage</a>
+          <a class="button secondary" href="ctest-coverage.html">Unit Tests</a>
           <a class="button secondary" href="examples.html">Examples</a>
         </div>
       </div>
@@ -2981,31 +2980,10 @@ def render_index() -> str:
       </div>
     </section>
 
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Coverage Layers</p>
-        <h2>Two complementary ways to catch regressions</h2>
-        <p>C++ unit tests check individual classes and functions, while mission harnesses test live MOOS processes, vehicle motion, and system-level outcomes.</p>
-      </div>
-      <div class="technical-grid technical-grid--two">
-        <article class="technical-card">
-          <h3>Unit Tests</h3>
-          <p>CTest C++ unit tests for MOOS-IvP libraries, apps, behaviors, and utilities.</p>
-          <a class="text-link" href="ctest-coverage.html">Browse CTest coverage</a>
-        </article>
-        <article class="technical-card">
-          <h3>Mission Harnesses</h3>
-          <p>Live MOOS missions that test app messages, behavior states, vehicle motion, timing, and interactions between processes.</p>
-          <a class="text-link" href="#families">Browse harness catalog</a>
-        </article>
-      </div>
-    </section>
-
     <section id="families" class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Harness Catalog</p>
-        <h2>MOOS apps and IvP behaviors under test</h2>
-        <p>Select an app or behavior family to see its harness pages.</p>
+        <h2>Harness Catalog</h2>
+        <p>MOOS apps and IvP behaviors under test</p>
       </div>
       <div class="family-list">
         {family_sections}
