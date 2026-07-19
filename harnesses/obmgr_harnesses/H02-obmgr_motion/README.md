@@ -75,10 +75,6 @@ instead use `grade=fail reason=<runner_reason>`.
 - `point_cluster_pass`: Posts four `TRACKED_FEATURE` points under the same key
   to test `pObstacleMgr`'s generated convex-hull path instead of its configured
   polygon path; passes when `ARRIVED=true` and `OB_TOTAL_COLLISIONS=0`.
-- `lasso_cluster_pass`: Posts the same four points with `lasso=true` and
-  `lasso_radius=8`, exercising pseudo-hull configuration instead of the normal
-  convex hull; the current evaluator passes when `ARRIVED=true` and
-  `OB_TOTAL_COLLISIONS=0` without comparing the generated hull.
 - `two_sequential_fail`: Places two 8-by-8-meter obstacles in the transit lane
   at separate points along the route, testing consecutive obstacle encounters;
   passes when `ARRIVED=true`, `OB_TOTAL_ENCOUNTERS=2`, and

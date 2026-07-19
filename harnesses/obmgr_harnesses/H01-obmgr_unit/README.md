@@ -30,15 +30,16 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 - `no_alert_request_absent_pass`: Posts the near `GIVEN_OBSTACLE` without an
   `OBM_ALERT_REQUEST`, testing that an accepted obstacle does not produce
   request-scoped output; passes when `OBM_NEW_GIVEN=true`,
-  `OBM_DIST_TO_OBJ=OB_NEAR,18.0` is absent, and `OBSTACLE_ALERT` remains empty.
+  no `OBM_DIST_TO_OBJ` publication is observed, and `OBSTACLE_ALERT` remains
+  empty.
 - `bad_alert_request_absent_pass`: Sends an `OBM_ALERT_REQUEST` with
   `alert_range=-25` before posting the near obstacle, testing rejection of an
-  invalid request; passes when `OBM_NEW_GIVEN=true`, the expected
-  `OBM_DIST_TO_OBJ` report is absent, and `OBSTACLE_ALERT` remains empty.
+  invalid request; passes when `OBM_NEW_GIVEN=true`, no `OBM_DIST_TO_OBJ`
+  publication is observed, and `OBSTACLE_ALERT` remains empty.
 - `given_far_absent_pass`: Posts a `GIVEN_OBSTACLE` 35 meters east while the
   alert range is 25 meters and `post_dist_to_polys=close`, testing close-range
-  output gating; passes when `OBM_NEW_GIVEN=true`,
-  `OBM_DIST_TO_OBJ=OB_FAR,35.0` is absent, and `OBSTACLE_ALERT` remains empty.
+  output gating; passes when `OBM_NEW_GIVEN=true`, no `OBM_DIST_TO_OBJ`
+  publication is observed, and `OBSTACLE_ALERT` remains empty.
 - `given_general_alert_pass`: Configures a named `general_alert` with a
   40-meter range, then posts an obstacle 35 meters away and outside the normal
   25-meter alert range, testing the independent general-alert path; passes when
@@ -57,19 +58,19 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   `OBSTACLE_ALERT` remains empty.
 - `given_max_duration_missing_absent_pass`: Sets `given_max_duration=30` and
   posts a `GIVEN_OBSTACLE` without `duration=`, testing the required-duration
-  check; passes when `OBM_NEW_GIVEN` is never set.
+  check; passes when neither `OBM_NEW_GIVEN` nor `OBSTACLE_ALERT` is published.
 - `invalid_given_nonconvex_absent_pass`: Posts a `GIVEN_OBSTACLE` whose three
   vertices are collinear, testing invalid-polygon rejection; passes when
-  `OBM_NEW_GIVEN` is never set, `OBM_DIST_TO_OBJ=BAD_GIVEN,20.0` is absent, and
-  `OBSTACLE_ALERT` remains empty.
+  `OBM_NEW_GIVEN` is never set, no `OBM_DIST_TO_OBJ` publication is observed,
+  and `OBSTACLE_ALERT` remains empty.
 - `post_dist_always_pass`: Sets `post_dist_to_polys=true` and posts an obstacle
   35 meters away, outside the 25-meter alert range, testing unconditional
   distance publication; passes when `OBM_NEW_GIVEN=true` and
   `OBM_DIST_TO_OBJ=OB_FAR,35.0`.
 - `post_dist_false_absent_pass`: Sets `post_dist_to_polys=false` before posting
   the near obstacle, testing distance-output suppression without rejecting the
-  obstacle; passes when `OBM_NEW_GIVEN=true` and
-  `OBM_DIST_TO_OBJ=OB_NEAR,18.0` is absent.
+  obstacle; passes when `OBM_NEW_GIVEN=true` and no `OBM_DIST_TO_OBJ`
+  publication is observed.
 
 ### Point-cluster and hull-generation cases
 
@@ -83,16 +84,16 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   `17 < OBM_MIN_DIST_EVER < 19`.
 - `invalid_point_missing_key_absent_pass`: Posts four `TRACKED_FEATURE` points
   without `key=` or `label=`, testing rejection before cluster creation; passes
-  when `OBM_DIST_TO_OBJ=GENERIC,18.0` is absent and `OBSTACLE_ALERT` remains
-  empty.
+  when no `OBM_DIST_TO_OBJ` publication is observed and `OBSTACLE_ALERT`
+  remains empty.
 - `max_pts_per_cluster_trim_pass`: Sets `max_pts_per_cluster=3` and posts five
-  points under `key=rock_a`, exercising the capped-cluster path before hull
-  construction; the current evaluator passes when
-  `17 < OBM_MIN_DIST_EVER < 19` but does not distinguish the retained points.
+  points under `key=rock_a`, with the first two 10 meters away and the latest
+  three 22 meters away, testing that the cap discards the older near points;
+  passes when the current report is `OBM_DIST_TO_OBJ=ROCK_A,22.0`.
 - `points_ignore_range_absent_pass`: Sets `ignore_range=10` and posts a point
   cluster whose nearest point is 18 meters away, testing point rejection
-  outside the input range; passes when `OBM_DIST_TO_OBJ=ROCK_A,18.0` is absent
-  and `OBSTACLE_ALERT` remains empty.
+  outside the input range; passes when no `OBM_DIST_TO_OBJ` publication is
+  observed and `OBSTACLE_ALERT` remains empty.
 - `points_age_resolve_pass`: Sets `max_age_per_point=3` and posts four points
   under `key=rock_a`, testing point-cluster expiration; passes at 10 seconds
   when `OBM_RESOLVED=rock_a`.
@@ -126,23 +127,22 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
 
 - `disable_obstacle_pass`: Sets `disable_var=OBM_DISABLE`, accepts `ob_near`,
   and posts `OBM_DISABLE=ob_near`, testing generation of
-  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=disable`; the current evaluator
-  passes when any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true` and records
-  the payload without comparing it.
+  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=disable`; passes only when that
+  complete payload is observed.
 - `disable_vsource_pass`: Posts `OBM_DISABLE=vsource=radar`, testing the
   source-selector branch of the modification parser; passes when
   `OB_FILTER_SEEN=true` and
   `BHV_ABLE_FILTER=vsource=radar,action=disable` exactly.
 - `enable_obstacle_pass`: Sets `enable_var=OBM_ENABLE`, accepts `ob_near`, and
   posts `OBM_ENABLE=ob_near`, testing generation of
-  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=enable`; the current evaluator
-  passes when any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true` and records
-  the payload without comparing it.
+  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=enable`; passes only when that
+  complete payload is observed.
 - `expunge_obstacle_pass`: Sets `expunge_var=OBM_EXPUNGE`, accepts `ob_near`,
   and posts `OBM_EXPUNGE=ob_near`, testing generation of
-  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=expunge`; the current evaluator
-  passes when any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true` and does not
-  verify removal from the manager's internal map.
+  `BHV_ABLE_FILTER=obstacle_id=ob_near,action=expunge`; passes only when that
+  complete payload is observed. This case intentionally grades the public
+  filter translation only; the bare-ID removal defect is recorded separately
+  as a suggested upstream change.
 
 ## Typical Runs
 
@@ -198,12 +198,15 @@ aborted rows, and the run root and safety lock are kept for diagnosis.
 
 ## Mission-Owned Payload Comparisons
 
-Four cases compare structured strings that contain their own `=` characters:
+Seven cases compare structured strings that contain their own `=` characters:
 
 - `given_general_alert_pass`
 - `general_alert_default_name_pass`
 - `point_vsource_alert_pass`
 - `disable_vsource_pass`
+- `disable_obstacle_pass`
+- `enable_obstacle_pass`
+- `expunge_obstacle_pass`
 
 Each case uses the existing shoreside `uTimerScript` to publish its expected
 literal under the one reused name `OBM_EXPECTED_PAYLOAD`. `pMissionEval` then
@@ -217,16 +220,21 @@ the legacy full-token checks. For `point_vsource_alert_pass` and
 legacy substring checks. That is a migration to a mission-owned expression of
 the existing payload contract, not a broader redesign of the test matrix.
 
-Seven expected-absence cases use the direct mission-side failure condition
-`OBSTACLE_ALERT != ""` so any nonempty alert fails the case:
+Seven expected-absence cases set `OBM_DIST_SEEN=true` on any
+`OBM_DIST_TO_OBJ` mail and fail when the flag is observed. Cases that also
+require alert absence retain their direct mission-side
+`OBSTACLE_ALERT != ""` failure condition:
 
 - `no_alert_request_absent_pass`
 - `bad_alert_request_absent_pass`
 - `given_far_absent_pass`
-- `given_max_duration_reject_absent_pass`
 - `invalid_given_nonconvex_absent_pass`
+- `post_dist_false_absent_pass`
 - `invalid_point_missing_key_absent_pass`
 - `points_ignore_range_absent_pass`
+
+`given_max_duration_missing_absent_pass` separately sets an alert-seen flag so
+even an unexpected empty `OBSTACLE_ALERT` publication fails the case.
 
 ## What `./zlaunch.sh` Does Here
 

@@ -3,7 +3,6 @@ case=offset_clear_pass grade=pass form=obavoid_tests_harness mmod=offset_clear_p
 case=tight_alert_pass grade=pass form=obavoid_tests_harness mmod=tight_alert_pass eval=true arrived=true collisions=0 near_misses=0 encounters=1 mhash=[RUBY-JESS]
 case=runtime_given_late_pass grade=pass form=obavoid_tests_harness mmod=runtime_given_late_pass eval=true arrived=true collisions=0 near_misses=0 encounters=1 mhash=[REAR-NAME]
 case=point_cluster_pass grade=pass form=obavoid_tests_harness mmod=point_cluster_pass eval=true arrived=true collisions=0 near_misses=0 encounters=1 mhash=[HEAD-DREW]
-case=lasso_cluster_pass grade=pass form=obavoid_tests_harness mmod=lasso_cluster_pass eval=true arrived=true collisions=0 near_misses=0 encounters=1 mhash=[FOUR-SHAW]
 case=two_sequential_fail grade=pass form=obavoid_tests_harness mmod=two_sequential_fail eval=true expected=collision arrived=true collisions=1 near_misses=0 encounters=2 mhash=[SLIM-FINN]
 case=wide_center_fail grade=pass form=obavoid_tests_harness mmod=wide_center_fail eval=true expected=collision arrived=true collisions=1 near_misses=0 encounters=1 mhash=[RUDE-TUCK]
 case=avoid_disabled_fail grade=pass form=obavoid_tests_harness mmod=avoid_disabled_fail eval=true expected=collision arrived=true collisions=1 near_misses=0 encounters=1 mhash=[TINY-CATO]

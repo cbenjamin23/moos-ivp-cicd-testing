@@ -66,7 +66,6 @@ CASES=(
     tight_alert_pass
     runtime_given_late_pass
     point_cluster_pass
-    lasso_cluster_pass
     two_sequential_fail
     wide_center_fail
     avoid_disabled_fail
@@ -307,10 +306,6 @@ get_case_config() {
         point_cluster_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/point-cluster-pass-shoreside.xmoos"
             CASE_VEH_PATCH="$HARNESS_DIR/point-cluster-pass-vehicle.xmoos"
-            ;;
-        lasso_cluster_pass)
-            CASE_SHORE_PATCH="$HARNESS_DIR/lasso-cluster-pass-shoreside.xmoos"
-            CASE_VEH_PATCH="$HARNESS_DIR/lasso-cluster-pass-vehicle.xmoos"
             ;;
         two_sequential_fail)
             CASE_SHORE_PATCH="$HARNESS_DIR/two-sequential-pass-shoreside.xmoos"

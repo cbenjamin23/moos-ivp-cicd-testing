@@ -3,9 +3,11 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @OBM_DIST_TO_OBJ#OBM_DIST_SEEN=true
+
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
-  fail_condition = OBM_DIST_TO_OBJ = GENERIC,18.0
+  fail_condition = OBM_DIST_SEEN = true
   fail_condition = OBSTACLE_ALERT != ""
 
   result_flag  = MISSION_EVALUATED = true
@@ -16,6 +18,7 @@ ProcessConfig = pMissionEval
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = dist_seen=$[OBM_DIST_SEEN]
   report_column    = dist=$[OBM_DIST_TO_OBJ]
   report_column    = alert=$[OBSTACLE_ALERT]
   report_column    = mhash=$[MHASH_SHORT]

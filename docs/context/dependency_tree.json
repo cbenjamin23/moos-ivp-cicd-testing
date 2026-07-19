@@ -1027,7 +1027,7 @@
         "path": "missions/obmgr_missions/obmgr_motion"
       },
       "patches": {
-        "file_count": 19
+        "file_count": 17
       },
       "path": "harnesses/obmgr_harnesses/H02-obmgr_motion",
       "perf_profile": "",
@@ -1053,7 +1053,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 10,
+        "case_count": 9,
         "case_parse_error": "",
         "cases": [
           "baseline_center_pass",
@@ -1061,7 +1061,6 @@
           "tight_alert_pass",
           "runtime_given_late_pass",
           "point_cluster_pass",
-          "lasso_cluster_pass",
           "two_sequential_fail",
           "wide_center_fail",
           "avoid_disabled_fail",
@@ -7032,10 +7031,10 @@
       ".sh": 366,
       ".txt": 302,
       ".xbhv": 518,
-      ".xmoos": 1327,
+      ".xmoos": 1325,
       "[none]": 7
     },
-    "harness_patch_count": 1740,
+    "harness_patch_count": 1738,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

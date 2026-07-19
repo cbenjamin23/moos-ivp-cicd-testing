@@ -1,3 +1,17 @@
+// Publish the structured expected payload as a right-hand variable because
+// LogicCondition cannot safely parse embedded key=value text as a literal.
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval
+  condition = DEPLOY_ALL = true
+
+  event = var=OBM_EXPECTED_PAYLOAD, val="obstacle_id=ob_near,action=enable", time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=8
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
@@ -7,6 +21,7 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = OB_FILTER_SEEN = true
+  pass_condition = BHV_ABLE_FILTER = $ (OBM_EXPECTED_PAYLOAD)
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = obmgr_tests_harness

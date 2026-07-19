@@ -160,8 +160,8 @@ Work through the seven existing Obstacle Manager findings in this order:
 
 1. Strengthen `disable_obstacle_pass`, `enable_obstacle_pass`, and
    `expunge_obstacle_pass` by comparing the complete `BHV_ABLE_FILTER` payload;
-   separately prove expunge removes the named obstacle if a stable observable
-   exists.
+   record expunge removal as an upstream dependency when the checked-out app
+   does not perform it for the documented bare-ID input.
 2. Replace value-specific absence checks with a flag that detects any
    `OBM_DIST_TO_OBJ` publication in the seven expected-absence cases.
 3. Extend `given_max_duration_missing_absent_pass` to reject any unexpected
@@ -170,9 +170,9 @@ Work through the seven existing Obstacle Manager findings in this order:
    and untrimmed hulls produce different observable results. If the retained
    point set cannot be observed reliably through the app, move the trimming
    contract to CTest and keep at most one broad point-cluster harness case.
-5. For `lasso_cluster_pass`, look for a stable generated-polygon or
-   lasso-specific publication. If none exists, decide whether the pseudo-hull
-   algorithm belongs in CTest instead of adding another motion threshold.
+5. Remove H02 `lasso_cluster_pass` because it has no lasso-specific evidence;
+   retain the H01 lasso case that distinguishes the generated pseudo-hull from
+   the non-lasso collinear-point fallback.
 
 For each change, first demonstrate that the current evaluator accepts the
 targeted broken condition or explain statically why it can. Then implement the
@@ -181,6 +181,42 @@ when supported, run the complete family matrix, update the README description
 and gap status, regenerate the website and dependency map, and run repository
 invariants.
 
+### Wave 0 Progress (2026-07-19)
+
+- Exact `BHV_ABLE_FILTER` comparisons now grade the disable, enable, and
+  expunge translation cases. A deliberately wrong action makes the focused
+  case fail.
+- All seven distance-absence cases now fail on any `OBM_DIST_TO_OBJ` mail. A
+  mutation posting `WRONG_VALUE,999.0` fails, where the prior value-specific
+  evaluator would have passed.
+- `given_max_duration_missing_absent_pass` now fails on any alert mail. An
+  injected unexpected alert makes the focused case fail.
+- `max_pts_per_cluster_trim_pass` now places the first two points 10 meters
+  away and the retained final three 22 meters away. The case requires the
+  22-meter result; raising the cap from 3 to 20 retains the near points,
+  reports 10 meters, and makes the case fail without depending on polygon
+  vertex serialization. `OBM_MIN_DIST_EVER` remains diagnostic rather than a
+  verdict because it correctly remembers the older near points.
+- The complete 30-case H01 matrix passes with the strengthened evaluators in
+  minimal logging, and representative cases pass with full logging.
+- Source inspection found that a bare `OBM_EXPUNGE=ob_near` publishes the
+  expunge filter but does not populate the ID passed to the erase path. The
+  local case now states and proves only filter translation; the removal defect
+  is parked under Suggested Upstream Changes.
+- H02 `lasso_cluster_pass` was removed because it duplicated H01 lasso
+  generation plus H02 generated-hull behavior spawning without adding
+  lasso-specific evidence.
+
+## Suggested Upstream Changes
+
+This is a parking lot for MOOS-IvP changes discovered while strengthening the
+harnesses. These findings do not authorize edits to the upstream checkout, and
+the local test matrix must remain meaningful and passing without those edits.
+
+| ID | Upstream area | Observed behavior | Suggested change | Harness follow-up after upstream change | Status |
+| --- | --- | --- | --- | --- | --- |
+| `OBM-UP-001` | `pObstacleMgr` bare-ID enable/disable/expunge parsing | `OBM_EXPUNGE=ob_near` publishes `BHV_ABLE_FILTER=obstacle_id=ob_near,action=expunge`, but the bare-ID branch does not populate the local obstacle ID used by `addExpungedObstacle()`, so the managed obstacle is not erased. | Populate the parsed obstacle ID for the documented bare-ID form before applying enable, disable, or expunge bookkeeping. | Extend `expunge_obstacle_pass` with post-expunge evidence that no further output for `ob_near` is published; consider equivalent state checks for bare-ID enable and disable bookkeeping. | Deferred |
+
 ## Coverage Gaps
 
 These are documentation-audit findings, not failures introduced by this work.
@@ -188,13 +224,13 @@ They are intentionally deferred to the case-strengthening pass.
 
 | Harness | Case | Intended property | Current grading evidence | Gap | Recommended strengthening | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| obmgr_h01 | `max_pts_per_cluster_trim_pass` | `max_pts_per_cluster=3` retains the intended three points from a five-point stream before building the hull. | `17 < OBM_MIN_DIST_EVER < 19` | The untrimmed five-point hull also satisfies this distance band. | Require `OBM_DIST_TO_OBJ=ROCK_A,18.1` and/or compare `OBSTACLE_ALERT` with the expected three-point triangle; confirm with a no-trim mutation. | Open |
-| obmgr_h01 | `disable_obstacle_pass` | `OBM_DISABLE=ob_near` becomes `BHV_ABLE_FILTER=obstacle_id=ob_near,action=disable`. | Any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true`. | The payload is recorded but not compared. | Compare the complete `BHV_ABLE_FILTER` payload with the expected value. | Open |
-| obmgr_h01 | `enable_obstacle_pass` | `OBM_ENABLE=ob_near` becomes `BHV_ABLE_FILTER=obstacle_id=ob_near,action=enable`. | Any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true`. | The payload is recorded but not compared. | Compare the complete `BHV_ABLE_FILTER` payload with the expected value. | Open |
-| obmgr_h01 | `expunge_obstacle_pass` | `OBM_EXPUNGE=ob_near` emits the expunge filter and removes `ob_near` from the manager. | Any `BHV_ABLE_FILTER` mail sets `OB_FILTER_SEEN=true`. | Neither the exact payload nor internal removal is verified. | Compare the complete filter payload and then query an observable proving `ob_near` is no longer managed. | Open |
-| obmgr_h01 | `no_alert_request_absent_pass`, `bad_alert_request_absent_pass`, `given_far_absent_pass`, `invalid_given_nonconvex_absent_pass`, `post_dist_false_absent_pass`, `invalid_point_missing_key_absent_pass`, `points_ignore_range_absent_pass` | No obstacle-distance publication occurs in each expected-absence scenario. | Each evaluator forbids one expected `OBM_DIST_TO_OBJ` value. | A different nonempty distance value would not fail the case. | Set a mail flag on any `OBM_DIST_TO_OBJ` publication and fail when the flag is observed. | Open |
-| obmgr_h01 | `given_max_duration_missing_absent_pass` | A `GIVEN_OBSTACLE` without `duration=` is rejected without producing an alert. | `OBM_NEW_GIVEN` must remain unset. | The evaluator does not reject a stray `OBSTACLE_ALERT`. | Add a mail flag or nonempty-value failure condition for `OBSTACLE_ALERT`. | Open |
-| obmgr_h02 | `lasso_cluster_pass` | `lasso=true` and `lasso_radius=8` use the pseudo-hull rather than the normal convex hull. | `ARRIVED=true` and `OB_TOTAL_COLLISIONS=0`. | The normal convex hull can plausibly produce the same successful transit. | Compare the generated obstacle polygon or another lasso-specific value, then confirm with a lasso-disabled mutation. | Open |
+| obmgr_h01 | `max_pts_per_cluster_trim_pass` | `max_pts_per_cluster=3` discards two older points 10 meters away and builds the hull from the final three points 22 meters away. | The evaluator requires the current `OBM_DIST_TO_OBJ=ROCK_A,22.0`; the lifetime minimum remains diagnostic because it remembers the discarded near points. | Resolved: an untrimmed cluster retains the near points and reports 10 meters, while equivalent polygon serialization changes do not affect the verdict. | Retain the separated geometry and current-distance check. | Resolved |
+| obmgr_h01 | `disable_obstacle_pass` | `OBM_DISABLE=ob_near` becomes `BHV_ABLE_FILTER=obstacle_id=ob_near,action=disable`. | The evaluator now requires the complete expected payload through `OBM_EXPECTED_PAYLOAD`. | Resolved: unrelated or malformed filter mail no longer passes. | Retain the exact comparison. | Resolved |
+| obmgr_h01 | `enable_obstacle_pass` | `OBM_ENABLE=ob_near` becomes `BHV_ABLE_FILTER=obstacle_id=ob_near,action=enable`. | The evaluator now requires the complete expected payload through `OBM_EXPECTED_PAYLOAD`. | Resolved: unrelated or malformed filter mail no longer passes. | Retain the exact comparison. | Resolved |
+| obmgr_h01 | `expunge_obstacle_pass` | `OBM_EXPUNGE=ob_near` becomes `BHV_ABLE_FILTER=obstacle_id=ob_near,action=expunge`. | The evaluator now requires the complete expected payload through `OBM_EXPECTED_PAYLOAD`. | Resolved for the behavior the current upstream app performs; the separate removal defect is recorded under Suggested Upstream Changes. | Retain the exact translation check without making the local suite depend on an unavailable upstream fix. | Resolved |
+| obmgr_h01 | `no_alert_request_absent_pass`, `bad_alert_request_absent_pass`, `given_far_absent_pass`, `invalid_given_nonconvex_absent_pass`, `post_dist_false_absent_pass`, `invalid_point_missing_key_absent_pass`, `points_ignore_range_absent_pass` | No obstacle-distance publication occurs in each expected-absence scenario. | Each evaluator now sets `OBM_DIST_SEEN=true` on any `OBM_DIST_TO_OBJ` mail and fails on that flag. | Resolved: any value now fails, rather than only one expected value. | Retain the mail-presence flag. | Resolved |
+| obmgr_h01 | `given_max_duration_missing_absent_pass` | A `GIVEN_OBSTACLE` without `duration=` is rejected without producing an alert. | The evaluator now fails on either `OBM_NEW_GIVEN` or any `OBSTACLE_ALERT` mail. | Resolved: stray alert publication no longer passes. | Retain the alert-presence flag. | Resolved |
+| obmgr_h02 | `lasso_cluster_pass` | `lasso=true` and `lasso_radius=8` were intended to prove pseudo-hull use during motion. | `ARRIVED=true` and `OB_TOTAL_COLLISIONS=0` were also satisfied by the normal convex hull. | The case added no lasso-specific evidence; H01 already distinguishes lasso generation and H02 `point_cluster_pass` covers behavior spawning from a generated hull. | Removed from the H02 matrix rather than retaining a false sense of coverage. | Removed |
 | cmgr_h01 | `detect_strict_absent_pass`, `detect_edge_absent_pass`, `detect_far_spoof_absent_pass`, `runtime_alert_disable_absent_pass`, `filter_match_type_absent_pass` | The contact is tracked but excluded from the selected alert by range, CPA, runtime state, or type. | `CONTACT_SEEN` must remain false. | Closest-contact, range, or list evidence is recorded but not graded, so failure to process the contact at all can also pass. | Require `CONTACT_CLOSEST=intruder` plus the expected range, or `CONTACTS_LIST=intruder`, while retaining the no-alert condition. | Open |
 | cmgr_h01 | `detect_short_duration_absent_pass` | A two-second spoof expires without triggering the alert. | `CONTACT_SEEN` must remain false. | The contact is also 34 meters away under 20-meter range and CPA thresholds, so geometry alone prevents detection. | Use geometry that would alert while live and grade explicit retirement or list removal after expiration. | Open |
 | cmgr_h01 | `post_all_ranges_pass` | `post_all_ranges=true` publishes the complete `CONTACT_RANGES` list for both contacts. | `CONTACTS_COUNT=2` and `CONTACTS_LIST=alpha,bravo`; `CONTACT_RANGES` is only recorded. | An empty or incorrect ranges publication does not fail the case. | Compare `CONTACT_RANGES` with a stable expected value or per-contact numeric bands. | Open |

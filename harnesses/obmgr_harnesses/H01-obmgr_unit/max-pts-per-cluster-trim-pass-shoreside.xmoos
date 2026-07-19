@@ -4,8 +4,7 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   lead_condition = TEST_EVAL_READY = true
-  pass_condition = OBM_MIN_DIST_EVER > 17
-  pass_condition = OBM_MIN_DIST_EVER < 19
+  pass_condition = OBM_DIST_TO_OBJ = ROCK_A,22.0
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = obmgr_tests_harness

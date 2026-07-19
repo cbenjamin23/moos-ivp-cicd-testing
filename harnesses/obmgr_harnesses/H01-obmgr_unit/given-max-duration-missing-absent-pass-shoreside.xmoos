@@ -3,9 +3,12 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @OBSTACLE_ALERT#OB_ALERT_SEEN=true
+
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
   fail_condition = OBM_NEW_GIVEN = true
+  fail_condition = OB_ALERT_SEEN = true
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = obmgr_tests_harness
@@ -16,6 +19,7 @@ ProcessConfig = pMissionEval
   report_column    = grade=$[GRADE]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = new_given=$[OBM_NEW_GIVEN]
+  report_column    = alert_seen=$[OB_ALERT_SEEN]
   report_column    = alert=$[OBSTACLE_ALERT]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt

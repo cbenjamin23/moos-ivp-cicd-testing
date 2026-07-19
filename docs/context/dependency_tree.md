@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1740` under configured targets
+- Harness patch/config files: `1738` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -85,7 +85,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `cmgr_h01` | `cmgr` | `harnesses/cmgr_harnesses/H01-cmgr_unit/zlaunch.sh` | `missions/cmgr_missions/cmgr_unit` | 33 | `pSpoofNode`, `pContactMgrV20` | `cmgr-unit` |
 | `cmgr_h02` | `cmgr` | `harnesses/cmgr_harnesses/H02-cmgr_motion/zlaunch.sh` | `missions/cmgr_missions/cmgr_motion` | 15 | `pSpoofNode`, `uFldCollisionDetect`, `pContactMgrV20` | `cmgr-motion` |
 | `obmgr_h01` | `obmgr` | `harnesses/obmgr_harnesses/H01-obmgr_unit/zlaunch.sh` | `missions/obmgr_missions/obmgr_unit` | 30 | `pObstacleMgr` | `obmgr-unit` |
-| `obmgr_h02` | `obmgr` | `harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh` | `missions/obmgr_missions/obmgr_motion` | 10 | `pObstacleMgr`, `uFldCollObDetect` | `obmgr-motion` |
+| `obmgr_h02` | `obmgr` | `harnesses/obmgr_harnesses/H02-obmgr_motion/zlaunch.sh` | `missions/obmgr_missions/obmgr_motion` | 9 | `pObstacleMgr`, `uFldCollObDetect` | `obmgr-motion` |
 | `pid_h01` | `pid` | `harnesses/pid_harnesses/H01-pid_unit/zlaunch.sh` | `missions/pid_missions/pid_unit` | 34 | - | `pid-unit` |
 | `pid_h02` | `pid` | `harnesses/pid_harnesses/H02-pid_motion/zlaunch.sh` | `missions/pid_missions/pid_motion` | 13 | - | `pid-motion` |
 | `usim_marine_h01` | `usim_marine` | `harnesses/usim_marine_harnesses/H01-usim_marine_motion/zlaunch.sh` | `missions/usim_marine_missions/usim_marine_motion` | 36 | - | `usim-marine-motion` |

@@ -127,12 +127,6 @@
 
 
         <article class="case-row">
-          <code>lasso_cluster_pass</code>
-          <p>Posts the same four points with lasso=true and lasso_radius=8, exercising pseudo-hull configuration instead of the normal convex hull; the current evaluator passes when ARRIVED=true and OB_TOTAL_COLLISIONS=0 without comparing the generated hull.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>two_sequential_fail</code>
           <p>Places two 8-by-8-meter obstacles in the transit lane at separate points along the route, testing consecutive obstacle encounters; passes when ARRIVED=true, OB_TOTAL_ENCOUNTERS=2, and OB_TOTAL_COLLISIONS=1.</p>
         </article>
