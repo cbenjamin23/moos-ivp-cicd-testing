@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>History View</h3>
-          <p>Description: Posts first, second, and third to XMS_HIST while scoping it with --history, testing history-mode capture; passes when the output contains XMS_HIST and the final value third.</p>
+          <p>Description: Starts --history=XMS_HIST before the scripted first, second, and third publications, testing collection and oldest-to-newest rendering of distinct history entries; passes when the capture contains all three values in that order.</p>
         </div>
       </article>
 
@@ -117,7 +117,7 @@
 
         <article class="case-row">
           <code>show_time_only_pass</code>
-          <p>Runs --show=time for XMS_ALPHA, testing the time-column option; passes when the capture contains XMS_ALPHA and the substring (T.</p>
+          <p>Runs --show=time for XMS_ALPHA, testing the time-column option; passes when the XMS_ALPHA row contains a numeric timestamp and the exact alpha value.</p>
         </article>
 
 
@@ -129,7 +129,7 @@
 
         <article class="case-row">
           <code>show_time_community_pass</code>
-          <p>Runs --show=time,community for XMS_ALPHA, testing the combined column request; passes when the capture contains XMS_ALPHA and shoreside, but the time column is not independently checked.</p>
+          <p>Runs --show=time,community for XMS_ALPHA, testing the combined column request; passes when one row contains XMS_ALPHA, a numeric timestamp, shoreside, and the exact alpha value in their displayed column order.</p>
         </article>
 
 
@@ -141,7 +141,7 @@
 
         <article class="case-row">
           <code>history_var_pass</code>
-          <p>Posts first, second, and third to XMS_HIST while scoping it with --history, testing history-mode capture; passes when the output contains XMS_HIST and the final value third.</p>
+          <p>Starts --history=XMS_HIST before the scripted first, second, and third publications, testing collection and oldest-to-newest rendering of distinct history entries; passes when the capture contains all three values in that order.</p>
         </article>
 
 
@@ -153,7 +153,7 @@
 
         <article class="case-row">
           <code>clean_cli_scope_pass</code>
-          <p>Loads a mission file that configures XMS_ALPHA and XMS_SECONDARY, then runs --clean XMS_NUM, testing replacement of file scope by CLI scope; passes when the capture contains XMS_NUM=42 evidence and no XMS_ALPHA token.</p>
+          <p>Loads a mission file that configures XMS_ALPHA and XMS_SECONDARY, then runs --clean XMS_NUM, testing replacement of the complete file scope by CLI scope; passes when the capture contains XMS_NUM=42 evidence and neither configured variable appears.</p>
         </article>
 
 
@@ -195,7 +195,7 @@
 
         <article class="case-row">
           <code>shortcut_source_time_pass</code>
-          <p>Runs -st for XMS_ALPHA, testing the combined source-and-time shortcut; passes when the capture contains XMS_ALPHA and uTimerScript, but the time column is not independently checked.</p>
+          <p>Runs -st for XMS_ALPHA, testing the combined source-and-time shortcut; passes when one row contains XMS_ALPHA, uTimerScript, a numeric timestamp, and the exact alpha value in their displayed column order.</p>
         </article>
 
 
@@ -273,7 +273,7 @@
 
         <article class="case-row">
           <code>clean_shortcut_scope_pass</code>
-          <p>Loads the mission-file scope, then runs -c XMS_NUM, testing the short alias for ignoring configured variables; passes when the capture contains XMS_NUM=42 evidence and no XMS_ALPHA token.</p>
+          <p>Loads the mission-file scope, then runs -c XMS_NUM, testing the short alias for ignoring all configured variables; passes when the capture contains XMS_NUM=42 evidence and neither XMS_ALPHA nor XMS_SECONDARY appears.</p>
         </article>
 
       </div>

@@ -312,6 +312,8 @@ get_case_config() {
     XMS_USE_FILE="no"
     XMS_CONNECT_MODE="serverhost"
     CHECK_TOKENS=()
+    CHECK_REGEXES=()
+    ORDERED_TOKENS=()
     ABSENT_TOKENS=()
 
     case "$CASE_NAME" in
@@ -338,7 +340,8 @@ get_case_config() {
             ;;
         show_time_only_pass)
             XMS_ARGS=("--show=time" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "(T")
+            CHECK_TOKENS=("XMS_ALPHA" "alpha")
+            CHECK_REGEXES=('time_value::^XMS_ALPHA[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+"alpha"$')
             ;;
         show_community_only_pass)
             XMS_ARGS=("--show=community" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
@@ -346,7 +349,8 @@ get_case_config() {
             ;;
         show_time_community_pass)
             XMS_ARGS=("--show=time,community" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "shoreside")
+            CHECK_TOKENS=("XMS_ALPHA" "shoreside" "alpha")
+            CHECK_REGEXES=('time_community_row::^XMS_ALPHA[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+shoreside[[:space:]]+"alpha"$')
             ;;
         show_source_community_pass)
             XMS_ARGS=("--show=source,community" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
@@ -354,7 +358,8 @@ get_case_config() {
             ;;
         history_var_pass)
             XMS_ARGS=("--history=XMS_HIST" "--mode=streaming" "--termint=0.2")
-            CHECK_TOKENS=("XMS_HIST" "third")
+            CHECK_TOKENS=("XMS_HIST" "HISTORY")
+            ORDERED_TOKENS=('"first"' '"second"' '"third"')
             ;;
         trunc_long_payload_pass)
             XMS_ARGS=("--trunc=25" "--mode=streaming" "--termint=0.2" "XMS_LONG")
@@ -365,7 +370,7 @@ get_case_config() {
             XMS_USE_FILE="yes"
             XMS_ARGS=("--clean" "--mode=streaming" "--termint=0.2" "XMS_NUM")
             CHECK_TOKENS=("XMS_NUM" "42")
-            ABSENT_TOKENS=("XMS_ALPHA")
+            ABSENT_TOKENS=("XMS_ALPHA" "XMS_SECONDARY")
             ;;
         config_var_pass)
             XMS_USE_FILE="yes"
@@ -397,7 +402,8 @@ get_case_config() {
             ;;
         shortcut_source_time_pass)
             XMS_ARGS=("-st" "--mode=streaming" "--termint=0.2" "XMS_ALPHA")
-            CHECK_TOKENS=("XMS_ALPHA" "uTimerScript")
+            CHECK_TOKENS=("XMS_ALPHA" "uTimerScript" "alpha")
+            CHECK_REGEXES=('source_time_row::^XMS_ALPHA[[:space:]]+uTimerScript[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+"alpha"$')
             ;;
         filter_specific_pass)
             XMS_ARGS=("--all" "--filter=XMS_A" "--mode=streaming" "--termint=0.2")
@@ -457,7 +463,7 @@ get_case_config() {
             XMS_USE_FILE="yes"
             XMS_ARGS=("-c" "--mode=streaming" "--termint=0.2" "XMS_NUM")
             CHECK_TOKENS=("XMS_NUM" "42")
-            ABSENT_TOKENS=("XMS_ALPHA")
+            ABSENT_TOKENS=("XMS_ALPHA" "XMS_SECONDARY")
             ;;
         *) return 1 ;;
     esac
@@ -502,8 +508,15 @@ check_output() {
     local workdir="$1"
     local output="$workdir/uxms.out"
     local token
+    local regex_spec
+    local regex_name
+    local regex
+    local line_no
+    local previous_line=0
     MISSING_TOKENS=""
     FORBIDDEN_TOKENS=""
+    FAILED_REGEXES=""
+    ORDER_FAILURE=""
 
     for token in "${CHECK_TOKENS[@]}"; do
         if ! grep -Fq -- "$token" "$output"; then
@@ -516,7 +529,25 @@ check_output() {
         fi
     done
 
-    [ -z "$MISSING_TOKENS" ] && [ -z "$FORBIDDEN_TOKENS" ]
+    for regex_spec in "${CHECK_REGEXES[@]}"; do
+        regex_name=${regex_spec%%::*}
+        regex=${regex_spec#*::}
+        if ! grep -Eq -- "$regex" "$output"; then
+            FAILED_REGEXES="${FAILED_REGEXES}${FAILED_REGEXES:+,}$regex_name"
+        fi
+    done
+
+    for token in "${ORDERED_TOKENS[@]}"; do
+        line_no=$(awk -v token="$token" 'index($0, token) {print NR; exit}' "$output")
+        if [ -z "$line_no" ] || [ "$line_no" -le "$previous_line" ]; then
+            ORDER_FAILURE=history_sequence
+            break
+        fi
+        previous_line=$line_no
+    done
+
+    [ -z "$MISSING_TOKENS" ] && [ -z "$FORBIDDEN_TOKENS" ] &&
+        [ -z "$FAILED_REGEXES" ] && [ -z "$ORDER_FAILURE" ]
 }
 
 prepare_case() {
@@ -614,8 +645,9 @@ write_result() {
 
     if [ "$mission_grade" = pass ] && ! check_output "$workdir"; then
         provenance=$(runner_provenance "$line")
-        printf 'case=%s grade=fail reason=output_check_failed missing_tokens=%s forbidden_tokens=%s%s\n' \
+        printf 'case=%s grade=fail reason=output_check_failed missing_tokens=%s forbidden_tokens=%s failed_regexes=%s order_check=%s%s\n' \
             "$case_name" "${MISSING_TOKENS:-none}" "${FORBIDDEN_TOKENS:-none}" \
+            "${FAILED_REGEXES:-none}" "${ORDER_FAILURE:-pass}" \
             "${provenance:+ $provenance}" > "$result_file"
         return 0
     fi
@@ -651,6 +683,7 @@ run_case() {
             cd "$workdir" || exit 1
             launch_args=(
                 --just_make
+                --mmod="$case_name"
                 --max_time="$MAX_TIME"
                 "${DISPLAY_ARGS[@]}"
                 --shore_mport="$((case_base + 0))"
@@ -665,6 +698,7 @@ run_case() {
             : > results.txt
             launch_args=(
                 --external_client
+                --mmod="$case_name"
                 --max_time="$MAX_TIME"
                 "${DISPLAY_ARGS[@]}"
                 --shore_mport="$((case_base + 0))"

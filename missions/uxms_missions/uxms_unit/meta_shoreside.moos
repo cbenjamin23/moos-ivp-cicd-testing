@@ -50,9 +50,9 @@ ProcessConfig = uTimerScript
   event = var=XMS_LONG, val=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, time=0.5
   event = var=XMS_NOISE, val=noise, time=0.5
   event = var=XMS_SECONDARY, val=secondary, time=0.7
-  event = var=XMS_HIST, val=first, time=0.5
-  event = var=XMS_HIST, val=second, time=1.0
-  event = var=XMS_HIST, val=third, time=1.5
+  event = var=XMS_HIST, val=first, time=22
+  event = var=XMS_HIST, val=second, time=24
+  event = var=XMS_HIST, val=third, time=26
 }
 
 //----------------------------------------------------

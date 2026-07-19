@@ -27,20 +27,20 @@ runner failure rather than being mistaken for a pMissionEval verdict.
 - `all_mode_pass`: Runs with `--all`, testing the long option for database-wide scope; passes when the capture contains both the MOOSDB variable `DB_UPTIME` and scripted `XMS_ALPHA`.
 - `all_shortcut_pass`: Runs with `-a`, testing the short alias for database-wide scope; passes when the capture contains both `DB_UPTIME` and `XMS_ALPHA`.
 - `show_source_pass`: Runs `--show=source` for `XMS_ALPHA`, testing publication-source display; passes when the capture contains `XMS_ALPHA` and its publisher `uTimerScript`.
-- `show_time_only_pass`: Runs `--show=time` for `XMS_ALPHA`, testing the time-column option; passes when the capture contains `XMS_ALPHA` and the substring `(T`.
+- `show_time_only_pass`: Runs `--show=time` for `XMS_ALPHA`, testing the time-column option; passes when the `XMS_ALPHA` row contains a numeric timestamp and the exact `alpha` value.
 - `show_community_only_pass`: Runs `--show=community` for `XMS_ALPHA`, testing community display; passes when the capture contains `XMS_ALPHA` and `shoreside`.
-- `show_time_community_pass`: Runs `--show=time,community` for `XMS_ALPHA`, testing the combined column request; passes when the capture contains `XMS_ALPHA` and `shoreside`, but the time column is not independently checked.
+- `show_time_community_pass`: Runs `--show=time,community` for `XMS_ALPHA`, testing the combined column request; passes when one row contains `XMS_ALPHA`, a numeric timestamp, `shoreside`, and the exact `alpha` value in their displayed column order.
 - `show_source_community_pass`: Runs `--show=source,community` for `XMS_ALPHA`, testing both named columns together; passes when the capture contains `XMS_ALPHA`, `uTimerScript`, and `shoreside`.
-- `history_var_pass`: Posts `first`, `second`, and `third` to `XMS_HIST` while scoping it with `--history`, testing history-mode capture; passes when the output contains `XMS_HIST` and the final value `third`.
+- `history_var_pass`: Starts `--history=XMS_HIST` before the scripted `first`, `second`, and `third` publications, testing collection and oldest-to-newest rendering of distinct history entries; passes when the capture contains all three values in that order.
 - `trunc_long_payload_pass`: Scopes a 62-character `XMS_LONG` value with `--trunc=25`, testing the long truncation option; passes when the capture contains `abcdefghijklmnopqrstuvwxyz` but not the complete payload.
-- `clean_cli_scope_pass`: Loads a mission file that configures `XMS_ALPHA` and `XMS_SECONDARY`, then runs `--clean XMS_NUM`, testing replacement of file scope by CLI scope; passes when the capture contains `XMS_NUM=42` evidence and no `XMS_ALPHA` token.
+- `clean_cli_scope_pass`: Loads a mission file that configures `XMS_ALPHA` and `XMS_SECONDARY`, then runs `--clean XMS_NUM`, testing replacement of the complete file scope by CLI scope; passes when the capture contains `XMS_NUM=42` evidence and neither configured variable appears.
 - `config_var_pass`: Loads the mission file without CLI variable names, testing its configured `var=XMS_ALPHA` and `var=XMS_SECONDARY` scope; passes when both variable names appear in the capture.
 - `filter_prefix_pass`: Combines `--all` with `--filter=XMS_`, testing prefix filtering of database-wide scope; passes when `XMS_ALPHA` and `XMS_NUM` appear and `DB_UPTIME` does not.
 - `src_timer_pass`: Uses `--src=uTimerScript` without explicit variable names, testing source-derived scope; passes when the capture includes the publisher's `XMS_ALPHA` and `XMS_NUM` variables.
 - `novirgins_pass`: Scopes posted `XMS_ALPHA` and never-posted `XMS_MISSING` with `--novirgins`, testing suppression of virgin variables; passes when `XMS_ALPHA=alpha` evidence appears and neither `XMS_MISSING` nor `n/a` appears.
 - `novirgins_shortcut_pass`: Repeats the posted and never-posted scope with `-g`, testing the short alias for virgin suppression; passes with the same `XMS_ALPHA` presence and `XMS_MISSING`/`n/a` absence checks.
 - `shortcut_source_pass`: Runs `-s` for `XMS_ALPHA`, testing the short alias for source display; passes when the capture contains `XMS_ALPHA` and `uTimerScript`.
-- `shortcut_source_time_pass`: Runs `-st` for `XMS_ALPHA`, testing the combined source-and-time shortcut; passes when the capture contains `XMS_ALPHA` and `uTimerScript`, but the time column is not independently checked.
+- `shortcut_source_time_pass`: Runs `-st` for `XMS_ALPHA`, testing the combined source-and-time shortcut; passes when one row contains `XMS_ALPHA`, `uTimerScript`, a numeric timestamp, and the exact `alpha` value in their displayed column order.
 - `filter_specific_pass`: Combines `--all` with the narrower `--filter=XMS_A`, testing selective prefix filtering; passes when `XMS_ALPHA=alpha` evidence appears and neither `XMS_NUM` nor `DB_UPTIME` appears.
 - `filter_no_match_absent_pass`: Combines `--all` with `--filter=NO_SUCH_PREFIX`, testing a filter with no matching variables; passes when a `SCOPING` report is produced without `XMS_ALPHA` or `DB_UPTIME`.
 - `colorany_pass`: Applies `--colorany=XMS_ALPHA` to the scoped variable, testing that the option is accepted without losing its row; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking terminal color codes.
@@ -53,7 +53,7 @@ runner failure rather than being mistaken for a pMissionEval verdict.
 - `moos_underscore_args_pass`: Connects with `--moos_host=localhost` and `--moos_port=<case-port>`, testing the underscore MOOS aliases; passes when the capture contains `XMS_ALPHA` and `alpha` from that database.
 - `alias_proc_name_pass`: Runs with `--alias=uXMS_ci` while scoping `XMS_ALPHA`, exercising custom process-name parsing; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking the registered process name.
 - `colormap_pair_pass`: Applies `--colormap=XMS_ALPHA,red` to the scoped variable, testing that a variable/color pair is accepted without losing its row; passes when the capture contains `XMS_ALPHA` and `alpha`, without checking terminal color codes.
-- `clean_shortcut_scope_pass`: Loads the mission-file scope, then runs `-c XMS_NUM`, testing the short alias for ignoring configured variables; passes when the capture contains `XMS_NUM=42` evidence and no `XMS_ALPHA` token.
+- `clean_shortcut_scope_pass`: Loads the mission-file scope, then runs `-c XMS_NUM`, testing the short alias for ignoring all configured variables; passes when the capture contains `XMS_NUM=42` evidence and neither `XMS_ALPHA` nor `XMS_SECONDARY` appears.
 
 ## Run
 
@@ -87,3 +87,9 @@ through 54930. Validation also covered all-case target generation, standalone
 stem execution, output-check rejection, invalid arguments, port bounds, exact
 result ordering, Bash 3.2 re-execution/rejection, and scoped
 post-run cleanup.
+
+After the high-confidence coverage review, the strengthened 32-case matrix
+passed 32/32 with four jobs in 59 seconds. Removing `--show=time`, omitting the
+middle history publication, and allowing only `XMS_SECONDARY` to leak from the
+mission-file scope were each rejected while the publisher mission still
+earned its normal pass grade.
