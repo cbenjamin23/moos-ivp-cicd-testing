@@ -96,7 +96,7 @@ Those repo-local reductions were kept because they validated cleanly.
 
 The shared launcher lives outside this repo at:
 
-- `/Users/charlesbenjamin/moos-ivp/scripts/xlaunch.sh`
+- `moos-ivp/scripts/xlaunch.sh` (outside this repository)
 
 Its shutdown path still includes a post-kill wait. That wait exists because
 mission processes may still be flushing `results.txt` and other outputs when

@@ -164,14 +164,14 @@ Typical usage:
 
 ```bash
 ./scripts/benchmark_parallel.sh \
-  --harness=/Users/charlesbenjamin/moos-ivp-cicd-testing/harnesses/cmgr_harnesses/H01-cmgr_unit \
+  --harness=/path/to/moos-ivp-cicd-testing/harnesses/cmgr_harnesses/H01-cmgr_unit \
   --jobs=1,2,4,8,16,20
 ```
 
 Note:
 
 - the `xlaunch.sh` reduction was only a local experiment in the separate
-  `moos-ivp` checkout at `/Users/charlesbenjamin/moos-ivp/scripts/xlaunch.sh`
+  `moos-ivp` checkout at `/path/to/moos-ivp/scripts/xlaunch.sh`
 - that foreign-repo change has been reverted
 - the timings above remain useful as evidence for what a smaller shared
   launcher wait could buy if that upstream script is intentionally changed
@@ -212,7 +212,7 @@ Recommended scope going forward:
 
 The separate shared launcher lives at:
 
-- [`/Users/charlesbenjamin/moos-ivp/scripts/xlaunch.sh`](/Users/charlesbenjamin/moos-ivp/scripts/xlaunch.sh)
+- [`moos-ivp/scripts/xlaunch.sh`](https://github.com/moos-ivp/moos-ivp/blob/main/scripts/xlaunch.sh)
 
 The relevant sequence is:
 
