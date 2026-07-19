@@ -60,7 +60,11 @@ class UfldObstacleSimEvalContractTests(unittest.TestCase):
 
     def test_launcher_uses_one_case_patch_and_no_shell_grader(self) -> None:
         self.assertIn(
-            '"$CASE_SHORE_PATCH" --targ="$workdir/meta_shoreside.moosx"',
+            'shore_patches+=("$CASE_SHORE_PATCH")',
+            self.launcher_text,
+        )
+        self.assertIn(
+            '"${shore_patches[@]}" --targ="$workdir/meta_shoreside.moosx"',
             self.launcher_text,
         )
         for legacy_token in (
