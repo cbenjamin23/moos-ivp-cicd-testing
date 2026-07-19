@@ -31,6 +31,12 @@ description below identifies it as a useful local entry point.
 
 ## Harness Runtime Support
 
+- `clean_harness_workdirs.sh` reports retained harness run roots and recognized
+  legacy scratch workdirs, and can remove them after explicit age selection,
+  active-run checks, and scoped teardown.
+  Reporting is the default. Use `--delete --older-than=<days>` for routine
+  pruning or `--delete --all` for an explicit full cleanup; `--target=<key>`
+  and repeatable `--exclude=<key>` options use `config/harness_targets.json`.
 - `harness_teardown.sh` provides shared harness cleanup for isolated case
   workdirs and their process manifests.
 - `moos_scoped_teardown.sh` terminates MOOS processes within one explicitly
