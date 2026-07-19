@@ -7,6 +7,7 @@ ProcessConfig = pMissionEval
   pass_condition = ARRIVED = true
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = ENCOUNTER_TOTAL = 0
+  pass_condition = CONTACT_CLOSEST = intruder
   fail_condition = CONTACT_DETECTED = true
 
   result_flag = MISSION_EVALUATED = true

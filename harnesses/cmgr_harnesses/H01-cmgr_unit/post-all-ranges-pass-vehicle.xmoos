@@ -23,8 +23,13 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY = true
 
-  event = var=SPOOF, val="name=alpha,x=20,y=-50,hdg=180,spd=0.2,vsource=ais,color=green", time=4
-  event = var=SPOOF, val="name=bravo,x=20,y=-40,hdg=180,spd=0.2,vsource=ais,color=orange", time=5
+  event = var=USM_ENABLED, val=false, time=2
+  event = var=NAV_X, val=0, time=3
+  event = var=NAV_Y, val=-60, time=3
+  event = var=NAV_HEADING, val=90, time=3
+  event = var=NAV_SPEED, val=0, time=3
+  event = var=SPOOF, val="name=alpha,x=20,y=-50,hdg=180,spd=0,vsource=ais,color=green", time=4
+  event = var=SPOOF, val="name=bravo,x=20,y=-40,hdg=180,spd=0,vsource=ais,color=orange", time=5
 }
 
 ProcessConfig = uFldNodeBroker

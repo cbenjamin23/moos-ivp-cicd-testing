@@ -21,9 +21,11 @@ and running a short `70m` eastbound corridor.
   geometry; passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=0`, and
   `COLLISION_TOTAL=0`.
 - `no_detect_clear_pass`: Moves the contact to `(45,-34)` and reduces the alert
-  thresholds to 10 and 12 meters, exercising out-of-range non-detection;
-  passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=0`,
-  `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
+  thresholds to 10 and 12 meters, testing that a tracked contact outside both
+  thresholds does not generate the avoid alert; passes when
+  `CONTACT_CLOSEST=intruder`, `CONTACT_CLOSEST_RANGE>10`, `ARRIVED=true`,
+  `ENCOUNTER_TOTAL=0`, `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains
+  false.
 - `delayed_crossing_pass`: Posts a stationary on-lane contact at `(51,-60)`
   after 12 seconds and evaluates at 52 seconds, testing late alert and avoidance
   during transit; passes when `ARRIVED=true`, `CONTACT_DETECTED=true`, and
@@ -35,33 +37,31 @@ and running a short `70m` eastbound corridor.
   alert by `BCM_ALERT_REQUEST` at one second, and posts the on-lane contact at
   two seconds, testing runtime alert creation; passes when `ARRIVED=true`,
   `CONTACT_DETECTED=true`, and `COLLISION_TOTAL=0`.
-- `runtime_alert_reenable_pass`: Disables the static alert at one second,
-  enables it at two seconds, and posts the contact at three seconds, exercising
-  runtime alert re-enable; the current evaluator requires only the final
-  `ARRIVED=true`, `CONTACT_DETECTED=true`, and `COLLISION_TOTAL=0` outcome and
-  does not prove the disable step took effect.
-- `hold_alerts_for_helm_pass`: Sets `hold_alerts_for_helm=true` for the baseline
-  contact, exercising delayed alert release until the helm is driving; the
-  current evaluator passes on `ARRIVED=true`, `CONTACT_DETECTED=true`, and
-  `COLLISION_TOTAL=0` without checking when the alert was released.
+- `runtime_alert_reenable_pass`: Disables the static alert before posting the
+  short-lived `early` contact, waits for that contact to retire, then enables
+  the alert and posts on-lane `late`; passes when `early` retires without
+  publishing `CMGR_ALERTED_early`, `CMGR_ALERTED_late=true`, `ARRIVED=true`,
+  and `COLLISION_TOTAL=0`.
 - `filter_match_type_clear_pass`: Requires `match_type=ship` while posting the
-  default `kayak` contact at `(45,-42)`, exercising type-filtered
-  non-detection; passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=0`,
-  `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
+  default `kayak` contact at `(45,-42)`, testing that type filtering blocks the
+  alert without dropping the contact; passes when `CONTACT_CLOSEST=intruder`,
+  `ARRIVED=true`, `ENCOUNTER_TOTAL=0`, `COLLISION_TOTAL=0`, and
+  `CONTACT_DETECTED` remains false.
 - `stale_reappear_pass`: Sets `contact_max_age=5`, posts a three-second
-  `intruder` at one second, then posts the same name on the route at 12 seconds,
-  exercising retirement and reappearance; the evaluator passes when
-  `ARRIVED=true`, `CONTACT_RETIRED=intruder`, `CONTACT_DETECTED=true`, and
-  `COLLISION_TOTAL=0`, but does not tie the detection flag specifically to the
-  second report.
+  `intruder` at one second, clears the old detection latch at 10 seconds, then
+  posts the same name on the route at 12 seconds, testing retirement and fresh
+  alerting after reappearance; passes when `CONTACT_RETIRED=intruder`, the
+  reset `CONTACT_DETECTED` returns to true, `ARRIVED=true`, and
+  `COLLISION_TOTAL=0`.
 - `two_contact_pass`: Posts avoid-worthy `alpha` at `(39,-56)` and background
-  `bravo` at `(53,-34)`, exercising multi-contact tracking during avoidance;
-  the current evaluator passes when `ARRIVED=true`, `CONTACT_DETECTED=true`,
-  `ENCOUNTER_TOTAL=0`, and `COLLISION_TOTAL=0` while recording, but not grading,
-  `CONTACTS_COUNT` and `CONTACTS_LIST`.
+  `bravo` at `(53,-34)`, testing that both are tracked while only `alpha`
+  generates the avoid alert; passes when `CONTACTS_LIST=alpha,bravo`,
+  `CONTACT_ALERTED=alpha`, `ARRIVED=true`, `ENCOUNTER_TOTAL=0`, and
+  `COLLISION_TOTAL=0`.
 - `tight_alert_fail`: Reduces the baseline alert thresholds to 8 and 10 meters,
-  exercising the late-alert/no-detection outcome; passes when `ARRIVED=true`,
-  `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
+  testing that the tracked `intruder` never enters the tighter alert region;
+  passes when `CONTACT_CLOSEST=intruder`, `ARRIVED=true`, `COLLISION_TOTAL=0`,
+  and `CONTACT_DETECTED` remains false.
 - `avoid_disabled_fail`: Sends the alert update to `DISABLED_INFO` instead of
   the behavior's `CONTACT_INFO` variable and posts an oncoming contact at
   `(67,-60)` moving west at `1.8`, testing detection without behavior spawn;
@@ -69,7 +69,8 @@ and running a short `70m` eastbound corridor.
   `ENCOUNTER_TOTAL=1`, and `COLLISION_TOTAL=0`.
 - `runtime_alert_disable_fail`: Disables the static alert at one second before
   posting the same oncoming contact at two seconds, testing runtime alert
-  suppression; passes when `ARRIVED=true`, `ENCOUNTER_TOTAL=1`,
+  suppression without dropping contact tracking; passes when
+  `CONTACT_CLOSEST=intruder`, `ARRIVED=true`, `ENCOUNTER_TOTAL=1`,
   `COLLISION_TOTAL=0`, and `CONTACT_DETECTED` remains false.
 - `fast_intruder_fail`: Posts an oncoming contact at `(57,-60)` moving west at
   `3.0`, testing detection under a faster encounter geometry; passes when
@@ -142,6 +143,10 @@ Execution contract:
   global `ktm`, `pkill`, or process-group extension is used
 
 ## Harness-skill migration validation
+
+The current matrix has 14 cases after the coverage-strengthening pass removed
+the non-discriminating helm-startup hold case. The 15-case counts below record
+the earlier migration validation and are retained as historical measurements.
 
 Validation on July 14, 2026 preserved all 15 case tokens, all 24 patch files,
 the case-to-patch mapping, mission geometry, and every `pMissionEval`

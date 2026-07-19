@@ -6,12 +6,14 @@ ProcessConfig = pContactMgrV20
   app_logging = true
 
   decay           = 20,40
-  contact_max_age = 35
+  contact_max_age = 3
+  retire_flag     = CONTACT_RETIRED=$[CONTACT]
 
   alert_verbose = true
 
   alert = id=avoid, var=CONTACT_INFO, val="name=avd_ # contact=$[VNAME]"
   alert = id=avoid, on_flag=CONTACT_DETECTED=true
+  alert = id=avoid, on_flag=CMGR_ALERTED_$[VNAME]=true
   alert = id=avoid, alert_range=20, cpa_range=28
 
   post_closest_range   = true
@@ -26,6 +28,34 @@ ProcessConfig = uTimerScript
   condition = DEPLOY = true
 
   event = var=BCM_ALERT_REQUEST, val="id=avoid,action=disable", time=1
-  event = var=BCM_ALERT_REQUEST, val="id=avoid,action=enable",  time=2
-  event = var=SPOOF, val="name=intruder,x=39,y=-60,hdg=180,spd=0,vsource=ais,color=green,dur=45", time=3
+  event = var=SPOOF, val="name=early,x=10,y=-45,hdg=180,spd=0,vsource=ais,color=orange,dur=2", time=2
+  event = var=BCM_ALERT_REQUEST, val="id=avoid,action=enable", time=8
+  event = var=SPOOF, val="name=late,x=51,y=-60,hdg=180,spd=0,vsource=ais,color=green,dur=45", time=10
+}
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  try_shore_host = pshare_route=$(SHORE_IP):$(SHORE_PSHARE)
+
+  bridge = src=VIEW_POLYGON
+  bridge = src=VIEW_CIRCLE
+  bridge = src=VIEW_POINT
+  bridge = src=VIEW_SEGLIST
+  bridge = src=ARRIVED
+  bridge = src=CONTACT_DETECTED
+  bridge = src=CMGR_ALERTED_early
+  bridge = src=CMGR_ALERTED_late
+  bridge = src=CONTACT_INFO
+  bridge = src=CONTACT_CLOSEST
+  bridge = src=CONTACT_CLOSEST_RANGE
+  bridge = src=CONTACTS_COUNT
+  bridge = src=CONTACTS_LIST
+  bridge = src=CONTACT_RESOLVED
+  bridge = src=CONTACT_RETIRED
+  bridge = src=NODE_REPORT
+  bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }

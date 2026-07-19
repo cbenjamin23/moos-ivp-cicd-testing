@@ -3,7 +3,6 @@ case=detect_strict_absent_pass form=cmgr_tests_harness mmod=detect_strict_absent
 case=detect_edge_pass form=cmgr_tests_harness mmod=detect_edge_pass grade=pass eval=true seen=true closest=intruder range=14 mhash=[DEAF-MONT]
 case=detect_edge_absent_pass form=cmgr_tests_harness mmod=detect_edge_absent_pass grade=pass eval=true seen=false closest=intruder range=14 mhash=[DAFT-NEED]
 case=detect_delayed_spoof_pass form=cmgr_tests_harness mmod=detect_delayed_spoof_pass grade=pass eval=true seen=true closest=intruder range=16 mhash=[DARN-ROOK]
-case=detect_short_duration_absent_pass form=cmgr_tests_harness mmod=detect_short_duration_absent_pass grade=pass eval=true seen=false closest=intruder range=34 mhash=[TIDY-HOST]
 case=detect_early_checkpoint_absent_pass form=cmgr_tests_harness mmod=detect_early_checkpoint_absent_pass grade=pass eval=true seen=false mhash=[RARE-INFO]
 case=detect_far_spoof_absent_pass form=cmgr_tests_harness mmod=detect_far_spoof_absent_pass grade=pass eval=true seen=false closest=intruder range=28 mhash=[PAST-HUNT]
 case=detect_near_spoof_pass form=cmgr_tests_harness mmod=detect_near_spoof_pass grade=pass eval=true seen=true closest=intruder range=8 mhash=[POSH-ARES]

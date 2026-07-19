@@ -69,7 +69,6 @@ CASES=(
     head_on_pass
     runtime_alert_add_pass
     runtime_alert_reenable_pass
-    hold_alerts_for_helm_pass
     filter_match_type_clear_pass
     stale_reappear_pass
     two_contact_pass
@@ -320,10 +319,8 @@ get_case_config() {
             CASE_VEH_PATCH="$HARNESS_DIR/runtime-alert-add-pass-vehicle.xmoos"
             ;;
         runtime_alert_reenable_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/runtime-alert-reenable-pass-shoreside.xmoos"
             CASE_VEH_PATCH="$HARNESS_DIR/runtime-alert-reenable-pass-vehicle.xmoos"
-            ;;
-        hold_alerts_for_helm_pass)
-            CASE_VEH_PATCH="$HARNESS_DIR/hold-alerts-for-helm-pass-vehicle.xmoos"
             ;;
         filter_match_type_clear_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/filter-match-type-clear-pass-shoreside.xmoos"

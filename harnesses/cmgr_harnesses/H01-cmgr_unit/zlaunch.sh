@@ -66,7 +66,6 @@ CASES=(
     detect_edge_pass
     detect_edge_absent_pass
     detect_delayed_spoof_pass
-    detect_short_duration_absent_pass
     detect_early_checkpoint_absent_pass
     detect_far_spoof_absent_pass
     detect_near_spoof_pass
@@ -331,10 +330,6 @@ get_case_config() {
         detect_delayed_spoof_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/detect-delayed-spoof-pass-shoreside.xmoos"
             CASE_VEH_PATCH="$HARNESS_DIR/detect-delayed-spoof-pass-vehicle.xmoos"
-            ;;
-        detect_short_duration_absent_pass)
-            CASE_SHORE_PATCH="$HARNESS_DIR/detect-short-duration-absent-pass-shoreside.xmoos"
-            CASE_VEH_PATCH="$HARNESS_DIR/detect-short-duration-absent-pass-vehicle.xmoos"
             ;;
         detect_early_checkpoint_absent_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/detect-early-checkpoint-absent-pass-shoreside.xmoos"

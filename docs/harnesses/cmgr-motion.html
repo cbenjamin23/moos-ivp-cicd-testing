@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Two Contact Pass</h3>
-          <p>Description: Posts avoid-worthy alpha at (39,-56) and background bravo at (53,-34), exercising multi-contact tracking during avoidance; the current evaluator passes when ARRIVED=true, CONTACT_DETECTED=true, ENCOUNTER_TOTAL=0, and COLLISION_TOTAL=0 while recording, but not grading, CONTACTS_COUNT and CONTACTS_LIST.</p>
+          <p>Description: Posts avoid-worthy alpha at (39,-56) and background bravo at (53,-34), testing that both are tracked while only alpha generates the avoid alert; passes when CONTACTS_LIST=alpha,bravo, CONTACT_ALERTED=alpha, ARRIVED=true, ENCOUNTER_TOTAL=0, and COLLISION_TOTAL=0.</p>
         </div>
       </article>
 
@@ -110,7 +110,7 @@
 
         <article class="case-row">
           <code>no_detect_clear_pass</code>
-          <p>Moves the contact to (45,-34) and reduces the alert thresholds to 10 and 12 meters, exercising out-of-range non-detection; passes when ARRIVED=true, ENCOUNTER_TOTAL=0, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
+          <p>Moves the contact to (45,-34) and reduces the alert thresholds to 10 and 12 meters, testing that a tracked contact outside both thresholds does not generate the avoid alert; passes when CONTACT_CLOSEST=intruder, CONTACT_CLOSEST_RANGE&gt;10, ARRIVED=true, ENCOUNTER_TOTAL=0, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
         </article>
 
 
@@ -134,37 +134,31 @@
 
         <article class="case-row">
           <code>runtime_alert_reenable_pass</code>
-          <p>Disables the static alert at one second, enables it at two seconds, and posts the contact at three seconds, exercising runtime alert re-enable; the current evaluator requires only the final ARRIVED=true, CONTACT_DETECTED=true, and COLLISION_TOTAL=0 outcome and does not prove the disable step took effect.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>hold_alerts_for_helm_pass</code>
-          <p>Sets hold_alerts_for_helm=true for the baseline contact, exercising delayed alert release until the helm is driving; the current evaluator passes on ARRIVED=true, CONTACT_DETECTED=true, and COLLISION_TOTAL=0 without checking when the alert was released.</p>
+          <p>Disables the static alert before posting the short-lived early contact, waits for that contact to retire, then enables the alert and posts on-lane late; passes when early retires without publishing CMGR_ALERTED_early, CMGR_ALERTED_late=true, ARRIVED=true, and COLLISION_TOTAL=0.</p>
         </article>
 
 
         <article class="case-row">
           <code>filter_match_type_clear_pass</code>
-          <p>Requires match_type=ship while posting the default kayak contact at (45,-42), exercising type-filtered non-detection; passes when ARRIVED=true, ENCOUNTER_TOTAL=0, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
+          <p>Requires match_type=ship while posting the default kayak contact at (45,-42), testing that type filtering blocks the alert without dropping the contact; passes when CONTACT_CLOSEST=intruder, ARRIVED=true, ENCOUNTER_TOTAL=0, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
         </article>
 
 
         <article class="case-row">
           <code>stale_reappear_pass</code>
-          <p>Sets contact_max_age=5, posts a three-second intruder at one second, then posts the same name on the route at 12 seconds, exercising retirement and reappearance; the evaluator passes when ARRIVED=true, CONTACT_RETIRED=intruder, CONTACT_DETECTED=true, and COLLISION_TOTAL=0, but does not tie the detection flag specifically to the second report.</p>
+          <p>Sets contact_max_age=5, posts a three-second intruder at one second, clears the old detection latch at 10 seconds, then posts the same name on the route at 12 seconds, testing retirement and fresh alerting after reappearance; passes when CONTACT_RETIRED=intruder, the reset CONTACT_DETECTED returns to true, ARRIVED=true, and COLLISION_TOTAL=0.</p>
         </article>
 
 
         <article class="case-row">
           <code>two_contact_pass</code>
-          <p>Posts avoid-worthy alpha at (39,-56) and background bravo at (53,-34), exercising multi-contact tracking during avoidance; the current evaluator passes when ARRIVED=true, CONTACT_DETECTED=true, ENCOUNTER_TOTAL=0, and COLLISION_TOTAL=0 while recording, but not grading, CONTACTS_COUNT and CONTACTS_LIST.</p>
+          <p>Posts avoid-worthy alpha at (39,-56) and background bravo at (53,-34), testing that both are tracked while only alpha generates the avoid alert; passes when CONTACTS_LIST=alpha,bravo, CONTACT_ALERTED=alpha, ARRIVED=true, ENCOUNTER_TOTAL=0, and COLLISION_TOTAL=0.</p>
         </article>
 
 
         <article class="case-row">
           <code>tight_alert_fail</code>
-          <p>Reduces the baseline alert thresholds to 8 and 10 meters, exercising the late-alert/no-detection outcome; passes when ARRIVED=true, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
+          <p>Reduces the baseline alert thresholds to 8 and 10 meters, testing that the tracked intruder never enters the tighter alert region; passes when CONTACT_CLOSEST=intruder, ARRIVED=true, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
         </article>
 
 
@@ -176,7 +170,7 @@
 
         <article class="case-row">
           <code>runtime_alert_disable_fail</code>
-          <p>Disables the static alert at one second before posting the same oncoming contact at two seconds, testing runtime alert suppression; passes when ARRIVED=true, ENCOUNTER_TOTAL=1, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
+          <p>Disables the static alert at one second before posting the same oncoming contact at two seconds, testing runtime alert suppression without dropping contact tracking; passes when CONTACT_CLOSEST=intruder, ARRIVED=true, ENCOUNTER_TOTAL=1, COLLISION_TOTAL=0, and CONTACT_DETECTED remains false.</p>
         </article>
 
 

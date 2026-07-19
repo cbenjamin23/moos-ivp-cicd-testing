@@ -5,6 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
+  event = var=CONTACT_DETECTED, val=false, time=10
   event = var=TEST_EVAL_READY, val=true, time=58
 }
 

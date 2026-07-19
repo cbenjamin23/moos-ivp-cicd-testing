@@ -1,3 +1,28 @@
+// Hold ownship at its configured start so the reported ranges are a stable
+// app-level contract rather than a sample from a moving integration mission.
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=true
+
+  required_nodes = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval
+  condition = DEPLOY_ALL = true
+
+  event = var=CMGR_EXPECTED_RANGES, val="22.4,28.3", time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=12
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
@@ -6,6 +31,7 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = CONTACTS_COUNT = 2
   pass_condition = CONTACTS_LIST = alpha,bravo
+  pass_condition = CONTACT_RANGES = $ (CMGR_EXPECTED_RANGES)
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = cmgr_tests_harness

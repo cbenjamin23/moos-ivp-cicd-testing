@@ -95,7 +95,7 @@
 
         <article class="case-row">
           <code>detect_strict_absent_pass</code>
-          <p>Keeps the baseline contact but reduces both alert thresholds to 10 meters, exercising range/CPA exclusion; passes when the checkpoint is reached without CONTACT_SEEN=true.</p>
+          <p>Keeps the baseline contact but reduces both alert thresholds to 10 meters, testing exclusion of a tracked contact beyond both thresholds; passes when CONTACT_CLOSEST=intruder, CONTACT_CLOSEST_RANGE&gt;10, and CONTACT_SEEN remains false.</p>
         </article>
 
 
@@ -107,19 +107,13 @@
 
         <article class="case-row">
           <code>detect_edge_absent_pass</code>
-          <p>Sets both alert thresholds to 14 meters while the reported closest range is 14 meters, exercising the alert boundary; the current evaluator passes when CONTACT_SEEN remains false but does not grade the reported range.</p>
+          <p>Sets both alert thresholds to 14 meters while the reported closest range is 14 meters, testing the strict alert boundary; passes when CONTACT_CLOSEST=intruder, CONTACT_CLOSEST_RANGE=14, and CONTACT_SEEN remains false.</p>
         </article>
 
 
         <article class="case-row">
           <code>detect_delayed_spoof_pass</code>
           <p>Delays the baseline SPOOF from four to eight seconds and moves the checkpoint to 16 seconds, testing late contact intake; passes when CONTACT_SEEN=true.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>detect_short_duration_absent_pass</code>
-          <p>Sets the spoof duration to two seconds, posts intruder at (50,-44), and uses 20-meter alert thresholds, exercising short-lived contact input; the current evaluator passes when CONTACT_SEEN remains false, but the reported 34-meter range also places the contact outside both thresholds.</p>
         </article>
 
 
@@ -131,7 +125,7 @@
 
         <article class="case-row">
           <code>detect_far_spoof_absent_pass</code>
-          <p>Posts intruder at (20,-30) with 20-meter alert thresholds, exercising an out-of-range tracked contact; passes when CONTACT_SEEN remains false.</p>
+          <p>Posts intruder at (20,-30) with 20-meter alert thresholds, testing exclusion of a tracked contact whose reported range exceeds 20 meters; passes when CONTACT_CLOSEST=intruder, CONTACT_CLOSEST_RANGE&gt;20, and CONTACT_SEEN remains false.</p>
         </article>
 
 
@@ -155,13 +149,13 @@
 
         <article class="case-row">
           <code>post_all_ranges_pass</code>
-          <p>Enables post_all_ranges=true for alerted contacts alpha and bravo, exercising CONTACT_RANGES publication; the current evaluator passes on CONTACTS_COUNT=2 and CONTACTS_LIST=alpha,bravo while recording, but not comparing, the ranges.</p>
+          <p>Enables post_all_ranges=true for alerted contacts alpha and bravo, disables simulator motion, and seeds ownship at (0,-60), testing the sorted one-decimal range report for fixed contacts at (20,-50) and (20,-40); passes when CONTACTS_COUNT=2, CONTACTS_LIST=alpha,bravo, and CONTACT_RANGES=22.4,28.3.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_closest_relbng_pass</code>
-          <p>Enables post_closest_relbng=true for the same two-contact geometry, exercising CONTACT_CLOSEST_RELBNG publication; the current evaluator passes on CONTACTS_COUNT=2 and CONTACT_CLOSEST=alpha while recording, but not grading, the bearing.</p>
+          <p>Enables post_closest_relbng=true for the same fixed two-contact geometry with ownship heading 90 degrees, testing the rounded relative bearing to nearer contact alpha; passes when CONTACTS_COUNT=2, CONTACT_CLOSEST=alpha, and CONTACT_CLOSEST_RELBNG=333.</p>
         </article>
 
 
@@ -173,25 +167,25 @@
 
         <article class="case-row">
           <code>runtime_alert_disable_absent_pass</code>
-          <p>Disables the static track alert with BCM_ALERT_REQUEST at two seconds before posting intruder at four seconds, exercising runtime alert disable; passes when CONTACT_SEEN remains false.</p>
+          <p>Disables the static track alert with BCM_ALERT_REQUEST at two seconds before posting intruder at four seconds, testing that a tracked contact inside the static alert range no longer fires that alert; passes when CONTACT_CLOSEST=intruder, CONTACT_CLOSEST_RANGE&lt;80, and CONTACT_SEEN remains false.</p>
         </article>
 
 
         <article class="case-row">
           <code>filter_match_type_absent_pass</code>
-          <p>Adds match_type=ship to the alert while the spoofed contact retains the default kayak type, exercising type filtering; the current evaluator passes when CONTACT_SEEN remains false and records, but does not require, CONTACTS_LIST=intruder.</p>
+          <p>Adds match_type=ship to the alert while the spoofed contact retains the default kayak type, testing type filtering after contact intake; passes when CONTACTS_LIST=intruder, CONTACT_CLOSEST=intruder, and CONTACT_SEEN remains false.</p>
         </article>
 
 
         <article class="case-row">
           <code>disable_contact_pass</code>
-          <p>Detects intruder at four seconds and posts CONTACT_DISABLE=intruder at six seconds, exercising translation to a BHV_ABLE_FILTER disable message; the current evaluator requires CONTACT_SEEN=true and any filter mail, but does not compare the payload.</p>
+          <p>Detects intruder at four seconds and posts CONTACT_DISABLE=intruder at six seconds, exercising translation to a BHV_ABLE_FILTER disable message; passes when CONTACT_SEEN=true and the complete payload is contact=intruder,action=disable.</p>
         </article>
 
 
         <article class="case-row">
           <code>enable_contact_pass</code>
-          <p>Detects intruder at four seconds and posts CONTACT_ENABLE=intruder at six seconds, exercising translation to a BHV_ABLE_FILTER enable message; the current evaluator requires CONTACT_SEEN=true and any filter mail, but does not compare the payload.</p>
+          <p>Detects intruder at four seconds and posts CONTACT_ENABLE=intruder at six seconds, exercising translation to a BHV_ABLE_FILTER enable message; passes when CONTACT_SEEN=true and the complete payload is contact=intruder,action=enable.</p>
         </article>
 
 

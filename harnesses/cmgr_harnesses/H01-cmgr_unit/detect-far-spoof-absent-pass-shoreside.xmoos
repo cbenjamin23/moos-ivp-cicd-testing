@@ -5,6 +5,8 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
+  pass_condition = CONTACT_CLOSEST = intruder
+  pass_condition = CONTACT_CLOSEST_RANGE > 20
   fail_condition = CONTACT_SEEN = true
 
   result_flag  = MISSION_EVALUATED = true

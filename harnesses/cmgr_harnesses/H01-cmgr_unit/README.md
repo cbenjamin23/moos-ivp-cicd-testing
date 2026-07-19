@@ -21,29 +21,26 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   `cpa_range=100`, testing the normal alert `on_flag`; passes when
   `CONTACT_SEEN=true` at the 12-second checkpoint.
 - `detect_strict_absent_pass`: Keeps the baseline contact but reduces both
-  alert thresholds to 10 meters, exercising range/CPA exclusion; passes when
-  the checkpoint is reached without `CONTACT_SEEN=true`.
+  alert thresholds to 10 meters, testing exclusion of a tracked contact beyond
+  both thresholds; passes when `CONTACT_CLOSEST=intruder`,
+  `CONTACT_CLOSEST_RANGE>10`, and `CONTACT_SEEN` remains false.
 - `detect_edge_pass`: Sets both alert thresholds to 18 meters for the baseline
   contact, testing admission near the threshold; passes when
   `CONTACT_SEEN=true`.
 - `detect_edge_absent_pass`: Sets both alert thresholds to 14 meters while the
-  reported closest range is 14 meters, exercising the alert boundary; the
-  current evaluator passes when `CONTACT_SEEN` remains false but does not grade
-  the reported range.
+  reported closest range is 14 meters, testing the strict alert boundary;
+  passes when `CONTACT_CLOSEST=intruder`, `CONTACT_CLOSEST_RANGE=14`, and
+  `CONTACT_SEEN` remains false.
 - `detect_delayed_spoof_pass`: Delays the baseline `SPOOF` from four to eight
   seconds and moves the checkpoint to 16 seconds, testing late contact intake;
   passes when `CONTACT_SEEN=true`.
-- `detect_short_duration_absent_pass`: Sets the spoof duration to two seconds,
-  posts `intruder` at `(50,-44)`, and uses 20-meter alert thresholds,
-  exercising short-lived contact input; the current evaluator passes when
-  `CONTACT_SEEN` remains false, but the reported 34-meter range also places the
-  contact outside both thresholds.
 - `detect_early_checkpoint_absent_pass`: Evaluates at two seconds before the
   baseline spoof is posted at four seconds, testing pre-contact state; passes
   when `TEST_EVAL_READY=true` and `CONTACT_SEEN` has not become true.
 - `detect_far_spoof_absent_pass`: Posts `intruder` at `(20,-30)` with
-  20-meter alert thresholds, exercising an out-of-range tracked contact;
-  passes when `CONTACT_SEEN` remains false.
+  20-meter alert thresholds, testing exclusion of a tracked contact whose
+  reported range exceeds 20 meters; passes when `CONTACT_CLOSEST=intruder`,
+  `CONTACT_CLOSEST_RANGE>20`, and `CONTACT_SEEN` remains false.
 - `detect_near_spoof_pass`: Moves `intruder` to `(20,-50)` under the baseline
   alert, exercising close-range detection; passes when `CONTACT_SEEN=true`.
 - `detect_cpa_only_pass`: Posts a closing contact at `(35,-35)` with speed
@@ -55,32 +52,36 @@ For the patching mechanics, see [`NSPATCH.md`](./NSPATCH.md).
   naming; passes when `CONTACT_SEEN=true` and
   `CONTACT_CLOSEST=intruder`.
 - `post_all_ranges_pass`: Enables `post_all_ranges=true` for alerted contacts
-  `alpha` and `bravo`, exercising `CONTACT_RANGES` publication; the current
-  evaluator passes on `CONTACTS_COUNT=2` and
-  `CONTACTS_LIST=alpha,bravo` while recording, but not comparing, the ranges.
+  `alpha` and `bravo`, disables simulator motion, and seeds ownship at
+  `(0,-60)`, testing the sorted one-decimal range report for fixed contacts at
+  `(20,-50)` and `(20,-40)`; passes when `CONTACTS_COUNT=2`,
+  `CONTACTS_LIST=alpha,bravo`, and `CONTACT_RANGES=22.4,28.3`.
 - `post_closest_relbng_pass`: Enables `post_closest_relbng=true` for the same
-  two-contact geometry, exercising `CONTACT_CLOSEST_RELBNG` publication; the
-  current evaluator passes on `CONTACTS_COUNT=2` and
-  `CONTACT_CLOSEST=alpha` while recording, but not grading, the bearing.
+  fixed two-contact geometry with ownship heading 90 degrees, testing the
+  rounded relative bearing to nearer contact `alpha`; passes when
+  `CONTACTS_COUNT=2`, `CONTACT_CLOSEST=alpha`, and
+  `CONTACT_CLOSEST_RELBNG=333`.
 - `runtime_alert_add_pass`: Removes the static alert, posts a complete
   `BCM_ALERT_REQUEST` at two seconds, and posts `intruder` at four seconds,
   testing runtime alert creation; passes when `CONTACT_SEEN=true` and
   `CONTACT_CLOSEST=intruder`.
 - `runtime_alert_disable_absent_pass`: Disables the static `track` alert with
   `BCM_ALERT_REQUEST` at two seconds before posting `intruder` at four seconds,
-  exercising runtime alert disable; passes when `CONTACT_SEEN` remains false.
+  testing that a tracked contact inside the static alert range no longer fires
+  that alert; passes when `CONTACT_CLOSEST=intruder`,
+  `CONTACT_CLOSEST_RANGE<80`, and `CONTACT_SEEN` remains false.
 - `filter_match_type_absent_pass`: Adds `match_type=ship` to the alert while
-  the spoofed contact retains the default `kayak` type, exercising type
-  filtering; the current evaluator passes when `CONTACT_SEEN` remains false
-  and records, but does not require, `CONTACTS_LIST=intruder`.
+  the spoofed contact retains the default `kayak` type, testing type filtering
+  after contact intake; passes when `CONTACTS_LIST=intruder`,
+  `CONTACT_CLOSEST=intruder`, and `CONTACT_SEEN` remains false.
 - `disable_contact_pass`: Detects `intruder` at four seconds and posts
   `CONTACT_DISABLE=intruder` at six seconds, exercising translation to a
-  `BHV_ABLE_FILTER` disable message; the current evaluator requires
-  `CONTACT_SEEN=true` and any filter mail, but does not compare the payload.
+  `BHV_ABLE_FILTER` disable message; passes when `CONTACT_SEEN=true` and the
+  complete payload is `contact=intruder,action=disable`.
 - `enable_contact_pass`: Detects `intruder` at four seconds and posts
   `CONTACT_ENABLE=intruder` at six seconds, exercising translation to a
-  `BHV_ABLE_FILTER` enable message; the current evaluator requires
-  `CONTACT_SEEN=true` and any filter mail, but does not compare the payload.
+  `BHV_ABLE_FILTER` enable message; passes when `CONTACT_SEEN=true` and the
+  complete payload is `contact=intruder,action=enable`.
 - `early_warning_pass`: Configures `early_warning_time=3`, disables warning
   radii, and sets `early_warning_flag=CONTACT_WARN=true`, testing the warning
   flag path; passes when `CONTACT_WARN=true` at the checkpoint.
@@ -291,6 +292,10 @@ The normalized harness row contains one authoritative `grade` field. The
 legacy `actual` and `expected` shell fields were redundant because every case
 in this matrix already makes the intended outcome, including non-detection,
 produce mission-owned `grade=pass`.
+
+The current matrix has 32 cases after the coverage-strengthening pass removed
+the non-discriminating short-duration case. The 33-case counts below record the
+earlier migration validation and are retained as historical measurements.
 
 ## Wall-Clock Efficiency
 

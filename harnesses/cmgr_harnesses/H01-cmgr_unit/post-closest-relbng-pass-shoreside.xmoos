@@ -1,3 +1,16 @@
+// Hold ownship at its configured start so relative bearing is evaluated from
+// a fixed position and heading.
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=true
+
+  required_nodes = 1
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
@@ -6,6 +19,7 @@ ProcessConfig = pMissionEval
   lead_condition = TEST_EVAL_READY = true
   pass_condition = CONTACTS_COUNT = 2
   pass_condition = CONTACT_CLOSEST = alpha
+  pass_condition = CONTACT_CLOSEST_RELBNG = 333
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = cmgr_tests_harness

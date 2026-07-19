@@ -755,7 +755,7 @@
         "path": "missions/cmgr_missions/cmgr_unit"
       },
       "patches": {
-        "file_count": 57
+        "file_count": 55
       },
       "path": "harnesses/cmgr_harnesses/H01-cmgr_unit",
       "perf_profile": "",
@@ -781,7 +781,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 33,
+        "case_count": 32,
         "case_parse_error": "",
         "cases": [
           "detect_baseline_pass",
@@ -789,7 +789,6 @@
           "detect_edge_pass",
           "detect_edge_absent_pass",
           "detect_delayed_spoof_pass",
-          "detect_short_duration_absent_pass",
           "detect_early_checkpoint_absent_pass",
           "detect_far_spoof_absent_pass",
           "detect_near_spoof_pass",
@@ -882,7 +881,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 15,
+        "case_count": 14,
         "case_parse_error": "",
         "cases": [
           "baseline_crossing_pass",
@@ -892,7 +891,6 @@
           "head_on_pass",
           "runtime_alert_add_pass",
           "runtime_alert_reenable_pass",
-          "hold_alerts_for_helm_pass",
           "filter_match_type_clear_pass",
           "stale_reappear_pass",
           "two_contact_pass",
@@ -7031,10 +7029,10 @@
       ".sh": 366,
       ".txt": 302,
       ".xbhv": 518,
-      ".xmoos": 1325,
+      ".xmoos": 1323,
       "[none]": 7
     },
-    "harness_patch_count": 1738,
+    "harness_patch_count": 1736,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

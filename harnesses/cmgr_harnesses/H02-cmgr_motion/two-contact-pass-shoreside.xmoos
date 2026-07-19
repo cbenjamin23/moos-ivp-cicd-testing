@@ -7,6 +7,8 @@ ProcessConfig = pMissionEval
   pass_condition = ARRIVED = true
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = CONTACT_DETECTED = true
+  pass_condition = CONTACT_ALERTED = alpha
+  pass_condition = CONTACTS_LIST = alpha,bravo
   pass_condition = ENCOUNTER_TOTAL = 0
 
   result_flag = MISSION_EVALUATED = true
@@ -23,6 +25,7 @@ ProcessConfig = pMissionEval
   report_column = eval=$[TEST_EVAL_READY]
   report_column = arrived=$[ARRIVED]
   report_column = detected=$[CONTACT_DETECTED]
+  report_column = alerted=$[CONTACT_ALERTED]
   report_column = count=$[CONTACTS_COUNT]
   report_column = list=$[CONTACTS_LIST]
   report_column = closest=$[CONTACT_CLOSEST]
