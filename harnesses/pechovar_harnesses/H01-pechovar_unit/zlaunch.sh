@@ -74,6 +74,7 @@ CASES=(
     latest_only_repeated_source_pass
     flip_component_pass
     flip_explicit_param_syntax_pass
+    flip_explicit_filter_suppresses_pass
     flip_filter_match_pass
     flip_multiple_filters_match_pass
     flip_filter_case_insensitive_match_pass
@@ -281,6 +282,7 @@ get_case_config() {
     REPORT_COLUMNS=()
     REQUIRED_TOKENS=()
     ABSENT_TOKENS=()
+    EXPECTED_ALOG_VALUES=()
     COUNT_VAR=""
     COUNT_TARGET=""
 
@@ -342,7 +344,7 @@ get_case_config() {
         default_repeated_source_posts_each_pass)
             ECHO_LINES=("  Echo = ECHO_SRC_LATEST -> ECHO_OUT_LATEST")
             add_timer_event ECHO_SRC_LATEST first 0.5
-            add_timer_event ECHO_SRC_LATEST second 0.7
+            add_timer_event ECHO_SRC_LATEST second 0.5
             PASS_CONDITIONS=("ECHO_OUT_LATEST = second")
             COUNT_VAR="ECHO_OUT_LATEST"
             COUNT_TARGET="2"
@@ -350,8 +352,10 @@ get_case_config() {
         latest_only_repeated_source_pass)
             ECHO_LINES=("  echo_latest_only = true" "  Echo = ECHO_SRC_LATEST -> ECHO_OUT_LATEST")
             add_timer_event ECHO_SRC_LATEST first 0.5
-            add_timer_event ECHO_SRC_LATEST second 0.7
+            add_timer_event ECHO_SRC_LATEST second 0.5
             PASS_CONDITIONS=("ECHO_OUT_LATEST = second")
+            COUNT_VAR="ECHO_OUT_LATEST"
+            COUNT_TARGET="1"
             ;;
         flip_component_pass)
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = dest_separator = #" "  FLIP:click = x -> xcenter" "  FLIP:click = y -> ycenter")
@@ -364,6 +368,12 @@ get_case_config() {
             add_timer_event FLIP_SRC "type=redeploy,x=18" 0.5
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
             REQUIRED_TOKENS=("xcenter=18")
+            ;;
+        flip_explicit_filter_suppresses_pass)
+            ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = filter = type == redeploy" "  FLIP:click = component = x -> xcenter")
+            add_timer_event FLIP_SRC "type=loiter,x=18" 0.5
+            PASS_CONDITIONS=("TEST_EVAL_READY = true")
+            ABSENT_TOKENS=(" FLIP_OUT ")
             ;;
         flip_filter_match_pass)
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = dest_separator = #" "  FLIP:click = type == redeploy" "  FLIP:click = x -> xcenter" "  FLIP:click = y -> ycenter")
@@ -418,8 +428,7 @@ get_case_config() {
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = x -> xcenter")
             add_timer_event FLIP_SRC "x=8,z=99" 0.5
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
-            REQUIRED_TOKENS=("xcenter=8")
-            ABSENT_TOKENS=("xcenter=8,z=99")
+            EXPECTED_ALOG_VALUES=("FLIP_OUT=xcenter=8")
             ;;
         flip_no_mapped_fields_no_output_pass)
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = x -> xcenter")
@@ -437,7 +446,7 @@ get_case_config() {
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = x -> xcenter")
             add_timer_event FLIP_SRC "x=" 0.5
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
-            REQUIRED_TOKENS=("xcenter=")
+            EXPECTED_ALOG_VALUES=("FLIP_OUT=xcenter=")
             ;;
         cycle_guard_no_echo_pass)
             ECHO_LINES=("  Echo = CYCLE_A -> CYCLE_B" "  Echo = CYCLE_B -> CYCLE_A")
@@ -469,20 +478,22 @@ get_case_config() {
             ECHO_LINES=("  FLIP:bad = source_variable = FLIP_SRC" "  FLIP:bad = dest_variable = FLIP_SRC" "  FLIP:bad = x -> xcenter")
             add_timer_event FLIP_SRC "x=17" 0.5
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
-            ABSENT_TOKENS=("xcenter=17")
+            ABSENT_TOKENS=(" FLIP_OUT ")
+            COUNT_VAR="FLIP_SRC"
+            COUNT_TARGET="1"
             ;;
         shared_source_dual_flip_pass)
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = x -> xcenter" "  FLIP:mark = source_variable = FLIP_SRC" "  FLIP:mark = dest_variable = ECHO_OUT_STR" "  FLIP:mark = y -> ypos")
             add_timer_event FLIP_SRC "x=31,y=41" 0.5
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
-            REQUIRED_TOKENS=("xcenter=31" "ypos=41")
+            EXPECTED_ALOG_VALUES=("FLIP_OUT=xcenter=31" "ECHO_OUT_STR=ypos=41")
             ;;
         dual_flip_independent_pass)
             ECHO_LINES=("  FLIP:click = source_variable = FLIP_SRC" "  FLIP:click = dest_variable = FLIP_OUT" "  FLIP:click = x -> xcenter" "  FLIP:alt = source_variable = ECHO_SRC_STR" "  FLIP:alt = dest_variable = ECHO_OUT_STR" "  FLIP:alt = word -> word_out")
             add_timer_event FLIP_SRC "x=44" 0.5
             add_timer_event ECHO_SRC_STR "word=bravo" 0.6
             PASS_CONDITIONS=("TEST_EVAL_READY = true")
-            REQUIRED_TOKENS=("xcenter=44" "word_out=bravo")
+            EXPECTED_ALOG_VALUES=("FLIP_OUT=xcenter=44" "ECHO_OUT_STR=word_out=bravo")
             ;;
         *) return 1 ;;
     esac
@@ -588,6 +599,18 @@ alog_window_has_token() {
     return 1
 }
 
+alog_window_has_value() {
+    local root="$1" var="$2" expected="$3" alog cutoff
+    while IFS= read -r -d '' alog; do
+        cutoff=$(evaluation_cutoff "$alog")
+        aloggrep "$var" "$alog" 2>/dev/null |
+            awk -v v="$var" -v expected="$expected" -v end="$cutoff" \
+                '$2 == v && $1 <= end && $4 == expected {found=1; exit} END {exit !found}' &&
+            return 0
+    done < <(find "$root" -type f -name '*.alog' -print0)
+    return 1
+}
+
 count_alog_posts() {
     local root="$1" var="$2" alog cutoff count total=0 found=no
     while IFS= read -r -d '' alog; do
@@ -603,8 +626,9 @@ count_alog_posts() {
 }
 
 check_alog_evidence() {
-    local root="$1" token count evidence=mission_owned
-    if [ "${#REQUIRED_TOKENS[@]}" -eq 0 ] && [ "${#ABSENT_TOKENS[@]}" -eq 0 ] && [ -z "$COUNT_VAR" ]; then
+    local root="$1" token value_spec var expected count evidence=mission_owned
+    if [ "${#REQUIRED_TOKENS[@]}" -eq 0 ] && [ "${#ABSENT_TOKENS[@]}" -eq 0 ] &&
+       [ "${#EXPECTED_ALOG_VALUES[@]}" -eq 0 ] && [ -z "$COUNT_VAR" ]; then
         printf 'evidence=%s\n' "$evidence"
         return 0
     fi
@@ -619,6 +643,14 @@ check_alog_evidence() {
             echo 'evidence=unexpected_token'
             return 1
         fi
+    done
+    for value_spec in "${EXPECTED_ALOG_VALUES[@]}"; do
+        var=${value_spec%%=*}
+        expected=${value_spec#*=}
+        alog_window_has_value "$root" "$var" "$expected" || {
+            echo 'evidence=missing_exact_publication'
+            return 1
+        }
     done
     if [ -n "$COUNT_VAR" ]; then
         count=$(count_alog_posts "$root" "$COUNT_VAR") || { echo 'evidence=missing_count_log'; return 1; }
@@ -705,7 +737,7 @@ run_case() {
     (
         cd "$workdir" || exit 1
         : > results.txt
-        launch_args=(--max_time="$MAX_TIME" "${DISPLAY_ARGS[@]}"
+        launch_args=(--max_time="$MAX_TIME" --mmod="$case_name" "${DISPLAY_ARGS[@]}"
             --shore_mport="$case_base" --shore_pshare="$((case_base + PSHARE_OFFSET))" "$TIME_WARP")
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)
         LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"

@@ -38,6 +38,7 @@ ProcessConfig = pLogger
   Log = MISSION_EVALUATED @ 0 nosync
   Log = ECHO_OUT_STR @ 0 nosync
   Log = ECHO_OUT_LATEST @ 0 nosync
+  Log = FLIP_SRC @ 0 nosync
   Log = FLIP_OUT @ 0 nosync
   Log = CYCLE_A @ 0 nosync
   Log = CYCLE_B @ 0 nosync

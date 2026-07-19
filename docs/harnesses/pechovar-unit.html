@@ -147,13 +147,13 @@
 
         <article class="case-row">
           <code>default_repeated_source_posts_each_pass</code>
-          <p>Leaves echo_latest_only false and posts first then second to one source, testing release of every queued update; passes when the final value is second and the logs contain exactly two ECHO_OUT_LATEST publications.</p>
+          <p>Leaves echo_latest_only false and posts first then second in one MOOS mail batch, testing release of every queued update; passes when the final value is second and the logs contain exactly two ECHO_OUT_LATEST publications.</p>
         </article>
 
 
         <article class="case-row">
           <code>latest_only_repeated_source_pass</code>
-          <p>Sets echo_latest_only=true and posts first then second before release, testing retention of the most recent source value; passes when pMissionEval observes final ECHO_OUT_LATEST=second, without checking the target publication count.</p>
+          <p>Sets echo_latest_only=true and posts first then second in the same MOOS mail batch, testing replacement of the older held message before release; passes when final ECHO_OUT_LATEST=second is published exactly once.</p>
         </article>
 
 
@@ -166,6 +166,12 @@
         <article class="case-row">
           <code>flip_explicit_param_syntax_pass</code>
           <p>Configures filter = type == redeploy and component = x -&gt; xcenter instead of shorthand entries, testing explicit EFlipper parameter syntax; passes when input type=redeploy,x=18 produces xcenter=18.</p>
+        </article>
+
+
+        <article class="case-row">
+          <code>flip_explicit_filter_suppresses_pass</code>
+          <p>Uses the same explicit filter = and component = syntax but posts type=loiter,x=18, proving the explicit filter controls output rather than merely parsing; passes when no FLIP_OUT publication occurs.</p>
         </article>
 
 
@@ -219,7 +225,7 @@
 
         <article class="case-row">
           <code>flip_unmapped_component_omitted_pass</code>
-          <p>Maps only x from x=8,z=99, testing omission of an unmapped source component; passes when xcenter=8 appears and the combined token xcenter=8,z=99 does not.</p>
+          <p>Maps only x from x=8,z=99, testing omission of an unmapped source component; passes when the complete FLIP_OUT value is exactly xcenter=8.</p>
         </article>
 
 
@@ -237,7 +243,7 @@
 
         <article class="case-row">
           <code>flip_empty_value_pass</code>
-          <p>Maps source component x from the payload x=, testing preservation of an empty component value; passes when the logs contain xcenter=.</p>
+          <p>Maps source component x from the payload x=, testing preservation of an empty component value; passes when the complete FLIP_OUT value is exactly xcenter=.</p>
         </article>
 
 
@@ -267,19 +273,19 @@
 
         <article class="case-row">
           <code>invalid_flip_alias_no_output_pass</code>
-          <p>Configures FLIP_SRC as both source and destination with an x -&gt; xcenter mapping, testing source/destination alias rejection; passes when input x=17 produces no xcenter=17 payload.</p>
+          <p>Configures FLIP_SRC as both source and destination with an x -&gt; xcenter mapping, testing source/destination alias rejection; passes when the logs contain exactly the one original FLIP_SRC=x=17 post and no FLIP_OUT publication.</p>
         </article>
 
 
         <article class="case-row">
           <code>shared_source_dual_flip_pass</code>
-          <p>Gives two named EFlippers the same FLIP_SRC=x=31,y=41, mapping x to FLIP_OUT and y to ECHO_OUT_STR; passes when both xcenter=31 and ypos=41 appear.</p>
+          <p>Gives two named EFlippers the same FLIP_SRC=x=31,y=41, mapping x to FLIP_OUT and y to ECHO_OUT_STR; passes when the exact bound publications are FLIP_OUT=xcenter=31 and ECHO_OUT_STR=ypos=41.</p>
         </article>
 
 
         <article class="case-row">
           <code>dual_flip_independent_pass</code>
-          <p>Gives two named EFlippers separate sources and destinations, posting x=44 to one and word=bravo to the other; passes when the logs contain both xcenter=44 and word_out=bravo.</p>
+          <p>Gives two named EFlippers separate sources and destinations, posting x=44 to one and word=bravo to the other; passes when the exact bound publications are FLIP_OUT=xcenter=44 and ECHO_OUT_STR=word_out=bravo.</p>
         </article>
 
       </div>
