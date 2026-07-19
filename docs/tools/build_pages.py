@@ -116,6 +116,7 @@ class Example:
     corrected_approach: str
     feature_commits: tuple[tuple[str, str], ...] = ()
     diff_label: str = ""
+    source_revision: str = ""
 
 
 EXAMPLE_CATALOG: tuple[Example, ...] = (
@@ -210,47 +211,50 @@ Expected Y:  6.741529793   Actual Y: -4.810944792
         corrected_approach="Keep the established Y/X argument order. If the call is wrapped for readability, give the wrapper named X and Y outputs and preserve a numeric round-trip test.",
     ),
     Example(
-        slug="json-node-reports",
-        title="The JSON reports that no consumer can read",
+        slug="stale-contact-timestamps",
+        title="The stale-contact cleanup that deletes a live vehicle",
         category="C++ unit test · new feature",
-        summary="JSON node reports are a real interoperability feature. Publishing them is only half the change: every shared node-report parser must recognize the new representation.",
-        source_path="ivp/src/pNodeReporter/NodeReporter.cpp",
-        test_path="tests/cpp/contacts/NodeRecord/NodeRecordUtilsTest.cpp",
-        mutation="Publish JSON node reports without updating the shared parser",
-        diff="""+  else if(param == \"json_report\")
-+    handled = setNonWhiteVarOnString(m_json_report, value);
-   ...
-+  string json_report = cspToJson(report);
-+  if(tolower(m_json_report) == \"true\")
-+    Notify(m_node_report_var, json_report);
-+  else
-     Notify(m_node_report_var, report);""",
-        command="""cd tests/cpp
-./ctests.sh --contacts --jobs=4""",
-        baseline="100% tests passed, 0 tests failed out of 106",
-        failure="""ParsesJsonNodeReportsUsedByJsonPosters
-Value of: rec.valid()
-  Actual: false
-Expected: true
-Expected name: alpha
-  Actual: \"\"
+        summary="Automatically expiring vehicles that stop reporting is useful. Reusing the sender's timestamp looks natural, but clock skew can make a freshly received contact appear old.",
+        source_path="ivp/src/lib_geodaid/ContactLedger.cpp",
+        test_path="tests/cpp/geodaid/ContactLedger/ContactLedgerTest.cpp",
+        mutation="Measure contact freshness from the sender's report timestamp",
+        diff=""" bool ContactLedger::isStale(string vname, double thresh) const
+ {
+-  map<string,double>::const_iterator p;
+-  p = m_map_records_utc.find(vname);
+-  if(p == m_map_records_utc.end())
++  double report_utc = getUTC(vname);
++  if(report_utc == 0)
+     return(false);
 
-99% tests passed, 1 test failed out of 106""",
-        why_it_looks_good="JSON output is useful for dashboards and non-MOOS consumers. Adding a configuration option and converting the outgoing report looks self-contained because pNodeReporter publishes valid JSON and its legacy output path remains intact.",
-        what_changed="After JSON publication was added, a receiving component could be handed a syntactically valid report that the shared parser interpreted as the legacy CSP format, yielding an invalid empty NodeRecord.",
-        what_caught_it="The CTest sends a complete JSON vehicle report through the same generic parser used by consumers and checks the resulting name, position, motion, mode, and status fields.",
-        corrected_approach="The follow-up upstream change dispatches brace-wrapped input to string2NodeRecordJSON() and retains the CSP path for existing reports, making the new format additive rather than a compatibility break.",
-        feature_commits=(
-            ("1ef6c1485", "JSON publication"),
-            ("6eb8fc3b9", "JSON parsing"),
-        ),
+-  double rcvd_utc = p->second;
+-  double elapsed  = m_curr_utc - rcvd_utc;
++  double elapsed = m_curr_utc - report_utc;
+ }""",
+        command="""cd tests/cpp
+./ctests.sh --geodaid --jobs=4""",
+        baseline="100% tests passed, 0 tests failed out of 21",
+        failure="""DistinguishesReportTimestampAgeFromReceiveTimestampAge
+Value of: ledger.isStale(\"abe\", 20)
+  Actual: true
+Expected: false
+Expected stale contacts: 0
+  Actual: 1
+
+95% tests passed, 1 test failed out of 21""",
+        why_it_looks_good="Every node report already carries a UTC timestamp, so reusing getUTC() avoids a second lookup and appears to measure the report's age directly. It works whenever vehicle clocks are perfectly synchronized.",
+        what_changed="The report timestamp says when the sender created the message, not when this vehicle received it. With latency or clock skew, a report received five seconds ago can appear thirty-five seconds old and be removed as stale.",
+        what_caught_it="The CTest receives a report stamped 70 at local time 100, advances to 105, and applies a 20-second stale threshold. The contact is fresh by its five-second receive age even though its embedded timestamp is thirty-five seconds old.",
+        corrected_approach="Keep local receipt times in m_map_records_utc for stale-contact decisions. Use the embedded report timestamp for extrapolation and clock-skew telemetry, where sender time is the value that actually matters.",
+        feature_commits=(("5472d94c2", "contact staleness tracking"),),
         diff_label="Reconstructed incomplete implementation",
+        source_revision=UPSTREAM_REVISION,
     ),
 )
 
 EXAMPLE_ORDER = (
     "dynamic-operating-region",
-    "json-node-reports",
+    "stale-contact-timestamps",
     "global-obstacle-alert-deduplication",
     "coordinate-output-order",
 )
@@ -263,6 +267,7 @@ EXAMPLES: tuple[Example, ...] = tuple(
 STALE_EXAMPLE_SLUGS = (
     "strict-eflipper-filters",
     "colregs-boundary-tolerance",
+    "json-node-reports",
 )
 
 
@@ -3188,7 +3193,7 @@ def render_examples() -> str:
         <li>Start from a passing focused test or harness case.</li>
         <li>Make one plausible change without committing it to MOOS-IvP.</li>
         <li>Capture the meaningful failure, not merely a compiler error.</li>
-        <li>Explain the contract that caught the edit and the safer approach.</li>
+        <li>Explain what the test protects and the safer approach.</li>
       </ol>
     </section>
   </main>
@@ -3199,16 +3204,16 @@ def render_examples() -> str:
 def render_example(example: Example) -> str:
     example_index = EXAMPLES.index(example)
     next_example = EXAMPLES[(example_index + 1) % len(EXAMPLES)]
-    source_revision = (
-        example.feature_commits[-1][0]
-        if example.feature_commits
-        else UPSTREAM_REVISION
-    )
-    source_link_label = (
-        "Open the source at the completed feature revision"
-        if example.feature_commits
-        else "Open the source at the tested baseline"
-    )
+    source_revision = example.source_revision
+    if not source_revision:
+        source_revision = (
+            example.feature_commits[-1][0]
+            if example.feature_commits
+            else UPSTREAM_REVISION
+        )
+    source_link_label = "Open the source at the tested baseline"
+    if example.feature_commits and not example.source_revision:
+        source_link_label = "Open the source at the completed feature revision"
     test_result = f"""
         <article class="example-baseline">
           <h3>Before the edit</h3>
