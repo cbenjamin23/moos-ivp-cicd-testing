@@ -19,7 +19,9 @@ CPP_TEST_DIR = REPO_ROOT / "tests" / "cpp"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 CTEST_COVERAGE_DATA = ROOT / "data" / "ctest_coverage.json"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
-ASSET_VERSION = "20260718-1"
+UPSTREAM_REVISION = "29ea136b6d489fd8dda093b6218a51e4022badeb"
+UPSTREAM_BLOB = f"https://github.com/moos-ivp/moos-ivp/blob/{UPSTREAM_REVISION}"
+ASSET_VERSION = "20260719-1"
 PENDING_GIF = "GIF_PENDING"
 CASE_ARRAY_RE = re.compile(
     r"^\s*([A-Z0-9_]*CASES)\s*=\s*\(\s*(.*?)\)\s*(?:#.*)?$",
@@ -93,6 +95,143 @@ class CTestArea:
     coverage_note: str
     labels: tuple[str, ...]
     path: str
+
+
+@dataclass(frozen=True)
+class Example:
+    slug: str
+    title: str
+    category: str
+    summary: str
+    source_path: str
+    test_path: str
+    mutation: str
+    diff: str
+    command: str
+    baseline: str
+    failure: str
+    why_it_looks_good: str
+    what_changed: str
+    what_caught_it: str
+    corrected_approach: str
+
+
+EXAMPLES: tuple[Example, ...] = (
+    Example(
+        slug="coordinate-output-order",
+        title="The coordinate cleanup that swaps X and Y",
+        category="C++ unit test",
+        summary="A conventional output-argument order looks more natural, compiles cleanly, and returns plausible coordinates—but puts each value in the wrong field.",
+        source_path="ivp/src/pNodeReporter/NodeReporter.cpp",
+        test_path="tests/cpp/pnodereporter/Core/NodeReporterTest.cpp",
+        mutation="Treat the geodesy outputs as X then Y",
+        diff="""-  m_geodesy.LatLong2LocalGrid(nav_lat, nav_lon, nav_y, nav_x);
++  m_geodesy.LatLong2LocalGrid(nav_lat, nav_lon, nav_x, nav_y);""",
+        command="""cd tests/cpp
+./ctests.sh --pnodereporter --jobs=4""",
+        baseline="100% tests passed, 0 tests failed out of 17",
+        failure="""CrossFillSynthesizesLocalAndGlobalCoordinates
+Expected X: -4.717421778   Actual X:  6.668403106
+Expected Y:  6.741529793   Actual Y: -4.810944792
+
+94% tests passed, 1 tests failed out of 17""",
+        why_it_looks_good="Most APIs return Cartesian coordinates in X/Y order. Reordering the two output arguments makes the call read the way a maintainer would expect, and the types provide no warning because both arguments are doubles.",
+        what_changed="This MOOSGeodesy call uses the less obvious Y/X output order. Swapping the arguments still produces finite, believable numbers, but pNodeReporter serializes the wrong local position.",
+        what_caught_it="The pNodeReporter CTest checks the numeric result in both conversion directions. Merely checking that X and Y exist would let this edit pass.",
+        corrected_approach="Keep the established Y/X argument order. If the call is wrapped for readability, give the wrapper named X and Y outputs and preserve a numeric round-trip test.",
+    ),
+    Example(
+        slug="strict-eflipper-filters",
+        title="The stricter filter that drops valid messages",
+        category="C++ unit test",
+        summary="Requiring every configured filter field to appear sounds safer, but changes EFlipper's contract: missing fields are allowed and only present mismatches suppress output.",
+        source_path="ivp/src/pEchoVar/EFlipper.cpp",
+        test_path="tests/cpp/pechovar/EFlipper/EFlipperTest.cpp",
+        mutation="Reject input when a configured filter field is absent",
+        diff="""+  map<string, bool> filters_seen;
+   ...
+-    if((fmatch != \"\") && (fmatch != tolower(right)))
+-      filtered = true;
++    if(fmatch != \"\") {
++      filters_seen[tolower(left)] = true;
++      if(fmatch != tolower(right))
++        filtered = true;
++    }
++  }
++
++  map<string,string>::iterator p;
++  for(p=m_fmap.begin(); p!=m_fmap.end(); p++)
++    if(!filters_seen[p->first])
++      filtered = true;""",
+        command="""cd tests/cpp
+./ctests.sh --pechovar --jobs=4""",
+        baseline="100% tests passed, 0 tests failed out of 31",
+        failure="""MissingFiltersDoNotBlockMappedOutput
+Expected: xcenter_assign=10,ycenter_assign=20
+Actual:   \"\"
+
+97% tests passed, 1 tests failed out of 31""",
+        why_it_looks_good="A strict filter is easy to reason about: if configuration says mode must equal survey, an input without mode appears incomplete. Tracking all observed filters also looks like straightforward validation hardening.",
+        what_changed="EFlipper filters are conditional. A present field with the wrong value rejects the message; an absent field does not. The edit silently turns that conditional filter into a required-field schema.",
+        what_caught_it="The EFlipper CTest exercises a payload containing the mapped X and Y fields but no mode field. It expects the mapped output and fails immediately when the stricter code returns an empty string.",
+        corrected_approach="Preserve the missing-field behavior. If callers need required fields, add a separately named option with its own tests instead of changing the existing filter semantics.",
+    ),
+    Example(
+        slug="global-obstacle-alert-deduplication",
+        title="The deduplication that ignores the second obstacle",
+        category="Live mission harness",
+        summary="Suppressing repeated publications on one alert variable reduces traffic, but two different obstacle IDs legitimately share that channel.",
+        source_path="ivp/src/pObstacleMgr/ObstacleManager.cpp",
+        test_path="harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion/README.md",
+        mutation="Post only the first obstacle alert",
+        diff="""void ObstacleManager::postConvexHullUpdate(...)
+{
++  if(m_alerts_posted > 0)
++    return;
++
+   XYPolygon poly = m_map_obstacles[key].getPoly();""",
+        command="""cd harnesses/obstacle_behavior_harnesses/H01-obstacle_behavior_motion
+./zlaunch.sh --case=two_obstacles_clean_pass \\
+  --port_base=42000 --log=minimal 10""",
+        baseline="failures=0 total=1 elapsed_seconds=12",
+        failure="""grade=fail
+obstacle_alert_count=1
+obstacle_spawned=ob_one
+arrived=true collisions=1 encounters=2
+
+failures=1 total=1 elapsed_seconds=12""",
+        why_it_looks_good="OBSTACLE_ALERT is one MOOS variable, so treating later posts as duplicates looks like a simple way to reduce repeated work and message traffic.",
+        what_changed="The variable is a stream, not a singleton. Each publication carries an obstacle ID. Global deduplication allows ob_one through, suppresses ob_two, and prevents the second spawned avoidance behavior from being created.",
+        what_caught_it="The mission requires two alert deliveries and the final spawned ID ob_two. It also grades the vehicle outcome, exposing the operational consequence: the vehicle arrives but records a collision.",
+        corrected_approach="Deduplicate by obstacle identity and payload version, not by output variable or lifetime alert count. Retain the two-obstacle mission as the integration guard.",
+    ),
+    Example(
+        slug="colregs-boundary-tolerance",
+        title="The safety tolerance that changes a COLREGS decision",
+        category="Threshold mission harness",
+        summary="Adding a one-meter tolerance seems conservative, but moves a calibrated give-way geometry onto the bow-crossing branch and changes the encounter state.",
+        source_path="ivp/src/lib_behaviors-colregs/BHV_AvdColregsV22.cpp",
+        test_path="harnesses/colregs_harnesses/H02-colregs_thresholds/README.md",
+        mutation="Accept bow crossing within one meter of the configured cutoff",
+        diff="""-    if(m_cnos.os_crosses_cn_bow_dist() > acceptable_dist)
++    if(m_cnos.os_crosses_cn_bow_dist() >= (acceptable_dist - 1))
+       m_avoid_submode = \"bow\";""",
+        command="""cd harnesses/colregs_harnesses/H02-colregs_thresholds
+./zlaunch.sh --case=giveway_bowdist_edge_pass \\
+  --port_base=43000 --log=minimal 10""",
+        baseline="grade=pass colregs_mode=giveway:stern colregs_ix=20 xcn_bow_dist=9.021",
+        failure="""grade=fail timeout=true
+colregs_mode=cpa colregs_ix=50
+xcn_bow_dist=9.036 xcn_turn_gap=24.3
+collisions=0
+
+failures=1 total=1 elapsed_seconds=15""",
+        why_it_looks_good="A small tolerance can appear to absorb sensor noise and choose an earlier, more conservative maneuver near a decision boundary.",
+        what_changed="The edge fixture is intentionally just below the configured 10-meter bow-distance cutoff. Moving the cutoff by one meter changes the initial submode and the encounter no longer satisfies the expected give-way-stern contract before timeout.",
+        what_caught_it="The COLREGS threshold harness grades the published mode and numeric index, not only collision count. The mutation remained collision-free, so an outcome-only test would have missed the decision regression.",
+        corrected_approach="Keep the documented cutoff unchanged. A noise policy should be designed explicitly—such as hysteresis with entry and exit thresholds—and validated across the full mirrored threshold family.",
+    ),
+)
 
 
 HARNESSES: tuple[Harness, ...] = (
@@ -2098,7 +2237,7 @@ def page_shell(title: str, body: str, prefix: str = "") -> str:
         <a href="{prefix}quick-start.html">Quick Start</a>
         <a href="{prefix}index.html#families">Harnesses</a>
         <a href="{prefix}ctest-coverage.html">CTest Coverage</a>
-        <a href="{prefix}technical.html">Technical</a>
+        <a href="{prefix}examples.html">Examples</a>
       </nav>
       <label class="theme-switch" title="Toggle Frost theme">
         <input type="checkbox" data-theme-toggle aria-label="Frost theme">
@@ -2787,7 +2926,7 @@ def render_index() -> str:
           <a class="button primary" href="quick-start.html">Developer quick start</a>
           <a class="button secondary" href="#families">Browse catalog</a>
           <a class="button secondary" href="ctest-coverage.html">CTest coverage</a>
-          <a class="button secondary" href="technical.html">Technical overview</a>
+          <a class="button secondary" href="examples.html">Examples</a>
         </div>
       </div>
       <div class="hero-panel hero-panel--actions">
@@ -2846,7 +2985,7 @@ def render_index() -> str:
         <li><code>pMissionEval</code> reports and shell-side checks turn each run into a clear pass/fail result.</li>
       </ol>
       <div class="workflow-actions">
-        <a class="text-link" href="technical.html">Read the technical architecture</a>
+        <a class="text-link" href="examples.html">See the tests catch real mutations</a>
       </div>
     </section>
   </main>
@@ -2925,181 +3064,168 @@ def render_harness(h: Harness) -> str:
     return page_shell(h.title, body, "../")
 
 
-def render_technical() -> str:
-    family_rows = "\n".join(
-        f"""
-          <tr>
-            <th>{escape(family.name)}</th>
-            <td>{escape(family.summary)}</td>
-            <td>{len(family.slugs)}</td>
-          </tr>
+def upstream_url(path: str) -> str:
+    return f"{UPSTREAM_BLOB}/{path}"
+
+
+def render_example_card(example: Example, number: int) -> str:
+    return f"""
+      <article class="example-card">
+        <div class="example-card-topline">
+          <span class="example-number">{number:02d}</span>
+          <span class="example-category">{escape(example.category)}</span>
+        </div>
+        <h2>{escape(example.title)}</h2>
+        <p>{escape(example.summary)}</p>
+        <dl class="example-card-facts">
+          <div>
+            <dt>Intentional edit</dt>
+            <dd>{escape(example.mutation)}</dd>
+          </div>
+          <div>
+            <dt>Result</dt>
+            <dd><span class="result-fail">Verified failure</span></dd>
+          </div>
+        </dl>
+        <a class="text-link" href="examples/{example.slug}.html">Read the full example</a>
+      </article>
 """
-        for family in FAMILIES
+
+
+def render_examples() -> str:
+    cards = "\n".join(
+        render_example_card(example, number)
+        for number, example in enumerate(EXAMPLES, start=1)
     )
     body = f"""
   <main>
-    <section class="page-hero">
+    <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
-      <p class="eyebrow">Technical Overview</p>
-      <h1>How the coverage workspace is organized.</h1>
-      <p class="lede">The repository combines C++ unit tests for individual classes and functions with mission harnesses that test live MOOS apps, behaviors, and vehicle motion.</p>
-    </section>
-
-    <section class="content-section compact-section">
-      <div class="section-heading">
-        <p class="eyebrow">Core Terms</p>
-        <h2>Vocabulary for the rest of the site</h2>
-      </div>
-      <div class="term-list">
-        <article class="term-item">
-          <h3>CTest target</h3>
-          <p>A C++ unit-test executable registered with CTest. Use it for behavior that can be checked without running a mission.</p>
-        </article>
-        <article class="term-item">
-          <h3>CTest family</h3>
-          <p>A named group of related C++ unit tests, such as <code>geometry</code>, <code>mbutil</code>, or <code>behaviors-marine</code>.</p>
-        </article>
-        <article class="term-item">
-          <h3>Mission stem</h3>
-          <p>The reusable base mission: MOOS communities, launch files, behavior templates, simulator setup, and map geometry shared by many checks.</p>
-        </article>
-        <article class="term-item">
-          <h3>Harness case</h3>
-          <p>One scenario layered on top of a stem. A case changes only the inputs needed to test a specific behavior, edge condition, or regression risk.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="technical-grid">
-      <article class="technical-card">
-        <h2>CTest Coverage</h2>
-        <p><code>tests/cpp/</code> holds C++ unit tests for parsers, geometry, IvP functions, contact records, behavior helpers, app utility classes, and other source-level logic.</p>
-      </article>
-      <article class="technical-card">
-        <h2>Mission Harnesses</h2>
-        <p>Harnesses run live MOOS missions when the behavior under test depends on process startup, MOOSDB traffic, vehicle motion, mission timing, or interactions between apps and behaviors.</p>
-      </article>
-      <article class="technical-card">
-        <h2>How tests are grouped</h2>
-        <p>CTest families group related C++ unit tests. Harness families and target keys group related mission harnesses.</p>
-      </article>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Coverage Layers</p>
-        <h2>Why the workspace uses more than one test style</h2>
-      </div>
-      <div class="explain-stack">
-        <article>
-          <h3>C++ unit tests</h3>
-          <p>Fast tests check individual library, app, behavior, and utility classes and functions without launching a mission or allocating MOOS ports.</p>
-        </article>
-        <article>
-          <h3>Unit-style mission checks</h3>
-          <p>Small stationary or controlled missions verify app outputs directly: detection, absence, report values, alert requests, filters, and lifecycle messages.</p>
-        </article>
-        <article>
-          <h3>Moving integration checks</h3>
-          <p>Short corridor missions verify that app outputs lead to correct downstream behavior: safe arrival, avoidance engagement, zero collisions, and expected fail modes.</p>
-        </article>
-        <article>
-          <h3>Behavior correctness checks</h3>
-          <p>Behavior-focused missions isolate behavior-specific requirements, such as alert requests, helper flags, lifecycle state, successful avoidance, and behavior completion.</p>
-        </article>
-        <article>
-          <h3>Performance and endurance checks</h3>
-          <p>Longer missions apply sustained pressure and add timing, warning-log, and repeatability constraints around mission pass/fail results.</p>
-        </article>
+      <p class="eyebrow">Examples</p>
+      <h1>Good-looking edits. Real test failures.</h1>
+      <p class="lede">Each example starts with a small, defensible change to MOOS-IvP, then shows the focused test that turns red and the behavior the test protects.</p>
+      <div class="example-verification">
+        <strong>Reproduced locally</strong>
+        <span>Clean baseline at <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
+        <span>Intentional mutations only—none were committed</span>
       </div>
     </section>
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Families</p>
-        <h2>Mission harness families</h2>
+        <p class="eyebrow">Four failure stories</p>
+        <h2>What this test workspace catches</h2>
+        <p>These are demonstrations, not historical upstream regressions. Each mutation was applied to a clean local checkout, tested, and removed after its failure was captured.</p>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Area</th>
-              <th>Role in the pipeline</th>
-              <th>Harnesses</th>
-            </tr>
-          </thead>
-          <tbody>
-            {family_rows}
-          </tbody>
-        </table>
+      <div class="example-grid">
+        {cards}
       </div>
     </section>
 
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Metadata</p>
-        <h2>Selectors and invariant checks</h2>
-      </div>
-      <div class="technical-grid">
-        <article class="technical-card">
-          <h3>CTest registry labels</h3>
-          <p><code>tests/cpp/</code> target definitions use labels for CTest registry metadata and suite-level reporting. The workflow exposes only the top-level family selectors.</p>
-        </article>
-        <article class="technical-card">
-          <h3>CTest invariants</h3>
-          <p><code>scripts/check_cpp_tests.py</code> checks that CTest registrations, labels, source references, discovery placeholders, and optional upstream bucket coverage stay consistent.</p>
-        </article>
-        <article class="technical-card">
-          <h3>Harness targets</h3>
-          <p><code>config/harness_targets.json</code> maps target keys to harness paths and families so grouped mission validation can select the right harness set.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section">
-      <div class="section-heading">
-        <p class="eyebrow">Guide Map</p>
-        <h2>Use the right page for the task</h2>
-      </div>
-      <div class="technical-grid">
-        <article class="technical-card">
-          <h3>CTest Coverage</h3>
-          <p>Review the current CTest target and case snapshot, grouped by MOOS-IvP component family.</p>
-          <a class="text-link" href="ctest-coverage.html">Open CTest coverage</a>
-        </article>
-        <article class="technical-card">
-          <h3>Harness Catalog</h3>
-          <p>Browse the app and behavior mission harness families, then open individual harness pages for case coverage and source links.</p>
-          <a class="text-link" href="index.html#families">Open catalog</a>
-        </article>
-        <article class="technical-card">
-          <h3>Developer Quick Start</h3>
-          <p>Build a local MOOS-IvP branch, then run a focused CTest group and its full mission harness.</p>
-          <a class="text-link" href="quick-start.html">Open quick start</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="workflow">
-      <p class="eyebrow">Source Orientation</p>
-      <h2>Where to look in the repository</h2>
+    <section class="workflow example-method">
+      <p class="eyebrow">Method</p>
+      <h2>One mutation at a time</h2>
       <ol>
-        <li><code>tests/cpp/</code> contains the CTest coverage layer.</li>
-        <li><code>scripts/check_cpp_tests.py</code> contains the CTest invariant checker.</li>
-        <li><code>missions/</code> contains reusable stem missions.</li>
-        <li><code>harnesses/</code> contains case overlays, harness wrappers, and per-harness documentation.</li>
-        <li><code>config/harness_targets.json</code> contains mission harness target metadata.</li>
-        <li><code>docs/tools/build_pages.py</code> generates this website from repository metadata.</li>
+        <li>Run the focused test against the unchanged MOOS-IvP checkout.</li>
+        <li>Apply one intentional source edit without creating a commit.</li>
+        <li>Rebuild only the affected target and capture the failing result.</li>
+        <li>Restore the source and rebuild the original target before continuing.</li>
       </ol>
-      <div class="workflow-actions">
-        <a class="text-link" href="{repo_url('scripts/check_cpp_tests.py')}">View the invariant checker</a>
-      </div>
     </section>
   </main>
 """
-    return page_shell("Technical Overview", body)
+    return page_shell("Examples", body)
 
 
+def render_example(example: Example) -> str:
+    example_index = EXAMPLES.index(example)
+    next_example = EXAMPLES[(example_index + 1) % len(EXAMPLES)]
+    body = f"""
+  <main>
+    <section class="page-hero page-hero--wide-lede">
+      <a class="back-link" href="../examples.html">Back to examples</a>
+      <p class="eyebrow">Example {example_index + 1:02d} · {escape(example.category)}</p>
+      <h1>{escape(example.title)}</h1>
+      <p class="lede">{escape(example.summary)}</p>
+      <div class="example-verification">
+        <strong>Verified failure</strong>
+        <span>Baseline <a href="https://github.com/moos-ivp/moos-ivp/commit/{UPSTREAM_REVISION}"><code>{UPSTREAM_REVISION[:10]}</code></a></span>
+        <span>Local mutation; no commit created</span>
+      </div>
+    </section>
+
+    <section class="content-section example-section">
+      <div class="section-heading">
+        <p class="eyebrow">The proposed edit</p>
+        <h2>{escape(example.mutation)}</h2>
+      </div>
+      <div class="example-story-grid">
+        <article class="example-explanation">
+          <h3>Why it looks reasonable</h3>
+          <p>{escape(example.why_it_looks_good)}</p>
+          <p><a class="text-link" href="{upstream_url(example.source_path)}">Open the source at the tested baseline</a></p>
+        </article>
+        <article class="example-code-panel">
+          <p class="code-label">{escape(example.source_path)}</p>
+          <pre class="mutation-diff"><code>{escape(example.diff)}</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section example-section">
+      <div class="section-heading">
+        <p class="eyebrow">The test</p>
+        <h2>Run the focused check</h2>
+      </div>
+      <div class="example-run-grid">
+        <article class="example-code-panel">
+          <h3>Command</h3>
+          <pre><code>{escape(example.command)}</code></pre>
+        </article>
+        <article class="example-baseline">
+          <h3>Before the edit</h3>
+          <pre><code>{escape(example.baseline)}</code></pre>
+        </article>
+      </div>
+      <article class="example-failure">
+        <div>
+          <p class="eyebrow">After the edit</p>
+          <h3>The focused test turns red</h3>
+        </div>
+        <pre><code>{escape(example.failure)}</code></pre>
+      </article>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading">
+        <p class="eyebrow">Explanation</p>
+        <h2>What the failure tells us</h2>
+      </div>
+      <div class="example-lessons">
+        <article>
+          <h3>What changed</h3>
+          <p>{escape(example.what_changed)}</p>
+        </article>
+        <article>
+          <h3>What caught it</h3>
+          <p>{escape(example.what_caught_it)}</p>
+          <p><a class="text-link" href="{repo_url(example.test_path)}">Open the protecting test</a></p>
+        </article>
+        <article>
+          <h3>Safer approach</h3>
+          <p>{escape(example.corrected_approach)}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="workflow example-next">
+      <p class="eyebrow">Next example</p>
+      <h2>{escape(next_example.title)}</h2>
+      <a class="button secondary" href="{next_example.slug}.html">Continue</a>
+    </section>
+  </main>
+"""
+    return page_shell(example.title, body, "../")
 def write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     normalized = ""
@@ -3176,11 +3302,14 @@ def main() -> None:
     write(ROOT / "index.html", render_index())
     write(ROOT / "quick-start.html", render_quick_start())
     write(ROOT / "ctest-coverage.html", render_ctest_coverage())
-    write(ROOT / "technical.html", render_technical())
+    write(ROOT / "examples.html", render_examples())
+    for example in EXAMPLES:
+        write(ROOT / "examples" / f"{example.slug}.html", render_example(example))
     for harness in HARNESSES:
         write(ROOT / "harnesses" / f"{harness.slug}.html", render_harness(harness))
     write(ROOT / "assets" / "gifs" / "README.md", render_gif_manifest())
     write(ROOT / ".nojekyll", "")
+    (ROOT / "technical.html").unlink(missing_ok=True)
 
 
 if __name__ == "__main__":

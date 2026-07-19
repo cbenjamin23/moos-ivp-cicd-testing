@@ -194,6 +194,10 @@ h3,
 .stats-grid,
 .technical-grid,
 .card-grid,
+.example-grid,
+.example-story-grid,
+.example-run-grid,
+.example-lessons,
 .gif-grid,
 .family-harnesses {
   gap: 0.9rem;
@@ -209,6 +213,12 @@ h3,
 .technical-card,
 .table-wrap,
 .source-strip,
+.example-card,
+.example-explanation,
+.example-code-panel,
+.example-baseline,
+.example-failure,
+.example-lessons article,
 .explain-stack article,
 .case-row {
   background: rgba(255, 255, 255, 0.62);

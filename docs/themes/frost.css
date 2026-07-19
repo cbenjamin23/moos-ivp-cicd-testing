@@ -37,6 +37,12 @@ body {
 .technical-card,
 .table-wrap,
 .source-strip,
+.example-card,
+.example-explanation,
+.example-code-panel,
+.example-baseline,
+.example-failure,
+.example-lessons article,
 .explain-stack article,
 .case-row {
   background: rgba(255, 255, 255, 0.72);

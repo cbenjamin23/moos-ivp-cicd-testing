@@ -551,6 +551,184 @@ h3 {
   margin-top: auto;
 }
 
+.example-verification {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  max-width: 900px;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1rem;
+  background: var(--soft);
+  border-left: 4px solid var(--orange);
+  border-radius: 0.55rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.example-verification strong {
+  color: var(--ink);
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.example-card,
+.example-explanation,
+.example-code-panel,
+.example-baseline,
+.example-failure,
+.example-lessons article {
+  min-width: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+
+.example-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+}
+
+.example-card h2 {
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+}
+
+.example-card > p,
+.example-explanation p,
+.example-lessons p {
+  color: var(--muted);
+}
+
+.example-card > .text-link {
+  margin-top: auto;
+  padding-top: 0.8rem;
+}
+
+.example-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.example-number {
+  color: var(--blue);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.example-category {
+  padding: 0.3rem 0.55rem;
+  color: var(--blue);
+  background: var(--soft);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.example-card-facts {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0;
+}
+
+.example-card-facts div {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
+}
+
+.example-card-facts dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.example-card-facts dd {
+  margin: 0;
+  font-weight: 750;
+}
+
+.example-story-grid,
+.example-run-grid,
+.example-lessons {
+  display: grid;
+  gap: 1rem;
+}
+
+.example-story-grid {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+}
+
+.example-run-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.example-lessons {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.example-explanation,
+.example-code-panel,
+.example-baseline,
+.example-lessons article {
+  padding: 1.1rem;
+}
+
+.example-code-panel pre,
+.example-baseline pre {
+  margin-top: 0.75rem;
+}
+
+.code-label {
+  margin: 0 0 0.7rem;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.mutation-diff {
+  border-left: 4px solid var(--orange);
+}
+
+.example-failure {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.55fr) minmax(0, 1.45fr);
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1.1rem;
+  border-color: var(--orange);
+}
+
+.example-failure .eyebrow {
+  margin-bottom: 0.4rem;
+}
+
+.example-failure pre {
+  width: 100%;
+}
+
+.example-method,
+.example-next {
+  border-left: 4px solid var(--orange);
+}
+
+.example-next .button {
+  margin-top: 0.5rem;
+}
+
 .stat-card strong {
   display: block;
   color: var(--blue);
@@ -1088,6 +1266,11 @@ tbody tr:last-child td {
   .stats-grid,
   .technical-grid,
   .card-grid,
+  .example-grid,
+  .example-story-grid,
+  .example-run-grid,
+  .example-lessons,
+  .example-failure,
   .gif-grid,
   .family-harnesses,
   .case-matrix {
