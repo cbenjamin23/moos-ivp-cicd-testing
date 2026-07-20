@@ -6,6 +6,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HARNESS_ROOT = REPO_ROOT / "harnesses" / "mission_utility_harnesses"
 RUNNER = HARNESS_ROOT / "mission_utility_runner.sh"
+HASH_RESET_PATCH = HARNESS_ROOT / "patches" / "hash-reset-changes-shoreside.xmoos"
 LAUNCHERS = (
     HARNESS_ROOT / "H01-pmissioneval_unit" / "zlaunch.sh",
     HARNESS_ROOT / "H02-pmissionhash_unit" / "zlaunch.sh",
@@ -47,6 +48,21 @@ fi
         text = RUNNER.read_text(encoding="utf-8")
         self.assertIn("mission_utility_main() {", text)
         self.assertNotIn('mission_utility_main "$@"', text)
+
+    def test_hash_reset_timing_is_owned_by_the_case_patch(self) -> None:
+        runner_text = RUNNER.read_text(encoding="utf-8")
+        case_block = runner_text.split("hash_reset_changes_pass)", 1)[1].split(";;", 1)[0]
+        self.assertIn(
+            'POKE_ARGS="PASS_INPUT=true CASE_VALUE:=hashreset CASE_MAIL:=hashreset"',
+            case_block,
+        )
+        self.assertNotIn("RESET_MHASH", case_block)
+        self.assertNotIn("TEST_EVAL_READY", case_block)
+        self.assertNotIn("__SLEEP__", case_block)
+
+        patch_text = HASH_RESET_PATCH.read_text(encoding="utf-8")
+        self.assertIn("event = var=RESET_MHASH, val=true, time=5", patch_text)
+        self.assertIn("event = var=TEST_EVAL_READY, val=true, time=45", patch_text)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-case=hash_custom_vars_pass grade=pass subject=pMissionHash expected_subject=pass form=mission_utility_unit  mmod=hash_custom_vars_pass  subject_grade=pass  eval=true  custom_hash=mhash=260717-2050U-LITE-DASH,utc=1784335848.34  custom_short=LITE-DASH
-case=hash_short_off_pass grade=pass subject=pMissionHash expected_subject=pass form=mission_utility_unit  mmod=hash_short_off_pass  subject_grade=pass  computed_short=[TEDS-BUSH]  full_hash=mhash=260717-2050G-TEDS-BUSH,utc=1784335848.51
+case=hash_custom_vars_pass grade=pass subject=pMissionHash expected_subject=pass form=mission_utility_unit  mmod=hash_custom_vars_pass  subject_grade=pass  eval=true  custom_hash=mhash=260720-0423N-CAGY-NONO,utc=1784535798.00  custom_short=CAGY-NONO
+case=hash_short_off_pass grade=pass subject=pMissionHash expected_subject=pass form=mission_utility_unit  mmod=hash_short_off_pass  subject_grade=pass  computed_short=[TAME-CARE]  full_hash=mhash=260720-0423W-TAME-CARE,utc=1784535798.13
 case=hash_long_off_pass grade=pass subject=pMissionHash expected_subject=pass   subject_grade=pass  case_value=longoff
-case=hash_reset_changes_pass grade=pass subject=pMissionHash expected_subject=pass form=mission_utility_unit  mmod=hash_reset_changes_pass  prehash=[DAFT-JOSH]  subject_grade=pass  eval=true  reset_hash=[DARK-DRIP]
+case=hash_reset_changes_pass grade=pass subject=pMissionHash expected_subject=pass form=mission_utility_unit  mmod=hash_reset_changes_pass  prehash=[HIND-YALE]  subject_grade=pass  eval=true  reset_hash=[LIMP-ZANE]

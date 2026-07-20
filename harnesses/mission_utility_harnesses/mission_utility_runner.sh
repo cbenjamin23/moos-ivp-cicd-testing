@@ -341,7 +341,7 @@ get_case_config() {
         hash_reset_changes_pass)
             SHORE_PATCH="$PATCH_DIR/hash-reset-changes-shoreside.xmoos"
             EXTRA_CHECK="hash_reset"
-            POKE_ARGS="PASS_INPUT=true CASE_VALUE:=hashreset CASE_MAIL:=hashreset RESET_MHASH=true __SLEEP__=4 TEST_EVAL_READY=true"
+            POKE_ARGS="PASS_INPUT=true CASE_VALUE:=hashreset CASE_MAIL:=hashreset"
             ;;
         mayfinish_custom_finish_pass)
             SHORE_PATCH="$PATCH_DIR/mayfinish-custom-finish-shoreside.xmoos"
@@ -458,7 +458,21 @@ unique_hash_count() {
         echo 0
         return
     }
-    aloggrep "$alog" MISSION_HASH 2>/dev/null | sed -n 's/.*mhash=\([^, ]*\).*/\1/p' | sort -u | wc -l | tr -d ' '
+    awk '
+        $2 == "MISSION_HASH" && $3 == "pMissionHash" {
+            value = $4
+            sub(/^mhash=/, "", value)
+            sub(/,.*/, "", value)
+            if(value != "")
+                seen[value] = 1
+        }
+        END {
+            count = 0
+            for(value in seen)
+                count++
+            print count
+        }
+    ' "$alog"
 }
 
 grade_from_line() {
@@ -558,10 +572,19 @@ extra_check_ok() {
         custom_hash)
             echo "$line" | rg -q 'custom_hash=mhash=' && \
             echo "$line" | rg -q 'custom_short=[A-Z]+-[A-Z]+' && \
-            ! echo "$line" | rg -Fq '$[CUSTOM_'
+            ! echo "$line" | rg -Fq '$[CUSTOM_' && \
+            ! alog_var_has "$case_dir" "MISSION_HASH" && \
+            ! alog_var_has "$case_dir" "MHASH"
             return $?
             ;;
         hash_reset)
+            local prehash
+            local reset_hash
+            prehash=$(field_value "$line" "prehash") || return 1
+            reset_hash=$(field_value "$line" "reset_hash") || return 1
+            [[ "$prehash" =~ ^\[[A-Z]+-[A-Z]+\]$ ]] && \
+            [[ "$reset_hash" =~ ^\[[A-Z]+-[A-Z]+\]$ ]] && \
+            [ "$prehash" != "$reset_hash" ] && \
             [ "$(unique_hash_count "$case_dir")" -ge 2 ]
             return $?
             ;;

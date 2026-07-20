@@ -61,7 +61,7 @@
         </div>
         <div class="gif-meta">
           <h3>Custom Hash Vars</h3>
-          <p>Description: Sets mission_hash_var=CUSTOM_MISSION_HASH and mhash_short_var=CUSTOM_MHASH_SHORT, testing non-default publication names; passes when the evaluator grades pass and reports a full mhash=...,utc=... value plus a two-word short hash through those custom variables.</p>
+          <p>Description: Sets mission_hash_var=CUSTOM_MISSION_HASH and mhash_short_var=CUSTOM_MHASH_SHORT, testing that both hash publications move to the configured names rather than being duplicated under the defaults; passes when the evaluator receives a full mhash=...,utc=... value and a two-word short hash through the custom variables and the .alog contains neither MISSION_HASH nor MHASH.</p>
         </div>
       </article>
 
@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Hash Reset</h3>
-          <p>Description: Posts RESET_MHASH=true, testing runtime regeneration of the mission hash; passes when the evaluator grades pass and the .alog contains at least two distinct mhash= values published on MISSION_HASH.</p>
+          <p>Description: Posts RESET_MHASH=true at mission time 5 and evaluates after pMissionHash&#x27;s next 30-second publication, testing runtime hash regeneration; passes when the reported prehash and reset_hash are different two-word hashes and the .alog contains at least two distinct MISSION_HASH payloads sourced by pMissionHash.</p>
         </div>
       </article>
 
@@ -89,7 +89,7 @@
 
         <article class="case-row">
           <code>hash_custom_vars_pass</code>
-          <p>Sets mission_hash_var=CUSTOM_MISSION_HASH and mhash_short_var=CUSTOM_MHASH_SHORT, testing non-default publication names; passes when the evaluator grades pass and reports a full mhash=...,utc=... value plus a two-word short hash through those custom variables.</p>
+          <p>Sets mission_hash_var=CUSTOM_MISSION_HASH and mhash_short_var=CUSTOM_MHASH_SHORT, testing that both hash publications move to the configured names rather than being duplicated under the defaults; passes when the evaluator receives a full mhash=...,utc=... value and a two-word short hash through the custom variables and the .alog contains neither MISSION_HASH nor MHASH.</p>
         </article>
 
 
@@ -107,7 +107,7 @@
 
         <article class="case-row">
           <code>hash_reset_changes_pass</code>
-          <p>Posts RESET_MHASH=true, testing runtime regeneration of the mission hash; passes when the evaluator grades pass and the .alog contains at least two distinct mhash= values published on MISSION_HASH.</p>
+          <p>Posts RESET_MHASH=true at mission time 5 and evaluates after pMissionHash&#x27;s next 30-second publication, testing runtime hash regeneration; passes when the reported prehash and reset_hash are different two-word hashes and the .alog contains at least two distinct MISSION_HASH payloads sourced by pMissionHash.</p>
         </article>
 
       </div>
