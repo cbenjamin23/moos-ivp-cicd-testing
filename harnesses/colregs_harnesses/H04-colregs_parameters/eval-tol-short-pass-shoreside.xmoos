@@ -13,11 +13,14 @@ ProcessConfig = pMissionEval
   AppTick    = 4
   CommsTick  = 4
 
+  lead_condition = (COLREGS_AVOID_IX_BEN = 43) or (MISSION_TIMEOUT = true)
+  pass_condition = COLREGS_AVOID_IX_BEN = 43
+  pass_condition = MISSION_TIMEOUT = false
+
   lead_condition = (ARRIVED_ben = true) or (MISSION_TIMEOUT = true)
   pass_condition = ARRIVED_ben = true
   pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
-  pass_condition = COLREGS_AVOID_IX_BEN = 43
   pass_condition = UCD_CLOSEST_RANGE_EVER >= 23.5
   pass_condition = UCD_CLOSEST_RANGE_EVER <= 24.8
   pass_condition = CN_PORT_OF_OS__BEN = 0

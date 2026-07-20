@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1724` under configured targets
+- Harness patch/config files: `1723` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -107,7 +107,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `colregs_h01` | `colregs` | `harnesses/colregs_harnesses/H01-colregs_classification/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 22 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-classification` |
 | `colregs_h02` | `colregs` | `harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 45 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-thresholds` |
 | `colregs_h03` | `colregs` | `harnesses/colregs_harnesses/H03-colregs_execution/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 23 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-execution` |
-| `colregs_h04` | `colregs` | `harnesses/colregs_harnesses/H04-colregs_parameters/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 32 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-parameters` |
+| `colregs_h04` | `colregs` | `harnesses/colregs_harnesses/H04-colregs_parameters/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 31 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-parameters` |
 | `collision_h01` | `collision_behavior` | `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh` | `missions/collision_behavior_missions/collision_behavior_motion` | 21 | `pSpoofNode`, `uFldCollisionDetect`, `pContactMgrV20` | `collision-behavior-motion` |
 | `convoy_h01` | `convoy_behavior` | `harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/zlaunch.sh` | `missions/convoy_behavior_missions/convoy_behavior_motion` | 48 | `pContactMgrV20` | `convoy-behavior-motion` |
 | `cutrange_h01` | `cutrange_behavior` | `harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/zlaunch.sh` | `missions/cutrange_behavior_missions/cutrange_behavior_motion` | 39 | `uFldCollisionDetect`, `pContactMgrV20` | `cutrange-behavior-motion` |

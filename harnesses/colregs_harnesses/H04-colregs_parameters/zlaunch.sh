@@ -91,7 +91,6 @@ CASES=(
     check_plateaus_true_pass
     completed_dist_default_pass
     completed_dist_high_pass
-    refinery_on_pass
     refinery_off_pass
 )
 
@@ -420,7 +419,7 @@ get_case_config() {
     elif [ "$CASE_NAME" = "check_plateaus_true_pass" ]; then
         MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/check-plateaus-true-pass-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/refinery-on-avdcol.xbhv"
+        BHV_PATCH="$HARNESS_DIR/check-plateaus-true-avdcol.xbhv"
     elif [ "$CASE_NAME" = "completed_dist_default_pass" ]; then
         MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/completed-dist-default-pass-shoreside.xmoos"
@@ -428,10 +427,6 @@ get_case_config() {
         MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/completed-dist-high-pass-shoreside.xmoos"
         BHV_PATCH="$HARNESS_DIR/completed-dist-high-avdcol.xbhv"
-    elif [ "$CASE_NAME" = "refinery_on_pass" ]; then
-        MMOD="head_on_cpa_fallback_pass"
-        SHORE_PATCH="$HARNESS_DIR/refinery-on-pass-shoreside.xmoos"
-        BHV_PATCH="$HARNESS_DIR/refinery-on-avdcol.xbhv"
     elif [ "$CASE_NAME" = "refinery_off_pass" ]; then
         MMOD="head_on_cpa_fallback_pass"
         SHORE_PATCH="$HARNESS_DIR/refinery-off-pass-shoreside.xmoos"

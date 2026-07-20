@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=MISSION_TIMEOUT, val=true, time=50
+  event = var=COMPLETED_DIST_CHECK, val=true, time=50
 }
 
 ProcessConfig = pMissionEval
@@ -13,9 +13,10 @@ ProcessConfig = pMissionEval
   AppTick    = 4
   CommsTick  = 4
 
-  lead_condition = MISSION_TIMEOUT = true
+  lead_condition = COMPLETED_DIST_CHECK = true
   pass_condition = COLLISION_TOTAL = 0
-  pass_condition = MISSION_TIMEOUT = true
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = COMPLETED_DIST_CHECK = true
   pass_condition = COLREGS_AVOID_MODE_BEN = complete
   pass_condition = UCD_CLOSEST_RANGE_EVER > 10
 
@@ -28,6 +29,7 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
+  report_column = check=$[COMPLETED_DIST_CHECK]
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = colregs_mode=$[COLREGS_AVOID_MODE_BEN]
   report_column = colregs_ix=$[COLREGS_AVOID_IX_BEN]

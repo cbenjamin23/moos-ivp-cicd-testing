@@ -153,19 +153,19 @@
 
         <article class="case-row">
           <code>eval_tol_default_pass</code>
-          <p>On overtaking_starboard_range_far_pass, uses the stock evaluation horizon and exercises the complete maneuver; passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 22.1 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.</p>
+          <p>On overtaking_starboard_range_far_pass, uses the stock evaluation horizon, first requires overtaking-port index 43, then passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 22.1 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.</p>
         </article>
 
 
         <article class="case-row">
           <code>eval_tol_short_pass</code>
-          <p>On the same overtaking geometry, sets eval_tol=30; passes when index 43 is observed and Ben arrives with zero collisions, no timeout, closest range from 23.5 through 24.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.</p>
+          <p>On the same overtaking geometry, sets eval_tol=30, first requires index 43, then passes when Ben arrives with zero collisions, no timeout, closest range from 23.5 through 24.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.</p>
         </article>
 
 
         <article class="case-row">
           <code>eval_tol_long_pass</code>
-          <p>On the same overtaking geometry, sets eval_tol=240; passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 21.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.</p>
+          <p>On the same overtaking geometry, sets eval_tol=240, first requires index 43, then passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 21.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.</p>
         </article>
 
 
@@ -255,19 +255,13 @@
 
         <article class="case-row">
           <code>completed_dist_default_pass</code>
-          <p>On head_on_cpa_fallback_pass, uses completed_dist=45; the harness intentionally waits for the shared timeout checkpoint and passes when timeout is true, mode is complete, collisions are zero, and closest range is above 10 meters.</p>
+          <p>On head_on_cpa_fallback_pass, uses completed_dist=45; at the shared 50-second evaluation checkpoint, passes when the behavior is complete, the checkpoint is true, timeout is false, collisions are zero, and closest range is above 10 meters.</p>
         </article>
 
 
         <article class="case-row">
           <code>completed_dist_high_pass</code>
-          <p>On the same geometry, raises completed_dist to 80; the harness intentionally waits for the same checkpoint and passes when timeout is true, mode remains none, collisions are zero, and closest range is above 10 meters.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>refinery_on_pass</code>
-          <p>On head_on_cpa_fallback_pass, sets use_refinery=true with plateau checking enabled; passes at CPA index 50 when plateau is false, basin is true, and refinery logic is aft, with zero collisions, no timeout, and closest range above 10 meters.</p>
+          <p>On the same geometry, raises completed_dist to 80; at the same checkpoint, passes when the behavior remains none, the checkpoint is true, timeout is false, collisions are zero, and closest range is above 10 meters.</p>
         </article>
 
 

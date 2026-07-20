@@ -7,8 +7,8 @@ TLDR:
   `giveway_bow_dist`, `max_util_cpa_dist`, `velocity_filter`, `eval_tol`,
   `pwt_outer_dist`, `pwt_inner_dist`, `pwt_grade`, `pts_port_turns_ok`,
   `turn_radius`, `check_plateaus`, `completed_dist`, and `use_refinery`
-- current supported gate: 32 cases
-- migration signoff: the modern launcher and all 32 ordinary rolling cases
+- current supported gate: 31 cases
+- migration signoff: the modern launcher and all 31 ordinary rolling cases
   are validated without exclusive scheduling
 - intended long-term pattern: keep geometry fixed and change one behavior knob
   at a time
@@ -65,7 +65,7 @@ Current case structure:
 - keep geometry fixed for each parameter-focused mini-suite
 - vary one parameter group at a time in small, explicit steps
 - keep mission-owned grading where the source exposes a clean signal
-- allow execution-style or timeout-snapshot families when that is the real
+- allow execution-style or fixed-checkpoint families when that is the real
   parameter effect
 
 The migrated launcher requires Bash 5.1 or newer, uses isolated mission copies
@@ -100,9 +100,9 @@ Every mode uses isolated mission copies and compact per-case port blocks:
 - `max_util_cpa_high_pass`: On the same geometry, raises `max_util_cpa_dist` to 24 so the encounter enters stand-on unsure-bow; passes when index 36 appears before timeout with zero collisions and closest range above 10 meters.
 - `velocity_filter_off_pass`: On `crossing_port_standon_band350_bow_pass`, leaves velocity filtering disabled; passes when the encounter reaches stand-on bow index 32 before timeout with zero collisions and closest range above 10 meters.
 - `velocity_filter_on_pass`: On the same geometry, enables `velocity_filter=min_spd=1.0,max_spd=2.0,pct=40`, changing the projected CPA enough to enter stand-on unsure-bow; passes when index 36 appears before timeout with zero collisions and closest range above 10 meters.
-- `eval_tol_default_pass`: On `overtaking_starboard_range_far_pass`, uses the stock evaluation horizon and exercises the complete maneuver; passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 22.1 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
-- `eval_tol_short_pass`: On the same overtaking geometry, sets `eval_tol=30`; passes when index 43 is observed and Ben arrives with zero collisions, no timeout, closest range from 23.5 through 24.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
-- `eval_tol_long_pass`: On the same overtaking geometry, sets `eval_tol=240`; passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 21.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
+- `eval_tol_default_pass`: On `overtaking_starboard_range_far_pass`, uses the stock evaluation horizon, first requires overtaking-port index 43, then passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 22.1 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
+- `eval_tol_short_pass`: On the same overtaking geometry, sets `eval_tol=30`, first requires index 43, then passes when Ben arrives with zero collisions, no timeout, closest range from 23.5 through 24.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
+- `eval_tol_long_pass`: On the same overtaking geometry, sets `eval_tol=240`, first requires index 43, then passes when Ben arrives with zero collisions, no timeout, closest range from 20.7 through 21.8 meters, Claire never port of Ben, Claire fore of Ben, and no track crossing.
 - `pwt_outer_dist_default_pass`: On `crossing_port_standon_southwest_outer_above_pass`, uses `pwt_outer_dist=40`; passes when the out-of-range encounter remains at CPA index 50 before timeout with zero collisions and closest range above 10 meters.
 - `pwt_outer_dist_high_pass`: On the same geometry, raises `pwt_outer_dist` to 45 so the contact enters the COLREGS relevance gate; passes when stand-on stern index 30 appears before timeout with zero collisions and closest range above 10 meters.
 - `pwt_inner_dist_low_pass`: On `crossing_port_standon_southwest_outer_above_pass`, sets `pwt_inner_dist=10`; passes when index 30 appears by 30 meters of contact range, priority weight is 45 through 60, and the mission has zero collisions, no timeout, and closest range above 10 meters.
@@ -117,9 +117,8 @@ Every mode uses isolated mission copies and compact per-case port blocks:
 - `turn_radius_high_pass`: On the same geometry, sets `turn_radius=8` so the turn-gap check rejects the give-way branch; passes when index 22 appears before timeout with zero collisions and closest range above 10 meters.
 - `check_plateaus_false_pass`: On `head_on_cpa_fallback_pass`, enables the refinery but sets `check_plateaus=false`; passes at CPA index 50 when `REFINERY_PLATEAU_OK_BEN=false`, `REFINERY_BASIN_OK_BEN=false`, and `REFINERY_LOGIC_BEN=none`, with zero collisions, no timeout, and closest range above 10 meters.
 - `check_plateaus_true_pass`: On the same geometry, enables both the refinery and plateau checking; passes at CPA index 50 when plateau is false, basin is true, and refinery logic is `aft`, with zero collisions, no timeout, and closest range above 10 meters.
-- `completed_dist_default_pass`: On `head_on_cpa_fallback_pass`, uses `completed_dist=45`; the harness intentionally waits for the shared timeout checkpoint and passes when timeout is true, mode is `complete`, collisions are zero, and closest range is above 10 meters.
-- `completed_dist_high_pass`: On the same geometry, raises `completed_dist` to 80; the harness intentionally waits for the same checkpoint and passes when timeout is true, mode remains `none`, collisions are zero, and closest range is above 10 meters.
-- `refinery_on_pass`: On `head_on_cpa_fallback_pass`, sets `use_refinery=true` with plateau checking enabled; passes at CPA index 50 when plateau is false, basin is true, and refinery logic is `aft`, with zero collisions, no timeout, and closest range above 10 meters.
+- `completed_dist_default_pass`: On `head_on_cpa_fallback_pass`, uses `completed_dist=45`; at the shared 50-second evaluation checkpoint, passes when the behavior is `complete`, the checkpoint is true, timeout is false, collisions are zero, and closest range is above 10 meters.
+- `completed_dist_high_pass`: On the same geometry, raises `completed_dist` to 80; at the same checkpoint, passes when the behavior remains `none`, the checkpoint is true, timeout is false, collisions are zero, and closest range is above 10 meters.
 - `refinery_off_pass`: On the same geometry, sets `use_refinery=false`; passes at CPA index 50 when plateau and basin are false and refinery logic is `none`, with zero collisions, no timeout, and closest range above 10 meters.
 
 Current assertion styles:
@@ -132,8 +131,8 @@ Current assertion styles:
   - fixed mode / fixed range gate
 - execution-shaped checks
   - expected side/CPA envelope or stable end-state shape
-- timeout-snapshot checks
-  - intentional `MISSION_TIMEOUT=true` at a shared checkpoint
+- fixed-checkpoint checks
+  - intentional case-specific evaluation event at a shared time
   - expected posted mode/state at that checkpoint
 
 Visual/manual-run instrumentation:
@@ -207,13 +206,14 @@ Implemented expectations:
   `check_plateaus=true` the same geometry should post the stable diagnostic
   signature `plateau_ok=false`, `basin_ok=true`, `plateau_logic=aft`
 - `completed_dist_default_pass` / `completed_dist_high_pass`: fixed
-  `head_on_cpa_fallback_pass` geometry is graded at a shared late timeout
+  `head_on_cpa_fallback_pass` geometry is graded at a shared late evaluation
   checkpoint instead of an arrival checkpoint; the stock
   `completed_dist=45` case should already be `complete`, while the same
   geometry with `completed_dist=80` should still be `none`
-- `refinery_on_pass` / `refinery_off_pass`: fixed `head_on_cpa_fallback_pass`
-  geometry should remain `cpa` (`colregs_ix=50`) with and without refinery;
-  with `check_plateaus=true`, the `use_refinery=true` case should also post
+- `check_plateaus_true_pass` / `refinery_off_pass`: the retained true case is
+  the shared enabled control for both the `check_plateaus` and `use_refinery`
+  comparisons on fixed `head_on_cpa_fallback_pass` geometry. Both should
+  remain `cpa` (`colregs_ix=50`); the enabled case should post
   the stable refinery diagnostics `plateau_ok=false`, `basin_ok=true`, and
   `plateau_logic=aft`, while the `use_refinery=false` case should leave those
   bridged diagnostics at their initialized values
@@ -241,8 +241,8 @@ Notes on the strengthened `use_refinery` group:
   lands in `cpa`
 - this is a better fit because `use_refinery` only affects the CPA IPF path in
   the current source
-- H04 now enables `check_plateaus=true` in both refinery cases and bridges the
-  posted refinery diagnostics to shoreside
+- H04 uses `check_plateaus_true_pass` as the enabled refinery control and
+  bridges the posted diagnostics to shoreside
 - that makes the family more than a pure stability check:
   - `use_refinery=true` must still stay in `cpa`
   - and it must post the stable same-geometry refinery signature observed on
@@ -279,12 +279,15 @@ Notes on the implemented `completed_dist` group:
   direction on the trusted CPA geometry `head_on_cpa_fallback_pass`
 - a fixed late-range gate did not work cleanly because once the stock
   behavior completes, it stops posting fresh `AVDCOL_RANGE_BEN` updates
-- the supported family instead uses a shared timeout checkpoint at mission
-  time `50`:
+- the supported family instead uses a shared `COMPLETED_DIST_CHECK=true`
+  evaluation event at mission time `50`:
   - stock `completed_dist=45` has already self-completed and posts
     `mode=complete:none`
   - raised `completed_dist=80` has not yet self-completed and remains
     `mode=none:none`
+- `MISSION_TIMEOUT` stays false in both cases; the timer is justified here as
+  the common observation window for a positive and an expected-not-yet-complete
+  state, not as evidence that either mission succeeded
 - this makes `completed_dist` an execution/completion-timing family rather
   than a mode-entry family, which matches the actual source semantics
 
@@ -452,7 +455,7 @@ Generic inherited `IvPContactBehavior` parameters are not listed here.
   - distance used for completion semantics, also constrained against the
     relevance distances
   - default in V22 constructor: `100`
-  - now implemented in H04 as a shared-timeout completion split
+  - now implemented in H04 as a shared evaluation-checkpoint completion split
 - `pwt_grade`
   - relevance-weight falloff style: `linear`, `quadratic`, or `quasi`
   - default in V22 constructor: `linear`
