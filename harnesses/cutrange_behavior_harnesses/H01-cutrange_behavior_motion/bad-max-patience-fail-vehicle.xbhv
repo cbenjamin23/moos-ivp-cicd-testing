@@ -9,6 +9,5 @@ Behavior = BHV_CutRange
       pwt_outer_dist = 70
       pwt_inner_dist = 15
         giveup_range = 160
-        max_patience = 100
+        max_patience = 101
 }
-

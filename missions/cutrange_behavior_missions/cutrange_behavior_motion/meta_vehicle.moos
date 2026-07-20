@@ -107,11 +107,13 @@ ProcessConfig = uFldNodeBroker
   bridge = src=NAV_X, alias=ABE_NAV_X
   bridge = src=NAV_Y, alias=ABE_NAV_Y
   bridge = src=NAV_HEADING, alias=ABE_NAV_HEADING
+  bridge = src=IVPHELM_STATE, alias=ABE_IVPHELM_STATE
 #else
   bridge = src=NAV_SPEED, alias=BEN_NAV_SPEED
   bridge = src=NAV_X, alias=BEN_NAV_X
   bridge = src=NAV_Y, alias=BEN_NAV_Y
   bridge = src=NAV_HEADING, alias=BEN_NAV_HEADING
+  bridge = src=IVPHELM_STATE, alias=BEN_IVPHELM_STATE
 #endif
 #ifdef VROLE CHASER
   bridge = src=BHV_WARNING, alias=ABE_BHV_WARNING

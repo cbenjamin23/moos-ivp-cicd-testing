@@ -28,7 +28,7 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = cutrange_behavior_tests
-  mission_mod  = $(MMOD:=startup_no_warning_pass)
+  mission_mod  = $(MMOD:=settled_no_warning_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]

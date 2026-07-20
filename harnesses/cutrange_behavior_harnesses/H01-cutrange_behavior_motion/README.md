@@ -12,7 +12,7 @@ bridged NAV speed from both vehicles, and behavior warning/error mail.
 
 ## Cases
 
-- `startup_no_warning_pass`: Uses the stock configuration, clears the accumulated warning flag at 42 seconds, and evaluates three seconds later; passes when pursuit has started and no warning or behavior error was observed after that reset.
+- `settled_no_warning_pass`: Uses the stock configuration, clears accumulated startup warnings at 42 seconds, and observes the following three-second settled window; passes when pursuit has started and no new warning or behavior error occurs in that window.
 - `static_cutrange_pass`: Starts Abe and Ben 90 meters apart on the same eastbound line with stock `pwt_inner_dist=15`, `pwt_outer_dist=70`, and `giveup_range=160`; passes at 65 seconds when pursuit is true, giveup is false, closest range is at most 50 meters, Ben's speed is at least 0.6, and no warning or behavior error was observed after the 55-second warning reset.
 - `crossing_cutrange_pass`: Starts Ben at `(20,-140)` heading north toward `(20,60)` while Abe begins at `(-70,-80)` heading east; passes at 70 seconds when pursuit remains true without giveup, closest range is at most 60 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.
 - `headon_cutrange_pass`: Starts Ben at `(90,-80)` heading west at a configured 1.4 m/s toward `(-170,-80)`; passes at 60 seconds when pursuit is true, closest range is at most 45 meters, both vehicles are moving at least 0.8, and no settled warning or behavior error was observed.
@@ -25,7 +25,7 @@ bridged NAV speed from both vehicles, and behavior warning/error mail.
 - `short_time_on_leg_pass`: Sets `time_on_leg=5`; passes under the stock 65-second pursuit, no-giveup, closest-range-at-most-50, moving-target, and settled no-warning/no-error criteria.
 - `long_time_on_leg_pass`: Sets `time_on_leg=45`; passes under the same stock closure and settled warning/error criteria.
 - `low_patience_pass`: Sets `patience=5` with `max_patience=85`; passes under the stock 65-second closure and settled warning/error criteria.
-- `high_patience_pass`: Sets `patience=85` and `max_patience=95`; passes at 45 seconds when pursuit is true and no warning or behavior error was observed after the 42-second warning reset, without a graded range condition.
+- `high_patience_pass`: Sets `patience=85` and `max_patience=95`; passes at 65 seconds when pursuit is true without giveup, closest range is at most 50 meters, Ben is moving at least 0.6 m/s, and no settled warning or behavior error was observed.
 - `max_patience_clamp_pass`: Sets `patience=90` above `max_patience=45`, exercising the clamp path; passes under the stock 65-second closure and settled warning/error criteria.
 - `max_patience_100_pass`: Sets both `patience` and `max_patience` to 100 to exercise the configurable upper limit; passes under the stock 65-second closure and settled warning/error criteria.
 - `pwt_outer_active_pass`: Raises `pwt_outer_dist` from 70 to 100 while retaining `pwt_inner_dist=15`; passes under the stock 65-second closure and settled warning/error criteria.
@@ -39,18 +39,17 @@ bridged NAV speed from both vehicles, and behavior warning/error mail.
 - `runtime_patience_update_pass`: Starts with `patience=5` and posts `CUTRANGE_UPDATES=patience=80` at 37 seconds; passes under the stock 65-second closure and settled warning/error criteria.
 - `runtime_giveup_update_pass`: Enables pursuit at 30 seconds and posts `giveup_range=20` at 34 seconds; passes at 55 seconds when both the earlier pursuit flag and the giveup flag are true, Abe's speed is at most 0.6, and no settled warning or behavior error was observed.
 - `runtime_bad_update_recover_warn_pass`: Starts relevance off, posts invalid `pwt_outer_dist=-5` at 32 seconds, then restores `pwt_inner_dist=15,pwt_outer_dist=70` at 42 and 43 seconds; passes at 85 seconds when pursuit is true without giveup, current range is at most 90 meters, closest range is at most 65, Abe is moving at least 0.6, some behavior warning was observed, and no behavior error was observed.
-- `no_extrapolate_pass`: Sets `extrapolate=false` while Ben continues publishing fresh motion reports; passes under the stock 65-second closure and settled warning/error criteria.
 - `missing_contact_warn_pass`: Sets `contact=ghost` with `on_no_contact_ok=true`; passes at 20 seconds when some behavior warning and no behavior error were observed.
-- `missing_contact_fail`: Sets `contact=ghost` with `on_no_contact_ok=false`; this expected-negative harness verdict passes at 15 seconds when pursuit and giveup are false, closest range remains at least 80 meters, Abe's speed is at most 0.1, and Ben's is at least 0.6—warning and error mail are not graded.
-- `missing_contact_param_fail`: Omits `contact` and sets `on_no_contact_ok=false`; this expected-negative verdict uses the same 15-second pre-pursuit inactivity and separation criteria, without requiring warning or error evidence.
-- `bad_pwt_outer_dist_fail`: Sets `pwt_outer_dist=-1`; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring evidence that the parameter was rejected.
-- `bad_pwt_inner_dist_fail`: Sets `pwt_inner_dist=90` above `pwt_outer_dist=70`; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.
-- `bad_giveup_range_fail`: Sets `giveup_range=-1`; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.
-- `bad_patience_fail`: Sets `patience=-1`; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.
-- `bad_max_patience_fail`: Sets `max_patience=100`, which the current source accepts as valid; the named expected-negative verdict nevertheless passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.
-- `bad_time_on_leg_fail`: Sets `time_on_leg=-1`; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.
-- `bad_decay_fail`: Sets `decay=nope`; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.
-- `bad_legacy_util_param_fail`: Adds unsupported top-level `min_util_cpa_dist=10`; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.
+- `missing_contact_fail`: Sets `contact=ghost` with `on_no_contact_ok=false`; after clearing startup errors at 35 seconds, this expected-negative case passes when a new `BHV_ERROR` arrives while Abe's helm remains in `DRIVE` and the 45-second deadline is still false.
+- `missing_contact_param_fail`: Omits `contact` with `on_no_contact_ok=false`; after the same post-activation error reset, this expected-negative case passes when a new `BHV_ERROR` arrives in `DRIVE` before the deadline.
+- `bad_pwt_outer_dist_fail`: Sets `pwt_outer_dist=-1`; this expected-negative case passes only when Abe's helm reaches `MALCONFIG` before the fallback deadline.
+- `pwt_inner_normalizes_outer_pass`: Sets `pwt_outer_dist=70` followed by `pwt_inner_dist=90`, exercising the shared setter that raises the companion outer value to 90; over the bounded observation window, passes when pursuit is latched, Abe remains at or below 0.35 m/s, Ben moves at least 0.6 m/s, closest range stays at least 70 meters, and no settled warning or behavior error occurs.
+- `bad_giveup_range_fail`: Sets `giveup_range=-1`; this expected-negative case passes only when Abe's helm reaches `MALCONFIG` before the fallback deadline.
+- `bad_patience_fail`: Sets `patience=-1`; this expected-negative case passes only when Abe's helm reaches `MALCONFIG` before the fallback deadline.
+- `bad_max_patience_fail`: Sets `max_patience=101`, above the accepted inclusive 0–100 range; this expected-negative case passes only when Abe's helm reaches `MALCONFIG` before the fallback deadline.
+- `bad_time_on_leg_fail`: Sets `time_on_leg=-1`; this expected-negative case passes only when Abe's helm reaches `MALCONFIG` before the fallback deadline.
+- `bad_decay_fail`: Sets `decay=nope`; this expected-negative case passes only when Abe's helm reaches `MALCONFIG` before the fallback deadline.
+- `bad_legacy_util_param_fail`: Adds unsupported top-level `min_util_cpa_dist=10`; this expected-negative case passes only when Abe's helm reaches `MALCONFIG` before the fallback deadline.
 
 ## Running
 
@@ -77,7 +76,7 @@ directly:
   --shore_pshare=25010 --veh1_pshare=25011 --veh2_pshare=25012 10
 ```
 
-The full matrix currently has 39 cases. Normal expected-pass cases clear the
+The full matrix currently has 38 cases. Normal expected-pass cases clear the
 known first-active contact warm-up warning before evaluation, then require no
 settled chaser-side behavior warnings or errors; explicitly named `*_warn_pass`
 cases require the expected warning and `BHV_ERROR_SEEN=false`. Serial and
@@ -93,6 +92,9 @@ That keeps them from passing solely because the vehicles happened to get close
 before the target reached the turn geometry under test.
 
 Latest validation:
+
+- July 19, 2026 contract-strengthening sweep: `38/38` cases passed with
+  minimal logging at `--jobs=4` and `38/38` passed serially with full logging
 
 - July 16, 2026
 - generated-file matrix: `39/39` isolated cases completed

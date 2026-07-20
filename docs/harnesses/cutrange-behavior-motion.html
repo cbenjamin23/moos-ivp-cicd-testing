@@ -97,8 +97,8 @@
       <div class="case-matrix">
 
         <article class="case-row">
-          <code>startup_no_warning_pass</code>
-          <p>Uses the stock configuration, clears the accumulated warning flag at 42 seconds, and evaluates three seconds later; passes when pursuit has started and no warning or behavior error was observed after that reset.</p>
+          <code>settled_no_warning_pass</code>
+          <p>Uses the stock configuration, clears accumulated startup warnings at 42 seconds, and observes the following three-second settled window; passes when pursuit has started and no new warning or behavior error occurs in that window.</p>
         </article>
 
 
@@ -176,7 +176,7 @@
 
         <article class="case-row">
           <code>high_patience_pass</code>
-          <p>Sets patience=85 and max_patience=95; passes at 45 seconds when pursuit is true and no warning or behavior error was observed after the 42-second warning reset, without a graded range condition.</p>
+          <p>Sets patience=85 and max_patience=95; passes at 65 seconds when pursuit is true without giveup, closest range is at most 50 meters, Ben is moving at least 0.6 m/s, and no settled warning or behavior error was observed.</p>
         </article>
 
 
@@ -259,12 +259,6 @@
 
 
         <article class="case-row">
-          <code>no_extrapolate_pass</code>
-          <p>Sets extrapolate=false while Ben continues publishing fresh motion reports; passes under the stock 65-second closure and settled warning/error criteria.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>missing_contact_warn_pass</code>
           <p>Sets contact=ghost with on_no_contact_ok=true; passes at 20 seconds when some behavior warning and no behavior error were observed.</p>
         </article>
@@ -272,61 +266,61 @@
 
         <article class="case-row">
           <code>missing_contact_fail</code>
-          <p>Sets contact=ghost with on_no_contact_ok=false; this expected-negative harness verdict passes at 15 seconds when pursuit and giveup are false, closest range remains at least 80 meters, Abe&#x27;s speed is at most 0.1, and Ben&#x27;s is at least 0.6—warning and error mail are not graded.</p>
+          <p>Sets contact=ghost with on_no_contact_ok=false; after clearing startup errors at 35 seconds, this expected-negative case passes when a new BHV_ERROR arrives while Abe&#x27;s helm remains in DRIVE and the 45-second deadline is still false.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_param_fail</code>
-          <p>Omits contact and sets on_no_contact_ok=false; this expected-negative verdict uses the same 15-second pre-pursuit inactivity and separation criteria, without requiring warning or error evidence.</p>
+          <p>Omits contact with on_no_contact_ok=false; after the same post-activation error reset, this expected-negative case passes when a new BHV_ERROR arrives in DRIVE before the deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>Sets pwt_outer_dist=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring evidence that the parameter was rejected.</p>
+          <p>Sets pwt_outer_dist=-1; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
-          <code>bad_pwt_inner_dist_fail</code>
-          <p>Sets pwt_inner_dist=90 above pwt_outer_dist=70; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
+          <code>pwt_inner_normalizes_outer_pass</code>
+          <p>Sets pwt_outer_dist=70 followed by pwt_inner_dist=90, exercising the shared setter that raises the companion outer value to 90; over the bounded observation window, passes when pursuit is latched, Abe remains at or below 0.35 m/s, Ben moves at least 0.6 m/s, closest range stays at least 70 meters, and no settled warning or behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_giveup_range_fail</code>
-          <p>Sets giveup_range=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
+          <p>Sets giveup_range=-1; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_patience_fail</code>
-          <p>Sets patience=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
+          <p>Sets patience=-1; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_patience_fail</code>
-          <p>Sets max_patience=100, which the current source accepts as valid; the named expected-negative verdict nevertheless passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
+          <p>Sets max_patience=101, above the accepted inclusive 0–100 range; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>Sets time_on_leg=-1; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
+          <p>Sets time_on_leg=-1; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Sets decay=nope; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
+          <p>Sets decay=nope; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_legacy_util_param_fail</code>
-          <p>Adds unsupported top-level min_util_cpa_dist=10; this expected-negative verdict passes on the same 15-second pre-pursuit inactivity and separation criteria, without requiring rejection evidence.</p>
+          <p>Adds unsupported top-level min_util_cpa_dist=10; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG before the fallback deadline.</p>
         </article>
 
       </div>

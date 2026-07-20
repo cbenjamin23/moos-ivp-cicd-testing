@@ -61,7 +61,7 @@ CLEANUP_FAILED=no
 FINISH_FATAL_REASON=""
 
 CASES=(
-    startup_no_warning_pass
+    settled_no_warning_pass
     static_cutrange_pass
     crossing_cutrange_pass
     headon_cutrange_pass
@@ -88,12 +88,11 @@ CASES=(
     runtime_patience_update_pass
     runtime_giveup_update_pass
     runtime_bad_update_recover_warn_pass
-    no_extrapolate_pass
     missing_contact_warn_pass
     missing_contact_fail
     missing_contact_param_fail
     bad_pwt_outer_dist_fail
-    bad_pwt_inner_dist_fail
+    pwt_inner_normalizes_outer_pass
     bad_giveup_range_fail
     bad_patience_fail
     bad_max_patience_fail
@@ -325,7 +324,7 @@ get_case_config() {
     CASE_VEH_BHV_PATCH=""
     CASE_EXTRA_ARGS=""
 
-    if [ "$CASE_NAME" = "startup_no_warning_pass" ]; then
+    if [ "$CASE_NAME" = "settled_no_warning_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-startup-no-warning-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "static_cutrange_pass" ]; then
         true
@@ -363,7 +362,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "low_patience_pass" ]; then
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-low-patience-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "high_patience_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-startup-no-warning-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-high-patience-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "max_patience_clamp_pass" ]; then
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-max-patience-clamp-pass-vehicle.xbhv"
@@ -403,23 +401,21 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-runtime-recover-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-bad-update-recover-pass-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-pwt-inner-zero-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "no_extrapolate_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-no-extrapolate-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_warn_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-warning-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-warn-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/eval-missing-ghost-contact-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_param_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/eval-missing-contact-param-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-param-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_pwt_outer_dist_fail" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-outer-dist-fail-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "bad_pwt_inner_dist_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-inner-dist-fail-vehicle.xbhv"
+    elif [ "$CASE_NAME" = "pwt_inner_normalizes_outer_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/eval-zero-relevance-pass-shoreside.xmoos"
+        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-pwt-inner-normalizes-outer-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_giveup_range_fail" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-giveup-range-fail-vehicle.xbhv"

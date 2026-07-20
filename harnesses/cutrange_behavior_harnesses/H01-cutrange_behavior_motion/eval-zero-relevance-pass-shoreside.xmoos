@@ -19,6 +19,7 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
+  pass_condition = ABE_IVPHELM_STATE = DRIVE
   pass_condition = CUTRANGE_PURSUIT = true
   pass_condition = ABE_NAV_SPEED <= 0.35
   pass_condition = BEN_NAV_SPEED >= 0.6
@@ -38,6 +39,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[TEST_EVAL_READY]
+  report_column = helm_state=$[ABE_IVPHELM_STATE]
   report_column = pursuit=$[CUTRANGE_PURSUIT]
   report_column = giveup=$[CUTRANGE_GIVEUP]
   report_column = range=$[UCD_CLOSEST_RANGE]

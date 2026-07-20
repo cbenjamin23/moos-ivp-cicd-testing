@@ -1,0 +1,43 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=BHV_ERROR_SEEN, val=false, time=35
+  event = var=ERROR_WINDOW_OPEN, val=true, time=35
+  event = var=TEST_EVAL_READY, val=true, time=45
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @ABE_BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = ((ERROR_WINDOW_OPEN = true) and (BHV_ERROR_SEEN = true)) or (TEST_EVAL_READY = true)
+  pass_condition = ERROR_WINDOW_OPEN = true
+  pass_condition = BHV_ERROR_SEEN = true
+  pass_condition = ABE_IVPHELM_STATE = DRIVE
+  pass_condition = TEST_EVAL_READY = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = cutrange_behavior_tests
+  mission_mod  = $(MMOD:=missing_contact_param_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = deadline=$[TEST_EVAL_READY]
+  report_column = error_window=$[ERROR_WINDOW_OPEN]
+  report_column = helm_state=$[ABE_IVPHELM_STATE]
+  report_column = bhv_error_seen=$[BHV_ERROR_SEEN]
+  report_column = bhv_error=$[ABE_BHV_ERROR]
+  report_column = mhash=$[MHASH_SHORT]
+}

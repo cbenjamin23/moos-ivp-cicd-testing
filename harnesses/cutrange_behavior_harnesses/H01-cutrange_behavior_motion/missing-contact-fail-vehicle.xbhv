@@ -21,4 +21,3 @@ Behavior = BHV_CutRange
   pursueflag = CUTRANGE_PURSUIT = true
   giveupflag = CUTRANGE_GIVEUP = true
 }
-

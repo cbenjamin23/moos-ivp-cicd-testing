@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1720` under configured targets
+- Harness patch/config files: `1721` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -110,7 +110,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `colregs_h04` | `colregs` | `harnesses/colregs_harnesses/H04-colregs_parameters/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 31 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-parameters` |
 | `collision_h01` | `collision_behavior` | `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh` | `missions/collision_behavior_missions/collision_behavior_motion` | 16 | `pSpoofNode`, `uFldCollisionDetect`, `pContactMgrV20` | `collision-behavior-motion` |
 | `convoy_h01` | `convoy_behavior` | `harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/zlaunch.sh` | `missions/convoy_behavior_missions/convoy_behavior_motion` | 47 | `pContactMgrV20` | `convoy-behavior-motion` |
-| `cutrange_h01` | `cutrange_behavior` | `harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/zlaunch.sh` | `missions/cutrange_behavior_missions/cutrange_behavior_motion` | 39 | `uFldCollisionDetect`, `pContactMgrV20` | `cutrange-behavior-motion` |
+| `cutrange_h01` | `cutrange_behavior` | `harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/zlaunch.sh` | `missions/cutrange_behavior_missions/cutrange_behavior_motion` | 38 | `uFldCollisionDetect`, `pContactMgrV20` | `cutrange-behavior-motion` |
 | `fixedturn_h01` | `fixedturn_behavior` | `harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/zlaunch.sh` | `missions/fixedturn_behavior_missions/fixedturn_behavior_motion` | 24 | - | `fixedturn-behavior-motion` |
 | `periodic_speed_h01` | `periodic_speed_behavior` | `harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion/zlaunch.sh` | `missions/periodic_speed_behavior_missions/periodic_speed_behavior_motion` | 24 | - | `periodic-speed-behavior-motion` |
 | `zigzag_h01` | `zigzag_behavior` | `harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion/zlaunch.sh` | `missions/zigzag_behavior_missions/zigzag_behavior_motion` | 35 | - | `zigzag-behavior-motion` |
