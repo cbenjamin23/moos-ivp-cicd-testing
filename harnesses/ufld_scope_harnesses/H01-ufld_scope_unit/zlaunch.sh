@@ -323,54 +323,103 @@ latest_scope_appcast() {
     printf '%s\n' "$latest"
 }
 
-scope_line_matches() {
+scope_table_canonical() {
     local line="$1"
-    local pattern="$2"
-    rg -q -- "$pattern" <<< "$line"
+    local text
+    [ -n "$line" ] || return 1
+    text=${line//!@/$'\n'}
+    awk '
+        function trim(value) {
+            sub(/^[[:space:]]+/, "", value)
+            sub(/[[:space:]]+$/, "", value)
+            return value
+        }
+        function canonical(row, prefix,   i, width, value, output) {
+            output=prefix
+            for(i=1; i<=column_count; i++) {
+                if(i < column_count)
+                    width=column_start[i+1] - column_start[i]
+                else
+                    width=length(row) - column_start[i] + 1
+                value=trim(substr(row, column_start[i], width))
+                output=output "|" value
+            }
+            return output
+        }
+        /^#messages=/ {
+            header=$0
+            sub(/^#messages=/, "", header)
+            if((getline divider) <= 0)
+                exit 2
+            remainder=divider
+            offset=0
+            while(match(remainder, /-+/)) {
+                column_count++
+                column_start[column_count]=offset + RSTART
+                offset += RSTART + RLENGTH - 1
+                remainder=substr(remainder, RSTART + RLENGTH)
+            }
+            if(column_count == 0)
+                exit 3
+            print canonical(header, "H")
+            while((getline row) > 0) {
+                if((row == "") || (row ~ /^#/))
+                    break
+                print canonical(row, "R")
+            }
+            found=1
+            exit 0
+        }
+        END {
+            if(!found)
+                exit 4
+        }
+    ' <<< "$text"
 }
 
-scope_evidence_ok() {
+scope_expected_table() {
     local case_name="$1"
-    local line="$2"
-    [ -n "$line" ] || return 1
     case "$case_name" in
         appcast_table_pass)
-            scope_line_matches "$line" 'alpha' &&
-            scope_line_matches "$line" 'survey' &&
-            scope_line_matches "$line" '2\.5' &&
-            scope_line_matches "$line" '12'
+            printf '%s\n' \
+                'H|VName|MODE|speed|trip_dist' \
+                'R|alpha|survey|2.5|12'
             ;;
         alias_headers_pass)
-            scope_line_matches "$line" 'nav_mode' &&
-            scope_line_matches "$line" 'speed' &&
-            scope_line_matches "$line" 'trip' &&
-            ! scope_line_matches "$line" 'trip_dist'
+            printf '%s\n' \
+                'H|VName|nav_mode|speed|trip' \
+                'R|alpha|survey|2.5|12'
             ;;
         update_replaces_same_key_pass)
-            scope_line_matches "$line" 'return' &&
-            ! scope_line_matches "$line" 'survey'
+            printf '%s\n' \
+                'H|VName|MODE|speed|trip_dist' \
+                'R|alpha|return||'
             ;;
         multi_vehicle_rows_pass)
-            scope_line_matches "$line" 'alpha' &&
-            scope_line_matches "$line" 'bravo' &&
-            scope_line_matches "$line" 'station'
+            printf '%s\n' \
+                'H|VName|MODE|speed|trip_dist' \
+                'R|alpha|survey||' \
+                'R|bravo|station||'
             ;;
         invalid_scope_ignored_pass)
-            scope_line_matches "$line" 'MODE'
+            printf '%s\n' \
+                'H|VName|MODE' \
+                'R|alpha|survey'
             ;;
         missing_field_blank_cell_pass)
-            scope_line_matches "$line" 'alpha' &&
-            scope_line_matches "$line" 'MODE' &&
-            ! scope_line_matches "$line" 'survey'
+            printf '%s\n' \
+                'H|VName|MODE|speed|trip_dist' \
+                'R|alpha|||'
             ;;
         missing_key_blank_row_pass)
-            scope_line_matches "$line" 'MODE' &&
-            scope_line_matches "$line" 'survey' &&
-            ! scope_line_matches "$line" 'alpha'
+            printf '%s\n' \
+                'H|VName|MODE' \
+                'R||survey'
             ;;
         later_missing_field_replaces_value_pass)
-            scope_line_matches "$line" 'alpha' &&
-            ! scope_line_matches "$line" 'survey'
+            printf '%s\n' \
+                'H|VName|MODE|speed|trip_dist' \
+                'R|alpha|||'
             ;;
         *)
             return 1
@@ -384,6 +433,7 @@ write_result() {
     local launch_rc="$3"
     local workdir="$4"
     local line grade_count mission_grade mission_rows provenance appcast_line
+    local expected_table observed_table header_count row_count
 
     if [ "$JUST_MAKE" = yes ]; then
         if [ "$launch_rc" -eq 0 ]; then
@@ -425,14 +475,21 @@ write_result() {
     fi
     if [ "$mission_grade" = pass ]; then
         appcast_line=$(latest_scope_appcast "$workdir")
-        if ! scope_evidence_ok "$case_name" "$appcast_line"; then
+        observed_table=$(scope_table_canonical "$appcast_line" || true)
+        expected_table=$(scope_expected_table "$case_name" || true)
+        if [ -z "$observed_table" ] || [ "$observed_table" != "$expected_table" ]; then
+            printf '%s: exact AppCast table mismatch for %s\nexpected:\n%s\nobserved:\n%s\n' \
+                "$ME" "$case_name" "$expected_table" "${observed_table:-missing}" >&2
             provenance=$(runner_provenance "$line")
-            printf 'case=%s grade=fail reason=appcast_evidence_mismatch appcast_check=fail%s\n' \
+            printf 'case=%s grade=fail reason=appcast_table_mismatch appcast_check=fail%s\n' \
                 "$case_name" "${provenance:+ $provenance}" > "$result_file"
             return 0
         fi
+        header_count=$(awk -F'|' 'NR == 1 {print NF-1}' <<< "$observed_table")
+        row_count=$(awk -F'|' '$1 == "R" {count++} END {print count+0}' <<< "$observed_table")
         line=$(without_case_field "$line")
-        printf 'case=%s %s appcast_check=pass\n' "$case_name" "$line" > "$result_file"
+        printf 'case=%s %s appcast_check=pass headers=%s rows=%s\n' \
+            "$case_name" "$line" "$header_count" "$row_count" > "$result_file"
         return 0
     fi
     line=$(without_case_field "$line")
