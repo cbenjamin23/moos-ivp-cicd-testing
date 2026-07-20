@@ -231,7 +231,7 @@
 
         <article class="case-row">
           <code>runtime_stealth_block_pass</code>
-          <p>Starts with comms_range=100, delivers Abe&#x27;s UFC_BEFORE message, posts UNC_STEALTH=vname=abe,stealth=0.4, and sends UFC_AFTER; passes when Ben receives exactly one message—the exact before-update payload—while both reverse acknowledgements arrive.</p>
+          <p>Starts with comms_range=100, delivers Abe&#x27;s message and bidirectional reports, then posts UNC_STEALTH=vname=abe,stealth=0.4 at a 60-meter separation; passes when Ben retains only Abe&#x27;s exact pre-update message, Abe&#x27;s later reports no longer reach Ben, and Ben&#x27;s later reports and both acknowledgements still reach Abe.</p>
         </article>
 
 
@@ -261,7 +261,7 @@
 
         <article class="case-row">
           <code>shared_node_reports_numeric_pass</code>
-          <p>Configures shared_node_reports=0.1; passes when the baseline deliveries occur and at least one NODE_REPORT_UNC is published through the numeric configuration path.</p>
+          <p>Configures shared_node_reports=0.6 while each vehicle sends ten reports across fixed 0.4- and 0.8-real-second gaps; passes when the ordinary directed traffic remains available and exactly ten NODE_REPORT_UNC posts are shared from the twenty inputs, proving that the numeric interval throttles reports rather than merely enabling sharing.</p>
         </article>
 
 
