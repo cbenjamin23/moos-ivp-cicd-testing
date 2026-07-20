@@ -111,7 +111,7 @@
 
         <article class="case-row">
           <code>brs_ground_truth_false_no_gt_pass</code>
-          <p>Configures zero-percent uniform noise with ground_truth=false; passes when the ordinary short report identifies the beacon at range 50 and no short BRS_RANGE_REPORT_GT is published.</p>
+          <p>Configures zero-percent uniform noise, report_vars=both, and ground_truth=false; passes when both ordinary report forms identify the beacon at range 50 while neither BRS_RANGE_REPORT_GT nor requester-specific BRS_RANGE_REPORT_GT_ALPHA is published during the six-second window.</p>
         </article>
 
 
