@@ -21,6 +21,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=OBM_RESOLVED
   bridge = src=AVOID_RANGE_SEEN
   bridge = src=AVOID_CPA_SEEN
+  bridge = src=AVOID_RANGE_VALUE
+  bridge = src=AVOID_CPA_VALUE
   bridge = src=BHV_ERROR
   bridge = src=BHV_WARNING
   bridge = src=IVPHELM_STATE

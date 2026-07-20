@@ -49,6 +49,7 @@ ProcessConfig = pAutoPoke
   flag = OB_TOTAL_COLLISIONS=0
   flag = OB_TOTAL_ENCOUNTERS=0
   flag = OB_TOTAL_NEAR_MISSES=0
+  flag = TEST_EVAL_READY=false
 
   required_nodes = 1
 }
@@ -146,6 +147,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = MOOS_MANUAL_OVERRIDE
   qbridge  = OBAVOIDING, OBM_ALERT_REQUEST, OBSTACLE_ALERT, OBM_RESOLVED
   qbridge  = AVOID_RANGE_SEEN, AVOID_CPA_SEEN
+  qbridge  = AVOID_RANGE_VALUE, AVOID_CPA_VALUE
 }
 
 //----------------------------------------------------

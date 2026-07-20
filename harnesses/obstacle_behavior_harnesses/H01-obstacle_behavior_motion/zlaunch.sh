@@ -336,7 +336,7 @@ get_case_config() {
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/poly-alias-pass-vehicle.xbhv"
             ;;
         rng_flag_no_threshold_pass)
-            CASE_SHORE_PATCH="$HARNESS_DIR/rng-flag-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/rng-flag-no-threshold-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/rng-flag-no-threshold-pass-vehicle.xbhv"
             ;;
         avoid_disabled_fail)

@@ -86,6 +86,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=OBM_RESOLVED
   bridge = src=AVOID_RANGE_SEEN
   bridge = src=AVOID_CPA_SEEN
+  bridge = src=AVOID_RANGE_VALUE
+  bridge = src=AVOID_CPA_VALUE
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }
@@ -139,6 +141,8 @@ ProcessConfig = pLogger
   Log = OBM_RESOLVED @ 0 nosync
   Log = AVOID_RANGE_SEEN @ 0 nosync
   Log = AVOID_CPA_SEEN @ 0 nosync
+  Log = AVOID_RANGE_VALUE @ 0 nosync
+  Log = AVOID_CPA_VALUE @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

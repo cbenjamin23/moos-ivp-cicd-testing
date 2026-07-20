@@ -104,13 +104,13 @@
 
         <article class="case-row">
           <code>rng_flag_pass</code>
-          <p>Adds rng_flag=&lt;20 AVOID_RANGE_SEEN=true, testing the thresholded range flag during the stock one-obstacle avoidance; passes when alert request, obstacle alert, and range-flag mail have appeared, the behavior reaches OBAVOIDING=end, the vehicle arrives, and collisions remain zero.</p>
+          <p>Adds paired &lt;20 range flags that post AVOID_RANGE_SEEN=true and the live $[RNG]; the first publication must carry true with range below 20 meters, and the vehicle must subsequently arrive collision-free.</p>
         </article>
 
 
         <article class="case-row">
           <code>cpa_flag_pass</code>
-          <p>Adds cpa_flag=AVOID_CPA_SEEN=true, testing publication after the behavior records a closest-point-of-approach event; passes when alert request, obstacle alert, and CPA-flag mail have appeared and collisions remain zero, without requiring final arrival or OBAVOIDING=end.</p>
+          <p>Adds paired CPA flags that post AVOID_CPA_SEEN=true and the event&#x27;s $[CPA]; passes when the source-defined close-then-open CPA event reports true, a minimum range below the 28-meter relevance boundary, prior request and alert delivery, and zero collisions.</p>
         </article>
 
 
@@ -122,7 +122,7 @@
 
         <article class="case-row">
           <code>no_refinery_pass</code>
-          <p>Sets use_refinery=false for the same lane obstacle, exercising direct objective construction without the IvP refinery; passes when request and alert mail appear, OBAVOIDING=end, the vehicle arrives, and collisions remain zero.</p>
+          <p>Sets use_refinery=false, selecting the direct OF_Reflector path without refinery plateau/basin regions; this retained compatibility smoke test proves the setting is accepted and produces a collision-free arrival, but no published telemetry distinguishes the internal construction branch.</p>
         </article>
 
 
@@ -146,7 +146,7 @@
 
         <article class="case-row">
           <code>rng_flag_no_threshold_pass</code>
-          <p>Sets rng_flag=AVOID_RANGE_SEEN=true without a range predicate, testing the unconditional range-flag form; passes when request, obstacle-alert, and range-flag mail appear, OBAVOIDING=end, the vehicle arrives, and collisions remain zero.</p>
+          <p>Adds the same payload and $[RNG] flags without a threshold; the first publication must occur above 20 meters with payload true, distinguishing this unconditional form from the &lt;20 case before collision-free arrival.</p>
         </article>
 
 
@@ -158,67 +158,67 @@
 
         <article class="case-row">
           <code>bad_polygon_fail</code>
-          <p>Supplies the crossed polygon {29,-53:43,-67:29,-67:43,-53}, exercising invalid launch-time geometry; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true, while the raw state is only reported.</p>
+          <p>Supplies the crossed polygon {29,-53:43,-67:29,-67:43,-53}; the expected-negative case passes only when the bridged helm state equals MALCONFIG before its deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_inner_dist_fail</code>
-          <p>Sets pwt_inner_dist=40 above pwt_outer_dist=28 while raising completed_dist to 42, isolating the invalid relevance-distance ordering; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets pwt_inner_dist=40 above pwt_outer_dist=28 while raising completed_dist to 42; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>Sets pwt_outer_dist=8 below pwt_inner_dist=14, exercising the opposite invalid relevance-distance ordering; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets pwt_outer_dist=8 below pwt_inner_dist=14; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_completed_dist_fail</code>
-          <p>Sets completed_dist=20 below pwt_outer_dist=28, exercising invalid completion/relevance ordering; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets completed_dist=20 below pwt_outer_dist=28; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_min_util_cpa_dist_fail</code>
-          <p>Sets min_util_cpa_dist=20 above max_util_cpa_dist=16, exercising invalid CPA utility bounds; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets min_util_cpa_dist=20 above max_util_cpa_dist=16; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_util_cpa_dist_fail</code>
-          <p>Sets max_util_cpa_dist=6 below min_util_cpa_dist=8, exercising the opposite invalid CPA utility ordering; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets max_util_cpa_dist=6 below min_util_cpa_dist=8; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_allowable_ttc_fail</code>
-          <p>Sets allowable_ttc=-1, exercising rejection of a negative time-to-collision limit; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets allowable_ttc=-1; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_rng_flag_fail</code>
-          <p>Sets rng_flag=&lt;bogus AVOID_RANGE_SEEN=true, exercising rejection of a nonnumeric range threshold; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets rng_flag=&lt;bogus AVOID_RANGE_SEEN=true, supplying a nonnumeric threshold; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_cpa_flag_fail</code>
-          <p>Sets cpa_flag=AVOID_CPA_SEEN without an assignment value, exercising malformed flag syntax; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets cpa_flag=AVOID_CPA_SEEN without an assignment value; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_use_refinery_fail</code>
-          <p>Sets use_refinery=maybe, exercising rejection of a non-boolean refinery selector; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>Sets use_refinery=maybe; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_grade_fail</code>
-          <p>Sets the unsupported parameter pwt_grade=quadratic, exercising the current setParam() rejection surface; the harness passes when any IVPHELM_STATE mail latches HELM_MALCONFIG=true.</p>
+          <p>supplies the unsupported pwt_grade=quadratic; the expected-negative case requires exact helm MALCONFIG.</p>
         </article>
 
       </div>

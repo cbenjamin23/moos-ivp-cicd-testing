@@ -17,12 +17,16 @@ ProcessConfig = pMissionEval
   mailflag = @OBM_ALERT_REQUEST#ALERT_REQUEST_SEEN=true
   mailflag = @OBSTACLE_ALERT#OBSTACLE_ALERT_SEEN=true
   mailflag = @OBM_RESOLVED#RESOLVED_SEEN=true
-  lead_condition = (AVOID_CPA_VALUE >= 0) or (TEST_EVAL_READY = true)
+
+  lead_condition = (AVOID_RANGE_VALUE >= 0) or (TEST_EVAL_READY = true)
+  pass_condition = AVOID_RANGE_VALUE > 20
+  pass_condition = AVOID_RANGE_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+
+  lead_condition = (ARRIVED = true) or (TEST_EVAL_READY = true)
   pass_condition = ALERT_REQUEST_SEEN = true
   pass_condition = OBSTACLE_ALERT_SEEN = true
-  pass_condition = AVOID_CPA_SEEN = true
-  pass_condition = AVOID_CPA_VALUE >= 0
-  pass_condition = AVOID_CPA_VALUE < 28
+  pass_condition = ARRIVED = true
   pass_condition = OB_TOTAL_COLLISIONS = 0
   pass_condition = TEST_EVAL_READY = false
 
@@ -31,23 +35,19 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = obstacle_behavior_motion_tests
-  mission_mod  = $(MMOD:=cpa_flag_pass)
+  mission_mod  = $(MMOD:=rng_flag_no_threshold_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = deadline=$[TEST_EVAL_READY]
+  report_column = range_flag=$[AVOID_RANGE_SEEN]
+  report_column = range=$[AVOID_RANGE_VALUE]
   report_column = obavoiding=$[OBAVOIDING]
   report_column = alert_req_seen=$[ALERT_REQUEST_SEEN]
   report_column = obstacle_alert_seen=$[OBSTACLE_ALERT_SEEN]
-  report_column = resolved_seen=$[RESOLVED_SEEN]
-  report_column = cpa_flag=$[AVOID_CPA_SEEN]
-  report_column = cpa=$[AVOID_CPA_VALUE]
-  report_column = resolved=$[OBM_RESOLVED]
   report_column = arrived=$[ARRIVED]
   report_column = collisions=$[OB_TOTAL_COLLISIONS]
-  report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
-  report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
   report_column = mhash=$[MHASH_SHORT]
 }

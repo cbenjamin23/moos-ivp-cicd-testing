@@ -18,10 +18,17 @@ Scenario:
 - `BHV_AvoidObstacleV24` auto-requests `OBSTACLE_ALERT`
 - shoreside grades behavior-owned outcomes such as alert request seen,
   obstacle alert seen, `OBAVOIDING=end`, and clean arrival
+- `pAutoPoke` initializes `TEST_EVAL_READY=false`, so case-specific timers are
+  explicit missing-event deadlines rather than unresolved variables
 
 The companion harness expands this stem into flag-path, launch-time polygon,
 non-engagement, multi-obstacle, disabled-behavior, and invalid-configuration
 variants.
+
+The flag cases bridge behavior-expanded `AVOID_RANGE_VALUE=$[RNG]` and
+`AVOID_CPA_VALUE=$[CPA]` alongside their exact configured Boolean payloads.
+This lets their evaluators lead on source-defined range and CPA events instead
+of a fixed elapsed-time checkpoint.
 
 Default pass rule:
 

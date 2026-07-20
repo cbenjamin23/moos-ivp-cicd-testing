@@ -14,6 +14,7 @@ Behavior = BHV_AvoidObstacleV24
   endflag      = OBAVOIDING = end
 
   cpa_flag          = AVOID_CPA_SEEN=true
+  cpa_flag          = AVOID_CPA_VALUE=$[CPA]
   use_refinery      = true
   allowable_ttc     = 80
   pwt_outer_dist    = 28

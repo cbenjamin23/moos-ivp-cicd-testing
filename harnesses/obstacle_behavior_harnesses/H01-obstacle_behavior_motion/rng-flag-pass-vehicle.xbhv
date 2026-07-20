@@ -14,6 +14,7 @@ Behavior = BHV_AvoidObstacleV24
   endflag      = OBAVOIDING = end
 
   rng_flag          = <20 AVOID_RANGE_SEEN=true
+  rng_flag          = <20 AVOID_RANGE_VALUE=$[RNG]
   use_refinery      = true
   allowable_ttc     = 80
   pwt_outer_dist    = 28
