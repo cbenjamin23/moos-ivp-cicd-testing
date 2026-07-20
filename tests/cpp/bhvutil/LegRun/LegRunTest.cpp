@@ -112,7 +112,9 @@ TEST(LegRunTest, AppliesIncrementalModifiersAndInvalidatesCachedTurnGeometry)
   LegRun run;
   ASSERT_TRUE(run.setParams("id=lane1,p1=0:0,p2=100:0,turn_rad=20,turn_ext=5"));
   const double initial_turn_len = run.getTurn1Len();
+  const unsigned int initial_turn_points = run.initTurnPoints1().size();
   ASSERT_GT(initial_turn_len, 0.0);
+  ASSERT_GT(initial_turn_points, 1u);
 
   EXPECT_TRUE(run.modTurnRad(10));
   EXPECT_DOUBLE_EQ(run.getTurn1Rad(), 30);
@@ -128,8 +130,12 @@ TEST(LegRunTest, AppliesIncrementalModifiersAndInvalidatesCachedTurnGeometry)
   EXPECT_TRUE(run.modTurnBias(15));
   EXPECT_DOUBLE_EQ(run.getTurn1Bias(), 15);
   EXPECT_DOUBLE_EQ(run.getTurn2Bias(), 15);
-  EXPECT_TRUE(run.setTurnPtGap(0.1));
-  EXPECT_TRUE(run.modTurnPtGap(-10));
+
+  EXPECT_TRUE(run.setTurnPtGap(10));
+  const unsigned int sparse_turn_points = run.initTurnPoints1().size();
+  EXPECT_TRUE(run.modTurnPtGap(-5));
+  const unsigned int dense_turn_points = run.initTurnPoints1().size();
+  EXPECT_GT(dense_turn_points, sparse_turn_points);
   EXPECT_TRUE(run.turnModified());
 }
 

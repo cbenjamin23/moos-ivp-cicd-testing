@@ -47,6 +47,36 @@ ProcessConfig = pEchoVar
   FLIP:legrun_patience = source_variable = BHV_SETTINGS
   FLIP:legrun_patience = dest_variable   = LR_PATIENCE_SETTING
   FLIP:legrun_patience = patience -> patience
+
+  FLIP:legrun_p1 = source_variable = VIEW_POINT
+  FLIP:legrun_p1 = dest_variable   = LR_P1_POINT
+  FLIP:legrun_p1 = label == abe_p1
+  FLIP:legrun_p1 = label -> label
+  FLIP:legrun_p1 = x -> x
+  FLIP:legrun_p1 = y -> y
+
+  FLIP:legrun_p2 = source_variable = VIEW_POINT
+  FLIP:legrun_p2 = dest_variable   = LR_P2_POINT
+  FLIP:legrun_p2 = label == abe_p2
+  FLIP:legrun_p2 = label -> label
+  FLIP:legrun_p2 = x -> x
+  FLIP:legrun_p2 = y -> y
+
+  FLIP:legrun_fpt1 = source_variable = VIEW_POINT
+  FLIP:legrun_fpt1 = dest_variable   = LR_FPT1_POINT
+  FLIP:legrun_fpt1 = label == abe_fpt1
+  FLIP:legrun_fpt1 = label -> label
+  FLIP:legrun_fpt1 = x -> x
+  FLIP:legrun_fpt1 = y -> y
+  FLIP:legrun_fpt1 = z -> z
+
+  FLIP:legrun_fpt2 = source_variable = VIEW_POINT
+  FLIP:legrun_fpt2 = dest_variable   = LR_FPT2_POINT
+  FLIP:legrun_fpt2 = label == abe_fpt2
+  FLIP:legrun_fpt2 = label -> label
+  FLIP:legrun_fpt2 = x -> x
+  FLIP:legrun_fpt2 = y -> y
+  FLIP:legrun_fpt2 = z -> z
 }
 
 //----------------------------------------------------

@@ -1,0 +1,53 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval, pEchoVar
+  condition = DEPLOY_ALL = true
+
+  event = var=LR_EXPECT_FPT1_BIAS, val="x=-47.76,y=-66.85,z=222.05,label=abe_fpt1", time=0.5
+  event = var=LR_EXPECT_FPT2_BIAS, val="x=49.29,y=-20.85,z=87.23,label=abe_fpt2", time=0.5
+  event = var=LR_EXPECT_FPT1_EXT,  val="x=-49.35,y=-67.46,z=222.05,label=abe_fpt1", time=0.5
+  event = var=LR_EXPECT_FPT2_EXT,  val="x=50.78,y=-20.01,z=87.23,label=abe_fpt2", time=0.5
+  event = var=MISSION_TIMEOUT, val=true, time=50
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (LR_FPT1_POINT = $ (LR_EXPECT_FPT1_BIAS)) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_FPT2_POINT = $ (LR_EXPECT_FPT2_BIAS)) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_FPT1_POINT = $ (LR_EXPECT_FPT1_BIAS)
+  pass_condition = LR_FPT2_POINT = $ (LR_EXPECT_FPT2_BIAS)
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_FPT1_POINT = $ (LR_EXPECT_FPT1_EXT)) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_FPT2_POINT = $ (LR_EXPECT_FPT2_EXT)) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_FPT1_POINT = $ (LR_EXPECT_FPT1_EXT)
+  pass_condition = LR_FPT2_POINT = $ (LR_EXPECT_FPT2_EXT)
+  pass_condition = ABE_IVPHELM_STATE = DRIVE
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = legrun_behavior_tests
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = expected=bias_then_extension_geometry
+  report_column = fpt1=$[LR_FPT1_POINT]
+  report_column = fpt2=$[LR_FPT2_POINT]
+  report_column = helm_state=$[ABE_IVPHELM_STATE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

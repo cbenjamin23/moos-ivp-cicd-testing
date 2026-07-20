@@ -1,0 +1,48 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval, pEchoVar
+  condition = DEPLOY_ALL = true
+
+  event = var=LR_EXPECT_FPT1, val="x=-53.83,y=-68.03,z=230.79,label=abe_fpt1", time=0.5
+  event = var=LR_EXPECT_FPT2, val="x=54.06,y=-16.9,z=78.49,label=abe_fpt2", time=0.5
+  event = var=MISSION_TIMEOUT, val=true, time=170
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (LR_FPT1_POINT = $ (LR_EXPECT_FPT1)) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_FPT2_POINT = $ (LR_EXPECT_FPT2)) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_FPT1_POINT = $ (LR_EXPECT_FPT1)
+  pass_condition = LR_FPT2_POINT = $ (LR_EXPECT_FPT2)
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_TURN1_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_TURN1_DONE = true
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = legrun_behavior_tests
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = expected=shared_bias_extension_gap_geometry
+  report_column = fpt1=$[LR_FPT1_POINT]
+  report_column = fpt2=$[LR_FPT2_POINT]
+  report_column = turn1=$[LR_TURN1_DONE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

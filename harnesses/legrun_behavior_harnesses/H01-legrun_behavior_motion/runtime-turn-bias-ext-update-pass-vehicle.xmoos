@@ -7,5 +7,4 @@ ProcessConfig = uTimerScript
 
   event = var=LEG_UPDATE, val="turn_bias_mod=-10", time=5
   event = var=LEG_UPDATE, val="turn_ext_mod=2", time=7
-  event = var=LEG_UPDATE, val="turn_pt_gap=15", time=9
 }

@@ -81,7 +81,7 @@ CASES=(
     runtime_turn_radius_update_pass
     runtime_speed_replace_reset_pass
     runtime_shift_point_pass
-    runtime_turn_bias_gap_update_pass
+    runtime_turn_bias_ext_update_pass
     flag_aliases_pass
     mid_pct_late_pass
     patience_clip_pass
@@ -333,12 +333,20 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/init-far-turn-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/init-far-turn-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "turn_rad_alias_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/turn-rad-alias-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/turn-preview-sample-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/turn-rad-alias-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "turn_bias_ext_gap_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/turn-bias-ext-gap-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/turn-preview-sample-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/turn-bias-ext-gap-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "individual_turn_params_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/individual-turn-params-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/turn-preview-sample-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/individual-turn-params-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "turn_rad_min_clip_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/turn-rad-min-clip-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/turn-preview-sample-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/turn-rad-min-clip-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "capture_radius_alias_pass" ]; then
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/capture-radius-alias-pass-vehicle.xbhv"
@@ -362,17 +370,23 @@ get_case_config() {
         CASE_VEH_MOOS_FULL_PATCH="$HARNESS_DIR/leg-speed-sequence-pass-full-logging-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/leg-speed-count-repeat-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "runtime_length_angle_update_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/runtime-length-angle-update-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-length-angle-update-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_turn_radius_update_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/runtime-turn-radius-update-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-turn-radius-update-pass-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/runtime-compact-leg-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "runtime_speed_replace_reset_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/runtime-speed-replace-reset-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-speed-replace-reset-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/runtime-compact-leg-pass-vehicle.xbhv"
+        CASE_VEH_MOOS_FULL_PATCH="$HARNESS_DIR/runtime-speed-replace-reset-pass-full-logging-vehicle.xmoos"
+        CASE_VEH_BHV_PATCH="$HARNESS_DIR/runtime-speed-replace-reset-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "runtime_shift_point_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/runtime-shift-point-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-shift-point-pass-vehicle.xmoos"
-    elif [ "$CASE_NAME" = "runtime_turn_bias_gap_update_pass" ]; then
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-turn-bias-gap-update-pass-vehicle.xmoos"
+    elif [ "$CASE_NAME" = "runtime_turn_bias_ext_update_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/runtime-turn-bias-ext-update-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-turn-bias-ext-update-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "flag_aliases_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/flag-aliases-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/flag-aliases-pass-vehicle.xmoos"

@@ -1,0 +1,12 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY = true
+
+  // Rebuild the configured turn previews after all evaluators are connected,
+  // then restore the requested geometry for direct comparison.
+  event = var=LEG_UPDATE, val="turn_rad_mod=2",  time=3
+  event = var=LEG_UPDATE, val="turn_rad_mod=-2", time=5
+}

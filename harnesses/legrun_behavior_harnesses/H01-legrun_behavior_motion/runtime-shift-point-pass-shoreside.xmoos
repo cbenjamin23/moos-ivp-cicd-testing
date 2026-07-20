@@ -1,0 +1,45 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval, pEchoVar
+  condition = DEPLOY_ALL = true
+
+  event = var=LR_EXPECT_P1, val="x=-18.11,y=-67.85,label=abe_p1", time=0.5
+  event = var=LR_EXPECT_P2, val="x=36.11,y=-42.15,label=abe_p2", time=0.5
+  event = var=MISSION_TIMEOUT, val=true, time=50
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (LR_P1_POINT = $ (LR_EXPECT_P1)) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_P2_POINT = $ (LR_EXPECT_P2)) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_P1_POINT = $ (LR_EXPECT_P1)
+  pass_condition = LR_P2_POINT = $ (LR_EXPECT_P2)
+  pass_condition = ABE_IVPHELM_STATE = DRIVE
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = legrun_behavior_tests
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = expected=center_shifted_to_9_-55
+  report_column = p1=$[LR_P1_POINT]
+  report_column = p2=$[LR_P2_POINT]
+  report_column = helm_state=$[ABE_IVPHELM_STATE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

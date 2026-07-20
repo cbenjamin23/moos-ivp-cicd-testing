@@ -34,20 +34,26 @@ leg, turn, mid-leg, mid-turn, completion, and warning/error signals.
   false.
 - `turn_rad_alias_pass`
   Configures both turns through shared aliases `turn_bias=100`, `turn_dir=port`,
-  `turn_rad=8`, and `turn_ext=4`; passes on the baseline progression flags
-  through turn 1 and leg 2, with no behavior error.
+  `turn_rad=8`, and `turn_ext=4`; passes when the behavior regenerates exact
+  reference points `(-47.81,-65.84,224.72)` and
+  `(61.81,-48.16,44.72)` for the two turns, completes turn 1, and reports no
+  behavior error.
 - `turn_bias_ext_gap_pass`
   Sets shared `turn_bias=85`, `turn_rad=9`, `turn_ext=8`, and
-  `turn_pt_gap=18` to exercise shaped turn generation; passes on the baseline
-  progression flags through turn 1 and leg 2, with no behavior error.
+  `turn_pt_gap=18`; passes when the generated turn reference points are
+  exactly `(-53.83,-68.03,230.79)` and `(54.06,-16.9,78.49)`, turn 1
+  completes, and no behavior error occurs. The direct `LegRun` CTest separately
+  requires a smaller point gap to produce a denser preview.
 - `individual_turn_params_pass`
   Configures asymmetric turns with radii 7 and 10, biases 80 and 95,
-  extensions 3 and 6, and opposite directions; passes on the baseline
-  progression flags through turn 1 and leg 2, with no behavior error.
+  extensions 3 and 6, and opposite directions; passes when the two generated
+  reference points are exactly `(-43.94,-68.02,218.14)` and
+  `(44.65,-23.06,3.88)`, turn 1 completes, and no behavior error occurs.
 - `turn_rad_min_clip_pass`
   Sets `turn_rad_min=9` before shared `turn_rad=2`, exercising minimum-radius
-  clipping; passes on the baseline progression flags through turn 1 and leg 2,
-  with no behavior error.
+  clipping; passes when the effective 9-meter geometry produces exact turn
+  reference points `(-50.75,-65.1,225.82)` and
+  `(49.83,-17.43,83.46)`, turn 1 completes, and no behavior error occurs.
 - `capture_radius_alias_pass`
   Replaces `capture_radius=5` with the equivalent `radius=5` alias; passes on
   the full baseline progression, midpoint, completion, and no-error evidence.
@@ -73,25 +79,29 @@ leg, turn, mid-leg, mid-turn, completion, and warning/error signals.
   `1.0`, and every intervening turn remains at cruise speed `1.6`.
 - `runtime_length_angle_update_pass`
   Posts `leg_len_mod=8` at six seconds and `leg_ang_mod=-5` at eight seconds;
-  passes on ordinary progression, midpoint, completion, and no-error evidence,
-  without measuring the updated leg geometry.
+  passes when the endpoints first become `(-23.72,-71.56)` and
+  `(37.72,-42.44)`, then become `(-22.34,-74.18)` and
+  `(36.34,-39.82)`, while the helm remains in `DRIVE` without a behavior
+  error.
 - `runtime_turn_radius_update_pass`
-  Uses a 44-meter leg and posts `turn_rad_mod=2` and `turn_ext_mod=1` before
-  the first turn; passes on ordinary progression, midpoint, completion, and
-  no-error evidence, without measuring the updated turn.
+  Uses a 44-meter leg and posts `turn_rad_mod=2`; passes when the regenerated
+  turn reference points are exactly `(-46.45,-60.94,226.75)` and
+  `(43.89,-18.12,82.53)`, with the helm in `DRIVE` and no behavior error.
 - `runtime_speed_replace_reset_pass`
-  Applies `leg_spds` replace, reset, clear, and final `replace,1.2` updates at
-  two-second intervals on a 44-meter leg; passes on ordinary progression,
-  midpoint, completion, and no-error evidence, without grading update history
-  or final speed.
+  Uses controlled leg transitions to apply `replace,1.1,1.5`, `reset`,
+  `clear`, and final `replace,1.2` updates; passes when ordered mode/speed pairs
+  are `leg1/1.1`, `leg2/1.1`, `leg1/1.6`, and `leg2/1.2`, proving each command
+  changes the next applicable schedule state.
 - `runtime_shift_point_pass`
   Posts `shift_pt=9,-55` four seconds after deployment to move the leg center;
-  passes on ordinary progression, midpoint, completion, and no-error evidence,
-  without measuring the shifted endpoints.
-- `runtime_turn_bias_gap_update_pass`
-  Posts `turn_bias_mod=-10`, `turn_ext_mod=2`, and `turn_pt_gap=15` during the
-  run; passes on ordinary progression, midpoint, completion, and no-error
-  evidence, without measuring the resulting turn geometry.
+  passes when the endpoints become `(-18.11,-67.85)` and `(36.11,-42.15)`,
+  whose midpoint is exactly `(9,-55)`, while the helm remains in `DRIVE`
+  without a behavior error.
+- `runtime_turn_bias_ext_update_pass`
+  Posts `turn_bias_mod=-10` and then `turn_ext_mod=2`; passes when the generated
+  turn reference points first become `(-47.76,-66.85,222.05)` and
+  `(49.29,-20.85,87.23)`, then become `(-49.35,-67.46,222.05)` and
+  `(50.78,-20.01,87.23)`, with the helm in `DRIVE` and no behavior error.
 - `flag_aliases_pass`
   Adds `leg_end_flag`, `turn_end_flag`, `mid_leg_flag`, and `mid_turn_flag`
   alongside the canonical flag names; passes when every canonical and alias
@@ -157,9 +167,10 @@ Latest validation:
 - generated-file matrix: `33/33` cases completed with `--just_make --jobs=4`
 - minimal rolling matrix: `33/33` mission-owned verdicts passed
 - full-logging rolling matrix: `33/33` mission-owned verdicts passed
-- deliberate mutations of far-turn initialization, static speed scheduling,
-  mid-leg percentage, patience clipping, and invalid-leg rejection all failed
-  their focused evaluators
+- deliberate mutations of far-turn initialization, shared turn radius,
+  runtime leg length, speed-schedule reset, static speed scheduling, mid-leg
+  percentage, patience clipping, turn-point density, and invalid-leg rejection
+  all failed their focused evaluators or CTest
 - warp: `10`
 
 Logging is minimal by default. Use `--log=full` for the complete matrix, or

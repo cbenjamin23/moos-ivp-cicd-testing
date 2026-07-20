@@ -6,5 +6,4 @@ ProcessConfig = uTimerScript
   condition = DEPLOY = true
 
   event = var=LEG_UPDATE, val="turn_rad_mod=2", time=6
-  event = var=LEG_UPDATE, val="turn_ext_mod=1", time=8
 }
