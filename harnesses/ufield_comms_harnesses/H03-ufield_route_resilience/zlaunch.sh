@@ -452,7 +452,7 @@ prepare_case() {
         render_patch "$shore_patch" "$workdir/case-shoreside.xmoos" "$case_base" || return 1
         shore_patch="$workdir/case-shoreside.xmoos"
     fi
-    if [[ "$vehicle_patch" = *.template.xmoos ]]; then
+    if [[ "$vehicle_patch" = *.template.xmoos ]] || grep -q '@BAD_PORT@' "$vehicle_patch"; then
         render_patch "$vehicle_patch" "$workdir/case-vehicle.xmoos" "$case_base" || return 1
         vehicle_patch="$workdir/case-vehicle.xmoos"
     fi
@@ -540,6 +540,46 @@ shore_lacks() {
     alog_var_lacks_pattern "$alog" "$var" "$pattern"
 }
 
+shore_vnode_duplicate_rejected() {
+    local case_dir="$1"
+    local alog
+    alog=$(shore_alog "$case_dir")
+    [ -n "$alog" ] || return 1
+    if ! aloggrep "$alog" PSHARE_CMD 2>/dev/null | awk '
+        /src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127[.]0[.]0[.]1:[0-9]+/ {
+            route = $0
+            sub(/^.*route=/, "", route)
+            sub(/[[:space:]].*$/, "", route)
+            if (!(route in counts))
+                route_total++
+            counts[route]++
+        }
+        END {
+            if (route_total != 2)
+                exit 1
+            if (mode == "full")
+                exit 0
+            min_count = -1
+            max_count = 0
+            for (route in counts) {
+                if ((min_count < 0) || (counts[route] < min_count))
+                    min_count = counts[route]
+                if (counts[route] > max_count)
+                    max_count = counts[route]
+            }
+            if ((min_count < 2) || ((max_count - min_count) > 1))
+                exit 1
+        }
+    ' mode="$LOG_MODE"; then
+        return 1
+    fi
+
+    if [ "$LOG_MODE" = full ]; then
+        rg '[[:space:]]APPCAST[[:space:]]+uFldShoreBroker .*config_warnings=Duplicate vnode route:127[.]0[.]0[.]1:[0-9]+' \
+            "$alog" >/dev/null
+    fi
+}
+
 supplemental_check_ok() {
     local check="$1"
     local case_dir="$2"
@@ -574,6 +614,10 @@ supplemental_check_ok() {
         startup_invalid_bad_param_valid_route)
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "shore_route" && \
             vehicle_lacks "$case_dir" "BEN" "PSHARE_CMD" "shore_route" && \
+            vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
+            vehicle_has "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
+            vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1" && \
+            vehicle_lacks "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
@@ -667,6 +711,10 @@ supplemental_check_ok() {
             vehicle_has "$case_dir" "BEN" "TRY_SHORE_HOST" "shore_route=localhost:[0-9]+" && \
             vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "shore_route" && \
             vehicle_lacks "$case_dir" "BEN" "PSHARE_CMD" "shore_route" && \
+            vehicle_has "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
+            vehicle_has "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_0,dest_name=NODE_BROKER_PING,route=localhost:[0-9]+" && \
+            vehicle_lacks "$case_dir" "ABE" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1" && \
+            vehicle_lacks "$case_dir" "BEN" "PSHARE_CMD" "src_name=NODE_BROKER_PING_1" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;
@@ -717,6 +765,7 @@ supplemental_check_ok() {
             ;;
         shore_vnode_duplicate_ignored)
             shore_has "$case_dir" "PSHARE_CMD" "src_name=TRY_SHORE_HOST,dest_name=TRY_SHORE_HOST,route=127.0.0.1:[0-9]+" && \
+            shore_vnode_duplicate_rejected "$case_dir" && \
             vehicle_has "$case_dir" "ABE" "NODE_BROKER_ACK" "status=ok,key=0" && \
             vehicle_has "$case_dir" "BEN" "NODE_BROKER_ACK" "status=ok,key=0"
             ;;

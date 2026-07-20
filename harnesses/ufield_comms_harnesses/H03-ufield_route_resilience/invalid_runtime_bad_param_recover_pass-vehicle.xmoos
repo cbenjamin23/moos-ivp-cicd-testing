@@ -30,7 +30,7 @@ ProcessConfig = uTimerScript
   event = var=NODE_REPORT_LOCAL, val="NAME=$(VNAME),TYPE=KAYAK,TIME=$[UTC],X=$(XPOS),Y=$(YPOS),LAT=43.825300,LON=-70.330400,SPD=0,HDG=$(HDG),YAW=$(HDG),DEPTH=0,LENGTH=4,GROUP=$(VGROUP),MODE=MODE@ACTIVE:COMMS", time=940
   event = var=NODE_REPORT_LOCAL, val="NAME=$(VNAME),TYPE=KAYAK,TIME=$[UTC],X=$(XPOS),Y=$(YPOS),LAT=43.825300,LON=-70.330400,SPD=0,HDG=$(HDG),YAW=$(HDG),DEPTH=0,LENGTH=4,GROUP=$(VGROUP),MODE=MODE@ACTIVE:COMMS", time=980
 
-  event = var=TRY_SHORE_HOST, val="shore_route=localhost:$(SHORE_PSHARE)", time=300
+  event = var=TRY_SHORE_HOST, val="shore_route=localhost:@BAD_PORT@", time=300
   event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=600
   event = var=TRY_SHORE_HOST, val="pshare_route=localhost:$(SHORE_PSHARE)", time=800
 

@@ -105,7 +105,7 @@
 
         <article class="case-row">
           <code>startup_invalid_bad_param_valid_route_pass</code>
-          <p>Adds shore_route=localhost:&lt;shore-port&gt; beside a valid startup pshare_route; passes when neither vehicle emits a pShare command containing shore_route, both receive status=ok,key=0, and ordinary communications succeed.</p>
+          <p>Adds shore_route=localhost:&lt;reserved-dead-port&gt; before a valid startup pshare_route; passes when each vehicle creates only the live route as key 0, creates no key 1, receives status=ok,key=0, and completes ordinary communications.</p>
         </article>
 
 
@@ -153,7 +153,7 @@
 
         <article class="case-row">
           <code>late_runtime_tryhost_blocks_delivery_fail</code>
-          <p>Waits until time 1700—after Abe&#x27;s message at 1040 and Ben&#x27;s acknowledgement at 1120—to post the first valid route; the expected-negative case passes when both brokers later receive status=ok,key=0 and node count reaches two, but no direct message was delivered before mission end.</p>
+          <p>Sends Abe&#x27;s one-shot message before any route, then establishes the first valid route at time 1700; the expected-negative case passes when the message is not replayed while both brokers later reach status=ok,key=0 and node count two.</p>
         </article>
 
 
@@ -183,7 +183,7 @@
 
         <article class="case-row">
           <code>invalid_runtime_bad_param_recover_pass</code>
-          <p>Posts shore_route=localhost:&lt;shore-port&gt; before the valid runtime pshare_route; passes when the malformed mail is logged, no pShare command contains shore_route, both brokers receive status=ok,key=0, and ordinary communications recover.</p>
+          <p>Posts shore_route=localhost:&lt;reserved-dead-port&gt; before the valid runtime pshare_route; passes when the malformed mail consumes no route key, each vehicle creates only the live route as key 0, receives status=ok,key=0, and ordinary communications recover.</p>
         </article>
 
 
@@ -231,7 +231,7 @@
 
         <article class="case-row">
           <code>shore_vnode_duplicate_ignored_pass</code>
-          <p>Configures Abe&#x27;s vnode route twice before Ben&#x27;s route; passes when shoreside emits discovery routing, both vehicles receive status=ok,key=0, and the full ordinary communications mission succeeds.</p>
+          <p>Configures Abe&#x27;s vnode route twice before Ben&#x27;s route; passes when only the two unique endpoints are emitted, minimal-log route counts stay balanced or the full log contains uFldShoreBroker&#x27;s duplicate-route rejection warning, both vehicles receive status=ok,key=0, and ordinary communications succeed.</p>
         </article>
 
       </div>

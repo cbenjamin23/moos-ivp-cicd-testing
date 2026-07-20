@@ -3,7 +3,7 @@ ProcessConfig = uFldNodeBroker
   AppTick   = 2
   CommsTick = 2
 
-  try_shore_host = shore_route=localhost:$(SHORE_PSHARE)
+  try_shore_host = shore_route=localhost:@BAD_PORT@
   try_shore_host = pshare_route=localhost:$(SHORE_PSHARE)
 
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
