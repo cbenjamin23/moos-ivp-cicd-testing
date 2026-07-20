@@ -83,6 +83,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=PS_PENDING_INACTIVE
   bridge = src=NAV_HEADING
   bridge = src=NAV_SPEED
+  bridge = src=IVPHELM_STATE, alias=ABE_IVPHELM_STATE
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT

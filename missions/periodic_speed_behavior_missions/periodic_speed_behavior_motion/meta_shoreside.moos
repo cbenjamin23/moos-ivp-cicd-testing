@@ -52,6 +52,8 @@ ProcessConfig = pAutoPoke
   flag = MISSION_DONE=false
   flag = MISSION_TIMEOUT=false
   flag = BHV_ERROR_SEEN=false
+  flag = EVAL_ARMED=false
+  flag = TEST_EVAL_READY=false
 
   required_nodes = 1
 }
@@ -79,9 +81,15 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
   lead_condition = (MISSION_DONE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = MISSION_DONE = true
+  pass_condition = MISSION_TIMEOUT = false
   pass_condition = PS_BUSY_COUNT >= 2
   pass_condition = NAV_SPEED > 0.4
+  pass_condition = ABE_IVPHELM_STATE = DRIVE
+  pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -102,6 +110,7 @@ ProcessConfig = pMissionEval
   report_column = pending_inactive=$[PS_PENDING_INACTIVE]
   report_column = nav_speed=$[NAV_SPEED]
   report_column = heading=$[NAV_HEADING]
+  report_column = helm_state=$[ABE_IVPHELM_STATE]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }
@@ -118,6 +127,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = MOOS_MANUAL_OVERRIDE
   qbridge  = PERIODIC_SPEED, PS_BUSY_COUNT, PS_PENDING_ACTIVE, PS_PENDING_INACTIVE
   qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+  qbridge  = ABE_IVPHELM_STATE
 }
 
 //----------------------------------------------------

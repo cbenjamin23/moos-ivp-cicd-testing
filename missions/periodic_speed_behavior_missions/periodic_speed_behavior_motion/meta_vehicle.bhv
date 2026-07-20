@@ -35,6 +35,20 @@ Behavior = BHV_ConstantHeading
 }
 
 //----------------------------------------------------
+Behavior = BHV_ConstantSpeed
+{
+  name      = idle_speed
+  pwt       = 10
+  condition = MODE == ACTIVE
+
+  speed       = 0
+  duration    = no-time-limit
+  peakwidth   = 0
+  basewidth   = 0.2
+  summitdelta = 25
+}
+
+//----------------------------------------------------
 Behavior = BHV_PeriodicSpeed
 {
   name      = periodic_speed

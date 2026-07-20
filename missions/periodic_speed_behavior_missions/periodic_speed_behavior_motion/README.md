@@ -2,10 +2,13 @@
 
 Deterministic moving stem mission for `BHV_PeriodicSpeed`.
 
-The vehicle runs a constant-heading behavior so the periodic speed behavior can
-own the speed objective. The shoreside evaluator grades the behavior-owned
-status variables (`PS_BUSY_COUNT`, `PS_PENDING_ACTIVE`,
-`PS_PENDING_INACTIVE`, and `PERIODIC_SPEED`) plus observed `NAV_SPEED`.
+The vehicle runs a constant-heading behavior and a low-priority zero-speed
+objective so the helm remains fully defined during PeriodicSpeed's lazy window;
+the higher-priority periodic behavior owns speed during its busy window. At a
+scheduled clock sample, the shoreside evaluator grades the case-specific
+`PS_BUSY_COUNT`, pending-time, and `NAV_SPEED` contract, requires the sample
+before its fallback deadline, and rejects a behavior error or any helm state
+other than `DRIVE`.
 
 Typical commands:
 
