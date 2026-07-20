@@ -1,0 +1,77 @@
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = LOITER_DONE=false
+  flag = LOITER_COMPLETE=false
+  flag = TEST_EVAL_READY=false
+  flag = BHV_ERROR_SEEN=false
+  flag = LOITER_INDEX=-1
+  flag = EMPTY_SPEC_RUN_SEEN=false
+  flag = DESIRED_SPEED_SEEN=false
+
+  required_nodes = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+  // This case proves an expected absence, so the observation deadline is the
+  // correct lead: the behavior must run without producing an objective.
+  event = var=TEST_EVAL_READY, val=true, time=10
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @EMPTY_SPEC_RUN#EMPTY_SPEC_RUN_SEEN=true
+  mailflag = @DESIRED_SPEED#DESIRED_SPEED_SEEN=true
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = TEST_EVAL_READY = true
+  pass_condition = TEST_EVAL_READY = true
+  pass_condition = EMPTY_SPEC_RUN_SEEN = true
+  pass_condition = IVPHELM_STATE = DRIVE
+  pass_condition = LOITER_INDEX = -1
+  pass_condition = DESIRED_SPEED_SEEN = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = loiter_behavior_tests
+  mission_mod  = $(MMOD:=empty_polygon_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = expected=empty_spec_suppresses_objective
+  report_column = eval=$[TEST_EVAL_READY]
+  report_column = empty_run=$[EMPTY_SPEC_RUN_SEEN]
+  report_column = helm_state=$[IVPHELM_STATE]
+  report_column = index=$[LOITER_INDEX]
+  report_column = desired_speed_seen=$[DESIRED_SPEED_SEEN]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = TEST_EVAL_READY, BHV_WARNING, BHV_ERROR, IVPHELM_STATE
+  qbridge  = LOITER_INDEX, DESIRED_SPEED, EMPTY_SPEC_RUN
+}

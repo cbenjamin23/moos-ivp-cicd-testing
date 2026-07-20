@@ -26,6 +26,10 @@ Behavior = BHV_Loiter
   updates   = LOITER_UPDATES
   endflag   = LOITER_DONE = true
   endflag   = DESIRED_SPEED = 0
+  runxflag  = LOITER_CENTER_X = $[CX]
+  runxflag  = LOITER_CENTER_Y = $[CY]
+  runxflag  = LOITER_RADIUS = $[RAD]
+  runxflag  = LOITER_POINTS = $[PTS]
 
   perpetual = true
   speed     = $(STOCK_SPD)

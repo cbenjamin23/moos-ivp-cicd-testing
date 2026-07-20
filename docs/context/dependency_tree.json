@@ -4247,6 +4247,7 @@
         "loiter_behavior"
       ],
       "focus_process_apps": [
+        "pEchoVar",
         "pHelmIvP",
         "pMarinePIDV22",
         "pNodeReporter",
@@ -4261,13 +4262,14 @@
         "path": "missions/loiter_behavior_missions/loiter_behavior_motion"
       },
       "patches": {
-        "file_count": 44
+        "file_count": 52
       },
       "path": "harnesses/loiter_behavior_harnesses/H01-loiter_behavior_motion",
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
         "pAutoPoke",
+        "pEchoVar",
         "pHelmIvP",
         "pHostInfo",
         "pLogger",
@@ -4285,19 +4287,17 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 34,
+        "case_count": 29,
         "case_parse_error": "",
         "cases": [
           "radial_clockwise_pass",
           "radial_counterclockwise_pass",
-          "clockwise_best_pass",
           "polygon_box_pass",
           "triangle_polygon_pass",
           "start_inside_loiter_pass",
           "acquire_from_far_pass",
           "early_acquire_mode_pass",
           "center_activate_pass",
-          "capture_radius_large_pass",
           "slip_radius_pass",
           "speed_alt_update_pass",
           "use_alt_speed_static_pass",
@@ -4309,7 +4309,6 @@
           "slingshot_bearing_pass",
           "post_suffix_outputs_pass",
           "eta_output_pass",
-          "ipf_zaic_spd_pass",
           "slow_speed_acquire_pass",
           "empty_polygon_fail",
           "bad_polygon_fail",
@@ -4318,8 +4317,6 @@
           "bad_use_alt_speed_fail",
           "bad_patience_fail",
           "bad_capture_radius_fail",
-          "center_bad_update_recover_pass",
-          "spiral_factor_pass",
           "patience_low_pass",
           "patience_high_pass"
         ],
@@ -6225,6 +6222,7 @@
       ],
       "pEchoVar": [
         "legrun_h01",
+        "loiter_h01",
         "pechovar_h01",
         "processwatch_h01",
         "ufld_obstacle_sim_h01",
@@ -7027,11 +7025,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 504,
-      ".xmoos": 1337,
+      ".xbhv": 500,
+      ".xmoos": 1349,
       "[none]": 7
     },
-    "harness_patch_count": 1736,
+    "harness_patch_count": 1744,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

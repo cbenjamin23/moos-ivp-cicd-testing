@@ -102,6 +102,12 @@ ProcessConfig = uFldNodeBroker
   bridge = src=LOITER_DIST_TO_VERT
   bridge = src=LOITER_BNG_TOTAL
   bridge = src=LOITER_BNG_DELTA
+  bridge = src=DESIRED_SPEED
+  bridge = src=LOITER_CENTER_X
+  bridge = src=LOITER_CENTER_Y
+  bridge = src=LOITER_RADIUS
+  bridge = src=LOITER_POINTS
+  bridge = src=IVPHELM_UPDATE_RESULT
   bridge = src=LOITER_UPDATES
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
@@ -162,6 +168,11 @@ ProcessConfig = pLogger
   Log = LOITER_ETA_TO_POLY @ 0 nosync
   Log = LOITER_DIST_TO_VERT @ 0 nosync
   Log = LOITER_BNG_TOTAL @ 0 nosync
+  Log = LOITER_CENTER_X @ 0 nosync
+  Log = LOITER_CENTER_Y @ 0 nosync
+  Log = LOITER_RADIUS @ 0 nosync
+  Log = LOITER_POINTS @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

@@ -1,0 +1,60 @@
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  // Hold the behavior idle long enough for center_activate to arm its
+  // present-position recenter before the case deploys.
+  flag = DEPLOY_ALL=false
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = LOITER_DONE=false
+  flag = LOITER_COMPLETE=false
+  flag = TEST_EVAL_READY=false
+  flag = BHV_ERROR_SEEN=false
+
+  required_nodes = 1
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  event = var=DEPLOY_ALL, val=true, time=5
+  // Missing-center deadline; the positive lead is the recentered X value.
+  event = var=TEST_EVAL_READY, val=true, time=20
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (LOITER_CENTER_X = -45) or (TEST_EVAL_READY = true)
+  pass_condition = LOITER_CENTER_X = -45
+  pass_condition = LOITER_CENTER_Y = -121
+  pass_condition = LOITER_POINTS = 8
+  pass_condition = BHV_ERROR_SEEN = false
+  pass_condition = TEST_EVAL_READY = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = loiter_behavior_tests
+  mission_mod  = $(MMOD:=center_activate_pass)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = deadline=$[TEST_EVAL_READY]
+  report_column = center_x=$[LOITER_CENTER_X]
+  report_column = center_y=$[LOITER_CENTER_Y]
+  report_column = radius=$[LOITER_RADIUS]
+  report_column = points=$[LOITER_POINTS]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

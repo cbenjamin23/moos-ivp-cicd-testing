@@ -22,6 +22,7 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
   Run = uTimerScript     @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pMissionEval     @ NewConsole = false
   Run = pAutoPoke        @ NewConsole = false
 #ifdef LAUNCH_GUI yes
@@ -29,6 +30,35 @@ ProcessConfig = ANTLER
 #else
   Run = pMissionHash     @ NewConsole = false
 #endif
+}
+
+//----------------------------------------------------
+// pEchoVar Config Block
+
+// BHV_Loiter exposes point-capture history inside LOITER_REPORT. Normalize
+// the one field needed by the slip/nonmonotonic-capture case so its evaluator
+// can lead on the behavior event instead of a fixed elapsed time.
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:nonmono_one = source_variable = LOITER_REPORT
+  FLIP:nonmono_one = dest_variable   = LOITER_NONMONO_ONE
+  FLIP:nonmono_one = nonmono_hits == 1
+  FLIP:nonmono_one = nonmono_hits -> nonmono_hits
+
+  FLIP:update_error = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:update_error = dest_variable   = LOITER_UPDATE_PARAM_ERROR
+  FLIP:update_error = bhv == loiter
+  FLIP:update_error = var == LOITER_UPDATES
+  FLIP:update_error = result == param_error
+  FLIP:update_error = dest_separator = :
+  FLIP:update_error = bhv    -> bhv
+  FLIP:update_error = var    -> var
+  FLIP:update_error = result -> result
+
 }
 
 #include plugs.moos <pHostInfo>
@@ -126,6 +156,9 @@ ProcessConfig = uFldShoreBroker
   qbridge  = LOITER_REPORT, LOITER_INDEX, LOITER_MODE, LOITER_ACQUIRE
   qbridge  = LOITER_DIST_TO_POLY, LOITER_ETA_TO_POLY, LOITER_DIST_TO_VERT
   qbridge  = LOITER_BNG_TOTAL, LOITER_BNG_DELTA
+  qbridge  = DESIRED_SPEED
+  qbridge  = LOITER_CENTER_X, LOITER_CENTER_Y, LOITER_RADIUS, LOITER_POINTS
+  qbridge  = IVPHELM_UPDATE_RESULT
 }
 
 //----------------------------------------------------
@@ -164,6 +197,13 @@ ProcessConfig = pLogger
   Log = LOITER_ACQUIRE @ 0 nosync
   Log = LOITER_DIST_TO_POLY @ 0 nosync
   Log = LOITER_DIST_TO_VERT @ 0 nosync
+  Log = LOITER_NONMONO_ONE @ 0 nosync
+  Log = DESIRED_SPEED @ 0 nosync
+  Log = LOITER_CENTER_X @ 0 nosync
+  Log = LOITER_CENTER_Y @ 0 nosync
+  Log = LOITER_RADIUS @ 0 nosync
+  Log = LOITER_POINTS @ 0 nosync
+  Log = LOITER_UPDATE_PARAM_ERROR @ 0 nosync
   Log = BHV_ERROR_SEEN @ 0 nosync
   Log = MISSION_EVALUATED @ 0 nosync
   Log = NODE_REPORT @ 0 nosync

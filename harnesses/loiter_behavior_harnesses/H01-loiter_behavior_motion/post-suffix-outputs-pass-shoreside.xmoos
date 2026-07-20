@@ -8,12 +8,37 @@ ProcessConfig = uTimerScript
   event = var=TEST_EVAL_READY, val=true, time=25
 }
 
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = DEPLOY_ALL=true
+  flag = MOOS_MANUAL_OVERRIDE_ALL=false
+  flag = LOITER_DONE=false
+  flag = LOITER_COMPLETE=false
+  flag = TEST_EVAL_READY=false
+  flag = BHV_ERROR_SEEN=false
+  flag = UNSUFFIXED_STATUS_SEEN=false
+  flag = LOITER_INDEX_CUSTOM=-1
+  flag = LOITER_ACQUIRE_CUSTOM=1
+  flag = LOITER_DIST_TO_POLY_CUSTOM=999
+
+  required_nodes = 1
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
   CommsTick = 4
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @LOITER_REPORT#UNSUFFIXED_STATUS_SEEN=true
+  mailflag = @LOITER_INDEX#UNSUFFIXED_STATUS_SEEN=true
+  mailflag = @LOITER_MODE#UNSUFFIXED_STATUS_SEEN=true
+  mailflag = @LOITER_ACQUIRE#UNSUFFIXED_STATUS_SEEN=true
+  mailflag = @LOITER_DIST_TO_POLY#UNSUFFIXED_STATUS_SEEN=true
+  mailflag = @LOITER_ETA_TO_POLY#UNSUFFIXED_STATUS_SEEN=true
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = TEST_EVAL_READY = true
@@ -21,6 +46,7 @@ ProcessConfig = pMissionEval
   pass_condition = LOITER_MODE_CUSTOM = stable
   pass_condition = LOITER_ACQUIRE_CUSTOM = 0
   pass_condition = LOITER_DIST_TO_POLY_CUSTOM <= 10
+  pass_condition = UNSUFFIXED_STATUS_SEEN = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -41,6 +67,7 @@ ProcessConfig = pMissionEval
   report_column = mode=$[LOITER_MODE_CUSTOM]
   report_column = acquire=$[LOITER_ACQUIRE_CUSTOM]
   report_column = dist_poly=$[LOITER_DIST_TO_POLY_CUSTOM]
+  report_column = unsuffixed_seen=$[UNSUFFIXED_STATUS_SEEN]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }

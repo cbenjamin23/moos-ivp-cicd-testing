@@ -5,7 +5,8 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=TEST_EVAL_READY, val=true, time=35
+  // Missing-speed deadline; both positive leads are desired-speed changes.
+  event = var=TEST_EVAL_READY, val=true, time=15
 }
 
 ProcessConfig = pMissionEval
@@ -15,9 +16,14 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = (LOITER_CENTER_X = 32) or (TEST_EVAL_READY = true)
-  pass_condition = LOITER_CENTER_X = 32
-  pass_condition = LOITER_CENTER_Y = -121
+  lead_condition = (DESIRED_SPEED >= 0.85) or (TEST_EVAL_READY = true)
+  pass_condition = DESIRED_SPEED >= 0.85
+  pass_condition = DESIRED_SPEED <= 0.95
+  pass_condition = TEST_EVAL_READY = false
+
+  lead_condition = (DESIRED_SPEED >= 2.15) or (TEST_EVAL_READY = true)
+  pass_condition = DESIRED_SPEED >= 2.15
+  pass_condition = DESIRED_SPEED <= 2.25
   pass_condition = BHV_ERROR_SEEN = false
   pass_condition = TEST_EVAL_READY = false
 
@@ -26,15 +32,14 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = loiter_behavior_tests
-  mission_mod  = $(MMOD:=center_assign_pair_pass)
+  mission_mod  = $(MMOD:=speed_alt_update_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = deadline=$[TEST_EVAL_READY]
-  report_column = center_x=$[LOITER_CENTER_X]
-  report_column = center_y=$[LOITER_CENTER_Y]
+  report_column = desired_speed=$[DESIRED_SPEED]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }

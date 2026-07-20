@@ -26,9 +26,12 @@ Default pass rule:
 
 The companion harness patches this stem into direction, polygon-shape,
 activation, acquisition, runtime-update, output-contract, parameter, and
-negative-configuration cases. Most pass cases evaluate after the vehicle has
-entered stable loiter. Early acquisition and slow-speed cases intentionally
-evaluate while the vehicle is still outside the polygon.
+negative-configuration cases. Case-specific evaluators prefer behavior state
+changes over elapsed-time checkpoints: timers serve as missing-event
+deadlines, while `runxflag` macros expose the live polygon center, radius, and
+point count. `pEchoVar` normalizes the `nonmono_hits` field from
+`LOITER_REPORT` and the loiter-specific `IVPHELM_UPDATE_RESULT` rejection used
+by the corresponding cases.
 
 Entry points:
 

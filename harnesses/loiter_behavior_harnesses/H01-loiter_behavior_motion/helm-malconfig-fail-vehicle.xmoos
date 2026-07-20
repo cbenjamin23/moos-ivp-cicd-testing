@@ -25,6 +25,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
   bridge = src=IVPHELM_STATE
+  bridge = src=EMPTY_SPEC_RUN
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }

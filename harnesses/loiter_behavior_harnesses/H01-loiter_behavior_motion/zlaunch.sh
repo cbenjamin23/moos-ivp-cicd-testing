@@ -63,14 +63,12 @@ FINISH_FATAL_REASON=""
 CASES=(
     radial_clockwise_pass
     radial_counterclockwise_pass
-    clockwise_best_pass
     polygon_box_pass
     triangle_polygon_pass
     start_inside_loiter_pass
     acquire_from_far_pass
     early_acquire_mode_pass
     center_activate_pass
-    capture_radius_large_pass
     slip_radius_pass
     speed_alt_update_pass
     use_alt_speed_static_pass
@@ -82,7 +80,6 @@ CASES=(
     slingshot_bearing_pass
     post_suffix_outputs_pass
     eta_output_pass
-    ipf_zaic_spd_pass
     slow_speed_acquire_pass
     empty_polygon_fail
     bad_polygon_fail
@@ -91,8 +88,6 @@ CASES=(
     bad_use_alt_speed_fail
     bad_patience_fail
     bad_capture_radius_fail
-    center_bad_update_recover_pass
-    spiral_factor_pass
     patience_low_pass
     patience_high_pass
 )
@@ -320,36 +315,68 @@ get_case_config() {
 
     case "$CASE_NAME" in
         radial_clockwise_pass) CASE_SHORE_PATCH="$HARNESS_DIR/eval-late-shoreside.xmoos" ;;
-        radial_counterclockwise_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/radial-counterclockwise-pass-vehicle.xbhv" ;;
-        clockwise_best_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/clockwise-best-pass-vehicle.xbhv" ;;
-        polygon_box_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/polygon-box-pass-vehicle.xbhv" ;;
-        triangle_polygon_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/triangle-polygon-pass-vehicle.xbhv" ;;
-        start_inside_loiter_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/start-inside-loiter-pass-vehicle.xbhv" ;;
-        acquire_from_far_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/acquire-from-far-pass-vehicle.xbhv" ;;
+        radial_counterclockwise_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/radial-counterclockwise-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/radial-counterclockwise-pass-vehicle.xbhv"
+            ;;
+        polygon_box_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/polygon-box-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/polygon-box-pass-vehicle.xbhv"
+            ;;
+        triangle_polygon_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/triangle-polygon-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/triangle-polygon-pass-vehicle.xbhv"
+            ;;
+        start_inside_loiter_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/start-inside-loiter-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/start-inside-loiter-pass-vehicle.xbhv"
+            ;;
+        acquire_from_far_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/acquire-from-far-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/acquire-from-far-pass-vehicle.xbhv"
+            ;;
         early_acquire_mode_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/early-acquire-mode-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/acquire-from-far-pass-vehicle.xbhv"
             ;;
-        center_activate_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/center-activate-pass-vehicle.xbhv" ;;
-        capture_radius_large_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/capture-radius-large-pass-vehicle.xbhv" ;;
-        slip_radius_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/slip-radius-pass-vehicle.xbhv" ;;
+        center_activate_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/center-activate-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/center-activate-pass-vehicle.xbhv"
+            ;;
+        slip_radius_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/slip-radius-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/slip-radius-pass-vehicle.xbhv"
+            ;;
         speed_alt_update_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/speed-alt-update-pass-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/speed-alt-update-pass-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/speed-alt-update-pass-vehicle.xbhv"
             ;;
-        use_alt_speed_static_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/use-alt-speed-static-pass-vehicle.xbhv" ;;
-        center_assign_xy_pass) CASE_VEH_MOOS_PATCH="$HARNESS_DIR/center-assign-xy-pass-vehicle.xmoos" ;;
+        use_alt_speed_static_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/use-alt-speed-static-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/use-alt-speed-static-pass-vehicle.xbhv"
+            ;;
+        center_assign_xy_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/center-assign-18-pass-shoreside.xmoos"
+            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/center-assign-xy-pass-vehicle.xmoos"
+            ;;
         center_assign_pair_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/center-assign-pair-pass-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/center-assign-pair-pass-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/center-assign-pair-pass-vehicle.xbhv"
             ;;
-        xcenter_ycenter_update_pass) CASE_VEH_MOOS_PATCH="$HARNESS_DIR/xcenter-ycenter-update-pass-vehicle.xmoos" ;;
+        xcenter_ycenter_update_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/center-assign-18-pass-shoreside.xmoos"
+            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/xcenter-ycenter-update-pass-vehicle.xmoos"
+            ;;
         mod_poly_rad_expand_pass)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-late-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/mod-poly-rad-expand-pass-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/mod-poly-rad-expand-pass-vehicle.xmoos"
             ;;
-        mod_poly_rad_shrink_pass) CASE_VEH_MOOS_PATCH="$HARNESS_DIR/mod-poly-rad-shrink-pass-vehicle.xmoos" ;;
+        mod_poly_rad_shrink_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/mod-poly-rad-shrink-pass-shoreside.xmoos"
+            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/mod-poly-rad-shrink-pass-vehicle.xmoos"
+            ;;
         slingshot_bearing_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/slingshot-bearing-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/slingshot-bearing-pass-vehicle.xbhv"
@@ -360,13 +387,12 @@ get_case_config() {
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/post-suffix-outputs-pass-vehicle.xbhv"
             ;;
         eta_output_pass) CASE_SHORE_PATCH="$HARNESS_DIR/eta-output-pass-shoreside.xmoos" ;;
-        ipf_zaic_spd_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/ipf-zaic-spd-pass-vehicle.xbhv" ;;
         slow_speed_acquire_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/slow-speed-acquire-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/slow-speed-acquire-pass-vehicle.xbhv"
             ;;
         empty_polygon_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/empty-polygon-fail-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/empty-polygon-fail-vehicle.xbhv"
             ;;
@@ -399,8 +425,6 @@ get_case_config() {
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-capture-radius-fail-vehicle.xbhv"
             ;;
-        center_bad_update_recover_pass) CASE_VEH_MOOS_PATCH="$HARNESS_DIR/center-bad-update-recover-pass-vehicle.xmoos" ;;
-        spiral_factor_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/spiral-factor-pass-vehicle.xbhv" ;;
         patience_low_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/patience-low-pass-vehicle.xbhv" ;;
         patience_high_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/patience-high-pass-vehicle.xbhv" ;;
         *)

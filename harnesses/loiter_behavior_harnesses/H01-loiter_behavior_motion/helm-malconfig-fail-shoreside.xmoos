@@ -1,12 +1,26 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  event = var=EVAL_ARMED, val=true, time=2
+  // Missing-state deadline; MALCONFIG itself is the successful lead.
+  event = var=TEST_EVAL_READY, val=true, time=15
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
   CommsTick = 4
 
-  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
+  lead_condition = (EVAL_ARMED = true) or (TEST_EVAL_READY = true)
+  pass_condition = EVAL_ARMED = true
 
-  lead_condition = HELM_MALCONFIG = true
-  pass_condition = HELM_MALCONFIG = true
+  lead_condition = (IVPHELM_STATE = MALCONFIG) or (TEST_EVAL_READY = true)
+  pass_condition = IVPHELM_STATE = MALCONFIG
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -19,9 +33,11 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[HELM_MALCONFIG]
+  report_column = eval=$[IVPHELM_STATE]
   report_column = expected=helm_malconfig
-  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = armed=$[EVAL_ARMED]
+  report_column = deadline=$[TEST_EVAL_READY]
+  report_column = helm_state=$[IVPHELM_STATE]
   report_column = mhash=$[MHASH_SHORT]
 }
 

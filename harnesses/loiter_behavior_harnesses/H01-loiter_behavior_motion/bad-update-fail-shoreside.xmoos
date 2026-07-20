@@ -5,7 +5,8 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=TEST_EVAL_READY, val=true, time=25
+  // Missing-rejection deadline; the positive lead is the update result.
+  event = var=TEST_EVAL_READY, val=true, time=15
 }
 
 ProcessConfig = pMissionEval
@@ -15,15 +16,18 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @LOITER_UPDATE_PARAM_ERROR#LOITER_UPDATE_REJECTED=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  lead_condition = (LOITER_UPDATE_REJECTED = true) or (TEST_EVAL_READY = true)
+  pass_condition = LOITER_UPDATE_REJECTED = true
   pass_condition = BHV_WARNING_SEEN = true
-  pass_condition = LOITER_INDEX >= 0
-  pass_condition = LOITER_MODE = stable
-  pass_condition = LOITER_ACQUIRE = 0
-  pass_condition = LOITER_DIST_TO_POLY <= 10
+  pass_condition = LOITER_CENTER_X = 12
+  pass_condition = LOITER_CENTER_Y = -121
+  pass_condition = LOITER_POINTS = 8
+  pass_condition = LOITER_RADIUS >= 18.38
+  pass_condition = LOITER_RADIUS <= 18.39
   pass_condition = BHV_ERROR_SEEN = false
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -36,16 +40,15 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = eval=$[LOITER_UPDATE_REJECTED]
   report_column = expected=bad_update_rejected
+  report_column = deadline=$[TEST_EVAL_READY]
+  report_column = update_result=$[LOITER_UPDATE_PARAM_ERROR]
   report_column = bhv_warning=$[BHV_WARNING_SEEN]
-  report_column = loiter_done=$[LOITER_DONE]
-  report_column = complete=$[LOITER_COMPLETE]
-  report_column = index=$[LOITER_INDEX]
-  report_column = mode=$[LOITER_MODE]
-  report_column = acquire=$[LOITER_ACQUIRE]
-  report_column = dist_poly=$[LOITER_DIST_TO_POLY]
-  report_column = dist_vert=$[LOITER_DIST_TO_VERT]
+  report_column = center_x=$[LOITER_CENTER_X]
+  report_column = center_y=$[LOITER_CENTER_Y]
+  report_column = radius=$[LOITER_RADIUS]
+  report_column = points=$[LOITER_POINTS]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }
@@ -62,4 +65,6 @@ ProcessConfig = uFldShoreBroker
   qbridge  = LOITER_REPORT, LOITER_INDEX, LOITER_MODE, LOITER_ACQUIRE
   qbridge  = LOITER_DIST_TO_POLY, LOITER_ETA_TO_POLY, LOITER_DIST_TO_VERT
   qbridge  = LOITER_BNG_TOTAL, LOITER_BNG_DELTA
+  qbridge  = LOITER_CENTER_X, LOITER_CENTER_Y, LOITER_RADIUS, LOITER_POINTS
+  qbridge  = IVPHELM_UPDATE_RESULT
 }

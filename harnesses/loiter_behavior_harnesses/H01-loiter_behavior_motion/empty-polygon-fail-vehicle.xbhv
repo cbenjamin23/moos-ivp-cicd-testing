@@ -6,6 +6,7 @@ Behavior = BHV_Loiter
   updates   = LOITER_UPDATES
   endflag   = LOITER_DONE = true
   endflag   = DESIRED_SPEED = 0
+  runxflag  = EMPTY_SPEC_RUN = true
 
   perpetual = true
   speed     = $(STOCK_SPD)
