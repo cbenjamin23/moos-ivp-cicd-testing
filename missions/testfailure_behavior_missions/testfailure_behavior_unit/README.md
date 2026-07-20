@@ -17,6 +17,13 @@ Crash cases remain self-evaluating missions: process loss is the subject
 behavior, while pMissionEval writes a passing harness verdict only after
 `uProcessWatch` confirms that loss.
 
+The burn/hang patches additionally wait for the first ordinary
+`PHELMIVP_ITER_GAP` sample before activating, so their completion stall occurs
+while pHelmIvP load reporting is already live. An auxiliary evaluator latches
+only gaps above 10 normalized iteration periods, and `uGapDeadline` supplies a
+short post-completion absence deadline so a missing stall becomes a normal
+mission failure.
+
 ## Running
 
 ```bash

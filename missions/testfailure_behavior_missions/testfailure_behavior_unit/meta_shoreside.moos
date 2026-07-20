@@ -20,6 +20,7 @@ ProcessConfig = ANTLER
   Run = uLoadWatch    @ NewConsole = false
   Run = pHelmIvP      @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false ~ uGapDeadline
   Run = pMissionEval  @ NewConsole = false ~ pGapLatch
   Run = pMissionEval  @ NewConsole = false
   Run = pAutoPoke     @ NewConsole = false
@@ -46,6 +47,7 @@ ProcessConfig = pAutoPoke
   flag = NAV_SPEED=0
   flag = TEST_EVAL_READY=false
   flag = TEST_FAILURE_DONE=false
+  flag = TEST_GAP_DEADLINE=false
   flag = TEST_GAP_SEEN=false
 }
 
@@ -60,6 +62,19 @@ ProcessConfig = uTimerScript
   condition = DEPLOY = true
 
   event = var=TEST_EVAL_READY, val=true, time=8.0
+}
+
+//----------------------------------------------------
+// uGapDeadline Config Block
+
+ProcessConfig = uGapDeadline
+{
+  AppTick   = 20
+  CommsTick = 20
+
+  condition = TEST_FAILURE_DONE = true
+
+  event = var=TEST_GAP_DEADLINE, val=true, time=2.0
 }
 
 //----------------------------------------------------
@@ -87,9 +102,11 @@ ProcessConfig = pGapLatch
   AppTick   = 50
   CommsTick = 50
 
-  lead_condition = TEST_EVAL_READY = true
-  lead_condition = PHELMIVP_ITER_GAP > 1.5
-  pass_condition = PHELMIVP_ITER_GAP > 1.5
+  mailflag = @PHELMIVP_ITER_GAP#TEST_LOADCAST_READY=true
+
+  lead_condition = TEST_FAILURE_DONE = true
+  lead_condition = PHELMIVP_ITER_GAP > 10
+  pass_condition = PHELMIVP_ITER_GAP > 10
 
   pass_flag   = TEST_GAP_SEEN = true
   result_flag = TEST_GAP_LATCHED = true

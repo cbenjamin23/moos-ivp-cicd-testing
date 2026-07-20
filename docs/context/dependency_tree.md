@@ -117,7 +117,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `legrun_h01` | `legrun_behavior` | `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/zlaunch.sh` | `missions/legrun_behavior_missions/legrun_behavior_motion` | 33 | `pEchoVar` | `legrun-behavior-motion` |
 | `memoryturnlimit_h01` | `memoryturnlimit_behavior` | `harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion/zlaunch.sh` | `missions/memoryturnlimit_behavior_missions/memoryturnlimit_behavior_motion` | 21 | - | `memoryturnlimit-behavior-motion` |
 | `timer_h01` | `timer_behavior` | `harnesses/timer_behavior_harnesses/H01-timer_behavior_motion/zlaunch.sh` | `missions/timer_behavior_missions/timer_behavior_motion` | 18 | - | `timer-behavior-motion` |
-| `testfailure_h01` | `testfailure_behavior` | `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh` | `missions/testfailure_behavior_missions/testfailure_behavior_unit` | 9 | `pGapLatch` | `testfailure-behavior-unit` |
+| `testfailure_h01` | `testfailure_behavior` | `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh` | `missions/testfailure_behavior_missions/testfailure_behavior_unit` | 9 | `pGapLatch`, `uGapDeadline` | `testfailure-behavior-unit` |
 | `hostinfo_h01` | `hostinfo` | `harnesses/hostinfo_harnesses/H01-hostinfo_unit/zlaunch.sh` | `missions/hostinfo_missions/hostinfo_unit` | 7 | - | `hostinfo-unit` |
 | `loadwatch_h01` | `loadwatch` | `harnesses/loadwatch_harnesses/H01-loadwatch_unit/zlaunch.sh` | `missions/loadwatch_missions/loadwatch_unit` | 12 | - | `loadwatch-unit` |
 | `processwatch_h01` | `processwatch` | `harnesses/processwatch_harnesses/H01-processwatch_unit/zlaunch.sh` | `missions/processwatch_missions/processwatch_unit` | 7 | - | `processwatch-unit` |
@@ -188,6 +188,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `uFldObstacleSim`: `p01_obstacle`, `ufld_obstacle_sim_h01`
 - `uFldPathCheck`: `ufld_pathcheck_h01`
 - `uFldScope`: `ufld_scope_h01`
+- `uGapDeadline`: `testfailure_h01`
 - `uMemWatch`: `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`
 - `uQueryDB`: `uquerydb_h01`
 - `uTimerAlias`: `pantler_h01`

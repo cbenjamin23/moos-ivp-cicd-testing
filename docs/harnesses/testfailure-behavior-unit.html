@@ -51,7 +51,7 @@
         </div>
         <div class="gif-meta">
           <h3>Burn Gap Detection</h3>
-          <p>Description: Completes immediately with failure_type=burn,2.0, busy-waiting inside the helm for two seconds; passes when a PHELMIVP_ITER_GAP&gt;1.5 is latched, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
+          <p>Description: Sets failure_type=burn,2.0, waits until pHelmIvP is publishing monitored iteration gaps, then completes the behavior and enters its busy loop; passes when a normalized PHELMIVP_ITER_GAP&gt;10 is latched before the observation deadline, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
         </div>
       </article>
 
@@ -85,25 +85,25 @@
 
         <article class="case-row">
           <code>burn_gap_detected_pass</code>
-          <p>Completes immediately with failure_type=burn,2.0, busy-waiting inside the helm for two seconds; passes when a PHELMIVP_ITER_GAP&gt;1.5 is latched, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
+          <p>Sets failure_type=burn,2.0, waits until pHelmIvP is publishing monitored iteration gaps, then completes the behavior and enters its busy loop; passes when a normalized PHELMIVP_ITER_GAP&gt;10 is latched before the observation deadline, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>hang_alias_gap_detected_pass</code>
-          <p>Completes immediately with failure_type=hang,2.0, exercising hang as the burn alias; passes when a greater-than-1.5-second helm iteration gap is latched, the end flag fires, and all watched processes remain present.</p>
+          <p>Uses failure_type=hang,2.0 under the same monitored completion fixture, testing that hang selects the burn loop rather than the crash path; passes on a normalized gap above 10, the completion endflag, and preserved process health.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_default_time_gap_pass</code>
-          <p>Uses failure_type=burn with no time field, exercising the three-second constructor default; passes when a greater-than-1.5-second helm iteration gap is latched, the end flag fires, and all watched processes remain present.</p>
+          <p>Uses failure_type=burn with no time field, leaving the constructor&#x27;s burn target at 3; passes when the monitored completion produces a normalized gap above 10, the endflag fires, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_malformed_time_default_gap_pass</code>
-          <p>Uses failure_type=burn,not_a_number, which leaves the three-second default unchanged; passes when a greater-than-1.5-second helm iteration gap is latched, the end flag fires, and all watched processes remain present.</p>
+          <p>Uses failure_type=burn,not_a_number, which leaves the three-second default target unchanged because the suffix is not numeric; passes on the same monitored gap, completion, and process-health evidence as the omitted-time case.</p>
         </article>
 
 

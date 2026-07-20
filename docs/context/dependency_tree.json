@@ -3635,7 +3635,8 @@
       ],
       "focus_process_apps": [
         "pGapLatch",
-        "pHelmIvP"
+        "pHelmIvP",
+        "uGapDeadline"
       ],
       "harness": "H01-testfailure_behavior_unit",
       "key": "testfailure_h01",
@@ -3654,6 +3655,7 @@
         "pHelmIvP",
         "pLogger",
         "pMissionEval",
+        "uGapDeadline",
         "uLoadWatch",
         "uProcessWatch",
         "uTimerScript"
@@ -6768,6 +6770,9 @@
         "ufield_comms_h03",
         "waypoint_h01",
         "zigzag_h01"
+      ],
+      "uGapDeadline": [
+        "testfailure_h01"
       ],
       "uLoadWatch": [
         "cmgr_h01",

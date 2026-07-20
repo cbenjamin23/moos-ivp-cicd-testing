@@ -70,6 +70,9 @@ ProcessConfig = pLogger
   Log = ULW_NEAR_BREACH_COUNT @ 0 nosync
   Log = TEST_EVAL_READY @ 0 nosync
   Log = TEST_FAILURE_DONE @ 0 nosync
+  Log = TEST_GAP_DEADLINE @ 0 nosync
+  Log = TEST_GAP_SEEN @ 0 nosync
+  Log = TEST_LOADCAST_READY @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

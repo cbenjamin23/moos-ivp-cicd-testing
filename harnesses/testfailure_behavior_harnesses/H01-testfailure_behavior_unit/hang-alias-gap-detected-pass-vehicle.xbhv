@@ -8,6 +8,7 @@ Behavior = BHV_TestFailure
   name      = test_failure
   pwt       = 100
   condition = DEPLOY=true
+  condition = TEST_LOADCAST_READY=true
   endflag   = TEST_FAILURE_DONE = true
 
   duration = 0
