@@ -1,41 +1,16 @@
-case=default_resolve_pass  grade=pass  form=collision_behavior_motion_tests  mmod=default_resolve_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=0  near_misses=0  collisions=0  mhash=[LATE-FILE]
-
-case=no_alert_request_absent_pass  grade=pass  form=collision_behavior_motion_tests  mmod=no_alert_request_absent_pass  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[NINE-PAIR]
-
-case=post_per_contact_info_pass  grade=pass  form=collision_behavior_motion_tests  mmod=post_per_contact_info_pass  eval=true  avoiding=end  alert_req_seen=false  contact_seen=true  range_seen=true  clsg_seen=true  resolved=intruder  arrived=true  collisions=0  mhash=[IDLE-RAKE]
-
-case=behavior_filter_absent_pass  grade=pass  form=collision_behavior_motion_tests  mmod=behavior_filter_absent_pass  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[SAFE-MOLD]
-
-case=head_on_resolve_pass  grade=pass  form=collision_behavior_motion_tests  mmod=head_on_resolve_pass  eval=true  avoiding=end  alert_req_seen=true  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  collisions=0  mhash=[EVIL-GURU]
-
-case=pwt_outer_too_small_fail  grade=pass  form=collision_behavior_motion_tests  mmod=pwt_outer_too_small_fail  eval=true  avoiding=end  alert_req_seen=true  contact_seen=true  resolved=intruder  arrived=true  encounters=1  near_misses=0  collisions=1  mhash=[FULL-WALL]
-
-case=pwt_grade_quadratic_pass  grade=pass  form=collision_behavior_motion_tests  mmod=pwt_grade_quadratic_pass  eval=true  avoiding=end  alert_req_seen=true  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=1  near_misses=0  collisions=0  mhash=[NEDS-CAGE]
-
-case=pwt_grade_quasi_pass  grade=pass  form=collision_behavior_motion_tests  mmod=pwt_grade_quasi_pass  eval=true  avoiding=end  alert_req_seen=true  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=1  near_misses=0  collisions=0  mhash=[FLAT-DANE]
-
-case=use_refinery_pass  grade=pass  form=collision_behavior_motion_tests  mmod=use_refinery_pass  eval=true  avoiding=end  alert_req_seen=true  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=0  near_misses=0  collisions=0  mhash=[WISE-LIAM]
-
-case=contact_type_required_absent_pass  grade=pass  form=collision_behavior_motion_tests  mmod=contact_type_required_absent_pass  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  range_seen=false  clsg_seen=false  resolved=none  arrived=true  collisions=0  mhash=[VAIN-AMOS]
-
-case=no_extrapolate_pass  grade=pass  form=collision_behavior_motion_tests  mmod=no_extrapolate_pass  eval=true  avoiding=end  alert_req_seen=true  contact_seen=true  range_seen=false  clsg_seen=false  resolved=intruder  arrived=true  encounters=0  near_misses=0  collisions=0  mhash=[LAST-UMPS]
-
-case=no_alert_request_fail  grade=pass  form=collision_behavior_motion_tests  mmod=no_alert_request_fail  eval=true  avoiding=idle  alert_req_seen=false  contact_seen=false  resolved=none  arrived=true  collisions=1  mhash=[LIVE-ORCA]
-
-case=bad_pwt_inner_dist_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_pwt_inner_dist_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[]
-
-case=bad_pwt_outer_dist_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_pwt_outer_dist_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[TINY-ADEN]
-
-case=bad_min_util_cpa_dist_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_min_util_cpa_dist_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[IRON-CARE]
-
-case=bad_max_util_cpa_dist_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_max_util_cpa_dist_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[]
-
-case=bad_pwt_grade_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_pwt_grade_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[]
-
-case=bad_completed_dist_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_completed_dist_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[IRON-SLAB]
-
-case=bad_time_on_leg_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_time_on_leg_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[]
-
-case=bad_decay_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_decay_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[]
-
-case=bad_collision_depth_fail  grade=pass  form=collision_behavior_motion_tests  mmod=bad_collision_depth_fail  eval=true  helm_malconfig=true  bhv_error=false  mhash=[]
+case=default_resolve_pass grade=pass form=collision_behavior_motion_tests mmod=default_resolve_pass eval=true avoiding=end alert_req_seen=true contact_seen=true range_seen=false clsg_seen=false resolved=intruder arrived=true encounters=0 near_misses=0 collisions=0 mhash=[CURT-MEMO]
+case=no_alert_request_absent_pass grade=pass form=collision_behavior_motion_tests mmod=no_alert_request_absent_pass eval=true avoiding=idle alert_req_seen=false contact_seen=false range_seen=false clsg_seen=false resolved=none arrived=true collisions=0 mhash=[VAIN-KOBE]
+case=post_per_contact_info_pass grade=pass form=collision_behavior_motion_tests mmod=post_per_contact_info_pass deadline=false avoiding=end alert_req_seen=true contact_seen=true range_seen=true clsg_seen=true resolved=intruder arrived=true collisions=0 mhash=[COZY-ZAIN]
+case=behavior_filter_absent_pass grade=pass form=collision_behavior_motion_tests mmod=behavior_filter_absent_pass eval=true avoiding=idle alert_req_seen=true contact_seen=false range_seen=false clsg_seen=false resolved=none arrived=true collisions=0 mhash=[CAGY-WINE]
+case=head_on_resolve_pass grade=pass form=collision_behavior_motion_tests mmod=head_on_resolve_pass eval=true avoiding=end alert_req_seen=true contact_seen=true range_seen=false clsg_seen=false resolved=intruder arrived=true collisions=0 mhash=[COOL-GIBB]
+case=pwt_outer_too_small_fail grade=pass form=collision_behavior_motion_tests mmod=pwt_outer_too_small_fail deadline=false avoiding=active alert_req_seen=true contact_seen=true resolved=none arrived=false encounters=1 near_misses=0 collisions=1 mhash=[SAFE-MARS]
+case=pwt_grade_quadratic_pass grade=pass form=collision_behavior_motion_tests mmod=default_resolve_pass eval=true avoiding=end alert_req_seen=true contact_seen=true range_seen=false clsg_seen=false resolved=intruder arrived=true encounters=1 near_misses=0 collisions=0 mhash=[JUST-HAWK]
+case=pwt_grade_quasi_pass grade=pass form=collision_behavior_motion_tests mmod=default_resolve_pass eval=true avoiding=end alert_req_seen=true contact_seen=true range_seen=false clsg_seen=false resolved=intruder arrived=true encounters=1 near_misses=0 collisions=0 mhash=[TALL-DRIP]
+case=use_refinery_pass grade=pass form=collision_behavior_motion_tests mmod=use_refinery_pass plateau_ok=true plateau_logic=aft avoiding=active contact_seen=true collisions=0 mhash=[NUDE-PIKE]
+case=contact_type_required_absent_pass grade=pass form=collision_behavior_motion_tests mmod=contact_type_required_absent_pass eval=true avoiding=idle alert_req_seen=true contact_seen=false range_seen=false clsg_seen=false resolved=none arrived=true collisions=0 mhash=[FOUR-AMES]
+case=no_alert_request_fail grade=pass form=collision_behavior_motion_tests mmod=no_alert_request_fail eval=true avoiding=idle alert_req_seen=false contact_seen=false resolved=none arrived=true collisions=1 mhash=[LEWD-MERL]
+case=bad_pwt_grade_fail grade=pass form=collision_behavior_motion_tests mmod=bad_config_fail deadline=false helm_state=MALCONFIG bhv_error=false mhash=[]
+case=bad_completed_dist_fail grade=pass form=collision_behavior_motion_tests mmod=bad_config_fail deadline=false helm_state=MALCONFIG bhv_error=false mhash=[OOZY-CRIS]
+case=bad_time_on_leg_fail grade=pass form=collision_behavior_motion_tests mmod=bad_config_fail deadline=false helm_state=MALCONFIG bhv_error=false mhash=[WEAK-MELL]
+case=bad_decay_fail grade=pass form=collision_behavior_motion_tests mmod=bad_config_fail deadline=false helm_state=MALCONFIG bhv_error=false mhash=[NEAR-ROWS]
+case=bad_collision_depth_fail grade=pass form=collision_behavior_motion_tests mmod=bad_config_fail deadline=false helm_state=MALCONFIG bhv_error=false mhash=[PLUS-WEBB]

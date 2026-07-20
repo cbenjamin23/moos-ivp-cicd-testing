@@ -110,7 +110,7 @@
 
         <article class="case-row">
           <code>post_per_contact_info_pass</code>
-          <p>Sets post_per_contact_info=true against the baseline on-lane intruder; passes when both RANGE_AVD_intruder and CLSG_SPD_AVD_intruder were published, contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
+          <p>Sets post_per_contact_info=true against the stationary on-lane intruder; when the reported range first reaches 26–27 meters, requires a closing speed of 1.9–2.3 m/s, then passes when the behavior resolves intruder, Abe arrives, and collision total remains zero.</p>
         </article>
 
 
@@ -128,7 +128,7 @@
 
         <article class="case-row">
           <code>pwt_outer_too_small_fail</code>
-          <p>Shrinks the relevance distances to pwt_outer_dist=5, pwt_inner_dist=2, min_util_cpa_dist=1, and max_util_cpa_dist=3 against the baseline on-lane intruder; this expected-negative case passes when COLLISION_TOTAL&gt;0 at the evaluation checkpoint.</p>
+          <p>Shrinks the relevance distances to pwt_outer_dist=5, pwt_inner_dist=2, min_util_cpa_dist=1, and max_util_cpa_dist=3 against the baseline on-lane intruder; this expected-negative case first requires the spawned behavior to receive contact info and run, then passes when the on-lane collision occurs before the deadline.</p>
         </article>
 
 
@@ -146,7 +146,7 @@
 
         <article class="case-row">
           <code>use_refinery_pass</code>
-          <p>Sets use_refinery=true against the baseline on-lane intruder, exercising refined IvP-function construction; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
+          <p>Sets use_refinery=true, check_plateaus=true, and verbose=true against the baseline on-lane intruder; passes when the active spawned behavior publishes a successful plateau check and non-none refinery logic case before its 60-second missing-diagnostic deadline, with contact info received and no collision at that branch checkpoint.</p>
         </article>
 
 
@@ -157,68 +157,38 @@
 
 
         <article class="case-row">
-          <code>no_extrapolate_pass</code>
-          <p>Sets extrapolate=false while retaining the fresh stationary on-lane intruder feed; passes when contact info was received, the behavior ends with intruder resolved, Abe arrives, and collision total is zero.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>no_alert_request_fail</code>
           <p>Sets no_alert_request=true while leaving the stationary intruder directly in Abe&#x27;s lane; this expected-negative case passes when the behavior remains idle, CONTACT_INFO is never observed, no contact is resolved, Abe arrives, and at least one collision is recorded.</p>
         </article>
 
 
         <article class="case-row">
-          <code>bad_pwt_inner_dist_fail</code>
-          <p>Sets pwt_inner_dist=30 above pwt_outer_dist=24; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_pwt_outer_dist_fail</code>
-          <p>Sets pwt_outer_dist=5 below pwt_inner_dist=10; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_min_util_cpa_dist_fail</code>
-          <p>Sets min_util_cpa_dist=20 above max_util_cpa_dist=16; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>bad_max_util_cpa_dist_fail</code>
-          <p>Sets max_util_cpa_dist=4 below min_util_cpa_dist=6; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>bad_pwt_grade_fail</code>
-          <p>Sets the unsupported pwt_grade=banana; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
+          <p>Sets the unsupported pwt_grade=banana; this expected-negative case passes only when the bridged IVPHELM_STATE value is exactly MALCONFIG before the 18-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_completed_dist_fail</code>
-          <p>Sets completed_dist=-1; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
+          <p>Sets completed_dist=-1; this expected-negative case passes only when the bridged IVPHELM_STATE value is exactly MALCONFIG before the 18-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>Sets inherited time_on_leg=-1; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
+          <p>Sets inherited time_on_leg=-1; this expected-negative case passes only when the bridged IVPHELM_STATE value is exactly MALCONFIG before the 18-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Sets the inherited contact decay window to 30,20, placing the stale threshold below the linear threshold; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
+          <p>Sets the inherited contact decay window to 30,20, placing the stale threshold below the linear threshold; this expected-negative case passes only when the bridged IVPHELM_STATE value is exactly MALCONFIG before the 18-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_collision_depth_fail</code>
-          <p>Sets collision_depth=2 in a course/speed-only IvP domain; this expected-negative case passes when IVPHELM_STATE reports HELM_MALCONFIG=true before the 18-second checkpoint.</p>
+          <p>Sets collision_depth=2 in a course/speed-only IvP domain; this expected-negative case passes only when the bridged IVPHELM_STATE value is exactly MALCONFIG before the 18-second deadline.</p>
         </article>
 
       </div>

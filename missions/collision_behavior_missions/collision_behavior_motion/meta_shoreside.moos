@@ -53,6 +53,9 @@ ProcessConfig = pAutoPoke
   flag = CONTACT_INFO_SEEN=false
   flag = RANGE_INFO_SEEN=false
   flag = CLSG_INFO_SEEN=false
+  flag = PLATEAU_CHECK_OK=false
+  flag = PLATEAU_LOGIC_CASE=none
+  flag = TEST_EVAL_READY=false
   flag = ENCOUNTER_TOTAL=0
   flag = NEAR_MISS_TOTAL=0
   flag = COLLISION_TOTAL=0
@@ -75,9 +78,12 @@ ProcessConfig = uTimerScript
   event = var=CONTACT_INFO_SEEN, val=false, time=1
   event = var=RANGE_INFO_SEEN, val=false, time=1
   event = var=CLSG_INFO_SEEN, val=false, time=1
+  event = var=PLATEAU_CHECK_OK, val=false, time=1
+  event = var=PLATEAU_LOGIC_CASE, val=none, time=1
   event = var=ENCOUNTER_TOTAL, val=0, time=1
   event = var=NEAR_MISS_TOTAL, val=0, time=1
   event = var=COLLISION_TOTAL, val=0, time=1
+  event = var=TEST_EVAL_READY, val=false, time=1
   event = var=TEST_EVAL_READY, val=true, time=44
 }
 
@@ -159,6 +165,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = DEPLOY, NODE_REPORT, NODE_MESSAGE, MOOS_MANUAL_OVERRIDE
   qbridge  = AVOIDING, BCM_ALERT_REQUEST, CONTACT_INFO, CONTACT_RESOLVED
   qbridge  = RANGE_AVD_intruder, CLSG_SPD_AVD_intruder
+  qbridge  = PLATEAU_CHECK_OK, PLATEAU_LOGIC_CASE
 }
 
 //----------------------------------------------------

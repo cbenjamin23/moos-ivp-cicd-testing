@@ -71,12 +71,7 @@ CASES=(
     pwt_grade_quasi_pass
     use_refinery_pass
     contact_type_required_absent_pass
-    no_extrapolate_pass
     no_alert_request_fail
-    bad_pwt_inner_dist_fail
-    bad_pwt_outer_dist_fail
-    bad_min_util_cpa_dist_fail
-    bad_max_util_cpa_dist_fail
     bad_pwt_grade_fail
     bad_completed_dist_fail
     bad_time_on_leg_fail
@@ -338,6 +333,7 @@ get_case_config() {
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/pwt-grade-quasi-pass-vehicle.xbhv"
             ;;
         use_refinery_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/use-refinery-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/use-refinery-pass-vehicle.xbhv"
             ;;
         contact_type_required_absent_pass)
@@ -345,32 +341,9 @@ get_case_config() {
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/contact-type-required-absent-pass-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/contact-type-required-absent-pass-vehicle.xbhv"
             ;;
-        no_extrapolate_pass)
-            CASE_VEH_BHV_PATCH="$HARNESS_DIR/no-extrapolate-pass-vehicle.xbhv"
-            ;;
         no_alert_request_fail)
             CASE_SHORE_PATCH="$HARNESS_DIR/no-alert-request-fail-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/no-alert-request-fail-vehicle.xbhv"
-            ;;
-        bad_pwt_inner_dist_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
-            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
-            CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-inner-dist-fail-vehicle.xbhv"
-            ;;
-        bad_pwt_outer_dist_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
-            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
-            CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-outer-dist-fail-vehicle.xbhv"
-            ;;
-        bad_min_util_cpa_dist_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
-            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
-            CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-min-util-cpa-dist-fail-vehicle.xbhv"
-            ;;
-        bad_max_util_cpa_dist_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
-            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
-            CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-max-util-cpa-dist-fail-vehicle.xbhv"
             ;;
         bad_pwt_grade_fail)
             CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"

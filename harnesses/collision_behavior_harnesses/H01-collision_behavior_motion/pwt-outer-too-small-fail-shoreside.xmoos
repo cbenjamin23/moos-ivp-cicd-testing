@@ -8,8 +8,14 @@ ProcessConfig = pMissionEval
   mailflag = @RANGE_AVD_intruder#RANGE_INFO_SEEN=true
   mailflag = @CLSG_SPD_AVD_intruder#CLSG_INFO_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
+  lead_condition = ((AVOIDING = running) and (CONTACT_INFO_SEEN = true)) or (TEST_EVAL_READY = true)
+  pass_condition = AVOIDING = running
+  pass_condition = CONTACT_INFO_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+
+  lead_condition = (COLLISION_TOTAL > 0) or (TEST_EVAL_READY = true)
   pass_condition = COLLISION_TOTAL > 0
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -22,7 +28,7 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = avoiding=$[AVOIDING]
   report_column = alert_req_seen=$[ALERT_REQUEST_SEEN]
   report_column = contact_seen=$[CONTACT_INFO_SEEN]

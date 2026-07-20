@@ -30,7 +30,8 @@ collision outcome.
   behavior.
 - `post_per_contact_info_pass`
   The avoid behavior is configured to post per-contact info and the mission
-  confirms the range and closing-speed outputs show up.
+  checks the range and closing-speed values against the stationary-contact
+  geometry before grading the completed transit.
 - `behavior_filter_absent_pass`
   The behavior requests an alert with a type filter that excludes the spoofed
   contact, so the avoid behavior stays idle and the mission still finishes
@@ -48,12 +49,11 @@ collision outcome.
   The quasi objective-function grade should still resolve the baseline
   encounter cleanly.
 - `use_refinery_pass`
-  The refinery branch should still produce a safe resolving behavior.
+  The active refinery branch must publish successful plateau diagnostics at
+  its live branch checkpoint.
 - `contact_type_required_absent_pass`
   The legacy `contact_type_required` alias should filter out a non-matching
   off-lane contact and allow clean idle transit.
-- `no_extrapolate_pass`
-  Disabling extrapolation should still work while the contact report is fresh.
 - `no_alert_request_fail`
   The behavior is told not to request an alert while the contact remains
   challenging. The mission should fail because the avoid behavior never

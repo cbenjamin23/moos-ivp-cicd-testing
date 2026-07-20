@@ -148,6 +148,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=CONTACT_RESOLVED
   bridge = src=RANGE_AVD_intruder
   bridge = src=CLSG_SPD_AVD_intruder
+  bridge = src=PLATEAU_CHECK_OK
+  bridge = src=PLATEAU_LOGIC_CASE
   bridge = src=NODE_REPORT
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
@@ -200,6 +202,8 @@ ProcessConfig = pLogger
   Log = AVOIDING @ 0 nosync
   Log = RANGE_AVD_intruder @ 0 nosync
   Log = CLSG_SPD_AVD_intruder @ 0 nosync
+  Log = PLATEAU_CHECK_OK @ 0 nosync
+  Log = PLATEAU_LOGIC_CASE @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

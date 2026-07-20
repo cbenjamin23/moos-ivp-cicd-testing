@@ -2823,7 +2823,7 @@
         "path": "missions/collision_behavior_missions/collision_behavior_motion"
       },
       "patches": {
-        "file_count": 33
+        "file_count": 29
       },
       "path": "harnesses/collision_behavior_harnesses/H01-collision_behavior_motion",
       "perf_profile": "",
@@ -2850,7 +2850,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 21,
+        "case_count": 16,
         "case_parse_error": "",
         "cases": [
           "default_resolve_pass",
@@ -2863,12 +2863,7 @@
           "pwt_grade_quasi_pass",
           "use_refinery_pass",
           "contact_type_required_absent_pass",
-          "no_extrapolate_pass",
           "no_alert_request_fail",
-          "bad_pwt_inner_dist_fail",
-          "bad_pwt_outer_dist_fail",
-          "bad_min_util_cpa_dist_fail",
-          "bad_max_util_cpa_dist_fail",
           "bad_pwt_grade_fail",
           "bad_completed_dist_fail",
           "bad_time_on_leg_fail",
@@ -7010,11 +7005,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 511,
-      ".xmoos": 1317,
+      ".xbhv": 506,
+      ".xmoos": 1318,
       "[none]": 7
     },
-    "harness_patch_count": 1723,
+    "harness_patch_count": 1719,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

@@ -3,8 +3,6 @@ ProcessConfig = uTimerScript
   AppTick   = 2
   CommsTick = 2
 
-  event = var=HELM_MALCONFIG, val=false, time=1
-  event = var=BHV_ERROR_SEEN, val=false, time=1
   event = var=ARRIVED, val=false, time=1
   event = var=AVOIDING, val=idle, time=1
   event = var=CONTACT_RESOLVED, val=none, time=1
@@ -12,10 +10,13 @@ ProcessConfig = uTimerScript
   event = var=CONTACT_INFO_SEEN, val=false, time=1
   event = var=RANGE_INFO_SEEN, val=false, time=1
   event = var=CLSG_INFO_SEEN, val=false, time=1
+  event = var=PLATEAU_CHECK_OK, val=false, time=1
+  event = var=PLATEAU_LOGIC_CASE, val=none, time=1
   event = var=ENCOUNTER_TOTAL, val=0, time=1
   event = var=NEAR_MISS_TOTAL, val=0, time=1
   event = var=COLLISION_TOTAL, val=0, time=1
-  event = var=TEST_EVAL_READY, val=true, time=18
+  event = var=TEST_EVAL_READY, val=false, time=1
+  event = var=TEST_EVAL_READY, val=true, time=60
 }
 
 ProcessConfig = pMissionEval
@@ -23,10 +24,15 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BCM_ALERT_REQUEST#ALERT_REQUEST_SEEN=true
+  mailflag = @CONTACT_INFO#CONTACT_INFO_SEEN=true
 
-  lead_condition = (IVPHELM_STATE = MALCONFIG) or (TEST_EVAL_READY = true)
-  pass_condition = IVPHELM_STATE = MALCONFIG
+  lead_condition = ((PLATEAU_CHECK_OK = true) and (PLATEAU_LOGIC_CASE != none)) or (TEST_EVAL_READY = true)
+  pass_condition = PLATEAU_CHECK_OK = true
+  pass_condition = PLATEAU_LOGIC_CASE != none
+  pass_condition = (AVOIDING = active) or (AVOIDING = running)
+  pass_condition = CONTACT_INFO_SEEN = true
+  pass_condition = COLLISION_TOTAL = 0
   pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
@@ -34,14 +40,16 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = collision_behavior_motion_tests
-  mission_mod  = $(MMOD:=bad_config_fail)
+  mission_mod = $(MMOD:=use_refinery_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = deadline=$[TEST_EVAL_READY]
-  report_column = helm_state=$[IVPHELM_STATE]
-  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = plateau_ok=$[PLATEAU_CHECK_OK]
+  report_column = plateau_logic=$[PLATEAU_LOGIC_CASE]
+  report_column = avoiding=$[AVOIDING]
+  report_column = contact_seen=$[CONTACT_INFO_SEEN]
+  report_column = collisions=$[COLLISION_TOTAL]
   report_column = mhash=$[MHASH_SHORT]
 }
