@@ -72,7 +72,7 @@
         </div>
         <div class="gif-meta">
           <h3>Custom Value Timeout</h3>
-          <p>Description: Configures finish_var=CUSTOM_DONE and finish_val=complete but has pMissionEval produce CUSTOM_DONE=almost, exercising rejection of a mismatched finish value; the harness passes when the directly launched uMayFinish reaches its six-second limit and exits with code 1.</p>
+          <p>Description: Configures finish_var=CUSTOM_DONE and finish_val=complete but has pMissionEval publish CUSTOM_DONE=almost, testing that uMayFinish ignores a delivered value that does not equal its configured finish value; the harness passes when the .alog records exactly CUSTOM_DONE=almost and the directly launched process reaches its six-second limit with exit code 1.</p>
         </div>
       </article>
 
@@ -101,7 +101,7 @@
 
         <article class="case-row">
           <code>mayfinish_custom_value_timeout_fail</code>
-          <p>Configures finish_var=CUSTOM_DONE and finish_val=complete but has pMissionEval produce CUSTOM_DONE=almost, exercising rejection of a mismatched finish value; the harness passes when the directly launched uMayFinish reaches its six-second limit and exits with code 1.</p>
+          <p>Configures finish_var=CUSTOM_DONE and finish_val=complete but has pMissionEval publish CUSTOM_DONE=almost, testing that uMayFinish ignores a delivered value that does not equal its configured finish value; the harness passes when the .alog records exactly CUSTOM_DONE=almost and the directly launched process reaches its six-second limit with exit code 1.</p>
         </article>
 
 

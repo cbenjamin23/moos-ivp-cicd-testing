@@ -352,6 +352,7 @@ get_case_config() {
         mayfinish_custom_value_timeout_fail)
             EXPECTED_SUBJECT="timeout"
             SHORE_PATCH="$PATCH_DIR/mayfinish-custom-value-timeout-shoreside.xmoos"
+            EXTRA_CHECK="custom_mismatch"
             MAYFINISH_ALIAS="uMayFinish_custom_mismatch"
             CASE_MAX_TIME="6"
             POKE_ARGS="PASS_INPUT=true CASE_VALUE:=customtimeout CASE_MAIL:=customtimeout TEST_EVAL_READY=true"
@@ -621,6 +622,10 @@ extra_check_ok() {
             alog_var_line_matches "$case_dir" "CUSTOM_DONE" 'complete'
             return $?
             ;;
+        custom_mismatch)
+            alog_var_scalar_equals "$case_dir" "CUSTOM_DONE" "almost"
+            return $?
+            ;;
     esac
     return 1
 }
@@ -833,6 +838,11 @@ evaluate_mayfinish_subject() {
     fi
 
     if [ "$EXPECTED_SUBJECT" = "timeout" ]; then
+        if ! extra_check_ok "$EXTRA_CHECK" "$workdir" ""; then
+            printf 'case=%s grade=fail reason=evidence_mismatch subject=uMayFinish expected_subject=timeout subject_rc=%s\n' \
+                "$case_name" "$subject_rc" > "$result_file"
+            return 1
+        fi
         printf 'case=%s grade=pass subject=uMayFinish expected_subject=timeout subject_rc=%s\n' \
             "$case_name" "$subject_rc" > "$result_file"
         return 0
