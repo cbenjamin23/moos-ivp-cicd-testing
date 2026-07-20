@@ -25,25 +25,32 @@ Typical commands:
   seconds when `MEM_HDG_AVG` is 95 to 175, heading is 105 to 180, speed is at
   least 0.7 m/s, mismatch is at most 75 degrees, and no warning or error occurs.
 - `tight_window_pass`
-  Narrows `turn_range` to 6 and raises limiter weight to 200; passes when the
-  memory average is 90 to 120 degrees, heading is 95 to 125, mismatch is at
-  least 55, speed is at least 0.7 m/s, and no warning or error occurs.
+  Holds limiter weight at 150 and narrows `turn_range` from 18 to 6, isolating
+  the smaller peak width around the recent-heading average; passes at 16
+  seconds when `MEM_HDG_AVG` is 90 to 100 degrees, heading is 95 to 105,
+  mismatch is at least 75 degrees, speed is at least 0.7 m/s, and no warning or
+  error occurs.
 - `relaxed_window_pass`
-  Widens `turn_range` to 120 and lowers limiter weight to 100; passes when the
-  memory average is 100 to 180 degrees, heading is 125 to 185, mismatch is at
-  most 60, speed is at least 0.7 m/s, and no warning or error occurs.
+  Holds limiter weight at 150 and widens `turn_range` from 18 to 120, isolating
+  the wider peak that lets the 180-degree heading demand advance farther;
+  passes at 16 seconds when `MEM_HDG_AVG` is 100 to 180 degrees, heading is 125
+  to 185, mismatch is at most 60 degrees, speed is at least 0.7 m/s, and no
+  warning or error occurs.
 - `short_memory_pass`
-  Shortens `memory_time` from 8 to 2 seconds; passes at 17 seconds when the
-  memory average is 110 to 130 degrees, heading is 112 to 130, mismatch is 55
-  to 70, speed is at least 0.7 m/s, and no warning or error occurs.
+  Shortens `memory_time` from 8 to 2 seconds so the average retains two seconds
+  of trailing headings; passes at the shared 16-second turn checkpoint when
+  `MEM_HDG_AVG` is 110 to 114 degrees, heading is 112 to 116, mismatch is 55 to
+  70 degrees, speed is at least 0.7 m/s, and no warning or error occurs.
 - `long_memory_pass`
   Lengthens `memory_time` from 8 to 20 seconds; passes when the memory average
   is 85 to 120 degrees, heading is 90 to 130, mismatch is at least 50, speed is
   at least 0.7 m/s, and no warning or error occurs.
 - `zero_memory_pass`
-  Sets the accepted boundary `memory_time=0`; passes when the memory average is
-  110 to 125 degrees, heading is 112 to 125, mismatch is 60 to 70, speed is at
-  least 0.7 m/s, and no warning or error occurs.
+  Sets `memory_time=0`, causing each iteration to discard every earlier heading
+  sample so the posted average tracks the current heading; passes at the shared
+  16-second turn checkpoint when `MEM_HDG_AVG` and heading are each 115 to 120
+  degrees, mismatch is 60 to 70 degrees, speed is at least 0.7 m/s, and no
+  warning or error occurs.
 - `weak_priority_pass`
   Lowers the limiter weight from 150 to 40 while retaining `turn_range=18`;
   passes when the memory average is 120 to 190 degrees, heading is 140 to 190,

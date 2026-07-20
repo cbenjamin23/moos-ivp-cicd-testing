@@ -8,10 +8,10 @@ ProcessConfig = pMissionEval
 
   lead_condition = (EVAL_TIME = true) or (MISSION_TIMEOUT = true)
   pass_condition = EVAL_TIME = true
-  pass_condition = MEM_HDG_AVG >= 110
-  pass_condition = MEM_HDG_AVG <= 125
-  pass_condition = NAV_HEADING >= 112
-  pass_condition = NAV_HEADING <= 125
+  pass_condition = MEM_HDG_AVG >= 115
+  pass_condition = MEM_HDG_AVG <= 120
+  pass_condition = NAV_HEADING >= 115
+  pass_condition = NAV_HEADING <= 120
   pass_condition = NAV_SPEED >= 0.7
   pass_condition = HEADING_MISMATCH >= 60
   pass_condition = HEADING_MISMATCH <= 70
