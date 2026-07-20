@@ -357,8 +357,8 @@ check_plogger_artifact() {
                 { printf '%s\n' alog_dynamic_ok; return 0; }
             ;;
         double)
-            files_contain "$root" '*.alog' ' PLOGGER_NUM ' &&
-                { printf '%s\n' alog_double_ok; return 0; }
+            alogs_contain_numeric_value "$root" PLOGGER_NUM 42.5 &&
+                { printf '%s\n' alog_double_42_5_ok; return 0; }
             ;;
         sync)
             files_contain "$root" '*.slog' 'SYNC_ALPHA' &&
@@ -407,6 +407,22 @@ files_contain() {
 
     find "$root" -type f -name "$glob" -exec grep -l -- "$pattern" {} + 2>/dev/null |
         grep -q .
+}
+
+alogs_contain_numeric_value() {
+    local root="$1"
+    local variable="$2"
+    local expected="$3"
+
+    find "$root" -type f -name '*.alog' -exec awk \
+        -v variable="$variable" -v expected="$expected" '
+            $2 == variable &&
+            $4 ~ /^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$/ &&
+            ($4 + 0) == (expected + 0) {
+                print FILENAME
+                exit
+            }
+        ' {} + 2>/dev/null | grep -q .
 }
 
 apply_case_overlays() {

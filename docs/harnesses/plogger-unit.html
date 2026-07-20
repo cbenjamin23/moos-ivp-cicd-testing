@@ -105,7 +105,7 @@
 
         <article class="case-row">
           <code>plogger_double_log_pass</code>
-          <p>Explicitly logs the numeric post PLOGGER_NUM=42.5, exercising double-valued asynchronous logging; passes when the live value is between 42 and 43 and an .alog contains a PLOGGER_NUM entry.</p>
+          <p>Explicitly logs numeric post PLOGGER_NUM=42.5, exercising double-valued asynchronous serialization; passes when the live value is between 42 and 43 and an .alog records PLOGGER_NUM with numeric value 42.5.</p>
         </article>
 
 

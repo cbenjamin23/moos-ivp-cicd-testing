@@ -25,7 +25,7 @@ repository-wide interface without imposing an ordinary logging allowlist.
 - `plogger_explicit_log_pass` Configures `Log=PLOGGER_ALPHA @ 0 nosync` and posts `PLOGGER_ALPHA=alpha`, testing explicit asynchronous logging; passes when the live value is `alpha` and an `.alog` contains that variable-value pair.
 - `plogger_wildcard_omit_pass` Enables wildcard logging for `*_ME`, omits `OMIT_ME`, and posts `KEEP_ME=keep` plus `OMIT_ME=omit`, testing the omit pattern; passes when both posts reach the mission evaluator, the `.alog` contains `KEEP_ME=keep`, and it does not contain `OMIT_ME=omit`.
 - `plogger_dynamic_log_request_pass` Sends `PLOGGER_CMD="LOG_REQUEST=DYN_LOG @ 0 nosync"` before posting `DYN_LOG=dynamic`, testing runtime addition of an asynchronous log variable; passes when the live value is `dynamic` and an `.alog` contains that variable-value pair.
-- `plogger_double_log_pass` Explicitly logs the numeric post `PLOGGER_NUM=42.5`, exercising double-valued asynchronous logging; passes when the live value is between 42 and 43 and an `.alog` contains a `PLOGGER_NUM` entry.
+- `plogger_double_log_pass` Explicitly logs numeric post `PLOGGER_NUM=42.5`, exercising double-valued asynchronous serialization; passes when the live value is between 42 and 43 and an `.alog` records `PLOGGER_NUM` with numeric value `42.5`.
 - `plogger_sync_log_pass` Enables a 0.5-second synchronous log and configures `SYNC_ALPHA` as a synchronous column, testing static `.slog` column creation; passes when `SYNC_ALPHA=sync` reaches the evaluator and an `.slog` header contains `SYNC_ALPHA`.
 - `plogger_wildcard_xlog_pass` Enables wildcard logging for `XLOG_*`, omits `XLOG_OMIT`, and enables `WildcardExclusionLog`, testing exclusion-file routing; passes when both live posts arrive, the `.alog` contains `XLOG_KEEP=keep` but not `XLOG_OMIT=omit`, and an `.xlog` contains the omitted pair.
 - `plogger_filetimestamp_false_pass` Sets `FileTimeStamp=false`, `File=LOG_plogger_filetimestamp_false_pass`, and posts `FIXED_NAME=fixed`, testing deterministic log naming; passes when that exact directory and `.alog` filename exist and the file contains the posted pair.
@@ -56,3 +56,10 @@ artifacts, and post-run listener checks. A focused negative probe confirmed
 that removing the expected copied file now produces `artifact_check_failed`;
 the final full matrix produced ten `.alog` files, two `.slog` files, one
 `.xlog`, one copied file, and ten passing aggregate rows.
+
+The July 20, 2026 artifact-oracle pass completed all ten cases with both
+minimal and full logging at three concurrent jobs. The retained original
+`.alog` recorded `PLOGGER_NUM` as `42.50000`; changing only the posted value to
+`42.25` left the live range evaluation passing but made the exact numeric
+artifact check fail, proving that the case now detects an incorrectly logged
+value rather than merely the presence of the variable name.

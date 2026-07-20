@@ -1,10 +1,10 @@
-case=plogger_explicit_log_pass form=plogger_unit mmod=plogger_explicit_log_pass grade=pass eval=true alpha=alpha mhash=[ICED-ERLE] artifact=alog_explicit_ok
-case=plogger_wildcard_omit_pass form=plogger_unit mmod=plogger_wildcard_omit_pass grade=pass eval=true keep=keep omit=omit mhash=[CHIC-RUSH] artifact=alog_wildcard_omit_ok
-case=plogger_dynamic_log_request_pass form=plogger_unit mmod=plogger_dynamic_log_request_pass grade=pass eval=true dyn=dynamic mhash=[MERE-SOLO] artifact=alog_dynamic_ok
-case=plogger_double_log_pass form=plogger_unit mmod=plogger_double_log_pass grade=pass eval=true num=42.5 mhash=[DEAD-BING] artifact=alog_double_ok
-case=plogger_sync_log_pass form=plogger_unit mmod=plogger_sync_log_pass grade=pass eval=true sync=sync mhash=[FREE-TURN] artifact=slog_sync_ok
-case=plogger_wildcard_xlog_pass form=plogger_unit mmod=plogger_wildcard_xlog_pass grade=pass eval=true keep=keep omit=omit mhash=[SEXY-LEFT] artifact=xlog_exclusion_ok
-case=plogger_filetimestamp_false_pass form=plogger_unit mmod=plogger_filetimestamp_false_pass grade=pass eval=true fixed=fixed mhash=[LATE-ROCK] artifact=filetimestamp_false_ok
-case=plogger_datatype_precision_pass form=plogger_unit mmod=plogger_datatype_precision_pass grade=pass eval=true num=3.142 str=typed mhash=[VERY-BOON] artifact=datatype_precision_ok
-case=plogger_dynamic_sync_column_pass form=plogger_unit mmod=plogger_dynamic_sync_column_pass grade=pass eval=true dyn=dynsync mhash=[WISE-ARLO] artifact=dynamic_sync_ok
-case=plogger_copy_file_request_pass form=plogger_unit mmod=plogger_copy_file_request_pass grade=pass eval=true copy=true mhash=[HAZY-PIKE] artifact=copy_file_ok
+case=plogger_explicit_log_pass form=plogger_unit mmod=plogger_explicit_log_pass grade=pass eval=true alpha=alpha mhash=[BASS-MOLE] artifact=alog_explicit_ok
+case=plogger_wildcard_omit_pass form=plogger_unit mmod=plogger_wildcard_omit_pass grade=pass eval=true keep=keep omit=omit mhash=[SOUR-NIAL] artifact=alog_wildcard_omit_ok
+case=plogger_dynamic_log_request_pass form=plogger_unit mmod=plogger_dynamic_log_request_pass grade=pass eval=true dyn=dynamic mhash=[MILD-CLAW] artifact=alog_dynamic_ok
+case=plogger_double_log_pass form=plogger_unit mmod=plogger_double_log_pass grade=pass eval=true num=42.5 mhash=[SAME-POOL] artifact=alog_double_42_5_ok
+case=plogger_sync_log_pass form=plogger_unit mmod=plogger_sync_log_pass grade=pass eval=true sync=sync mhash=[CURT-MELL] artifact=slog_sync_ok
+case=plogger_wildcard_xlog_pass form=plogger_unit mmod=plogger_wildcard_xlog_pass grade=pass eval=true keep=keep omit=omit mhash=[CHIC-SHOW] artifact=xlog_exclusion_ok
+case=plogger_filetimestamp_false_pass form=plogger_unit mmod=plogger_filetimestamp_false_pass grade=pass eval=true fixed=fixed mhash=[FIRM-TIME] artifact=filetimestamp_false_ok
+case=plogger_datatype_precision_pass form=plogger_unit mmod=plogger_datatype_precision_pass grade=pass eval=true num=3.142 str=typed mhash=[HIGH-BLUE] artifact=datatype_precision_ok
+case=plogger_dynamic_sync_column_pass form=plogger_unit mmod=plogger_dynamic_sync_column_pass grade=pass eval=true dyn=dynsync mhash=[GRIM-DUCT] artifact=dynamic_sync_ok
+case=plogger_copy_file_request_pass form=plogger_unit mmod=plogger_copy_file_request_pass grade=pass eval=true copy=true mhash=[LIKE-IZZY] artifact=copy_file_ok
