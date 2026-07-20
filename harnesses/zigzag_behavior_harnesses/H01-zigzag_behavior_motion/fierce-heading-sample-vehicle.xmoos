@@ -1,0 +1,9 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = ZIGZAG = true
+
+  event = var=ZZ_FIERCE_HDG_DEADLINE, val=true, time=4
+}

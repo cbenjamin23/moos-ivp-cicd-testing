@@ -109,6 +109,11 @@ ProcessConfig = uFldNodeBroker
   bridge = src=ZZ_FINAL_STEM_DIST
   bridge = src=NAV_HEADING
   bridge = src=NAV_SPEED
+  bridge = src=DESIRED_HEADING
+  bridge = src=ZZ_MOD_HIGH_DEADLINE
+  bridge = src=ZZ_FIERCE_HDG_DEADLINE
+  bridge = src=ZZ_UPDATE_HDG_DEADLINE
+  bridge = src=IVPHELM_STATE, alias=ABE_IVPHELM_STATE
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
@@ -177,6 +182,12 @@ ProcessConfig = pLogger
   Log = ZZ_FINAL_STEM_ODO @ 0 nosync
   Log = ZZ_FINAL_STEM_DIST @ 0 nosync
   Log = NAV_HEADING @ 0 nosync
+  Log = NAV_SPEED @ 0 nosync
+  Log = DESIRED_HEADING @ 0 nosync
+  Log = ZZ_MOD_HIGH_DEADLINE @ 0 nosync
+  Log = ZZ_FIERCE_HDG_DEADLINE @ 0 nosync
+  Log = ZZ_UPDATE_HDG_DEADLINE @ 0 nosync
+  Log = IVPHELM_STATE @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

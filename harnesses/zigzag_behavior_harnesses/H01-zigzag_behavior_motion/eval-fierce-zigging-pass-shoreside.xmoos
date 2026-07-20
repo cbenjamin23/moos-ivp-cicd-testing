@@ -5,14 +5,24 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
+  lead_condition = ZIGZAG = true
+  lead_condition = ((DESIRED_HEADING < 10) or (DESIRED_HEADING > 350)) or (ZZ_FIERCE_HDG_DEADLINE = true)
+  pass_condition = (DESIRED_HEADING < 10) or (DESIRED_HEADING > 350)
+  pass_condition = ZIG_COUNT = 0
+  pass_condition = ZZ_FIERCE_HDG_DEADLINE = false
+  pass_condition = BHV_ERROR_SEEN = false
+
   lead_condition = (ZZ_DONE = true) or (MISSION_TIMEOUT = true)
   pass_condition = ZZ_DONE = true
   pass_condition = TRANSIT_DONE = true
-  pass_condition = ZIG_COUNT >= 4
-  pass_condition = ZAG_COUNT >= 2
+  pass_condition = ZIG_COUNT = 4
+  pass_condition = ZAG_COUNT = 2
   pass_condition = ZZ_PORT_SEEN = true
   pass_condition = ZZ_STAR_SEEN = true
-  pass_condition = ZZ_FINAL_STEM_ODO < 25
+  pass_condition = ZZ_PORT_EXIT_SEEN = true
+  pass_condition = ZZ_STAR_EXIT_SEEN = true
+  pass_condition = ZZ_LAST_SIDE = star
+  pass_condition = MISSION_TIMEOUT = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -31,6 +41,7 @@ ProcessConfig = pMissionEval
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = transit=$[TRANSIT_DONE]
   report_column = heading=$[NAV_HEADING]
+  report_column = desired_heading=$[DESIRED_HEADING]
   report_column = nav_speed=$[NAV_SPEED]
   report_column = zigs=$[ZIG_COUNT]
   report_column = zags=$[ZAG_COUNT]

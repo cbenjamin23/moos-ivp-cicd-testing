@@ -5,9 +5,20 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
+  lead_condition = ((ZIG_COUNT >= 1) and (DESIRED_HEADING > 60)) or (ZZ_UPDATE_HDG_DEADLINE = true)
+  pass_condition = ZIG_COUNT = 1
+  pass_condition = DESIRED_HEADING > 60
+  pass_condition = DESIRED_HEADING < 75
+  pass_condition = ZZ_UPDATE_HDG_DEADLINE = false
+  pass_condition = BHV_ERROR_SEEN = false
+
   lead_condition = (ZZ_DONE = true) or (MISSION_TIMEOUT = true)
   pass_condition = ZZ_DONE = true
+  pass_condition = MISSION_TIMEOUT = false
   pass_condition = NAV_SPEED > 1.45
+  pass_condition = NAV_SPEED < 2.0
+  pass_condition = ZIG_COUNT = 4
+  pass_condition = ZAG_COUNT = 2
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -25,6 +36,7 @@ ProcessConfig = pMissionEval
   report_column = zz_done=$[ZZ_DONE]
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = heading=$[NAV_HEADING]
+  report_column = desired_heading=$[DESIRED_HEADING]
   report_column = nav_speed=$[NAV_SPEED]
   report_column = zigs=$[ZIG_COUNT]
   report_column = zags=$[ZAG_COUNT]

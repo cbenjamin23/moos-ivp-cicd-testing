@@ -5,10 +5,17 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
+  lead_condition = ZIGZAG = true
+  lead_condition = (NAV_SPEED > 2.05) or (ZZ_MOD_HIGH_DEADLINE = true)
+  pass_condition = NAV_SPEED > 2.05
+  pass_condition = ZZ_MOD_HIGH_DEADLINE = false
+  pass_condition = BHV_ERROR_SEEN = false
+
   lead_condition = (ZZ_DONE = true) or (MISSION_TIMEOUT = true)
   pass_condition = ZZ_DONE = true
-  pass_condition = NAV_SPEED > 1.0
-  pass_condition = NAV_SPEED < 1.9
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = NAV_SPEED > 1.45
+  pass_condition = NAV_SPEED < 1.95
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

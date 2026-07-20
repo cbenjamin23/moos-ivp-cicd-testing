@@ -16,7 +16,7 @@ Behavior = BHV_ZigZag
   stem_hdg        = 45
   zig_angle       = 25
   zig_first       = port
-  max_zig_legs    = 3
+  max_zig_legs    = 5
   hdg_thresh      = 8
 
   zigflag   = ZIG_COUNT=$[ZIGS]

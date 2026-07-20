@@ -57,6 +57,11 @@ ProcessConfig = pAutoPoke
   flag = ZZ_FINAL_STEM_ODO=0
   flag = ZZ_FINAL_STEM_DIST=0
   flag = MISSION_TIMEOUT=false
+  flag = ZZ_MOD_HIGH_DEADLINE=false
+  flag = ZZ_FIERCE_HDG_DEADLINE=false
+  flag = ZZ_UPDATE_HDG_DEADLINE=false
+  flag = EVAL_ARMED=false
+  flag = TEST_EVAL_READY=false
   flag = BHV_ERROR_SEEN=false
 
   required_nodes = 1
@@ -97,6 +102,7 @@ ProcessConfig = pMissionEval
   pass_condition = ZZ_PORT_EXIT_SEEN = true
   pass_condition = ZZ_STAR_EXIT_SEEN = true
   pass_condition = ZZ_LAST_SIDE = star
+  pass_condition = MISSION_TIMEOUT = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -115,6 +121,7 @@ ProcessConfig = pMissionEval
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = transit=$[TRANSIT_DONE]
   report_column = heading=$[NAV_HEADING]
+  report_column = desired_heading=$[DESIRED_HEADING]
   report_column = nav_speed=$[NAV_SPEED]
   report_column = zigs=$[ZIG_COUNT]
   report_column = zags=$[ZAG_COUNT]
@@ -151,7 +158,10 @@ ProcessConfig = uFldShoreBroker
   qbridge  = ZZ_LAST_SIDE, ZZ_STEM_ODO, ZZ_STEM_DIST, ZZ_STEM_HDG, ZZ_STEM_SPEED
   qbridge  = ZZ_ZIG_MIN_SPEED, ZZ_ZIG_SPEED_DELTA
   qbridge  = ZZ_FINAL_STEM_ODO, ZZ_FINAL_STEM_DIST
-  qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+  qbridge  = NAV_HEADING, NAV_SPEED, DESIRED_HEADING
+  qbridge  = ZZ_MOD_HIGH_DEADLINE, ZZ_FIERCE_HDG_DEADLINE, ZZ_UPDATE_HDG_DEADLINE
+  qbridge  = ABE_IVPHELM_STATE
+  qbridge  = BHV_ERROR, BHV_WARNING
 }
 
 //----------------------------------------------------
@@ -231,6 +241,7 @@ ProcessConfig = pMarineViewer
   scope = MISSION_EVALUATED
   scope = MISSION_TIMEOUT
   scope = NAV_HEADING
+  scope = DESIRED_HEADING
   scope = BHV_ERROR_SEEN
 
   button_one = DEPLOY # DEPLOY_ALL=true

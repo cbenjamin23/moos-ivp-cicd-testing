@@ -10,8 +10,11 @@ Evaluation is mission-owned:
 
 - `pAutoPoke` deploys the vehicle and resets behavior-observation variables.
 - `BHV_ZigZag` posts `ZZ_DONE`, side-transition flags, zig/zag counts, and
-  stem-line telemetry through behavior macros.
-- `pMissionEval` writes the verdict to `results.txt`.
+  stem-line telemetry through behavior macros; the vehicle also bridges live
+  `DESIRED_HEADING`, `NAV_SPEED`, and helm state for phase-specific checks.
+- `pMissionEval` grades exact completion state or ordered active-phase
+  observations and writes `results.txt`; case timers are missing-state
+  deadlines rather than substitutes for requested heading or speed.
 - `uMayFinish` is driven by `xlaunch.sh` through the harness launcher.
 
 Typical commands:

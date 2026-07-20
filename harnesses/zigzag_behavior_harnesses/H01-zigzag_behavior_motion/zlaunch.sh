@@ -364,7 +364,7 @@ get_case_config() {
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/single-leg-complete-pass-vehicle.xbhv"
             ;;
         zero_leg_limit_pass)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-short-complete-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-zero-leg-complete-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/zero-leg-limit-pass-vehicle.xbhv"
             ;;
         stem_odo_complete_pass)
@@ -406,10 +406,12 @@ get_case_config() {
             ;;
         fierce_zigging_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/eval-fierce-zigging-pass-shoreside.xmoos"
+            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/fierce-heading-sample-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/fierce-zigging-pass-vehicle.xbhv"
             ;;
         delta_heading_alias_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/eval-fierce-zigging-pass-shoreside.xmoos"
+            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/fierce-heading-sample-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/delta-heading-alias-pass-vehicle.xbhv"
             ;;
         visual_hints_off_pass)

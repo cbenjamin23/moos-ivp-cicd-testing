@@ -3,8 +3,9 @@ ProcessConfig = uTimerScript
   AppTick   = 2
   CommsTick = 2
 
-  condition = DEPLOY = true
+  condition = ZIGZAG = true
 
-  event = var=ZIG_UPDATE, val="zig_angle=0", time=2.5
-  event = var=ZIG_UPDATE, val="mod_speed=0.4", time=4
+  event = var=ZIG_UPDATE, val="zig_angle=0", time=0.5
+  event = var=ZIG_UPDATE, val="mod_speed=0.4", time=1.5
+  event = var=ZZ_UPDATE_HDG_DEADLINE, val=true, time=10
 }
