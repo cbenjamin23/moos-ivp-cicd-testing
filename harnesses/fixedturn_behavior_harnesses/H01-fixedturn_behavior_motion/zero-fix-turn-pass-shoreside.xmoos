@@ -8,6 +8,9 @@ ProcessConfig = pMissionEval
   lead_condition = (FT_DONE = true) or (MISSION_TIMEOUT = true)
   pass_condition = FT_DONE = true
   pass_condition = TURNING_TIME < 2
+  pass_condition = TURNING_DIST < 0.25
+  pass_condition = NAV_HEADING > 44
+  pass_condition = NAV_HEADING < 46
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true

@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Port 360</h3>
-          <p>Description: Uses the same 355-degree configuration with turn_dir=port; passes on the same completion, time, distance, and no-error conditions, without a graded direction, heading, or radius assertion.</p>
+          <p>Description: Uses the same 355-degree configuration with turn_dir=port; the first evaluator phase requires DESIRED_RUDDER&lt;-50, and the completion phase requires the same near-start final heading, long-turn time/distance, and no-error conditions, with radial FT_REPORT fields remaining diagnostic.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Turn Spec Sequence</h3>
-          <p>Description: Queues a 45-degree starboard turn followed by a 45-degree port turn, both at speed 1.4 and mod_hdg=45; passes when TURN_ONE, TURN_TWO, and FT_DONE are true, the final reported turn has time above one second and distance above three meters, and no behavior error was observed.</p>
+          <p>Description: Queues a 45-degree starboard turn followed by a 45-degree port turn, both at speed 1.4 and mod_hdg=45; passes when TURN_ONE, TURN_TWO, and FT_DONE are true, final heading has returned to 35 through 55 degrees, the final turn has time above one second and distance above three meters, and no behavior error was observed.</p>
         </div>
       </article>
 
@@ -110,31 +110,31 @@
 
         <article class="case-row">
           <code>starboard_360_pass</code>
-          <p>Sets fix_turn=355, mod_hdg=90, turn_dir=star, and speed=1.8; passes when FT_DONE=true, turn time exceeds 15 seconds, turn distance exceeds 25 meters, and no behavior error was observed, while heading and radial FT_REPORT contents are report-only.</p>
+          <p>Sets fix_turn=355, mod_hdg=90, turn_dir=star, and speed=1.8; an ordered evaluator first requires DESIRED_RUDDER&gt;50 after FIX_TURN=true, then requires completion with final heading 20 through 65 degrees, turn time above 15 seconds, turn distance above 25 meters, and no behavior error, while the radial fields in FT_REPORT remain diagnostic.</p>
         </article>
 
 
         <article class="case-row">
           <code>port_360_pass</code>
-          <p>Uses the same 355-degree configuration with turn_dir=port; passes on the same completion, time, distance, and no-error conditions, without a graded direction, heading, or radius assertion.</p>
+          <p>Uses the same 355-degree configuration with turn_dir=port; the first evaluator phase requires DESIRED_RUDDER&lt;-50, and the completion phase requires the same near-start final heading, long-turn time/distance, and no-error conditions, with radial FT_REPORT fields remaining diagnostic.</p>
         </article>
 
 
         <article class="case-row">
           <code>speed_auto_pass</code>
-          <p>Sets speed=auto for the stock starboard 90-degree turn; passes on the stock completion, 105-to-170-degree heading, positive time/distance, and no-error conditions, while the inherited speed shown in FT_REPORT is report-only.</p>
+          <p>Sets speed=auto for the stock starboard 90-degree turn; while positive rudder proves the turn is active, the first evaluator phase requires 1.7&lt;DESIRED_SPEED&lt;1.9, then the completion phase requires the stock starboard heading, time/distance, and no-error outcome.</p>
         </article>
 
 
         <article class="case-row">
           <code>fixed_speed_pass</code>
-          <p>Sets speed=1.3 for the stock starboard 90-degree turn; passes on the same completion, heading, time/distance, and no-error conditions without grading the selected speed.</p>
+          <p>Sets speed=1.3 for the stock starboard 90-degree turn; the first evaluator phase requires 1.25&lt;DESIRED_SPEED&lt;1.35, then the completion phase requires the stock heading, time/distance, and no-error outcome.</p>
         </article>
 
 
         <article class="case-row">
           <code>turn_delay_pass</code>
-          <p>Adds turn_delay=4 to the stock starboard 90-degree turn; passes when the turn eventually completes with time above one second, distance above three meters, and no behavior error, without grading the four-second hold interval.</p>
+          <p>Adds turn_delay=4 to the stock starboard 90-degree turn; three seconds after FIX_TURN=true, the first evaluator phase requires heading to remain between 44 and 46 degrees, then the completion phase requires the stock starboard heading, time/distance, and no-error outcome.</p>
         </article>
 
 
@@ -146,7 +146,7 @@
 
         <article class="case-row">
           <code>turn_spec_sequence_pass</code>
-          <p>Queues a 45-degree starboard turn followed by a 45-degree port turn, both at speed 1.4 and mod_hdg=45; passes when TURN_ONE, TURN_TWO, and FT_DONE are true, the final reported turn has time above one second and distance above three meters, and no behavior error was observed.</p>
+          <p>Queues a 45-degree starboard turn followed by a 45-degree port turn, both at speed 1.4 and mod_hdg=45; passes when TURN_ONE, TURN_TWO, and FT_DONE are true, final heading has returned to 35 through 55 degrees, the final turn has time above one second and distance above three meters, and no behavior error was observed.</p>
         </article>
 
 
@@ -182,13 +182,13 @@
 
         <article class="case-row">
           <code>zero_fix_turn_pass</code>
-          <p>Sets fix_turn=0; passes when FT_DONE=true, turn time is below two seconds, and no behavior error was observed, while turn distance and heading are report-only.</p>
+          <p>Sets fix_turn=0; passes when FT_DONE=true, turn time is below two seconds, turn distance is below 0.25 meters, heading remains between 44 and 46 degrees, and no behavior error was observed.</p>
         </article>
 
 
         <article class="case-row">
           <code>runtime_static_update_pass</code>
-          <p>Posts turn_dir=port at one second and speed=1.6 at 1.2 seconds before the static turn activates; passes when FT_DONE=true, heading is above 285 degrees, time and distance are positive, and no behavior error was observed, without grading the updated speed.</p>
+          <p>Posts turn_dir=port at one second and speed=1.6 at 1.2 seconds before the static turn activates; while negative rudder proves the port turn is active, the first evaluator phase requires 1.55&lt;DESIRED_SPEED&lt;1.65, then completion requires heading above 285 degrees, positive time/distance, and no behavior error.</p>
         </article>
 
 
@@ -206,37 +206,37 @@
 
         <article class="case-row">
           <code>bad_fix_turn_fail</code>
-          <p>Sets fix_turn=-5; this expected-negative case passes at the 15-second mission timeout when FT_DONE=false, speed is below 0.1, heading remains 44 through 46 degrees, and no behavior error was observed.</p>
+          <p>Sets fix_turn=-5; this expected-negative case passes only when Abe&#x27;s helm reaches MALCONFIG after the two-second evaluator arm barrier and before the 15-second fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_stale_nav_thresh_fail</code>
-          <p>Sets stale_nav_thresh=0; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
+          <p>Sets stale_nav_thresh=0; this expected-negative case passes only on the same exact MALCONFIG state before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_dir_fail</code>
-          <p>Sets turn_dir=banana; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
+          <p>Sets turn_dir=banana; this expected-negative case passes only on the same exact MALCONFIG state before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_fail</code>
-          <p>Sets speed=-1; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
+          <p>Sets speed=-1; this expected-negative case passes only on the same exact MALCONFIG state before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_spec_fail</code>
-          <p>Adds bogus=oops to a scheduled turn; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
+          <p>Adds bogus=oops to a scheduled turn; this expected-negative case passes only on the same exact MALCONFIG state before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_schedule_repeat_fail</code>
-          <p>Sets schedule_repeat=maybe; this expected-negative case passes on the same timeout, no-completion, stopped, unchanged-heading, and no-error conditions.</p>
+          <p>Sets schedule_repeat=maybe; this expected-negative case passes only on the same exact MALCONFIG state before the fallback deadline.</p>
         </article>
 
       </div>

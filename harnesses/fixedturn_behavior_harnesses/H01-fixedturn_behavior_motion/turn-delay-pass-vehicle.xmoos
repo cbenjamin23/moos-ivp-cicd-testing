@@ -1,0 +1,9 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = FIX_TURN = true
+
+  event = var=DELAY_SAMPLE, val=true, time=3
+}

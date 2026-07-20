@@ -15,8 +15,8 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = ((FIX_TURN = true) and (DESIRED_RUDDER > 50)) or (MISSION_TIMEOUT = true)
-  pass_condition = DESIRED_RUDDER > 50
+  lead_condition = ((FIX_TURN = true) and (DESIRED_RUDDER < -50)) or (MISSION_TIMEOUT = true)
+  pass_condition = DESIRED_RUDDER < -50
   pass_condition = MISSION_TIMEOUT = false
 
   lead_condition = (FT_DONE = true) or (MISSION_TIMEOUT = true)
@@ -33,12 +33,10 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = fixedturn_behavior_tests
-  mission_mod  = $(MMOD:=long_turn_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[FT_DONE]
   report_column = ft_done=$[FT_DONE]
   report_column = timeout=$[MISSION_TIMEOUT]

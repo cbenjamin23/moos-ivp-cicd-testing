@@ -3119,7 +3119,7 @@
         "path": "missions/fixedturn_behavior_missions/fixedturn_behavior_motion"
       },
       "patches": {
-        "file_count": 42
+        "file_count": 46
       },
       "path": "harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion",
       "perf_profile": "",
@@ -7004,10 +7004,10 @@
       ".sh": 365,
       ".txt": 302,
       ".xbhv": 504,
-      ".xmoos": 1322,
+      ".xmoos": 1326,
       "[none]": 7
     },
-    "harness_patch_count": 1721,
+    "harness_patch_count": 1725,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

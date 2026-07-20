@@ -9,6 +9,8 @@ ProcessConfig = pMissionEval
   pass_condition = TURN_ONE = true
   pass_condition = TURN_TWO = true
   pass_condition = FT_DONE = true
+  pass_condition = NAV_HEADING > 35
+  pass_condition = NAV_HEADING < 55
   pass_condition = TURNING_TIME > 1
   pass_condition = TURNING_DIST > 3
   pass_condition = BHV_ERROR_SEEN = false

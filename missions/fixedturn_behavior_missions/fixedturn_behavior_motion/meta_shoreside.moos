@@ -52,6 +52,9 @@ ProcessConfig = pAutoPoke
   flag = TURN_THREE=false
   flag = TRANSIT_DONE=false
   flag = MISSION_TIMEOUT=false
+  flag = TEST_EVAL_READY=false
+  flag = EVAL_ARMED=false
+  flag = DELAY_SAMPLE=false
   flag = EARLY_DONE=false
   flag = BHV_ERROR_SEEN=false
 
@@ -129,7 +132,10 @@ ProcessConfig = uFldShoreBroker
   qbridge  = MOOS_MANUAL_OVERRIDE
   qbridge  = FT_DONE, FT_REPORT, FIX_TURN, TRANSIT_DONE
   qbridge  = TURNING_TIME, TURNING_DIST, TURN_ONE, TURN_TWO, TURN_THREE
-  qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+  qbridge  = DELAY_SAMPLE
+  qbridge  = NAV_HEADING, NAV_SPEED, DESIRED_SPEED, DESIRED_RUDDER
+  qbridge  = ABE_IVPHELM_STATE
+  qbridge  = BHV_ERROR, BHV_WARNING
 }
 
 //----------------------------------------------------
@@ -202,11 +208,14 @@ ProcessConfig = pMarineViewer
   scope = MISSION_EVALUATED
   scope = MISSION_TIMEOUT
   scope = NAV_HEADING
+  scope = DESIRED_SPEED
+  scope = DESIRED_RUDDER
   scope = TURNING_TIME
   scope = TURNING_DIST
   scope = TURN_ONE
   scope = TURN_TWO
   scope = TURN_THREE
+  scope = DELAY_SAMPLE
   scope = BHV_ERROR_SEEN
 
   button_one = DEPLOY # DEPLOY_ALL=true

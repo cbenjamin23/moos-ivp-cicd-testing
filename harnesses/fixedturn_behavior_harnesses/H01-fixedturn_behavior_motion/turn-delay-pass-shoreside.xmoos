@@ -1,13 +1,3 @@
-ProcessConfig = uTimerScript
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  condition = DEPLOY_ALL = true
-
-  event = var=MISSION_TIMEOUT, val=true, time=55
-}
-
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
@@ -15,8 +5,17 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
+  lead_condition = (DELAY_SAMPLE = true) or (MISSION_TIMEOUT = true)
+  pass_condition = DELAY_SAMPLE = true
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = NAV_HEADING > 44
+  pass_condition = NAV_HEADING < 46
+
   lead_condition = (FT_DONE = true) or (MISSION_TIMEOUT = true)
   pass_condition = FT_DONE = true
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = NAV_HEADING > 105
+  pass_condition = NAV_HEADING < 170
   pass_condition = TURNING_TIME > 1
   pass_condition = TURNING_DIST > 3
   pass_condition = BHV_ERROR_SEEN = false
@@ -35,6 +34,7 @@ ProcessConfig = pMissionEval
   report_column = eval=$[FT_DONE]
   report_column = ft_done=$[FT_DONE]
   report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = delay_sample=$[DELAY_SAMPLE]
   report_column = heading=$[NAV_HEADING]
   report_column = nav_speed=$[NAV_SPEED]
   report_column = turn_time=$[TURNING_TIME]

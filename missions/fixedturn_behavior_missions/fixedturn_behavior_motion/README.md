@@ -11,6 +11,9 @@ Evaluation is mission-owned:
 - `pAutoPoke` deploys the vehicle.
 - `BHV_FixedTurn` posts `FT_DONE`, `TURNING_TIME`, `TURNING_DIST`, and
   `FT_REPORT`.
+- The vehicle broker exposes `DESIRED_SPEED`, `DESIRED_RUDDER`, and Abe's
+  `IVPHELM_STATE` so case evaluators can grade the active turn command and
+  exact configuration state.
 - `pMissionEval` writes the verdict to `results.txt`.
 - `uMayFinish` is driven by `xlaunch.sh` through `zlaunch.sh`.
 

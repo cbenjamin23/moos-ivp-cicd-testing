@@ -1,13 +1,3 @@
-ProcessConfig = uTimerScript
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  condition = DEPLOY_ALL = true
-
-  event = var=MISSION_TIMEOUT, val=true, time=65
-}
-
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
@@ -15,17 +5,18 @@ ProcessConfig = pMissionEval
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
 
-  lead_condition = ((FIX_TURN = true) and (DESIRED_RUDDER > 50)) or (MISSION_TIMEOUT = true)
-  pass_condition = DESIRED_RUDDER > 50
+  lead_condition = ((DESIRED_SPEED > 1.25) and (DESIRED_SPEED < 1.35)) or (MISSION_TIMEOUT = true)
+  pass_condition = DESIRED_SPEED > 1.25
+  pass_condition = DESIRED_SPEED < 1.35
   pass_condition = MISSION_TIMEOUT = false
 
   lead_condition = (FT_DONE = true) or (MISSION_TIMEOUT = true)
   pass_condition = FT_DONE = true
   pass_condition = MISSION_TIMEOUT = false
-  pass_condition = NAV_HEADING > 20
-  pass_condition = NAV_HEADING < 65
-  pass_condition = TURNING_TIME > 15
-  pass_condition = TURNING_DIST > 25
+  pass_condition = NAV_HEADING > 105
+  pass_condition = NAV_HEADING < 170
+  pass_condition = TURNING_TIME > 1
+  pass_condition = TURNING_DIST > 3
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -33,23 +24,18 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = fixedturn_behavior_tests
-  mission_mod  = $(MMOD:=long_turn_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
   report_column = eval=$[FT_DONE]
   report_column = ft_done=$[FT_DONE]
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = heading=$[NAV_HEADING]
+  report_column = desired_speed=$[DESIRED_SPEED]
   report_column = nav_speed=$[NAV_SPEED]
-  report_column = rudder=$[DESIRED_RUDDER]
   report_column = turn_time=$[TURNING_TIME]
   report_column = turn_dist=$[TURNING_DIST]
-  report_column = turn_one=$[TURN_ONE]
-  report_column = turn_two=$[TURN_TWO]
-  report_column = turn_three=$[TURN_THREE]
   report_column = ft_report=$[FT_REPORT]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
