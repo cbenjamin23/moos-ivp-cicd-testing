@@ -95,31 +95,31 @@
 
         <article class="case-row">
           <code>custom_status_vars_pass</code>
-          <p>Sets var_status_idle=IDLE_SECONDS, var_status_running=RUN_SECONDS, and status_suffix=custom; passes when IDLE_SECONDS_custom and RUN_SECONDS_custom both exceed two seconds and no behavior error occurs.</p>
+          <p>Sets var_status_idle=IDLE_SECONDS, var_status_running=RUN_SECONDS, and status_suffix=custom; passes when IDLE_SECONDS_custom and RUN_SECONDS_custom both exceed two seconds, none of the stem, unsuffixed, or default counter names is published, and no behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>default_suffix_pass</code>
-          <p>Omits both status-variable parameters and sets status_suffix=_survey; passes when default outputs TIMER_IDLE_survey and TIMER_RUNNING_survey both exceed two seconds and no behavior error occurs.</p>
+          <p>Omits both status-variable parameters and sets status_suffix=_survey; passes when default outputs TIMER_IDLE_survey and TIMER_RUNNING_survey both exceed two seconds, neither unsuffixed default nor stem counter name is published, and no behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>custom_no_suffix_pass</code>
-          <p>Sets custom outputs IDLE_RAW and RUN_RAW with no suffix; passes when both counters exceed two seconds and no behavior error occurs.</p>
+          <p>Sets custom outputs IDLE_RAW and RUN_RAW with no suffix; passes when both counters exceed two seconds, neither default nor stem counter name is published, and no behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>default_no_suffix_pass</code>
-          <p>Omits status-variable and suffix parameters; passes when default unsuffixed outputs TIMER_IDLE and TIMER_RUNNING both exceed two seconds and no behavior error occurs.</p>
+          <p>Omits status-variable and suffix parameters; passes when default unsuffixed outputs TIMER_IDLE and TIMER_RUNNING both exceed two seconds, no suffixed default or stem counter name is published, and no behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>active_at_start_pass</code>
-          <p>Posts TIMER_ACTIVE=true at 0.5 seconds and evaluates at eight seconds; passes when TIMER_RUNNING_SECONDS_base&gt;5 and no behavior error occurs.</p>
+          <p>Posts TIMER_ACTIVE=true at 0.5 seconds and evaluates at eight seconds; passes when idle accumulation is 0 to 0.1 seconds, TIMER_RUNNING_SECONDS_base&gt;5, and no behavior error occurs.</p>
         </article>
 
 
@@ -137,13 +137,13 @@
 
         <article class="case-row">
           <code>repeated_status_param_pass</code>
-          <p>Sets unused status names and suffix first, then replaces them with TIMER_IDLE_SECONDS, TIMER_RUNNING_SECONDS, and base; passes when the final suffixed counters both exceed two seconds and no behavior error occurs.</p>
+          <p>Sets unused status names and suffix first, then replaces them with TIMER_IDLE_SECONDS, TIMER_RUNNING_SECONDS, and base; passes when the final suffixed counters both exceed two seconds, neither UNUSED_IDLE_unused nor UNUSED_RUN_unused is published, and no behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>post_mapping_pass</code>
-          <p>Maps the stock suffixed counters to TIMER_IDLE_MAPPED and TIMER_RUNNING_MAPPED; passes when both mapped counters exceed two seconds and no behavior error occurs.</p>
+          <p>Maps the stock suffixed counters to TIMER_IDLE_MAPPED and TIMER_RUNNING_MAPPED; passes when both mapped counters exceed two seconds, neither original counter is published, and no behavior error occurs.</p>
         </article>
 
 

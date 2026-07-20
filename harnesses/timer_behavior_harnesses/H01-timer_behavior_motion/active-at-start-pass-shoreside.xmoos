@@ -21,6 +21,8 @@ ProcessConfig = pMissionEval
 
   lead_condition = (TEST_EVAL_READY = true) or (MISSION_TIMEOUT = true)
   pass_condition = TEST_EVAL_READY = true
+  pass_condition = TIMER_IDLE_SECONDS_base >= 0
+  pass_condition = TIMER_IDLE_SECONDS_base <= 0.1
   pass_condition = TIMER_RUNNING_SECONDS_base > 5
   pass_condition = BHV_ERROR_SEEN = false
 

@@ -4,15 +4,13 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
-  mailflag = @TIMER_IDLE#UNEXPECTED_TIMER_STATUS_SEEN=true
-  mailflag = @TIMER_RUNNING#UNEXPECTED_TIMER_STATUS_SEEN=true
-  mailflag = @TIMER_IDLE_SECONDS_base#UNEXPECTED_TIMER_STATUS_SEEN=true
-  mailflag = @TIMER_RUNNING_SECONDS_base#UNEXPECTED_TIMER_STATUS_SEEN=true
+  mailflag = @UNUSED_IDLE_unused#UNEXPECTED_TIMER_STATUS_SEEN=true
+  mailflag = @UNUSED_RUN_unused#UNEXPECTED_TIMER_STATUS_SEEN=true
 
   lead_condition = (TEST_EVAL_READY = true) or (MISSION_TIMEOUT = true)
   pass_condition = TEST_EVAL_READY = true
-  pass_condition = TIMER_IDLE_survey > 2
-  pass_condition = TIMER_RUNNING_survey > 2
+  pass_condition = TIMER_IDLE_SECONDS_base > 2
+  pass_condition = TIMER_RUNNING_SECONDS_base > 2
   pass_condition = BHV_ERROR_SEEN = false
   pass_condition = UNEXPECTED_TIMER_STATUS_SEEN = false
 
@@ -21,7 +19,7 @@ ProcessConfig = pMissionEval
   fail_flag   = SAY_MOOS = fail
 
   mission_form = timer_behavior_tests
-  mission_mod  = $(MMOD:=default_suffix_pass)
+  mission_mod  = $(MMOD:=repeated_status_param_pass)
 
   report_file   = results.txt
   report_column = grade=$[GRADE]
@@ -31,10 +29,8 @@ ProcessConfig = pMissionEval
   report_column = active=$[TIMER_ACTIVE]
   report_column = idle=$[TIMER_IDLE_SECONDS_base]
   report_column = running=$[TIMER_RUNNING_SECONDS_base]
-  report_column = custom_idle=$[IDLE_SECONDS_custom]
-  report_column = custom_running=$[RUN_SECONDS_custom]
-  report_column = default_idle=$[TIMER_IDLE_survey]
-  report_column = default_running=$[TIMER_RUNNING_survey]
+  report_column = unused_idle=$[UNUSED_IDLE_unused]
+  report_column = unused_running=$[UNUSED_RUN_unused]
   report_column = unexpected_status=$[UNEXPECTED_TIMER_STATUS_SEEN]
   report_column = timeout=$[MISSION_TIMEOUT]
   report_column = bhv_error=$[BHV_ERROR_SEEN]

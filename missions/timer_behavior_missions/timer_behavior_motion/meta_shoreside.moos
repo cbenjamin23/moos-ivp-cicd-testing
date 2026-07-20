@@ -49,6 +49,7 @@ ProcessConfig = pAutoPoke
   flag = TEST_EVAL_READY=false
   flag = MISSION_TIMEOUT=false
   flag = BHV_ERROR_SEEN=false
+  flag = UNEXPECTED_TIMER_STATUS_SEEN=false
 
   required_nodes = 1
 }
@@ -133,11 +134,13 @@ ProcessConfig = uFldShoreBroker
   qbridge  = TIMER_ACTIVE, TEST_EVAL_READY, MISSION_TIMEOUT
   qbridge  = TIMER_IDLE_SECONDS_base, TIMER_RUNNING_SECONDS_base
   qbridge  = IDLE_SECONDS_custom, RUN_SECONDS_custom
+  qbridge  = IDLE_SECONDS, RUN_SECONDS
   qbridge  = IDLE_RAW, RUN_RAW
   qbridge  = TIMER_IDLE, TIMER_RUNNING
   qbridge  = TIMER_IDLE_survey, TIMER_RUNNING_survey
   qbridge  = TIMER_IDLE_MAPPED, TIMER_RUNNING_MAPPED
   qbridge  = TIMER_IDLE_UPDATED_late, TIMER_RUNNING_UPDATED_late
+  qbridge  = UNUSED_IDLE_unused, UNUSED_RUN_unused
   qbridge  = TIMER_DONE, TIMER_REMAINING
   qbridge  = TRANSIT_DONE, NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
 }
@@ -180,6 +183,8 @@ ProcessConfig = pLogger
   Log = TIMER_RUNNING_SECONDS_base @ 0 nosync
   Log = IDLE_SECONDS_custom @ 0 nosync
   Log = RUN_SECONDS_custom @ 0 nosync
+  Log = IDLE_SECONDS @ 0 nosync
+  Log = RUN_SECONDS @ 0 nosync
   Log = IDLE_RAW @ 0 nosync
   Log = RUN_RAW @ 0 nosync
   Log = TIMER_IDLE @ 0 nosync
@@ -190,6 +195,8 @@ ProcessConfig = pLogger
   Log = TIMER_RUNNING_MAPPED @ 0 nosync
   Log = TIMER_IDLE_UPDATED_late @ 0 nosync
   Log = TIMER_RUNNING_UPDATED_late @ 0 nosync
+  Log = UNUSED_IDLE_unused @ 0 nosync
+  Log = UNUSED_RUN_unused @ 0 nosync
   Log = TIMER_DONE @ 0 nosync
   Log = TIMER_REMAINING @ 0 nosync
 

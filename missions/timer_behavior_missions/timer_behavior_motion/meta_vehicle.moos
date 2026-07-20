@@ -98,6 +98,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=TIMER_RUNNING_SECONDS_base
   bridge = src=IDLE_SECONDS_custom
   bridge = src=RUN_SECONDS_custom
+  bridge = src=IDLE_SECONDS
+  bridge = src=RUN_SECONDS
   bridge = src=IDLE_RAW
   bridge = src=RUN_RAW
   bridge = src=TIMER_IDLE
@@ -108,6 +110,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=TIMER_RUNNING_MAPPED
   bridge = src=TIMER_IDLE_UPDATED_late
   bridge = src=TIMER_RUNNING_UPDATED_late
+  bridge = src=UNUSED_IDLE_unused
+  bridge = src=UNUSED_RUN_unused
   bridge = src=TIMER_DONE
   bridge = src=TIMER_REMAINING
   bridge = src=NAV_HEADING
@@ -167,6 +171,8 @@ ProcessConfig = pLogger
   Log = TIMER_RUNNING_SECONDS_base @ 0 nosync
   Log = IDLE_SECONDS_custom @ 0 nosync
   Log = RUN_SECONDS_custom @ 0 nosync
+  Log = IDLE_SECONDS @ 0 nosync
+  Log = RUN_SECONDS @ 0 nosync
   Log = IDLE_RAW @ 0 nosync
   Log = RUN_RAW @ 0 nosync
   Log = TIMER_IDLE @ 0 nosync
@@ -177,6 +183,8 @@ ProcessConfig = pLogger
   Log = TIMER_RUNNING_MAPPED @ 0 nosync
   Log = TIMER_IDLE_UPDATED_late @ 0 nosync
   Log = TIMER_RUNNING_UPDATED_late @ 0 nosync
+  Log = UNUSED_IDLE_unused @ 0 nosync
+  Log = UNUSED_RUN_unused @ 0 nosync
   Log = TIMER_DONE @ 0 nosync
   Log = TIMER_REMAINING @ 0 nosync
   Log = NAV_HEADING @ 0 nosync

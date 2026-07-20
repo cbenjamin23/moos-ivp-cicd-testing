@@ -23,21 +23,25 @@ owned by `pMissionEval` and uses timer-posted duration counters:
 - `custom_status_vars_pass`
   Sets `var_status_idle=IDLE_SECONDS`, `var_status_running=RUN_SECONDS`, and
   `status_suffix=custom`; passes when `IDLE_SECONDS_custom` and
-  `RUN_SECONDS_custom` both exceed two seconds and no behavior error occurs.
+  `RUN_SECONDS_custom` both exceed two seconds, none of the stem, unsuffixed,
+  or default counter names is published, and no behavior error occurs.
 - `default_suffix_pass`
   Omits both status-variable parameters and sets `status_suffix=_survey`;
   passes when default outputs `TIMER_IDLE_survey` and `TIMER_RUNNING_survey`
-  both exceed two seconds and no behavior error occurs.
+  both exceed two seconds, neither unsuffixed default nor stem counter name is
+  published, and no behavior error occurs.
 - `custom_no_suffix_pass`
   Sets custom outputs `IDLE_RAW` and `RUN_RAW` with no suffix; passes when both
-  counters exceed two seconds and no behavior error occurs.
+  counters exceed two seconds, neither default nor stem counter name is
+  published, and no behavior error occurs.
 - `default_no_suffix_pass`
   Omits status-variable and suffix parameters; passes when default unsuffixed
-  outputs `TIMER_IDLE` and `TIMER_RUNNING` both exceed two seconds and no
-  behavior error occurs.
+  outputs `TIMER_IDLE` and `TIMER_RUNNING` both exceed two seconds, no suffixed
+  default or stem counter name is published, and no behavior error occurs.
 - `active_at_start_pass`
   Posts `TIMER_ACTIVE=true` at 0.5 seconds and evaluates at eight seconds;
-  passes when `TIMER_RUNNING_SECONDS_base>5` and no behavior error occurs.
+  passes when idle accumulation is 0 to 0.1 seconds,
+  `TIMER_RUNNING_SECONDS_base>5`, and no behavior error occurs.
 - `delayed_activation_pass`
   Delays `TIMER_ACTIVE=true` until seven seconds and evaluates at twelve;
   passes when idle time exceeds five seconds, running time exceeds two seconds,
@@ -49,11 +53,13 @@ owned by `pMissionEval` and uses timer-posted duration counters:
 - `repeated_status_param_pass`
   Sets unused status names and suffix first, then replaces them with
   `TIMER_IDLE_SECONDS`, `TIMER_RUNNING_SECONDS`, and `base`; passes when the
-  final suffixed counters both exceed two seconds and no behavior error occurs.
+  final suffixed counters both exceed two seconds, neither
+  `UNUSED_IDLE_unused` nor `UNUSED_RUN_unused` is published, and no behavior
+  error occurs.
 - `post_mapping_pass`
   Maps the stock suffixed counters to `TIMER_IDLE_MAPPED` and
-  `TIMER_RUNNING_MAPPED`; passes when both mapped counters exceed two seconds
-  and no behavior error occurs.
+  `TIMER_RUNNING_MAPPED`; passes when both mapped counters exceed two seconds,
+  neither original counter is published, and no behavior error occurs.
 - `duration_complete_pass`
   Sets `duration=2`, `duration_status=TIMER_REMAINING`, and end flag
   `TIMER_DONE=true`; passes when the end flag is true, remaining time is below

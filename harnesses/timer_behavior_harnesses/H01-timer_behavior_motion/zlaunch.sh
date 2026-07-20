@@ -335,6 +335,7 @@ get_case_config() {
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/pause-resume-pass-vehicle.xmoos"
             ;;
         repeated_status_param_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/repeated-status-param-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/repeated-status-param-pass-vehicle.xbhv"
             ;;
         post_mapping_pass)
