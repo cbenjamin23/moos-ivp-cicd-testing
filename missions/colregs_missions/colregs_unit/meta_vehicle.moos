@@ -139,6 +139,10 @@ ProcessConfig = uFldNodeBroker
   bridge = src=COLREGS_SUMMARY_BEN
   bridge = src=AVDCOL_RANGE_ABE
   bridge = src=AVDCOL_RANGE_BEN
+  bridge = src=COLREGS_OS_CN_REL_BNG_abe
+  bridge = src=COLREGS_OS_CN_REL_BNG_ben
+  bridge = src=COLREGS_CN_OS_REL_BNG_abe
+  bridge = src=COLREGS_CN_OS_REL_BNG_ben
   bridge = src=CN_FORE_OF_OS_ABE
   bridge = src=CN_FORE_OF_OS_BEN
   bridge = src=CN_PORT_OF_OS__ABE

@@ -52,6 +52,11 @@ Behavior = BHV_AvdColregsV22
   post_status_info_on_idle = true
   can_disable = true
 
+  // Expose the live geometry used by the source classifiers so threshold
+  // harnesses can grade the predicate as well as the resulting mode.
+  runxflag = COLREGS_OS_CN_REL_BNG_$(VNAME) = $[OS_CN_REL_BNG]
+  runxflag = COLREGS_CN_OS_REL_BNG_$(VNAME) = $[CN_OS_REL_BNG]
+
         pwt_outer_dist = 40
         pwt_inner_dist = 20
         completed_dist = 45

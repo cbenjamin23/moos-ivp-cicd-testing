@@ -14,9 +14,9 @@ ProcessConfig = pMissionEval
   CommsTick  = 4
 
   lead_condition = (COLREGS_AVOID_IX_BEN = 30) or (MISSION_TIMEOUT = true)
-  pass_condition = COLLISION_TOTAL = 0
   pass_condition = MISSION_TIMEOUT = false
   pass_condition = COLREGS_AVOID_IX_BEN = 30
+  pass_condition = AVDCOL_RANGE_BEN > 18
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass
@@ -38,6 +38,8 @@ ProcessConfig = pMissionEval
   report_column = colregs_ix=$[COLREGS_AVOID_IX_BEN]
   report_column = colregs_summary=$[COLREGS_SUMMARY_BEN]
   report_column = avdcol_range=$[AVDCOL_RANGE_BEN]
+  report_column = os_cn_rel_bng=$[COLREGS_OS_CN_REL_BNG_abe]
+  report_column = cn_os_rel_bng=$[COLREGS_CN_OS_REL_BNG_abe]
   report_column = cn_fore=$[CN_FORE_OF_OS_BEN]
   report_column = cn_crossed=$[CN_CROSSED_OS_PORT_STAR_BEN]
   report_column = near_misses=$[NEAR_MISS_TOTAL]

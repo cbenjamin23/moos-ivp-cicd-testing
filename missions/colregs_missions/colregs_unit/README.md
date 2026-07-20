@@ -120,6 +120,13 @@ that posted avoidance weight for parameter families like `pwt_inner_dist` and
 `pwt_grade`, where the source effect is relevance shaping rather than a clean
 mode-entry split.
 
+The spawned behavior also posts its live relative bearings on every running
+helm iteration and bridges them to shoreside as
+`COLREGS_OS_CN_REL_BNG_<vname>` and `COLREGS_CN_OS_REL_BNG_<vname>`. H02 uses
+the `abe` values to grade the exact source bearing cutoff at the same point as
+the resulting classification instead of inferring the cutoff from configured
+starts alone.
+
 The stem also now bridges refinery diagnostics per ownship:
 - `PLATEAU_CHECK_OK_<vname>`
 - `BASIN_CHECK_OK_<vname>`

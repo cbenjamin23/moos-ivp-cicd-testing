@@ -4,7 +4,7 @@ TLDR:
 - threshold-edge harness on the shared `colregs_unit` stem
 - proves that small geometry changes flip classification where the source says they should
 - intended to absorb the unstable edge-space that does not belong in `H01`
-- current active gate is a geometry-first 56-case threshold sweep with
+- current active gate is a geometry-first 45-case threshold sweep with
   isolated serial and Bash 5.1 rolling execution; two moving Band 315 probes
   remain available as explicit exploratory cases
 
@@ -58,64 +58,58 @@ of the threshold the geometry is expected to land on.
 
 ## Cases
 
-- `head_on_thresh_below_pass`: Ben approaches ownship with an eight-degree heading offset (`B_HEADING=8`). Passes when head-on index 10 appears before timeout while `COLLISION_TOTAL=0`.
-- `head_on_thresh_edge_pass`: Increases Ben's heading offset to 12 degrees at the calibrated edge. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
-- `head_on_thresh_above_pass`: Increases Ben's heading offset to 16 degrees. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
-- `head_on_thresh_below_mirror_pass`: Mirrors the below-edge heading to 352 degrees. Passes when head-on index 10 appears before timeout while `COLLISION_TOTAL=0`.
-- `head_on_thresh_edge_mirror_pass`: Mirrors the edge heading to 348 degrees. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
-- `head_on_thresh_above_mirror_pass`: Mirrors the above-edge heading to 344 degrees. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaking_thresh_below_pass`: Runs parallel eastbound tracks with 1.6 m/s ownship on `y=-48` and 1.0 m/s Ben on `y=-84`, a 36-meter offset. Passes when `overtaking:port` index 43 appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaking_thresh_edge_pass`: Moves ownship to `y=-47`, increasing the offset to 37 meters. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaking_thresh_above_pass`: Moves ownship to `y=-46`, increasing the offset to 38 meters. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaking_thresh_below_mirror_pass`: Places ownship on `y=-122` and Ben on `y=-84`, a 38-meter mirrored offset. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaking_thresh_edge_mirror_pass`: Moves mirrored ownship to `y=-121`, a 37-meter offset. Passes when CPA index 50 appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaking_thresh_above_mirror_pass`: Moves mirrored ownship to `y=-120`, a 36-meter offset. Passes when `overtaking:starboard` index 47 appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaken_thresh_below_pass`: Sends 1.6 m/s Ben from `(-70,-58)` past 1.0 m/s ownship on `y=-80`, a 22-meter port-side offset. Passes when `COLREGS_AVOID_MODE_BEN=cpa` appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaken_thresh_edge_pass`: Moves Ben to `y=-62`, an 18-meter port-side offset. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaken_thresh_above_pass`: Moves Ben to `y=-66`, a 14-meter port-side offset. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaken_thresh_below_mirror_pass`: Mirrors the 22-meter offset with Ben on `y=-102`. Passes when CPA mode appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaken_thresh_edge_mirror_pass`: Moves mirrored Ben to `y=-96.5`, 16.5 meters from ownship. Passes when `standon_ot:starboard` appears before timeout while `COLLISION_TOTAL=0`.
-- `overtaken_thresh_above_mirror_pass`: Moves mirrored Ben to `y=-94`, 14 meters from ownship. Passes when `standon_ot:starboard` appears before timeout while `COLLISION_TOTAL=0`.
-- `giveway_bowdist_below_pass`: Starts eastbound ownship at `(-71,-48)` against northbound Ben at `(10,-130)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
-- `giveway_bowdist_edge_pass`: Moves ownship one meter forward to `(-70,-48)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
-- `giveway_bowdist_above_pass`: Moves ownship to `(-61,-48)`. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
-- `giveway_bowdist_below_mirror_pass`: Rotates the below fixture 180 degrees, with ownship at `(71,48)` and Ben at `(-10,130)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
-- `giveway_bowdist_edge_mirror_pass`: Rotates the edge fixture, placing ownship at `(70,48)`. Passes when `giveway:stern` index 20 appears before timeout while `COLLISION_TOTAL=0`.
-- `giveway_bowdist_above_mirror_pass`: Rotates the above fixture, placing ownship at `(61,48)`. Passes when `giveway:bow` index 22 appears before timeout while `COLLISION_TOTAL=0`.
-- `giveway_turngap_below_pass`: Starts ownship at `(-25.377,11.833)` on heading 115 at 1.4 m/s and Ben at `(41.652,-50.428)` on heading 330 at 1.3 m/s. Passes on index 20 with `XCN_BOW_DIST_BEN<10` and `XCN_BOW_TURN_GAP_BEN>10`, before timeout and with zero collisions.
-- `giveway_turngap_edge_pass`: Moves Ben slightly to `(41.600,-50.480)` and raises its speed to 1.4 m/s. Passes on index 20 with bow distance below 10 and turn gap above 10, before timeout and with zero collisions.
-- `giveway_turngap_above_pass`: Changes ownship to 1.2 m/s and moves Ben to `(39.46,-52.627)` at 1.4 m/s. Passes on index 22 with both bow distance and turn gap below 10, before timeout and with zero collisions.
-- `giveway_turngap_below_mirror_pass`: Rotates the below fixture 180 degrees, using ownship `(25.377,-11.833)` heading 295 and Ben `(-41.652,50.428)` heading 150. Passes on index 20 with bow distance below 10 and turn gap above 10, before timeout and with zero collisions.
-- `giveway_turngap_edge_mirror_pass`: Rotates the edge fixture and uses equal 1.4 m/s speeds. Passes on index 20 with bow distance below 10 and turn gap above 10, before timeout and with zero collisions.
-- `giveway_turngap_above_mirror_pass`: Rotates the above fixture, with 1.2 m/s ownship and 1.4 m/s Ben. Passes on index 22 with both bow distance and turn gap below 10, before timeout and with zero collisions.
-- `standon_unsurebow_below_pass`: Uses eastbound ownship at `(-55,-72)` and southbound Ben at `(10,-18)`. Passes when generic `standon:unsure` index 38 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_unsurebow_edge_pass`: Uses ownship at `(-60,-80)` and Ben at `(10,-30)`. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_unsurebow_above_pass`: Uses the execution-far fixture with ownship at `(-76,-80)` and Ben at `(10,-12)`. Passes when `standon:bow` index 32 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_band270_stern_pass`: Uses eastbound ownship at `(-70,-80)` and 1.2 m/s southbound Ben at `(10,15)`. Passes when `standon:stern` index 30 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_band350_unsurebow_pass`: Starts ownship at `(-35,-80)` and southbound Ben at `(10,-70)`. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_band350_unsurebow_alt_pass`: Moves Ben two meters north to `(10,-68)` in the same Band-350 fixture. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_band350_bow_pass`: Moves Ben to `(10,-60)` in the same Band-350 fixture. Passes when `standon:bow` index 32 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_band315_bow_pass`: Starts eastbound ownship at `(-35,-80)` and southbound Ben at `(0,-64)`. Passes when `standon:bow` index 32 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_southwest_unsurebow_pass`: Starts ownship eastbound at `(-30,-90)` and Ben southwest-bound from `(10,-82)` on heading 225. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_southwest_unsure_pass`: Moves the southwest-bound Ben start to `(10,-76)`. Passes when generic `standon:unsure` index 38 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_southwest_stern_pass`: Moves the southwest-bound Ben start to `(10,-70)`. Passes when `standon:stern` index 30 appears before timeout while `COLLISION_TOTAL=0`.
-- `outer_dist_below_pass`: Uses the southwest fixture with Ben starting at `(10,-70.5)`. Passes when `COLREGS_AVOID_MODE_BEN=standon:stern` appears before timeout while `COLLISION_TOTAL=0`.
-- `outer_dist_edge_pass`: Moves Ben to `(10,-70)`. Passes when `standon:stern` appears before timeout while `COLLISION_TOTAL=0`.
-- `outer_dist_above_pass`: Moves Ben to `(10,-69)`. Passes when CPA mode appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_inextremis_range_below_pass`: Uses the wide stand-on-stern geometry: ownship `(-70,-80)` and Ben `(10,15)`. Passes when stand-on-stern index 30 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_inextremis_range_edge_pass`: Uses ownship `(-30,-90)` and Ben `(-6,-87)` on heading 246. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_inextremis_range_above_pass`: Moves Ben half a meter to `(-6,-87.5)` in the same fixture. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_inextremis_cpa_below_pass`: Reuses the same wide stand-on-stern geometry as the range-below case. Passes when stand-on-stern index 30 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_inextremis_cpa_edge_pass`: Starts ownship at `(-30,-90)` and Ben at `(-6,-88)` on heading 244. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_inextremis_cpa_above_pass`: Moves Ben to `(-6,-86)` in the same CPA fixture. Passes when `standon:inextremis` index 31 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_ot_inextremis_range_below_pass`: Sends 1.6 m/s Ben from `(-105,-76)` toward 1.0 m/s ownship at `(-35,-80)`. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_ot_inextremis_range_edge_pass`: Moves Ben forward to `(-52,-76)`. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_ot_inextremis_range_above_pass`: Moves Ben forward to `(-50,-76)`. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_ot_inextremis_cpa_below_pass`: Uses Ben at `(-70,-64)`, a 16-meter lateral offset from ownship's `y=-80` track. Passes when `standon_ot:port` appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_ot_inextremis_cpa_edge_pass`: Uses Ben at `(-50,-75)`, five meters from ownship's track. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_ot_inextremis_cpa_above_pass`: Uses Ben at `(-50,-76)`, four meters from ownship's track. Passes when `standon_ot:inextremis` appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_band315_unsure_pass`: This explicitly selected exploratory case starts ownship at `(-30,-90)` and southwest-bound Ben at `(0,-82)`. Passes when generic `standon:unsure` index 38 appears before timeout while `COLLISION_TOTAL=0`.
-- `standon_band315_unsure_bow_pass`: This explicitly selected exploratory case moves Ben to `(0,-80)` and lowers its speed to 1.2 m/s. Passes when `standon:unsure_bow` index 36 appears before timeout while `COLLISION_TOTAL=0`.
+H02 grades classification and the named source predicate when that predicate is
+available from the live behavior. The timer is only a missing-classification
+deadline. Collision, encounter, CPA outcome, and arrival fields are diagnostic;
+completed-maneuver safety belongs to `H03-colregs_execution`.
+
+- `head_on_thresh_below_pass`: Ben's eight-degree heading offset produces head-on index 10 while the live contact-to-ownship relative bearing remains within 12 degrees of zero.
+- `head_on_thresh_edge_pass`: Ben's 12-degree configured heading offset produces CPA index 50 after the live contact-to-ownship relative bearing moves just outside the 12-degree head-on cutoff.
+- `head_on_thresh_above_pass`: Ben's 16-degree heading offset produces CPA index 50 with the live contact-to-ownship relative bearing outside the 12-degree cutoff.
+- `head_on_thresh_below_mirror_pass`: The mirrored 352-degree heading produces head-on index 10 while the live contact-to-ownship relative bearing remains within 12 degrees of zero.
+- `head_on_thresh_edge_mirror_pass`: The mirrored 348-degree heading produces CPA index 50 after the live contact-to-ownship relative bearing moves just outside the 12-degree cutoff.
+- `head_on_thresh_above_mirror_pass`: The mirrored 344-degree heading produces CPA index 50 with the live contact-to-ownship relative bearing outside the 12-degree cutoff.
+- `overtaking_thresh_below_pass`: A 36-meter port-side offset keeps the live contact-to-ownship relative bearing inside the 112.5–247.5-degree Rule 13 sector and produces `overtaking:port` index 43.
+- `overtaking_thresh_edge_pass`: A 37-meter port-side offset moves the live contact-to-ownship relative bearing above 247.5 degrees and produces `giveway:bow` index 22.
+- `overtaking_thresh_above_pass`: A 38-meter port-side offset remains above the 247.5-degree sector ceiling and produces `giveway:bow` index 22.
+- `overtaking_thresh_below_mirror_pass`: A 38-meter mirrored offset leaves the live contact-to-ownship relative bearing below 112.5 degrees and produces CPA index 50.
+- `overtaking_thresh_edge_mirror_pass`: A 37-meter mirrored offset remains below the 112.5-degree sector floor and produces CPA index 50.
+- `overtaking_thresh_above_mirror_pass`: A 36-meter mirrored offset moves the live contact-to-ownship relative bearing inside the Rule 13 sector and produces `overtaking:starboard` index 47.
+- `overtaken_thresh_below_pass`: Ben overtakes from a 22-meter port-side offset and the classifier remains in CPA instead of entering `standon_ot`.
+- `overtaken_thresh_edge_pass`: Moving Ben to an 18-meter port-side offset produces `standon_ot:port`.
+- `overtaken_thresh_above_pass`: Moving Ben to a 14-meter port-side offset produces `standon_ot:port`.
+- `overtaken_thresh_below_mirror_pass`: The mirrored 22-meter offset remains in CPA instead of entering `standon_ot`.
+- `overtaken_thresh_edge_mirror_pass`: The mirrored 16.5-meter offset produces `standon_ot:starboard`.
+- `overtaken_thresh_above_mirror_pass`: The mirrored 14-meter offset produces `standon_ot:starboard`.
+- `giveway_bowdist_below_pass`: The below fixture produces index 20 with `XCN_BOW_DIST_BEN<10` and `XCN_BOW_TURN_GAP_BEN>10`, proving neither bow-selection predicate is active.
+- `giveway_bowdist_edge_pass`: The edge fixture remains index 20 with bow distance below 10 and turn gap above 10.
+- `giveway_bowdist_above_pass`: The above fixture produces index 22 with bow distance above 10 and turn gap above 10, isolating the bow-distance branch.
+- `giveway_bowdist_below_mirror_pass`: The rotated below fixture remains index 20 with bow distance below 10 and turn gap above 10.
+- `giveway_bowdist_edge_mirror_pass`: The rotated edge fixture remains index 20 with bow distance below 10 and turn gap above 10.
+- `giveway_bowdist_above_mirror_pass`: The rotated above fixture produces index 22 with bow distance above 10 and turn gap above 10.
+- `giveway_turngap_below_pass`: The diagonal below fixture produces index 20 with bow distance below 10 and turn gap above 10.
+- `giveway_turngap_edge_pass`: The last calibrated stern-side fixture produces index 20 with bow distance below 10 and turn gap above 10.
+- `giveway_turngap_above_pass`: The diagonal above fixture produces index 22 with both bow distance and turn gap below 10, isolating the turn-gap branch.
+- `giveway_turngap_below_mirror_pass`: The rotated below fixture produces index 20 with bow distance below 10 and turn gap above 10.
+- `giveway_turngap_edge_mirror_pass`: The rotated edge fixture produces index 20 with bow distance below 10 and turn gap above 10.
+- `giveway_turngap_above_mirror_pass`: The rotated above fixture produces index 22 with both bow distance and turn gap below 10.
+- `standon_unsurebow_below_pass`: Eastbound ownship from `(-55,-72)` against southbound Ben from `(10,-18)` produces `standon:unsure` index 38.
+- `standon_unsurebow_edge_pass`: Ownship from `(-60,-80)` against Ben from `(10,-30)` produces `standon:unsure_bow` index 36.
+- `standon_unsurebow_above_pass`: The execution-far fixture with ownship `(-76,-80)` and Ben `(10,-12)` produces `standon:bow` index 32.
+- `standon_band270_stern_pass`: Eastbound ownship against 1.2 m/s southbound Ben from `(10,15)` produces `standon:stern` index 30 while the live ownship-to-contact relative bearing is in the source's 270–315-degree band.
+- `standon_band350_unsurebow_pass`: Ownship at `(-35,-80)` against southbound Ben from `(10,-70)` produces `standon:unsure_bow` index 36 while the live ownship-to-contact relative bearing is above 350 degrees.
+- `standon_band315_bow_pass`: Ownship at `(-35,-80)` against southbound Ben from `(0,-64)` produces `standon:bow` index 32 while the live ownship-to-contact relative bearing is in the source's 315–350-degree band.
+- `standon_southwest_unsurebow_pass`: Southwest-bound Ben from `(10,-82)` produces `standon:unsure_bow` index 36.
+- `standon_southwest_unsure_pass`: Moving southwest-bound Ben to `(10,-76)` produces `standon:unsure` index 38.
+- `standon_southwest_stern_pass`: Moving southwest-bound Ben to `(10,-70)` produces `standon:stern` index 30.
+- `standon_inextremis_range_below_pass`: The wide stand-on fixture produces `standon:stern` index 30 while live contact range remains above the 18-meter `max_util_cpa_dist`.
+- `standon_inextremis_range_edge_pass`: The edge fixture produces `standon:inextremis` index 31 with live contact range at or below 18 meters.
+- `standon_inextremis_range_above_pass`: Moving Ben half a meter produces `standon:inextremis` index 31 with live contact range at or below 18 meters.
+- `standon_ot_inextremis_range_below_pass`: Ben approaches from `(-105,-76)` and produces `standon_ot:port` while live contact range remains above 18 meters.
+- `standon_ot_inextremis_range_edge_pass`: Moving Ben to `(-52,-76)` produces `standon_ot:inextremis` with live contact range at or below 18 meters.
+- `standon_ot_inextremis_range_above_pass`: Moving Ben to `(-50,-76)` produces `standon_ot:inextremis` with live contact range at or below 18 meters.
+- `standon_band315_unsure_pass`: This explicitly selected exploratory case starts ownship at `(-30,-90)` and southwest-bound Ben at `(0,-82)`; it passes on `standon:unsure` index 38 before the missing-classification deadline.
+- `standon_band315_unsure_bow_pass`: This explicitly selected exploratory case moves Ben to `(0,-80)` at 1.2 m/s; it passes on `standon:unsure_bow` index 36 before the missing-classification deadline.
 
 ## Scope Boundary
 
@@ -278,8 +272,6 @@ Current implemented cases:
 - `standon_unsurebow_edge_pass`
 - `standon_unsurebow_above_pass`
 - `standon_band350_unsurebow_pass`
-- `standon_band350_unsurebow_alt_pass`
-- `standon_band350_bow_pass`
 
 What each implemented case means:
 - `standon_unsurebow_below_pass`: representative near-zero bow-crossing case
@@ -290,9 +282,6 @@ What each implemented case means:
   `standon:bow`
 - `standon_band350_unsurebow_pass`: Band #1 (`rel_bng > 350`) case pinned in
   `standon:unsure_bow`
-- `standon_band350_unsurebow_alt_pass`: alternate Band #1 geometry that lands
-  in the same branch and helps keep this narrow slice from being under-sampled
-- `standon_band350_bow_pass`: Band #1 case pinned in `standon:bow`
 
 Current implemented cases:
 - Band #2 (`315 < rel_bng <= 350`) cases pinned in each submode. Only the bow
@@ -319,15 +308,14 @@ Expected behavior:
   - `standon_unsurebow_above_pass` -> `standon:bow` (`32`)
 - Band #1 cases:
 - `standon_band350_unsurebow_pass` -> `standon:unsure_bow` (`36`)
-- `standon_band350_unsurebow_alt_pass` -> `standon:unsure_bow` (`36`)
-- `standon_band350_bow_pass` -> `standon:bow` (`32`)
 - `standon_band315_unsure_pass` -> `standon:unsure` (`38`)
 - `standon_band315_unsure_bow_pass` -> `standon:unsure_bow` (`36`)
 - `standon_band315_bow_pass` -> `standon:bow` (`32`)
 
 Status:
 - first representative `unsure -> unsure_bow -> bow` family implemented
-- Band #1 family implemented
+- one source-verified Band #1 representative implemented; two cases formerly
+  labeled Band #1 were removed after live telemetry placed them in Band #2
 - Band #2 bow representative implemented in the supported gate; its
   `unsure` and `unsure_bow` probes are retained as exploratory cases
 - only additional Band #3 bow/unsure/unsure_bow representatives remain removed
@@ -645,51 +633,36 @@ Current implemented cases:
 - `standon_inextremis_range_below_pass`
 - `standon_inextremis_range_edge_pass`
 - `standon_inextremis_range_above_pass`
-- `standon_inextremis_cpa_below_pass`
-- `standon_inextremis_cpa_edge_pass`
-- `standon_inextremis_cpa_above_pass`
 - `standon_ot_inextremis_range_below_pass`
 - `standon_ot_inextremis_range_edge_pass`
 - `standon_ot_inextremis_range_above_pass`
-- `standon_ot_inextremis_cpa_below_pass`
-- `standon_ot_inextremis_cpa_edge_pass`
-- `standon_ot_inextremis_cpa_above_pass`
 
 Expected behavior:
 - standon below threshold: `standon:stern`
 - standon edge/above threshold: `standon:inextremis`
-- standon CPA below threshold: `standon:stern`
-- standon CPA edge/above threshold: `standon:inextremis`
 - standon_ot below threshold: `standon_ot:port`
 - standon_ot edge/above threshold: `standon_ot:inextremis`
 
 Notes:
 - the supported split keeps the stock utility defaults fixed at
   `min_util_cpa_dist=10` and `max_util_cpa_dist=18`
+- each retained evaluator grades the live contact range on the correct side of
+  the 18-meter range predicate as well as the expected classification
 - the standon bank uses the turn-driven stern probes:
   `crossing_port_standon_stern_pass`,
   `crossing_port_standon_turn_unsure_stern_below_pass`,
   `crossing_port_standon_turn_unsure_stern_edge_pass`, and
   `crossing_port_standon_turn_unsure_stern_above_pass`
-- the standon CPA below case anchors on the stable stern seed:
-  `crossing_port_standon_stern_pass`
-- the standon CPA edge/above cases use the dedicated turn-based CPA pocket:
-  `crossing_port_standon_cpa_edge_pass` and
-  `crossing_port_standon_cpa_above_pass`
-- `crossing_port_standon_cpa_wide_pass` remains available as a calibration
-  alias if the wider CPA offset needs to be revisited later
 - the `standon_ot` range bank uses
   `overtaken_port_standon_range_far_pass`,
   `overtaken_port_standon_range_edge_pass`, and
   `overtaken_port_standon_range_close_pass`
 - `overtaken_port_standon_range_edge_pass` is the H02 range-edge pocket;
   `overtaken_port_standon_range_close_pass` is the above pocket
-- the `standon_ot` CPA bank uses
-  `overtaken_port_standon_cpa_wide_pass`,
-  `overtaken_port_standon_cpa_edge_pass`, and
-  `overtaken_port_standon_cpa_above_pass`
-- the `standon_ot` range and CPA banks are both clean geometry-backed
-  threshold families
+- the former CPA-labeled banks were removed from the gate because the current
+  behavior macro leaves `$[CPA]` unexpanded, and their below fixtures also
+  crossed the range predicate; they therefore could not isolate the named CPA
+  threshold
 - this family is more useful here than trying to force `inextremis` into `H01`
 
 Status:
@@ -727,8 +700,6 @@ Planned harness cases:
 - `standon_band315_bow_pass`
 - `standon_band270_stern_pass`
 - `standon_band350_unsurebow_pass`
-- `standon_band350_unsurebow_alt_pass`
-- `standon_band350_bow_pass`
 - `standon_southwest_unsurebow_pass`
 - `standon_southwest_unsure_pass`
 - `standon_southwest_stern_pass`
@@ -782,30 +753,19 @@ Notes:
   - edge and above cases cleanly enter `standon_ot:port` or
     `standon_ot:starboard`
 
-### 9. Outer Range Gate
+### 9. Removed Outer Range Gate
 
-Purpose:
-- verify the stock `pwt_outer_dist` cutoff using geometry only
-- keep the below/edge/above split honest without changing behavior
-  parameters
-
-Current implemented cases:
+Removed cases:
 - `outer_dist_below_pass`
 - `outer_dist_edge_pass`
 - `outer_dist_above_pass`
 
-Expected behavior:
-- below and edge: `standon:stern`
-- above: `cpa`
-
-Notes:
-- the geometry anchor is the southwest stern pocket that already sits almost
-  exactly on the 40-unit outer range cutoff
-- the below/edge/above split comes from a 0.5 m translation of that pocket,
-  not from any `BHV_PATCH` or utility-threshold override
-- `outer_dist_edge_pass` is the current southwest stern pocket
-- `outer_dist_above_pass` is the slightly more distant translation that
-  should fall back to `cpa` instead of holding stand-on
+The names claimed a split at `pwt_outer_dist=40`, but live telemetry showed the
+supposed above case did not grade until CPA appeared at roughly 14.5 meters.
+The below and edge cases graded around 38–40 meters, so the triplet neither
+sampled the named sides of the cutoff nor isolated one source predicate. All
+three were removed rather than preserving an unrelated classification change
+under an outer-range name.
 
 ### 10. Deferred Activation and Release Gates
 
@@ -876,9 +836,8 @@ Implemented and supported families:
 - Stand-on representative `unsure -> unsure_bow -> bow` progression:
   `standon_unsurebow_below_pass`, `standon_unsurebow_edge_pass`,
   `standon_unsurebow_above_pass`
-- Stand-on band350 representatives:
-  `standon_band350_unsurebow_pass`, `standon_band350_unsurebow_alt_pass`,
-  `standon_band350_bow_pass`
+- Stand-on band350 representative:
+  `standon_band350_unsurebow_pass`
 - Stand-on band315 supported representative:
   `standon_band315_bow_pass`
 - Stand-on band315 exploratory cases, available only through explicit
@@ -889,79 +848,39 @@ Implemented and supported families:
 - Stand-on stern-adjacent southwest family:
   `standon_southwest_unsurebow_pass`, `standon_southwest_unsure_pass`,
   `standon_southwest_stern_pass`
-- Outer range gate:
-  `outer_dist_below_pass`, `outer_dist_edge_pass`, `outer_dist_above_pass`
 - In-extremis entry family:
   `standon_inextremis_range_below_pass`, `standon_inextremis_range_edge_pass`,
-  `standon_inextremis_range_above_pass`, `standon_inextremis_cpa_below_pass`,
-  `standon_inextremis_cpa_edge_pass`, `standon_inextremis_cpa_above_pass`,
+  `standon_inextremis_range_above_pass`,
   `standon_ot_inextremis_range_below_pass`,
   `standon_ot_inextremis_range_edge_pass`,
-  `standon_ot_inextremis_range_above_pass`,
-  `standon_ot_inextremis_cpa_below_pass`,
-  `standon_ot_inextremis_cpa_edge_pass`,
-  `standon_ot_inextremis_cpa_above_pass`
+  `standon_ot_inextremis_range_above_pass`
 
 ## Current Assertion Style
 
-- head-on below expects live `COLREGS_AVOID_IX_BEN = 10`
-- head-on edge/above expect transition to `COLREGS_AVOID_IX_BEN = 50`
-- mirrored head-on cases reuse the same expected index behavior with the
-  contact mirrored to the opposite side of the centerline
-- overtaking upper-bound family expects:
-  - `43` below the cutoff
-  - `22` at and above the cutoff
-- overtaking lower-bound mirror family expects:
-  - `50` below and near the cutoff
-  - `47` above the cutoff
-- overtaken entry family expects:
-  - `cpa` below the cutoff
-  - `standon_ot:port` or `standon_ot:starboard` at and above the cutoff
-- give-way bow-distance family expects:
-  - `20` below and at the current edge
-  - `22` above the cutoff
-  - the rotated mirror family reuses the same expected split:
-  - `20` below and at the current edge
-  - `22` above the cutoff
-- give-way turn-gap family expects:
-  - `20` below and at the current edge
-  - `22` above the cutoff
-  - the rotated mirror family reuses the same split
-- stand-on representative additions expect:
-  - `standon_band315_bow_pass` -> `32`
-  - `standon_band270_stern_pass` -> `30`
-  - `standon_band350_unsurebow_pass` -> `36`
-  - `standon_band350_unsurebow_alt_pass` -> `36`
-  - `standon_band350_bow_pass` -> `32`
-  - `standon_southwest_unsurebow_pass` -> `36`
-  - `standon_southwest_unsure_pass` -> `38`
-  - `standon_southwest_stern_pass` -> `30`
-- outer range gate expects:
-  - `outer_dist_below_pass` -> `30`
-  - `outer_dist_edge_pass` -> `30`
-  - `outer_dist_above_pass` -> `cpa`
-- in-extremis additions expect:
-  - `standon_inextremis_range_below_pass` -> `30`
-  - `standon_inextremis_range_edge_pass` -> `31`
-  - `standon_inextremis_range_above_pass` -> `31`
-  - `standon_inextremis_cpa_below_pass` -> `30`
-  - `standon_inextremis_cpa_edge_pass` -> `31`
-  - `standon_inextremis_cpa_above_pass` -> `31`
-  - `standon_ot_inextremis_range_below_pass` -> `standon_ot:port`
-  - `standon_ot_inextremis_range_edge_pass` -> `standon_ot:inextremis`
-  - `standon_ot_inextremis_range_above_pass` -> `standon_ot:inextremis`
-  - `standon_ot_inextremis_cpa_below_pass` -> `standon_ot:port`
-  - `standon_ot_inextremis_cpa_edge_pass` -> `standon_ot:inextremis`
-  - `standon_ot_inextremis_cpa_above_pass` -> `standon_ot:inextremis`
+Every supported case requires its exact COLREGS mode or index before the
+missing-classification deadline. Where the current behavior exposes the source
+predicate, the evaluator requires that predicate too:
 
-## Planned Assertion Style
+- head-on cases grade the live contact-to-ownship relative bearing against the
+  12-degree absolute cutoff
+- overtaking cases grade the live contact-to-ownship relative bearing against
+  the 112.5–247.5-degree Rule 13 sector
+- give-way bow-distance and turn-gap cases grade both derived distances against
+  the ten-meter cutoff
+- named stand-on bearing cases grade the live ownship-to-contact bearing inside
+  the claimed source band
+- retained in-extremis range cases grade live contact range against
+  `max_util_cpa_dist=18`
 
-- expected `COLREGS_AVOID_MODE_<CONTACT>`
-- expected `COLREGS_AVOID_IX_<CONTACT>`
-- stable no-collision outcome
-- deterministic resolution by timeout, not `actual=missing`
-- optional anti-thrashing checks when a case is close enough to a threshold
-  that oscillation is a real regression risk
+The overtaken-vessel CPA gate and most stand-on submode progressions remain
+classification assertions because current telemetry does not expose the
+current CPA or contact-crossing distance used by those branches. That
+limitation is explicit in the review plan rather than hidden behind proxy
+checks.
+
+The timer is only a failure deadline. Collision, arrival, encounter, and
+completed-maneuver CPA fields are diagnostic in H02; H03 owns execution-safety
+claims.
 
 ## Coverage Priorities
 
@@ -1004,19 +923,17 @@ the stem launcher uses a bounded query to confirm that `pHelmIvP` and
 `pContactMgrV20` have both started and that the helm has iterated in each
 vehicle community.
 
-The supported stand-on group passed three consecutive jobs-4 matrices in each
-mode: 33/33 minimal cases in 33, 32, and 33 seconds, and 33/33 full cases in
-39, 39, and 41 seconds. The overtaking group passed three consecutive minimal
-jobs-4 matrices (18/18 total) after its evaluators were tied to the expected
-classification and their timeout budget was raised from 75 to 90 simulated
-seconds. The complete 56-case jobs-4 gate then passed in both modes: 177
-seconds minimal and 203 seconds full, a 12.8% wall-time reduction. These are
-functional wall-time validations, not CPU measurements.
+After the predicate review, all 45 default cases passed with four rolling jobs
+in both logging modes: 145 seconds minimal and 169 seconds full. The same
+matrix also prepared cleanly in `--just_make` mode. Deliberate mutations proved
+the added conditions are active: narrowing the head-on bearing window failed a
+case that still produced index 10, and raising the give-way bow-distance cutoff
+failed a case that still produced index 22.
 
 The two Band 315 moving-boundary probes remain explicitly runnable as
 `--case=standon_band315_unsure_pass` and
 `--case=standon_band315_unsure_bow_pass`, but they are excluded from the
 default and `standon` group gates because retained logs showed that the
 expected classifications were not stable under normal active-contact motion.
-No case is deleted, no solo-slot scheduler workaround is used, and no behavior
-source is changed.
+The removed gate cases remain as stem geometries or evaluator artifacts for
+future calibration; no upstream behavior source was changed.

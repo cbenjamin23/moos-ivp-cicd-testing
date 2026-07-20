@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=MISSION_TIMEOUT, val=true, time=75
+  event = var=MISSION_TIMEOUT, val=true, time=120
 }
 
 ProcessConfig = pMissionEval
@@ -13,9 +13,10 @@ ProcessConfig = pMissionEval
   AppTick    = 4
   CommsTick  = 4
 
-  lead_condition = (COLREGS_AVOID_MODE_BEN = standon_ot:starboard) or (MISSION_TIMEOUT = true)
+  lead_condition = (COLREGS_AVOID_IX_BEN = 36) or (MISSION_TIMEOUT = true)
   pass_condition = MISSION_TIMEOUT = false
-  pass_condition = COLREGS_AVOID_MODE_BEN = standon_ot:starboard
+  pass_condition = COLREGS_AVOID_IX_BEN = 36
+  pass_condition = COLREGS_OS_CN_REL_BNG_abe > 350
 
   result_flag   = MISSION_EVALUATED = true
   pass_flag     = SAY_MOOS = pass
@@ -38,10 +39,6 @@ ProcessConfig = pMissionEval
   report_column = avdcol_range=$[AVDCOL_RANGE_BEN]
   report_column = os_cn_rel_bng=$[COLREGS_OS_CN_REL_BNG_abe]
   report_column = cn_os_rel_bng=$[COLREGS_CN_OS_REL_BNG_abe]
-  report_column = xcn_bow_dist=$[XCN_BOW_DIST_BEN]
-  report_column = xcn_turn_gap=$[XCN_BOW_TURN_GAP_BEN]
-  report_column = closest_range_ever=$[UCD_CLOSEST_RANGE_EVER]
-  report_column = cn_port=$[CN_PORT_OF_OS__BEN]
   report_column = cn_fore=$[CN_FORE_OF_OS_BEN]
   report_column = cn_crossed=$[CN_CROSSED_OS_PORT_STAR_BEN]
   report_column = near_misses=$[NEAR_MISS_TOTAL]

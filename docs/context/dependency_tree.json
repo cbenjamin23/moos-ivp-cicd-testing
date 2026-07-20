@@ -2523,7 +2523,7 @@
         "path": "missions/colregs_missions/colregs_unit"
       },
       "patches": {
-        "file_count": 27
+        "file_count": 30
       },
       "path": "harnesses/colregs_harnesses/H02-colregs_thresholds",
       "perf_profile": "",
@@ -2549,7 +2549,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 56,
+        "case_count": 45,
         "case_parse_error": "",
         "cases": [
           "head_on_thresh_below_pass",
@@ -2587,27 +2587,16 @@
           "standon_unsurebow_above_pass",
           "standon_band270_stern_pass",
           "standon_band350_unsurebow_pass",
-          "standon_band350_unsurebow_alt_pass",
-          "standon_band350_bow_pass",
           "standon_band315_bow_pass",
           "standon_southwest_unsurebow_pass",
           "standon_southwest_unsure_pass",
           "standon_southwest_stern_pass",
-          "outer_dist_below_pass",
-          "outer_dist_edge_pass",
-          "outer_dist_above_pass",
           "standon_inextremis_range_below_pass",
           "standon_inextremis_range_edge_pass",
           "standon_inextremis_range_above_pass",
-          "standon_inextremis_cpa_below_pass",
-          "standon_inextremis_cpa_edge_pass",
-          "standon_inextremis_cpa_above_pass",
           "standon_ot_inextremis_range_below_pass",
           "standon_ot_inextremis_range_edge_pass",
-          "standon_ot_inextremis_range_above_pass",
-          "standon_ot_inextremis_cpa_below_pass",
-          "standon_ot_inextremis_cpa_edge_pass",
-          "standon_ot_inextremis_cpa_above_pass"
+          "standon_ot_inextremis_range_above_pass"
         ],
         "helpers": [
           "scripts/moos_scoped_teardown.sh"
@@ -7023,10 +7012,10 @@
       ".sh": 365,
       ".txt": 302,
       ".xbhv": 511,
-      ".xmoos": 1315,
+      ".xmoos": 1318,
       "[none]": 7
     },
-    "harness_patch_count": 1721,
+    "harness_patch_count": 1724,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

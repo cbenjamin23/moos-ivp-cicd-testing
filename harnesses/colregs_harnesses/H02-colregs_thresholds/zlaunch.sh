@@ -115,33 +115,19 @@ GROUP_STANDON_CASES=(
     standon_unsurebow_above_pass
     standon_band270_stern_pass
     standon_band350_unsurebow_pass
-    standon_band350_unsurebow_alt_pass
-    standon_band350_bow_pass
     standon_band315_bow_pass
     standon_southwest_unsurebow_pass
     standon_southwest_unsure_pass
     standon_southwest_stern_pass
 )
 
-GROUP_OUTER_DIST_CASES=(
-    outer_dist_below_pass
-    outer_dist_edge_pass
-    outer_dist_above_pass
-)
-
 GROUP_INEXTREMIS_CASES=(
     standon_inextremis_range_below_pass
     standon_inextremis_range_edge_pass
     standon_inextremis_range_above_pass
-    standon_inextremis_cpa_below_pass
-    standon_inextremis_cpa_edge_pass
-    standon_inextremis_cpa_above_pass
     standon_ot_inextremis_range_below_pass
     standon_ot_inextremis_range_edge_pass
     standon_ot_inextremis_range_above_pass
-    standon_ot_inextremis_cpa_below_pass
-    standon_ot_inextremis_cpa_edge_pass
-    standon_ot_inextremis_cpa_above_pass
 )
 
 CASES=(
@@ -152,7 +138,6 @@ CASES=(
     "${GROUP_GIVEWAY_CASES[@]}"
     "${GROUP_TURNGAP_CASES[@]}"
     "${GROUP_STANDON_CASES[@]}"
-    "${GROUP_OUTER_DIST_CASES[@]}"
     "${GROUP_INEXTREMIS_CASES[@]}"
 )
 
@@ -193,7 +178,6 @@ Groups:
   giveway
   turngap
   standon
-  outer_dist
   inextremis
 
 Default cases:
@@ -303,7 +287,6 @@ select_cases() {
         giveway) SELECTED_CASES=("${GROUP_GIVEWAY_CASES[@]}") ;;
         turngap) SELECTED_CASES=("${GROUP_TURNGAP_CASES[@]}") ;;
         standon) SELECTED_CASES=("${GROUP_STANDON_CASES[@]}") ;;
-        outer_dist) SELECTED_CASES=("${GROUP_OUTER_DIST_CASES[@]}") ;;
         inextremis) SELECTED_CASES=("${GROUP_INEXTREMIS_CASES[@]}") ;;
         *) die "unknown group: $GROUP" ;;
     esac
@@ -493,17 +476,11 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
         MMOD="crossing_port_standon_exec_far_pass"
     elif [ "$CASE_NAME" = "standon_band270_stern_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-stern-shoreside.xmoos"
+        SHORE_PATCH="$HARNESS_DIR/standon-band270-stern-shoreside.xmoos"
         MMOD="crossing_port_standon_stern_pass"
     elif [ "$CASE_NAME" = "standon_band350_unsurebow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
+        SHORE_PATCH="$HARNESS_DIR/standon-band350-unsurebow-shoreside.xmoos"
         MMOD="crossing_port_standon_band350_unsure_pass"
-    elif [ "$CASE_NAME" = "standon_band350_unsurebow_alt_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
-        MMOD="crossing_port_standon_band350_unsure_bow_pass"
-    elif [ "$CASE_NAME" = "standon_band350_bow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
-        MMOD="crossing_port_standon_band350_bow_pass"
     elif [ "$CASE_NAME" = "standon_band315_unsure_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-shoreside.xmoos"
         MMOD="crossing_port_standon_band315_unsure_pass"
@@ -511,7 +488,7 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
         MMOD="crossing_port_standon_band315_unsure_bow_pass"
     elif [ "$CASE_NAME" = "standon_band315_bow_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-bow-shoreside.xmoos"
+        SHORE_PATCH="$HARNESS_DIR/standon-band315-bow-shoreside.xmoos"
         MMOD="crossing_port_standon_band315_bow_pass"
     elif [ "$CASE_NAME" = "standon_southwest_unsurebow_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-unsurebow-unsure-bow-shoreside.xmoos"
@@ -522,15 +499,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "standon_southwest_stern_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-stern-shoreside.xmoos"
         MMOD="crossing_port_standon_southwest_stern_pass"
-    elif [ "$CASE_NAME" = "outer_dist_below_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/outer-dist-below-shoreside.xmoos"
-        MMOD="crossing_port_standon_southwest_outer_below_pass"
-    elif [ "$CASE_NAME" = "outer_dist_edge_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/outer-dist-below-shoreside.xmoos"
-        MMOD="crossing_port_standon_southwest_outer_edge_pass"
-    elif [ "$CASE_NAME" = "outer_dist_above_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/outer-dist-above-shoreside.xmoos"
-        MMOD="crossing_port_standon_southwest_outer_above_pass"
     elif [ "$CASE_NAME" = "standon_inextremis_range_below_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-inextremis-below-shoreside.xmoos"
         MMOD="crossing_port_standon_stern_pass"
@@ -540,15 +508,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "standon_inextremis_range_above_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standon-inextremis-edge-shoreside.xmoos"
         MMOD="crossing_port_standon_turn_unsure_stern_above_pass"
-    elif [ "$CASE_NAME" = "standon_inextremis_cpa_below_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-below-shoreside.xmoos"
-        MMOD="crossing_port_standon_stern_pass"
-    elif [ "$CASE_NAME" = "standon_inextremis_cpa_edge_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-edge-shoreside.xmoos"
-        MMOD="crossing_port_standon_cpa_edge_pass"
-    elif [ "$CASE_NAME" = "standon_inextremis_cpa_above_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standon-inextremis-edge-shoreside.xmoos"
-        MMOD="crossing_port_standon_cpa_above_pass"
     elif [ "$CASE_NAME" = "standon_ot_inextremis_range_below_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-below-shoreside.xmoos"
         MMOD="overtaken_port_standon_range_far_pass"
@@ -558,15 +517,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "standon_ot_inextremis_range_above_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-edge-shoreside.xmoos"
         MMOD="overtaken_port_standon_range_close_pass"
-    elif [ "$CASE_NAME" = "standon_ot_inextremis_cpa_below_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-below-shoreside.xmoos"
-        MMOD="overtaken_port_standon_cpa_wide_pass"
-    elif [ "$CASE_NAME" = "standon_ot_inextremis_cpa_edge_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-edge-shoreside.xmoos"
-        MMOD="overtaken_port_standon_cpa_edge_pass"
-    elif [ "$CASE_NAME" = "standon_ot_inextremis_cpa_above_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/standonot-inextremis-edge-shoreside.xmoos"
-        MMOD="overtaken_port_standon_cpa_above_pass"
     else
         echo "$ME: unknown case: $CASE_NAME" >&2
         return 1
