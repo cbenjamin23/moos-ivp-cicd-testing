@@ -302,6 +302,7 @@ get_case_patch() {
 prepare_case() {
     local case_name="$1"
     local workdir="$2"
+    local minimal_policy=none
 
     get_case_patch "$case_name" || return 1
     [ -f "$CASE_PATCH" ] || return 1
@@ -315,11 +316,61 @@ prepare_case() {
     nspatch --stem="$workdir/meta_shoreside.moos" \
         "$CASE_PATCH" --targ="$workdir/meta_shoreside.moosx" || return 1
     if [ "$LOG_MODE" = minimal ]; then
+        if [ "$case_name" = range_normalization_collision_pass ]; then
+            minimal_policy=appcast
+        fi
         (
             cd "$workdir" || exit 1
-            ./prepare_logging_mode.sh "$LOG_MODE" none meta_shoreside.moosx
+            ./prepare_logging_mode.sh "$LOG_MODE" "$minimal_policy" meta_shoreside.moosx
         ) || return 1
     fi
+}
+
+latest_collob_appcast() {
+    local workdir="$1"
+    local alog candidate latest=""
+    while IFS= read -r -d '' alog; do
+        candidate=$(awk '
+            $2 == "APPCAST" && $3 == "uFldCollObDetect" &&
+            index($0, "proc=uFldCollObDetect") {line=$0}
+            END {print line}
+        ' "$alog")
+        [ -z "$candidate" ] || latest="$candidate"
+    done < <(find "$workdir" -type f -name '*.alog' -print0)
+    printf '%s\n' "$latest"
+}
+
+collob_effective_ranges() {
+    local line="$1"
+    local text
+    [ -n "$line" ] || return 1
+    text=${line//!@/$'\n'}
+    awk '
+        /^[[:space:]]*Collision Dist:[[:space:]]*/ {
+            value=$0
+            sub(/^[[:space:]]*Collision Dist:[[:space:]]*/, "", value)
+            collision=value
+            collision_count++
+        }
+        /^[[:space:]]*Near Miss Dist:[[:space:]]*/ {
+            value=$0
+            sub(/^[[:space:]]*Near Miss Dist:[[:space:]]*/, "", value)
+            near_miss=value
+            near_miss_count++
+        }
+        /^[[:space:]]*Encounter Dist:[[:space:]]*/ {
+            value=$0
+            sub(/^[[:space:]]*Encounter Dist:[[:space:]]*/, "", value)
+            encounter=value
+            encounter_count++
+        }
+        END {
+            if((collision_count != 1) || (near_miss_count != 1) ||
+               (encounter_count != 1))
+                exit 1
+            printf "%s/%s/%s\n", collision, near_miss, encounter
+        }
+    ' <<< "$text"
 }
 
 write_result() {
@@ -327,7 +378,7 @@ write_result() {
     local result_file="$2"
     local launch_rc="$3"
     local workdir="$4"
-    local line grade_count mission_grade mission_rows provenance
+    local line grade_count mission_grade mission_rows provenance appcast_line effective_ranges
 
     if [ "$JUST_MAKE" = yes ]; then
         if [ "$launch_rc" -eq 0 ]; then
@@ -365,6 +416,20 @@ write_result() {
         provenance=$(runner_provenance "$line")
         printf 'case=%s grade=fail reason=launch_error launch_rc=%s%s\n' \
             "$case_name" "$launch_rc" "${provenance:+ $provenance}" > "$result_file"
+        return 0
+    fi
+    if [ "$case_name" = range_normalization_collision_pass ] && [ "$mission_grade" = pass ]; then
+        appcast_line=$(latest_collob_appcast "$workdir")
+        effective_ranges=$(collob_effective_ranges "$appcast_line" || true)
+        if [ "$effective_ranges" != 6/6/6 ]; then
+            provenance=$(runner_provenance "$line")
+            printf 'case=%s grade=fail reason=appcast_evidence_mismatch expected_ranges=6/6/6 observed_ranges=%s%s\n' \
+                "$case_name" "${effective_ranges:-missing}" "${provenance:+ $provenance}" > "$result_file"
+            return 0
+        fi
+        line=$(without_case_field "$line")
+        printf 'case=%s %s effective_ranges=%s appcast_check=pass\n' \
+            "$case_name" "$line" "$effective_ranges" > "$result_file"
         return 0
     fi
     line=$(without_case_field "$line")

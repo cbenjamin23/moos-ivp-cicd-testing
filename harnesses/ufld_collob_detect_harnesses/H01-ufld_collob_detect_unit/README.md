@@ -26,9 +26,10 @@ owns the substantive pass/fail verdict.
 - `near_miss_upper_macro_flag_pass` Configures `near_miss_flag=COD_NEAR_$UP_VNAME=$ID:$MISS_CNT` and completes Alpha's 3-meter near miss with `obs`; passes when the expanded variable and value are exactly `COD_NEAR_ALPHA=obs:1`.
 - `collision_boundary_counts_near_pass` Completes an encounter whose minimum distance is exactly the 1-meter `collision_dist`; passes when near-miss and encounter flags report `alpha:obs:1:1` and no collision flag is published, demonstrating the collision comparison is strict `<`.
 - `near_boundary_counts_encounter_pass` Completes an encounter whose minimum distance is exactly the 5-meter `near_miss_dist`; passes when the encounter flag reports `alpha:obs:5:1` and neither near-miss nor collision flags are published, demonstrating the near-miss comparison is strict `<`.
-- `named_clear_only_removes_target_pass` Creates `obs1` near `x=0` and `obs2` near `x=40`, clears only `obs1` after both are old enough for deletion, then completes a 0.5-meter collision with `obs2`; passes when the exact collision and encounter flags still identify `obs2`.
-- `range_normalization_collision_pass` Configures collision, near-miss, and encounter distances as `6`, `3`, and `4`, then moves Alpha to 5.5 meters from the obstacle and back out; passes when exact collision and encounter flags report `alpha:obs:5.5:1`, demonstrating the outer encounter distance was expanded enough to admit the collision-range event.
+- `named_clear_only_removes_target_pass` Creates `obs1` near `x=0` and `obs2` near `x=40`, clears only `obs1` after both are old enough for deletion, then drives Alpha through `obs2` and the former `obs1` location; passes when the app-owned collision and encounter counts remain one and both exact flags identify only `obs2` at 0.5 meters.
+- `range_normalization_collision_pass` Configures collision, near-miss, and encounter distances as `6`, `3`, and `4`, then moves Alpha to 5.5 meters from the obstacle and back out; passes when exact collision and encounter flags report `alpha:obs:5.5:1` and the app's `Configuration` AppCast reports the effective distances as `6/6/6`.
 
-Logging is minimal by default and runs without `pLogger`. Use `--log=full` for
-the complete matrix, or combine it with `--case=NAME` for one fully logged
-diagnostic case.
+Logging is minimal by default and normally runs without `pLogger`; the range
+normalization case retains only `APPCAST` because its verdict grades the app's
+effective configuration. Use `--log=full` for the complete matrix, or combine
+it with `--case=NAME` for one fully logged diagnostic case.

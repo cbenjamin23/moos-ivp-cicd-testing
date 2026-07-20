@@ -32,7 +32,10 @@ ProcessConfig = uTimerScript
   event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=65,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=5.7
   event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=45.5,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=6.2
   event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=65,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=6.8
-  event = var=TEST_EVAL_READY, val=true, time=8.5
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=-25,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=7.2
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=-5.5,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=7.7
+  event = var=NODE_REPORT, val="NAME=alpha,TYPE=KAYAK,GROUP=red,UTC_TIME=100,X=-25,Y=0,LAT=43.825300,LON=-70.330400,SPD=0,HDG=0", time=8.3
+  event = var=TEST_EVAL_READY, val=true, time=9.5
 }
 
 ProcessConfig = pMissionEval

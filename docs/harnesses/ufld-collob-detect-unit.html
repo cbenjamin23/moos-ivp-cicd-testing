@@ -159,13 +159,13 @@
 
         <article class="case-row">
           <code>named_clear_only_removes_target_pass</code>
-          <p>Creates obs1 near x=0 and obs2 near x=40, clears only obs1 after both are old enough for deletion, then completes a 0.5-meter collision with obs2; passes when the exact collision and encounter flags still identify obs2.</p>
+          <p>Creates obs1 near x=0 and obs2 near x=40, clears only obs1 after both are old enough for deletion, then drives Alpha through obs2 and the former obs1 location; passes when the app-owned collision and encounter counts remain one and both exact flags identify only obs2 at 0.5 meters.</p>
         </article>
 
 
         <article class="case-row">
           <code>range_normalization_collision_pass</code>
-          <p>Configures collision, near-miss, and encounter distances as 6, 3, and 4, then moves Alpha to 5.5 meters from the obstacle and back out; passes when exact collision and encounter flags report alpha:obs:5.5:1, demonstrating the outer encounter distance was expanded enough to admit the collision-range event.</p>
+          <p>Configures collision, near-miss, and encounter distances as 6, 3, and 4, then moves Alpha to 5.5 meters from the obstacle and back out; passes when exact collision and encounter flags report alpha:obs:5.5:1 and the app&#x27;s Configuration AppCast reports the effective distances as 6/6/6.</p>
         </article>
 
       </div>
