@@ -2,7 +2,7 @@ ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 100
 
-  timer_args = --verbose=false
+  timer_args = --alias=uTimerExtraArg
 
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
@@ -18,6 +18,15 @@ ProcessConfig = uTimerExtra
   AppTick   = 4
   CommsTick = 4
 
+  event = var=ANTLER_EXTRA_FALLBACK, val=true, time=1.0
+  event = var=TEST_EVAL_READY, val=true, time=4.0
+}
+
+ProcessConfig = uTimerExtraArg
+{
+  AppTick   = 4
+  CommsTick = 4
+
   event = var=ANTLER_EXTRA_FLAG, val=true, time=1.0
   event = var=TEST_EVAL_READY, val=true, time=4.0
 }
@@ -29,6 +38,7 @@ ProcessConfig = pMissionEval
 
   lead_condition = TEST_EVAL_READY = true
   pass_condition = ANTLER_EXTRA_FLAG = true
+  fail_condition = ANTLER_EXTRA_FALLBACK = true
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pantler_unit
@@ -39,6 +49,7 @@ ProcessConfig = pMissionEval
   report_column    = mmod=$[MMOD]
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = extra=$[ANTLER_EXTRA_FLAG]
+  report_column    = fallback=$[ANTLER_EXTRA_FALLBACK]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }

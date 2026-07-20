@@ -111,13 +111,13 @@
 
         <article class="case-row">
           <code>pantler_system_path_launch_pass</code>
-          <p>Starts uTimerScript as uTimerSystemPath with PATH=SYSTEM, exercising explicit system-path lookup; passes when the aliased process posts ANTLER_PATH_FLAG=true and the evaluation trigger.</p>
+          <p>Sets ANTLER&#x27;s default ExecutablePath to an empty case directory but starts uTimerSystemPath with PATH=SYSTEM, testing the per-process system-path override; passes when that child posts ANTLER_PATH_FLAG=true before an independently launched deadline process posts the evaluation trigger.</p>
         </article>
 
 
         <article class="case-row">
           <code>pantler_extra_params_launch_pass</code>
-          <p>Defines timer_args=--verbose=false and starts uTimerScript as uTimerExtra with ExtraProcessParams=timer_args, exercising named extra-argument forwarding; passes when the aliased process posts ANTLER_EXTRA_FLAG=true and the evaluation trigger.</p>
+          <p>Defines timer_args=--alias=uTimerExtraArg while the ANTLER Run entry names uTimerExtra, testing named extra-argument forwarding; passes when the child selects ProcessConfig=uTimerExtraArg, posts ANTLER_EXTRA_FLAG=true, and never posts the fallback configuration&#x27;s ANTLER_EXTRA_FALLBACK=true.</p>
         </article>
 
       </div>

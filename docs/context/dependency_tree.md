@@ -124,7 +124,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `pshare_h01` | `pshare` | `harnesses/pshare_harnesses/H01-pshare_unit/zlaunch.sh` | `missions/pshare_missions/pshare_unit` | 13 | `uTimerBlocked` | `pshare-unit` |
 | `pshare_h02` | `pshare` | `harnesses/pshare_harnesses/H02-pshare_topology/zlaunch.sh` | `missions/pshare_missions/pshare_topology` | 12 | `ShareAlpha` | `pshare-topology` |
 | `plogger_h01` | `plogger` | `harnesses/plogger_harnesses/H01-plogger_unit/zlaunch.sh` | `missions/plogger_missions/plogger_unit` | 10 | - | `plogger-unit` |
-| `pantler_h01` | `pantler` | `harnesses/pantler_harnesses/H01-pantler_unit/zlaunch.sh` | `missions/pantler_missions/pantler_unit` | 6 | `uTimerAlias`, `uTimerAllowed`, `uTimerExtra`, `uTimerOne` | `pantler-unit` |
+| `pantler_h01` | `pantler` | `harnesses/pantler_harnesses/H01-pantler_unit/zlaunch.sh` | `missions/pantler_missions/pantler_unit` | 6 | `uTimerAlias`, `uTimerAllowed`, `uTimerExtra`, `uTimerExtraArg` | `pantler-unit` |
 | `pmissioneval_h01` | `pmissioneval` | `harnesses/mission_utility_harnesses/H01-pmissioneval_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 17 | - | `pmissioneval-unit` |
 | `pmissionhash_h01` | `pmissionhash` | `harnesses/mission_utility_harnesses/H02-pmissionhash_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 4 | - | `pmissionhash-unit` |
 | `umayfinish_h01` | `umayfinish` | `harnesses/mission_utility_harnesses/H03-umayfinish_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 4 | - | `umayfinish-unit` |
@@ -195,7 +195,9 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `uTimerAllowed`: `pantler_h01`
 - `uTimerBlocked`: `pantler_h01`, `pshare_h01`
 - `uTimerExtra`: `pantler_h01`
+- `uTimerExtraArg`: `pantler_h01`
 - `uTimerOne`: `pantler_h01`
+- `uTimerPathDeadline`: `pantler_h01`
 - `uTimerSystemPath`: `pantler_h01`
 - `uTimerTwo`: `pantler_h01`
 - `uXMS`: `uxms_h01`

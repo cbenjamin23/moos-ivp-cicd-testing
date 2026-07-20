@@ -1,14 +1,16 @@
 ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 100
+  ExecutablePath = ./pantler_empty_bin
 
-  Run = MOOSDB        @ NewConsole = false
-  Run = pRealm        @ NewConsole = false
-  Run = pLogger       @ NewConsole = false
+  Run = MOOSDB        @ NewConsole = false, PATH=SYSTEM
+  Run = pRealm        @ NewConsole = false, PATH=SYSTEM
+  Run = pLogger       @ NewConsole = false, PATH=SYSTEM
   Run = uTimerScript  @ NewConsole = false, PATH=SYSTEM ~ uTimerSystemPath
-  Run = pMissionEval  @ NewConsole = false
-  Run = pAutoPoke     @ NewConsole = false
-  Run = pMissionHash  @ NewConsole = false
+  Run = uTimerScript  @ NewConsole = false, PATH=SYSTEM ~ uTimerPathDeadline
+  Run = pMissionEval  @ NewConsole = false, PATH=SYSTEM
+  Run = pAutoPoke     @ NewConsole = false, PATH=SYSTEM
+  Run = pMissionHash  @ NewConsole = false, PATH=SYSTEM
 }
 
 ProcessConfig = uTimerSystemPath
@@ -17,6 +19,13 @@ ProcessConfig = uTimerSystemPath
   CommsTick = 4
 
   event = var=ANTLER_PATH_FLAG, val=true, time=1.0
+}
+
+ProcessConfig = uTimerPathDeadline
+{
+  AppTick   = 4
+  CommsTick = 4
+
   event = var=TEST_EVAL_READY, val=true, time=4.0
 }
 

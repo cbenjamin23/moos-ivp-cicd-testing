@@ -315,6 +315,10 @@ apply_case_overlays() {
         nspatch --stem="$workdir/meta_shoreside.moos" \
             "$CASE_SHORE_PATCH" --targ="$workdir/meta_shoreside.moosx" || return 1
     fi
+
+    if [ "$case_name" = pantler_system_path_launch_pass ]; then
+        mkdir -p "$workdir/pantler_empty_bin" || return 1
+    fi
 }
 
 prepare_case() {

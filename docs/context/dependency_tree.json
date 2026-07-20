@@ -4030,7 +4030,9 @@
         "uTimerAllowed",
         "uTimerBlocked",
         "uTimerExtra",
+        "uTimerExtraArg",
         "uTimerOne",
+        "uTimerPathDeadline",
         "uTimerSystemPath",
         "uTimerTwo"
       ],
@@ -4053,7 +4055,9 @@
         "uTimerAllowed",
         "uTimerBlocked",
         "uTimerExtra",
+        "uTimerExtraArg",
         "uTimerOne",
+        "uTimerPathDeadline",
         "uTimerScript",
         "uTimerSystemPath",
         "uTimerTwo"
@@ -6917,7 +6921,13 @@
       "uTimerExtra": [
         "pantler_h01"
       ],
+      "uTimerExtraArg": [
+        "pantler_h01"
+      ],
       "uTimerOne": [
+        "pantler_h01"
+      ],
+      "uTimerPathDeadline": [
         "pantler_h01"
       ],
       "uTimerScript": [
