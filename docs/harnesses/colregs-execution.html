@@ -146,7 +146,7 @@
 
         <article class="case-row">
           <code>crossing_port_standon_unsure_bow_execution_pass</code>
-          <p>Uses the same geometry as the preceding case, whose classification history includes standon:unsure_bow. Passes on the same 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds with no timeout or collision; the transient mode is not graded here.</p>
+          <p>Uses the same geometry as the preceding case but first requires COLREGS_AVOID_IX_BEN=36 (standon:unsure_bow), then passes on the 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds with no timeout or collision.</p>
         </article>
 
 
@@ -170,19 +170,19 @@
 
         <article class="case-row">
           <code>crossing_port_standon_close_unsure_bow_execution_pass</code>
-          <p>Uses the same close geometry but identifies its earlier standon:unsure_bow transition. Passes on the same 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds; the transient mode itself is not graded.</p>
+          <p>Uses the close geometry and first requires COLREGS_AVOID_IX_BEN=36 (standon:unsure_bow), then passes on the 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds with no timeout or collision.</p>
         </article>
 
 
         <article class="case-row">
           <code>crossing_port_standon_unsure_execution_pass</code>
-          <p>Uses ownship (-55,-72) and Ben (10,-18), whose classification history includes standon:unsure. Passes within 12.1 wall seconds when closest range is 10–13 meters and Ben finishes starboard and aft without crossing, timeout, or collision; the transient mode is not graded.</p>
+          <p>Uses ownship (-55,-72) and Ben (10,-18), first requires COLREGS_AVOID_IX_BEN=38 (standon:unsure), then passes within 12.1 wall seconds when closest range is 10–13 meters and Ben finishes starboard and aft without crossing, timeout, or collision.</p>
         </article>
 
 
         <article class="case-row">
           <code>overtaking_starboard_execution_pass</code>
-          <p>Sends 1.6 m/s ownship from (-90,-80) past 1.0 m/s Ben at (-35,-84). Passes within 12 wall seconds when closest range is 17–21 meters, Ben finishes starboard (cn_port=0), cn_crossed=0, and arrival occurs without timeout or collision; fore/aft state is not graded.</p>
+          <p>Sends 1.6 m/s ownship from (-90,-80) past 1.0 m/s Ben at (-35,-84). Passes within 12 wall seconds when closest range is 17–21 meters, Ben finishes starboard (cn_port=0), cn_crossed=0, and arrival occurs without timeout or collision; fore/aft state is not graded because accepted completion runs have produced both cn_fore=0 and cn_fore=1.</p>
         </article>
 
 

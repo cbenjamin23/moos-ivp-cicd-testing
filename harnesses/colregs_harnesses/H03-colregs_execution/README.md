@@ -3,7 +3,7 @@
 TLDR:
 - execution-quality harness on the shared `colregs_unit` stem
 - checks realized CPA band, relative side outcome, and loose completion time per canonical case
-- sits after `H01/H02`: mode selection is already assumed correct and now we check maneuver quality
+- sits after `H01/H02`: primarily checks maneuver quality, with three ordered checks that preserve a transient classification central to the case identity
 - current implemented cases: 23 default execution cases covering most H01 canonicals plus the better-fit spacing siblings
 - migration signoff: three rolling 23/23 matrices and one serial 23/23 matrix passed on July 16, 2026
 
@@ -22,10 +22,11 @@ Primary intent:
   classification
 - launch each case with its own `*-shoreside.xmoos` patch
 - let `pMissionEval` own pass/fail expectations for each case:
+  - the exact transient COLREGS index before completion where that transition is the case's distinguishing claim
   - CPA band
   - relative side outcome (`cn_port`, selective `cn_fore`, `cn_crossed=0`)
   - final `colregs_mode` where the case identity should persist through completion
-- keep only loose completion time in the shell harness, because `WALL_TIME` is available to `pMissionEval` only as a report macro and not as a logic-test variable
+- lead successful evaluation from COLREGS state and `ARRIVED_ben`; keep the timer as a missing-state deadline and the loose wall-time ceiling as a separate execution-speed check
 
 The migrated launcher requires Bash 5.1 or newer, uses isolated mission copies
 in serial and rolling modes, refills open job slots immediately, assigns a
@@ -43,13 +44,13 @@ any case geometry, stimulus, evaluator condition, or timing ceiling.
 - `crossing_starboard_giveway_far_execution_pass`: Moves the same crossing starts outward to ownship `(-80,-80)` and Ben `(10,-150)`. Passes within 13 wall seconds when closest range is 17.7–24 meters with the same port/aft/no-crossing and no-timeout/no-collision outcome.
 - `crossing_starboard_giveway_close_execution_pass`: Moves the starts inward to ownship `(-60,-80)` and Ben `(10,-115)`. Passes within 12 wall seconds when closest range is 18–24 meters with the same port/aft/no-crossing and no-timeout/no-collision outcome.
 - `crossing_port_standon_execution_pass`: Runs eastbound ownship from `(-70,-80)` against southbound Ben from `(10,-20)` through arrival. Passes within 12 wall seconds when closest range is 14–20 meters, Ben finishes starboard and aft (`cn_port=0`, `cn_fore=0`), `cn_crossed=0`, and no timeout or collision occurs.
-- `crossing_port_standon_unsure_bow_execution_pass`: Uses the same geometry as the preceding case, whose classification history includes `standon:unsure_bow`. Passes on the same 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds with no timeout or collision; the transient mode is not graded here.
+- `crossing_port_standon_unsure_bow_execution_pass`: Uses the same geometry as the preceding case but first requires `COLREGS_AVOID_IX_BEN=36` (`standon:unsure_bow`), then passes on the 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds with no timeout or collision.
 - `crossing_port_standon_stern_execution_pass`: Starts southbound Ben farther north at `(10,15)` and 1.2 m/s. Passes within 16 wall seconds when closest range is 18.9–21 meters, Ben finishes starboard and aft without crossing, and no timeout or collision occurs.
 - `crossing_port_standon_far_execution_pass`: Uses the execution-tuned far fixture with ownship `(-76,-80)` and Ben `(10,-12)`. Passes within 13 wall seconds when closest range is 14–20 meters and the final relationship is starboard/aft with no crossing, timeout, or collision.
 - `crossing_port_standon_close_execution_pass`: Uses the closer starts ownship `(-60,-80)` and Ben `(10,-30)`. Passes within 12 wall seconds on the 14–20-meter, starboard/aft/no-crossing envelope with no timeout or collision.
-- `crossing_port_standon_close_unsure_bow_execution_pass`: Uses the same close geometry but identifies its earlier `standon:unsure_bow` transition. Passes on the same 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds; the transient mode itself is not graded.
-- `crossing_port_standon_unsure_execution_pass`: Uses ownship `(-55,-72)` and Ben `(10,-18)`, whose classification history includes `standon:unsure`. Passes within 12.1 wall seconds when closest range is 10–13 meters and Ben finishes starboard and aft without crossing, timeout, or collision; the transient mode is not graded.
-- `overtaking_starboard_execution_pass`: Sends 1.6 m/s ownship from `(-90,-80)` past 1.0 m/s Ben at `(-35,-84)`. Passes within 12 wall seconds when closest range is 17–21 meters, Ben finishes starboard (`cn_port=0`), `cn_crossed=0`, and arrival occurs without timeout or collision; fore/aft state is not graded.
+- `crossing_port_standon_close_unsure_bow_execution_pass`: Uses the close geometry and first requires `COLREGS_AVOID_IX_BEN=36` (`standon:unsure_bow`), then passes on the 14–20-meter, starboard/aft/no-crossing completion envelope within 12 wall seconds with no timeout or collision.
+- `crossing_port_standon_unsure_execution_pass`: Uses ownship `(-55,-72)` and Ben `(10,-18)`, first requires `COLREGS_AVOID_IX_BEN=38` (`standon:unsure`), then passes within 12.1 wall seconds when closest range is 10–13 meters and Ben finishes starboard and aft without crossing, timeout, or collision.
+- `overtaking_starboard_execution_pass`: Sends 1.6 m/s ownship from `(-90,-80)` past 1.0 m/s Ben at `(-35,-84)`. Passes within 12 wall seconds when closest range is 17–21 meters, Ben finishes starboard (`cn_port=0`), `cn_crossed=0`, and arrival occurs without timeout or collision; fore/aft state is not graded because accepted completion runs have produced both `cn_fore=0` and `cn_fore=1`.
 - `overtaking_starboard_range_far_execution_pass`: Moves ownship back to `(-105,-80)` while retaining Ben at `(-35,-84)`. Passes within 12 wall seconds when closest range is 20–24 meters and Ben finishes starboard and fore (`cn_port=0`, `cn_fore=1`) without crossing, timeout, or collision.
 - `overtaking_starboard_small_gap_execution_pass`: Uses the long-range sibling, not the compact case: ownship starts `(-105,-80)` and Ben `(-35,-82)` with a two-meter gap. Passes within 12 wall seconds when closest range is 21.7–22.8 meters and Ben finishes starboard/fore without crossing, timeout, or collision.
 - `overtaking_starboard_mirror_execution_pass`: Mirrors the compact tracks with ownship at `(-90,-84)` and Ben at `(-35,-80)`. Passes within 12 wall seconds when closest range is 17–21 meters and Ben finishes port/fore (`1,1`) without crossing, timeout, or collision.
@@ -62,6 +63,7 @@ any case geometry, stimulus, evaluator condition, or timing ceiling.
 
 Current mission-side assertions:
 - every H03 case patch still requires `ARRIVED_ben = true`, `COLLISION_TOTAL = 0`, and `MISSION_TIMEOUT = false`
+- the two unsure-bow cases first require index 36, and the unsure case first requires index 38, in an ordered evaluator aspect before the arrival aspect
 - each case patch now also owns its own CPA/side/mode envelope inside `pMissionEval`
 - all supported H03 cases require `cn_crossed=0`
 - head_on family (`head_on_execution_pass`, `head_on_cpa_fallback_execution_pass`, `head_on_port_offset_execution_pass`, `head_on_starboard_offset_execution_pass`): `closest_range_ever` in `[16,20]`, `cn_port=1`, `cn_fore=0`
