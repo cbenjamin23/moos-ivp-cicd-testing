@@ -39,6 +39,7 @@ Reported metrics:
 - near-miss count
 - encounter count
 - short mission hash
+- staged obstacle count and short SHA-256 fixture fingerprint
 
 The companion harness treats those metrics as evaluation-snapshot values and
 compares them against explicit range baselines. That matters most for the
@@ -62,6 +63,7 @@ original shoreside and vehicle wildcard logging.
 
 - The course layout and viewer framing are derived from `missions-auto/02-obavoid`.
 - The fixed field layouts now live in [obstacles/](obstacles/README.md), and `init_field.sh` stages the selected one into the mission root as `obstacles.txt`.
+- `launch.sh` derives `FIELD_OBSTACLE_COUNT` and `FIELD_FINGERPRINT` from that staged file so fixed-field evaluators can reject a substituted fixture.
 - `endurance_random` generates a fresh random `obstacles.txt` at launch and enables obstacle reset behavior in `uFldObstacleSim`.
 - Mission `zlaunch.sh` automatically raises its default `--max_time` for `endurance_random` so `uMayFinish` does not cut the run off at the short fixed-case budget.
 - The current named mission scenarios are `baseline_field`, `dense_field`, and `endurance_random`.

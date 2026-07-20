@@ -373,7 +373,7 @@ invariants.
   four stall cases report `gap_seen=true` and `gap_deadline=false`, confirming
   that the deadline is only a missing-event fallback.
 
-### Wave 5 Progress (2026-07-19)
+### Wave 5 Progress (2026-07-19–20)
 
 - PeriodicSpeed's stem now supplies a low-priority zero-speed objective during
   lazy windows, preventing the prior expected `MissingDecVars:speed` errors
@@ -410,6 +410,20 @@ invariants.
 - ZigZag malformed-configuration cases now require armed, pre-deadline exact
   `ABE_IVPHELM_STATE=MALCONFIG`; parameter-specific rejection identity remains
   deferred to `HELM-UP-001`.
+- P01 derives an obstacle count and short SHA-256 fingerprint from the staged
+  `obstacles.txt`, posts both through the mission, and requires the exact
+  checked-in identity for the six-obstacle baseline and eight-obstacle dense
+  cases. The randomized endurance case requires seven generated polygons and
+  reports its run-specific fingerprint without treating random geometry as a
+  fixed fixture.
+- Substituting the six-obstacle baseline file into the dense case leaves its
+  motion and performance checks healthy but produces mission-owned
+  `grade=fail` with the baseline count and fingerprint. Moving one vertex in
+  the dense file preserves count eight and normal completion but also fails on
+  the changed fingerprint, proving the two checks independently.
+- The full three-case P01 matrix passes under the local performance profile;
+  the endurance case completed ten cycles in 163.71 wall seconds with seven
+  staged polygons, zero collisions, 37 near misses, and 62 encounters.
 
 ## Suggested Upstream Changes
 
@@ -660,7 +674,7 @@ They are intentionally deferred to the case-strengthening pass.
 | opregion_h01 | `reset_before_exit_pass` | `OPREGION_UPDATES=reset=true` clears official-entry state and is necessary to suppress a pending halt breach. | `trigger_exit_time=5`; `pEchoVar` requires the successful `opreg`/`OPREGION_UPDATES` result, and the evaluator requires four seconds outside after the reset with no breach. | Resolved: removing the reset post leaves the same excursion and reaches four seconds outside, but `reset_accepted=false` produces a clean mission-owned failure before the five-second breach threshold. | Retain the accepted-update identity and post-reset seconds-outside evidence. | Resolved |
 | opregion_h01 | `max_depth_breach_fail`, `min_altitude_breach_fail` | The configured sensor value crosses the named limit and activates that limit's behavior-owned breach flag. | The evaluators require `DEPTH_LIMIT_BREACHED=true` with paired input `5`, or `ALTITUDE_LIMIT_BREACHED=true` with paired input `2`, plus the behavior error; altitude is seeded at `20` and uses an inactive registration helper because of `OPREG-UP-001`. | Resolved locally: keeping depth at `0` or altitude at `20` preserves the paired test metadata but suppresses the dedicated breach flag and fails at the missing-breach deadline; the former altitude fixture never reached its comparison branch. | Retain dedicated flags and paired inputs; remove only the registration helper after `OPREG-UP-001` is fixed. | Resolved locally; upstream registration deferred |
 | opregion_h01 | `bad_save_dist_fail`, `bad_halt_dist_fail`, `bad_max_depth_fail`, `bad_min_altitude_fail`, `bad_recover_spd_fail`, `bad_trigger_on_poly_entry_fail`, `bad_trigger_entry_time_fail`, `bad_trigger_exit_time_fail` | Each malformed startup value causes helm configuration rejection. | Every evaluator now leads on and requires literal `IVPHELM_STATE=MALCONFIG`; the timer is only a missing-state deadline. | Oracle hardened: repairing `trigger_exit_time=-1` to `0.5` reaches `DRIVE` and produces a clean mission-owned failure. These are ordinary expected-negative cases, while parameter-specific identity remains unavailable. | Retain exact state rejection and defer field identity to `HELM-UP-001`. | Oracle hardened; exact identity deferred |
-| p01_obstacle | `baseline_field_pass`, `dense_field_pass` | The baseline case stages the six-obstacle file and the dense case stages the distinct eight-obstacle file. | Both cases use identical mission thresholds and shell wall/warning bands; no field identity or obstacle count is reported. | Staging the baseline file for both cases can pass, especially because their observed aggregate counts are currently identical. | Report a field hash or obstacle count and require six versus eight, then retain metric bands appropriate to each fixture. | Open |
+| p01_obstacle | `baseline_field_pass`, `dense_field_pass` | The baseline case stages the exact six-obstacle file and the dense case stages the exact distinct eight-obstacle file. | `launch.sh` derives count and a short SHA-256 fingerprint from the actual staged `obstacles.txt`; `pMissionEval` reports both and requires `6/sha256_4e5a4b8c6149` or `8/sha256_d5c642b45d1d` before accepting the existing motion and performance evidence. | Resolved: substituting the baseline file into the dense case fails with count six, and a one-vertex dense mutation retains count eight and ordinary completion but fails on the changed fingerprint. | Retain input-identity checks independently of the performance bands; they prove fixture wiring, not obstacle-avoidance quality by themselves. | Resolved; fixture identity |
 | p03_colregs | `mixed_speed_circle_pass` | The five vehicles use the configured asymmetric speeds `1.55,1.67,1.79,1.91,2.03`. | The evaluator grades completion, collision, closest-range, batch, timeout, wall-time, and warning metrics only. | Launching equal speeds can pass. | Report each vehicle's configured or observed speed and require the five-value profile before accepting performance metrics. | Open |
 | p03_colregs | `noncoop_circle_pass` | `eve` is the selected non-cooperative vehicle and actually runs with `AVOID=false`. | `DUMB_VNAME` is report-only, and no helm mode or avoidance state is graded. | A fully cooperative ring or a different disabled vehicle can pass. | Require `DUMB_VNAME=eve` and observable evidence from eve that avoidance remained disabled throughout the window. | Open |
 | shadow_h01 | `startup_no_warning_pass`, `static_shadow_pass` | The startup case uniquely demonstrates that delaying `contact=ben` and Shadow activation avoids a premature missing-contact warning. | Both cases use the same stem events (`contact=ben` at 30 seconds and `SHADOW=true` at 32 seconds); the startup evaluator merely lowers Abe's minimum speed from `1.0` to `0.8`. | There is no distinct startup fixture or pre-activation observation, so the two cases can pass for the same reason. | Activate Shadow before contact data in a paired control, or explicitly observe the pre-activation interval and then retain the warning-free delayed case. | Open |

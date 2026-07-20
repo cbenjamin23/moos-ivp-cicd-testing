@@ -32,6 +32,8 @@ ENDURANCE_MODE="false"
 DRESET="false"
 ENDURANCE_TIMEOUT_SECS="1800"
 ENDURANCE_TARGET_CYCLES="10"
+FIELD_OBSTACLE_COUNT="0"
+FIELD_FINGERPRINT="unknown"
 
 #------------------------------------------------------------
 #  Part 3: Check for and handle command-line arguments
@@ -53,6 +55,8 @@ for ARGI; do
         echo "  --mport=<9000>     Shoreside MOOSDB port"
         echo "  --pshare=<9200>    Shoreside pShare port"
         echo "  --scenario=<name>  Mission scenario"
+        echo "  --field_count=<n>  Staged obstacle polygon count"
+        echo "  --field_fingerprint=<id>  Staged obstacle file fingerprint"
         echo "  --vnames=<vnames>  Colon-separated vehicle names"
         exit 0
     elif [ "${ARGI//[^0-9]/}" = "$ARGI" -a "$TIME_WARP" = 1 ]; then
@@ -73,6 +77,10 @@ for ARGI; do
         PSHARE_PORT="${ARGI#--pshare=*}"
     elif [ "${ARGI:0:11}" = "--scenario=" ]; then
         SCENARIO="${ARGI#--scenario=*}"
+    elif [ "${ARGI:0:14}" = "--field_count=" ]; then
+        FIELD_OBSTACLE_COUNT="${ARGI#--field_count=*}"
+    elif [ "${ARGI:0:20}" = "--field_fingerprint=" ]; then
+        FIELD_FINGERPRINT="${ARGI#--field_fingerprint=*}"
     elif [ "${ARGI:0:9}" = "--vnames=" ]; then
         VNAMES="${ARGI#--vnames=*}"
     else
@@ -89,6 +97,29 @@ case "$SCENARIO" in
         ;;
     *)
         echo "$ME: Unknown scenario [$SCENARIO]"
+        exit 1
+        ;;
+esac
+
+case "$FIELD_OBSTACLE_COUNT" in
+    ''|*[!0-9]*)
+        echo "$ME: Invalid field obstacle count [$FIELD_OBSTACLE_COUNT]"
+        exit 1
+        ;;
+esac
+case "$FIELD_FINGERPRINT" in
+    unknown) ;;
+    sha256_????????????)
+        FIELD_FINGERPRINT_HEX="${FIELD_FINGERPRINT#sha256_}"
+        case "$FIELD_FINGERPRINT_HEX" in
+            *[!0-9a-f]*)
+                echo "$ME: Invalid field fingerprint [$FIELD_FINGERPRINT]"
+                exit 1
+                ;;
+        esac
+        ;;
+    *)
+        echo "$ME: Invalid field fingerprint [$FIELD_FINGERPRINT]"
         exit 1
         ;;
 esac
@@ -126,6 +157,8 @@ if [ "${VERBOSE}" = "yes" ]; then
     echo "DRESET =        [${DRESET}]"
     echo "END_TIMEOUT =   [${ENDURANCE_TIMEOUT_SECS}]"
     echo "END_TGT_CYC =   [${ENDURANCE_TARGET_CYCLES}]"
+    echo "FIELD_COUNT =   [${FIELD_OBSTACLE_COUNT}]"
+    echo "FIELD_ID =      [${FIELD_FINGERPRINT}]"
     echo "----------------------------------"
     echo "VNAMES =        [${VNAMES}]"
     echo -n "Hit any key to continue launch "
@@ -146,7 +179,9 @@ nsplug meta_shoreside.moos targ_shoreside.moos $NSFLAGS WARP=$TIME_WARP \
        MMOD=$SCENARIO               VNAMES=$VNAMES          \
        ENDURANCE_MODE=$ENDURANCE_MODE DRESET=$DRESET        \
        ENDURANCE_TIMEOUT_SECS=$ENDURANCE_TIMEOUT_SECS       \
-       ENDURANCE_TARGET_CYCLES=$ENDURANCE_TARGET_CYCLES
+       ENDURANCE_TARGET_CYCLES=$ENDURANCE_TARGET_CYCLES     \
+       FIELD_OBSTACLE_COUNT=$FIELD_OBSTACLE_COUNT           \
+       FIELD_FINGERPRINT=$FIELD_FINGERPRINT
 
 if [ "${JUST_MAKE}" = "yes" ]; then
     echo "$ME: Targ files made; exiting without launch."

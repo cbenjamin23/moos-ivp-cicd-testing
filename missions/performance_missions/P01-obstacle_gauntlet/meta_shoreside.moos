@@ -50,6 +50,8 @@ ProcessConfig = pAutoPoke
   flag = OB_TOTAL_NEAR_MISSES=0
   flag = MISSION_DONE=false
   flag = MISSION_TIMEOUT=false
+  flag = FIELD_OBSTACLE_COUNT=$(FIELD_OBSTACLE_COUNT:=0)
+  flag = FIELD_FINGERPRINT=$(FIELD_FINGERPRINT:=unknown)
 
   required_nodes = 1
 }
@@ -115,6 +117,8 @@ ProcessConfig = pMissionEval
   report_column = collisions=$[OB_TOTAL_COLLISIONS]
   report_column = near_misses=$[OB_TOTAL_NEAR_MISSES]
   report_column = encounters=$[OB_TOTAL_ENCOUNTERS]
+  report_column = field_count=$[FIELD_OBSTACLE_COUNT]
+  report_column = field_id=$[FIELD_FINGERPRINT]
   report_column = mhash=$[MHASH_SHORT]
   report_column = date=$[DATE]
   report_column = time=$[TIME]

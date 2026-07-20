@@ -4,9 +4,9 @@ Performance harness for the first deterministic gauntlet mission family.
 
 ## Current Matrix
 
-- `baseline_field_pass` Traverses the checked-in six-obstacle `baseline_field.txt` for one waypoint loop, testing the deterministic reference gauntlet; passes with one cycle, zero collisions, 0–6 near misses, 1–8 encounters, `OBAVOIDING=end`, no timeout, zero scanned warning matches, and wall time in 16.5–20.0 seconds locally or 80–95 seconds under the CI profile.
-- `dense_field_pass` Traverses the checked-in eight-obstacle `dense_field.txt` for one waypoint loop, exercising a denser deterministic fixture; passes on the same one-cycle, zero-collision, 0–6 near-miss, 1–8 encounter, lifecycle-end, no-timeout, zero-warning, and profile-specific wall-time conditions as the baseline.
-- `endurance_random_pass` Generates seven obstacles at launch and repeats the loop until at least ten cycles, exercising a long randomized avoidance sample; passes with zero collisions, 20–70 near misses, 50–80 encounters, `OBAVOIDING=end`, `DB_UPTIME<=1800`, no timeout, zero scanned warnings, and wall time in 145–180 seconds locally or 780–900 seconds under the CI profile.
+- `baseline_field_pass` Stages the checked-in six-obstacle `baseline_field.txt` and traverses it for one waypoint loop, testing the exact reference fixture rather than any safe field; passes when the staged file has count `6` and fingerprint `sha256_4e5a4b8c6149`, with one cycle, zero collisions, 0–6 near misses, 1–8 encounters, `OBAVOIDING=end`, no timeout, zero scanned warning matches, and wall time in 16.5–20.0 seconds locally or 80–95 seconds under the CI profile.
+- `dense_field_pass` Stages the distinct eight-obstacle `dense_field.txt` and traverses it for one waypoint loop, testing the exact denser fixture rather than the baseline field; passes when the staged file has count `8` and fingerprint `sha256_d5c642b45d1d`, with the same motion, warning, and profile-specific timing conditions as the baseline.
+- `endurance_random_pass` Generates seven obstacles at launch and repeats the loop until at least ten cycles, exercising a long randomized avoidance sample; passes when the staged field contains seven polygons, with zero collisions, 20–70 near misses, 50–80 encounters, `OBAVOIDING=end`, `DB_UPTIME<=1800`, no timeout, zero scanned warnings, and wall time in 145–180 seconds locally or 780–900 seconds under the CI profile.
 
 The harness currently expects the gauntlet mission to:
 
@@ -16,6 +16,7 @@ The harness currently expects the gauntlet mission to:
 - avoid timing out
 - satisfy the mission-side MOOS-visible thresholds for the selected case
 - avoid disallowed planner/runtime warning text in the vehicle `.alog`
+- report the obstacle count and staged-file fingerprint used for the run
 
 It preserves the mission-owned report columns and wraps them in the usual harness summary line:
 
@@ -60,6 +61,8 @@ applies to the whole serial matrix or one explicit `--case`.
   - `ci` is what GitHub Actions sets through `PERF_PROFILE=ci`; it uses warp `2` and the relaxed wall-time bands below.
 - Current mission-side checks:
   - `baseline_field_pass`
+    - `FIELD_OBSTACLE_COUNT=6`
+    - `FIELD_FINGERPRINT=sha256_4e5a4b8c6149`
     - `WPT_CYCLES=1`
     - `OB_TOTAL_COLLISIONS=0`
     - `OB_TOTAL_NEAR_MISSES` in `[0,6]`
@@ -67,6 +70,8 @@ applies to the whole serial matrix or one explicit `--case`.
     - `OBAVOIDING=end`
     - `MISSION_TIMEOUT=false`
   - `dense_field_pass`
+    - `FIELD_OBSTACLE_COUNT=8`
+    - `FIELD_FINGERPRINT=sha256_d5c642b45d1d`
     - `WPT_CYCLES=1`
     - `OB_TOTAL_COLLISIONS=0`
     - `OB_TOTAL_NEAR_MISSES` in `[0,6]`
@@ -74,6 +79,7 @@ applies to the whole serial matrix or one explicit `--case`.
     - `OBAVOIDING=end`
     - `MISSION_TIMEOUT=false`
   - `endurance_random_pass`
+    - `FIELD_OBSTACLE_COUNT=7`
     - `WPT_CYCLES>=10`
     - `OB_TOTAL_COLLISIONS=0`
     - `OB_TOTAL_NEAR_MISSES` in `[20,70]`

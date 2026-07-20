@@ -32,6 +32,8 @@ SHORE_MPORT="9000"
 VEH_MPORT="9001"
 SHORE_PSHARE="9200"
 VEH_PSHARE="9201"
+FIELD_OBSTACLE_COUNT=""
+FIELD_FINGERPRINT=""
 
 # Launch wiring
 XLAUNCHED="no"
@@ -123,6 +125,32 @@ fi
 INIT_VARS=" $VERBOSE --scenario=$SCENARIO "
 ./init_field.sh $INIT_VARS
 
+FIELD_OBSTACLE_COUNT=$(awk '
+    tolower($1) == "poly" && $2 == "=" { count++ }
+    END { print count + 0 }
+' obstacles.txt)
+
+if command -v shasum >/dev/null 2>&1; then
+    FIELD_SHA256=$(shasum -a 256 obstacles.txt | awk '{print $1}')
+elif command -v sha256sum >/dev/null 2>&1; then
+    FIELD_SHA256=$(sha256sum obstacles.txt | awk '{print $1}')
+else
+    echo "$ME: Neither shasum nor sha256sum is available. Exit Code 3." >&2
+    exit 3
+fi
+
+case "$FIELD_OBSTACLE_COUNT" in
+    ''|*[!0-9]*)
+        echo "$ME: Unable to count staged obstacles. Exit Code 3." >&2
+        exit 3
+        ;;
+esac
+if [ "$FIELD_OBSTACLE_COUNT" -eq 0 ] || [ ${#FIELD_SHA256} -ne 64 ]; then
+    echo "$ME: Invalid staged obstacle metadata. Exit Code 3." >&2
+    exit 3
+fi
+FIELD_FINGERPRINT="sha256_${FIELD_SHA256:0:12}"
+
 VEHPOS=(`cat vpositions.txt`)
 SPEEDS=(`cat vspeeds.txt`)
 VNAMES=(`cat vnames.txt`)
@@ -147,6 +175,8 @@ if [ "${VERBOSE}" != "" ]; then
     echo "VEH_MPORT =     [${VEH_MPORT}]"
     echo "SHORE_PSHARE =  [${SHORE_PSHARE}]"
     echo "VEH_PSHARE =    [${VEH_PSHARE}]"
+    echo "FIELD_COUNT =   [${FIELD_OBSTACLE_COUNT}]"
+    echo "FIELD_ID =      [${FIELD_FINGERPRINT}]"
     echo "--------------------------------(VProps)----"
     echo "VNAMES =        [${VNAMES[*]}]"
     echo "VCOLORS =       [${VCOLOR[*]}]"
@@ -184,6 +214,8 @@ SARGS=" --auto --mport=$SHORE_MPORT --pshare=$SHORE_PSHARE $NOGUI "
 SARGS+=" --vnames=${VNAMES[0]} "
 SARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE "
 SARGS+=" --scenario=${SCENARIO} "
+SARGS+=" --field_count=${FIELD_OBSTACLE_COUNT} "
+SARGS+=" --field_fingerprint=${FIELD_FINGERPRINT} "
 vecho "Launching shoreside: $SARGS"
 ./launch_shoreside.sh $SARGS
 
