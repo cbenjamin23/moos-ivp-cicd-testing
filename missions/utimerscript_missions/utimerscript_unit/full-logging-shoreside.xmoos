@@ -7,5 +7,26 @@ ProcessConfig = pLogger
   File    = LOG_SHORESIDE
   PATH    = ./
 
+  Log = MISSION_EVALUATED @ 0 nosync
+  Log = UTS_PAYLOAD @ 0 nosync
+  Log = UTS_MACRO @ 0 nosync
+  Log = UTS_COUNT @ 0 nosync
+  Log = UTS_CUSTOM_STATUS @ 0 nosync
+  Log = UTS_STATUS @ 0 nosync
+  Log = UTS_DELAY_RESET @ 0 nosync
+  Log = UTS_GATE @ 0 nosync
+  Log = UTS_GATED @ 0 nosync
+  Log = UTS_PAUSE @ 0 nosync
+  Log = UTS_PAUSED_OUT @ 0 nosync
+  Log = UTS_TOGGLE_OUT @ 0 nosync
+  Log = UTS_GATE_B @ 0 nosync
+  Log = UTS_MULTI_GATED @ 0 nosync
+  Log = UTS_HOLD @ 0 nosync
+  Log = UTS_CUSTOM_PROBE @ 0 nosync
+  Log = UTS_CUSTOM_CTRL @ 0 nosync
+  Log = UTS_RPAIR @ 0 nosync
+  Log = UTS_QUIT_READY @ 0 nosync
+  Log = DB_CLIENTS @ 0 nosync
+
   WildCardLogging = true
 }

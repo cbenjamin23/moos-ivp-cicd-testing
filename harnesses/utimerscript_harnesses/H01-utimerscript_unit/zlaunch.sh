@@ -335,7 +335,7 @@ get_case_config() {
                 "event = var=UTS_MACRO, val=\"x=\$[NAV_X],y=\$[NAV_Y],count=\$[COUNT],tcount=\$[TCOUNT]\", time=0.4"
                 "event = var=TEST_EVAL_READY, val=true, time=0.7"
             )
-            EXTRA_CHECKS=("alog:UTS_MACRO:x=12.50,y=-4.25")
+            EXTRA_CHECKS=("exact:UTS_MACRO:x=12.50,y=-4.25,count=2,tcount=2")
             REPORT_COLUMNS=("macro=\$[UTS_MACRO]")
             ;;
         condition_gate_external_pass)
@@ -348,6 +348,7 @@ get_case_config() {
             POKE_STEPS=("0.8:UTS_GATE=true")
             PASS_CONDITIONS=("UTS_GATED = released")
             REPORT_COLUMNS=("gated=\$[UTS_GATED]" "gate=\$[UTS_GATE]")
+            EXTRA_CHECKS=("after:UTS_GATED:UTS_GATE:true:1")
             ;;
         pause_unpause_external_pass)
             TIMER_LINES=(
@@ -359,14 +360,14 @@ get_case_config() {
             POKE_STEPS=("0.8:UTS_PAUSE=false")
             PASS_CONDITIONS=("UTS_PAUSED_OUT = after_pause")
             REPORT_COLUMNS=("paused_out=\$[UTS_PAUSED_OUT]")
+            EXTRA_CHECKS=("after:UTS_PAUSED_OUT:UTS_PAUSE:false:1")
             ;;
         forward_jump_next_pass)
             TIMER_LINES=(
                 "script_name = forward_jump"
-                "event = var=UTS_LATE, val=jumped, time=30"
-                "event = var=TEST_EVAL_READY, val=true, time=31"
+                "event = var=UTS_LATE, val=jumped, time=100"
             )
-            POKE_STEPS=("0.7:UTS_FORWARD=0")
+            POKE_STEPS=("0.7:UTS_FORWARD=0" "0.7:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_LATE = jumped")
             REPORT_COLUMNS=("late=\$[UTS_LATE]")
             ;;
@@ -378,7 +379,7 @@ get_case_config() {
             POKE_STEPS=("0.7:UTS_RESET=true" "0.7:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_COUNT >= 1")
             REPORT_COLUMNS=("uts_count=\$[UTS_COUNT]")
-            EXTRA_CHECKS=("count:UTS_COUNT:2")
+            EXTRA_CHECKS=("exact_count:UTS_COUNT:2")
             ;;
         reset_time_all_posted_pass)
             TIMER_LINES=(
@@ -440,13 +441,13 @@ get_case_config() {
         randpair_poly_bounds_pass)
             TIMER_LINES=(
                 "script_name = randpair_poly"
-                "rand_pair = var1=PX, var2=PY, type=poly, key=at_post, poly=\"pts={0,0:10,0:10,10:0,10}\""
-                "event = var=UTS_RPX, val=\$[PX], time=0.2"
-                "event = var=UTS_RPY, val=\$[PY], time=0.2"
+                "rand_pair = var1=PX, var2=PY, type=poly, key=at_post, poly=\"pts={0,0:10,0:0,2}\""
+                "event = var=UTS_RPAIR, val=\"x=\$[PX],y=\$[PY]\", time=0.2, amt=20"
                 "event = var=TEST_EVAL_READY, val=true, time=0.5"
             )
-            PASS_CONDITIONS=("UTS_RPX >= 0" "UTS_RPX <= 10" "UTS_RPY >= 0" "UTS_RPY <= 10")
-            REPORT_COLUMNS=("rpx=\$[UTS_RPX]" "rpy=\$[UTS_RPY]")
+            PASS_CONDITIONS=('UTS_RPAIR != ""')
+            REPORT_COLUMNS=("rpair=\$[UTS_RPAIR]")
+            EXTRA_CHECKS=("triangle:UTS_RPAIR:10:2:20")
             ;;
         block_on_peer_pass)
             TIMER_LINES=(
@@ -481,14 +482,14 @@ get_case_config() {
             POKE_STEPS=("0.1:UTS_PAUSE:=toggle" "0.9:UTS_PAUSE:=toggle")
             PASS_CONDITIONS=("UTS_TOGGLE_OUT = after_toggle")
             REPORT_COLUMNS=("toggle_out=\$[UTS_TOGGLE_OUT]")
+            EXTRA_CHECKS=("after:UTS_TOGGLE_OUT:UTS_PAUSE:toggle:2")
             ;;
         forward_positive_skip_pass)
             TIMER_LINES=(
                 "script_name = forward_positive_skip"
-                "event = var=UTS_FORWARD_POS, val=skipped, time=5"
-                "event = var=TEST_EVAL_READY, val=true, time=6"
+                "event = var=UTS_FORWARD_POS, val=skipped, time=100"
             )
-            POKE_STEPS=("0.7:UTS_FORWARD=5")
+            POKE_STEPS=("0.7:UTS_FORWARD=100" "0.7:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_FORWARD_POS = skipped")
             REPORT_COLUMNS=("forward_pos=\$[UTS_FORWARD_POS]")
             ;;
@@ -499,12 +500,18 @@ get_case_config() {
                 "forward_var = UTS_SKIP"
                 "reset_var = UTS_REDO"
                 "paused = true"
-                "event = var=UTS_CUSTOM_CTRL, val=\$[TCOUNT], time=5"
+                "event = var=UTS_CUSTOM_PROBE, val=released, time=0.2"
+                "event = var=UTS_CUSTOM_CTRL, val=\$[COUNT], time=100"
             )
-            POKE_STEPS=("0.5:UTS_HOLD:=false" "0.5:UTS_SKIP=5" "0.5:UTS_REDO:=true" "0.5:UTS_SKIP=5" "0.7:TEST_EVAL_READY=true")
+            POKE_STEPS=("0.5:UTS_HOLD:=false" "0.3:UTS_SKIP=100" "0.3:UTS_REDO:=true" "0.3:UTS_SKIP=100" "0.5:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_CUSTOM_CTRL = 1")
-            REPORT_COLUMNS=("custom_ctrl=\$[UTS_CUSTOM_CTRL]")
-            EXTRA_CHECKS=("alog:UTS_STATUS:resets=1/any")
+            REPORT_COLUMNS=("custom_probe=\$[UTS_CUSTOM_PROBE]" "custom_ctrl=\$[UTS_CUSTOM_CTRL]")
+            EXTRA_CHECKS=(
+                "after:UTS_CUSTOM_PROBE:UTS_HOLD:false:1"
+                "exact_count:UTS_CUSTOM_PROBE:2"
+                "exact_count:UTS_CUSTOM_CTRL:2"
+                "alog:UTS_STATUS:resets=1/any"
+            )
             ;;
         time_warp_accelerates_pass)
             TIMER_LINES=(
@@ -528,7 +535,7 @@ get_case_config() {
             POKE_STEPS=("2.0:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_DELAY_RESET >= 1")
             REPORT_COLUMNS=("delay_reset_out=\$[UTS_DELAY_RESET]")
-            EXTRA_CHECKS=("count:UTS_DELAY_RESET:2" "alog:UTS_STATUS:delay_reset=1")
+            EXTRA_CHECKS=("exact_count:UTS_DELAY_RESET:2" "alog:UTS_STATUS:delay_reset=1")
             ;;
         reset_max_one_limit_pass)
             TIMER_LINES=(
@@ -637,6 +644,7 @@ get_case_config() {
             POKE_STEPS=("0.5:UTS_GATE_A=true" "0.5:UTS_GATE_B:=ready")
             PASS_CONDITIONS=("UTS_MULTI_GATED = released")
             REPORT_COLUMNS=("multi_gated=\$[UTS_MULTI_GATED]" "gate_a=\$[UTS_GATE_A]" "gate_b=\$[UTS_GATE_B]")
+            EXTRA_CHECKS=("after:UTS_MULTI_GATED:UTS_GATE_B:ready:1")
             ;;
         shuffle_false_status_pass)
             TIMER_LINES=(
@@ -658,6 +666,7 @@ get_case_config() {
             POKE_STEPS=("1.0:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_QUIT_READY = true")
             REPORT_COLUMNS=("quit_ready=\$[UTS_QUIT_READY]")
+            EXTRA_CHECKS=("client_transition:UTS_QUIT_READY:uTimerScript")
             ;;
     esac
 }
@@ -753,6 +762,28 @@ alog_var_line_matches_before_eval() {
         '$2 == var && ($1 + 0) <= (cutoff + 0) {print}' "$alog" | grep -Fq -- "$pattern"
 }
 
+alog_var_exact_before_eval() {
+    local case_dir="$1"
+    local var="$2"
+    local expected="$3"
+    local alog
+    local cutoff
+    alog=$(find_alog "$case_dir")
+    [ -n "$alog" ] || return 1
+    cutoff=$(evaluation_cutoff "$alog")
+    [ -n "$cutoff" ] || return 1
+    awk -v var="$var" -v expected="$expected" -v cutoff="$cutoff" '
+        $2 == var && ($1 + 0) <= (cutoff + 0) {
+            value = $4
+            for(i=5; i<=NF; i++)
+                value = value " " $i
+            if(value == expected)
+                found = 1
+        }
+        END {exit(found ? 0 : 1)}
+    ' "$alog"
+}
+
 alog_var_count_before_eval() {
     local case_dir="$1"
     local var="$2"
@@ -763,7 +794,95 @@ alog_var_count_before_eval() {
     cutoff=$(evaluation_cutoff "$alog")
     [ -n "$cutoff" ] || return 1
     awk -v var="$var" -v cutoff="$cutoff" \
-        '$2 == var && ($1 + 0) <= (cutoff + 0) {count++} END {print count+0}' "$alog"
+        '$2 == var && ($1 + 0) <= (cutoff + 0) {seen[$0] = 1}
+         END {for(line in seen) count++; print count+0}' "$alog"
+}
+
+alog_var_after_value_before_eval() {
+    local case_dir="$1"
+    local var="$2"
+    local release_var="$3"
+    local release_value="$4"
+    local release_occurrence="$5"
+    local alog
+    local cutoff
+    alog=$(find_alog "$case_dir")
+    [ -n "$alog" ] || return 1
+    cutoff=$(evaluation_cutoff "$alog")
+    [ -n "$cutoff" ] || return 1
+    awk -v var="$var" -v release_var="$release_var" \
+        -v release_value="$release_value" -v occurrence="$release_occurrence" \
+        -v cutoff="$cutoff" '
+        ($1 + 0) <= (cutoff + 0) && $2 == release_var && $4 == release_value {
+            seen++
+            if(seen == occurrence)
+                release_time = $1 + 0
+        }
+        ($1 + 0) <= (cutoff + 0) && $2 == var && first_var_time == "" {
+            first_var_time = $1 + 0
+        }
+        END {exit(release_time != "" && first_var_time != "" &&
+                  first_var_time > release_time ? 0 : 1)}
+    ' "$alog"
+}
+
+alog_triangle_samples_before_eval() {
+    local case_dir="$1"
+    local var="$2"
+    local width="$3"
+    local height="$4"
+    local expected_count="$5"
+    local alog
+    local cutoff
+    alog=$(find_alog "$case_dir")
+    [ -n "$alog" ] || return 1
+    cutoff=$(evaluation_cutoff "$alog")
+    [ -n "$cutoff" ] || return 1
+    awk -v var="$var" -v width="$width" -v height="$height" \
+        -v expected_count="$expected_count" -v cutoff="$cutoff" '
+        $2 == var && ($1 + 0) <= (cutoff + 0) && !seen[$0]++ {
+            count++
+            value = $4
+            if(value !~ /^x=-?[0-9]+([.][0-9]+)?,y=-?[0-9]+([.][0-9]+)?$/) {
+                bad = 1
+                next
+            }
+            sub(/^x=/, "", value)
+            split(value, coords, ",y=")
+            x = coords[1] + 0
+            y = coords[2] + 0
+            if(x < 0 || x > width || y < 0 || y > height ||
+               (x / width) + (y / height) > 1.001)
+                bad = 1
+        }
+        END {exit(!bad && count == expected_count ? 0 : 1)}
+    ' "$alog"
+}
+
+alog_client_transition_before_eval() {
+    local case_dir="$1"
+    local marker_var="$2"
+    local client="$3"
+    local alog
+    local cutoff
+    alog=$(find_alog "$case_dir")
+    [ -n "$alog" ] || return 1
+    cutoff=$(evaluation_cutoff "$alog")
+    [ -n "$cutoff" ] || return 1
+    awk -v marker_var="$marker_var" -v client="$client" -v cutoff="$cutoff" '
+        ($1 + 0) <= (cutoff + 0) && $2 == marker_var && $3 == client && marker_time == "" {
+            marker_time = $1 + 0
+            marker_owned = 1
+        }
+        ($1 + 0) <= (cutoff + 0) && $2 == "DB_CLIENTS" {
+            value = $4
+            for(i=5; i<=NF; i++)
+                value = value " " $i
+            if(marker_time != "" && ($1 + 0) > marker_time && index(value, client) == 0)
+                disconnected = 1
+        }
+        END {exit(marker_owned && disconnected ? 0 : 1)}
+    ' "$alog"
 }
 
 stop_client() {
@@ -825,6 +944,14 @@ extra_checks_ok() {
     local pattern
     local min_count
     local actual_count
+    local expected_count
+    local release_var
+    local release_value
+    local release_occurrence
+    local width
+    local height
+    local marker_var
+    local client
 
     for check in "${EXTRA_CHECKS[@]}"; do
         kind="${check%%:*}"
@@ -834,6 +961,11 @@ extra_checks_ok() {
                 var="${rest%%:*}"
                 pattern="${rest#*:}"
                 alog_var_line_matches_before_eval "$case_dir" "$var" "$pattern" || return 1
+                ;;
+            exact)
+                var="${rest%%:*}"
+                pattern="${rest#*:}"
+                alog_var_exact_before_eval "$case_dir" "$var" "$pattern" || return 1
                 ;;
             absent)
                 var="$rest"
@@ -845,6 +977,37 @@ extra_checks_ok() {
                 min_count="${rest#*:}"
                 actual_count=$(alog_var_count_before_eval "$case_dir" "$var") || return 1
                 [ "$actual_count" -ge "$min_count" ] || return 1
+                ;;
+            exact_count)
+                var="${rest%%:*}"
+                expected_count="${rest#*:}"
+                actual_count=$(alog_var_count_before_eval "$case_dir" "$var") || return 1
+                [ "$actual_count" -eq "$expected_count" ] || return 1
+                ;;
+            after)
+                var="${rest%%:*}"
+                rest="${rest#*:}"
+                release_var="${rest%%:*}"
+                rest="${rest#*:}"
+                release_value="${rest%%:*}"
+                release_occurrence="${rest#*:}"
+                alog_var_after_value_before_eval "$case_dir" "$var" "$release_var" \
+                    "$release_value" "$release_occurrence" || return 1
+                ;;
+            triangle)
+                var="${rest%%:*}"
+                rest="${rest#*:}"
+                width="${rest%%:*}"
+                rest="${rest#*:}"
+                height="${rest%%:*}"
+                expected_count="${rest#*:}"
+                alog_triangle_samples_before_eval "$case_dir" "$var" "$width" \
+                    "$height" "$expected_count" || return 1
+                ;;
+            client_transition)
+                marker_var="${rest%%:*}"
+                client="${rest#*:}"
+                alog_client_transition_before_eval "$case_dir" "$marker_var" "$client" || return 1
                 ;;
             *)
                 return 1

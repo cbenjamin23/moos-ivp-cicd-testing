@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Pause/Unpause</h3>
-          <p>Description: Starts with paused=true, schedules UTS_PAUSED_OUT=after_pause, and later pokes UTS_PAUSE=false; passes when pMissionEval observes after_pause, without checking that it was absent while paused.</p>
+          <p>Description: Starts paused with UTS_PAUSED_OUT=after_pause pending, then pokes UTS_PAUSE=false; passes when the first output occurs after that unpause mail and its value is after_pause.</p>
         </div>
       </article>
 
@@ -99,31 +99,31 @@
 
         <article class="case-row">
           <code>macro_count_nav_pass</code>
-          <p>Posts NAV_X=12.5 and NAV_Y=-4.25, then expands them with COUNT and TCOUNT into UTS_MACRO; passes when its alog line contains x=12.50,y=-4.25, while the count fields are only reported.</p>
+          <p>Posts NAV_X=12.5 and NAV_Y=-4.25, then expands both navigation values and the local and total event counters; passes only when UTS_MACRO exactly equals x=12.50,y=-4.25,count=2,tcount=2.</p>
         </article>
 
 
         <article class="case-row">
           <code>condition_gate_external_pass</code>
-          <p>Configures condition=UTS_GATE = true, schedules UTS_GATED=released, and pokes the gate true at runtime; passes when the final gated value is released and the gate is true, without checking pre-poke absence.</p>
+          <p>Holds UTS_GATED=released behind condition=UTS_GATE = true, then pokes the gate externally; passes when the first output occurs after the UTS_GATE=true mail and the final value is released.</p>
         </article>
 
 
         <article class="case-row">
           <code>pause_unpause_external_pass</code>
-          <p>Starts with paused=true, schedules UTS_PAUSED_OUT=after_pause, and later pokes UTS_PAUSE=false; passes when pMissionEval observes after_pause, without checking that it was absent while paused.</p>
+          <p>Starts paused with UTS_PAUSED_OUT=after_pause pending, then pokes UTS_PAUSE=false; passes when the first output occurs after that unpause mail and its value is after_pause.</p>
         </article>
 
 
         <article class="case-row">
           <code>forward_jump_next_pass</code>
-          <p>Schedules UTS_LATE=jumped at script time 30 and pokes UTS_FORWARD=0, exercising the jump-to-next-event control; passes when UTS_LATE=jumped is eventually observed before the time-31 readiness event.</p>
+          <p>Places UTS_LATE=jumped at script time 100, sends UTS_FORWARD=0, and evaluates from a later external poke while natural script time is still below 100; passes when the jump-to-next control releases the event.</p>
         </article>
 
 
         <article class="case-row">
           <code>reset_var_repost_pass</code>
-          <p>Schedules UTS_COUNT=$[TCOUNT], pokes UTS_RESET=true, and evaluates after the reset; passes when the final count is at least one and the logs contain at least two UTS_COUNT publications.</p>
+          <p>Posts UTS_COUNT=$[TCOUNT], sends one UTS_RESET=true, and evaluates after the second run; passes when the final value is 1 and exactly two logical UTS_COUNT publications occurred.</p>
         </article>
 
 
@@ -165,7 +165,7 @@
 
         <article class="case-row">
           <code>randpair_poly_bounds_pass</code>
-          <p>Samples PX,PY from the square polygon {0,0:10,0:10,10:0,10} at post time; passes when both published coordinates lie between 0 and 10.</p>
+          <p>Publishes 20 paired x,y samples from the nonrectangular triangle {0,0:10,0:0,2} in single events so each pair comes from one at_post draw; passes when all 20 values lie inside that triangle.</p>
         </article>
 
 
@@ -183,19 +183,19 @@
 
         <article class="case-row">
           <code>pause_toggle_external_pass</code>
-          <p>Schedules a time-10 event and sends two UTS_PAUSE=toggle pokes to pause and resume; passes when UTS_TOGGLE_OUT=after_toggle is eventually observed, without grading the paused interval.</p>
+          <p>Schedules UTS_TOGGLE_OUT=after_toggle at time 10 and sends two UTS_PAUSE=toggle pokes; passes when the first output occurs after the second toggle, proving the intervening paused interval suppressed it.</p>
         </article>
 
 
         <article class="case-row">
           <code>forward_positive_skip_pass</code>
-          <p>Schedules UTS_FORWARD_POS=skipped at time 5 and later pokes UTS_FORWARD=5, exercising positive forwarding; passes when the value is observed, without comparing its publication time with an unforwarded run.</p>
+          <p>Places UTS_FORWARD_POS=skipped at script time 100, sends UTS_FORWARD=100, and evaluates from a later external poke while natural script time is still below 100; passes when the positive skip releases the event.</p>
         </article>
 
 
         <article class="case-row">
           <code>custom_control_vars_pass</code>
-          <p>Rebinds pause, forward, and reset controls to UTS_HOLD, UTS_SKIP, and UTS_REDO, then drives all three names; passes when final UTS_CUSTOM_CTRL=1 and status contains resets=1/any.</p>
+          <p>Rebinds pause, forward, and reset to UTS_HOLD, UTS_SKIP, and UTS_REDO; passes when the first probe follows the hold release, each 100-second event is released by its skip, reset status is 1/any, and both the probe and control output publish exactly twice with final local count 1.</p>
         </article>
 
 
@@ -207,7 +207,7 @@
 
         <article class="case-row">
           <code>delay_reset_pass</code>
-          <p>Sets all-posted reset, reset_max=1, and delay_reset=1.0; passes when at least two UTS_DELAY_RESET posts occur and status contains delay_reset=1.</p>
+          <p>Sets all-posted reset, reset_max=1, and delay_reset=1.0; passes when exactly two UTS_DELAY_RESET posts occur and status contains delay_reset=1.</p>
         </article>
 
 
@@ -225,7 +225,7 @@
 
         <article class="case-row">
           <code>dbtime_utc_macro_pass</code>
-          <p>Publishes $[DBTIME] and $[UTC] simultaneously, testing both clock macros; passes when both resulting numeric values are greater than zero.</p>
+          <p>Publishes $[DBTIME] and $[UTC] in the same iteration and currently requires both values to be positive; this is smoke coverage only because the tested upstream build reports the same epoch-like value for both macros when its DB_UPTIME baseline remains unset.</p>
         </article>
 
 
@@ -267,7 +267,7 @@
 
         <article class="case-row">
           <code>multi_condition_gate_pass</code>
-          <p>Requires both UTS_GATE_A=true and UTS_GATE_B=ready, poked sequentially, before scheduling UTS_MULTI_GATED=released; passes when the final output and both final gate values match, without checking absence after only the first gate.</p>
+          <p>Requires UTS_GATE_A=true and then UTS_GATE_B=ready; passes when the first UTS_MULTI_GATED=released publication occurs only after the second gate mail and both final gate values match.</p>
         </article>
 
 
@@ -279,7 +279,7 @@
 
         <article class="case-row">
           <code>quit_event_pass</code>
-          <p>Posts UTS_QUIT_READY=true and then executes a time-0.4 quit event before readiness is poked externally; passes when pMissionEval observes the ready value, without independently checking that uTimerScript exited.</p>
+          <p>Posts UTS_QUIT_READY=true, executes quit at time 0.4, and leaves pMissionEval running until an external readiness poke; passes when the ready post is sourced by uTimerScript and a later DB_CLIENTS update no longer contains that client.</p>
         </article>
 
       </div>
