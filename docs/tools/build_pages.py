@@ -2762,19 +2762,18 @@ def render_ctest_coverage() -> str:
   <main>
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
-      <p class="eyebrow">Unit Tests</p>
-      <h1>C++ unit tests for MOOS-IvP.</h1>
-      <p class="lede">These tests check individual classes and functions without running a mission. CTest organizes them into focused groups for parsers, geometry, IvP functions, contact records, behavior helpers, app utilities, and other source-level logic.</p>
+      <h1>C++ Unit Tests</h1>
+      <p class="lede">Tests check individual classes and functions without running a mission. Organized into focused groups dubbed 'component families' for parsers, geometry, IvP functions, contact records, behavior helpers, app utilities, and other source-level logic.</p>
       <div class="hero-actions">
         <a class="button primary" href="#buckets">Browse component families</a>
-        <a class="button secondary" href="{repo_url('tests/cpp/README.md')}">CTest README</a>
+        <a class="button secondary" href="{repo_url('tests/cpp/README.md')}">README</a>
       </div>
     </section>
 
     <section class="content-section stats-section">
       <div class="section-heading">
         <p class="eyebrow">Current Snapshot</p>
-        <h2>CTest coverage at a glance</h2>
+        <h2>Unit test coverage at a glance</h2>
       </div>
       <div class="stats-grid stats-grid--three">
         <article class="stat-card">
@@ -2960,7 +2959,7 @@ def render_index() -> str:
         <p class="lede">C++ unit tests check individual classes and functions, while mission harnesses test live MOOS processes, vehicle motion, and system-level outcomes.</p>
         <div class="hero-actions">
           <a class="button primary" href="quick-start.html">Developer quick start</a>
-          <a class="button secondary" href="#families">Browse catalog</a>
+          <a class="button secondary" href="#families">Harnesses</a>
           <a class="button secondary" href="ctest-coverage.html">Unit Tests</a>
           <a class="button secondary" href="examples.html">Examples</a>
         </div>
