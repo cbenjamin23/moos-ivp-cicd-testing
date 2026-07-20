@@ -117,7 +117,7 @@
 
         <article class="case-row">
           <code>ground_truth_gaussian_unsupported_no_gt_pass</code>
-          <p>Sets unsupported rn_algorithm=gaussian, sigma 0, and ground_truth=true; passes when the normal short report identifies range 50 and no short CRS_RANGE_REPORT_GT is published.</p>
+          <p>Sets unsupported rn_algorithm=gaussian, sigma 0, and ground_truth=true; passes when the normal short report identifies range 50 while neither CRS_RANGE_REPORT_GT nor requester-specific CRS_RANGE_REPORT_GT_ALPHA is published during the six-second window.</p>
         </article>
 
 
@@ -129,7 +129,7 @@
 
         <article class="case-row">
           <code>ground_truth_no_algorithm_absent_pass</code>
-          <p>Sets ground_truth=true without rn_algorithm, exercising the algorithm gate; passes when the normal short report identifies range 50 and no short CRS_RANGE_REPORT_GT is published.</p>
+          <p>Sets ground_truth=true without rn_algorithm, exercising the algorithm gate; passes when the normal short report identifies range 50 while neither ground-truth report form is published during the six-second window.</p>
         </article>
 
 
@@ -231,7 +231,7 @@
 
         <article class="case-row">
           <code>ground_truth_false_no_gt_pass</code>
-          <p>Sets zero-noise uniform reporting, report_vars=both, and ground_truth=false; passes when both normal report forms identify range 50 and no short ground-truth report is published.</p>
+          <p>Sets zero-noise uniform reporting, report_vars=both, and ground_truth=false; passes when both normal report forms identify range 50 while neither ground-truth report form is published during the six-second window.</p>
         </article>
 
 

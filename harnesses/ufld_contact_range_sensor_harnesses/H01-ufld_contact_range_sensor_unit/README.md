@@ -16,9 +16,9 @@ sensor-arc gating.
 - `report_vars_long_pass` Sets `report_vars=long`; passes when no short report is published and `CRS_RANGE_REPORT_ALPHA` identifies Bravo at range `50`.
 - `report_vars_both_pass` Sets `report_vars=both`; passes when both the requester-tagged short report and Alpha-specific long report identify Bravo at range `50`.
 - `ground_truth_uniform_zero_pass` Sets `rn_algorithm=uniform,pct=0`, `ground_truth=true`, and `report_vars=both`; passes when normal and `CRS_RANGE_REPORT_GT` short reports both identify the same 50-meter Alpha-to-Bravo range.
-- `ground_truth_gaussian_unsupported_no_gt_pass` Sets unsupported `rn_algorithm=gaussian`, sigma `0`, and `ground_truth=true`; passes when the normal short report identifies range `50` and no short `CRS_RANGE_REPORT_GT` is published.
+- `ground_truth_gaussian_unsupported_no_gt_pass` Sets unsupported `rn_algorithm=gaussian`, sigma `0`, and `ground_truth=true`; passes when the normal short report identifies range `50` while neither `CRS_RANGE_REPORT_GT` nor requester-specific `CRS_RANGE_REPORT_GT_ALPHA` is published during the six-second window.
 - `ground_truth_long_only_pass` Sets `report_vars=long`, zero-noise uniform reporting, and ground truth; passes when neither short form is published and both `CRS_RANGE_REPORT_ALPHA` and `CRS_RANGE_REPORT_GT_ALPHA` identify Bravo at range `50`.
-- `ground_truth_no_algorithm_absent_pass` Sets `ground_truth=true` without `rn_algorithm`, exercising the algorithm gate; passes when the normal short report identifies range `50` and no short `CRS_RANGE_REPORT_GT` is published.
+- `ground_truth_no_algorithm_absent_pass` Sets `ground_truth=true` without `rn_algorithm`, exercising the algorithm gate; passes when the normal short report identifies range `50` while neither ground-truth report form is published during the six-second window.
 - `allow_echo_type_block_pass` Allows only `kayak` echoes while Bravo reports `TYPE=SHIP`; passes when neither short nor long range report is published.
 - `allow_echo_type_accept_pass` Allows `kayak` echoes while both contacts report `TYPE=KAYAK`; passes on the baseline exact short report and pulse evidence.
 - `allow_echo_type_multi_accept_ship_pass` Allows `kayak,ship` and makes Bravo a ship, exercising multi-type matching; passes on the exact 50-meter short report and Bravo pulse.
@@ -35,7 +35,7 @@ sensor-arc gating.
 - `display_pulses_false_pass` Sets `display_pulses=false`; passes when the exact 50-meter short report is published and no `VIEW_RANGE_PULSE` is observed.
 - `unknown_request_no_report_pass` Requests `name=ghost` without a known ghost report; passes when neither short nor long range output is published.
 - `missing_name_request_no_report_pass` Posts known Alpha and Bravo reports but requests `vname=alpha` instead of the required `name` field; passes when neither report form is published.
-- `ground_truth_false_no_gt_pass` Sets zero-noise uniform reporting, `report_vars=both`, and `ground_truth=false`; passes when both normal report forms identify range `50` and no short ground-truth report is published.
+- `ground_truth_false_no_gt_pass` Sets zero-noise uniform reporting, `report_vars=both`, and `ground_truth=false`; passes when both normal report forms identify range `50` while neither ground-truth report form is published during the six-second window.
 - `crs_node_report_local_pass` Supplies both 50-meter contact positions through `NODE_REPORT_LOCAL`, exercising the local-report subscription; passes on the exact short report and Bravo pulse.
 - `unlimited_far_range_pass` Places Bravo 500 meters away with `push_dist=default=unlimited` and `pull_dist=default=10`; passes when the short report identifies range `500`.
 - `push_distance_alias_far_pass` Uses alias `push_distance=default=unlimited` with `pull_distance=default=10` for the same 500-meter geometry; passes when the short report identifies range `500`.
