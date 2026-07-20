@@ -11,6 +11,7 @@ Behavior = BHV_LegRun
   turn1_endflag = LR_TURN1_DONE = true
   turn2_endflag = LR_TURN2_DONE = true
   midlegflag    = LR_MID_LEG = true
+  midlegflag    = LR_MID_LEG_PCT = $[PCT_NP]
   midturnflag   = LR_MID_TURN = true
 
   perpetual = true

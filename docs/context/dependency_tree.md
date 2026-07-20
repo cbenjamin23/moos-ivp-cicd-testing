@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1727` under configured targets
+- Harness patch/config files: `1734` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -114,7 +114,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `fixedturn_h01` | `fixedturn_behavior` | `harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/zlaunch.sh` | `missions/fixedturn_behavior_missions/fixedturn_behavior_motion` | 24 | - | `fixedturn-behavior-motion` |
 | `periodic_speed_h01` | `periodic_speed_behavior` | `harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion/zlaunch.sh` | `missions/periodic_speed_behavior_missions/periodic_speed_behavior_motion` | 24 | - | `periodic-speed-behavior-motion` |
 | `zigzag_h01` | `zigzag_behavior` | `harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion/zlaunch.sh` | `missions/zigzag_behavior_missions/zigzag_behavior_motion` | 35 | - | `zigzag-behavior-motion` |
-| `legrun_h01` | `legrun_behavior` | `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/zlaunch.sh` | `missions/legrun_behavior_missions/legrun_behavior_motion` | 33 | - | `legrun-behavior-motion` |
+| `legrun_h01` | `legrun_behavior` | `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/zlaunch.sh` | `missions/legrun_behavior_missions/legrun_behavior_motion` | 33 | `pEchoVar` | `legrun-behavior-motion` |
 | `memoryturnlimit_h01` | `memoryturnlimit_behavior` | `harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion/zlaunch.sh` | `missions/memoryturnlimit_behavior_missions/memoryturnlimit_behavior_motion` | 21 | - | `memoryturnlimit-behavior-motion` |
 | `timer_h01` | `timer_behavior` | `harnesses/timer_behavior_harnesses/H01-timer_behavior_motion/zlaunch.sh` | `missions/timer_behavior_missions/timer_behavior_motion` | 18 | - | `timer-behavior-motion` |
 | `testfailure_h01` | `testfailure_behavior` | `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh` | `missions/testfailure_behavior_missions/testfailure_behavior_unit` | 9 | `pGapLatch` | `testfailure-behavior-unit` |
@@ -172,7 +172,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `iM300Health`: `p02_colregs`, `p03_colregs`
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
-- `pEchoVar`: `pechovar_h01`, `ufld_obstacle_sim_h01`, `utermcommand_h01`
+- `pEchoVar`: `legrun_h01`, `pechovar_h01`, `ufld_obstacle_sim_h01`, `utermcommand_h01`
 - `pGapLatch`: `testfailure_h01`
 - `pMediator`: `ufield_comms_h02`
 - `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`

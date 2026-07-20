@@ -1,0 +1,34 @@
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 50
+
+  Run = MOOSDB         @ NewConsole = false
+  Run = uTimerScript   @ NewConsole = false
+  Run = uProcessWatch  @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = pNodeReporter  @ NewConsole = false
+  Run = pHelmIvP       @ NewConsole = false
+  Run = pHostInfo      @ NewConsole = false
+  Run = uFldNodeBroker @ NewConsole = false
+  Run = uLoadWatch     @ NewConsole = false
+  Run = pRealm         @ NewConsole = false
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  event = var=NAV_X,       val=-18, time=0.2
+  event = var=NAV_Y,       val=-86, time=0.2
+  event = var=NAV_HEADING, val=0,   time=0.2
+  event = var=NAV_SPEED,   val=0,   time=0.2
+
+  condition = DEPLOY = true
+
+  event = var=NAV_Y, val=12,  time=20
+  event = var=NAV_Y, val=-88, time=40
+  event = var=NAV_Y, val=12,  time=60
+  event = var=NAV_Y, val=-88, time=80
+  event = var=NAV_Y, val=12,  time=100
+}

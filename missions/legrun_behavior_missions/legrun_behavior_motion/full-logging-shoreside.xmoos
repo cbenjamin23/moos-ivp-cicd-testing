@@ -7,6 +7,7 @@ ProcessConfig = ANTLER
   Run = pLogger          @ NewConsole = false
   Run = uProcessWatch    @ NewConsole = false
   Run = pShare           @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pHostInfo        @ NewConsole = false
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false

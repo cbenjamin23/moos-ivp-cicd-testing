@@ -3374,6 +3374,7 @@
         "legrun_behavior"
       ],
       "focus_process_apps": [
+        "pEchoVar",
         "pHelmIvP",
         "pMarinePIDV22",
         "pNodeReporter",
@@ -3388,13 +3389,14 @@
         "path": "missions/legrun_behavior_missions/legrun_behavior_motion"
       },
       "patches": {
-        "file_count": 38
+        "file_count": 45
       },
       "path": "harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion",
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
         "pAutoPoke",
+        "pEchoVar",
         "pHelmIvP",
         "pHostInfo",
         "pLogger",
@@ -6212,6 +6214,7 @@
         "pdeadmanpost_h01"
       ],
       "pEchoVar": [
+        "legrun_h01",
         "pechovar_h01",
         "ufld_obstacle_sim_h01",
         "utermcommand_h01"
@@ -7004,10 +7007,10 @@
       ".sh": 365,
       ".txt": 302,
       ".xbhv": 504,
-      ".xmoos": 1328,
+      ".xmoos": 1335,
       "[none]": 7
     },
-    "harness_patch_count": 1727,
+    "harness_patch_count": 1734,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

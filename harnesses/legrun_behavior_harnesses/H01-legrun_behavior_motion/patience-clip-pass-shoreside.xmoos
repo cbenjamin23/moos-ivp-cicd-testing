@@ -1,0 +1,48 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  block_on = pMissionEval, pEchoVar
+  condition = DEPLOY_ALL = true
+
+  event = var=LR_PATIENCE_EXPECTED, val="patience=99", time=0.5
+  event = var=MISSION_TIMEOUT, val=true, time=170
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (LR_PATIENCE_SETTING = $ (LR_PATIENCE_EXPECTED)) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 1.55) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 1.65) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_PATIENCE_SETTING = $ (LR_PATIENCE_EXPECTED)
+  pass_condition = LR_NOW_SPD > 1.55
+  pass_condition = LR_NOW_SPD < 1.65
+  pass_condition = ABE_IVPHELM_STATE = DRIVE
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = legrun_behavior_tests
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = eval=$[LR_PATIENCE_SETTING]
+  report_column = expected=patience_clipped_to_99
+  report_column = patience_setting=$[LR_PATIENCE_SETTING]
+  report_column = lr_now_spd=$[LR_NOW_SPD]
+  report_column = helm_state=$[ABE_IVPHELM_STATE]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = settings=$[BHV_SETTINGS]
+  report_column = mhash=$[MHASH_SHORT]
+}

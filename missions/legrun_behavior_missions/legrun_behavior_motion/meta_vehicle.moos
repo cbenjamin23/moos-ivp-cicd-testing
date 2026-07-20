@@ -91,16 +91,20 @@ ProcessConfig = uFldNodeBroker
   bridge = src=VIEW_SEGLIST
   bridge = src=LR_MODE
   bridge = src=LR_MODE_REPORT
+  bridge = src=LR_NOW_SPD
   bridge = src=BHV_SETTINGS
   bridge = src=LR_LEG1_DONE
   bridge = src=LR_LEG2_DONE
   bridge = src=LR_TURN1_DONE
   bridge = src=LR_TURN2_DONE
   bridge = src=LR_MID_LEG
+  bridge = src=LR_MID_LEG_PCT
   bridge = src=LR_MID_TURN
   bridge = src=LR_DONE
   bridge = src=NAV_HEADING
   bridge = src=NAV_SPEED
+  bridge = src=DESIRED_SPEED
+  bridge = src=IVPHELM_STATE, alias=ABE_IVPHELM_STATE
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
@@ -152,16 +156,20 @@ ProcessConfig = pLogger
   Log = BHV_ERROR @ 0 nosync
   Log = LR_MODE @ 0 nosync
   Log = LR_MODE_REPORT @ 0 nosync
+  Log = LR_NOW_SPD @ 0 nosync
   Log = BHV_SETTINGS @ 0 nosync
   Log = LR_LEG1_DONE @ 0 nosync
   Log = LR_LEG2_DONE @ 0 nosync
   Log = LR_TURN1_DONE @ 0 nosync
   Log = LR_TURN2_DONE @ 0 nosync
   Log = LR_MID_LEG @ 0 nosync
+  Log = LR_MID_LEG_PCT @ 0 nosync
   Log = LR_MID_TURN @ 0 nosync
   Log = LR_DONE @ 0 nosync
   Log = LEG_UPDATE @ 0 nosync
   Log = NAV_HEADING @ 0 nosync
+  Log = DESIRED_SPEED @ 0 nosync
+  Log = IVPHELM_STATE @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

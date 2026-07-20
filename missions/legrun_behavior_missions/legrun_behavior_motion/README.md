@@ -2,7 +2,8 @@
 
 Single-vehicle moving stem for `BHV_LegRun` correctness tests. The vehicle runs
 a two-leg pattern with port and starboard turns, while shoreside evaluation
-grades behavior-owned leg, turn, mid-leg, and mid-turn flags.
+grades behavior-owned mode, leg, turn, midpoint, scheduled-speed, effective
+setting, completion, and helm-state evidence selected by the harness case.
 
 Typical runs:
 

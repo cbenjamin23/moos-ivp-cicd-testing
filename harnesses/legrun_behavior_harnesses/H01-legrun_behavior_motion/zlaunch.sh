@@ -315,6 +315,7 @@ get_case_config() {
     CASE_NAME="$1"
     CASE_SHORE_PATCH=""
     CASE_VEH_MOOS_PATCH=""
+    CASE_VEH_MOOS_FULL_PATCH=""
     CASE_VEH_BHV_PATCH=""
 
     if [ "$CASE_NAME" = "baseline_cycle_pass" ]; then
@@ -346,10 +347,19 @@ get_case_config() {
     elif [ "$CASE_NAME" = "no_capture_line_pass" ]; then
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/no-capture-line-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "leg_speed_schedule_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/leg-speed-schedule-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/leg-speed-sequence-pass-vehicle.xmoos"
+        CASE_VEH_MOOS_FULL_PATCH="$HARNESS_DIR/leg-speed-sequence-pass-full-logging-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/leg-speed-schedule-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "leg_speed_onturn_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/leg-speed-onturn-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/leg-speed-sequence-pass-vehicle.xmoos"
+        CASE_VEH_MOOS_FULL_PATCH="$HARNESS_DIR/leg-speed-sequence-pass-full-logging-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/leg-speed-onturn-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "leg_speed_count_repeat_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/leg-speed-count-repeat-pass-shoreside.xmoos"
+        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/leg-speed-sequence-pass-vehicle.xmoos"
+        CASE_VEH_MOOS_FULL_PATCH="$HARNESS_DIR/leg-speed-sequence-pass-full-logging-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/leg-speed-count-repeat-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "runtime_length_angle_update_pass" ]; then
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-length-angle-update-pass-vehicle.xmoos"
@@ -368,8 +378,10 @@ get_case_config() {
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/flag-aliases-pass-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/flag-aliases-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "mid_pct_late_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/mid-pct-late-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/mid-pct-late-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "patience_clip_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/patience-clip-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/patience-clip-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_leg_config_fail" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-fail-shoreside.xmoos"
@@ -412,7 +424,9 @@ apply_case_patches() {
         nspatch --stem="$SHORE_STEM" "$CASE_SHORE_PATCH" --targ="$SHORE_XFILE"
     fi
 
-    if [ "$CASE_VEH_MOOS_PATCH" != "" ]; then
+    if [ "$LOG_MODE" = full ] && [ "$CASE_VEH_MOOS_FULL_PATCH" != "" ]; then
+        nspatch --stem="$VEHICLE_MOOS_STEM" "$CASE_VEH_MOOS_FULL_PATCH" --targ="$VEHICLE_MOOS_XFILE"
+    elif [ "$CASE_VEH_MOOS_PATCH" != "" ]; then
         nspatch --stem="$VEHICLE_MOOS_STEM" "$CASE_VEH_MOOS_PATCH" --targ="$VEHICLE_MOOS_XFILE"
     fi
 
@@ -432,7 +446,11 @@ apply_case_overlays() {
 
     if [ "$LOG_MODE" = full ]; then
         shore_patches+=("$workdir/full-logging-shoreside.xmoos")
-        vehicle_patches+=("$workdir/full-logging-vehicle.xmoos")
+        if [ -n "$CASE_VEH_MOOS_FULL_PATCH" ]; then
+            vehicle_patches+=("$CASE_VEH_MOOS_FULL_PATCH")
+        else
+            vehicle_patches+=("$workdir/full-logging-vehicle.xmoos")
+        fi
     fi
     if [ -n "$CASE_SHORE_PATCH" ]; then
         shore_patches+=("$CASE_SHORE_PATCH")
@@ -444,7 +462,8 @@ apply_case_overlays() {
         nspatch --stem="$workdir/meta_shoreside.moos" \
             "${shore_patches[@]}" --targ="$workdir/meta_shoreside.moosx" || return 1
     fi
-    if [ -n "$CASE_VEH_MOOS_PATCH" ]; then
+    if [ -n "$CASE_VEH_MOOS_PATCH" ] &&
+       { [ "$LOG_MODE" != full ] || [ -z "$CASE_VEH_MOOS_FULL_PATCH" ]; }; then
         vehicle_patches+=("$CASE_VEH_MOOS_PATCH")
     fi
     if [ "${#vehicle_patches[@]}" -gt 0 ]; then

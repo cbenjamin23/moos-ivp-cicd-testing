@@ -29,8 +29,9 @@ leg, turn, mid-leg, mid-turn, completion, and warning/error signals.
   turn; passes on the full baseline leg, turn, midpoint, completion, and
   no-error evidence.
 - `init_far_turn_pass`
-  Sets `init_leg_mode=far_turn` to begin on the opposite leg; passes when leg 2
-  and `LR_DONE` fire without a behavior error.
+  Sets `init_leg_mode=far_turn` to start on leg 2; passes when `LR_DONE=true`
+  with `LR_LEG2_DONE=true` while `LR_LEG1_DONE` and `LR_TURN1_DONE` remain
+  false.
 - `turn_rad_alias_pass`
   Configures both turns through shared aliases `turn_bias=100`, `turn_dir=port`,
   `turn_rad=8`, and `turn_ext=4`; passes on the baseline progression flags
@@ -58,17 +59,18 @@ leg, turn, mid-leg, mid-turn, completion, and warning/error signals.
   radius-only endpoint capture; passes on the full baseline progression,
   midpoint, completion, and no-error evidence.
 - `leg_speed_schedule_pass`
-  Configures the finite schedule `leg_spds=1.2,1.0,0.8,1.4`; passes on the
-  ordinary progression, midpoint, completion, and no-error evidence, without
-  grading the scheduled speeds.
+  Configures finite `leg_spds=1.2,1.0,0.8,1.4`; passes when behavior-owned
+  `LR_NOW_SPD` follows leg 2 `1.2`, leg 1 `1.0`, leg 2 `0.8`, leg 1 `1.4`,
+  then returns to cruise speed `1.6` on leg 2.
 - `leg_speed_onturn_pass`
-  Configures repeating speeds `1.1,0.9,1.3` with `leg_spds_onturn=true` so
-  schedule entries also apply during turns; passes on ordinary progression,
-  midpoint, completion, and no-error evidence.
+  Configures repeating `leg_spds=1.1,0.9,1.3` with
+  `leg_spds_onturn=true`; passes when each turn retains its preceding leg
+  speed through the ordered `1.1`, `0.9`, and `1.3` entries, then the wrapped
+  leg returns to `1.1`.
 - `leg_speed_count_repeat_pass`
-  Configures repeating count-expanded schedule `leg_spds=2:1.0,1.4`;
-  passes on ordinary progression, midpoint, completion, and no-error evidence,
-  without grading the expanded speed sequence.
+  Configures repeating count-expanded `leg_spds=2:1.0,1.4`; passes when two
+  consecutive legs use `1.0`, the next uses `1.4`, the wrapped leg returns to
+  `1.0`, and every intervening turn remains at cruise speed `1.6`.
 - `runtime_length_angle_update_pass`
   Posts `leg_len_mod=8` at six seconds and `leg_ang_mod=-5` at eight seconds;
   passes on ordinary progression, midpoint, completion, and no-error evidence,
@@ -95,45 +97,44 @@ leg, turn, mid-leg, mid-turn, completion, and warning/error signals.
   alongside the canonical flag names; passes when every canonical and alias
   flag reaches shoreside, the behavior completes, and no behavior error occurs.
 - `mid_pct_late_pass`
-  Moves `mid_leg_pct` and `mid_turn_pct` from 30 to 70; passes when both
-  midpoint flags eventually fire with the ordinary progression and completion
-  flags and no behavior error, without grading when they fired.
+  Sets `mid_leg_pct=70` and posts `$[PCT_NP]` with the mid-leg flag; passes
+  when that flag reports leg progress between `0.68` and `0.78`, the mid-turn
+  flag fires before completion, and no behavior error occurs.
 - `patience_clip_pass`
-  Supplies `patience=150`, which the behavior reports as the clipped value 99;
-  passes on ordinary progression, midpoint, completion, and no-error evidence,
-  while the reported clipped setting is not itself graded.
+  Supplies `patience=150` and extracts the behavior's reported setting with
+  `pEchoVar`; passes when the extracted value is exactly `patience=99`, the
+  helm is in `DRIVE`, and `LR_NOW_SPD` remains at cruise speed `1.6`.
 - `bad_leg_config_fail`
-  Sets nonnumeric `len=bad` in the leg specification; the harness passes when
-  the mission times out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets nonnumeric `len=bad` in the leg specification; passes when the bridged
+  helm state becomes exactly `MALCONFIG` before the 15-second deadline.
 - `bad_speed_schedule_fail`
-  Sets malformed `leg_spds=1.0,fast`; the harness passes when the mission times
-  out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets malformed `leg_spds=1.0,fast`; passes when the bridged helm state
+  becomes exactly `MALCONFIG` before the 15-second deadline.
 - `bad_init_mode_fail`
-  Sets unsupported `init_leg_mode=sideways`; the harness passes when the mission
-  times out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets unsupported `init_leg_mode=sideways`; passes when the bridged helm state
+  becomes exactly `MALCONFIG` before the 15-second deadline.
 - `bad_mid_pct_fail`
-  Sets out-of-range `mid_leg_pct=101`; the harness passes when the mission times
-  out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets out-of-range `mid_leg_pct=101`; passes when the bridged helm state
+  becomes exactly `MALCONFIG` before the 15-second deadline.
 - `bad_turn_radius_fail`
-  Sets invalid shared `turn_rad=0`; the harness passes when the mission times
-  out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets invalid shared `turn_rad=0`; passes when the bridged helm state becomes
+  exactly `MALCONFIG` before the 15-second deadline.
 - `bad_turn_ext_fail`
-  Sets invalid shared `turn_ext=-1`; the harness passes when the mission times
-  out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets invalid shared `turn_ext=-1`; passes when the bridged helm state becomes
+  exactly `MALCONFIG` before the 15-second deadline.
 - `bad_turn_dir_fail`
-  Sets unsupported shared `turn_dir=sideways`; the harness passes when the
-  mission times out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets unsupported shared `turn_dir=sideways`; passes when the bridged helm
+  state becomes exactly `MALCONFIG` before the 15-second deadline.
 - `bad_speed_high_fail`
-  Sets `speed=9`, above the helm speed domain; the harness passes when the
-  mission times out without reaching turn 2 and without a `BHV_ERROR` post.
+  Sets `speed=9`, above the helm speed domain; passes when the bridged helm
+  state becomes exactly `MALCONFIG` before the 15-second deadline.
 - `bad_speed_count_fail`
-  Sets invalid zero-count schedule entry `leg_spds=0:1.0`; the harness passes
-  when the mission times out without reaching turn 2 and without a `BHV_ERROR`
-  post.
+  Sets invalid zero-count schedule entry `leg_spds=0:1.0`; passes when the
+  bridged helm state becomes exactly `MALCONFIG` before the 15-second deadline.
 
-Expected-negative cases use mission-owned criteria. The result row grades
-`pass` only when `timeout=true`, `turn2=false`, and `bhv_error=false`, with
-`expected=malconfig_timeout` included as the evidence label.
+Expected-negative cases use mission-owned criteria. They grade `pass` only
+when the armed evaluator observes literal `IVPHELM_STATE=MALCONFIG` before its
+deadline; the current telemetry does not identify which parameter was rejected.
 
 ## Running
 
@@ -152,10 +153,13 @@ tree for inspection.
 
 Latest validation:
 
-- July 16, 2026
+- July 20, 2026
 - generated-file matrix: `33/33` cases completed with `--just_make --jobs=4`
-- three full rolling matrices: `99/99` mission-owned verdicts passed
-- full serial matrix: `33/33` mission-owned verdicts passed
+- minimal rolling matrix: `33/33` mission-owned verdicts passed
+- full-logging rolling matrix: `33/33` mission-owned verdicts passed
+- deliberate mutations of far-turn initialization, static speed scheduling,
+  mid-leg percentage, patience clipping, and invalid-leg rejection all failed
+  their focused evaluators
 - warp: `10`
 
 Logging is minimal by default. Use `--log=full` for the complete matrix, or

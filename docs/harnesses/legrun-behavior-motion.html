@@ -68,7 +68,7 @@
         </div>
         <div class="gif-meta">
           <h3>Far Turn Init</h3>
-          <p>Description: Sets init_leg_mode=far_turn to begin on the opposite leg; passes when leg 2 and LR_DONE fire without a behavior error.</p>
+          <p>Description: Sets init_leg_mode=far_turn to start on leg 2; passes when LR_DONE=true with LR_LEG2_DONE=true while LR_LEG1_DONE and LR_TURN1_DONE remain false.</p>
         </div>
       </article>
 
@@ -125,7 +125,7 @@
 
         <article class="case-row">
           <code>init_far_turn_pass</code>
-          <p>Sets init_leg_mode=far_turn to begin on the opposite leg; passes when leg 2 and LR_DONE fire without a behavior error.</p>
+          <p>Sets init_leg_mode=far_turn to start on leg 2; passes when LR_DONE=true with LR_LEG2_DONE=true while LR_LEG1_DONE and LR_TURN1_DONE remain false.</p>
         </article>
 
 
@@ -173,19 +173,19 @@
 
         <article class="case-row">
           <code>leg_speed_schedule_pass</code>
-          <p>Configures the finite schedule leg_spds=1.2,1.0,0.8,1.4; passes on the ordinary progression, midpoint, completion, and no-error evidence, without grading the scheduled speeds.</p>
+          <p>Configures finite leg_spds=1.2,1.0,0.8,1.4; passes when behavior-owned LR_NOW_SPD follows leg 2 1.2, leg 1 1.0, leg 2 0.8, leg 1 1.4, then returns to cruise speed 1.6 on leg 2.</p>
         </article>
 
 
         <article class="case-row">
           <code>leg_speed_onturn_pass</code>
-          <p>Configures repeating speeds 1.1,0.9,1.3 with leg_spds_onturn=true so schedule entries also apply during turns; passes on ordinary progression, midpoint, completion, and no-error evidence.</p>
+          <p>Configures repeating leg_spds=1.1,0.9,1.3 with leg_spds_onturn=true; passes when each turn retains its preceding leg speed through the ordered 1.1, 0.9, and 1.3 entries, then the wrapped leg returns to 1.1.</p>
         </article>
 
 
         <article class="case-row">
           <code>leg_speed_count_repeat_pass</code>
-          <p>Configures repeating count-expanded schedule leg_spds=2:1.0,1.4; passes on ordinary progression, midpoint, completion, and no-error evidence, without grading the expanded speed sequence.</p>
+          <p>Configures repeating count-expanded leg_spds=2:1.0,1.4; passes when two consecutive legs use 1.0, the next uses 1.4, the wrapped leg returns to 1.0, and every intervening turn remains at cruise speed 1.6.</p>
         </article>
 
 
@@ -227,67 +227,67 @@
 
         <article class="case-row">
           <code>mid_pct_late_pass</code>
-          <p>Moves mid_leg_pct and mid_turn_pct from 30 to 70; passes when both midpoint flags eventually fire with the ordinary progression and completion flags and no behavior error, without grading when they fired.</p>
+          <p>Sets mid_leg_pct=70 and posts $[PCT_NP] with the mid-leg flag; passes when that flag reports leg progress between 0.68 and 0.78, the mid-turn flag fires before completion, and no behavior error occurs.</p>
         </article>
 
 
         <article class="case-row">
           <code>patience_clip_pass</code>
-          <p>Supplies patience=150, which the behavior reports as the clipped value 99; passes on ordinary progression, midpoint, completion, and no-error evidence, while the reported clipped setting is not itself graded.</p>
+          <p>Supplies patience=150 and extracts the behavior&#x27;s reported setting with pEchoVar; passes when the extracted value is exactly patience=99, the helm is in DRIVE, and LR_NOW_SPD remains at cruise speed 1.6.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_leg_config_fail</code>
-          <p>Sets nonnumeric len=bad in the leg specification; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets nonnumeric len=bad in the leg specification; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_schedule_fail</code>
-          <p>Sets malformed leg_spds=1.0,fast; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets malformed leg_spds=1.0,fast; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_init_mode_fail</code>
-          <p>Sets unsupported init_leg_mode=sideways; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets unsupported init_leg_mode=sideways; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_mid_pct_fail</code>
-          <p>Sets out-of-range mid_leg_pct=101; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets out-of-range mid_leg_pct=101; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_radius_fail</code>
-          <p>Sets invalid shared turn_rad=0; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets invalid shared turn_rad=0; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_ext_fail</code>
-          <p>Sets invalid shared turn_ext=-1; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets invalid shared turn_ext=-1; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_turn_dir_fail</code>
-          <p>Sets unsupported shared turn_dir=sideways; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets unsupported shared turn_dir=sideways; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_high_fail</code>
-          <p>Sets speed=9, above the helm speed domain; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets speed=9, above the helm speed domain; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_speed_count_fail</code>
-          <p>Sets invalid zero-count schedule entry leg_spds=0:1.0; the harness passes when the mission times out without reaching turn 2 and without a BHV_ERROR post.</p>
+          <p>Sets invalid zero-count schedule entry leg_spds=0:1.0; passes when the bridged helm state becomes exactly MALCONFIG before the 15-second deadline.</p>
         </article>
 
       </div>

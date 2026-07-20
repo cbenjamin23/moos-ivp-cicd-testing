@@ -18,6 +18,7 @@ ProcessConfig = ANTLER
   Run = pRealm           @ NewConsole = false
   Run = uProcessWatch    @ NewConsole = false
   Run = pShare           @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pHostInfo        @ NewConsole = false
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
@@ -36,6 +37,19 @@ ProcessConfig = ANTLER
 #include plugs.moos <uProcessWatch>
 
 //----------------------------------------------------
+// pEchoVar Config Block
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:legrun_patience = source_variable = BHV_SETTINGS
+  FLIP:legrun_patience = dest_variable   = LR_PATIENCE_SETTING
+  FLIP:legrun_patience = patience -> patience
+}
+
+//----------------------------------------------------
 // pAutoPoke Config Block
 
 ProcessConfig = pAutoPoke
@@ -52,9 +66,12 @@ ProcessConfig = pAutoPoke
   flag = LR_TURN1_DONE=false
   flag = LR_TURN2_DONE=false
   flag = LR_MID_LEG=false
+  flag = LR_MID_LEG_PCT=0
   flag = LR_MID_TURN=false
   flag = LR_DONE=false
   flag = MISSION_TIMEOUT=false
+  flag = TEST_EVAL_READY=false
+  flag = EVAL_ARMED=false
   flag = BHV_ERROR_SEEN=false
 
   required_nodes = 1
@@ -142,10 +159,11 @@ ProcessConfig = uFldShoreBroker
 
   qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
   qbridge  = MOOS_MANUAL_OVERRIDE
-  qbridge  = LR_MODE, LR_MODE_REPORT, BHV_SETTINGS
+  qbridge  = LR_MODE, LR_MODE_REPORT, LR_NOW_SPD, BHV_SETTINGS
   qbridge  = LR_LEG1_DONE, LR_LEG2_DONE, LR_TURN1_DONE, LR_TURN2_DONE
-  qbridge  = LR_MID_LEG, LR_MID_TURN, LR_DONE
-  qbridge  = NAV_HEADING, NAV_SPEED, BHV_ERROR, BHV_WARNING
+  qbridge  = LR_MID_LEG, LR_MID_LEG_PCT, LR_MID_TURN, LR_DONE
+  qbridge  = NAV_HEADING, NAV_SPEED, DESIRED_SPEED, ABE_IVPHELM_STATE
+  qbridge  = BHV_ERROR, BHV_WARNING
 }
 
 //----------------------------------------------------
@@ -211,19 +229,24 @@ ProcessConfig = pMarineViewer
 
   scope = LR_MODE
   scope = LR_MODE_REPORT
+  scope = LR_NOW_SPD
   scope = LR_LEG1_DONE
   scope = LR_LEG2_DONE
   scope = LR_TURN1_DONE
   scope = LR_TURN2_DONE
   scope = LR_MID_LEG
+  scope = LR_MID_LEG_PCT
   scope = LR_MID_TURN
   scope = LR_DONE
   scope = MISSION_EVALUATED
   scope = MISSION_TIMEOUT
   scope = NAV_HEADING
   scope = NAV_SPEED
+  scope = DESIRED_SPEED
+  scope = ABE_IVPHELM_STATE
   scope = BHV_ERROR_SEEN
   scope = BHV_SETTINGS
+  scope = LR_PATIENCE_SETTING
 
   button_one = DEPLOY # DEPLOY_ALL=true
   button_one = DEPLOY # MOOS_MANUAL_OVERRIDE_ALL=false

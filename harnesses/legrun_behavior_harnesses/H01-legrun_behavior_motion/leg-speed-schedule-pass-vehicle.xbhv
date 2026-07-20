@@ -17,11 +17,12 @@ Behavior = BHV_LegRun
   speed     = $(STOCK_SPD)
   leg_spds  = 1.2,1.0,0.8,1.4
 
-  leg = x=7,y=-57,len=60,ang=64.64
+  p1 = -18,-88
+  p2 = -18,12
 
   capture_line   = true
-  capture_radius = 5
-  slip_radius    = 15
+  capture_radius = 50
+  slip_radius    = 60
   lead           = 5
   lead_damper    = 1
   patience       = 90
@@ -33,6 +34,7 @@ Behavior = BHV_LegRun
   turn1_rad  = 8
   turn2_rad  = 8
   turn_ext   = 4
+  turn_pt_gap = 20
 
   mid_leg_pct  = 30
   mid_turn_pct = 30

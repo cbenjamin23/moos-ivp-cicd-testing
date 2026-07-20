@@ -1,0 +1,90 @@
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+  event = var=MISSION_TIMEOUT, val=true, time=180
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = (LR_MODE = leg2) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 1.05) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 1.15) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_MODE = leg2
+  pass_condition = LR_NOW_SPD > 1.05
+  pass_condition = LR_NOW_SPD < 1.15
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_MODE = turn2) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 1.05) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 1.15) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_MODE = turn2
+  pass_condition = LR_NOW_SPD > 1.05
+  pass_condition = LR_NOW_SPD < 1.15
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_MODE = leg1) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 0.85) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 0.95) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_MODE = leg1
+  pass_condition = LR_NOW_SPD > 0.85
+  pass_condition = LR_NOW_SPD < 0.95
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_MODE = turn1) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 0.85) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 0.95) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_MODE = turn1
+  pass_condition = LR_NOW_SPD > 0.85
+  pass_condition = LR_NOW_SPD < 0.95
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_MODE = leg2) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 1.25) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 1.35) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_MODE = leg2
+  pass_condition = LR_NOW_SPD > 1.25
+  pass_condition = LR_NOW_SPD < 1.35
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_MODE = turn2) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 1.25) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 1.35) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_MODE = turn2
+  pass_condition = LR_NOW_SPD > 1.25
+  pass_condition = LR_NOW_SPD < 1.35
+  pass_condition = MISSION_TIMEOUT = false
+
+  lead_condition = (LR_MODE = leg1) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD > 1.05) or (MISSION_TIMEOUT = true)
+  lead_condition = (LR_NOW_SPD < 1.15) or (MISSION_TIMEOUT = true)
+  pass_condition = LR_MODE = leg1
+  pass_condition = LR_NOW_SPD > 1.05
+  pass_condition = LR_NOW_SPD < 1.15
+  pass_condition = MISSION_TIMEOUT = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = legrun_behavior_tests
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = eval=$[LR_MODE]
+  report_column = expected=leg_and_turn_speeds_1.1_0.9_1.3_repeat
+  report_column = lr_mode=$[LR_MODE]
+  report_column = lr_now_spd=$[LR_NOW_SPD]
+  report_column = timeout=$[MISSION_TIMEOUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}
