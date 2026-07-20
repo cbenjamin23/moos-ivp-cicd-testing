@@ -1,0 +1,14 @@
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  AsyncLog      = true
+  FileTimeStamp = true
+
+  LogAuxSrc       = true
+  WildCardLogging = false
+  Log = COLLISION_DETECT_PARAMS @ 0 nosync
+}

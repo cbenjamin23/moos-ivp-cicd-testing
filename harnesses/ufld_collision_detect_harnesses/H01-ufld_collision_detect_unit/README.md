@@ -33,8 +33,9 @@ Each case runs in an isolated copy of the shared uField app stem, and
 - `collision_flag_numeric_cpa_pass` Configures `collision_flag=UCD_COLLISION_CPA=$CPA` and completes a 2-meter collision; passes when `UCD_COLLISION_CPA` is posted as numeric value `2`.
 - `encounter_rings_true_posts_pass` Leaves encounter rings enabled, posts Alpha at `(0,0)` and Bravo at `(10,0)`, and checks each publication before the next node arrives; passes when the two exact 20-meter white `VIEW_CIRCLE` payloads are published with labels `alpharng` and `bravorng`.
 - `encounter_rings_false_absent_pass` Sets `encounter_rings=false` and posts Alpha and Bravo 10 meters apart; passes when no `VIEW_CIRCLE` is published.
-- `range_normalization_params_pass` Configures collision, near-miss, and encounter ranges as `6`, `3`, and `4`, then completes a 5-meter CPA; passes when any `COLLISION_DETECT_PARAMS` post is observed, `COLLISION_TOTAL=1`, and the exact report ranks the CPA as a collision, demonstrating that the smaller outer ranges were expanded enough to admit the event.
+- `range_normalization_params_pass` Configures collision, near-miss, and encounter ranges as `6`, `3`, and `4`, then completes a 5-meter CPA; passes when `COLLISION_DETECT_PARAMS` exactly reports normalized ranges `6`, `6`, and `6`, `COLLISION_TOTAL=1`, and the exact event report ranks the CPA as a collision.
 
-Logging is minimal by default and runs without `pLogger`. Use `--log=full` for
-the complete matrix, or combine it with `--case=NAME` for one fully logged
-diagnostic case.
+Logging is minimal by default and runs without `pLogger`, except that
+`range_normalization_params_pass` records only `COLLISION_DETECT_PARAMS` for
+its exact serialized-payload supplement. Use `--log=full` for the complete
+matrix, or combine it with `--case=NAME` for one fully logged diagnostic case.

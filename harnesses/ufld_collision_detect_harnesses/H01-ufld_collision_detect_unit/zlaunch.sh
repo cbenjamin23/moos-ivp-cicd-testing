@@ -40,6 +40,8 @@ REPO_DIR=$(cd "$HARNESS_DIR/../../.." && pwd)
 MISSION_DIR="$REPO_DIR/missions/ufield_app_missions/ufield_app_unit"
 TEARDOWN_HELPER="$REPO_DIR/scripts/moos_scoped_teardown.sh"
 COMMON_PATCH="$HARNESS_DIR/collision-detect-common-shoreside.xmoos"
+NORMALIZATION_LOG_PATCH="$HARNESS_DIR/range-normalization-minimal-logging-shoreside.xmoos"
+REQUIRED_NORMALIZED_PARAMS="collision_range=6, near_miss_range=6, encounter_range=6"
 RESULTS_FILE="$HARNESS_DIR/results.txt"
 RUNS_DIR="$HARNESS_DIR/.harness_runs"
 RUN_ROOT=""
@@ -312,6 +314,29 @@ get_case_patch() {
     esac
 }
 
+replace_with_normalization_logger() {
+    local target_file="$1"
+    local stem_file="${target_file%.moosx}.normalization-logger.moos"
+
+    awk '
+        /^[[:space:]]*#include[[:space:]]+plugs[.]moos[[:space:]]+<pLogger>[[:space:]]*$/ {
+            removed++
+            next
+        }
+        {print}
+        END {if(removed != 1) exit 42}
+    ' "$target_file" > "$stem_file" || {
+        rm -f "$stem_file"
+        return 1
+    }
+    nspatch --stem="$stem_file" "$NORMALIZATION_LOG_PATCH" \
+        --targ="$target_file" || {
+        rm -f "$stem_file"
+        return 1
+    }
+    rm -f "$stem_file"
+}
+
 prepare_case() {
     local case_name="$1"
     local workdir="$2"
@@ -330,11 +355,53 @@ prepare_case() {
     nspatch --stem="$workdir/meta_shoreside.common.moos" \
         "$CASE_PATCH" --targ="$workdir/meta_shoreside.moosx" || return 1
     if [ "$LOG_MODE" = minimal ]; then
-        (
-            cd "$workdir" || exit 1
-            ./prepare_logging_mode.sh "$LOG_MODE" none meta_shoreside.moosx
-        ) || return 1
+        if [ "$case_name" = range_normalization_params_pass ]; then
+            [ -f "$NORMALIZATION_LOG_PATCH" ] || return 1
+            replace_with_normalization_logger "$workdir/meta_shoreside.moosx" || return 1
+        else
+            (
+                cd "$workdir" || exit 1
+                ./prepare_logging_mode.sh "$LOG_MODE" none meta_shoreside.moosx
+            ) || return 1
+        fi
     fi
+}
+
+check_normalized_params_artifact() {
+    local root="$1"
+
+    find "$root" -type f -name '*.alog' -exec awk \
+        -v required="$REQUIRED_NORMALIZED_PARAMS" '
+            $2 == "COLLISION_DETECT_PARAMS" && $3 == "uFldCollisionDetect" {
+                value = $4
+                for(i=5; i<=NF; i++)
+                    value = value " " $i
+                if(value == required) {
+                    print "params_exact"
+                    exit
+                }
+            }
+        ' {} + 2>/dev/null | grep -qx params_exact
+}
+
+apply_case_artifact_check() {
+    local case_name="$1"
+    local result_file="$2"
+    local workdir="$3"
+    local line grade provenance
+
+    [ "$JUST_MAKE" != yes ] || return 0
+    [ "$case_name" = range_normalization_params_pass ] || return 0
+    line=$(awk 'NF {print; exit}' "$result_file" 2>/dev/null)
+    grade=$(field_value "$line" grade || true)
+    [ "$grade" = pass ] || return 0
+    if check_normalized_params_artifact "$workdir"; then
+        printf '%s params_exact=true\n' "$line" > "$result_file"
+        return 0
+    fi
+    provenance=$(runner_provenance "$line")
+    printf 'case=%s grade=fail reason=artifact_check_failed params_exact=false%s\n' \
+        "$case_name" "${provenance:+ $provenance}" > "$result_file"
 }
 
 write_result() {
@@ -416,6 +483,7 @@ run_case() {
     ) || launch_rc=$?
 
     write_result "$case_name" "$result_file" "$launch_rc" "$workdir"
+    apply_case_artifact_check "$case_name" "$result_file" "$workdir"
     if ! stop_root "$workdir"; then
         printf 'case=%s grade=fail reason=teardown_error\n' "$case_name" > "$result_file"
     fi

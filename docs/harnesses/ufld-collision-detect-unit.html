@@ -201,7 +201,7 @@
 
         <article class="case-row">
           <code>range_normalization_params_pass</code>
-          <p>Configures collision, near-miss, and encounter ranges as 6, 3, and 4, then completes a 5-meter CPA; passes when any COLLISION_DETECT_PARAMS post is observed, COLLISION_TOTAL=1, and the exact report ranks the CPA as a collision, demonstrating that the smaller outer ranges were expanded enough to admit the event.</p>
+          <p>Configures collision, near-miss, and encounter ranges as 6, 3, and 4, then completes a 5-meter CPA; passes when COLLISION_DETECT_PARAMS exactly reports normalized ranges 6, 6, and 6, COLLISION_TOTAL=1, and the exact event report ranks the CPA as a collision.</p>
         </article>
 
       </div>
