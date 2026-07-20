@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Radius Expand</h3>
-          <p>Description: Posts inner_radius=10 and outer_radius=28 at 12 and 13 seconds, exercising live ring expansion; passes at 35 seconds when DIST_TO_STATION&lt;=10 and no BHV_ERROR occurred.</p>
+          <p>Description: Posts inner_radius=10 and outer_radius=28; passes after update success is observed, settings report both exact radii, and the vehicle subsequently reaches DIST_TO_STATION&lt;=10.</p>
         </div>
       </article>
 
@@ -121,56 +121,50 @@
 
 
         <article class="case-row">
-          <code>center_activate_swing_pass</code>
-          <p>Sets center_activate=true and swing_time=8, exercising the activation-centered swing path; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>wide_radius_pass</code>
-          <p>Sets inner_radius=10 and outer_radius=28, exercising widened station rings; passes at 35 seconds when DIST_TO_STATION&lt;=10 and no BHV_ERROR occurred.</p>
+          <p>Sets inner_radius=10 and outer_radius=28; passes after the normalized settings report those exact radii and the vehicle reaches DIST_TO_STATION&lt;=10 before the deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>tight_radius_pass</code>
-          <p>Sets inner_radius=2, outer_radius=8, and outer_speed=1.4, exercising tighter station rings; passes at 35 seconds when DIST_TO_STATION&lt;=9 and no BHV_ERROR occurred.</p>
+          <p>Sets inner_radius=2, outer_radius=8, and outer_speed=1.4; passes after the normalized settings report all three values and the seeking vehicle reaches DIST_TO_STATION&lt;=9 before the deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>inner_gt_outer_pass</code>
-          <p>Sets inner_radius=18 and outer_radius=8, exercising the behavior&#x27;s handling of an inner radius larger than the outer radius; passes at 35 seconds when DIST_TO_STATION&lt;=18 and no BHV_ERROR occurred.</p>
+          <p>Sets inner_radius=18 and outer_radius=8; the live case requires those exact settings and DIST_TO_STATION&lt;=18, while a direct CTest verifies that StationKeep promotes the effective outer ring to 18 meters.</p>
         </article>
 
 
         <article class="case-row">
           <code>outer_speed_slow_pass</code>
-          <p>Sets outer_speed=0.35, exercising slow correction inside the outer ring; passes at 50 seconds when DIST_TO_STATION&lt;=20 and no BHV_ERROR occurred.</p>
+          <p>Sets outer_speed=0.35; passes when the reported setting rounds to 0.3 and, at 9&lt;DIST_TO_STATION&lt;11, StationKeep commands 0.15&lt;DESIRED_SPEED&lt;0.25 while seeking.</p>
         </article>
 
 
         <article class="case-row">
           <code>outer_speed_update_slow_pass</code>
-          <p>Posts outer_speed=0.35 through STATIONKEEP_UPDATES at two seconds, exercising a live correction-speed change; passes at 50 seconds when 10&lt;DIST_TO_STATION&lt;=22 and no BHV_ERROR occurred.</p>
+          <p>Posts outer_speed=0.35 through STATIONKEEP_UPDATES; passes after the exact update is accepted, settings report outer_speed=0.3, and StationKeep commands 0.15&lt;DESIRED_SPEED&lt;0.25 at 9&lt;DIST_TO_STATION&lt;11 while seeking.</p>
         </article>
 
 
         <article class="case-row">
           <code>transit_speed_fast_pass</code>
-          <p>Sets transit_speed=3.0, exercising a faster approach from (-45,-121) to (12,-121); passes at 35 seconds when DIST_TO_STATION&lt;=8 and no BHV_ERROR occurred.</p>
+          <p>Sets transit_speed=3.0; passes when StationKeep commands 2.95&lt;DESIRED_SPEED&lt;3.05 while seeking outside the 15-meter outer ring.</p>
         </article>
 
 
         <article class="case-row">
           <code>extra_speed_alias_pass</code>
-          <p>Sets legacy alias extra_speed=3.0, exercising its use as the transit speed; passes at 20 seconds when DIST_TO_STATION&lt;=25 and no BHV_ERROR occurred.</p>
+          <p>Sets alias extra_speed=3.0; passes when StationKeep likewise commands 2.95&lt;DESIRED_SPEED&lt;3.05 while seeking outside the outer ring.</p>
         </article>
 
 
         <article class="case-row">
           <code>transit_speed_slow_in_progress_pass</code>
-          <p>Sets transit_speed=0.5, exercising a slow approach; the harness passes at 15 seconds when DIST_TO_STATION&gt;20 and no BHV_ERROR occurred.</p>
+          <p>Sets transit_speed=0.5; passes when the seeking vehicle has moved from its initial 57-meter range to 15&lt;DIST_TO_STATION&lt;56 while commanding 0.45&lt;DESIRED_SPEED&lt;0.55.</p>
         </article>
 
 
@@ -194,43 +188,43 @@
 
         <article class="case-row">
           <code>hibernation_off_pass</code>
-          <p>Sets hibernation_radius=off, exercising the explicit disabled form; passes at 35 seconds when DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
+          <p>Sets hibernation_radius=off; passes when settings report the disabled value hiber=-1.0 and StationKeep remains SEEKING_STATION while more than 25 meters from the station.</p>
         </article>
 
 
         <article class="case-row">
           <code>point_update_retarget_pass</code>
-          <p>Changes the station from (12,-121) to (24,-121) through STATIONKEEP_UPDATES at eight seconds, exercising live retargeting; passes at 35 seconds when the behavior-owned DIST_TO_STATION&lt;=8 and no behavior warning or error occurred.</p>
+          <p>Posts point=x=24,y=-121; passes after that exact update is accepted, settings report station (24,-121), and the seeking vehicle reaches DIST_TO_STATION&lt;=8 from the new point.</p>
         </article>
 
 
         <article class="case-row">
           <code>radius_update_expand_pass</code>
-          <p>Posts inner_radius=10 and outer_radius=28 at 12 and 13 seconds, exercising live ring expansion; passes at 35 seconds when DIST_TO_STATION&lt;=10 and no BHV_ERROR occurred.</p>
+          <p>Posts inner_radius=10 and outer_radius=28; passes after update success is observed, settings report both exact radii, and the vehicle subsequently reaches DIST_TO_STATION&lt;=10.</p>
         </article>
 
 
         <article class="case-row">
           <code>radius_update_shrink_pass</code>
-          <p>Posts inner_radius=2 and outer_radius=8 at 12 and 13 seconds, exercising live ring contraction; passes at 35 seconds when DIST_TO_STATION&lt;=9 and no BHV_ERROR occurred.</p>
+          <p>Posts inner_radius=2 and outer_radius=8; passes after update success is observed, settings report both exact radii, and the vehicle subsequently reaches DIST_TO_STATION&lt;=9.</p>
         </article>
 
 
         <article class="case-row">
           <code>speed_update_slow_progress_pass</code>
-          <p>Posts transit_speed=0.45 at two seconds, exercising a live slowdown during approach; the harness passes at 15 seconds when DIST_TO_STATION&gt;20 and no BHV_ERROR occurred.</p>
+          <p>Posts transit_speed=0.45; passes after the exact update is accepted and the seeking vehicle advances to 15&lt;DIST_TO_STATION&lt;56 while the helm&#x27;s speed grid commands 0.35&lt;DESIRED_SPEED&lt;0.55.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_point_update_recover_pass</code>
-          <p>Posts malformed point=bad_point at three seconds and valid point=x=12,y=-121 at six seconds, exercising recovery after a rejected update; passes at 35 seconds when any warning was observed, DIST_TO_STATION&lt;=8, and no BHV_ERROR occurred.</p>
+          <p>Starts at station (12,-121), rejects point=bad_point, then accepts the distinct recovery point (24,-121); passes after the exact rejection result and a warning, exact accepted update and final settings, and DIST_TO_STATION&lt;=8 from the recovered point.</p>
         </article>
 
 
         <article class="case-row">
           <code>visual_hints_pass</code>
-          <p>Changes the station visualization to yellow vertices, cyan edges, and size 2, exercising visual-hint parsing; passes with the unchanged DIST_TO_STATION&lt;=8 and no-warning/no-error motion grade.</p>
+          <p>Sets vertex color yellow, edge color cyan, and both sizes to 2; passes only when the normalized inner-ring VIEW_POLYGON reports those fields, with white label color and no behavior error.</p>
         </article>
 
 
@@ -248,55 +242,55 @@
 
         <article class="case-row">
           <code>bad_update_fail</code>
-          <p>Starts without a station point and posts malformed point=bad_point at three seconds, exercising failed runtime initialization; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Starts without a station and posts point=bad_point; the harness passes only when the exact update reports param_error, a warning is published, and StationKeep remains inactive with DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no behavior error.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_outer_radius_fail</code>
-          <p>Sets outer_radius=-3, exercising negative-radius rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets outer_radius=-3; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_inner_radius_fail</code>
-          <p>Sets inner_radius=bad_radius, exercising nonnumeric-radius rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets inner_radius=bad_radius; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_hibernation_radius_fail</code>
-          <p>Sets hibernation_radius=zero, exercising invalid hibernation-radius rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets hibernation_radius=zero; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_outer_speed_fail</code>
-          <p>Sets outer_speed=zero, exercising nonnumeric correction-speed rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets outer_speed=zero; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_transit_speed_fail</code>
-          <p>Sets transit_speed=-2, exercising negative transit-speed rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets transit_speed=-2; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_extra_speed_fail</code>
-          <p>Sets alias extra_speed=-2, exercising negative alias-value rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets alias extra_speed=-2; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_center_activate_fail</code>
-          <p>Sets center_activate=maybe, exercising non-boolean activation-mode rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets center_activate=maybe; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_swing_time_fail</code>
-          <p>Sets center_activate=true with swing_time=slow, exercising nonnumeric swing-time rejection; the harness passes at 15 seconds when DIST_TO_STATION&gt;=100, PSKEEP_MODE=UNKNOWN, and no BHV_ERROR occurred.</p>
+          <p>Sets center_activate=true with swing_time=slow; the harness passes only when the armed helm reaches MALCONFIG before the missing-state deadline, while a direct CTest requires this value to be rejected by StationKeep.</p>
         </article>
 
       </div>

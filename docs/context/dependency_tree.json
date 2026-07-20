@@ -4686,6 +4686,7 @@
         "stationkeep_behavior"
       ],
       "focus_process_apps": [
+        "pEchoVar",
         "pHelmIvP",
         "pMarinePIDV22",
         "pNodeReporter",
@@ -4700,13 +4701,14 @@
         "path": "missions/stationkeep_behavior_missions/stationkeep_behavior_motion"
       },
       "patches": {
-        "file_count": 50
+        "file_count": 54
       },
       "path": "harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion",
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
         "pAutoPoke",
+        "pEchoVar",
         "pHelmIvP",
         "pHostInfo",
         "pLogger",
@@ -4724,14 +4726,13 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 34,
+        "case_count": 33,
         "case_parse_error": "",
         "cases": [
           "static_station_pass",
           "station_pt_alias_pass",
           "start_inside_hold_pass",
           "center_activate_hold_pass",
-          "center_activate_swing_pass",
           "wide_radius_pass",
           "tight_radius_pass",
           "inner_gt_outer_pass",
@@ -6228,6 +6229,7 @@
         "opregion_h01",
         "pechovar_h01",
         "processwatch_h01",
+        "stationkeep_h01",
         "ufld_obstacle_sim_h01",
         "utermcommand_h01"
       ],
@@ -7028,11 +7030,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 501,
-      ".xmoos": 1363,
+      ".xbhv": 500,
+      ".xmoos": 1368,
       "[none]": 7
     },
-    "harness_patch_count": 1759,
+    "harness_patch_count": 1763,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

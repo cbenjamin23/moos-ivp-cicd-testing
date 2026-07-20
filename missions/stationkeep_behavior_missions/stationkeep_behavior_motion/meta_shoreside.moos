@@ -22,6 +22,7 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
   Run = uTimerScript     @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pMissionEval     @ NewConsole = false
   Run = pAutoPoke        @ NewConsole = false
 #ifdef LAUNCH_GUI yes
@@ -36,6 +37,65 @@ ProcessConfig = ANTLER
 #include plugs.moos <uProcessWatch>
 
 //----------------------------------------------------
+// pEchoVar Config Block
+
+// Normalize the stable StationKeep fields used by case evaluators. Keeping
+// the structured-string parsing here lets pMissionEval compare small,
+// behavior-owned contracts instead of simulator trajectories or shell output.
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:settings = source_variable = BHV_SETTINGS
+  FLIP:settings = dest_variable   = STATION_SETTINGS
+  FLIP:settings = type == BHV_StationKeep
+  FLIP:settings = name == station_keep
+  FLIP:settings = dest_separator = :
+  FLIP:settings = x                  -> x
+  FLIP:settings = y                  -> y
+  FLIP:settings = inner_radius       -> inner
+  FLIP:settings = outer_radius       -> outer
+  FLIP:settings = hibernation_radius -> hiber
+  FLIP:settings = outer_speed        -> outer_speed
+  FLIP:settings = center_activate    -> center_activate
+
+  // The helm's same-iteration outer/inner VIEW_POLYGON posts collapse to the
+  // final inner-ring value at the MOOS boundary. Grade that stable value for
+  // visual hints; use BHV_SETTINGS for point and radius configuration.
+  FLIP:ring_visual = source_variable = VIEW_POLYGON
+  FLIP:ring_visual = dest_variable   = STATION_RING_VISUAL
+  FLIP:ring_visual = label == abe:station-keep-in
+  FLIP:ring_visual = dest_separator = :
+  FLIP:ring_visual = edge_size    -> edge_size
+  FLIP:ring_visual = vertex_size  -> vertex_size
+  FLIP:ring_visual = edge_color   -> edge_color
+  FLIP:ring_visual = label_color  -> label_color
+  FLIP:ring_visual = vertex_color -> vertex_color
+
+  FLIP:update_success = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:update_success = dest_variable   = STATION_UPDATE_SUCCESS
+  FLIP:update_success = bhv == station_keep
+  FLIP:update_success = var == STATIONKEEP_UPDATES
+  FLIP:update_success = result == success
+  FLIP:update_success = dest_separator = :
+  FLIP:update_success = bhv    -> bhv
+  FLIP:update_success = var    -> var
+  FLIP:update_success = result -> result
+
+  FLIP:update_error = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:update_error = dest_variable   = STATION_UPDATE_PARAM_ERROR
+  FLIP:update_error = bhv == station_keep
+  FLIP:update_error = var == STATIONKEEP_UPDATES
+  FLIP:update_error = result == param_error
+  FLIP:update_error = dest_separator = :
+  FLIP:update_error = bhv    -> bhv
+  FLIP:update_error = var    -> var
+  FLIP:update_error = result -> result
+}
+
+//----------------------------------------------------
 // pAutoPoke Config Block
 
 ProcessConfig = pAutoPoke
@@ -48,6 +108,8 @@ ProcessConfig = pAutoPoke
   flag = TEST_EVAL_READY=false
   flag = BHV_ERROR_SEEN=false
   flag = BHV_WARNING_SEEN=false
+  flag = STATION_UPDATE_ACCEPTED=false
+  flag = STATION_UPDATE_REJECTED=false
   flag = DIST_TO_STATION=999
   flag = PSKEEP_MODE=UNKNOWN
 
@@ -116,7 +178,8 @@ ProcessConfig = uFldShoreBroker
   qbridge  = MOOS_MANUAL_OVERRIDE
   qbridge  = STATIONKEEP_UPDATES, TEST_EVAL_READY
   qbridge  = DIST_TO_STATION, PSKEEP_MODE, BHV_SETTINGS
-  qbridge  = BHV_WARNING, BHV_ERROR
+  qbridge  = DESIRED_SPEED, IVPHELM_UPDATE_RESULT
+  qbridge  = ABE_IVPHELM_STATE, BHV_WARNING, BHV_ERROR
 }
 
 //----------------------------------------------------
@@ -150,6 +213,13 @@ ProcessConfig = pLogger
   Log = DIST_TO_STATION @ 0 nosync
   Log = PSKEEP_MODE @ 0 nosync
   Log = BHV_SETTINGS @ 0 nosync
+  Log = DESIRED_SPEED @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
+  Log = ABE_IVPHELM_STATE @ 0 nosync
+  Log = STATION_SETTINGS @ 0 nosync
+  Log = STATION_RING_VISUAL @ 0 nosync
+  Log = STATION_UPDATE_SUCCESS @ 0 nosync
+  Log = STATION_UPDATE_PARAM_ERROR @ 0 nosync
   Log = BHV_WARNING @ 0 nosync
   Log = BHV_ERROR @ 0 nosync
   Log = BHV_ERROR_SEEN @ 0 nosync

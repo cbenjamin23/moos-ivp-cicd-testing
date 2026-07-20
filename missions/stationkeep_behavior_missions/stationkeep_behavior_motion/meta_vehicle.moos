@@ -94,6 +94,9 @@ ProcessConfig = uFldNodeBroker
   bridge = src=DIST_TO_STATION
   bridge = src=PSKEEP_MODE
   bridge = src=BHV_SETTINGS
+  bridge = src=DESIRED_SPEED
+  bridge = src=IVPHELM_UPDATE_RESULT
+  bridge = src=IVPHELM_STATE, alias=ABE_IVPHELM_STATE
   bridge = src=STATIONKEEP_UPDATES
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
@@ -147,6 +150,9 @@ ProcessConfig = pLogger
   Log = DIST_TO_STATION @ 0 nosync
   Log = PSKEEP_MODE @ 0 nosync
   Log = BHV_SETTINGS @ 0 nosync
+  Log = DESIRED_SPEED @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
+  Log = IVPHELM_STATE @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

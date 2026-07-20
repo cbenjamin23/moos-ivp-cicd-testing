@@ -3,7 +3,7 @@ ProcessConfig = uTimerScript
   AppTick = 4
   CommsTick = 4
   condition = DEPLOY_ALL = true
-  event = var=STATION_EXPECT_SETTINGS, val="x=12.00:y=-121.00:inner=2.0:outer=8.0:hiber=-1.0:outer_speed=1.4:center_activate=false", time=0.5
+  event = var=STATION_EXPECT_SETTINGS, val="x=24.00:y=-121.00:inner=4.0:outer=15.0:hiber=-1.0:outer_speed=1.2:center_activate=false", time=0.5
   event = var=TEST_EVAL_READY, val=true, time=45
 }
 
@@ -12,11 +12,13 @@ ProcessConfig = pMissionEval
   AppTick = 4
   CommsTick = 4
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
-  lead_condition = (STATION_SETTINGS = $ (STATION_EXPECT_SETTINGS)) or (TEST_EVAL_READY = true)
+  mailflag = @STATION_UPDATE_SUCCESS#STATION_UPDATE_ACCEPTED=true
+  lead_condition = ((STATION_UPDATE_ACCEPTED = true) and (STATION_SETTINGS = $ (STATION_EXPECT_SETTINGS))) or (TEST_EVAL_READY = true)
+  pass_condition = STATION_UPDATE_ACCEPTED = true
   pass_condition = STATION_SETTINGS = $ (STATION_EXPECT_SETTINGS)
   pass_condition = TEST_EVAL_READY = false
-  lead_condition = (DIST_TO_STATION <= 9) or (TEST_EVAL_READY = true)
-  pass_condition = DIST_TO_STATION <= 9
+  lead_condition = (DIST_TO_STATION <= 8) or (TEST_EVAL_READY = true)
+  pass_condition = DIST_TO_STATION <= 8
   pass_condition = PSKEEP_MODE = SEEKING_STATION
   pass_condition = TEST_EVAL_READY = false
   pass_condition = BHV_ERROR_SEEN = false
@@ -27,7 +29,8 @@ ProcessConfig = pMissionEval
   report_file = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = expected=inner_2_outer_8_outer_speed_1.4
+  report_column = expected=runtime_station_24_-121
+  report_column = update=$[STATION_UPDATE_SUCCESS]
   report_column = settings=$[STATION_SETTINGS]
   report_column = dist=$[DIST_TO_STATION]
   report_column = pskeep=$[PSKEEP_MODE]

@@ -3,8 +3,8 @@ ProcessConfig = uTimerScript
   AppTick = 4
   CommsTick = 4
   condition = DEPLOY_ALL = true
-  event = var=STATION_EXPECT_SETTINGS, val="x=12.00:y=-121.00:inner=2.0:outer=8.0:hiber=-1.0:outer_speed=1.4:center_activate=false", time=0.5
-  event = var=TEST_EVAL_READY, val=true, time=45
+  event = var=STATION_EXPECT_VISUAL, val="edge_size=2:vertex_size=2:edge_color=cyan:label_color=white:vertex_color=yellow", time=0.5
+  event = var=TEST_EVAL_READY, val=true, time=20
 }
 
 ProcessConfig = pMissionEval
@@ -12,12 +12,8 @@ ProcessConfig = pMissionEval
   AppTick = 4
   CommsTick = 4
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
-  lead_condition = (STATION_SETTINGS = $ (STATION_EXPECT_SETTINGS)) or (TEST_EVAL_READY = true)
-  pass_condition = STATION_SETTINGS = $ (STATION_EXPECT_SETTINGS)
-  pass_condition = TEST_EVAL_READY = false
-  lead_condition = (DIST_TO_STATION <= 9) or (TEST_EVAL_READY = true)
-  pass_condition = DIST_TO_STATION <= 9
-  pass_condition = PSKEEP_MODE = SEEKING_STATION
+  lead_condition = (STATION_RING_VISUAL = $ (STATION_EXPECT_VISUAL)) or (TEST_EVAL_READY = true)
+  pass_condition = STATION_RING_VISUAL = $ (STATION_EXPECT_VISUAL)
   pass_condition = TEST_EVAL_READY = false
   pass_condition = BHV_ERROR_SEEN = false
   result_flag = MISSION_EVALUATED = true
@@ -27,9 +23,8 @@ ProcessConfig = pMissionEval
   report_file = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = expected=inner_2_outer_8_outer_speed_1.4
-  report_column = settings=$[STATION_SETTINGS]
-  report_column = dist=$[DIST_TO_STATION]
+  report_column = expected=yellow_cyan_size_2
+  report_column = visual=$[STATION_RING_VISUAL]
   report_column = pskeep=$[PSKEEP_MODE]
   report_column = deadline=$[TEST_EVAL_READY]
   report_column = bhv_error=$[BHV_ERROR_SEEN]

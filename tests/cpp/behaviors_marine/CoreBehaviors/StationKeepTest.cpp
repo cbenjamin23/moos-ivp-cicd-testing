@@ -229,3 +229,109 @@ TEST(BHVStationKeepTest, RunToIdleErasesRingsAndCenterActivateRecentersOnNextRun
   EXPECT_NE(polygon.get_sdata().find("x=-10.0"), std::string::npos);
   EXPECT_NE(polygon.get_sdata().find("y=30.0"), std::string::npos);
 }
+
+// Covers BHV station keep behavior: swing time follows ownship until the
+// configured window closes, then retains the last captured station point.
+TEST(BHVStationKeepTest, SwingTimeFollowsOwnshipThenFreezesStation)
+{
+  InfoBuffer info;
+  info.setCurrTime(0);
+  info.setValue("NAV_X", 0);
+  info.setValue("NAV_Y", -20);
+  info.setValue("NAV_HEADING", 90);
+  info.setValue("NAV_SPEED", 0);
+
+  BHV_StationKeep behavior(makeCourseSpeedDomain());
+  behavior.setInfoBuffer(&info);
+
+  ASSERT_TRUE(behavior.setParam("center_activate", "true"));
+  ASSERT_TRUE(behavior.setParam("swing_time", "8"));
+
+  auto expect_outer_center = [&behavior](const std::string& x,
+                                         const std::string& y) {
+    for(const VarDataPair& message : behavior.getMessages()) {
+      if(message.get_var() != "VIEW_POLYGON" || !message.is_string())
+        continue;
+      const std::string& value = message.get_sdata();
+      if(value.find("station-keep-out") == std::string::npos)
+        continue;
+      EXPECT_NE(value.find("x=" + x), std::string::npos);
+      EXPECT_NE(value.find("y=" + y), std::string::npos);
+      return;
+    }
+    FAIL() << "missing outer station ring";
+  };
+
+  std::unique_ptr<IvPFunction> initial(behavior.onRunState());
+  ASSERT_NE(initial, nullptr);
+  expect_outer_center("0.0", "-20.0");
+
+  info.setCurrTime(4);
+  info.setValue("NAV_X", 10);
+  behavior.clearMessages();
+  std::unique_ptr<IvPFunction> during_swing(behavior.onRunState());
+  ASSERT_NE(during_swing, nullptr);
+  expect_outer_center("10.0", "-20.0");
+
+  info.setCurrTime(9);
+  info.setValue("NAV_X", 20);
+  behavior.clearMessages();
+  std::unique_ptr<IvPFunction> closes_swing(behavior.onRunState());
+  ASSERT_NE(closes_swing, nullptr);
+  expect_outer_center("20.0", "-20.0");
+
+  info.setCurrTime(10);
+  info.setValue("NAV_X", 30);
+  behavior.clearMessages();
+  std::unique_ptr<IvPFunction> after_swing(behavior.onRunState());
+  ASSERT_NE(after_swing, nullptr);
+  expect_outer_center("20.0", "-20.0");
+}
+
+// Covers each malformed startup field used by the StationKeep harness and
+// the accepted aliases that share those parsing paths.
+TEST(BHVStationKeepTest, AcceptsAliasesAndRejectsMalformedHarnessParameters)
+{
+  BHV_StationKeep behavior(makeCourseSpeedDomain());
+
+  EXPECT_TRUE(behavior.setParam("station_pt", "x=12,y=-121"));
+  EXPECT_TRUE(behavior.setParam("hibernation_radius", "off"));
+  EXPECT_TRUE(behavior.setParam("extra_speed", "3.0"));
+
+  EXPECT_FALSE(behavior.setParam("point", "not_a_point"));
+  EXPECT_FALSE(behavior.setParam("outer_radius", "-3"));
+  EXPECT_FALSE(behavior.setParam("inner_radius", "bad_radius"));
+  EXPECT_FALSE(behavior.setParam("hibernation_radius", "zero"));
+  EXPECT_FALSE(behavior.setParam("outer_speed", "zero"));
+  EXPECT_FALSE(behavior.setParam("transit_speed", "-2"));
+  EXPECT_FALSE(behavior.setParam("extra_speed", "-2"));
+  EXPECT_FALSE(behavior.setParam("center_activate", "maybe"));
+  EXPECT_FALSE(behavior.setParam("swing_time", "slow"));
+}
+
+// Covers BHV station keep behavior: an inner radius larger than the requested
+// outer radius collapses the effective rings to the inner radius.
+TEST(BHVStationKeepTest, PromotesOuterRadiusToInnerRadiusOnRun)
+{
+  InfoBuffer info;
+  info.setValue("NAV_X", 30);
+  info.setValue("NAV_Y", 0);
+  info.setValue("NAV_HEADING", 180);
+  info.setValue("NAV_SPEED", 1);
+
+  BHV_StationKeep behavior(makeCourseSpeedDomain());
+  behavior.setInfoBuffer(&info);
+
+  ASSERT_TRUE(behavior.setParam("point", "x=0,y=0"));
+  ASSERT_TRUE(behavior.setParam("inner_radius", "18"));
+  ASSERT_TRUE(behavior.setParam("outer_radius", "8"));
+
+  std::unique_ptr<IvPFunction> ipf(behavior.onRunState());
+  ASSERT_NE(ipf, nullptr);
+
+  VarDataPair outer;
+  ASSERT_TRUE(findBehaviorMessage(behavior.getMessages(), "VIEW_POLYGON", outer));
+  ASSERT_TRUE(outer.is_string());
+  EXPECT_NE(outer.get_sdata().find("station-keep-out"), std::string::npos);
+  EXPECT_NE(outer.get_sdata().find("radius=18.0"), std::string::npos);
+}

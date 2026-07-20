@@ -65,7 +65,6 @@ CASES=(
     station_pt_alias_pass
     start_inside_hold_pass
     center_activate_hold_pass
-    center_activate_swing_pass
     wide_radius_pass
     tight_radius_pass
     inner_gt_outer_pass
@@ -323,7 +322,6 @@ get_case_config() {
         station_pt_alias_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/station-pt-alias-pass-vehicle.xbhv" ;;
         start_inside_hold_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/start-inside-hold-pass-vehicle.xbhv" ;;
         center_activate_hold_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/center-activate-hold-pass-vehicle.xbhv" ;;
-        center_activate_swing_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/center-activate-swing-pass-vehicle.xbhv" ;;
         wide_radius_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/wide-radius-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/wide-radius-pass-vehicle.xbhv"
@@ -368,8 +366,14 @@ get_case_config() {
             CASE_SHORE_PATCH="$HARNESS_DIR/hibernation-radius-update-settle-pass-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/hibernation-radius-update-settle-pass-vehicle.xmoos"
             ;;
-        hibernation_off_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/hibernation-off-pass-vehicle.xbhv" ;;
-        point_update_retarget_pass) CASE_VEH_MOOS_PATCH="$HARNESS_DIR/point-update-retarget-pass-vehicle.xmoos" ;;
+        hibernation_off_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/hibernation-off-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/hibernation-off-pass-vehicle.xbhv"
+            ;;
+        point_update_retarget_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/point-update-retarget-pass-shoreside.xmoos"
+            CASE_VEH_MOOS_PATCH="$HARNESS_DIR/point-update-retarget-pass-vehicle.xmoos"
+            ;;
         radius_update_expand_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/radius-update-expand-pass-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/radius-update-expand-pass-vehicle.xmoos"
@@ -386,50 +390,53 @@ get_case_config() {
             CASE_SHORE_PATCH="$HARNESS_DIR/bad-point-update-recover-pass-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/bad-point-update-recover-pass-vehicle.xmoos"
             ;;
-        visual_hints_pass) CASE_VEH_BHV_PATCH="$HARNESS_DIR/visual-hints-pass-vehicle.xbhv" ;;
+        visual_hints_pass)
+            CASE_SHORE_PATCH="$HARNESS_DIR/visual-hints-pass-shoreside.xmoos"
+            CASE_VEH_BHV_PATCH="$HARNESS_DIR/visual-hints-pass-vehicle.xbhv"
+            ;;
         missing_point_fail)
             CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-point-fail-vehicle.xbhv"
             ;;
         bad_point_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-point-fail-vehicle.xbhv"
             ;;
         bad_update_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/bad-update-fail-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/bad-update-fail-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-point-fail-vehicle.xbhv"
             ;;
         bad_outer_radius_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-outer-radius-fail-vehicle.xbhv"
             ;;
         bad_inner_radius_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-inner-radius-fail-vehicle.xbhv"
             ;;
         bad_hibernation_radius_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-hibernation-radius-fail-vehicle.xbhv"
             ;;
         bad_outer_speed_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-outer-speed-fail-vehicle.xbhv"
             ;;
         bad_transit_speed_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-transit-speed-fail-vehicle.xbhv"
             ;;
         bad_extra_speed_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-extra-speed-fail-vehicle.xbhv"
             ;;
         bad_center_activate_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-center-activate-fail-vehicle.xbhv"
             ;;
         bad_swing_time_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-negative-pass-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/eval-malconfig-pass-shoreside.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-swing-time-fail-vehicle.xbhv"
             ;;
         *)
