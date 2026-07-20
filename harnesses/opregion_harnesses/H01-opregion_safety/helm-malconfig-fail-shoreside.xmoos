@@ -3,10 +3,9 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  mailflag = @IVPHELM_STATE#HELM_MALCONFIG=true
-
-  lead_condition = HELM_MALCONFIG = true
-  pass_condition = HELM_MALCONFIG = true
+  lead_condition = (IVPHELM_STATE = MALCONFIG) or (TEST_EVAL_READY = true)
+  pass_condition = IVPHELM_STATE = MALCONFIG
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -19,7 +18,19 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[HELM_MALCONFIG]
-  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = eval=$[IVPHELM_STATE]
+  report_column = expected=invalid_config_rejected
+  report_column = helm_state=$[IVPHELM_STATE]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  // Missing-MALCONFIG deadline; normal grading leads on the exact helm state.
+  event = var=TEST_EVAL_READY, val=false, time=0
+  event = var=TEST_EVAL_READY, val=true, time=15
 }

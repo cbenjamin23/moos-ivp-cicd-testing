@@ -3,6 +3,7 @@ Behavior = BHV_OpRegionV24
   name      = opreg
   pwt       = 300
   condition = MODE == ACTIVE
+  condition = OPREG_ALTITUDE_READY = true
   updates   = OPREGION_UPDATES
 
   core_poly = pts={-23,-152:47,-152:47,-90:-23,-90}
@@ -27,4 +28,17 @@ Behavior = BHV_OpRegionV24
   visual_hints = halt_edge_color=white
   visual_hints = save_status_edge_color=yellow
   visual_hints = halt_status_edge_color=red
+}
+
+// BHV_OpRegionV24 reads NAV_ALTITUDE but does not register it. This inactive
+// helper registers the variable so the OpRegion altitude comparison is
+// reachable without changing upstream source.
+Behavior = BHV_MinAltitudeX
+{
+  name      = altitude_info_registration
+  pwt       = 0
+  condition = OPREG_ALTITUDE_HELPER = true
+
+  min_altitude = 0
+  missing_altitude_critical = false
 }

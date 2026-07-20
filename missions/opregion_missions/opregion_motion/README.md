@@ -31,10 +31,12 @@ Default pass rule:
 - `BHV_ERROR_SEEN=false`
 
 The companion harness patches the same stem into save-region recovery,
-halt-region breach, exit-debounce, max-time, dynamic-region update, and
-dynamic-halt cases. Cases with a natural terminal event evaluate on arrival or
-on the expected breach flag; the debounce/reset cases keep a short timed gate
-because they test absence of a breach after a timing window.
+halt-region breach, entry/exit-delay, reset, depth/altitude, max-time, and
+dynamic-region cases. OpRegion run flags expose its seconds inside and outside
+the save/halt polygons, and `pEchoVar` normalizes successful
+`IVPHELM_UPDATE_RESULT` posts. Cases lead on those behavior-owned states or on
+a natural arrival/breach event; timers are retained only as missing-evidence
+deadlines.
 
 Entry points:
 

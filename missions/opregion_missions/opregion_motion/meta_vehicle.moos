@@ -95,6 +95,16 @@ ProcessConfig = uFldNodeBroker
   bridge = src=SAVE_REGION_RECOVERING
   bridge = src=HALT_REGION_BREACHED
   bridge = src=TIME_LIMIT_BREACHED
+  bridge = src=DEPTH_LIMIT_BREACHED
+  bridge = src=ALTITUDE_LIMIT_BREACHED
+  bridge = src=OPREG_SECS_IN_HALT
+  bridge = src=OPREG_SECS_OUT_HALT
+  bridge = src=OPREG_SECS_OUT_SAVE
+  bridge = src=IVPHELM_UPDATE_RESULT
+  bridge = src=NAV_DEPTH
+  bridge = src=NAV_ALTITUDE
+  bridge = src=OPREG_DEPTH_INPUT
+  bridge = src=OPREG_ALTITUDE_INPUT
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
@@ -148,6 +158,14 @@ ProcessConfig = pLogger
   Log = SAVE_REGION_RECOVERING @ 0 nosync
   Log = HALT_REGION_BREACHED @ 0 nosync
   Log = TIME_LIMIT_BREACHED @ 0 nosync
+  Log = DEPTH_LIMIT_BREACHED @ 0 nosync
+  Log = ALTITUDE_LIMIT_BREACHED @ 0 nosync
+  Log = OPREG_SECS_IN_HALT @ 0 nosync
+  Log = OPREG_SECS_OUT_HALT @ 0 nosync
+  Log = OPREG_SECS_OUT_SAVE @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
+  Log = OPREG_DEPTH_INPUT @ 0 nosync
+  Log = OPREG_ALTITUDE_INPUT @ 0 nosync
 
   LogAuxSrc = true
   WildCardLogging = true

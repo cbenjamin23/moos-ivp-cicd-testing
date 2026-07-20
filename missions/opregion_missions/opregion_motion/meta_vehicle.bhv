@@ -93,6 +93,10 @@ Behavior = BHV_OpRegionV24
   breached_poly_flag = HALT_REGION_BREACHED=true
   breached_time_flag = TIME_LIMIT_BREACHED=true
 
+  runxflag = OPREG_SECS_IN_HALT=$[SECS_IN_HALT_POLY]
+  runxflag = OPREG_SECS_OUT_HALT=$[SECS_OUT_HALT_POLY]
+  runxflag = OPREG_SECS_OUT_SAVE=$[SECS_OUT_SAVE_POLY]
+
   visual_hints = vertex_size=0, edge_size=1
   visual_hints = core_edge_color=white
   visual_hints = save_edge_color=yellow

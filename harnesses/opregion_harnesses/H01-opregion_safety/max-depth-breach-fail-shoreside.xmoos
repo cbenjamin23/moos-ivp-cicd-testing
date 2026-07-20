@@ -1,0 +1,46 @@
+ProcessConfig = pMissionEval
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+
+  lead_condition = ((DEPTH_LIMIT_BREACHED = true) and (BHV_ERROR_SEEN = true)) or (TEST_EVAL_READY = true)
+  pass_condition = DEPTH_LIMIT_BREACHED = true
+  pass_condition = OPREG_DEPTH_INPUT = 5
+  pass_condition = SAVE_REGION_BREACHED = false
+  pass_condition = HALT_REGION_BREACHED = false
+  pass_condition = TIME_LIMIT_BREACHED = false
+  pass_condition = BHV_ERROR_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag   = SAY_MOOS = pass
+  fail_flag   = SAY_MOOS = fail
+
+  mission_form = opregion_safety_tests
+  mission_mod  = $(MMOD:=max_depth_breach_fail)
+
+  report_file   = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = mmod=$[MMOD]
+  report_column = eval=$[DEPTH_LIMIT_BREACHED]
+  report_column = expected=max_depth_breach
+  report_column = depth_breached=$[DEPTH_LIMIT_BREACHED]
+  report_column = depth_input=$[OPREG_DEPTH_INPUT]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = deadline=$[TEST_EVAL_READY]
+  report_column = mhash=$[MHASH_SHORT]
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  condition = DEPLOY_ALL = true
+
+  // Missing-breach deadline; normal grading leads on behavior-owned evidence.
+  event = var=TEST_EVAL_READY, val=true, time=15
+}

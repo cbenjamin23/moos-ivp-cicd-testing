@@ -8,6 +8,7 @@ ProcessConfig = pMissionEval
   lead_condition = ARRIVED = true
   pass_condition = ARRIVED = true
   pass_condition = SAVE_REGION_BREACHED = true
+  pass_condition = SAVE_REGION_RECOVERING = true
   pass_condition = HALT_REGION_BREACHED = false
   pass_condition = TIME_LIMIT_BREACHED = false
   pass_condition = BHV_ERROR_SEEN = false

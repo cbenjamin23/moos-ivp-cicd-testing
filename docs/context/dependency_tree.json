@@ -4427,6 +4427,7 @@
         "opregion"
       ],
       "focus_process_apps": [
+        "pEchoVar",
         "pHelmIvP",
         "pMarinePIDV22",
         "pNodeReporter",
@@ -4441,13 +4442,14 @@
         "path": "missions/opregion_missions/opregion_motion"
       },
       "patches": {
-        "file_count": 46
+        "file_count": 47
       },
       "path": "harnesses/opregion_harnesses/H01-opregion_safety",
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
         "pAutoPoke",
+        "pEchoVar",
         "pHelmIvP",
         "pHostInfo",
         "pLogger",
@@ -6223,6 +6225,7 @@
       "pEchoVar": [
         "legrun_h01",
         "loiter_h01",
+        "opregion_h01",
         "pechovar_h01",
         "processwatch_h01",
         "ufld_obstacle_sim_h01",
@@ -7026,10 +7029,10 @@
       ".sh": 365,
       ".txt": 302,
       ".xbhv": 500,
-      ".xmoos": 1350,
+      ".xmoos": 1351,
       "[none]": 7
     },
-    "harness_patch_count": 1745,
+    "harness_patch_count": 1746,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

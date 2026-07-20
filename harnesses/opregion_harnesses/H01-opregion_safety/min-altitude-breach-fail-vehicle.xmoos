@@ -5,6 +5,10 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY = true
 
+  // Seed a valid altitude before activating OpRegion, then cross the limit.
+  event = var=NAV_ALTITUDE, val=20, time=0
+  event = var=OPREG_ALTITUDE_READY, val=true, time=0.5
+  event = var=OPREG_ALTITUDE_INPUT, val=2, time=2
   event = var=NAV_ALTITUDE, val=2, time=2
   event = var=NAV_ALTITUDE, val=2, time=3
   event = var=NAV_ALTITUDE, val=2, time=4

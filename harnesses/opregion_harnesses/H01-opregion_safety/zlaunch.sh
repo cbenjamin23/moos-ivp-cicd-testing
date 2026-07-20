@@ -357,12 +357,12 @@ get_case_config() {
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/max-time-fail-vehicle.xbhv"
             ;;
         max_depth_breach_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/bhv-error-fail-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/max-depth-breach-fail-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/max-depth-breach-fail-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/max-depth-breach-fail-vehicle.xbhv"
             ;;
         min_altitude_breach_fail)
-            CASE_SHORE_PATCH="$HARNESS_DIR/bhv-error-fail-shoreside.xmoos"
+            CASE_SHORE_PATCH="$HARNESS_DIR/min-altitude-breach-fail-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/min-altitude-breach-fail-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/min-altitude-breach-fail-vehicle.xbhv"
             ;;

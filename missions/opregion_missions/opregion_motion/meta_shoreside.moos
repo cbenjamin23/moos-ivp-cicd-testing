@@ -22,6 +22,7 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
   Run = uTimerScript     @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pMissionEval     @ NewConsole = false
   Run = pAutoPoke        @ NewConsole = false
 #ifdef LAUNCH_GUI yes
@@ -34,6 +35,28 @@ ProcessConfig = ANTLER
 #include plugs.moos <pHostInfo>
 #include plugs.moos <pShare>
 #include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pEchoVar Config Block
+
+// Normalize the successful reset update so pMissionEval can grade the exact
+// behavior, update variable, and result fields without parsing shell output.
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:reset_success = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:reset_success = dest_variable   = OPREG_RESET_SUCCESS
+  FLIP:reset_success = bhv == opreg
+  FLIP:reset_success = var == OPREGION_UPDATES
+  FLIP:reset_success = result == success
+  FLIP:reset_success = dest_separator = :
+  FLIP:reset_success = bhv    -> bhv
+  FLIP:reset_success = var    -> var
+  FLIP:reset_success = result -> result
+}
 
 //----------------------------------------------------
 // pAutoPoke Config Block
@@ -50,6 +73,15 @@ ProcessConfig = pAutoPoke
   flag = SAVE_REGION_RECOVERING=false
   flag = HALT_REGION_BREACHED=false
   flag = TIME_LIMIT_BREACHED=false
+  flag = DEPTH_LIMIT_BREACHED=false
+  flag = ALTITUDE_LIMIT_BREACHED=false
+  flag = OPREG_SECS_IN_HALT=0
+  flag = OPREG_SECS_OUT_HALT=0
+  flag = OPREG_SECS_OUT_SAVE=0
+  flag = OPREG_RESET_ACCEPTED=false
+  flag = OPREG_DEPTH_INPUT=-1
+  flag = OPREG_ALTITUDE_INPUT=-1
+  flag = TEST_EVAL_READY=false
   flag = BHV_ERROR_SEEN=false
 
   required_nodes = 1
@@ -120,6 +152,10 @@ ProcessConfig = uFldShoreBroker
   qbridge  = OPREGION_UPDATES, OPREGION_CORE_POLY
   qbridge  = ARRIVED, SAVE_REGION_BREACHED, SAVE_REGION_RECOVERING
   qbridge  = HALT_REGION_BREACHED, TIME_LIMIT_BREACHED
+  qbridge  = DEPTH_LIMIT_BREACHED, ALTITUDE_LIMIT_BREACHED
+  qbridge  = OPREG_SECS_IN_HALT, OPREG_SECS_OUT_HALT, OPREG_SECS_OUT_SAVE
+  qbridge  = IVPHELM_UPDATE_RESULT, NAV_DEPTH, NAV_ALTITUDE
+  qbridge  = OPREG_DEPTH_INPUT, OPREG_ALTITUDE_INPUT
 }
 
 //----------------------------------------------------

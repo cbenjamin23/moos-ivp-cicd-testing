@@ -5,6 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY = true
 
+  event = var=OPREG_DEPTH_INPUT, val=5, time=2
   event = var=NAV_DEPTH, val=5, time=2
   event = var=NAV_DEPTH, val=5, time=3
   event = var=NAV_DEPTH, val=5, time=4

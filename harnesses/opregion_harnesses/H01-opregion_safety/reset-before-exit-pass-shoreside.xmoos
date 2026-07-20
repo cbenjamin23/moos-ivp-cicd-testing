@@ -4,11 +4,15 @@ ProcessConfig = pMissionEval
   CommsTick = 4
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @OPREG_RESET_SUCCESS#OPREG_RESET_ACCEPTED=true
 
-  lead_condition = TEST_EVAL_READY = true
+  lead_condition = (OPREG_SECS_OUT_HALT >= 4) or (TEST_EVAL_READY = true)
+  pass_condition = OPREG_RESET_ACCEPTED = true
+  pass_condition = OPREG_SECS_OUT_HALT >= 4
   pass_condition = HALT_REGION_BREACHED = false
   pass_condition = TIME_LIMIT_BREACHED = false
   pass_condition = BHV_ERROR_SEEN = false
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -21,7 +25,12 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = eval=$[OPREG_RESET_ACCEPTED]
+  report_column = expected=reset_clears_entry
+  report_column = reset_accepted=$[OPREG_RESET_ACCEPTED]
+  report_column = update_result=$[OPREG_RESET_SUCCESS]
+  report_column = secs_out_halt=$[OPREG_SECS_OUT_HALT]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = arrived=$[ARRIVED]
   report_column = save_breached=$[SAVE_REGION_BREACHED]
   report_column = save_recovering=$[SAVE_REGION_RECOVERING]
@@ -40,5 +49,6 @@ ProcessConfig = uTimerScript
 
   event = var=VIEW_POLYGON, val="pts={-23,-135:47,-135:47,-107:-23,-107},label=opreg_core_fixed,edge_color=white,vertex_size=0,edge_size=2,duration=9999", time=1
   event = var=VIEW_POLYGON, val="pts={-26,-138:50,-138:50,-104:-26,-104},label=opreg_halt_fixed,edge_color=white,vertex_size=0,edge_size=1,duration=9999", time=1
-  event = var=TEST_EVAL_READY, val=true, time=44
+  // Missing-reset/boundary-evidence deadline; normal grading is state-driven.
+  event = var=TEST_EVAL_READY, val=true, time=55
 }
