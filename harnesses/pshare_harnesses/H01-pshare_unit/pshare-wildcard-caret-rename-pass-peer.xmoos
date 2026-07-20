@@ -4,6 +4,7 @@ ProcessConfig = pShare
   CommsTick = 10
 
   Output = src_name=CARET_*,dest_name=^,route=127.0.0.1:$(SHORE_PSHARE)
+  Output = src_name=PSHARE_CASE_DONE,route=127.0.0.1:$(SHORE_PSHARE)
 }
 
 ProcessConfig = uTimerScript
@@ -12,4 +13,5 @@ ProcessConfig = uTimerScript
   CommsTick = 4
 
   event = var=CARET_DELTA, val=caret, time=2.0
+  event = var=PSHARE_CASE_DONE, val=true, time=4.0
 }

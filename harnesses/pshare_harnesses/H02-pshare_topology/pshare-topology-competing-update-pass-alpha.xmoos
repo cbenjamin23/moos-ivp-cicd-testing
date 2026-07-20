@@ -4,6 +4,7 @@ ProcessConfig = pShare
   CommsTick = 10
 
   Output = src_name=ALPHA_COMPETE,dest_name=COMPETE_RX,route=127.0.0.1:$(SHORE_PSHARE)
+  Output = src_name=COMPETE_ALPHA_DONE,route=127.0.0.1:$(SHORE_PSHARE)
 }
 
 ProcessConfig = uTimerScript
@@ -12,4 +13,5 @@ ProcessConfig = uTimerScript
   CommsTick = 4
 
   event = var=ALPHA_COMPETE, val=alpha, time=20.0
+  event = var=COMPETE_ALPHA_DONE, val=true, time=24.0
 }

@@ -16,8 +16,10 @@ evaluator, two sender peers, and one relay/listener peer.
   `FANIN_ALPHA` and `FANIN_BRAVO` on one shoreside input; passes when both
   destination values arrive.
 - `pshare_topology_competing_update_pass`
-  Routes alpha and bravo into the same `COMPETE_RX` destination at 20 and 24
-  seconds; passes when the later bravo update is the final value.
+  Routes `ALPHA_COMPETE=alpha` and later `BRAVO_COMPETE=bravo` into the same
+  `COMPETE_RX` destination; the ordered evaluator first requires
+  `COMPETE_RX=alpha` at `COMPETE_ALPHA_DONE`, then requires
+  `COMPETE_RX=bravo` at `COMPETE_DONE`.
 - `pshare_topology_multi_input_port_pass`
   Configures two separate shoreside `Input` entries, sends `WL_ALLOW=allowed`
   to the primary port and `WL_BLOCK=blocked` to the second port, and passes when
@@ -72,3 +74,11 @@ block. The four MOOSDB ports use offsets 0 through 3 and the four pShare ports
 use offsets 10 through 13. pMissionEval owns every topology verdict; the
 harness only applies the explicit community patches, validates one mission
 row, aggregates results in case order, and performs scoped cleanup.
+
+Latest validation:
+
+- July 20, 2026
+- `12/12` rolling passes in both minimal and full logging modes with
+  `--jobs=3 --max_time=65 10`
+- removing only alpha's `COMPETE_RX` data route produced a mission-owned
+  failure at the alpha completion phase even though bravo remained configured

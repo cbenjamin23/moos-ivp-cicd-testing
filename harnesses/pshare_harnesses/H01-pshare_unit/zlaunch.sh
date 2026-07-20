@@ -329,6 +329,7 @@ get_case_config() {
         pshare_wildcard_source_app_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-wildcard-source-app-pass-shoreside.xmoos"
             CASE_PEER_PATCH="$HARNESS_DIR/pshare-wildcard-source-app-pass-peer.xmoos"
+            CASE_PEER_FULL_LOG_PATCH="$HARNESS_DIR/pshare-wildcard-source-app-pass-full-logging-peer.xmoos"
             ;;
         pshare_multicast_alias_pass)
             CASE_SHORE_PATCH="$HARNESS_DIR/pshare-multicast-alias-pass-shoreside.xmoos"

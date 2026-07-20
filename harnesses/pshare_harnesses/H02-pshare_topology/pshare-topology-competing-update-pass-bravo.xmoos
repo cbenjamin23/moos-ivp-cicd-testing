@@ -4,6 +4,7 @@ ProcessConfig = pShare
   CommsTick = 10
 
   Output = src_name=BRAVO_COMPETE,dest_name=COMPETE_RX,route=127.0.0.1:$(SHORE_PSHARE)
+  Output = src_name=COMPETE_DONE,route=127.0.0.1:$(SHORE_PSHARE)
 }
 
 ProcessConfig = uTimerScript
@@ -11,5 +12,6 @@ ProcessConfig = uTimerScript
   AppTick   = 4
   CommsTick = 4
 
-  event = var=BRAVO_COMPETE, val=bravo, time=24.0
+  event = var=BRAVO_COMPETE, val=bravo, time=30.0
+  event = var=COMPETE_DONE, val=true, time=34.0
 }

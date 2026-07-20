@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1735` under configured targets
+- Harness patch/config files: `1736` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -121,10 +121,10 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `hostinfo_h01` | `hostinfo` | `harnesses/hostinfo_harnesses/H01-hostinfo_unit/zlaunch.sh` | `missions/hostinfo_missions/hostinfo_unit` | 7 | - | `hostinfo-unit` |
 | `loadwatch_h01` | `loadwatch` | `harnesses/loadwatch_harnesses/H01-loadwatch_unit/zlaunch.sh` | `missions/loadwatch_missions/loadwatch_unit` | 12 | - | `loadwatch-unit` |
 | `processwatch_h01` | `processwatch` | `harnesses/processwatch_harnesses/H01-processwatch_unit/zlaunch.sh` | `missions/processwatch_missions/processwatch_unit` | 7 | `pEchoVar` | `processwatch-unit` |
-| `pshare_h01` | `pshare` | `harnesses/pshare_harnesses/H01-pshare_unit/zlaunch.sh` | `missions/pshare_missions/pshare_unit` | 13 | - | `pshare-unit` |
+| `pshare_h01` | `pshare` | `harnesses/pshare_harnesses/H01-pshare_unit/zlaunch.sh` | `missions/pshare_missions/pshare_unit` | 13 | `uTimerBlocked` | `pshare-unit` |
 | `pshare_h02` | `pshare` | `harnesses/pshare_harnesses/H02-pshare_topology/zlaunch.sh` | `missions/pshare_missions/pshare_topology` | 12 | `ShareAlpha` | `pshare-topology` |
 | `plogger_h01` | `plogger` | `harnesses/plogger_harnesses/H01-plogger_unit/zlaunch.sh` | `missions/plogger_missions/plogger_unit` | 10 | - | `plogger-unit` |
-| `pantler_h01` | `pantler` | `harnesses/pantler_harnesses/H01-pantler_unit/zlaunch.sh` | `missions/pantler_missions/pantler_unit` | 6 | `uTimerAlias`, `uTimerAllowed`, `uTimerBlocked`, `uTimerExtra` | `pantler-unit` |
+| `pantler_h01` | `pantler` | `harnesses/pantler_harnesses/H01-pantler_unit/zlaunch.sh` | `missions/pantler_missions/pantler_unit` | 6 | `uTimerAlias`, `uTimerAllowed`, `uTimerExtra`, `uTimerOne` | `pantler-unit` |
 | `pmissioneval_h01` | `pmissioneval` | `harnesses/mission_utility_harnesses/H01-pmissioneval_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 17 | - | `pmissioneval-unit` |
 | `pmissionhash_h01` | `pmissionhash` | `harnesses/mission_utility_harnesses/H02-pmissionhash_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 4 | - | `pmissionhash-unit` |
 | `umayfinish_h01` | `umayfinish` | `harnesses/mission_utility_harnesses/H03-umayfinish_unit/zlaunch.sh` | `missions/mission_utility_missions/mission_utility_unit` | 4 | - | `umayfinish-unit` |
@@ -193,7 +193,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `uQueryDB`: `uquerydb_h01`
 - `uTimerAlias`: `pantler_h01`
 - `uTimerAllowed`: `pantler_h01`
-- `uTimerBlocked`: `pantler_h01`
+- `uTimerBlocked`: `pantler_h01`, `pshare_h01`
 - `uTimerExtra`: `pantler_h01`
 - `uTimerOne`: `pantler_h01`
 - `uTimerSystemPath`: `pantler_h01`

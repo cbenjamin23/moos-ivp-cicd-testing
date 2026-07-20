@@ -1,10 +1,22 @@
+ProcessConfig = pAutoPoke
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  flag = TEST_EVAL_READY=false
+  flag = SHORT_SRC_SOURCE_SEEN=false
+}
+
 ProcessConfig = pMissionEval
 {
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = TEST_EVAL_READY = true
+  mailflag = @SHORT_SRC#SHORT_SRC_SOURCE_SEEN=true
+
+  lead_condition = PSHARE_CASE_DONE = true
   pass_condition = SHORT_RX = short
+  pass_condition = SHORT_SRC_SOURCE_SEEN = false
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = pshare_unit
@@ -13,8 +25,9 @@ ProcessConfig = pMissionEval
   prereport_column = form=$[MISSION_FORM]
   prereport_column = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
-  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = eval=$[PSHARE_CASE_DONE]
   report_column    = short=$[SHORT_RX]
+  report_column    = source_seen=$[SHORT_SRC_SOURCE_SEEN]
   report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt

@@ -3,7 +3,11 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = TEST_EVAL_READY = true
+  lead_condition = (COMPETE_ALPHA_DONE = true) or (COMPETE_DONE = true)
+  pass_condition = COMPETE_ALPHA_DONE = true
+  pass_condition = COMPETE_RX = alpha
+
+  lead_condition = COMPETE_DONE = true
   pass_condition = COMPETE_RX = bravo
 
   result_flag  = MISSION_EVALUATED = true
@@ -13,7 +17,8 @@ ProcessConfig = pMissionEval
   report_column    = form=$[MISSION_FORM]
   report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
-  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = eval=$[COMPETE_DONE]
+  report_column    = alpha_done=$[COMPETE_ALPHA_DONE]
   report_column    = compete=$[COMPETE_RX]
   report_column    = pshare_in=$[PSHARE_INPUT_SUMMARY]
   report_column    = mhash=$[MHASH_SHORT]

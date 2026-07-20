@@ -5,6 +5,7 @@ ProcessConfig = ANTLER
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
   Run = pShare        @ NewConsole = false
+  Run = pLogger       @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false ~ uTimerBlocked
 }

@@ -3856,14 +3856,16 @@
       "families": [
         "pshare"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "uTimerBlocked"
+      ],
       "harness": "H01-pshare_unit",
       "key": "pshare_h01",
       "mission": {
         "path": "missions/pshare_missions/pshare_unit"
       },
       "patches": {
-        "file_count": 25
+        "file_count": 26
       },
       "path": "harnesses/pshare_harnesses/H01-pshare_unit",
       "perf_profile": "",
@@ -3873,6 +3875,7 @@
         "pLogger",
         "pMissionEval",
         "pShare",
+        "uTimerBlocked",
         "uTimerScript"
       ],
       "zlaunch": {
@@ -6908,7 +6911,8 @@
         "pantler_h01"
       ],
       "uTimerBlocked": [
-        "pantler_h01"
+        "pantler_h01",
+        "pshare_h01"
       ],
       "uTimerExtra": [
         "pantler_h01"
@@ -7014,10 +7018,10 @@
       ".sh": 365,
       ".txt": 302,
       ".xbhv": 504,
-      ".xmoos": 1336,
+      ".xmoos": 1337,
       "[none]": 7
     },
-    "harness_patch_count": 1735,
+    "harness_patch_count": 1736,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

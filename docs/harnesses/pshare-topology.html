@@ -93,7 +93,7 @@
 
         <article class="case-row">
           <code>pshare_topology_competing_update_pass</code>
-          <p>Routes alpha and bravo into the same COMPETE_RX destination at 20 and 24 seconds; passes when the later bravo update is the final value.</p>
+          <p>Routes ALPHA_COMPETE=alpha and later BRAVO_COMPETE=bravo into the same COMPETE_RX destination; the ordered evaluator first requires COMPETE_RX=alpha at COMPETE_ALPHA_DONE, then requires COMPETE_RX=bravo at COMPETE_DONE.</p>
         </article>
 
 

@@ -93,7 +93,7 @@
 
         <article class="case-row">
           <code>pshare_rename_route_pass</code>
-          <p>Routes ROUTE_TEST=bravo to renamed destination ROUTE_RENAMED; passes when shoreside receives ROUTE_RENAMED=bravo.</p>
+          <p>Sends ROUTE_TEST=bravo through explicit dest_name=ROUTE_RENAMED, testing that pShare replaces rather than duplicates the source name; passes at the routed completion event when ROUTE_RENAMED=bravo and shoreside has received no ROUTE_TEST mail.</p>
         </article>
 
 
@@ -117,7 +117,7 @@
 
         <article class="case-row">
           <code>pshare_shorthand_route_pass</code>
-          <p>Configures shorthand route SHORT_SRC-&gt;SHORT_RX and posts value short; passes when shoreside receives SHORT_RX=short.</p>
+          <p>Sends SHORT_SRC=short through shorthand route SHORT_SRC-&gt;SHORT_RX, testing its rename semantics; passes at the routed completion event when SHORT_RX=short and shoreside has received no SHORT_SRC mail.</p>
         </article>
 
 
@@ -141,7 +141,7 @@
 
         <article class="case-row">
           <code>pshare_wildcard_source_app_pass</code>
-          <p>Routes APPWILD_* only from uTimerScript and has that app post APPWILD_SRC=appwild; passes when shoreside receives the matching mail.</p>
+          <p>Has alias uTimerBlocked post APPWILD_BLOCKED before uTimerScript posts APPWILD_ALLOWED and APPWILD_DONE through src_name=APPWILD_*:uTimerScript; passes on APPWILD_DONE when the allowed mail arrived and no blocked-source mail did.</p>
         </article>
 
 
@@ -153,13 +153,13 @@
 
         <article class="case-row">
           <code>pshare_wildcard_prefix_rename_pass</code>
-          <p>Routes PFX_* with destination prefix RENAMED_ and posts PFX_ONE=prefixed; passes when shoreside receives RENAMED_PFX_ONE=prefixed.</p>
+          <p>Sends PFX_ONE=prefixed through wildcard destination prefix RENAMED_, testing prefix construction without source-name duplication; passes at the routed completion event when RENAMED_PFX_ONE=prefixed and shoreside has received no PFX_ONE mail.</p>
         </article>
 
 
         <article class="case-row">
           <code>pshare_wildcard_caret_rename_pass</code>
-          <p>Routes CARET_* with dest_name=^ and posts CARET_DELTA=caret; passes when shoreside receives only the matched suffix as DELTA=caret.</p>
+          <p>Sends CARET_DELTA=caret through CARET_* with dest_name=^, testing that the wildcard-matched suffix becomes the complete destination name; passes at the routed completion event when DELTA=caret and shoreside has received no CARET_DELTA mail.</p>
         </article>
 
       </div>
