@@ -132,6 +132,8 @@ ProcessConfig = uFldNodeBroker
   bridge = src=WPT_STAT_$(UP_VNAME), alias=WPT_STAT_$(UP_VNAME)
   bridge = src=COLREGS_AVOID_MODE
   bridge = src=AVDCOL_MODE
+  bridge = src=AVOID, alias=TRAFFIC_AVOID_$(UP_VNAME)
+  bridge = src=TRAFFIC_STOCK_SPEED, alias=TRAFFIC_STOCK_SPEED_$(UP_VNAME)
   bridge = src=VIEW_POLYGON
   bridge = src=VIEW_POINT
   bridge = src=VIEW_SEGLIST

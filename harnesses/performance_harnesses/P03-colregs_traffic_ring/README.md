@@ -4,10 +4,10 @@ Seeded five-vehicle COLREGS traffic-ring harness.
 
 ## Current Matrix
 
-- `baseline_circle_pass` Uses seed 17, five vehicles at speed 1.75, a 36-meter field ring, and a 300-second assignment window, testing the fixed-seed traffic-ring baseline; passes with mission completion, no timeout or collision, closest range in `(0,30]`, at least 25 assignment batches, zero scanned warnings, and wall time in 30–32 seconds locally or 58–70 seconds in CI.
-- `mixed_speed_circle_pass` Uses seed 23 and five speeds from 1.55 through 2.03 over the same 300-second window, exercising assignment and COLREGS behavior under speed asymmetry; passes with completion, no timeout or collision, closest range in `(0,30]`, at least 25 batches, zero scanned warnings, and the baseline profile-specific wall-time band.
-- `endurance_circle_pass` Uses seed 31, the five mixed speeds, a 42-meter field ring, 45-meter assignment radius, minimum target separation 18, predicted CPA 14, and a 900-second window, exercising a longer and wider traffic-ring soak; passes with completion, no timeout or collision, closest range in `(0,30]`, at least 80 batches, zero scanned warnings, and wall time in 89.5–92.5 seconds locally or 175–190 seconds in CI.
-- `noncoop_circle_pass` Uses seed 41, five vehicles at speed 1.5, and launches `eve` with `AVOID=false`, exercising a non-cooperative participant in the 300-second ring; passes on the same completion, no-timeout, zero-collision, closest-range, 25-batch, zero-warning, and profile-specific wall-time conditions as the short cooperative cases, while `DUMB_VNAME=eve` is only reported.
+- `baseline_circle_pass` Uses seed 17, five helm-reported stock speeds of `1.75`, five live `AVOID=true` states, a 36-meter field ring, and a 300-second assignment window, testing the fixed-seed cooperative baseline; passes when those per-vehicle settings are present with mission completion, no timeout or collision, closest range in `(0,30]`, at least 25 assignment batches, zero scanned warnings, and wall time in 30–32 seconds locally or 58–70 seconds in CI.
+- `mixed_speed_circle_pass` Gives Abe through Eve helm-reported stock speeds `1.55,1.67,1.79,1.91,2.03` with `AVOID=true` on all five vehicles, testing the intended speed-asymmetric cooperative configuration over the 300-second ring; passes when the exact five-value profile is present with completion, no timeout or collision, closest range in `(0,30]`, at least 25 batches, zero scanned warnings, and the baseline profile-specific wall-time band.
+- `endurance_circle_pass` Uses seed 31, the exact five-value mixed-speed profile with all five `AVOID=true`, a 42-meter field ring, 45-meter assignment radius, minimum target separation 18, predicted CPA 14, and a 900-second window, testing a longer and wider cooperative soak; passes when those settings are present with completion, no timeout or collision, closest range in `(0,30]`, at least 80 batches, zero scanned warnings, and wall time in 89.5–92.5 seconds locally or 175–190 seconds in CI.
+- `noncoop_circle_pass` Gives all five vehicles helm-reported stock speed `1.5` and launches only Eve with live `AVOID=false`, testing a specifically identified non-cooperative participant in the 300-second ring; passes when `DUMB_VNAME=eve`, Abe through Deb report `AVOID=true`, Eve reports `AVOID=false`, and the ordinary short-run completion, collision, activity, warning, and timing conditions hold.
 
 What it tests:
 - continuous five-vehicle COLREGS pressure under repeated seeded reassignment
@@ -15,6 +15,7 @@ What it tests:
 - no collisions over a fixed runtime window
 - no planner/runtime warning text across any vehicle `.alog`
 - assignment-activity floors for the selected case
+- exact per-vehicle configured stock speeds and live avoidance states
 
 Current split:
 - `pMissionEval` owns the MOOS-visible verdict through one shoreside patch per
@@ -52,15 +53,15 @@ and avoid concurrent load that would invalidate timing gates.
 
 Latest validation:
 
-- April 27, 2026
-- full matrix: `4/4` expected outcomes matched
-- command: `./zlaunch.sh --port_base=32000 10`
+- July 20, 2026
+- full matrix: `4/4` cases passed
+- command: `./zlaunch.sh --port_base=47000 10`
 
 Current supported envelopes:
 - `baseline_circle_pass`: `collisions=0`, `batches>=25`
-- `mixed_speed_circle_pass`: `collisions=0`, `batches>=25`
-- `endurance_circle_pass`: `collisions=0`, `batches>=80`
-- `noncoop_circle_pass`: `collisions=0`, `batches>=25`, `dumb_vname=eve`
+- `mixed_speed_circle_pass`: `collisions=0`, `batches>=25`, speeds `1.55,1.67,1.79,1.91,2.03`, all avoidance states `true`
+- `endurance_circle_pass`: `collisions=0`, `batches>=80`, speeds `1.55,1.67,1.79,1.91,2.03`, all avoidance states `true`
+- `noncoop_circle_pass`: `collisions=0`, `batches>=25`, `dumb_vname=eve`, only `avoid_eve=false`
 
 Notes:
 - `assign_fails` is still reported, but it is treated as coordinator health rather than the primary traffic verdict.

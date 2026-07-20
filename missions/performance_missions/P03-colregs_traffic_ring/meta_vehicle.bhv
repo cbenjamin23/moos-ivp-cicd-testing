@@ -5,6 +5,7 @@
 
 initialize   DEPLOY  = false
 initialize   AVOID   = $(AVOID_INITIAL:=true)
+initialize   TRAFFIC_STOCK_SPEED = $(STOCK_SPD)
 
 set MODE = ACTIVE {
   DEPLOY = true

@@ -34,10 +34,17 @@ Pass contract:
 - `COLLISION_TOTAL = 0`
 - `UCD_CLOSEST_RANGE_EVER > 0`
 - `TRAFFIC_BATCHES >=` the case-specific floor
+- the five helm communities report the scenario's exact `TRAFFIC_STOCK_SPEED`
+  values
+- cooperative scenarios keep every live `AVOID` state true; the noncooperative
+  scenario requires only Eve's state to be false
 
 Notes:
 - `TRAFFIC_ASSIGN_FAILS` is reported as coordinator health but is not a mission fail on its own.
 - `NEAR_MISS_TOTAL` and `closest_range_ever` are reported for analysis, but the primary soak gate is collision-free sustained activity.
+- Each helm initializes `TRAFFIC_STOCK_SPEED` from the same `STOCK_SPD` used by
+  its waypoint behavior, and the node broker gives both that value and live
+  `AVOID` state a vehicle-specific shoreside name for grading.
 - The supported scenarios use fixed RNG seeds, but asynchronous vehicle
   completion can change the order in which assignments consume that stream.
   Runs are comparable traffic samples, not exact event-by-event replays.
