@@ -161,7 +161,7 @@
 
         <article class="case-row">
           <code>eval_flags_and_mail_pass</code>
-          <p>Satisfies the baseline evaluator and posts CASE_MAIL=baseline, exercising configured result_flag, pass_flag, and mailflag publications; passes when the subject grades pass and the .alog contains EVAL_RESULT_FLAG, EVAL_PASS_FLAG, and EVAL_MAIL_SEEN entries.</p>
+          <p>Posts CASE_VALUE=alpha and CASE_MAIL=baseline, testing macro expansion in configured result_flag, pass_flag, and mailflag publications; passes when the subject grades pass and the .alog records exactly EVAL_RESULT_FLAG=result:alpha, EVAL_PASS_FLAG=pass:alpha, and EVAL_MAIL_SEEN=true.</p>
         </article>
 
 

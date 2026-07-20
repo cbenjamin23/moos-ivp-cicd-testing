@@ -434,6 +434,22 @@ alog_var_line_matches() {
     aloggrep "$alog" "$var" 2>/dev/null | rg "$var" | rg -q "$pattern"
 }
 
+alog_var_scalar_equals() {
+    local case_dir="$1"
+    local var="$2"
+    local expected="$3"
+    local alog
+    alog=$(find_alog "$case_dir")
+    [ "$alog" != "" ] || return 1
+    awk -v var="$var" -v expected="$expected" '
+        $2 == var && $4 == expected {
+            found = 1
+            exit
+        }
+        END { exit(found ? 0 : 1) }
+    ' "$alog"
+}
+
 unique_hash_count() {
     local case_dir="$1"
     local alog
@@ -478,9 +494,9 @@ extra_check_ok() {
             return 0
             ;;
         flags)
-            alog_has "$case_dir" "EVAL_RESULT_FLAG" && \
-            alog_has "$case_dir" "EVAL_PASS_FLAG" && \
-            alog_has "$case_dir" "EVAL_MAIL_SEEN"
+            alog_var_scalar_equals "$case_dir" "EVAL_RESULT_FLAG" "result:alpha" && \
+            alog_var_scalar_equals "$case_dir" "EVAL_PASS_FLAG" "pass:alpha" && \
+            alog_var_scalar_equals "$case_dir" "EVAL_MAIL_SEEN" "true"
             return $?
             ;;
         fail_flag)

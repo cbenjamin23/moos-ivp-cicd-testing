@@ -35,7 +35,7 @@ grades fail.
 - `eval_numeric_partial_fail` Satisfies both lead conditions and `PASS_INPUT=true` but posts `NUM_SCORE=39` against `NUM_SCORE>40`, testing partial failure in a multi-condition evaluator; the harness passes when the result records `subject_grade=fail`, `phase=ready`, and `score=39`, and the `.alog` contains `EVAL_FAIL_FLAG=partial_numeric_fail`.
 - `eval_fail_only_condition_fail` Configures no pass conditions and posts `FORCE_FAIL=true` after the lead condition, testing a fail-only evaluator; the harness passes when the result records `subject_grade=fail`, `eval=true`, and `force_fail=true`, and the `.alog` contains `EVAL_FAIL_FLAG=fail_only`.
 - `eval_fail_condition_fail` Posts `PASS_INPUT=true` and `FORCE_FAIL=true`, testing that an explicit fail condition overrides a satisfied pass condition; the harness passes when the result records `subject_grade=fail` and `force_fail=true`, and the `.alog` contains `EVAL_FAIL_FLAG`.
-- `eval_flags_and_mail_pass` Satisfies the baseline evaluator and posts `CASE_MAIL=baseline`, exercising configured `result_flag`, `pass_flag`, and `mailflag` publications; passes when the subject grades pass and the `.alog` contains `EVAL_RESULT_FLAG`, `EVAL_PASS_FLAG`, and `EVAL_MAIL_SEEN` entries.
+- `eval_flags_and_mail_pass` Posts `CASE_VALUE=alpha` and `CASE_MAIL=baseline`, testing macro expansion in configured `result_flag`, `pass_flag`, and `mailflag` publications; passes when the subject grades pass and the `.alog` records exactly `EVAL_RESULT_FLAG=result:alpha`, `EVAL_PASS_FLAG=pass:alpha`, and `EVAL_MAIL_SEEN=true`.
 - `eval_csp_report_pass` Sets `report_line_format=csp` and satisfies the baseline conditions, testing comma-and-space report formatting; passes when the subject grades pass and the result row contains the ordered comma-separated fields `form`, `mmod`, `grade=pass`, and `eval=true`.
 - `eval_mhash_macros_pass` Places `$[MHASH_SHORT]`, `$[MHASH_LSHORT]`, `$[MHASH_UTC]`, `$[MHASH]`, and `$[MISSION_HASH]` in report columns, testing mission-hash macro expansion; passes when the row matches the expected short-word, timestamp, and full-hash formats for every macro.
 - `eval_clock_macros_pass` Places `$[MONTH]`, `$[DAY]`, `$[HOUR]`, `$[MIN]`, `$[SEC]`, `$[DATE]`, and `$[TIME]` in report columns, testing clock macro expansion; passes when every field has its expected numeric format and no raw `$[` token remains.
@@ -51,3 +51,11 @@ grades fail.
 
 Serial and rolling runs use the same isolated-case path. Grouped runs use
 30-port case blocks from `--port_base`; the default starts at `9000`.
+
+## Coverage Validation
+
+The July 20, 2026 artifact-oracle pass completed all 17 cases with both
+minimal and full logging at four concurrent jobs. Independently changing the
+result flag to `result:wrong`, the pass flag to `pass:wrong`, or the mail flag
+to `false` left `subject_grade=pass` and `case_value=alpha` unchanged but made
+`eval_flags_and_mail_pass` fail with `reason=evidence_mismatch` in each run.
