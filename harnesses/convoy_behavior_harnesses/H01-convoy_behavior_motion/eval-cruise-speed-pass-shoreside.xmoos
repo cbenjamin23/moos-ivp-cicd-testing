@@ -16,13 +16,14 @@ ProcessConfig = pMissionEval
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
   mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  lead_condition = ((((QLEN >= 2) and (TLEN >= 20)) and (AVG2 >= 1)) and (BEN_NAV_SPEED >= 0.9)) or (TEST_EVAL_READY = true)
+  pass_condition = TEST_EVAL_READY = false
   pass_condition = QLEN >= 2
   pass_condition = TLEN >= 20
   pass_condition = MXRNG = 80
   pass_condition = AVG2 >= 1
-  pass_condition = ABE_NAV_SPEED <= 1.25
+  pass_condition = ABE_NAV_SPEED >= 0.90
+  pass_condition = ABE_NAV_SPEED <= 1.00
   pass_condition = BEN_NAV_SPEED >= 0.9
   pass_condition = BHV_ERROR_SEEN = false
 
@@ -37,7 +38,7 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = qlen=$[QLEN]
   report_column = tlen=$[TLEN]
   report_column = mxrng=$[MXRNG]

@@ -140,7 +140,7 @@
 
         <article class="case-row">
           <code>cruise_speed_pass</code>
-          <p>Configures cruise_speed=1.2 with spd_max=4; passes at 35 seconds when QLEN&gt;=2, TLEN&gt;=20, MXRNG=80, AVG2&gt;=1, Abe&#x27;s speed is at most 1.25, Ben&#x27;s is at least 0.9, and no behavior error was observed.</p>
+          <p>Configures cruise_speed=1.2 with spd_max=4; once the convoy has QLEN&gt;=2, TLEN&gt;=20, AVG2&gt;=1, and Ben is moving at least 0.9 m/s, passes when Abe is moving at 0.90–1.00 m/s, MXRNG=80, and no behavior error was observed before the deadline.</p>
         </article>
 
 
@@ -242,7 +242,7 @@
 
         <article class="case-row">
           <code>slow_follower_pass</code>
-          <p>Sets spd_slower=0.5, spd_faster=1, and max_mark_range=100, exercising conservative speed multipliers; passes when QLEN&gt;=6, TLEN&gt;=35, MXRNG=100, AVG2&gt;=1, and no behavior error was observed.</p>
+          <p>Sets spd_slower=0.5, spd_faster=1, and max_mark_range=100; once the convoy has QLEN&gt;=6, TLEN&gt;=35, and AVG2&gt;=1, passes when Abe is moving at 0.80–0.90 m/s, Ben is moving at least 1.00 m/s, MXRNG=100, and no behavior error was observed before the deadline.</p>
         </article>
 
 
@@ -266,7 +266,7 @@
 
         <article class="case-row">
           <code>runtime_cruise_speed_pass</code>
-          <p>Posts CONVOY_UPDATES=cruise_speed=1.2 at 12 seconds; passes at 35 seconds when QLEN&gt;=2, TLEN&gt;=20, MXRNG=80, AVG2&gt;=1, Abe&#x27;s speed is at most 1.25, Ben&#x27;s is at least 0.9, and no behavior error was observed.</p>
+          <p>Posts CONVOY_UPDATES=cruise_speed=1.2 at 12 seconds; once the convoy has QLEN&gt;=2, TLEN&gt;=20, AVG2&gt;=1, and Ben is moving at least 0.9 m/s, passes when Abe is moving at 0.90–1.00 m/s, MXRNG=80, and no behavior error was observed before the deadline.</p>
         </article>
 
 
@@ -289,12 +289,6 @@
 
 
         <article class="case-row">
-          <code>no_extrapolate_pass</code>
-          <p>Sets extrapolate=false while Ben continues publishing fresh motion reports; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>missing_contact_warn_pass</code>
           <p>Sets contact=ghost with on_no_contact_ok=true; passes at eight seconds when QLEN=0, TLEN=0, a behavior warning was observed, and no behavior error was observed.</p>
         </article>
@@ -302,85 +296,85 @@
 
         <article class="case-row">
           <code>missing_contact_fail</code>
-          <p>Sets contact=ghost with on_no_contact_ok=false; this expected-negative case passes at the 20-second checkpoint when either helm malconfiguration or any BHV_ERROR was observed.</p>
+          <p>Sets contact=ghost with on_no_contact_ok=false; after clearing startup errors at 15 seconds, this expected-negative case passes when a new BHV_ERROR arrives while the helm remains in DRIVE and the 25-second deadline is still false.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_param_fail</code>
-          <p>Omits contact and sets on_no_contact_ok=false; this expected-negative case passes at the 20-second checkpoint when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Omits contact and sets on_no_contact_ok=false; after clearing startup errors at 15 seconds, this expected-negative case passes when a new BHV_ERROR arrives while the helm remains in DRIVE and the 25-second deadline is still false.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_inter_mark_range_fail</code>
-          <p>Sets inter_mark_range=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets inter_mark_range=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_max_mark_range_fail</code>
-          <p>Sets max_mark_range=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets max_mark_range=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_radius_fail</code>
-          <p>Sets radius=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets radius=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_nm_radius_fail</code>
-          <p>Sets nm_radius=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets nm_radius=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_spd_slower_fail</code>
-          <p>Sets spd_slower=1.5, above the accepted multiplier range; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets spd_slower=1.5, above the accepted multiplier range; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_spd_faster_fail</code>
-          <p>Sets spd_faster=0.5, below the accepted multiplier range; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets spd_faster=0.5, below the accepted multiplier range; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_spd_max_fail</code>
-          <p>Sets spd_max=0; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets spd_max=0; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_rng_estop_fail</code>
-          <p>Sets rng_estop=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets rng_estop=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_rng_tgating_fail</code>
-          <p>Sets rng_tgating=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets rng_tgating=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_rng_lagging_fail</code>
-          <p>Sets rng_lagging=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets rng_lagging=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_rng_safety_fail</code>
-          <p>Sets the boolean rng_safety=maybe; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets the boolean rng_safety=maybe; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_cruise_speed_fail</code>
-          <p>Sets cruise_speed=-1; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.</p>
+          <p>Sets cruise_speed=-1; this expected-negative case passes only when IVPHELM_STATE=MALCONFIG is observed before the fallback deadline.</p>
         </article>
 
       </div>

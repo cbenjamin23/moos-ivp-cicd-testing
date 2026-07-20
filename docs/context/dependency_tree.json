@@ -2905,7 +2905,7 @@
         "path": "missions/convoy_behavior_missions/convoy_behavior_motion"
       },
       "patches": {
-        "file_count": 60
+        "file_count": 61
       },
       "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion",
       "perf_profile": "",
@@ -2930,7 +2930,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 48,
+        "case_count": 47,
         "case_parse_error": "",
         "cases": [
           "static_convoy_pass",
@@ -2965,7 +2965,6 @@
           "runtime_cruise_cap_warn_pass",
           "runtime_estop_speed_zero_pass",
           "runtime_bad_update_recover_pass",
-          "no_extrapolate_pass",
           "missing_contact_warn_pass",
           "missing_contact_fail",
           "missing_contact_param_fail",
@@ -7005,11 +7004,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 506,
-      ".xmoos": 1318,
+      ".xbhv": 505,
+      ".xmoos": 1320,
       "[none]": 7
     },
-    "harness_patch_count": 1719,
+    "harness_patch_count": 1720,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

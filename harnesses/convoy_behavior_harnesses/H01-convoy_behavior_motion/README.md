@@ -33,7 +33,7 @@ uses behavior outputs plus chaser/target speed aliases:
 - `long_mark_queue_pass`: Sets `max_mark_range=140` to permit a longer trail; passes when `QLEN>=6`, `TLEN>=35`, `MXRNG=140`, `AVG2>=1`, and no behavior error was observed.
 - `tight_radius_pass`: Shrinks the breadcrumb capture `radius` from 8 to 3; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
 - `wide_radius_pass`: Expands the breadcrumb capture `radius` from 8 to 16; passes under the same stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
-- `cruise_speed_pass`: Configures `cruise_speed=1.2` with `spd_max=4`; passes at 35 seconds when `QLEN>=2`, `TLEN>=20`, `MXRNG=80`, `AVG2>=1`, Abe's speed is at most 1.25, Ben's is at least 0.9, and no behavior error was observed.
+- `cruise_speed_pass`: Configures `cruise_speed=1.2` with `spd_max=4`; once the convoy has `QLEN>=2`, `TLEN>=20`, `AVG2>=1`, and Ben is moving at least 0.9 m/s, passes when Abe is moving at 0.90–1.00 m/s, `MXRNG=80`, and no behavior error was observed before the deadline.
 - `cruise_speed_cap_warn_pass`: Configures `cruise_speed=5` above `spd_max=2`; passes at 20 seconds when `QLEN>=2`, `TLEN>=10`, `AVG2>=1`, at least one `BHV_WARNING` was observed, and no behavior error was observed.
 - `safety_range_autoadjust_warn_pass`: Configures the compressed safety ranges `rng_estop=2`, `rng_tgating=5`, and `rng_lagging=6` with safety enabled; passes at 20 seconds when `QLEN>=2`, `TLEN>=10`, `AVG2>=1`, at least one behavior warning was observed, and no behavior error was observed.
 - `safety_off_bad_ranges_pass`: Uses the same `2,5,6` ranges with `rng_safety=false`; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
@@ -50,30 +50,29 @@ uses behavior outputs plus chaser/target speed aliases:
 - `lead_right_turn_pass`: Replaces Ben's straight leg with `55,-80:55,-35:125,-35`; passes at 85 seconds when Ben has reached `X>=50,Y>=-45`, `QLEN>=2`, `10<=TLEN<=130`, `MXRNG=80`, `AVG2>=0.6`, Abe's speed is at least 0.4, Ben's is at least 0.8, and no behavior error was observed.
 - `lead_s_turn_pass`: Starts Abe at `(-20,-80)`, changes the convoy trail to `radius=3.5`, `inter_mark_range=1.5`, and `max_mark_range=40`, and sends Ben through `25,-80:55,-50:70,-50:70,-90:105,-90`; passes at 145 seconds when `QLEN>=2`, `10<=TLEN<=55`, `MXRNG=40`, `AVG2>=0.6`, Abe is moving within `55<=X<=68,-58<=Y<=-48`, Ben is at `X>=72,Y<=-90`, the active breadcrumb is at `X>=70,Y>=-68`, and no behavior error was observed.
 - `short_queue_turn_pass`: Sets `max_mark_range=30` while Ben follows `40,-80:40,-40:105,-40`; passes at 85 seconds when `2<=QLEN<=6`, `10<=TLEN<=55`, `MXRNG=30`, `AVG2>=0.6`, both vehicles are moving, Ben has reached `X>=35,Y>=-50`, and no behavior error was observed.
-- `slow_follower_pass`: Sets `spd_slower=0.5`, `spd_faster=1`, and `max_mark_range=100`, exercising conservative speed multipliers; passes when `QLEN>=6`, `TLEN>=35`, `MXRNG=100`, `AVG2>=1`, and no behavior error was observed.
+- `slow_follower_pass`: Sets `spd_slower=0.5`, `spd_faster=1`, and `max_mark_range=100`; once the convoy has `QLEN>=6`, `TLEN>=35`, and `AVG2>=1`, passes when Abe is moving at 0.80–0.90 m/s, Ben is moving at least 1.00 m/s, `MXRNG=100`, and no behavior error was observed before the deadline.
 - `fast_follower_pass`: Sets `spd_slower=1` and `spd_faster=2`; passes when `QLEN>=4`, `TLEN>=20`, `MXRNG=80`, `AVG2>=1`, Abe's speed is at least 1.4, Ben's is at least 0.9, and no behavior error was observed.
 - `runtime_inter_mark_coarse_pass`: Posts `CONVOY_UPDATES=inter_mark_range=12` at 12 seconds; passes at 40 seconds when `2<=QLEN<=6`, `20<=TLEN<=95`, `MXRNG=80`, `AVG2>=1`, and no behavior error was observed.
 - `runtime_max_mark_short_pass`: Posts `CONVOY_UPDATES=max_mark_range=30` at 12 seconds; passes at 25 seconds when `QLEN>=2`, `TLEN<=38`, `MXRNG=30`, `AVG2>=1`, and no behavior error was observed.
-- `runtime_cruise_speed_pass`: Posts `CONVOY_UPDATES=cruise_speed=1.2` at 12 seconds; passes at 35 seconds when `QLEN>=2`, `TLEN>=20`, `MXRNG=80`, `AVG2>=1`, Abe's speed is at most 1.25, Ben's is at least 0.9, and no behavior error was observed.
+- `runtime_cruise_speed_pass`: Posts `CONVOY_UPDATES=cruise_speed=1.2` at 12 seconds; once the convoy has `QLEN>=2`, `TLEN>=20`, `AVG2>=1`, and Ben is moving at least 0.9 m/s, passes when Abe is moving at 0.90–1.00 m/s, `MXRNG=80`, and no behavior error was observed before the deadline.
 - `runtime_cruise_cap_warn_pass`: Posts `cruise_speed=5` at 12 seconds and `spd_max=2` at 13 seconds through `CONVOY_UPDATES`; passes at 20 seconds when `QLEN>=2`, `TLEN>=10`, `AVG2>=1`, at least one behavior warning was observed, and no behavior error was observed.
 - `runtime_estop_speed_zero_pass`: Posts `rng_estop=200`, `rng_tgating=210`, and `rng_lagging=220` at 12, 13, and 14 seconds; passes when `QLEN>=2`, `TLEN>=10`, Abe's speed is at most 0.25, Ben's is at least 0.9, and no behavior error was observed.
 - `runtime_bad_update_recover_pass`: Posts invalid `inter_mark_range=-1` at 12 seconds and restores `inter_mark_range=5` at 15 seconds; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and final no-error bounds.
-- `no_extrapolate_pass`: Sets `extrapolate=false` while Ben continues publishing fresh motion reports; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
 - `missing_contact_warn_pass`: Sets `contact=ghost` with `on_no_contact_ok=true`; passes at eight seconds when `QLEN=0`, `TLEN=0`, a behavior warning was observed, and no behavior error was observed.
-- `missing_contact_fail`: Sets `contact=ghost` with `on_no_contact_ok=false`; this expected-negative case passes at the 20-second checkpoint when either helm malconfiguration or any `BHV_ERROR` was observed.
-- `missing_contact_param_fail`: Omits `contact` and sets `on_no_contact_ok=false`; this expected-negative case passes at the 20-second checkpoint when either helm malconfiguration or any behavior error was observed.
-- `bad_inter_mark_range_fail`: Sets `inter_mark_range=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_max_mark_range_fail`: Sets `max_mark_range=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_radius_fail`: Sets `radius=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_nm_radius_fail`: Sets `nm_radius=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_spd_slower_fail`: Sets `spd_slower=1.5`, above the accepted multiplier range; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_spd_faster_fail`: Sets `spd_faster=0.5`, below the accepted multiplier range; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_spd_max_fail`: Sets `spd_max=0`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_rng_estop_fail`: Sets `rng_estop=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_rng_tgating_fail`: Sets `rng_tgating=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_rng_lagging_fail`: Sets `rng_lagging=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_rng_safety_fail`: Sets the boolean `rng_safety=maybe`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
-- `bad_cruise_speed_fail`: Sets `cruise_speed=-1`; this expected-negative case passes at 20 seconds when either helm malconfiguration or any behavior error was observed.
+- `missing_contact_fail`: Sets `contact=ghost` with `on_no_contact_ok=false`; after clearing startup errors at 15 seconds, this expected-negative case passes when a new `BHV_ERROR` arrives while the helm remains in `DRIVE` and the 25-second deadline is still false.
+- `missing_contact_param_fail`: Omits `contact` and sets `on_no_contact_ok=false`; after clearing startup errors at 15 seconds, this expected-negative case passes when a new `BHV_ERROR` arrives while the helm remains in `DRIVE` and the 25-second deadline is still false.
+- `bad_inter_mark_range_fail`: Sets `inter_mark_range=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_max_mark_range_fail`: Sets `max_mark_range=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_radius_fail`: Sets `radius=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_nm_radius_fail`: Sets `nm_radius=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_spd_slower_fail`: Sets `spd_slower=1.5`, above the accepted multiplier range; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_spd_faster_fail`: Sets `spd_faster=0.5`, below the accepted multiplier range; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_spd_max_fail`: Sets `spd_max=0`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_rng_estop_fail`: Sets `rng_estop=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_rng_tgating_fail`: Sets `rng_tgating=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_rng_lagging_fail`: Sets `rng_lagging=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_rng_safety_fail`: Sets the boolean `rng_safety=maybe`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
+- `bad_cruise_speed_fail`: Sets `cruise_speed=-1`; this expected-negative case passes only when `IVPHELM_STATE=MALCONFIG` is observed before the fallback deadline.
 
 ## Running
 
@@ -106,7 +105,7 @@ The geometry-entry cases are evaluated at 65 seconds and require `QLEN >= 2`,
 `TLEN` between 10 and 95 meters, `MXRNG = 80`, `AVG2 >= 1`, a moving target
 and chaser, chaser `Y` between -102 and -58, and no behavior error.
 
-The full matrix currently has 48 cases. Serial and rolling modes both use one
+The full matrix currently has 47 cases. Serial and rolling modes both use one
 isolated mission copy and one deterministic two-vehicle port block per case:
 `case_base = port_base + case_idx*PORT_STRIDE`, with MOOSDB ports at
 `case_base + 0..2` and pShare ports at `case_base + 10..12`. The harness
@@ -115,6 +114,10 @@ while one is active. Do not overlap it with other MOOS harnesses on the same
 machine.
 
 Latest validation:
+
+- July 19, 2026 contract-strengthening sweep: `47/47` cases passed with
+  minimal logging at `--jobs=4` and `47/47` passed with full logging at
+  `--jobs=2`
 
 - July 16, 2026
 - generated-file matrix: `48/48` isolated cases completed

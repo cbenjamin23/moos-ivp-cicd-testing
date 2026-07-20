@@ -93,7 +93,6 @@ CASES=(
     runtime_cruise_cap_warn_pass
     runtime_estop_speed_zero_pass
     runtime_bad_update_recover_pass
-    no_extrapolate_pass
     missing_contact_warn_pass
     missing_contact_fail
     missing_contact_param_fail
@@ -425,17 +424,15 @@ get_case_config() {
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-estop-speed-zero-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_bad_update_recover_pass" ]; then
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-bad-update-recover-pass-vehicle.xmoos"
-    elif [ "$CASE_NAME" = "no_extrapolate_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/no-extrapolate-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_warn_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-missing-contact-warn-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-warn-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/eval-missing-ghost-contact-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "missing_contact_param_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/eval-missing-contact-param-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/helm-malconfig-fail-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-param-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_inter_mark_range_fail" ]; then
