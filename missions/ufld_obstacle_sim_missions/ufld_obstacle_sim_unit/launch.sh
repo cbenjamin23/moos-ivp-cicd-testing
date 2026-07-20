@@ -159,7 +159,6 @@ if [ -f "meta_shoreside.moosx" ]; then
     SHORE_MOOS="meta_shoreside.moosx"
 fi
 
-[ -n "$MMOD" ] || MMOD=fixed_field_publish_pass
 nsplug "$SHORE_MOOS" targ_shoreside.moos "${NSFLAGS[@]}" \
        WARP="$TIME_WARP" MOOS_PORT="$MOOS_PORT" PSHARE_PORT="$PSHARE_PORT" \
        MMOD="$MMOD"

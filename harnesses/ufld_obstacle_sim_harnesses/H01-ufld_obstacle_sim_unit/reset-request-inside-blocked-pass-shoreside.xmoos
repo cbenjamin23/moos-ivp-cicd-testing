@@ -35,11 +35,16 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
+  mailflag = @KNOWN_OBSTACLE#KNOWN_OBSTACLE_COUNT=$[CNT]
+  mailflag = @GIVEN_OBSTACLE#GIVEN_OBSTACLE_COUNT=$[CNT]
+
   lead_condition = TEST_EVAL_READY = true
 
   pass_condition = UFOS_RESET = true
   pass_condition = UFOS_EVAL_KNOWN_A != ""
   pass_condition = UFOS_EVAL_GIVEN_A != ""
+  pass_condition = KNOWN_OBSTACLE_COUNT = 2
+  pass_condition = GIVEN_OBSTACLE_COUNT = 2
   fail_condition = KNOWN_OBSTACLE_CLEAR != ""
 
   result_flag  = MISSION_EVALUATED = true
@@ -52,6 +57,8 @@ ProcessConfig = pMissionEval
   report_column    = eval=$[TEST_EVAL_READY]
   report_column    = known=$[KNOWN_OBSTACLE]
   report_column    = given=$[GIVEN_OBSTACLE]
+  report_column    = known_count=$[KNOWN_OBSTACLE_COUNT]
+  report_column    = given_count=$[GIVEN_OBSTACLE_COUNT]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt
 }
