@@ -19,10 +19,15 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = TEST_EVAL_READY = true
+  lead_condition = PW_EVAL_ARMED = true
+  lead_condition = (MHASH_SHORT != "") or (TEST_EVAL_DEADLINE = true)
+  lead_condition = (PW_FULL_LOAD_10 != "") or (TEST_EVAL_DEADLINE = true)
+  pass_condition = TEST_EVAL_DEADLINE = false
   pass_condition = PROC_WATCH_ALL_OK = true
   pass_condition = PROC_WATCH_SUMMARY != ""
-  pass_condition = PROC_WATCH_FULL_SUMMARY != ""
+  pass_condition = PW_FULL_HOST_10 != ""
+  pass_condition = PW_FULL_EVAL_10 != ""
+  pass_condition = PW_FULL_LOAD_10 != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = processwatch_unit
@@ -31,7 +36,7 @@ ProcessConfig = pMissionEval
   report_column    = form=$[MISSION_FORM]
   report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
-  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = deadline=$[TEST_EVAL_DEADLINE]
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
   report_column    = proc_summary=$[PROC_WATCH_SUMMARY]
   report_column    = proc_full=$[PROC_WATCH_FULL_SUMMARY]

@@ -120,7 +120,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `testfailure_h01` | `testfailure_behavior` | `harnesses/testfailure_behavior_harnesses/H01-testfailure_behavior_unit/zlaunch.sh` | `missions/testfailure_behavior_missions/testfailure_behavior_unit` | 9 | `pGapLatch`, `uGapDeadline` | `testfailure-behavior-unit` |
 | `hostinfo_h01` | `hostinfo` | `harnesses/hostinfo_harnesses/H01-hostinfo_unit/zlaunch.sh` | `missions/hostinfo_missions/hostinfo_unit` | 7 | - | `hostinfo-unit` |
 | `loadwatch_h01` | `loadwatch` | `harnesses/loadwatch_harnesses/H01-loadwatch_unit/zlaunch.sh` | `missions/loadwatch_missions/loadwatch_unit` | 12 | - | `loadwatch-unit` |
-| `processwatch_h01` | `processwatch` | `harnesses/processwatch_harnesses/H01-processwatch_unit/zlaunch.sh` | `missions/processwatch_missions/processwatch_unit` | 7 | - | `processwatch-unit` |
+| `processwatch_h01` | `processwatch` | `harnesses/processwatch_harnesses/H01-processwatch_unit/zlaunch.sh` | `missions/processwatch_missions/processwatch_unit` | 7 | `pEchoVar` | `processwatch-unit` |
 | `pshare_h01` | `pshare` | `harnesses/pshare_harnesses/H01-pshare_unit/zlaunch.sh` | `missions/pshare_missions/pshare_unit` | 13 | - | `pshare-unit` |
 | `pshare_h02` | `pshare` | `harnesses/pshare_harnesses/H02-pshare_topology/zlaunch.sh` | `missions/pshare_missions/pshare_topology` | 12 | `ShareAlpha` | `pshare-topology` |
 | `plogger_h01` | `plogger` | `harnesses/plogger_harnesses/H01-plogger_unit/zlaunch.sh` | `missions/plogger_missions/plogger_unit` | 10 | - | `plogger-unit` |
@@ -172,7 +172,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `iM300Health`: `p02_colregs`, `p03_colregs`
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
-- `pEchoVar`: `legrun_h01`, `pechovar_h01`, `ufld_obstacle_sim_h01`, `utermcommand_h01`
+- `pEchoVar`: `legrun_h01`, `pechovar_h01`, `processwatch_h01`, `ufld_obstacle_sim_h01`, `utermcommand_h01`
 - `pGapLatch`: `testfailure_h01`
 - `pMediator`: `ufield_comms_h02`
 - `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`

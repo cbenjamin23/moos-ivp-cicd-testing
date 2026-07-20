@@ -16,16 +16,57 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB        @ NewConsole = false
   Run = pRealm        @ NewConsole = false
+  Run = pEchoVar      @ NewConsole = false
+  Run = pMissionEval  @ NewConsole = false
   Run = pHostInfo     @ NewConsole = false
   Run = uProcessWatch @ NewConsole = false
   Run = uLoadWatch    @ NewConsole = false
   Run = uTimerScript  @ NewConsole = false
-  Run = pMissionEval  @ NewConsole = false
-  Run = pAutoPoke     @ NewConsole = false
   Run = pMissionHash  @ NewConsole = false
 }
 
 #include plugs.moos <pLogger>
+
+//----------------------------------------------------
+// pEchoVar Config Block
+
+// Each flipper recognizes one exact name(here/gone) token from a ProcessWatch
+// full summary. This keeps pMissionEval's conditions scalar while still
+// checking the process identity and both counts.
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:full_host = source_variable = PROC_WATCH_FULL_SUMMARY
+  FLIP:full_host = dest_variable   = PW_FULL_HOST_10
+  FLIP:full_host = pHostInfo(1/0) -> match
+
+  FLIP:full_eval = source_variable = PROC_WATCH_FULL_SUMMARY
+  FLIP:full_eval = dest_variable   = PW_FULL_EVAL_10
+  FLIP:full_eval = pMissionEval(1/0) -> match
+
+  FLIP:full_load = source_variable = PROC_WATCH_FULL_SUMMARY
+  FLIP:full_load = dest_variable   = PW_FULL_LOAD_10
+  FLIP:full_load = uLoadWatch(1/0) -> match
+
+  FLIP:full_ghost = source_variable = PROC_WATCH_FULL_SUMMARY
+  FLIP:full_ghost = dest_variable   = PW_FULL_GHOST_11
+  FLIP:full_ghost = pGhost(1/1) -> match
+
+  FLIP:mapped_host = source_variable = UTIL_PROC_FULL_SUMMARY
+  FLIP:mapped_host = dest_variable   = PW_MAPPED_HOST_10
+  FLIP:mapped_host = pHostInfo(1/0) -> match
+
+  FLIP:mapped_eval = source_variable = UTIL_PROC_FULL_SUMMARY
+  FLIP:mapped_eval = dest_variable   = PW_MAPPED_EVAL_10
+  FLIP:mapped_eval = pMissionEval(1/0) -> match
+
+  FLIP:mapped_load = source_variable = UTIL_PROC_FULL_SUMMARY
+  FLIP:mapped_load = dest_variable   = PW_MAPPED_LOAD_10
+  FLIP:mapped_load = uLoadWatch(1/0) -> match
+}
 
 //----------------------------------------------------
 // pHostInfo Config Block
@@ -69,17 +110,6 @@ ProcessConfig = uLoadWatch
 }
 
 //----------------------------------------------------
-// pAutoPoke Config Block
-
-ProcessConfig = pAutoPoke
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  flag = TEST_EVAL_READY=false
-}
-
-//----------------------------------------------------
 // uTimerScript Config Block
 
 ProcessConfig = uTimerScript
@@ -87,7 +117,15 @@ ProcessConfig = uTimerScript
   AppTick   = 4
   CommsTick = 4
 
-  event = var=TEST_EVAL_READY, val=true, time=6.0
+  block_on = pEchoVar, pMissionEval, uProcessWatch
+
+  event = var=TEST_EVAL_DEADLINE, val=false, time=0.05
+  event = var=PW_EVAL_ARMED, val=false, time=0.05
+  event = var=PW_SOURCE_SUMMARY_SEEN, val=false, time=0.05
+  event = var=PW_SOURCE_FULL_SEEN, val=false, time=0.05
+  event = var=PW_SOURCE_EVENT_SEEN, val=false, time=0.05
+  event = var=PW_EVAL_ARMED, val=true, time=0.1
+  event = var=TEST_EVAL_DEADLINE, val=true, time=6.0
 }
 
 //----------------------------------------------------
@@ -98,8 +136,12 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = TEST_EVAL_READY = true
+  lead_condition = PW_EVAL_ARMED = true
+  lead_condition = (MHASH_SHORT != "") or (TEST_EVAL_DEADLINE = true)
+  lead_condition = (PROC_WATCH_SUMMARY != "") or (TEST_EVAL_DEADLINE = true)
+  pass_condition = TEST_EVAL_DEADLINE = false
   pass_condition = PROC_WATCH_ALL_OK = true
+  pass_condition = PROC_WATCH_SUMMARY != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = processwatch_unit
@@ -108,7 +150,7 @@ ProcessConfig = pMissionEval
   report_column    = form=$[MISSION_FORM]
   report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
-  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = deadline=$[TEST_EVAL_DEADLINE]
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
   report_column    = proc_summary=$[PROC_WATCH_SUMMARY]
   report_column    = mhash=$[MHASH_SHORT]

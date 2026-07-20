@@ -19,7 +19,15 @@ ProcessConfig = uTimerScript
   AppTick   = 4
   CommsTick = 4
 
-  event = var=TEST_EVAL_READY, val=true, time=125.0
+  block_on = pEchoVar, pMissionEval, uProcessWatch
+
+  event = var=TEST_EVAL_DEADLINE, val=false, time=0.05
+  event = var=PW_EVAL_ARMED, val=false, time=0.05
+  event = var=PW_SOURCE_SUMMARY_SEEN, val=false, time=0.05
+  event = var=PW_SOURCE_FULL_SEEN, val=false, time=0.05
+  event = var=PW_SOURCE_EVENT_SEEN, val=false, time=0.05
+  event = var=PW_EVAL_ARMED, val=true, time=0.1
+  event = var=TEST_EVAL_DEADLINE, val=true, time=125.0
 }
 
 ProcessConfig = pMissionEval
@@ -27,9 +35,14 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = TEST_EVAL_READY = true
+  lead_condition = PW_EVAL_ARMED = true
+  lead_condition = (MHASH_SHORT != "") or (TEST_EVAL_DEADLINE = true)
+  lead_condition = (PW_FULL_GHOST_11 != "") or (TEST_EVAL_DEADLINE = true)
+  pass_condition = TEST_EVAL_DEADLINE = false
   pass_condition = PROC_WATCH_ALL_OK = false
   pass_condition = GHOST_PRESENT = false
+  pass_condition = PROC_WATCH_SUMMARY != ""
+  pass_condition = PW_FULL_GHOST_11 != ""
 
   result_flag  = MISSION_EVALUATED = true
   mission_form = processwatch_unit
@@ -38,7 +51,7 @@ ProcessConfig = pMissionEval
   report_column    = form=$[MISSION_FORM]
   report_column    = mmod=$[MMOD]
   report_column    = grade=$[GRADE]
-  report_column    = eval=$[TEST_EVAL_READY]
+  report_column    = deadline=$[TEST_EVAL_DEADLINE]
   report_column    = expected=watch_awol
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
   report_column    = ghost_present=$[GHOST_PRESENT]

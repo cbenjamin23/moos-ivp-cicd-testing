@@ -2,11 +2,13 @@
 
 Headless shoreside mission for app-level `uProcessWatch` checks. The stem runs
 one MOOS community with `uProcessWatch`, two small watched peer utilities,
-`uTimerScript`, `pAutoPoke`, `pMissionEval`, and `pMissionHash`.
+`pEchoVar`, `uTimerScript`, `pMissionEval`, and `pMissionHash`.
 
-The default scenario grades `PROC_WATCH_ALL_OK=true`. Harness overlays vary
-watch lists, custom post names, summary/event publication names, and an expected
-missing-process failure.
+The default scenario evaluates when `PROC_WATCH_ALL_OK=true` and requires a
+nonempty short summary before a six-second fallback deadline. Harness overlays
+vary watch lists, custom post names, summary/event publication names, and an
+expected missing-process outcome. `pEchoVar` reduces exact full-summary
+`name(here/gone)` entries to scalar evaluator inputs.
 
 Run a single mission:
 

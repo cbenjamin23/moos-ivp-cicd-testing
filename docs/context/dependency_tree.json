@@ -3802,7 +3802,9 @@
       "families": [
         "processwatch"
       ],
-      "focus_process_apps": [],
+      "focus_process_apps": [
+        "pEchoVar"
+      ],
       "harness": "H01-processwatch_unit",
       "key": "processwatch_h01",
       "mission": {
@@ -3815,7 +3817,7 @@
       "perf_profile": "",
       "process_apps": [
         "ANTLER",
-        "pAutoPoke",
+        "pEchoVar",
         "pHostInfo",
         "pLogger",
         "pMissionEval",
@@ -6185,7 +6187,6 @@
         "pid_h02",
         "plogger_h01",
         "pnodereporter_h01",
-        "processwatch_h01",
         "pshare_h01",
         "pshare_h02",
         "shadow_h01",
@@ -6218,6 +6219,7 @@
       "pEchoVar": [
         "legrun_h01",
         "pechovar_h01",
+        "processwatch_h01",
         "ufld_obstacle_sim_h01",
         "utermcommand_h01"
       ],

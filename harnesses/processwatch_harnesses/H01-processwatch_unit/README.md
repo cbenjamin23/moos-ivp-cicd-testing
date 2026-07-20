@@ -12,31 +12,35 @@ apps as watched subjects.
 
 - `processwatch_all_present_pass`
   Enables `watch_all=true` while excluding the command-line utility patterns;
-  passes when `PROC_WATCH_ALL_OK=true` and `PROC_WATCH_SUMMARY` is nonempty,
-  without comparing its reported `All Present` text.
+  passes before the six-second deadline when `PROC_WATCH_ALL_OK=true` and
+  `PROC_WATCH_SUMMARY` is nonempty.
 - `processwatch_custom_present_post_pass`
-  Watches `pHostInfo:HOSTINFO_PRESENT`; passes when both
-  `PROC_WATCH_ALL_OK` and the custom `HOSTINFO_PRESENT` post are true.
+  Watches `pHostInfo:HOSTINFO_PRESENT` to exercise the custom presence-post
+  syntax; passes before the deadline when both booleans are true and the full
+  summary contains `pHostInfo(1/0)`.
 - `processwatch_multi_present_pass`
-  Watches `pHostInfo`, `pMissionEval`, and `uLoadWatch`; passes when
-  `PROC_WATCH_ALL_OK=true` and both summary variables are nonempty, without
-  comparing the per-process counts.
+  Watches `pHostInfo`, `pMissionEval`, and `uLoadWatch` together to verify
+  per-process accounting; passes before the deadline when all-watch health is
+  true and the full summary contains all three exact `(1/0)` entries.
 - `processwatch_post_mapping_pass`
-  Maps `PROC_WATCH_SUMMARY` to `UTIL_PROC_SUMMARY` while watching the three
-  peer apps; passes when all-watch health is true and the mapped summary and
-  ordinary full summary are nonempty.
+  Maps the short summary from `PROC_WATCH_SUMMARY` to `UTIL_PROC_SUMMARY`;
+  passes before the deadline when the destination is published, the source is
+  never published, and the ordinary full summary contains all three expected
+  `(1/0)` entries.
 - `processwatch_full_summary_mapping_pass`
-  Maps `PROC_WATCH_FULL_SUMMARY` to `UTIL_PROC_FULL_SUMMARY`; passes when
-  all-watch health is true and the ordinary short summary and mapped full
-  summary are nonempty.
+  Maps the full summary from `PROC_WATCH_FULL_SUMMARY` to
+  `UTIL_PROC_FULL_SUMMARY`; passes before the deadline when the source is
+  never published and the mapped payload contains the exact `(1/0)` entry for
+  each of the three watched processes.
 - `processwatch_event_mapping_present_pass`
   Watches `pHostInfo` and maps `PROC_WATCH_EVENT` to `UTIL_PROC_EVENT`;
-  passes when all-watch health is true and both the mapped event and ordinary
-  full summary are nonempty.
+  passes before the deadline when a mapped event is published, the source
+  event is never published, and the full summary contains `pHostInfo(1/0)`.
 - `processwatch_missing_awol_fail`
-  Watches nonexistent `pGhost:GHOST_PRESENT` for 125 seconds; the harness
-  passes with `expected=watch_awol` when `PROC_WATCH_ALL_OK=false` and
-  `GHOST_PRESENT=false`, while the reported AWOL summary text is not graded.
+  Watches nonexistent `pGhost:GHOST_PRESENT` to exercise configured-process
+  loss; the harness passes with `expected=watch_awol` before the 125-second
+  fallback when both booleans are false and the full summary contains
+  `pGhost(1/1)`.
 
 ## Run
 
@@ -59,12 +63,5 @@ uses rolling scheduling, so a new case starts as soon as any active case ends.
 Use `--keep_workdirs` to retain the per-case missions, logs, and result rows for
 inspection.
 
-Latest validation:
-
-- July 15, 2026
-- focused expected-AWOL case: three consecutive passes with
-  `--max_time=180 10`
-- grouped matrix: three `7/7` rolling passes with `--jobs=3 --max_time=180 10`
-- serial matrix: `7/7` cases passed with `--jobs=1 --max_time=180 10`
-- retained inspection confirmed one target, intended sidecar, log, and
-  mission-owned result row per case, with no remaining mission processes
+The evaluators lead on the relevant ProcessWatch health transition. Their
+timers are missing-state deadlines, not the normal grading trigger.
