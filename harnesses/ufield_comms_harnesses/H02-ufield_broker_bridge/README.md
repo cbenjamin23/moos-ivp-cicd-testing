@@ -31,7 +31,7 @@ Run the group:
 
 ## Current Matrix
 
-- `broker_handshake_pass` Runs the ordinary Abe and Ben brokers; passes when shoreside logs both `NODE_BROKER_PING` communities, `status=ok,key=0` acknowledgements and vehicle acknowledgements for both nodes, both names on `NODE_BROKER_VACK`, exact normal bridge summaries, and `UFSB_NODE_COUNT>=2` with ordinary traffic still flowing.
+- `broker_handshake_pass` Runs the ordinary Abe and Ben brokers; passes when each vehicle independently logs the exact normal `NODE_PSHARE_VARS` alias set and its `status=ok,key=0` acknowledgement, while shoreside logs both named pings, acknowledgements, and vacks and the ordinary bridged traffic still flows.
 - `shore_qbridge_expansion_pass` Configures the normal `NODE_REPORT`, `NODE_MESSAGE`, and `ACK_MESSAGE` qbridge set; passes when the exact qbridge summary includes those core and automatic request variables and shoreside logs the expected all/Abe/Ben report, Ben message, and Abe acknowledgement `PSHARE_CMD` expansions.
 - `shore_custom_bridge_pass` Adds `bridge=src=DEPLOY_$V,alias=DEPLOY`; passes when the exact bridge summary contains the template plus `DEPLOY_ABE` and `DEPLOY_BEN`, and shoreside logs both corresponding `src_name=DEPLOY_<V>,dest_name=DEPLOY` commands.
 - `node_custom_bridge_pass` Adds `src=CUSTOM_LOCAL,alias=CUSTOM_SHARED` to both node brokers; passes when the exact node alias summary begins with `CUSTOM_SHARED` and each vehicle log contains its `CUSTOM_LOCAL` to `CUSTOM_SHARED` pShare command.

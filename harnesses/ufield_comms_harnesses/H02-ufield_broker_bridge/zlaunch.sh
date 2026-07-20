@@ -446,7 +446,9 @@ supplemental_check_ok() {
             shore_has "$workdir" NODE_BROKER_VACK 'abe' &&
             shore_has "$workdir" NODE_BROKER_VACK 'ben' &&
             vehicle_has "$workdir" ABE NODE_BROKER_ACK 'status=ok,key=0' &&
-            vehicle_has "$workdir" BEN NODE_BROKER_ACK 'status=ok,key=0'
+            vehicle_has "$workdir" BEN NODE_BROKER_ACK 'status=ok,key=0' &&
+            vehicle_has "$workdir" ABE NODE_PSHARE_VARS '^ACK_MESSAGE,NODE_MESSAGE,NODE_REPORT,REALMCAST,WATCHCAST,REALMCAST_CHANNELS,APPCAST,NODE_PSHARE_VARS$' &&
+            vehicle_has "$workdir" BEN NODE_PSHARE_VARS '^ACK_MESSAGE,NODE_MESSAGE,NODE_REPORT,REALMCAST,WATCHCAST,REALMCAST_CHANNELS,APPCAST,NODE_PSHARE_VARS$'
             ;;
         shore_qbridge_expansion)
             shore_has "$workdir" PSHARE_CMD 'src_name=NODE_REPORT_ALL,dest_name=NODE_REPORT' &&
