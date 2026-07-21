@@ -5,7 +5,7 @@ ProcessConfig = uTimerScript
 
   condition = DEPLOY_ALL = true
 
-  event = var=TEST_EVAL_READY, val=true, time=60
+  event = var=TEST_EVAL_READY, val=true, time=70
 }
 
 ProcessConfig = pMissionEval
@@ -17,12 +17,14 @@ ProcessConfig = pMissionEval
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
   mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  lead_condition = (BCM_ALERT_REQUEST_SEEN = true) or (TEST_EVAL_READY = true)
   pass_condition = BCM_ALERT_REQUEST_SEEN = true
+
+  lead_condition = (((TRAIL_DISTANCE <= 30) and (PURSUIT = 1)) and (TRAIL_RELEVANCE > 0)) or (TEST_EVAL_READY = true)
   pass_condition = TRAIL_DISTANCE <= 30
   pass_condition = PURSUIT = 1
   pass_condition = TRAIL_RELEVANCE > 0
+  pass_condition = TEST_EVAL_READY = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
@@ -44,6 +46,7 @@ ProcessConfig = pMissionEval
   report_column = pursuit=$[PURSUIT]
   report_column = region=$[REGION]
   report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }

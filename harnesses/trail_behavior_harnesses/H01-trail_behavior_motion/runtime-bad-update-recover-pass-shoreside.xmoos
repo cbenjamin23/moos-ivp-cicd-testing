@@ -1,47 +1,53 @@
 ProcessConfig = uTimerScript
 {
-  AppTick   = 2
-  CommsTick = 2
-
+  AppTick = 4
+  CommsTick = 4
   condition = DEPLOY_ALL = true
-
-  event = var=TEST_EVAL_READY, val=true, time=25
+  event = var=TEST_EVAL_READY, val=true, time=70
 }
 
 ProcessConfig = pMissionEval
 {
-  AppTick   = 4
+  AppTick = 4
   CommsTick = 4
 
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
   mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+  mailflag = @TRAIL_BAD_RANGE_REJECTED#TRAIL_BAD_RANGE_REJECTED_SEEN=true
+  mailflag = @TRAIL_RANGE_70_ACCEPTED#TRAIL_RANGE_70_ACCEPTED_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
-  pass_condition = TRAIL_DISTANCE <= 30
+  lead_condition = (TRAIL_BAD_RANGE_REJECTED_SEEN = true) or (TEST_EVAL_READY = true)
+  pass_condition = TRAIL_BAD_RANGE_REJECTED_SEEN = true
+  pass_condition = BHV_WARNING_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+
+  lead_condition = (TRAIL_RANGE_70_ACCEPTED_SEEN = true) or (TEST_EVAL_READY = true)
+  pass_condition = TRAIL_RANGE_70_ACCEPTED_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+
+  lead_condition = (((TRAIL_DISTANCE <= 40) and (PURSUIT = 1)) and (TRAIL_RELEVANCE > 0)) or (TEST_EVAL_READY = true)
+  pass_condition = TRAIL_DISTANCE <= 40
   pass_condition = PURSUIT = 1
   pass_condition = TRAIL_RELEVANCE > 0
-  pass_condition = BHV_WARNING_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
   pass_condition = BHV_ERROR_SEEN = false
 
   result_flag = MISSION_EVALUATED = true
-  pass_flag   = SAY_MOOS = pass
-  fail_flag   = SAY_MOOS = fail
-
+  pass_flag = SAY_MOOS = pass
+  fail_flag = SAY_MOOS = fail
   mission_form = trail_behavior_tests
-  mission_mod  = $(MMOD:=runtime_bad_update_recover_pass)
-
-  report_file   = results.txt
+  report_file = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = expected=reject_range_-5_then_accept_70
+  report_column = rejected=$[TRAIL_BAD_RANGE_REJECTED_SEEN]
+  report_column = accepted=$[TRAIL_RANGE_70_ACCEPTED_SEEN]
   report_column = dist=$[TRAIL_DISTANCE]
   report_column = relevance=$[TRAIL_RELEVANCE]
-  report_column = range=$[TRAIL_RANGE]
   report_column = pursuit=$[PURSUIT]
   report_column = region=$[REGION]
   report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = bhv_error=$[BHV_ERROR_SEEN]
   report_column = mhash=$[MHASH_SHORT]
 }

@@ -59,7 +59,7 @@
         </div>
         <div class="gif-meta">
           <h3>Relative Port Trail</h3>
-          <p>Description: Sets relative trail_angle=135 and nm_radius=22, exercising a port-quarter trail point; passes at 45 seconds when TRAIL_DISTANCE&lt;=30, pursuit is active, relevance is positive, and no error occurred.</p>
+          <p>Description: Covers relative port expected pass.</p>
         </div>
       </article>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="gif-meta">
           <h3>Lead Turn Angle Update</h3>
-          <p>Description: Uses the target dogleg and posts trail_angle=135 at 12 seconds, exercising a live trail-point reframe before the turn; passes at 80 seconds with Ben beyond x=50,y=-45, TRAIL_DISTANCE&lt;=45, active pursuit and relevance, and no error.</p>
+          <p>Description: Covers lead turn angle update expected pass.</p>
         </div>
       </article>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="gif-meta">
           <h3>Runtime Range Extend</h3>
-          <p>Description: Posts trail_range=70 through TRAIL_UPDATES at 12 seconds, exercising live desired-range extension; passes at 60 seconds when TRAIL_DISTANCE&lt;=40, pursuit and relevance are active, and no error occurred.</p>
+          <p>Description: Covers runtime range extend expected pass.</p>
         </div>
       </article>
 
@@ -103,134 +103,14 @@
 
 
         <article class="case-row">
-          <code>absolute_west_pass</code>
-          <p>Sets trail_angle_type=absolute and trail_angle=270, exercising a world-frame trail point west of Ben; passes with the default TRAIL_DISTANCE&lt;=20, active-pursuit, positive-relevance, and no-error grade.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>relative_port_pass</code>
-          <p>Sets relative trail_angle=135 and nm_radius=22, exercising a port-quarter trail point; passes at 45 seconds when TRAIL_DISTANCE&lt;=30, pursuit is active, relevance is positive, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>relative_starboard_pass</code>
-          <p>Sets relative trail_angle=-135 and nm_radius=22, exercising a starboard-quarter trail point; passes at 45 seconds when TRAIL_DISTANCE&lt;=30, pursuit is active, relevance is positive, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>lead_right_turn_pass</code>
           <p>Replaces Ben&#x27;s straight leg with points (55,-80):(55,-35):(125,-35), exercising pursuit through a right-angle target turn; passes at 80 seconds when Ben has reached x&gt;=50,y&gt;=-45, TRAIL_DISTANCE&lt;=45, pursuit and relevance are active, and no error occurred.</p>
         </article>
 
 
         <article class="case-row">
-          <code>lead_port_turn_pass</code>
-          <p>Uses the same target dogleg with relative trail_angle=135 and nm_radius=22, exercising port-quarter trailing through the turn; passes at 80 seconds with Ben beyond x=50,y=-45, TRAIL_DISTANCE&lt;=45, active pursuit and relevance, and no error.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>lead_turn_angle_update_pass</code>
-          <p>Uses the target dogleg and posts trail_angle=135 at 12 seconds, exercising a live trail-point reframe before the turn; passes at 80 seconds with Ben beyond x=50,y=-45, TRAIL_DISTANCE&lt;=45, active pursuit and relevance, and no error.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>short_trail_range_pass</code>
-          <p>Sets trail_range=28, radius=5, and nm_radius=14, exercising a shorter desired separation; passes at 45 seconds when TRAIL_DISTANCE&lt;=18, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>long_trail_range_pass</code>
-          <p>Sets trail_range=70, radius=10, and nm_radius=28, exercising a longer desired separation; passes at 60 seconds when TRAIL_DISTANCE&lt;=40, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>tight_radius_pass</code>
-          <p>Sets radius=3, nm_radius=14, and trail_range=35, exercising tighter trail-point capture bands; passes at 45 seconds when TRAIL_DISTANCE&lt;=18, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>wide_radius_pass</code>
-          <p>Sets radius=16 and nm_radius=25, exercising wider trail-point capture bands; passes at 45 seconds when TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>inside_nm_radius_pass</code>
-          <p>Sets nm_radius=45, placing the chaser inside the near-mode radius for the default geometry; passes at 45 seconds when TRAIL_DISTANCE&lt;=45, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>outside_nm_radius_pass</code>
-          <p>Sets both radius and nm_radius to zero, exercising continuous pursuit outside the near-mode radius; passes at 45 seconds when TRAIL_DISTANCE&gt;0, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>pwt_outer_active_pass</code>
-          <p>Sets pwt_outer_dist=250 and nm_radius=22, exercising outer-distance relevance while the contact remains inside the boundary; passes when TRAIL_RANGE&lt;250, TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>pwt_outer_inactive_pass</code>
           <p>Sets pwt_outer_dist=30, below the observed contact range; passes when TRAIL_RANGE&gt;30, PURSUIT=0, relevance is zero, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>mod_trail_range_plus_pass</code>
-          <p>Starts from trail_range=45 and sets mod_trail_range=15, exercising an additive desired-range increase; passes at 45 seconds when TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>mod_trail_range_pct_pass</code>
-          <p>Starts from trail_range=50 and sets mod_trail_range_pct=50, exercising percentage range reduction; passes at 45 seconds when TRAIL_DISTANCE&lt;=18, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>mod_trail_range_floor_pass</code>
-          <p>Starts from trail_range=12 and applies mod_trail_range=-50, exercising the 10-meter minimum range clamp; passes at 45 seconds when TRAIL_DISTANCE&lt;=14, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_range_extend_pass</code>
-          <p>Posts trail_range=70 through TRAIL_UPDATES at 12 seconds, exercising live desired-range extension; passes at 60 seconds when TRAIL_DISTANCE&lt;=40, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_mod_range_plus_pass</code>
-          <p>Posts mod_trail_range=15 at 12 seconds, exercising a live additive range change; passes at 45 seconds when TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_mod_range_pct_pass</code>
-          <p>Posts mod_trail_range_pct=50 at 12 seconds, exercising a live percentage range change; passes at 45 seconds when TRAIL_DISTANCE&lt;=18, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_mod_range_floor_pass</code>
-          <p>Posts mod_trail_range_pct=10 at 12 seconds, exercising the 10-meter minimum clamp through a runtime update; passes at 60 seconds when TRAIL_DISTANCE&lt;=14, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_angle_update_pass</code>
-          <p>Posts trail_angle=135 at 12 seconds, exercising a live change from astern to port-quarter trailing; passes at 60 seconds when TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
         </article>
 
 
@@ -242,7 +122,7 @@
 
         <article class="case-row">
           <code>runtime_bad_update_recover_pass</code>
-          <p>Posts invalid trail_range=-5 at 12 seconds and valid trail_range=45 at 15 seconds, exercising continued pursuit after a rejected update; passes at 25 seconds when any warning was observed, TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
+          <p>Rejects trail_range=-5 before accepting the distinct recovery value 70; ordered evaluation requires the exact param_error, a warning, exact success for 70, then TRAIL_DISTANCE&lt;=40, active pursuit, and positive relevance before the deadline.</p>
         </article>
 
 
@@ -259,92 +139,80 @@
 
 
         <article class="case-row">
-          <code>no_extrapolate_pass</code>
-          <p>Sets extrapolate=false, exercising pursuit from the latest contact report without projection; passes at 60 seconds when TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>no_alert_request_pass</code>
-          <p>Sets no_alert_request=true, exercising suppression of Trail&#x27;s contact-manager alert request; passes with the default TRAIL_DISTANCE&lt;=20, active-pursuit, positive-relevance, and no-error grade.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>auto_alert_request_pass</code>
-          <p>Uses a spawn-templated Trail with no_alert_request=false, exercising automatic contact-manager subscription; passes at 60 seconds when any BCM_ALERT_REQUEST was observed, TRAIL_DISTANCE&lt;=30, pursuit and relevance are active, and no error occurred.</p>
+          <p>Starts a spawn-templated Trail with an updates variable and no_alert_request=false; the live case requires a BCM_ALERT_REQUEST before active pursuit, while direct CTest requires the complete request payload and proves each suppression gate.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_warn_pass</code>
-          <p>Sets contact=ghost with on_no_contact_ok=true, exercising warning-only handling of an unavailable contact; passes at eight seconds when any BHV_WARNING was observed and no BHV_ERROR occurred.</p>
+          <p>Sets contact=ghost with on_no_contact_ok=true; the live case leads on a pre-deadline warning with no behavior error, and direct CTest requires exact trail_contact: ghost x/y/heading/speed info not found warning text.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_fail</code>
-          <p>Sets contact=ghost with on_no_contact_ok=false, exercising the required-contact error path; the harness passes as soon as any BHV_ERROR publication is observed.</p>
+          <p>Sets the same absent contact with on_no_contact_ok=false; the live case leads on a pre-deadline behavior error, and direct CTest requires the exact ghost-contact message on BHV_ERROR.</p>
         </article>
 
 
         <article class="case-row">
           <code>missing_contact_param_fail</code>
-          <p>Omits contact while setting on_no_contact_ok=false, exercising the missing required parameter path; the harness passes as soon as any BHV_ERROR publication is observed.</p>
+          <p>Omits contact with on_no_contact_ok=false; the live case leads on a pre-deadline behavior error, and direct CTest requires exact trail_contact: contact IDX not set. text.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trail_angle_type_fail</code>
-          <p>Sets trail_angle_type=diagonal, exercising invalid angle-type rejection; the harness passes at 20 seconds when Trail remains inactive (TRAIL_DISTANCE&gt;=900, zero relevance, PURSUIT=-1, REGION=UNKNOWN) and no error occurred.</p>
+          <p>Sets trail_angle_type=diagonal; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this exact type.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trail_angle_fail</code>
-          <p>Sets trail_angle=west, exercising nonnumeric angle rejection; the harness passes at 20 seconds when the same inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets trail_angle=west; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this exact nonnumeric angle.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_trail_range_fail</code>
-          <p>Sets trail_range=-1, exercising negative range rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets trail_range=-1; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this exact negative range.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_mod_trail_range_pct_fail</code>
-          <p>Sets mod_trail_range_pct=0, exercising rejection of a nonpositive percentage modifier; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets mod_trail_range_pct=0; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this nonpositive percentage.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_radius_fail</code>
-          <p>Sets radius=-1, exercising negative capture-radius rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets radius=-1; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this exact radius.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_nm_radius_fail</code>
-          <p>Sets nm_radius=-1, exercising negative near-mode-radius rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets nm_radius=-1; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this exact near-mode radius.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_pwt_outer_dist_fail</code>
-          <p>Sets pwt_outer_dist=-1, exercising negative relevance-distance rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets pwt_outer_dist=-1; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this exact relevance distance.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_decay_fail</code>
-          <p>Sets decay=60,30, exercising rejection of a decay start greater than its end; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets decay=60,30; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection when decay start exceeds decay end.</p>
         </article>
 
 
         <article class="case-row">
           <code>bad_time_on_leg_fail</code>
-          <p>Sets inherited time_on_leg=-1, exercising rejection of a negative leg duration; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.</p>
+          <p>Sets inherited time_on_leg=-1; the harness requires armed, pre-deadline MALCONFIG, while direct CTest requires rejection of this exact negative duration.</p>
         </article>
 
       </div>

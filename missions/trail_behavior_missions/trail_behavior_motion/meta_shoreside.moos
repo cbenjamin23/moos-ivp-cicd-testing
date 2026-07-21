@@ -22,6 +22,7 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
   Run = uTimerScript     @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pMissionEval     @ NewConsole = false
   Run = pAutoPoke        @ NewConsole = false
 #ifdef LAUNCH_GUI yes
@@ -36,6 +37,34 @@ ProcessConfig = ANTLER
 #include plugs.moos <uProcessWatch>
 
 //----------------------------------------------------
+// pEchoVar Config Block
+
+// Preserve exact update values as well as result types so the runtime
+// recovery case cannot pass on an unrelated warning or generic success.
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:bad_range = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:bad_range = dest_variable   = TRAIL_BAD_RANGE_REJECTED
+  FLIP:bad_range = bhv == trail_contact
+  FLIP:bad_range = var == TRAIL_UPDATES
+  FLIP:bad_range = result == param_error
+  FLIP:bad_range = val == trail_range=-5
+  FLIP:bad_range = result -> result
+
+  FLIP:range_70 = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:range_70 = dest_variable   = TRAIL_RANGE_70_ACCEPTED
+  FLIP:range_70 = bhv == trail_contact
+  FLIP:range_70 = var == TRAIL_UPDATES
+  FLIP:range_70 = result == success
+  FLIP:range_70 = val == trail_range=70
+  FLIP:range_70 = result -> result
+}
+
+//----------------------------------------------------
 // pAutoPoke Config Block
 
 ProcessConfig = pAutoPoke
@@ -48,6 +77,9 @@ ProcessConfig = pAutoPoke
   flag = TEST_EVAL_READY=false
   flag = BHV_ERROR_SEEN=false
   flag = BHV_WARNING_SEEN=false
+  flag = BCM_ALERT_REQUEST_SEEN=false
+  flag = TRAIL_BAD_RANGE_REJECTED_SEEN=false
+  flag = TRAIL_RANGE_70_ACCEPTED_SEEN=false
   flag = TRAIL_DISTANCE=999
   flag = TRAIL_RELEVANCE=0
   flag = TRAIL_RANGE=999
@@ -128,6 +160,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = TRAIL_DISTANCE, TRAIL_RELEVANCE, TRAIL_RANGE, PURSUIT, REGION
   qbridge  = ABE_NAV_X, ABE_NAV_Y, BEN_NAV_X, BEN_NAV_Y
   qbridge  = TRAIL_SPEED, TRAIL_HEADING, BHV_WARNING, BHV_ERROR
+  qbridge  = IVPHELM_UPDATE_RESULT
 }
 
 //----------------------------------------------------
@@ -172,6 +205,10 @@ ProcessConfig = pLogger
   Log = BHV_WARNING @ 0 nosync
   Log = BHV_ERROR @ 0 nosync
   Log = BHV_ERROR_SEEN @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
+  Log = TRAIL_BAD_RANGE_REJECTED @ 0 nosync
+  Log = TRAIL_RANGE_70_ACCEPTED @ 0 nosync
+  Log = ABE_IVPHELM_STATE @ 0 nosync
   Log = MISSION_EVALUATED @ 0 nosync
   Log = NODE_REPORT @ 0 nosync
 }

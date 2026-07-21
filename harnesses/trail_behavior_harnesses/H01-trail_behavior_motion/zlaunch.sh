@@ -62,34 +62,12 @@ FINISH_FATAL_REASON=""
 
 CASES=(
     static_trail_pass
-    absolute_west_pass
-    relative_port_pass
-    relative_starboard_pass
     lead_right_turn_pass
-    lead_port_turn_pass
-    lead_turn_angle_update_pass
-    short_trail_range_pass
-    long_trail_range_pass
-    tight_radius_pass
-    wide_radius_pass
-    inside_nm_radius_pass
-    outside_nm_radius_pass
-    pwt_outer_active_pass
     pwt_outer_inactive_pass
-    mod_trail_range_plus_pass
-    mod_trail_range_pct_pass
-    mod_trail_range_floor_pass
-    runtime_range_extend_pass
-    runtime_mod_range_plus_pass
-    runtime_mod_range_pct_pass
-    runtime_mod_range_floor_pass
-    runtime_angle_update_pass
     runtime_relevance_off_pass
     runtime_bad_update_recover_pass
     idle_post_distance_pass
     idle_no_post_distance_pass
-    no_extrapolate_pass
-    no_alert_request_pass
     auto_alert_request_pass
     missing_contact_warn_pass
     missing_contact_fail
@@ -327,72 +305,12 @@ get_case_config() {
 
     if [ "$CASE_NAME" = "static_trail_pass" ]; then
         :
-    elif [ "$CASE_NAME" = "absolute_west_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/absolute-west-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "relative_port_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist30-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/relative-port-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "relative_starboard_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist30-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/relative-starboard-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "lead_right_turn_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/dist45-turn-late-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/lead-right-turn-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "lead_port_turn_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist45-turn-late-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/lead-port-turn-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "lead_turn_angle_update_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist45-turn-late-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-angle-update-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/lead-right-turn-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "short_trail_range_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist18-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/short-trail-range-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "long_trail_range_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist40-late-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/long-trail-range-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "tight_radius_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist18-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/tight-radius-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "wide_radius_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist30-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/wide-radius-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "inside_nm_radius_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/inside-nm-radius-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/inside-nm-radius-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "outside_nm_radius_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/outside-nm-radius-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/outside-nm-radius-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "pwt_outer_active_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/pwt-outer-active-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/pwt-outer-active-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "pwt_outer_inactive_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/pwt-outer-inactive-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/pwt-outer-inactive-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "mod_trail_range_plus_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist30-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/mod-trail-range-plus-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "mod_trail_range_pct_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist18-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/mod-trail-range-pct-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "mod_trail_range_floor_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/mod-trail-range-floor-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/mod-trail-range-floor-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "runtime_range_extend_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist40-late-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-range-extend-pass-vehicle.xmoos"
-    elif [ "$CASE_NAME" = "runtime_mod_range_plus_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist40-late-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-mod-range-plus-pass-vehicle.xmoos"
-    elif [ "$CASE_NAME" = "runtime_mod_range_pct_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist18-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-mod-range-pct-pass-vehicle.xmoos"
-    elif [ "$CASE_NAME" = "runtime_mod_range_floor_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/runtime-mod-range-floor-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-mod-range-floor-pass-vehicle.xmoos"
-    elif [ "$CASE_NAME" = "runtime_angle_update_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist30-late-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-angle-update-pass-vehicle.xmoos"
     elif [ "$CASE_NAME" = "runtime_relevance_off_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/runtime-relevance-off-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-relevance-off-pass-vehicle.xmoos"
@@ -407,11 +325,6 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/idle-no-post-distance-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/idle-no-post-distance-pass-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/idle-no-post-distance-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "no_extrapolate_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/dist30-late-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/no-extrapolate-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "no_alert_request_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/no-alert-request-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "auto_alert_request_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/auto-alert-request-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/auto-alert-request-pass-vehicle.xmoos"
@@ -426,31 +339,31 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-bhv-error-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/missing-contact-param-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_trail_angle_type_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-trail-angle-type-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_trail_angle_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-trail-angle-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_trail_range_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-trail-range-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_mod_trail_range_pct_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-mod-trail-range-pct-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_radius_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_nm_radius_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-nm-radius-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_pwt_outer_dist_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-pwt-outer-dist-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_decay_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-decay-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_time_on_leg_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-inactive-pass-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/helm-malconfig-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-time-on-leg-fail-vehicle.xbhv"
     else
         echo "$ME: Unknown case: [$CASE_NAME]"

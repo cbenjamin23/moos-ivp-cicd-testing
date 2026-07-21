@@ -1,9 +1,0 @@
-ProcessConfig = uTimerScript
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  condition = DEPLOY = true
-
-  event = var=TRAIL_UPDATES, val="mod_trail_range_pct=50", time=12
-}

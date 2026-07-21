@@ -107,9 +107,11 @@ ProcessConfig = uFldNodeBroker
   bridge = src=REGION
   bridge = src=TRAIL_SPEED
   bridge = src=TRAIL_HEADING
+  bridge = src=IVPHELM_UPDATE_RESULT
 #ifdef VROLE CHASER
   bridge = src=NAV_X, alias=ABE_NAV_X
   bridge = src=NAV_Y, alias=ABE_NAV_Y
+  bridge = src=IVPHELM_STATE, alias=ABE_IVPHELM_STATE
 #else
   bridge = src=NAV_X, alias=BEN_NAV_X
   bridge = src=NAV_Y, alias=BEN_NAV_Y
@@ -216,6 +218,8 @@ ProcessConfig = pLogger
   Log = NAV_Y @ 0 nosync
   Log = BHV_WARNING @ 0 nosync
   Log = BHV_ERROR @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
+  Log = IVPHELM_STATE @ 0 nosync
   Log = NODE_REPORT_LOCAL @ 0 nosync
 
   LogAuxSrc = true

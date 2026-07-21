@@ -22,47 +22,43 @@ uses behavior outputs such as:
 ## Cases
 
 - `static_trail_pass` Configures a relative `180`-degree trail point `45` meters behind Ben with `radius=8` and `nm_radius=18`; passes at 45 seconds when `TRAIL_DISTANCE<=20`, `PURSUIT=1`, relevance is positive, and no `BHV_ERROR` occurred.
-- `absolute_west_pass` Sets `trail_angle_type=absolute` and `trail_angle=270`, exercising a world-frame trail point west of Ben; passes with the default `TRAIL_DISTANCE<=20`, active-pursuit, positive-relevance, and no-error grade.
-- `relative_port_pass` Sets relative `trail_angle=135` and `nm_radius=22`, exercising a port-quarter trail point; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit is active, relevance is positive, and no error occurred.
-- `relative_starboard_pass` Sets relative `trail_angle=-135` and `nm_radius=22`, exercising a starboard-quarter trail point; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit is active, relevance is positive, and no error occurred.
 - `lead_right_turn_pass` Replaces Ben's straight leg with points `(55,-80):(55,-35):(125,-35)`, exercising pursuit through a right-angle target turn; passes at 80 seconds when Ben has reached `x>=50,y>=-45`, `TRAIL_DISTANCE<=45`, pursuit and relevance are active, and no error occurred.
-- `lead_port_turn_pass` Uses the same target dogleg with relative `trail_angle=135` and `nm_radius=22`, exercising port-quarter trailing through the turn; passes at 80 seconds with Ben beyond `x=50,y=-45`, `TRAIL_DISTANCE<=45`, active pursuit and relevance, and no error.
-- `lead_turn_angle_update_pass` Uses the target dogleg and posts `trail_angle=135` at 12 seconds, exercising a live trail-point reframe before the turn; passes at 80 seconds with Ben beyond `x=50,y=-45`, `TRAIL_DISTANCE<=45`, active pursuit and relevance, and no error.
-- `short_trail_range_pass` Sets `trail_range=28`, `radius=5`, and `nm_radius=14`, exercising a shorter desired separation; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
-- `long_trail_range_pass` Sets `trail_range=70`, `radius=10`, and `nm_radius=28`, exercising a longer desired separation; passes at 60 seconds when `TRAIL_DISTANCE<=40`, pursuit and relevance are active, and no error occurred.
-- `tight_radius_pass` Sets `radius=3`, `nm_radius=14`, and `trail_range=35`, exercising tighter trail-point capture bands; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
-- `wide_radius_pass` Sets `radius=16` and `nm_radius=25`, exercising wider trail-point capture bands; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
-- `inside_nm_radius_pass` Sets `nm_radius=45`, placing the chaser inside the near-mode radius for the default geometry; passes at 45 seconds when `TRAIL_DISTANCE<=45`, pursuit and relevance are active, and no error occurred.
-- `outside_nm_radius_pass` Sets both `radius` and `nm_radius` to zero, exercising continuous pursuit outside the near-mode radius; passes at 45 seconds when `TRAIL_DISTANCE>0`, pursuit and relevance are active, and no error occurred.
-- `pwt_outer_active_pass` Sets `pwt_outer_dist=250` and `nm_radius=22`, exercising outer-distance relevance while the contact remains inside the boundary; passes when `TRAIL_RANGE<250`, `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
 - `pwt_outer_inactive_pass` Sets `pwt_outer_dist=30`, below the observed contact range; passes when `TRAIL_RANGE>30`, `PURSUIT=0`, relevance is zero, and no error occurred.
-- `mod_trail_range_plus_pass` Starts from `trail_range=45` and sets `mod_trail_range=15`, exercising an additive desired-range increase; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
-- `mod_trail_range_pct_pass` Starts from `trail_range=50` and sets `mod_trail_range_pct=50`, exercising percentage range reduction; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
-- `mod_trail_range_floor_pass` Starts from `trail_range=12` and applies `mod_trail_range=-50`, exercising the 10-meter minimum range clamp; passes at 45 seconds when `TRAIL_DISTANCE<=14`, pursuit and relevance are active, and no error occurred.
-- `runtime_range_extend_pass` Posts `trail_range=70` through `TRAIL_UPDATES` at 12 seconds, exercising live desired-range extension; passes at 60 seconds when `TRAIL_DISTANCE<=40`, pursuit and relevance are active, and no error occurred.
-- `runtime_mod_range_plus_pass` Posts `mod_trail_range=15` at 12 seconds, exercising a live additive range change; passes at 45 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
-- `runtime_mod_range_pct_pass` Posts `mod_trail_range_pct=50` at 12 seconds, exercising a live percentage range change; passes at 45 seconds when `TRAIL_DISTANCE<=18`, pursuit and relevance are active, and no error occurred.
-- `runtime_mod_range_floor_pass` Posts `mod_trail_range_pct=10` at 12 seconds, exercising the 10-meter minimum clamp through a runtime update; passes at 60 seconds when `TRAIL_DISTANCE<=14`, pursuit and relevance are active, and no error occurred.
-- `runtime_angle_update_pass` Posts `trail_angle=135` at 12 seconds, exercising a live change from astern to port-quarter trailing; passes at 60 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
 - `runtime_relevance_off_pass` Posts `pwt_outer_dist=5` at 12 seconds, exercising runtime relevance shutdown; passes at 35 seconds when `TRAIL_RANGE>5`, `PURSUIT=0`, relevance is zero, and no error occurred.
-- `runtime_bad_update_recover_pass` Posts invalid `trail_range=-5` at 12 seconds and valid `trail_range=45` at 15 seconds, exercising continued pursuit after a rejected update; passes at 25 seconds when any warning was observed, `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
+- `runtime_bad_update_recover_pass` Rejects `trail_range=-5` before accepting the distinct recovery value `70`; ordered evaluation requires the exact `param_error`, a warning, exact success for `70`, then `TRAIL_DISTANCE<=40`, active pursuit, and positive relevance before the deadline.
 - `idle_post_distance_pass` Sets `post_trail_dist_on_idle=true` and turns `TRAIL=false` at 25 seconds, exercising distance publication while idle; passes at 35 seconds when `PURSUIT=0`, `TRAIL_DISTANCE<999`, and no error occurred.
 - `idle_no_post_distance_pass` Sets `post_trail_dist_on_idle=false`, turns `TRAIL=false` at 25 seconds, and writes sentinel `TRAIL_DISTANCE=999` at 28 seconds; passes at 35 seconds when the sentinel remains `999`, `PURSUIT=0`, and no error occurred.
-- `no_extrapolate_pass` Sets `extrapolate=false`, exercising pursuit from the latest contact report without projection; passes at 60 seconds when `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
-- `no_alert_request_pass` Sets `no_alert_request=true`, exercising suppression of Trail's contact-manager alert request; passes with the default `TRAIL_DISTANCE<=20`, active-pursuit, positive-relevance, and no-error grade.
-- `auto_alert_request_pass` Uses a spawn-templated Trail with `no_alert_request=false`, exercising automatic contact-manager subscription; passes at 60 seconds when any `BCM_ALERT_REQUEST` was observed, `TRAIL_DISTANCE<=30`, pursuit and relevance are active, and no error occurred.
-- `missing_contact_warn_pass` Sets `contact=ghost` with `on_no_contact_ok=true`, exercising warning-only handling of an unavailable contact; passes at eight seconds when any `BHV_WARNING` was observed and no `BHV_ERROR` occurred.
-- `missing_contact_fail` Sets `contact=ghost` with `on_no_contact_ok=false`, exercising the required-contact error path; the harness passes as soon as any `BHV_ERROR` publication is observed.
-- `missing_contact_param_fail` Omits `contact` while setting `on_no_contact_ok=false`, exercising the missing required parameter path; the harness passes as soon as any `BHV_ERROR` publication is observed.
-- `bad_trail_angle_type_fail` Sets `trail_angle_type=diagonal`, exercising invalid angle-type rejection; the harness passes at 20 seconds when Trail remains inactive (`TRAIL_DISTANCE>=900`, zero relevance, `PURSUIT=-1`, `REGION=UNKNOWN`) and no error occurred.
-- `bad_trail_angle_fail` Sets `trail_angle=west`, exercising nonnumeric angle rejection; the harness passes at 20 seconds when the same inactive sentinel outputs remain and no error occurred.
-- `bad_trail_range_fail` Sets `trail_range=-1`, exercising negative range rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
-- `bad_mod_trail_range_pct_fail` Sets `mod_trail_range_pct=0`, exercising rejection of a nonpositive percentage modifier; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
-- `bad_radius_fail` Sets `radius=-1`, exercising negative capture-radius rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
-- `bad_nm_radius_fail` Sets `nm_radius=-1`, exercising negative near-mode-radius rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
-- `bad_pwt_outer_dist_fail` Sets `pwt_outer_dist=-1`, exercising negative relevance-distance rejection; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
-- `bad_decay_fail` Sets `decay=60,30`, exercising rejection of a decay start greater than its end; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
-- `bad_time_on_leg_fail` Sets inherited `time_on_leg=-1`, exercising rejection of a negative leg duration; the harness passes at 20 seconds when the inactive sentinel outputs remain and no error occurred.
+- `auto_alert_request_pass` Starts a spawn-templated Trail with an updates variable and `no_alert_request=false`; the live case requires a `BCM_ALERT_REQUEST` before active pursuit, while direct CTest requires the complete request payload and proves each suppression gate.
+- `missing_contact_warn_pass` Sets `contact=ghost` with `on_no_contact_ok=true`; the live case leads on a pre-deadline warning with no behavior error, and direct CTest requires exact `trail_contact: ghost x/y/heading/speed info not found` warning text.
+- `missing_contact_fail` Sets the same absent contact with `on_no_contact_ok=false`; the live case leads on a pre-deadline behavior error, and direct CTest requires the exact ghost-contact message on `BHV_ERROR`.
+- `missing_contact_param_fail` Omits `contact` with `on_no_contact_ok=false`; the live case leads on a pre-deadline behavior error, and direct CTest requires exact `trail_contact: contact IDX not set.` text.
+- `bad_trail_angle_type_fail` Sets `trail_angle_type=diagonal`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this exact type.
+- `bad_trail_angle_fail` Sets `trail_angle=west`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this exact nonnumeric angle.
+- `bad_trail_range_fail` Sets `trail_range=-1`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this exact negative range.
+- `bad_mod_trail_range_pct_fail` Sets `mod_trail_range_pct=0`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this nonpositive percentage.
+- `bad_radius_fail` Sets `radius=-1`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this exact radius.
+- `bad_nm_radius_fail` Sets `nm_radius=-1`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this exact near-mode radius.
+- `bad_pwt_outer_dist_fail` Sets `pwt_outer_dist=-1`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this exact relevance distance.
+- `bad_decay_fail` Sets `decay=60,30`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection when decay start exceeds decay end.
+- `bad_time_on_leg_fail` Sets inherited `time_on_leg=-1`; the harness requires armed, pre-deadline `MALCONFIG`, while direct CTest requires rejection of this exact negative duration.
+
+## Direct CTest coverage
+
+`BHVTrailTest` holds contact and ownship state fixed so configuration can be
+graded at the layer where its effect is exact. It compares absolute west,
+relative port, relative starboard, and repeated runtime-style angle changes by
+their generated trail-point coordinates; compares every static and modifier
+range fixture by its effective distance, including the 10-meter floor; and
+requires the precise `Inside radius`, `Inside nm_radius`, and `Outside
+nm_radius` boundary states. Separate tests prove the strict outer relevance
+boundary, Trail's own `extrapolate=false` zero-speed branch, complete alert
+request and suppression gates, exact missing-contact diagnostics, and rejection
+of every malformed live fixture.
+
+The 22 removed missions checked only broad eventual pursuit around a point the
+implementation itself chose. The retained static and right-turn cases continue
+to cover live pursuit, while direct tests now fail when the claimed angle,
+range, radius, relevance, extrapolation, or alert-request setting is ignored.
 
 ## Running
 
@@ -72,11 +68,9 @@ From this harness directory:
 ./zlaunch.sh 10
 ./zlaunch.sh --case=static_trail_pass 10
 ./zlaunch.sh --case=pwt_outer_inactive_pass --gui 1
-./zlaunch.sh --case=outside_nm_radius_pass --gui 1
 ./zlaunch.sh --case=lead_right_turn_pass --gui 1
-./zlaunch.sh --case=lead_port_turn_pass --gui 1
-./zlaunch.sh --case=lead_turn_angle_update_pass --gui 1
 ./zlaunch.sh --case=runtime_bad_update_recover_pass --gui 1
+./zlaunch.sh --case=auto_alert_request_pass --gui 1
 ./zlaunch.sh --case=idle_post_distance_pass --gui 1
 ./zlaunch.sh --jobs=4 --port_base=15000 10
 ```
@@ -90,33 +84,22 @@ mission modifier and all six MOOSDB/pShare ports directly:
   --veh1_pshare=15011 --veh2_pshare=15012 10
 ```
 
-The full matrix currently has 42 cases. Serial and rolling modes both use one
+The full matrix currently has 20 cases. Serial and rolling modes both use one
 isolated mission copy and one deterministic two-vehicle port block per case.
 The harness requires Bash 5.1 or newer for rolling scheduling and prevents a
 second invocation from starting while one is active. Do not overlap it with
 other MOOS harnesses on the same machine.
 
-## Migration validation
+## Latest validation
 
-The skill 1.4.3 migration preserved all 42 case mappings, patches, evaluator
-conditions, event times, behavior values, grading variables, and coverage
-claims. Three clean `--jobs=4` matrices passed 126/126 rows in 132.18, 131.90,
-and 131.63 seconds. The isolated serial matrix passed 42/42 in 498.45 seconds.
-The untouched legacy rolling mean was 159.71 seconds and its serial matrix
-took 446.54 seconds.
-
-One additional migrated rolling attempt had a single `bad_decay_fail` mission
-exit before writing a pMissionEval row. The case passed immediately with its
-workdir retained, then passed five of five focused repetitions, the retained
-full matrix, and the final full matrix without any test change. This is
-recorded as an isolated launch/lifecycle outlier rather than converted into a
-passing result.
-
-Validation also covered all-case generation, nominal, warning-only, and
-expected-inactive verdicts, standalone generation and live execution, exact
-case order, rolling refill, 126 unique MOOSDB ports and the paired pShare
-ports, intended sidecars, unknown-case rejection, and
-Bash 3.2 rejection. Disposable fault injection verified normalized
-`missing_result`, `duplicate_results`, and `prepare_error` rows. Bash syntax,
-ShellCheck, and both skill static checkers pass. No tested MOOS process
-survived cleanup.
+- July 20, 2026
+- generated-file matrix: `20/20` cases completed
+- minimal-logging matrix: `20/20` cases passed
+- full-logging matrix: `20/20` cases passed
+- focused `BHVTrailTest`: `12/12` direct cases passed
+- focused `behaviors-marine` family: `226/226` CTests passed
+- nine deliberate mutations failed at their intended evidence: wrong angle,
+  ignored additive range, shifted radius boundary, shifted relevance boundary,
+  wrong extrapolation branch, unintended alert request, wrong missing-contact
+  policy, wrong recovery value, and repaired malformed range
+- warp: `10`
