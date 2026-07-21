@@ -64,3 +64,8 @@ build_matrix_results/
 # Temp files (emacs, etc)
 *#
 *~
+
+## 3 - Python
+
+__pycache__/
+*.py[cod]
