@@ -3118,9 +3118,8 @@ def render_examples() -> str:
 
     <section class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Four failure stories</p>
-        <h2>What this test workspace catches</h2>
-        <p>The two new-feature stories come first, followed by the two debugging stories. Within each pair, the harness example shows the operational outcome before the CTest example shows the smaller contract underneath.</p>
+        <h2>Four Failure Stories</h2>
+        <p>The two new-feature stories come first, followed by the two debugging stories. Within each pair, the harness example shows the operational outcome before the unit test example shows the smaller contract underneath.</p>
       </div>
       <div class="example-grid">
         {cards}
