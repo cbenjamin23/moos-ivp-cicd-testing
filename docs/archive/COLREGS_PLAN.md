@@ -3,7 +3,8 @@
 This document outlines the intended correctness-harness structure for the
 COLREGS family built around `BHV_AvdColregsV22`.
 
-Working follow-on items are tracked in [TODO.md](TODO.md).
+Working follow-on items are tracked in the harness family's
+[TODO.md](../../harnesses/colregs_harnesses/TODO.md).
 
 ## Current Status
 

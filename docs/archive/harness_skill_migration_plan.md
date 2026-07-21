@@ -145,7 +145,7 @@ application.
 ### Existing Exemptions
 
 The result shapes already documented in
-`docs/harness_result_semantics_migration.md` remain valid for harnesses whose
+`docs/archive/harness_result_semantics_migration.md` remain valid for harnesses whose
 subject is failure machinery or CLI return behavior. These include:
 
 - `pMissionEval` subject-grade failure cases

@@ -145,6 +145,75 @@ is recorded elsewhere. If part of the named claim still requires upstream
 behavior or observability, the row belongs in deferred rather than a separate
 partial category.
 
+### Deferred Triage (2026-07-20)
+
+The 22 deferred rows are sorted by their primary blocker. Categories are
+mutually exclusive for accounting even when a row could eventually benefit
+from more than one improvement.
+
+| Primary blocker | Rows | Meaning |
+| --- | ---: | --- |
+| Upstream behavior defect | 2 | The current upstream implementation prevents the intended contract from being true or portable. |
+| Missing subject telemetry | 5 | The app or behavior computes the distinguishing value or branch but does not publish stable evidence for it. |
+| Evaluator or diagnostic tooling | 8 | The subject behavior occurs, but current result infrastructure cannot latch, compare, or identify the exact evidence. |
+| Local fixture or CTest redesign | 6 | No upstream change is yet justified; a one-variable mission fixture or direct seam may resolve the row locally. |
+| Appropriately scoped broad exercise | 1 | The stable contract is already graded, and a tighter assertion would add environmental brittleness rather than useful protection. |
+
+#### Upstream behavior defects (2)
+
+| Harness and case | Blocking fact | Next action |
+| --- | --- | --- |
+| `utimerscript_h01`: `dbtime_utc_macro_pass` | `$[DBTIME]` currently expands to the same epoch-like value as `$[UTC]` because the connection baseline remains zero. | Keep the honest smoke verdict; pursue `UTS-UP-001`, then grade separate uptime and UTC domains. |
+| `testfailure_h01`: `burn_default_time_gap_pass`, `burn_malformed_time_default_gap_pass` | `MBTimer` polling makes the configured two- versus three-second burn distinction platform-sensitive. | Keep the deterministic monitored-stall verdict; pursue `TFAIL-UP-001`, then add nonoverlapping duration bands. |
+
+#### Missing subject telemetry (5)
+
+| Harness and case | Missing evidence | Next action |
+| --- | --- | --- |
+| `colregs_h02`: threshold matrix | Overtaken-vessel CPA and most stand-on crossing-distance predicates are not published. | Retain exposed predicate checks; pursue `COLREGS-UP-001/002` before restoring exact boundary claims. |
+| `collision_h01`: `pwt_grade_quadratic_pass`, `pwt_grade_quasi_pass` | Calculated relevance and final priority weight are internal. | Retain compatibility wording; pursue `ACOL-UP-002`, then grade range, relevance, and weight directly. |
+| `legrun_h01`: `mid_pct_late_pass` | Leg progress is observable, but turn progress is not. | Keep the resolved 70-percent leg assertion; pursue `LEGRUN-UP-001` for the turn assertion. |
+| `obstacle_behavior_h01`: `no_refinery_pass` | No status identifies whether the refinery or direct reflector branch built the IvP function. | Retain the compatibility smoke claim; add branch telemetry or a direct objective-construction seam. |
+| `ufld_beacon_range_sensor_h01`: blocked request/reply pair | Request-received and reply-sent state exists only in the appcast report. | Pursue `BRS-UP-001`, then require opposite received/replied states for the paired cases. |
+
+#### Evaluator or diagnostic tooling (8)
+
+| Harness and case | Tooling limitation | Next action |
+| --- | --- | --- |
+| `convoy_h01`: three warning cases | Same-iteration routine warnings overwrite the named warning before evaluation. | Use value-filtered warning latching under `PMEVAL-UP-002` or structured warning codes. |
+| `convoy_h01`: `runtime_bad_update_recover_pass` | The invalid-update warning cannot be latched and the effective pre/post setting is not exposed. | Require both exact rejection and a distinct setting transition when the infrastructure exposes them. |
+| `cutrange_h01`: `runtime_bad_update_recover_warn_pass` | A routine warm-up warning can satisfy the broad warning flag. | Add value-filtered warning latching under `PMEVAL-UP-002`. |
+| `fixedturn_h01`: `turn_spec_bad_update_recover_pass` | Ignoring the malformed update produces the same result because its rejection is not latched. | Require the exact rejection warning or structured schedule-state evidence. |
+| `memoryturnlimit_h01`: three malformed-value cases | `MALCONFIG` is exact, but the rejected field is not published. | Keep the behavioral rejection verdict; use structured configuration diagnostics under `HELM-UP-001` for field identity. |
+| `memoryturnlimit_h01`: two missing-parameter cases | Any warning satisfies the result; the two exact warning payloads cannot be distinguished. | Add value-filtered latching under `PMEVAL-UP-002`. |
+| `timer_h01`: four malformed-field cases | Absence of stock outputs proves rejection, but not which field was rejected. | Use structured configuration diagnostics under `HELM-UP-001`. |
+| `processwatch_h01`: `processwatch_all_present_pass` | Configuration parsing removes spaces from exact quoted comparison text. | Pursue `PMEVAL-UP-003`, then require exact `All Present`. |
+
+#### Local fixture or CTest redesign (6)
+
+These are the first deferred rows to revisit because they may be resolvable in
+this repository without waiting for upstream changes.
+
+| Harness and case | Current weakness | Local investigation |
+| --- | --- | --- |
+| `colregs_h02`: give-way turn-gap triplets and mirrors | The verdict grades the source predicate, but several fixture inputs change together. | Search for a repeatable one-input geometry that crosses only the ten-meter turn-gap boundary. |
+| `convoy_h01`: `range_aliases_pass` | Aliases equal stock values, so ignoring them passes. | Prefer a direct alias-assignment CTest; otherwise use discriminating nondefault boundaries. |
+| `convoy_h01`: radius and safety parameter cases | Broad final motion does not identify capture-radius or safety-state effects. | Inspect direct behavior seams, then try one-variable geometry only where it exposes a stable event. |
+| `cutrange_h01`: projection, patience, relevance, and runtime-update cases | All use the same broad closure verdict. | Split parser/calculation contracts into CTests and reserve missions for repeatable trajectory changes. |
+| `cutrange_h01`: `giveup_dist_alias_pass` | The alias equals the stock value. | Add a direct alias CTest or a nondefault live give-up boundary. |
+| `zigzag_h01`: visual-hint cases | Motion completion does not verify `VIEW_*` absence or custom colors. | Look for a direct visual-hint seam or an exact structured-publication comparator. |
+
+#### Appropriately scoped broad exercise (1)
+
+| Harness and case | Decision | Action |
+| --- | --- | --- |
+| `colregs_h03`: `overtaking_starboard_execution_pass` | Stable side, CPA, no-crossing, arrival, timeout, and collision outcomes are graded; compact-fixture fore/aft state varies across otherwise successful runs. | Keep fore/aft diagnostic-only and rely on the long-range overtaking cases for stable `cn_fore=1`; no strengthening action is currently warranted. |
+
+Work the local-redesign group first. After that, evaluate the eight shared
+tooling rows by blocker so one infrastructure improvement can strengthen
+several families. Treat the behavior-defect and missing-telemetry groups as
+upstream backlog, and do not tighten the appropriately scoped broad exercise.
+
 Track ordinary expected-negative work separately from behavioral gap closure.
 Requiring the exact rejection state, error, or payload is **oracle hardening**:
 it prevents an unrelated failure from passing but does not add a new behavior
