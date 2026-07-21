@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1706` under configured targets
+- Harness patch/config files: `1691` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -105,15 +105,15 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `depth_max_h04` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H04-max_depth_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 13 | - | `max-depth-motion` |
 | `depth_min_altitude_h05` | `depth_behavior` | `harnesses/depth_behavior_harnesses/H05-min_altitude_motion/zlaunch.sh` | `missions/depth_behavior_missions/depth_behavior_motion` | 10 | - | `min-altitude-motion` |
 | `colregs_h01` | `colregs` | `harnesses/colregs_harnesses/H01-colregs_classification/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 22 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-classification` |
-| `colregs_h02` | `colregs` | `harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 45 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-thresholds` |
+| `colregs_h02` | `colregs` | `harnesses/colregs_harnesses/H02-colregs_thresholds/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 43 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-thresholds` |
 | `colregs_h03` | `colregs` | `harnesses/colregs_harnesses/H03-colregs_execution/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 23 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-execution` |
 | `colregs_h04` | `colregs` | `harnesses/colregs_harnesses/H04-colregs_parameters/zlaunch.sh` | `missions/colregs_missions/colregs_unit` | 31 | `uMemWatch`, `uFldCollisionDetect`, `pContactMgrV20` | `colregs-parameters` |
 | `collision_h01` | `collision_behavior` | `harnesses/collision_behavior_harnesses/H01-collision_behavior_motion/zlaunch.sh` | `missions/collision_behavior_missions/collision_behavior_motion` | 16 | `pSpoofNode`, `uFldCollisionDetect`, `pContactMgrV20` | `collision-behavior-motion` |
-| `convoy_h01` | `convoy_behavior` | `harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/zlaunch.sh` | `missions/convoy_behavior_missions/convoy_behavior_motion` | 47 | `pContactMgrV20` | `convoy-behavior-motion` |
-| `cutrange_h01` | `cutrange_behavior` | `harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/zlaunch.sh` | `missions/cutrange_behavior_missions/cutrange_behavior_motion` | 38 | `uFldCollisionDetect`, `pContactMgrV20` | `cutrange-behavior-motion` |
+| `convoy_h01` | `convoy_behavior` | `harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion/zlaunch.sh` | `missions/convoy_behavior_missions/convoy_behavior_motion` | 42 | `pContactMgrV20` | `convoy-behavior-motion` |
+| `cutrange_h01` | `cutrange_behavior` | `harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion/zlaunch.sh` | `missions/cutrange_behavior_missions/cutrange_behavior_motion` | 30 | `uFldCollisionDetect`, `pContactMgrV20` | `cutrange-behavior-motion` |
 | `fixedturn_h01` | `fixedturn_behavior` | `harnesses/fixedturn_behavior_harnesses/H01-fixedturn_behavior_motion/zlaunch.sh` | `missions/fixedturn_behavior_missions/fixedturn_behavior_motion` | 24 | - | `fixedturn-behavior-motion` |
 | `periodic_speed_h01` | `periodic_speed_behavior` | `harnesses/periodic_speed_behavior_harnesses/H01-periodic_speed_behavior_motion/zlaunch.sh` | `missions/periodic_speed_behavior_missions/periodic_speed_behavior_motion` | 24 | - | `periodic-speed-behavior-motion` |
-| `zigzag_h01` | `zigzag_behavior` | `harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion/zlaunch.sh` | `missions/zigzag_behavior_missions/zigzag_behavior_motion` | 35 | - | `zigzag-behavior-motion` |
+| `zigzag_h01` | `zigzag_behavior` | `harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion/zlaunch.sh` | `missions/zigzag_behavior_missions/zigzag_behavior_motion` | 33 | - | `zigzag-behavior-motion` |
 | `legrun_h01` | `legrun_behavior` | `harnesses/legrun_behavior_harnesses/H01-legrun_behavior_motion/zlaunch.sh` | `missions/legrun_behavior_missions/legrun_behavior_motion` | 33 | `pEchoVar` | `legrun-behavior-motion` |
 | `memoryturnlimit_h01` | `memoryturnlimit_behavior` | `harnesses/memoryturnlimit_behavior_harnesses/H01-memoryturnlimit_behavior_motion/zlaunch.sh` | `missions/memoryturnlimit_behavior_missions/memoryturnlimit_behavior_motion` | 21 | - | `memoryturnlimit-behavior-motion` |
 | `timer_h01` | `timer_behavior` | `harnesses/timer_behavior_harnesses/H01-timer_behavior_motion/zlaunch.sh` | `missions/timer_behavior_missions/timer_behavior_motion` | 18 | - | `timer-behavior-motion` |

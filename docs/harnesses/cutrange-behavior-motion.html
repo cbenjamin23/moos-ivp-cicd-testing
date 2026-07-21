@@ -157,44 +157,8 @@
 
 
         <article class="case-row">
-          <code>short_time_on_leg_pass</code>
-          <p>Sets time_on_leg=5; passes under the stock 65-second pursuit, no-giveup, closest-range-at-most-50, moving-target, and settled no-warning/no-error criteria.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>long_time_on_leg_pass</code>
-          <p>Sets time_on_leg=45; passes under the same stock closure and settled warning/error criteria.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>low_patience_pass</code>
-          <p>Sets patience=5 with max_patience=85; passes under the stock 65-second closure and settled warning/error criteria.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>high_patience_pass</code>
           <p>Sets patience=85 and max_patience=95; passes at 65 seconds when pursuit is true without giveup, closest range is at most 50 meters, Ben is moving at least 0.6 m/s, and no settled warning or behavior error was observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>max_patience_clamp_pass</code>
-          <p>Sets patience=90 above max_patience=45, exercising the clamp path; passes under the stock 65-second closure and settled warning/error criteria.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>max_patience_100_pass</code>
-          <p>Sets both patience and max_patience to 100 to exercise the configurable upper limit; passes under the stock 65-second closure and settled warning/error criteria.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>pwt_outer_active_pass</code>
-          <p>Raises pwt_outer_dist from 70 to 100 while retaining pwt_inner_dist=15; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 
@@ -217,12 +181,6 @@
 
 
         <article class="case-row">
-          <code>giveup_dist_alias_pass</code>
-          <p>Replaces stock giveup_range=160 with the legacy alias giveup_dist=160; passes under the stock 65-second closure and settled warning/error criteria.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>giveup_hysteresis_pass</code>
           <p>Sets giveup_range=89.5 while stationary Ben begins 90 meters from Abe; passes at 30.5 seconds when pursuit is true, giveup is false, current range is 88 through 91 meters, and no settled warning or behavior error was observed.</p>
         </article>
@@ -237,12 +195,6 @@
         <article class="case-row">
           <code>runtime_pwt_off_pass</code>
           <p>Starts with the stock active relevance band, then posts pwt_outer_dist=120 and pwt_inner_dist=105 at 34 and 35 seconds; passes at 50 seconds when pursuit remains latched true but Abe is moving at most 0.35, Ben is moving at least 0.6, closest range remains at least 70 meters, and no settled warning or behavior error was observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>runtime_patience_update_pass</code>
-          <p>Starts with patience=5 and posts CUTRANGE_UPDATES=patience=80 at 37 seconds; passes under the stock 65-second closure and settled warning/error criteria.</p>
         </article>
 
 

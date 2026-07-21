@@ -84,8 +84,6 @@ CASES=(
     bad_runtime_update_recover_pass
     fierce_zigging_pass
     delta_heading_alias_pass
-    visual_hints_off_pass
-    visual_hints_custom_pass
     bad_zig_angle_low_fail
     bad_zig_angle_high_fail
     bad_zig_first_fail
@@ -413,12 +411,6 @@ get_case_config() {
             CASE_SHORE_PATCH="$HARNESS_DIR/eval-fierce-zigging-pass-shoreside.xmoos"
             CASE_VEH_MOOS_PATCH="$HARNESS_DIR/fierce-heading-sample-vehicle.xmoos"
             CASE_VEH_BHV_PATCH="$HARNESS_DIR/delta-heading-alias-pass-vehicle.xbhv"
-            ;;
-        visual_hints_off_pass)
-            CASE_VEH_BHV_PATCH="$HARNESS_DIR/visual-hints-off-pass-vehicle.xbhv"
-            ;;
-        visual_hints_custom_pass)
-            CASE_VEH_BHV_PATCH="$HARNESS_DIR/visual-hints-custom-pass-vehicle.xbhv"
             ;;
         bad_zig_angle_low_fail)
             CASE_SHORE_PATCH="$HARNESS_DIR/eval-quick-fail-shoreside.xmoos"

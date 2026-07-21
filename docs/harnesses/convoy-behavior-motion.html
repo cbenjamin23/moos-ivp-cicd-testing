@@ -127,18 +127,6 @@
 
 
         <article class="case-row">
-          <code>tight_radius_pass</code>
-          <p>Shrinks the breadcrumb capture radius from 8 to 3; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>wide_radius_pass</code>
-          <p>Expands the breadcrumb capture radius from 8 to 16; passes under the same stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>cruise_speed_pass</code>
           <p>Configures cruise_speed=1.2 with spd_max=4; once the convoy has QLEN&gt;=2, TLEN&gt;=20, AVG2&gt;=1, and Ben is moving at least 0.9 m/s, passes when Abe is moving at 0.90–1.00 m/s, MXRNG=80, and no behavior error was observed before the deadline.</p>
         </article>
@@ -157,12 +145,6 @@
 
 
         <article class="case-row">
-          <code>safety_off_bad_ranges_pass</code>
-          <p>Uses the same 2,5,6 ranges with rng_safety=false; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.</p>
-        </article>
-
-
-        <article class="case-row">
           <code>tailgating_speed_slow_pass</code>
           <p>Sets rng_estop=5, rng_tgating=200, rng_lagging=220, and spd_slower=0.5 so Abe remains in the tailgating speed regime; passes when QLEN&gt;=2, TLEN&gt;=10, Abe&#x27;s speed is at most 0.8, Ben&#x27;s is at least 0.9, and no behavior error was observed.</p>
         </article>
@@ -177,18 +159,6 @@
         <article class="case-row">
           <code>estop_speed_zero_pass</code>
           <p>Raises the safety ranges to rng_estop=200, rng_tgating=210, and rng_lagging=220 so Abe remains inside the emergency-stop range; passes when QLEN&gt;=2, TLEN&gt;=10, Abe&#x27;s speed is at most 0.25, Ben&#x27;s is at least 0.9, and no behavior error was observed.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>range_aliases_pass</code>
-          <p>Replaces the stock range keys with the legacy aliases range_estop=15, range_tailgating=25, and range_lagging=45; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>nm_radius_zero_pass</code>
-          <p>Sets nm_radius=0 while leaving breadcrumb radius=8; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.</p>
         </article>
 
 

@@ -2546,7 +2546,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 45,
+        "case_count": 43,
         "case_parse_error": "",
         "cases": [
           "head_on_thresh_below_pass",
@@ -2574,10 +2574,8 @@
           "giveway_bowdist_edge_mirror_pass",
           "giveway_bowdist_above_mirror_pass",
           "giveway_turngap_below_pass",
-          "giveway_turngap_edge_pass",
           "giveway_turngap_above_pass",
           "giveway_turngap_below_mirror_pass",
-          "giveway_turngap_edge_mirror_pass",
           "giveway_turngap_above_mirror_pass",
           "standon_unsurebow_below_pass",
           "standon_unsurebow_edge_pass",
@@ -2902,7 +2900,7 @@
         "path": "missions/convoy_behavior_missions/convoy_behavior_motion"
       },
       "patches": {
-        "file_count": 61
+        "file_count": 56
       },
       "path": "harnesses/convoy_behavior_harnesses/H01-convoy_behavior_motion",
       "perf_profile": "",
@@ -2927,7 +2925,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 47,
+        "case_count": 42,
         "case_parse_error": "",
         "cases": [
           "static_convoy_pass",
@@ -2935,17 +2933,12 @@
           "coarse_mark_spacing_pass",
           "short_mark_queue_pass",
           "long_mark_queue_pass",
-          "tight_radius_pass",
-          "wide_radius_pass",
           "cruise_speed_pass",
           "cruise_speed_cap_warn_pass",
           "safety_range_autoadjust_warn_pass",
-          "safety_off_bad_ranges_pass",
           "tailgating_speed_slow_pass",
           "lagging_speed_fast_pass",
           "estop_speed_zero_pass",
-          "range_aliases_pass",
-          "nm_radius_zero_pass",
           "view_point_post_pass",
           "angled_entry_pass",
           "cross_track_entry_pass",
@@ -3014,7 +3007,7 @@
         "path": "missions/cutrange_behavior_missions/cutrange_behavior_motion"
       },
       "patches": {
-        "file_count": 54
+        "file_count": 46
       },
       "path": "harnesses/cutrange_behavior_harnesses/H01-cutrange_behavior_motion",
       "perf_profile": "",
@@ -3040,7 +3033,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 38,
+        "case_count": 30,
         "case_parse_error": "",
         "cases": [
           "settled_no_warning_pass",
@@ -3053,21 +3046,13 @@
           "slow_target_pass",
           "fast_target_pass",
           "stationary_target_pass",
-          "short_time_on_leg_pass",
-          "long_time_on_leg_pass",
-          "low_patience_pass",
           "high_patience_pass",
-          "max_patience_clamp_pass",
-          "max_patience_100_pass",
-          "pwt_outer_active_pass",
           "pwt_inner_zero_relevance_pass",
           "pwt_equal_zero_relevance_pass",
           "giveup_start_far_pass",
-          "giveup_dist_alias_pass",
           "giveup_hysteresis_pass",
           "runtime_pwt_on_pass",
           "runtime_pwt_off_pass",
-          "runtime_patience_update_pass",
           "runtime_giveup_update_pass",
           "runtime_bad_update_recover_warn_pass",
           "missing_contact_warn_pass",
@@ -3288,7 +3273,7 @@
         "path": "missions/zigzag_behavior_missions/zigzag_behavior_motion"
       },
       "patches": {
-        "file_count": 56
+        "file_count": 54
       },
       "path": "harnesses/zigzag_behavior_harnesses/H01-zigzag_behavior_motion",
       "perf_profile": "",
@@ -3312,7 +3297,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 35,
+        "case_count": 33,
         "case_parse_error": "",
         "cases": [
           "baseline_port_first_pass",
@@ -3338,8 +3323,6 @@
           "bad_runtime_update_recover_pass",
           "fierce_zigging_pass",
           "delta_heading_alias_pass",
-          "visual_hints_off_pass",
-          "visual_hints_custom_pass",
           "bad_zig_angle_low_fail",
           "bad_zig_angle_high_fail",
           "bad_zig_first_fail",
@@ -6990,11 +6973,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 463,
-      ".xmoos": 1348,
+      ".xbhv": 449,
+      ".xmoos": 1347,
       "[none]": 7
     },
-    "harness_patch_count": 1706,
+    "harness_patch_count": 1691,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

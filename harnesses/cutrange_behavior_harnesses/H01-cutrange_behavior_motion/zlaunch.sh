@@ -71,21 +71,13 @@ CASES=(
     slow_target_pass
     fast_target_pass
     stationary_target_pass
-    short_time_on_leg_pass
-    long_time_on_leg_pass
-    low_patience_pass
     high_patience_pass
-    max_patience_clamp_pass
-    max_patience_100_pass
-    pwt_outer_active_pass
     pwt_inner_zero_relevance_pass
     pwt_equal_zero_relevance_pass
     giveup_start_far_pass
-    giveup_dist_alias_pass
     giveup_hysteresis_pass
     runtime_pwt_on_pass
     runtime_pwt_off_pass
-    runtime_patience_update_pass
     runtime_giveup_update_pass
     runtime_bad_update_recover_warn_pass
     missing_contact_warn_pass
@@ -355,20 +347,8 @@ get_case_config() {
     elif [ "$CASE_NAME" = "stationary_target_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-stationary-target-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/target-stationary-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "short_time_on_leg_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-short-time-on-leg-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "long_time_on_leg_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-long-time-on-leg-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "low_patience_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-low-patience-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "high_patience_pass" ]; then
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-high-patience-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "max_patience_clamp_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-max-patience-clamp-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "max_patience_100_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-max-patience-100-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "pwt_outer_active_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-pwt-outer-active-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "pwt_inner_zero_relevance_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-zero-relevance-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-pwt-inner-zero-pass-vehicle.xbhv"
@@ -379,8 +359,6 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-start-far-giveup-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-giveup-start-far-pass-vehicle.xbhv"
         CASE_EXTRA_ARGS="--vpos2=x=125,y=-80,heading=90"
-    elif [ "$CASE_NAME" = "giveup_dist_alias_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-giveup-dist-alias-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "giveup_hysteresis_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-giveup-hysteresis-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-giveup-hysteresis-stationary-pass-vehicle.xbhv"
@@ -391,9 +369,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "runtime_pwt_off_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-zero-relevance-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-pwt-off-pass-vehicle.xmoos"
-    elif [ "$CASE_NAME" = "runtime_patience_update_pass" ]; then
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-patience-update-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/cutrange-low-patience-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "runtime_giveup_update_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-giveup-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/runtime-giveup-update-pass-vehicle.xmoos"

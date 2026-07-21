@@ -102,10 +102,8 @@ GROUP_GIVEWAY_CASES=(
 
 GROUP_TURNGAP_CASES=(
     giveway_turngap_below_pass
-    giveway_turngap_edge_pass
     giveway_turngap_above_pass
     giveway_turngap_below_mirror_pass
-    giveway_turngap_edge_mirror_pass
     giveway_turngap_above_mirror_pass
 )
 
@@ -456,13 +454,9 @@ get_case_config() {
         SHORE_PATCH="$HARNESS_DIR/giveway-bowdist-bow-shoreside.xmoos"
     elif [ "$CASE_NAME" = "giveway_turngap_below_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/giveway-turngap-stern-shoreside.xmoos"
-    elif [ "$CASE_NAME" = "giveway_turngap_edge_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/giveway-turngap-stern-shoreside.xmoos"
     elif [ "$CASE_NAME" = "giveway_turngap_above_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/giveway-turngap-bow-shoreside.xmoos"
     elif [ "$CASE_NAME" = "giveway_turngap_below_mirror_pass" ]; then
-        SHORE_PATCH="$HARNESS_DIR/giveway-turngap-stern-shoreside.xmoos"
-    elif [ "$CASE_NAME" = "giveway_turngap_edge_mirror_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/giveway-turngap-stern-shoreside.xmoos"
     elif [ "$CASE_NAME" = "giveway_turngap_above_mirror_pass" ]; then
         SHORE_PATCH="$HARNESS_DIR/giveway-turngap-bow-shoreside.xmoos"

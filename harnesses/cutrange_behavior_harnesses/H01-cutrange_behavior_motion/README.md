@@ -12,6 +12,12 @@ bridged NAV speed from both vehicles, and behavior warning/error mail.
 
 ## Cases
 
+Deterministic `AOF_CutRangeCPA` and `BHV_CutRange` CTests separately grade
+time-horizon utility, patience blending and clamping, runtime patience updates,
+relevance weighting, and the `giveup_dist` alias. Their former broad closure
+missions were removed; this matrix retains scenarios whose contract depends on
+live pursuit, giveup, runtime relevance, or target motion.
+
 - `settled_no_warning_pass`: Uses the stock configuration, clears accumulated startup warnings at 42 seconds, and observes the following three-second settled window; passes when pursuit has started and no new warning or behavior error occurs in that window.
 - `static_cutrange_pass`: Starts Abe and Ben 90 meters apart on the same eastbound line with stock `pwt_inner_dist=15`, `pwt_outer_dist=70`, and `giveup_range=160`; passes at 65 seconds when pursuit is true, giveup is false, closest range is at most 50 meters, Ben's speed is at least 0.6, and no warning or behavior error was observed after the 55-second warning reset.
 - `crossing_cutrange_pass`: Starts Ben at `(20,-140)` heading north toward `(20,60)` while Abe begins at `(-70,-80)` heading east; passes at 70 seconds when pursuit remains true without giveup, closest range is at most 60 meters, Ben is moving at least 0.6, and no settled warning or behavior error was observed.
@@ -22,21 +28,13 @@ bridged NAV speed from both vehicles, and behavior warning/error mail.
 - `slow_target_pass`: Sets Ben's waypoint speed to 0.5 m/s toward `(120,-80)`; passes at 65 seconds when pursuit is true, closest range is at most 35 meters, Abe is moving at least 0.8, Ben is moving at most 0.9, and no settled warning or behavior error was observed.
 - `fast_target_pass`: Sets Ben's waypoint speed to 2.1 m/s toward `(220,-80)`; passes at 75 seconds when pursuit is true, closest range is at most 80 meters, Abe is moving at least 0.8, Ben is moving at least 1.7, and no settled warning or behavior error was observed.
 - `stationary_target_pass`: Sets Ben's waypoint speed to 0.1 m/s toward `(45,-80)`; passes at 50 seconds when pursuit is true, closest range is at most 45 meters, Abe is moving at least 0.8, Ben is moving at most 0.35, and no settled warning or behavior error was observed.
-- `short_time_on_leg_pass`: Sets `time_on_leg=5`; passes under the stock 65-second pursuit, no-giveup, closest-range-at-most-50, moving-target, and settled no-warning/no-error criteria.
-- `long_time_on_leg_pass`: Sets `time_on_leg=45`; passes under the same stock closure and settled warning/error criteria.
-- `low_patience_pass`: Sets `patience=5` with `max_patience=85`; passes under the stock 65-second closure and settled warning/error criteria.
 - `high_patience_pass`: Sets `patience=85` and `max_patience=95`; passes at 65 seconds when pursuit is true without giveup, closest range is at most 50 meters, Ben is moving at least 0.6 m/s, and no settled warning or behavior error was observed.
-- `max_patience_clamp_pass`: Sets `patience=90` above `max_patience=45`, exercising the clamp path; passes under the stock 65-second closure and settled warning/error criteria.
-- `max_patience_100_pass`: Sets both `patience` and `max_patience` to 100 to exercise the configurable upper limit; passes under the stock 65-second closure and settled warning/error criteria.
-- `pwt_outer_active_pass`: Raises `pwt_outer_dist` from 70 to 100 while retaining `pwt_inner_dist=15`; passes under the stock 65-second closure and settled warning/error criteria.
 - `pwt_inner_zero_relevance_pass`: Sets `pwt_inner_dist=105` and `pwt_outer_dist=120`, placing the initial 90-meter contact inside the zero-relevance region; passes at 50 seconds when pursuit is latched true but Abe's speed is at most 0.35, Ben is moving at least 0.6, closest range remains at least 70 meters, and no settled warning or behavior error was observed.
 - `pwt_equal_zero_relevance_pass`: Sets both relevance distances to 90, exercising the zero-width relevance interval; passes under the same stopped-Abe, moving-Ben, minimum-range-at-least-70, and settled warning/error criteria.
 - `giveup_start_far_pass`: Sets `giveup_range=120` and starts Ben at `(125,-80)`, 195 meters from Abe; passes at 45 seconds when pursuit and giveup are both false, Abe's speed is at most 0.35, closest range remains at least 150 meters, and no settled warning or behavior error was observed.
-- `giveup_dist_alias_pass`: Replaces stock `giveup_range=160` with the legacy alias `giveup_dist=160`; passes under the stock 65-second closure and settled warning/error criteria.
 - `giveup_hysteresis_pass`: Sets `giveup_range=89.5` while stationary Ben begins 90 meters from Abe; passes at 30.5 seconds when pursuit is true, giveup is false, current range is 88 through 91 meters, and no settled warning or behavior error was observed.
 - `runtime_pwt_on_pass`: Starts with `pwt_inner_dist=105,pwt_outer_dist=120`, enables CutRange at 30 seconds, then posts `pwt_inner_dist=15` and `pwt_outer_dist=70` at 37 and 38 seconds; passes at 80 seconds when pursuit is true without giveup, closest range is at most 65 meters, Abe is moving at least 0.6, and no settled warning or behavior error was observed.
 - `runtime_pwt_off_pass`: Starts with the stock active relevance band, then posts `pwt_outer_dist=120` and `pwt_inner_dist=105` at 34 and 35 seconds; passes at 50 seconds when pursuit remains latched true but Abe is moving at most 0.35, Ben is moving at least 0.6, closest range remains at least 70 meters, and no settled warning or behavior error was observed.
-- `runtime_patience_update_pass`: Starts with `patience=5` and posts `CUTRANGE_UPDATES=patience=80` at 37 seconds; passes under the stock 65-second closure and settled warning/error criteria.
 - `runtime_giveup_update_pass`: Enables pursuit at 30 seconds and posts `giveup_range=20` at 34 seconds; passes at 55 seconds when both the earlier pursuit flag and the giveup flag are true, Abe's speed is at most 0.6, and no settled warning or behavior error was observed.
 - `runtime_bad_update_recover_warn_pass`: Starts relevance off, posts invalid `pwt_outer_dist=-5` at 32 seconds, then restores `pwt_inner_dist=15,pwt_outer_dist=70` at 42 and 43 seconds; passes at 85 seconds when pursuit is true without giveup, current range is at most 90 meters, closest range is at most 65, Abe is moving at least 0.6, some behavior warning was observed, and no behavior error was observed.
 - `missing_contact_warn_pass`: Sets `contact=ghost` with `on_no_contact_ok=true`; passes at 20 seconds when some behavior warning and no behavior error were observed.

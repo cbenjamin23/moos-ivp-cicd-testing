@@ -66,17 +66,12 @@ CASES=(
     coarse_mark_spacing_pass
     short_mark_queue_pass
     long_mark_queue_pass
-    tight_radius_pass
-    wide_radius_pass
     cruise_speed_pass
     cruise_speed_cap_warn_pass
     safety_range_autoadjust_warn_pass
-    safety_off_bad_ranges_pass
     tailgating_speed_slow_pass
     lagging_speed_fast_pass
     estop_speed_zero_pass
-    range_aliases_pass
-    nm_radius_zero_pass
     view_point_post_pass
     angled_entry_pass
     cross_track_entry_pass
@@ -348,10 +343,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "long_mark_queue_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-long-queue-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/long-mark-queue-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "tight_radius_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/tight-radius-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "wide_radius_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/wide-radius-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "cruise_speed_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-cruise-speed-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/cruise-speed-pass-vehicle.xbhv"
@@ -361,8 +352,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "safety_range_autoadjust_warn_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-warning-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/safety-range-autoadjust-warn-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "safety_off_bad_ranges_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/safety-off-bad-ranges-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "tailgating_speed_slow_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-tailgating-speed-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/tailgating-speed-slow-pass-vehicle.xbhv"
@@ -372,10 +361,6 @@ get_case_config() {
     elif [ "$CASE_NAME" = "estop_speed_zero_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/eval-estop-speed-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/estop-speed-zero-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "range_aliases_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/range-aliases-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "nm_radius_zero_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/nm-radius-zero-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "view_point_post_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/view-point-post-pass-shoreside.xmoos"
     elif [ "$CASE_NAME" = "angled_entry_pass" ]; then

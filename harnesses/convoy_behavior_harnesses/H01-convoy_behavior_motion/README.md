@@ -26,22 +26,23 @@ uses behavior outputs plus chaser/target speed aliases:
 
 ## Cases
 
+Deterministic `BHV_Convoy` CTests separately require legacy range aliases to
+match canonical objectives, prove radius-driven breadcrumb consumption, and
+distinguish disabled from normalized safety ranges. The former broad motion
+cases for those contracts were removed. `nm_radius` is also omitted because
+the current upstream behavior parses but never reads it (`CONVOY-UP-001`).
+
 - `static_convoy_pass`: Uses the stock five-meter breadcrumb spacing and 80-meter queue cap while Abe follows eastbound Ben; passes at 45 seconds when `QLEN>=2`, `10<=TLEN<=95`, `MXRNG=80`, `AVG2>=1`, `AVG5>=1`, Abe's speed is at least 0.4, Ben's is at least 0.9, and no behavior error was observed.
 - `fine_mark_spacing_pass`: Sets `inter_mark_range=3` to retain more breadcrumbs; passes when `QLEN>=12`, `30<=TLEN<=95`, `MXRNG=80`, `AVG2>=1`, and no behavior error was observed.
 - `coarse_mark_spacing_pass`: Sets `inter_mark_range=12` to retain fewer breadcrumbs; passes at 40 seconds when `2<=QLEN<=6`, `20<=TLEN<=95`, `MXRNG=80`, `AVG2>=1`, and no behavior error was observed.
 - `short_mark_queue_pass`: Sets `max_mark_range=30` to trim the convoy trail; passes at 25 seconds when `QLEN>=2`, `TLEN<=38`, `MXRNG=30`, `AVG2>=1`, and no behavior error was observed.
 - `long_mark_queue_pass`: Sets `max_mark_range=140` to permit a longer trail; passes when `QLEN>=6`, `TLEN>=35`, `MXRNG=140`, `AVG2>=1`, and no behavior error was observed.
-- `tight_radius_pass`: Shrinks the breadcrumb capture `radius` from 8 to 3; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
-- `wide_radius_pass`: Expands the breadcrumb capture `radius` from 8 to 16; passes under the same stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
 - `cruise_speed_pass`: Configures `cruise_speed=1.2` with `spd_max=4`; once the convoy has `QLEN>=2`, `TLEN>=20`, `AVG2>=1`, and Ben is moving at least 0.9 m/s, passes when Abe is moving at 0.90–1.00 m/s, `MXRNG=80`, and no behavior error was observed before the deadline.
 - `cruise_speed_cap_warn_pass`: Configures `cruise_speed=5` above `spd_max=2`; passes at 20 seconds when `QLEN>=2`, `TLEN>=10`, `AVG2>=1`, at least one `BHV_WARNING` was observed, and no behavior error was observed.
 - `safety_range_autoadjust_warn_pass`: Configures the compressed safety ranges `rng_estop=2`, `rng_tgating=5`, and `rng_lagging=6` with safety enabled; passes at 20 seconds when `QLEN>=2`, `TLEN>=10`, `AVG2>=1`, at least one behavior warning was observed, and no behavior error was observed.
-- `safety_off_bad_ranges_pass`: Uses the same `2,5,6` ranges with `rng_safety=false`; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
 - `tailgating_speed_slow_pass`: Sets `rng_estop=5`, `rng_tgating=200`, `rng_lagging=220`, and `spd_slower=0.5` so Abe remains in the tailgating speed regime; passes when `QLEN>=2`, `TLEN>=10`, Abe's speed is at most 0.8, Ben's is at least 0.9, and no behavior error was observed.
 - `lagging_speed_fast_pass`: Sets the safety ranges to `5,10,20` and `spd_faster=2` so Abe remains in the lagging regime; passes when `QLEN>=4`, `TLEN>=20`, `MXRNG=80`, `AVG2>=1`, Abe's speed is at least 1.4, Ben's is at least 0.9, and no behavior error was observed.
 - `estop_speed_zero_pass`: Raises the safety ranges to `rng_estop=200`, `rng_tgating=210`, and `rng_lagging=220` so Abe remains inside the emergency-stop range; passes when `QLEN>=2`, `TLEN>=10`, Abe's speed is at most 0.25, Ben's is at least 0.9, and no behavior error was observed.
-- `range_aliases_pass`: Replaces the stock range keys with the legacy aliases `range_estop=15`, `range_tailgating=25`, and `range_lagging=45`; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
-- `nm_radius_zero_pass`: Sets `nm_radius=0` while leaving breadcrumb `radius=8`; passes under the stock 45-second queue, trail-length, reported-cap, average-speed, vehicle-speed, and no-error bounds.
 - `view_point_post_pass`: Uses the stock convoy configuration and watches `VIEW_POINT`; passes when at least one view point was posted, `QLEN>=2`, `TLEN>=10`, and no behavior error was observed.
 - `angled_entry_pass`: Starts Abe at `(-85,-125)` heading 40 degrees toward Ben's eastbound track; passes at 65 seconds when `QLEN>=2`, `10<=TLEN<=95`, `MXRNG=80`, `AVG2>=1`, both vehicles are moving, Abe has converged to `-102<=Y<=-58`, and no behavior error was observed.
 - `cross_track_entry_pass`: Starts Abe at `(-35,-145)` heading north across Ben's eastbound track; passes at 65 seconds under the same queue, trail, speed, `-102<=ABE_NAV_Y<=-58`, and no-error convergence bounds.

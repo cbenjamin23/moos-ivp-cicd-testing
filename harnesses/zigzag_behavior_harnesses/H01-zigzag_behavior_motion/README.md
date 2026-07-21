@@ -10,6 +10,11 @@ and expected malformed-configuration failures.
 
 ## Current Matrix
 
+Direct `BHV_ZigZag` CTests require exact custom colors in the generated
+heading-line publications and require complete `VIEW_SEGLIST` suppression when
+drawing is disabled. The two former visual-hint motion cases were removed
+because their evaluator observed only ordinary zigzag completion.
+
 - `baseline_port_first_pass`
   Runs a 1.4 m/s, port-first zigzag about a 45-degree stem with a 25-degree
   angle and three-leg limit; passes when the approach and behavior complete,
@@ -114,14 +119,6 @@ and expected malformed-configuration failures.
   fixture, testing identical alias behavior; it must produce the same initial
   north-centered requested-heading band and exact four-zig, two-zag,
   final-starboard completion evidence without an error or timeout.
-- `visual_hints_off_pass`
-  Sets `draw_set_hdg=false` and `draw_req_hdg=false`, exercising visual-hint
-  parser acceptance; passes only on the ordinary port-first completion,
-  side-transition, final-side, and no-error evidence.
-- `visual_hints_custom_pass`
-  Sets `set_hdg_color=green` and `req_hdg_color=orange`, exercising custom
-  visual-hint parser acceptance; passes only on the ordinary port-first
-  completion, side-transition, final-side, and no-error evidence.
 - `bad_zig_angle_low_fail`
   Sets invalid lower value `zig_angle=0`; the harness passes only when the
   armed evaluator observes exact `ABE_IVPHELM_STATE=MALCONFIG` before its

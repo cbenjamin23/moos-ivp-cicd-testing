@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <cmath>
+
 #include "AOF_AttractorCPA.h"
 #include "AOF_AvoidCollision.h"
 #include "AOF_AvoidCollisionDepth.h"
@@ -348,6 +351,54 @@ TEST(AOFCutRangeCPATest, BalancesRangeClosureCPAAndLowSpeedDiscouragement)
   EXPECT_NEAR(aof.evalBox(&stopped), 7.0, kGeomTol);
   aof.okLowSpeeds();
   EXPECT_NE(aof.evalBox(&stopped), 7.0);
+}
+
+// Covers AOF cut range CPA behavior: time on leg changes the projected CPA
+// utility for an otherwise identical closing maneuver.
+TEST(AOFCutRangeCPATest, TimeOnLegChangesProjectedCPAUtility)
+{
+  AOF_CutRangeCPA short_horizon(makeCourseSpeedDomain());
+  configureLatLonContactAOF(short_horizon);
+  EXPECT_TRUE(short_horizon.setParam("tol", 5));
+  EXPECT_TRUE(short_horizon.setParam("patience", 100));
+  ASSERT_TRUE(short_horizon.initialize());
+
+  AOF_CutRangeCPA long_horizon(makeCourseSpeedDomain());
+  configureLatLonContactAOF(long_horizon);
+  EXPECT_TRUE(long_horizon.setParam("tol", 45));
+  EXPECT_TRUE(long_horizon.setParam("patience", 100));
+  ASSERT_TRUE(long_horizon.initialize());
+
+  IvPBox closing = courseSpeedBox(90, 5);
+  EXPECT_GT(long_horizon.evalBox(&closing),
+            short_horizon.evalBox(&closing));
+}
+
+// Covers AOF cut range CPA behavior: patience changes the blend between rate
+// of closure and projected CPA utility at fixed geometry.
+TEST(AOFCutRangeCPATest, PatienceChangesROCCPABlend)
+{
+  AOF_CutRangeCPA low_patience(makeCourseSpeedDomain());
+  configureLatLonContactAOF(low_patience);
+  EXPECT_TRUE(low_patience.setParam("patience", 5));
+  ASSERT_TRUE(low_patience.initialize());
+
+  AOF_CutRangeCPA high_patience(makeCourseSpeedDomain());
+  configureLatLonContactAOF(high_patience);
+  EXPECT_TRUE(high_patience.setParam("patience", 100));
+  ASSERT_TRUE(high_patience.initialize());
+
+  double max_difference = 0;
+  for(unsigned int course = 0; course < 360; ++course) {
+    for(unsigned int speed = 0; speed < 6; ++speed) {
+      IvPBox sample = courseSpeedBox(course, speed);
+      max_difference = std::max(
+        max_difference,
+        std::fabs(low_patience.evalBox(&sample) -
+                  high_patience.evalBox(&sample)));
+    }
+  }
+  EXPECT_GT(max_difference, 1.0);
 }
 
 // Covers AOF cut range CPA behavior: rejects degenerate contact geometry and time on leg.

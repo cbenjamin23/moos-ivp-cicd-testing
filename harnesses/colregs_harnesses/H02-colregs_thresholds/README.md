@@ -4,7 +4,7 @@ TLDR:
 - threshold-edge harness on the shared `colregs_unit` stem
 - proves that small geometry changes flip classification where the source says they should
 - intended to absorb the unstable edge-space that does not belong in `H01`
-- current active gate is a geometry-first 45-case threshold sweep with
+- current active gate is a geometry-first 43-case threshold sweep with
   isolated serial and Bash 5.1 rolling execution; two moving Band 315 probes
   remain available as explicit exploratory cases
 
@@ -88,10 +88,8 @@ completed-maneuver safety belongs to `H03-colregs_execution`.
 - `giveway_bowdist_edge_mirror_pass`: The rotated edge fixture remains index 20 with bow distance below 10 and turn gap above 10.
 - `giveway_bowdist_above_mirror_pass`: The rotated above fixture produces index 22 with bow distance above 10 and turn gap above 10.
 - `giveway_turngap_below_pass`: The diagonal below fixture produces index 20 with bow distance below 10 and turn gap above 10.
-- `giveway_turngap_edge_pass`: The last calibrated stern-side fixture produces index 20 with bow distance below 10 and turn gap above 10.
 - `giveway_turngap_above_pass`: The diagonal above fixture produces index 22 with both bow distance and turn gap below 10, isolating the turn-gap branch.
 - `giveway_turngap_below_mirror_pass`: The rotated below fixture produces index 20 with bow distance below 10 and turn gap above 10.
-- `giveway_turngap_edge_mirror_pass`: The rotated edge fixture produces index 20 with bow distance below 10 and turn gap above 10.
 - `giveway_turngap_above_mirror_pass`: The rotated above fixture produces index 22 with both bow distance and turn gap below 10.
 - `standon_unsurebow_below_pass`: Eastbound ownship from `(-55,-72)` against southbound Ben from `(10,-18)` produces `standon:unsure` index 38.
 - `standon_unsurebow_edge_pass`: Ownship from `(-60,-80)` against Ben from `(10,-30)` produces `standon:unsure_bow` index 36.
@@ -188,10 +186,8 @@ Current implemented cases:
 - `giveway_bowdist_edge_mirror_pass`
 - `giveway_bowdist_above_mirror_pass`
 - `giveway_turngap_below_pass`
-- `giveway_turngap_edge_pass`
 - `giveway_turngap_above_pass`
 - `giveway_turngap_below_mirror_pass`
-- `giveway_turngap_edge_mirror_pass`
 - `giveway_turngap_above_mirror_pass`
 
 What each implemented case means:
@@ -207,13 +203,10 @@ What each implemented case means:
 - `giveway_turngap_below_pass`: diagonal give-way case where
   `xcn_bow_dist < 10` but `xcn_turn_gap` is still above the stock cutoff, so
   the classifier stays in `giveway:stern`
-- `giveway_turngap_edge_pass`: last calibrated stern-side turn-gap case under
-  the supported diagonal family
 - `giveway_turngap_above_pass`: same family with `xcn_turn_gap < 10`, which
   should flip to `giveway:bow` while staying below the ordinary bow-distance
   cutoff
 - `giveway_turngap_below_mirror_pass`: 180-degree mirror of the below case
-- `giveway_turngap_edge_mirror_pass`: 180-degree mirror of the edge case
 - `giveway_turngap_above_mirror_pass`: 180-degree mirror of the above case
 
 Expected behavior:
@@ -224,10 +217,8 @@ Expected behavior:
 - `giveway_bowdist_edge_mirror_pass` -> `giveway:stern` (`20`)
 - `giveway_bowdist_above_mirror_pass` -> `giveway:bow` (`22`)
 - `giveway_turngap_below_pass` -> `giveway:stern` (`20`)
-- `giveway_turngap_edge_pass` -> `giveway:stern` (`20`)
 - `giveway_turngap_above_pass` -> `giveway:bow` (`22`)
 - `giveway_turngap_below_mirror_pass` -> `giveway:stern` (`20`)
-- `giveway_turngap_edge_mirror_pass` -> `giveway:stern` (`20`)
 - `giveway_turngap_above_mirror_pass` -> `giveway:bow` (`22`)
 
 Status:
@@ -253,7 +244,7 @@ Notes:
   turn-gap split is sampled after contact exchange settles under both serial
   and wave-mode validation
 - repeated cold starts on the calibrated base family held the split at:
-  - below / edge -> `20`
+  - below -> `20`
   - above -> `22`
 - repeated cold starts on the mirror family held the same split
 
@@ -831,8 +822,8 @@ Implemented and supported families:
   `giveway_bowdist_below_pass`, `giveway_bowdist_edge_pass`,
   `giveway_bowdist_above_pass`, and the three mirror variants
 - Give-way turn-gap split:
-  `giveway_turngap_below_pass`, `giveway_turngap_edge_pass`,
-  `giveway_turngap_above_pass`, and the three mirror variants
+  `giveway_turngap_below_pass`, `giveway_turngap_above_pass`, and their two
+  mirror variants
 - Stand-on representative `unsure -> unsure_bow -> bow` progression:
   `standon_unsurebow_below_pass`, `standon_unsurebow_edge_pass`,
   `standon_unsurebow_above_pass`
@@ -923,7 +914,7 @@ the stem launcher uses a bounded query to confirm that `pHelmIvP` and
 `pContactMgrV20` have both started and that the helm has iterated in each
 vehicle community.
 
-After the predicate review, all 45 default cases passed with four rolling jobs
+After the predicate review, all 43 default cases passed with four rolling jobs
 in both logging modes: 145 seconds minimal and 169 seconds full. The same
 matrix also prepared cleanly in `--just_make` mode. Deliberate mutations proved
 the added conditions are active: narrowing the head-on bearing window failed a
