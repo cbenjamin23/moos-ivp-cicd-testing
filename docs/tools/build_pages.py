@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import re
-import json
 import shlex
 import sys
 from dataclasses import dataclass
@@ -17,7 +16,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS_DIR = REPO_ROOT / "harnesses"
 CPP_TEST_DIR = REPO_ROOT / "tests" / "cpp"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
-CTEST_COVERAGE_DATA = ROOT / "data" / "ctest_coverage.json"
 REPO_BLOB = "https://github.com/cbenjamin23/moos-ivp-cicd-testing/blob/main"
 UPSTREAM_REVISION = "29ea136b6d489fd8dda093b6218a51e4022badeb"
 UPSTREAM_BLOB = f"https://github.com/moos-ivp/moos-ivp/blob/{UPSTREAM_REVISION}"
@@ -92,7 +90,6 @@ class CTestArea:
     source_count: int
     case_count: int
     description: str
-    coverage_note: str
     labels: tuple[str, ...]
     path: str
 
@@ -2014,28 +2011,6 @@ def ctest_targets():
     return check_cpp_tests.all_targets()
 
 
-def ctest_coverage_data() -> dict[str, object]:
-    if not CTEST_COVERAGE_DATA.exists():
-        return {}
-    with CTEST_COVERAGE_DATA.open(encoding="utf-8") as handle:
-        data = json.load(handle)
-    families = data.get("families", {})
-    if not isinstance(families, dict):
-        return {}
-    return families
-
-
-def ctest_coverage_note(area: str, coverage_data: dict[str, object]) -> str:
-    raw = coverage_data.get(area)
-    if not isinstance(raw, dict):
-        return "Coverage: not measured."
-    line_percent = raw.get("line_percent")
-    source_files = raw.get("source_files")
-    if line_percent is None or not source_files:
-        return "Coverage: not measured."
-    return f"Line coverage: {line_percent:.2f}%."
-
-
 def count_gtest_cases(path: Path) -> int:
     count = 0
     for source in path.rglob("*Test.cpp"):
@@ -2198,7 +2173,6 @@ def ctest_area_description(area: str) -> str:
 
 def ctest_area_rows(targets=None) -> list[CTestArea]:
     targets = list(ctest_targets() if targets is None else targets)
-    coverage_data = ctest_coverage_data()
     area_targets: dict[str, list[object]] = {}
     for target in targets:
         area = target.file.relative_to(CPP_TEST_DIR).parts[0]
@@ -2218,7 +2192,6 @@ def ctest_area_rows(targets=None) -> list[CTestArea]:
                 source_count=sum(1 for _ in area_path.rglob("*Test.cpp")),
                 case_count=count_gtest_cases(area_path),
                 description=ctest_area_description(area),
-                coverage_note=ctest_coverage_note(area, coverage_data),
                 labels=tuple(sorted(label for label in labels if label)),
                 path=f"tests/cpp/{area}",
             )
@@ -2748,7 +2721,7 @@ def ctest_area_table_rows(areas: list[CTestArea]) -> str:
               </th>
               <td>{area.target_count}</td>
               <td>{area.case_count}</td>
-              <td class="ctest-description">{escape(area.description)} <span class="coverage-note">{escape(area.coverage_note)}</span></td>
+              <td class="ctest-description">{escape(area.description)}</td>
             </tr>
 """
         )
@@ -2792,7 +2765,6 @@ def render_ctest_coverage() -> str:
     <section id="buckets" class="content-section">
       <div class="section-heading">
         <h2>Component Family Catalog</h2>
-        <p>Line coverage includes only source files compiled directly into each test target.</p>
       </div>
       <div class="table-wrap">
         <table class="ctest-table">
@@ -2801,7 +2773,7 @@ def render_ctest_coverage() -> str:
               <th>Component family</th>
               <th>Targets</th>
               <th>Cases</th>
-              <th>Description and line coverage</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
@@ -2820,8 +2792,7 @@ def render_quick_start() -> str:
   <main>
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
-      <p class="eyebrow">Developer Quick Start</p>
-      <h1>Build your changes. Run the relevant tests.</h1>
+      <h1>Developer Quick Start</h1>
       <p class="lede">Check out the MOOS-IvP branch containing your changes, build it, then use this repository to run a focused CTest group and its mission harness.</p>
       <div class="hero-actions">
         <a class="button primary" href="#build">Build</a>
@@ -3136,8 +3107,7 @@ def render_examples() -> str:
   <main>
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
-      <p class="eyebrow">Examples</p>
-      <h1>Good-looking edits. Real test failures.</h1>
+      <h1>Example Regression Detection</h1>
       <p class="lede">Each example starts with a small, defensible edit to MOOS-IvP, then shows the focused test that catches it and the behavior that test protects.</p>
       <div class="example-verification">
         <strong>Evidence, not anecdotes</strong>
