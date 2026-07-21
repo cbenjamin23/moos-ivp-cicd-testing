@@ -24,9 +24,10 @@ sensor-arc gating.
 - `allow_echo_type_multi_accept_ship_pass` Allows `kayak,ship` and makes Bravo a ship, exercising multi-type matching; passes on the exact 50-meter short report and Bravo pulse.
 - `sensor_arc_forward_accept_pass` Sets `sensor_arc=45:135`; with Alpha heading north and Bravo due east at relative bearing `90`, it passes on the exact short report and pulse.
 - `sensor_arc_wrap_accept_pass` Sets wraparound `sensor_arc=315:135`; passes when the same relative-bearing-90 contact produces the exact short report and pulse.
+- `sensor_arc_wrap_aft_block_pass` Keeps wraparound `sensor_arc=315:135` but places Bravo due west at relative bearing `270`; passes when neither short nor long range output is published.
 - `sensor_arc_multi_segment_aft_accept_pass` Sets `sensor_arc=45:135,225:315` and places Bravo 50 meters west at relative bearing `270`; passes when the short report identifies Alpha, Bravo, and range `50`.
 - `sensor_arc_aft_block_pass` Sets forward-only `sensor_arc=45:135` and places Bravo 50 meters west at relative bearing `270`; passes when neither short nor long report is published.
-- `sensor_arc_full_accept_pass` Sets `sensor_arc=360`, exercising the full-circle token; passes on the baseline exact short report and pulse.
+- `sensor_arc_full_accept_pass` Sets `sensor_arc=360` and places Bravo due west at relative bearing `270`; passes when the full-circle token admits the exact short report and west-position pulse.
 - `ping_wait_blocks_second_pass` Sets `ping_wait=default=30` and sends Alpha requests at 1.5 and 2.5 seconds; passes when exactly one short report is counted.
 - `named_ping_wait_blocks_second_pass` Sets default wait `0` plus `ping_wait=alpha=30` and sends the same two requests; passes when exactly one report is counted.
 - `ping_wait_unlimited_allows_second_pass` Uses the common `ping_wait=default=0` and sends two requests one second apart; passes when at least two reports are counted.
@@ -56,3 +57,14 @@ Typical runs:
 Logging is minimal by default and runs without `pLogger`. Use `--log=full` for
 the complete matrix, or combine it with `--case=NAME` for one fully logged
 diagnostic case.
+
+## Latest validation
+
+- July 20, 2026
+- generated-file matrix: `35/35` completed
+- minimal-logging matrix: `35/35` passed
+- full-logging matrix: `35/35` passed
+- removing the wrap arc publishes the forbidden 270-degree report
+- replacing `sensor_arc=360` with `45:135` suppresses the required 270-degree
+  report and pulse
+- warp: `10`

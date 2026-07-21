@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1705` under configured targets
+- Harness patch/config files: `1706` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -140,7 +140,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `p03_colregs` | `colregs`, `performance` | `harnesses/performance_harnesses/P03-colregs_traffic_ring/zlaunch.sh` | `missions/performance_missions/P03-colregs_traffic_ring` | 4 | `pTrafficManager`, `iM300`, `iM300Health`, `uFldCollisionDetect` | `performance-traffic-ring` |
 | `ufld_pathcheck_h01` | `ufld_pathcheck` | `harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 17 | `uFldPathCheck`, `pMissionEvalAlpha` | `ufld-pathcheck-unit` |
 | `ufld_message_handler_h01` | `ufld_message_handler` | `harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 26 | `uFldMessageHandler` | `ufld-message-handler-unit` |
-| `ufld_contact_range_sensor_h01` | `ufld_contact_range_sensor` | `harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 34 | `uFldContactRangeSensor` | `ufld-contact-range-sensor-unit` |
+| `ufld_contact_range_sensor_h01` | `ufld_contact_range_sensor` | `harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 35 | `uFldContactRangeSensor` | `ufld-contact-range-sensor-unit` |
 | `ufld_beacon_range_sensor_h01` | `ufld_beacon_range_sensor` | `harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `uFldBeaconRangeSensor`, `pMissionEvalAlpha` | `ufld-beacon-range-sensor-unit` |
 | `ufld_collision_detect_h01` | `ufld_collision_detect` | `harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 20 | `pMissionEvalAlpha`, `uFldCollisionDetect` | `ufld-collision-detect-unit` |
 | `ufld_collob_detect_h01` | `ufld_collob_detect` | `harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 14 | `uFldCollObDetect` | `ufld-collob-detect-unit` |

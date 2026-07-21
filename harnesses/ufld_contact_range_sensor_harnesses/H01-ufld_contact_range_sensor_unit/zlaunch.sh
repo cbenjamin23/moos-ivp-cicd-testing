@@ -74,6 +74,7 @@ CASES=(
     allow_echo_type_multi_accept_ship_pass
     sensor_arc_forward_accept_pass
     sensor_arc_wrap_accept_pass
+    sensor_arc_wrap_aft_block_pass
     sensor_arc_multi_segment_aft_accept_pass
     sensor_arc_aft_block_pass
     sensor_arc_full_accept_pass
@@ -315,6 +316,7 @@ get_case_patch() {
         allow_echo_type_multi_accept_ship_pass) CASE_PATCH="$HARNESS_DIR/allow-echo-type-multi-accept-ship-pass-shoreside.xmoos" ;;
         sensor_arc_forward_accept_pass) CASE_PATCH="$HARNESS_DIR/sensor-arc-forward-accept-pass-shoreside.xmoos" ;;
         sensor_arc_wrap_accept_pass) CASE_PATCH="$HARNESS_DIR/sensor-arc-wrap-accept-pass-shoreside.xmoos" ;;
+        sensor_arc_wrap_aft_block_pass) CASE_PATCH="$HARNESS_DIR/sensor-arc-wrap-aft-block-pass-shoreside.xmoos" ;;
         sensor_arc_multi_segment_aft_accept_pass) CASE_PATCH="$HARNESS_DIR/sensor-arc-multi-segment-aft-accept-pass-shoreside.xmoos" ;;
         sensor_arc_aft_block_pass) CASE_PATCH="$HARNESS_DIR/sensor-arc-aft-block-pass-shoreside.xmoos" ;;
         sensor_arc_full_accept_pass) CASE_PATCH="$HARNESS_DIR/sensor-arc-full-accept-pass-shoreside.xmoos" ;;

@@ -126,7 +126,7 @@ only after the chosen change and its validation are complete.
 
 The table contains 276 gap rows:
 
-- **242 handled (87.7%)**: the appropriate local contract is resolved,
+- **243 handled (88.0%)**: the appropriate local contract is resolved,
   oracle-hardened, moved to direct coverage, or removed as false, redundant, or
   non-discriminating. No further local action is currently required.
 - **14 partially resolved (5.1%)**: useful local strengthening is complete, but
@@ -136,10 +136,10 @@ The table contains 276 gap rows:
   oracle without new upstream telemetry, evaluator support, direct seams, or a
   deterministic fixture. The deferred aspect was not disguised with a timing
   or outcome proxy.
-- **1 open (0.4%)**: this row has not yet received its Pass 2
-  disposition and mutation-backed strengthening review.
+- **0 open (0.0%)**: every row has received its Pass 2 disposition and
+  mutation-backed strengthening review.
 
-Thus 275 of 276 rows (99.6%) have received a Pass 2 disposition. A locally
+Thus all 276 rows (100%) have received a Pass 2 disposition. A locally
 complete contract belongs in handled even when a separate deeper opportunity
 is recorded elsewhere; `partially resolved` is reserved for a remaining part
 of the row's actual named claim.
@@ -533,6 +533,11 @@ invariants.
 - All eleven malformed Waypoint startup fixtures now require armed,
   pre-deadline literal `IVPHELM_STATE=MALCONFIG`, while direct CTest identifies
   every rejected value. Repairing `speed=-1` reaches `DRIVE` and fails.
+- ContactRangeSensor now pairs the `315:135` wraparound arc with accepted
+  relative bearing 90 and blocked relative bearing 270. Its `360` case uses
+  the same rear bearing instead of the default forward fixture. Removing the
+  wrap arc or replacing full circle with `45:135` produces a mission-owned
+  failure, and both 35-case matrices pass.
 
 ### Wave 5 Progress (2026-07-19–20)
 
@@ -952,7 +957,7 @@ They are intentionally deferred to the case-strengthening pass.
 | waypoint_h01 | `bad_xpoints_size_fail`; CTest `RejectsEveryMalformedHarnessParameterAndRouteUpdate` | A one-point `xpoints` update is rejected against the active two-point route without changing its points. | The live evaluator requires `param_error`, index zero, and distance above 70; CTest requires exact rejection and unchanged x coordinates 10 and 20. | Resolved: a valid same-size replacement removes the rejection and approaches its closer route, failing both live controls. | Retain live rejection/state evidence plus exact direct route preservation. | Resolved |
 | waypoint_h01 | Eleven retained `bad_*_fail` startup cases; CTest `RejectsEveryMalformedHarnessParameterAndRouteUpdate` | Every named malformed startup value is rejected by its exact Waypoint parameter parser and causes helm configuration failure. | CTest requires rejection of all eleven exact fixture values; each armed live evaluator requires literal `IVPHELM_STATE=MALCONFIG` before its missing-state deadline. | Resolved: repairing `speed=-1` to valid `1` reaches `DRIVE` and produces a clean mission-owned failure. | Retain direct parameter identity plus live helm integration. | Resolved; direct parameter identity |
 | ufld_contact_range_sensor_h01 | `ground_truth_gaussian_unsupported_no_gt_pass`, `ground_truth_no_algorithm_absent_pass`, `ground_truth_false_no_gt_pass` | No ground-truth output is published in either short or requester-specific long form. | Each evaluator now initializes and retains independent any-value mail latches for `CRS_RANGE_REPORT_GT` and `CRS_RANGE_REPORT_GT_ALPHA`, then requires both false after the six-second observation window while retaining the expected ordinary report evidence. | Resolved: injecting a stray `CRS_RANGE_REPORT_GT_ALPHA` leaves the ordinary report and short-channel absence intact but produces `gt_long_seen=true` and mission-owned failure. | Retain both channel latches; the fixed lead is justified because this is an expected-absence-over-window contract. | Resolved |
-| ufld_contact_range_sensor_h01 | `sensor_arc_wrap_accept_pass`, `sensor_arc_full_accept_pass` | The wraparound and `360` arc syntaxes are interpreted correctly, not merely accepted. | Both use the baseline forward contact and exact report/pulse grade. | Ignoring either arc setting leaves the default unrestricted sensor and produces the same result. | Add outside-arc blocking controls for the wrap case and multiple bearings for the full-circle case; confirm with arc-ignored mutations. | Open |
+| ufld_contact_range_sensor_h01 | `sensor_arc_wrap_accept_pass`, `sensor_arc_wrap_aft_block_pass`, `sensor_arc_full_accept_pass` | `315:135` admits relative bearing 90 but rejects 270, while `360` admits that same rear bearing. | The wrap pair requires the exact forward report/pulse and absence of both report forms for the rear contact; the full-circle case requires the exact rear report and west-position pulse. | Resolved: removing the wrap arc publishes the forbidden rear report, while replacing `360` with `45:135` suppresses its required rear report. | Retain the paired wrap fixture and shared rear-bearing control; unrestricted `360` intentionally matches the default internal state. | Resolved |
 | ufld_beacon_range_sensor_h01 | `brs_ground_truth_false_no_gt_pass` | `ground_truth=false` suppresses both short and requester-specific long ground-truth output while ordinary reports remain enabled. | The evaluator now requires exact ordinary short and long reports, then retains independent any-value latches for `BRS_RANGE_REPORT_GT` and `BRS_RANGE_REPORT_GT_ALPHA` through the six-second observation window. | Resolved: the ordinary long report proves requester-specific output is enabled; injecting only `BRS_RANGE_REPORT_GT_ALPHA` leaves both ordinary reports and short-channel absence intact but produces `gt_long_seen=true` and mission-owned failure. | Retain both channel latches; the fixed lead is justified because this is an expected-absence-over-window contract. | Resolved |
 | ufld_beacon_range_sensor_h01 | `beacon_reply_push_blocks_pass`, `request_path_pull_blocks_pass` | Beacon push distance governs the reply leg while node push/beacon pull distance governs the request leg. | Each case makes one direction 10 meters and the other 100 meters at a 50-meter separation, then requires the same request pulse and absence of a report. Source inspection confirms request-received and reply-sent counts exist only in the appcast report. | Swapping the request- and reply-leg interpretations produces the same published evidence, so no harness-only assertion can distinguish the two legs. | After `BRS-UP-001`, require request-received/reply-sent evidence with opposite states; until then retain the pair only as symmetric range-gate coverage. | Deferred — needs upstream telemetry (`BRS-UP-001`) |
 | ufld_collision_detect_h01 | `range_normalization_params_pass` | Invalid ordering `collision=6`, `near_miss=3`, `encounter=4` is normalized to `6/6/6` and that exact normalized summary is published. | The mission still requires the 5-meter collision and exact event report; a narrow alog supplement now binds the uFldCollisionDetect publication to exact `collision_range=6, near_miss_range=6, encounter_range=6`, with only that variable logged in minimal mode. | Resolved: changing the collision threshold to 5.5 preserves mission-owned `grade=pass`, `COLLISION_TOTAL=1`, and the exact 5-meter collision report but produces `artifact_check_failed` because the normalized summary is `5.5/5.5/5.5`. | Retain the mission grade plus exact payload supplement until `PMEVAL-UP-003` allows the space-containing string to be compared in-mission. | Resolved |
@@ -1031,7 +1036,7 @@ They are intentionally deferred to the case-strengthening pass.
 | p03_colregs | colregs, performance | 4 | [x] | [x] | [README](../harnesses/performance_harnesses/P03-colregs_traffic_ring/README.md) · [page](harnesses/performance-traffic-ring.html) |
 | ufld_pathcheck_h01 | ufld_pathcheck | 17 | [x] | [x] | [README](../harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/README.md) · [page](harnesses/ufld-pathcheck-unit.html) |
 | ufld_message_handler_h01 | ufld_message_handler | 26 | [x] | [x] | [README](../harnesses/ufld_message_handler_harnesses/H01-ufld_message_handler_unit/README.md) · [page](harnesses/ufld-message-handler-unit.html) |
-| ufld_contact_range_sensor_h01 | ufld_contact_range_sensor | 34 | [x] | [x] | [README](../harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/README.md) · [page](harnesses/ufld-contact-range-sensor-unit.html) |
+| ufld_contact_range_sensor_h01 | ufld_contact_range_sensor | 35 | [x] | [x] | [README](../harnesses/ufld_contact_range_sensor_harnesses/H01-ufld_contact_range_sensor_unit/README.md) · [page](harnesses/ufld-contact-range-sensor-unit.html) |
 | ufld_beacon_range_sensor_h01 | ufld_beacon_range_sensor | 20 | [x] | [x] | [README](../harnesses/ufld_beacon_range_sensor_harnesses/H01-ufld_beacon_range_sensor_unit/README.md) · [page](harnesses/ufld-beacon-range-sensor-unit.html) |
 | ufld_collision_detect_h01 | ufld_collision_detect | 20 | [x] | [x] | [README](../harnesses/ufld_collision_detect_harnesses/H01-ufld_collision_detect_unit/README.md) · [page](harnesses/ufld-collision-detect-unit.html) |
 | ufld_collob_detect_h01 | ufld_collob_detect | 14 | [x] | [x] | [README](../harnesses/ufld_collob_detect_harnesses/H01-ufld_collob_detect_unit/README.md) · [page](harnesses/ufld-collob-detect-unit.html) |

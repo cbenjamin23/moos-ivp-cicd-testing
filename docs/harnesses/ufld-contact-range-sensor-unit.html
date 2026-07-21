@@ -164,6 +164,12 @@
 
 
         <article class="case-row">
+          <code>sensor_arc_wrap_aft_block_pass</code>
+          <p>Keeps wraparound sensor_arc=315:135 but places Bravo due west at relative bearing 270; passes when neither short nor long range output is published.</p>
+        </article>
+
+
+        <article class="case-row">
           <code>sensor_arc_multi_segment_aft_accept_pass</code>
           <p>Sets sensor_arc=45:135,225:315 and places Bravo 50 meters west at relative bearing 270; passes when the short report identifies Alpha, Bravo, and range 50.</p>
         </article>
@@ -177,7 +183,7 @@
 
         <article class="case-row">
           <code>sensor_arc_full_accept_pass</code>
-          <p>Sets sensor_arc=360, exercising the full-circle token; passes on the baseline exact short report and pulse.</p>
+          <p>Sets sensor_arc=360 and places Bravo due west at relative bearing 270; passes when the full-circle token admits the exact short report and west-position pulse.</p>
         </article>
 
 
