@@ -94,7 +94,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `uxms_h01` | `uxms` | `harnesses/uxms_harnesses/H01-uxms_unit/zlaunch.sh` | `missions/uxms_missions/uxms_unit` | 31 | `uXMS` | `uxms-unit` |
 | `uquerydb_h01` | `uquerydb` | `harnesses/uquerydb_harnesses/H01-uquerydb_unit/zlaunch.sh` | `missions/uquerydb_missions/uquerydb_unit` | 32 | `uQueryDB` | `uquerydb-unit` |
 | `pechovar_h01` | `pechovar` | `harnesses/pechovar_harnesses/H01-pechovar_unit/zlaunch.sh` | `missions/pechovar_missions/pechovar_unit` | 34 | `pEchoVar` | `pechovar-unit` |
-| `utimerscript_h01` | `utimerscript` | `harnesses/utimerscript_harnesses/H01-utimerscript_unit/zlaunch.sh` | `missions/utimerscript_missions/utimerscript_unit` | 33 | - | `utimerscript-unit` |
+| `utimerscript_h01` | `utimerscript` | `harnesses/utimerscript_harnesses/H01-utimerscript_unit/zlaunch.sh` | `missions/utimerscript_missions/utimerscript_unit` | 30 | - | `utimerscript-unit` |
 | `pdeadmanpost_h01` | `pdeadmanpost` | `harnesses/pdeadmanpost_harnesses/H01-pdeadmanpost_unit/zlaunch.sh` | `missions/pdeadmanpost_missions/pdeadmanpost_unit` | 20 | `pDeadManPost` | `pdeadmanpost-unit` |
 | `pspoofnode_h01` | `pspoofnode` | `harnesses/pspoofnode_harnesses/H01-pspoofnode_unit/zlaunch.sh` | `missions/pspoofnode_missions/pspoofnode_unit` | 33 | `pSpoofNode` | `pspoofnode-unit` |
 | `utermcommand_h01` | `utermcommand` | `harnesses/utermcommand_harnesses/H01-utermcommand_unit/zlaunch.sh` | `missions/utermcommand_missions/utermcommand_unit` | 15 | `pEchoVar` | `utermcommand-unit` |

@@ -153,7 +153,7 @@ TEST(TS_MOOSAppEventTest, ScheduleAssignsTimesWithinRangesAndClearsPostedState)
   EXPECT_FALSE(app.eventPosted(1));
 }
 
-TEST(TS_MOOSAppEventTest, ScheduleWithoutShuffleKeepsAlreadyScheduledTimes)
+TEST(TS_MOOSAppEventTest, ScheduleWithoutShuffleKeepsTimestampAcrossReset)
 {
   TestableTimerScript app;
   app.addNewEvent("var=A,val=one,time=2:5");

@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cmath>
+#include <cstdlib>
+#include <limits>
 #include <string>
 
 #include "RandVarGaussian.h"
@@ -65,6 +68,36 @@ TEST(RandVarUniformTest, ResetSnapsAndBoundsRandomValues)
     EXPECT_TRUE(IsSnappedTo(variable.getValue(), 0.25));
     EXPECT_FALSE(variable.getStringValue().empty());
   }
+}
+
+TEST(RandVarUniformTest, SamplesSpanConfiguredRangeWithUniformMeanAndVariance)
+{
+  srand(17);
+  RandVarUniform variable;
+  ASSERT_TRUE(variable.setParam("min", -1));
+  ASSERT_TRUE(variable.setParam("max", 1));
+
+  constexpr int sample_count = 2000;
+  double sum = 0;
+  double square_sum = 0;
+  double minimum = std::numeric_limits<double>::infinity();
+  double maximum = -std::numeric_limits<double>::infinity();
+  for(int i = 0; i < sample_count; ++i) {
+    variable.reset();
+    const double value = variable.getValue();
+    sum += value;
+    square_sum += value * value;
+    minimum = std::min(minimum, value);
+    maximum = std::max(maximum, value);
+  }
+
+  const double mean = sum / sample_count;
+  const double variance = (square_sum / sample_count) - (mean * mean);
+  EXPECT_NEAR(mean, 0, 0.08);
+  EXPECT_GT(variance, 0.27);
+  EXPECT_LT(variance, 0.40);
+  EXPECT_LT(minimum, -0.9);
+  EXPECT_GT(maximum, 0.9);
 }
 
 TEST(RandVarUniformTest, EqualRangeSetsNumericValueButLeavesPreviousStringUntouched)
@@ -146,4 +179,30 @@ TEST(RandVarGaussianTest, ResetSnapsValuesInsideRange)
     EXPECT_TRUE(IsSnappedTo(variable.getValue(), 0.05));
     EXPECT_FALSE(variable.getStringValue().empty());
   }
+}
+
+TEST(RandVarGaussianTest, SamplesHaveConfiguredMeanAndGaussianVariance)
+{
+  srand(23);
+  RandVarGaussian variable;
+  ASSERT_TRUE(variable.setParam("min", -5));
+  ASSERT_TRUE(variable.setParam("max", 5));
+  ASSERT_TRUE(variable.setParam("mu", 1.5));
+  ASSERT_TRUE(variable.setParam("sigma", 0.5));
+
+  constexpr int sample_count = 2000;
+  double sum = 0;
+  double square_sum = 0;
+  for(int i = 0; i < sample_count; ++i) {
+    variable.reset();
+    const double value = variable.getValue();
+    sum += value;
+    square_sum += value * value;
+  }
+
+  const double mean = sum / sample_count;
+  const double variance = (square_sum / sample_count) - (mean * mean);
+  EXPECT_NEAR(mean, 1.5, 0.08);
+  EXPECT_GT(variance, 0.18);
+  EXPECT_LT(variance, 0.32);
 }

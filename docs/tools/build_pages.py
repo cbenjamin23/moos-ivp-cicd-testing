@@ -496,7 +496,7 @@ HARNESSES: tuple[Harness, ...] = (
         family="uTimerScript",
         path="harnesses/utimerscript_harnesses/H01-utimerscript_unit",
         mission="missions/utimerscript_missions/utimerscript_unit",
-        summary="Headless uTimerScript runtime matrix covering timed posts, quoted payloads, macros, conditions, pause, forward, reset, status, random values, block-on, atomic scripts, custom controls, timer warp, awake policies, shuffle, and quit behavior.",
+        summary="Headless uTimerScript runtime matrix covering exact posts and macro payloads, control-mail ordering, reset counts and delays, publication timing, status configuration, polygon random pairs, delayed-client block-on, awake policies, and process exit.",
         proof="Checks mission-owned pMissionEval grades on live uTimerScript publications, with external uPokeDB used only for runtime control mail and alog counts used for reposting and burst evidence.",
         gifs=(
             ("Timed Numeric/String", "timed_numeric_string_pass", "utimerscript-timed-numeric-string.gif"),
@@ -1557,7 +1557,7 @@ FAMILIES: tuple[Family, ...] = (
     Family(
         name="uTimerScript",
         label="uTimerScript",
-        summary="Checks timer events, runtime controls, reset/repeat paths, macro expansion, shuffle, awake policies, and quit behavior.",
+        summary="Checks exact event payloads, control ordering, reset and timing paths, macro expansion, delayed-client block-on, awake policies, and quit behavior.",
         slugs=("utimerscript-unit",),
     ),
     Family(
@@ -1874,7 +1874,7 @@ TEST_STYLE: dict[str, str] = {
     "uxms-unit": "Utility app correctness tests for uXMS. These cases verify terminal scoping output for named variables, all/alll display, source/time/community columns, history, truncation, config-file variables, clean CLI overrides, filters, source selection, novirgins, connection aliases, refresh modes, shortcuts, and color mapping.",
     "uquerydb-unit": "Utility app correctness tests for uQueryDB. These cases verify query return codes, CLI and ProcessConfig pass/fail conditions, fail-only queries, missing-variable timeouts, halt_max_time, numeric comparisons, compound logic, unique client names, and check-variable file formats.",
     "pechovar-unit": "Utility app correctness tests for pEchoVar. These cases verify live echo mapping, boolean inversion, fan-out, duplicate mapping de-duplication, latest-value handling, EFlipper component maps, filters, custom separators, cycle suppression, invalid flipper suppression, and independent named flippers.",
-    "utimerscript-unit": "Utility app correctness tests for uTimerScript. These cases verify live scheduled posts, quoted payloads, runtime condition/pause/forward/reset controls, automatic reset, status variables, random-value bounds, block-on release, atomic condition handling, custom controls, timer warp, burst events, awake policies, shuffle, and quit behavior.",
+    "utimerscript-unit": "Live uTimerScript correctness tests. Cases verify exact scheduled payloads, suppression and release ordering, reset counts and delays, timing windows, status output, polygon-pair containment, delayed-client block-on, awake policies, and quit-driven process exit.",
     "pdeadmanpost-unit": "Utility app correctness tests for pDeadManPost. These cases verify deadflag posting and suppression across active-at-start, inactive-until-first-heartbeat, stale heartbeat, custom heartbeat variables, once/repeat/reset post policies, invalid policy fallback, and typed deadflag configurations.",
     "pspoofnode-unit": "Utility app correctness tests for pSpoofNode. These cases verify structured NODE_REPORT output for config and runtime spoof requests, generated names, moving contacts, name/group/contact cancellation, expiration, defaults and startup ordering, runtime normalization, color/type edge behavior, and malformed requests.",
     "utermcommand-unit": "Utility app correctness tests for uTermCommand. These cases verify terminal command mapping for numeric and string posts, arrow syntax, unique and ambiguous partial keys, exact-prefix handling, delete editing, duplicate-key precedence, command config parsing, multi-command configs, and unknown command absence.",
@@ -1974,7 +1974,7 @@ STEM_CONTEXT: dict[str, str] = {
     "uxms-unit": "The stem mission runs one MOOS community with uTimerScript publishing controlled mail and pMissionEval proving publisher readiness. The harness runs bounded uXMS terminal captures and grades required and forbidden display tokens.",
     "uquerydb-unit": "The stem mission runs one MOOS community with uTimerScript publishing controlled query variables and pMissionEval proving publisher readiness. The harness runs bounded uQueryDB invocations and grades return codes plus .checkvars content.",
     "pechovar-unit": "The stem mission runs one MOOS community with pEchoVar, uTimerScript, pMissionEval, pMissionHash, and pLogger. The harness writes case-specific echo/flip mappings and scripted source mail, then grades direct echo variables plus alog evidence for structured EFlipper payloads and suppression.",
-    "utimerscript-unit": "The stem mission runs one MOOS community with uTimerScript, pMissionEval, pMissionHash, and pLogger. The harness writes case-specific script/evaluator blocks and uses external uPokeDB only for control mail so uTimerScript is not used to test itself.",
+    "utimerscript-unit": "The stem mission runs one MOOS community with uTimerScript, pMissionEval, pMissionHash, and pLogger. The harness writes case-specific script/evaluator blocks, uses external uPokeDB for control mail, and starts one delayed uXMS client for the block-on contract.",
     "pdeadmanpost-unit": "The stem mission runs one MOOS community with pDeadManPost and a case-generated heartbeat schedule. The harness grades exact deadflag variables and absence conditions through pMissionEval, then uses alog counts for policy cases where posting multiplicity matters.",
     "pspoofnode-unit": "The stem mission runs one MOOS community with pSpoofNode and case-generated spoof/cancel mail. The harness uses pMissionEval for readiness and alog checks for structured NODE_REPORT payload fields.",
     "utermcommand-unit": "The stem mission runs one MOOS community with MOOSDB, pMissionEval, and logging while the harness drives uTermCommand externally through stdin and grades the resulting posts.",
@@ -2783,7 +2783,7 @@ def render_ctest_coverage() -> str:
         </article>
         <article class="stat-card">
           <strong>{ctest_total_target_count(targets)}</strong>
-          <span>CTest Targets</span>
+          <span>Test Executables</span>
           <p>Focused executables that group related component checks.</p>
         </article>
         <article class="stat-card">
@@ -2797,7 +2797,7 @@ def render_ctest_coverage() -> str:
     <section id="buckets" class="content-section">
       <div class="section-heading">
         <p class="eyebrow">Component Families</p>
-        <h2>CTest coverage by MOOS-IvP component family</h2>
+        <h2>Unit test coverage by component family</h2>
         <p>Line coverage includes only source files compiled directly into each test target.</p>
       </div>
       <div class="table-wrap">

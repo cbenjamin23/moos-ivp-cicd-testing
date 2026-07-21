@@ -1708,7 +1708,7 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 33,
+        "case_count": 30,
         "case_parse_error": "",
         "cases": [
           "timed_numeric_string_pass",
@@ -1722,8 +1722,6 @@
           "delay_start_pass",
           "status_var_initial_pass",
           "silent_status_pass",
-          "randvar_uniform_bounds_pass",
-          "randvar_gaussian_bounds_pass",
           "randpair_poly_bounds_pass",
           "block_on_peer_pass",
           "atomic_condition_drop_pass",
@@ -1742,7 +1740,6 @@
           "time_window_event_pass",
           "reset_time_numeric_pass",
           "multi_condition_gate_pass",
-          "shuffle_false_status_pass",
           "quit_event_pass"
         ],
         "helpers": [

@@ -32,7 +32,7 @@
       <a class="back-link" href="../index.html#families">Back to catalog</a>
       <p class="eyebrow">uTimerScript</p>
       <h1>H01 uTimerScript Unit</h1>
-      <p class="lede">Utility app correctness tests for uTimerScript. These cases verify live scheduled posts, quoted payloads, runtime condition/pause/forward/reset controls, automatic reset, status variables, random-value bounds, block-on release, atomic condition handling, custom controls, timer warp, burst events, awake policies, shuffle, and quit behavior.</p>
+      <p class="lede">Live uTimerScript correctness tests. Cases verify exact scheduled payloads, suppression and release ordering, reset counts and delays, timing windows, status output, polygon-pair containment, delayed-client block-on, awake policies, and quit-driven process exit.</p>
     </section>
 
 
@@ -40,7 +40,7 @@
       <article class="stem-card">
         <p class="eyebrow">Stem Mission</p>
         <h2>Baseline scenario context</h2>
-        <p>The stem mission runs one MOOS community with uTimerScript, pMissionEval, pMissionHash, and pLogger. The harness writes case-specific script/evaluator blocks and uses external uPokeDB only for control mail so uTimerScript is not used to test itself.</p>
+        <p>The stem mission runs one MOOS community with uTimerScript, pMissionEval, pMissionHash, and pLogger. The harness writes case-specific script/evaluator blocks, uses external uPokeDB for control mail, and starts one delayed uXMS client for the block-on contract.</p>
       </article>
     </section>
 
@@ -135,7 +135,7 @@
 
         <article class="case-row">
           <code>delay_start_pass</code>
-          <p>Sets delay_start=1.0 before a time-0.1 UTS_DELAYED=true event; passes when that value is present by the time-1.3 readiness event, without grading its publication time.</p>
+          <p>Sets delay_start=1.0 before a time-0.1 UTS_DELAYED=true event; the first output must occur 0.9–1.4 MOOS seconds after the script&#x27;s initial status.</p>
         </article>
 
 
@@ -152,18 +152,6 @@
 
 
         <article class="case-row">
-          <code>randvar_uniform_bounds_pass</code>
-          <p>Defines uniform RV on [5,7] with key=at_post and publishes its expansion; passes when UTS_RAND lies in the configured bounds.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>randvar_gaussian_bounds_pass</code>
-          <p>Defines gaussian GV with mu=12, sigma=0.5, and clamp bounds [10,14]; passes when the single UTS_GAUSS sample lies in [10,14].</p>
-        </article>
-
-
-        <article class="case-row">
           <code>randpair_poly_bounds_pass</code>
           <p>Publishes 20 paired x,y samples from the nonrectangular triangle {0,0:10,0:0,2} in single events so each pair comes from one at_post draw; passes when all 20 values lie inside that triangle.</p>
         </article>
@@ -171,7 +159,7 @@
 
         <article class="case-row">
           <code>block_on_peer_pass</code>
-          <p>Sets block_on=pMissionHash before scheduling UTS_BLOCKED_OUT=unblocked; passes when the event publishes after the concurrently launched peer is present, without checking an earlier blocked interval.</p>
+          <p>Sets block_on=UTSDelayedPeer, starts that client only after a 1.2-second launcher delay, and requires UTS_BLOCKED_OUT=unblocked after the first logged DB_CLIENTS value containing the delayed peer.</p>
         </article>
 
 
@@ -201,13 +189,13 @@
 
         <article class="case-row">
           <code>time_warp_accelerates_pass</code>
-          <p>Sets uTimerScript time_warp=4 and schedules output at script time 2; passes when UTS_WARPED=true and status contains time_warp=4, without measuring acceleration.</p>
+          <p>Sets uTimerScript time_warp=4 and schedules output at script time 2; status must report warp 4 and the output must follow initial status by 0.35–0.8 MOOS seconds.</p>
         </article>
 
 
         <article class="case-row">
           <code>delay_reset_pass</code>
-          <p>Sets all-posted reset, reset_max=1, and delay_reset=1.0; passes when exactly two UTS_DELAY_RESET posts occur and status contains delay_reset=1.</p>
+          <p>Sets all-posted reset, reset_max=1, and delay_reset=1.0; exactly two UTS_DELAY_RESET posts must occur 1.0–1.6 MOOS seconds apart.</p>
         </article>
 
 
@@ -255,7 +243,7 @@
 
         <article class="case-row">
           <code>time_window_event_pass</code>
-          <p>Schedules UTS_WINDOWED=true in the 0.2:0.8 time window; passes when the value exists by time 1.1, without checking where inside the window it posted.</p>
+          <p>Schedules UTS_WINDOWED=true in the 0.2:0.8 time window; its first publication must follow initial status by 0.15–0.95 MOOS seconds, including one app-tick margin around the configured window.</p>
         </article>
 
 
@@ -268,12 +256,6 @@
         <article class="case-row">
           <code>multi_condition_gate_pass</code>
           <p>Requires UTS_GATE_A=true and then UTS_GATE_B=ready; passes when the first UTS_MULTI_GATED=released publication occurs only after the second gate mail and both final gate values match.</p>
-        </article>
-
-
-        <article class="case-row">
-          <code>shuffle_false_status_pass</code>
-          <p>Sets shuffle=false and schedules UTS_SHUFFLE_FALSE=true; passes when the value publishes and status contains shuffle=false, without comparing event order.</p>
         </article>
 
 

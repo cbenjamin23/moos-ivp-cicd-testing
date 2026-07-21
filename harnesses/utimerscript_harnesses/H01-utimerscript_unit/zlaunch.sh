@@ -73,8 +73,6 @@ CASES=(
     delay_start_pass
     status_var_initial_pass
     silent_status_pass
-    randvar_uniform_bounds_pass
-    randvar_gaussian_bounds_pass
     randpair_poly_bounds_pass
     block_on_peer_pass
     atomic_condition_drop_pass
@@ -93,7 +91,6 @@ CASES=(
     time_window_event_pass
     reset_time_numeric_pass
     multi_condition_gate_pass
-    shuffle_false_status_pass
     quit_event_pass
 )
 
@@ -306,6 +303,8 @@ get_case_config() {
     REPORT_COLUMNS=()
     EXTRA_CHECKS=()
     TIMER_LINES=()
+    DELAYED_PEER_ALIAS=""
+    DELAYED_PEER_DELAY=""
 
     case "$CASE_NAME" in
         timed_numeric_string_pass)
@@ -401,6 +400,7 @@ get_case_config() {
             )
             PASS_CONDITIONS=("UTS_DELAYED = true")
             REPORT_COLUMNS=("delayed=\$[UTS_DELAYED]")
+            EXTRA_CHECKS=("delta:UTS_STATUS:1:UTS_DELAYED:1:0.9:1.4")
             ;;
         status_var_initial_pass)
             TIMER_LINES=(
@@ -418,26 +418,6 @@ get_case_config() {
             )
             EXTRA_CHECKS=("absent:UTS_STATUS")
             ;;
-        randvar_uniform_bounds_pass)
-            TIMER_LINES=(
-                "script_name = randvar_uniform"
-                "randvar = varname=RV, min=5, max=7, key=at_post"
-                "event = var=UTS_RAND, val=\$[RV], time=0.2"
-                "event = var=TEST_EVAL_READY, val=true, time=0.5"
-            )
-            PASS_CONDITIONS=("UTS_RAND >= 5" "UTS_RAND <= 7")
-            REPORT_COLUMNS=("rand=\$[UTS_RAND]")
-            ;;
-        randvar_gaussian_bounds_pass)
-            TIMER_LINES=(
-                "script_name = randvar_gaussian"
-                "randvar = varname=GV, type=gaussian, min=10, max=14, mu=12, sigma=0.5, key=at_post"
-                "event = var=UTS_GAUSS, val=\$[GV], time=0.2"
-                "event = var=TEST_EVAL_READY, val=true, time=0.5"
-            )
-            PASS_CONDITIONS=("UTS_GAUSS >= 10" "UTS_GAUSS <= 14")
-            REPORT_COLUMNS=("gauss=\$[UTS_GAUSS]")
-            ;;
         randpair_poly_bounds_pass)
             TIMER_LINES=(
                 "script_name = randpair_poly"
@@ -452,12 +432,15 @@ get_case_config() {
         block_on_peer_pass)
             TIMER_LINES=(
                 "script_name = block_on_peer"
-                "block_on = pMissionHash"
+                "block_on = UTSDelayedPeer"
                 "event = var=UTS_BLOCKED_OUT, val=unblocked, time=0.2"
-                "event = var=TEST_EVAL_READY, val=true, time=0.5"
             )
+            DELAYED_PEER_ALIAS="UTSDelayedPeer"
+            DELAYED_PEER_DELAY="1.2"
+            POKE_STEPS=("2.0:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_BLOCKED_OUT = unblocked")
             REPORT_COLUMNS=("blocked_out=\$[UTS_BLOCKED_OUT]")
+            EXTRA_CHECKS=("after_client:UTS_BLOCKED_OUT:UTSDelayedPeer")
             ;;
         atomic_condition_drop_pass)
             CASE_MAX_TIME="50"
@@ -522,7 +505,10 @@ get_case_config() {
             )
             PASS_CONDITIONS=("UTS_WARPED = true")
             REPORT_COLUMNS=("warped=\$[UTS_WARPED]")
-            EXTRA_CHECKS=("alog:UTS_STATUS:time_warp=4")
+            EXTRA_CHECKS=(
+                "alog:UTS_STATUS:time_warp=4"
+                "delta:UTS_STATUS:1:UTS_WARPED:1:0.35:0.8"
+            )
             ;;
         delay_reset_pass)
             TIMER_LINES=(
@@ -535,7 +521,11 @@ get_case_config() {
             POKE_STEPS=("2.0:TEST_EVAL_READY=true")
             PASS_CONDITIONS=("UTS_DELAY_RESET >= 1")
             REPORT_COLUMNS=("delay_reset_out=\$[UTS_DELAY_RESET]")
-            EXTRA_CHECKS=("exact_count:UTS_DELAY_RESET:2" "alog:UTS_STATUS:delay_reset=1")
+            EXTRA_CHECKS=(
+                "exact_count:UTS_DELAY_RESET:2"
+                "alog:UTS_STATUS:delay_reset=1"
+                "delta:UTS_DELAY_RESET:1:UTS_DELAY_RESET:2:1.0:1.6"
+            )
             ;;
         reset_max_one_limit_pass)
             TIMER_LINES=(
@@ -620,6 +610,7 @@ get_case_config() {
             )
             PASS_CONDITIONS=("UTS_WINDOWED = true")
             REPORT_COLUMNS=("windowed=\$[UTS_WINDOWED]")
+            EXTRA_CHECKS=("delta:UTS_STATUS:1:UTS_WINDOWED:1:0.15:0.95")
             ;;
         reset_time_numeric_pass)
             TIMER_LINES=(
@@ -645,17 +636,6 @@ get_case_config() {
             PASS_CONDITIONS=("UTS_MULTI_GATED = released")
             REPORT_COLUMNS=("multi_gated=\$[UTS_MULTI_GATED]" "gate_a=\$[UTS_GATE_A]" "gate_b=\$[UTS_GATE_B]")
             EXTRA_CHECKS=("after:UTS_MULTI_GATED:UTS_GATE_B:ready:1")
-            ;;
-        shuffle_false_status_pass)
-            TIMER_LINES=(
-                "script_name = shuffle_false_status"
-                "shuffle = false"
-                "event = var=UTS_SHUFFLE_FALSE, val=true, time=0.2"
-                "event = var=TEST_EVAL_READY, val=true, time=0.5"
-            )
-            PASS_CONDITIONS=("UTS_SHUFFLE_FALSE = true")
-            REPORT_COLUMNS=("shuffle_false=\$[UTS_SHUFFLE_FALSE]")
-            EXTRA_CHECKS=("alog:UTS_STATUS:shuffle=false")
             ;;
         quit_event_pass)
             TIMER_LINES=(
@@ -885,6 +865,76 @@ alog_client_transition_before_eval() {
     ' "$alog"
 }
 
+alog_var_after_client_before_eval() {
+    local case_dir="$1"
+    local var="$2"
+    local client="$3"
+    local alog
+    local cutoff
+    alog=$(find_alog "$case_dir")
+    [ -n "$alog" ] || return 1
+    cutoff=$(evaluation_cutoff "$alog")
+    [ -n "$cutoff" ] || return 1
+    awk -v var="$var" -v client="$client" -v cutoff="$cutoff" '
+        ($1 + 0) <= (cutoff + 0) && $2 == "DB_CLIENTS" {
+            value = $4
+            for(i=5; i<=NF; i++)
+                value = value " " $i
+            if(client_time == "" && index(value, client) > 0) {
+                client_time = $1 + 0
+                client_line = NR
+            }
+        }
+        ($1 + 0) <= (cutoff + 0) && $2 == var && var_time == "" {
+            var_time = $1 + 0
+            var_line = NR
+        }
+        END {
+            ordered = (var_time > client_time) ||
+                      (var_time == client_time && var_line > client_line)
+            exit(client_time != "" && var_time != "" && ordered ? 0 : 1)
+        }
+    ' "$alog"
+}
+
+alog_occurrence_delta_before_eval() {
+    local case_dir="$1"
+    local from_var="$2"
+    local from_occurrence="$3"
+    local to_var="$4"
+    local to_occurrence="$5"
+    local min_delta="$6"
+    local max_delta="$7"
+    local alog
+    local cutoff
+    alog=$(find_alog "$case_dir")
+    [ -n "$alog" ] || return 1
+    cutoff=$(evaluation_cutoff "$alog")
+    [ -n "$cutoff" ] || return 1
+    awk -v from_var="$from_var" -v from_occurrence="$from_occurrence" \
+        -v to_var="$to_var" -v to_occurrence="$to_occurrence" \
+        -v min_delta="$min_delta" -v max_delta="$max_delta" \
+        -v cutoff="$cutoff" '
+        ($1 + 0) <= (cutoff + 0) && !seen[$0]++ {
+            if($2 == from_var) {
+                from_count++
+                if(from_count == from_occurrence)
+                    from_time = $1 + 0
+            }
+            if($2 == to_var) {
+                to_count++
+                if(to_count == to_occurrence)
+                    to_time = $1 + 0
+            }
+        }
+        END {
+            delta = to_time - from_time
+            exit(from_time != "" && to_time != "" &&
+                 delta >= min_delta && delta <= max_delta ? 0 : 1)
+        }
+    ' "$alog"
+}
+
 stop_client() {
     local pid="$1"
     local attempt
@@ -896,6 +946,21 @@ stop_client() {
     done
     kill -KILL "$pid" 2>/dev/null || true
     wait "$pid" 2>/dev/null || true
+}
+
+start_delayed_peer() {
+    local workdir="$1"
+    local port="$2"
+    local alias="$3"
+    local delay="$4"
+
+    (
+        sleep "$delay"
+        cd "$workdir" || exit 1
+        exec uXMS --alias="$alias" --serverhost=localhost \
+            --serverport="$port" DB_CLIENTS
+    ) > "$workdir/delayed_peer.log" 2>&1 &
+    DELAYED_PEER_PID=$!
 }
 
 run_bounded_poke() {
@@ -952,6 +1017,12 @@ extra_checks_ok() {
     local height
     local marker_var
     local client
+    local from_var
+    local from_occurrence
+    local to_var
+    local to_occurrence
+    local min_delta
+    local max_delta
 
     for check in "${EXTRA_CHECKS[@]}"; do
         kind="${check%%:*}"
@@ -1008,6 +1079,26 @@ extra_checks_ok() {
                 marker_var="${rest%%:*}"
                 client="${rest#*:}"
                 alog_client_transition_before_eval "$case_dir" "$marker_var" "$client" || return 1
+                ;;
+            after_client)
+                var="${rest%%:*}"
+                client="${rest#*:}"
+                alog_var_after_client_before_eval "$case_dir" "$var" "$client" || return 1
+                ;;
+            delta)
+                from_var="${rest%%:*}"
+                rest="${rest#*:}"
+                from_occurrence="${rest%%:*}"
+                rest="${rest#*:}"
+                to_var="${rest%%:*}"
+                rest="${rest#*:}"
+                to_occurrence="${rest%%:*}"
+                rest="${rest#*:}"
+                min_delta="${rest%%:*}"
+                max_delta="${rest#*:}"
+                alog_occurrence_delta_before_eval "$case_dir" "$from_var" \
+                    "$from_occurrence" "$to_var" "$to_occurrence" \
+                    "$min_delta" "$max_delta" || return 1
                 ;;
             *)
                 return 1
@@ -1132,6 +1223,7 @@ run_case() {
     local launch_rc=0
     local stimulus_rc=0
     local stem_pid=0
+    local delayed_peer_pid=0
     local -a launch_args=()
     local result_line
     local grade
@@ -1168,8 +1260,16 @@ run_case() {
             LOG_MODE_PREPARED=yes ./zlaunch.sh --log="$LOG_MODE" "${launch_args[@]}"
         ) &
         stem_pid=$!
+        if [ -n "$DELAYED_PEER_ALIAS" ]; then
+            start_delayed_peer "$workdir" "$((case_base + 0))" \
+                "$DELAYED_PEER_ALIAS" "$DELAYED_PEER_DELAY"
+            delayed_peer_pid=$DELAYED_PEER_PID
+        fi
         run_pokes "$((case_base + 0))" || stimulus_rc=$?
         wait "$stem_pid" || launch_rc=$?
+        if [ "$delayed_peer_pid" -gt 0 ]; then
+            stop_client "$delayed_peer_pid"
+        fi
     fi
 
     write_result "$case_name" "$result_file" "$launch_rc" "$stimulus_rc" "$workdir"
