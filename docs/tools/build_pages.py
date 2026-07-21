@@ -2736,7 +2736,7 @@ def render_ctest_coverage() -> str:
     <section class="page-hero page-hero--wide-lede">
       <a class="back-link" href="index.html">Back to overview</a>
       <h1>C++ Unit Tests</h1>
-      <p class="lede">Tests check individual classes and functions without running a mission. Organized into focused groups dubbed 'component families' for parsers, geometry, IvP functions, contact records, behavior helpers, app utilities, and other source-level logic.</p>
+      <p class="lede">Tests check individual classes and functions without running a mission. Organized into focused groups dubbed 'component families' for libraries and other source-level logic like mbutil, geometry, contacts, moosgeodesy, etc.</p>
       <div class="hero-actions">
         <a class="button primary" href="#buckets">Browse component families</a>
         <a class="button secondary" href="{repo_url('tests/cpp/README.md')}">README</a>
