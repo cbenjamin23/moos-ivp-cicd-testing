@@ -16,10 +16,10 @@ ProcessConfig = pMissionEval
   mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
   mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
 
-  lead_condition = TEST_EVAL_READY = true
-  pass_condition = TEST_EVAL_READY = true
+  lead_condition = (BHV_WARNING_SEEN = true) or (TEST_EVAL_READY = true)
   pass_condition = BHV_WARNING_SEEN = true
   pass_condition = BHV_ERROR_SEEN = false
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -32,7 +32,7 @@ ProcessConfig = pMissionEval
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
-  report_column = eval=$[TEST_EVAL_READY]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = relevance=$[SHADOW_RELEVANCE]
   report_column = shdw_spd=$[SHADOW_CONTACT_SPEED]
   report_column = shdw_hdg=$[SHADOW_CONTACT_HEADING]

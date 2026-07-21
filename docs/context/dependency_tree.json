@@ -4588,6 +4588,7 @@
       ],
       "focus_process_apps": [
         "pContactMgrV20",
+        "pEchoVar",
         "pHelmIvP",
         "pMarinePIDV22",
         "pNodeReporter",
@@ -4602,7 +4603,7 @@
         "path": "missions/shadow_behavior_missions/shadow_behavior_motion"
       },
       "patches": {
-        "file_count": 51
+        "file_count": 44
       },
       "path": "harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion",
       "perf_profile": "",
@@ -4610,6 +4611,7 @@
         "ANTLER",
         "pAutoPoke",
         "pContactMgrV20",
+        "pEchoVar",
         "pHelmIvP",
         "pHostInfo",
         "pLogger",
@@ -4627,10 +4629,9 @@
         "uTimerScript"
       ],
       "zlaunch": {
-        "case_count": 35,
+        "case_count": 28,
         "case_parse_error": "",
         "cases": [
-          "startup_no_warning_pass",
           "static_shadow_pass",
           "west_shadow_pass",
           "north_shadow_pass",
@@ -4639,20 +4640,14 @@
           "slow_contact_speed_pass",
           "fast_contact_speed_pass",
           "stationary_contact_pass",
-          "pwt_outer_active_pass",
-          "pwt_outer_edge_pass",
           "pwt_outer_inactive_pass",
           "runtime_pwt_outer_on_pass",
           "runtime_pwt_outer_off_pass",
           "runtime_bad_update_recover_warn_pass",
           "runtime_missing_contact_recover_warn_pass",
-          "heading_widths_pass",
-          "speed_width_aliases_pass",
-          "no_extrapolate_pass",
           "cnflag_range_macro_pass",
           "missing_contact_warn_pass",
           "missing_contact_fail",
-          "missing_contact_param_fail",
           "bad_pwt_outer_dist_fail",
           "bad_heading_peakwidth_fail",
           "bad_heading_basewidth_fail",
@@ -6229,6 +6224,7 @@
         "opregion_h01",
         "pechovar_h01",
         "processwatch_h01",
+        "shadow_h01",
         "stationkeep_h01",
         "ufld_obstacle_sim_h01",
         "utermcommand_h01"
@@ -7030,11 +7026,11 @@
       ".py": 38,
       ".sh": 365,
       ".txt": 302,
-      ".xbhv": 500,
-      ".xmoos": 1368,
+      ".xbhv": 494,
+      ".xmoos": 1367,
       "[none]": 7
     },
-    "harness_patch_count": 1763,
+    "harness_patch_count": 1756,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
     "mission_config_count": 477,

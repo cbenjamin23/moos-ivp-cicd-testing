@@ -105,6 +105,7 @@ ProcessConfig = uFldNodeBroker
   bridge = src=SHADOW_CONTACT_SPEED
   bridge = src=SHADOW_CONTACT_HEADING
   bridge = src=SHADOW_RELEVANCE
+  bridge = src=IVPHELM_UPDATE_RESULT
 #ifdef VROLE CHASER
   bridge = src=NAV_SPEED,   alias=ABE_NAV_SPEED
   bridge = src=NAV_HEADING, alias=ABE_NAV_HEADING
@@ -219,6 +220,7 @@ ProcessConfig = pLogger
   Log = SHADOW_CONTACT_SPEED @ 0 nosync
   Log = SHADOW_CONTACT_HEADING @ 0 nosync
   Log = SHADOW_RELEVANCE @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
   Log = NAV_SPEED @ 0 nosync
   Log = NAV_HEADING @ 0 nosync
   Log = BHV_WARNING @ 0 nosync

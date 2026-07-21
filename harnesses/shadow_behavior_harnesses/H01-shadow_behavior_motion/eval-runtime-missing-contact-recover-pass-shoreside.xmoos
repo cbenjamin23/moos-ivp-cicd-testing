@@ -1,0 +1,57 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  condition = DEPLOY_ALL = true
+  event = var=TEST_EVAL_READY, val=true, time=55
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @BHV_WARNING#BHV_WARNING_SEEN=true
+  mailflag = @SHADOW_GHOST_ACCEPTED#SHADOW_GHOST_ACCEPTED_SEEN=true
+  mailflag = @SHADOW_BEN_ACCEPTED#SHADOW_BEN_ACCEPTED_SEEN=true
+  mailflag = @SHADOW_PWT_120_ACCEPTED#SHADOW_PWT_120_ACCEPTED_SEEN=true
+
+  lead_condition = ((SHADOW_GHOST_ACCEPTED_SEEN = true) and (BHV_WARNING_SEEN = true)) or (TEST_EVAL_READY = true)
+  pass_condition = SHADOW_GHOST_ACCEPTED_SEEN = true
+  pass_condition = BHV_WARNING_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+
+  lead_condition = (SHADOW_BEN_ACCEPTED_SEEN = true) or (TEST_EVAL_READY = true)
+  pass_condition = SHADOW_BEN_ACCEPTED_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+
+  lead_condition = (((SHADOW_PWT_120_ACCEPTED_SEEN = true) and (SHADOW_RELEVANCE > 0)) and ((SHADOW_CONTACT_SPEED >= 1.0) and ((ABE_NAV_SPEED >= 0.8) and (BEN_NAV_SPEED >= 1.0)))) or (TEST_EVAL_READY = true)
+  pass_condition = SHADOW_PWT_120_ACCEPTED_SEEN = true
+  pass_condition = SHADOW_RELEVANCE > 0
+  pass_condition = SHADOW_CONTACT_SPEED >= 1.0
+  pass_condition = ABE_NAV_SPEED >= 0.8
+  pass_condition = BEN_NAV_SPEED >= 1.0
+  pass_condition = TEST_EVAL_READY = false
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag = SAY_MOOS = pass
+  fail_flag = SAY_MOOS = fail
+  mission_form = shadow_behavior_tests
+  report_file = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = expected=accept_ghost_warn_then_accept_ben_and_pwt_120
+  report_column = ghost=$[SHADOW_GHOST_ACCEPTED_SEEN]
+  report_column = ben=$[SHADOW_BEN_ACCEPTED_SEEN]
+  report_column = pwt=$[SHADOW_PWT_120_ACCEPTED_SEEN]
+  report_column = relevance=$[SHADOW_RELEVANCE]
+  report_column = shdw_spd=$[SHADOW_CONTACT_SPEED]
+  report_column = abe_spd=$[ABE_NAV_SPEED]
+  report_column = ben_spd=$[BEN_NAV_SPEED]
+  report_column = warning=$[BHV_WARNING_SEEN]
+  report_column = deadline=$[TEST_EVAL_READY]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

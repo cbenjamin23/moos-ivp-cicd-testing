@@ -1,36 +1,35 @@
 ProcessConfig = uTimerScript
 {
-  AppTick   = 2
-  CommsTick = 2
-
-  event = var=HELM_MALCONFIG, val=false, time=1
-  event = var=TEST_EVAL_READY, val=true, time=20
+  AppTick = 4
+  CommsTick = 4
+  condition = DEPLOY_ALL = true
+  event = var=EVAL_ARMED, val=true, time=2
+  event = var=TEST_EVAL_READY, val=true, time=15
 }
 
 ProcessConfig = pMissionEval
 {
-  AppTick   = 4
+  AppTick = 4
   CommsTick = 4
 
-  mailflag = @ABE_IVPHELM_STATE#HELM_MALCONFIG=true
+  lead_condition = (EVAL_ARMED = true) or (TEST_EVAL_READY = true)
+  pass_condition = EVAL_ARMED = true
+  pass_condition = TEST_EVAL_READY = false
 
-  lead_condition = (HELM_MALCONFIG = true) or (TEST_EVAL_READY = true)
-  pass_condition = HELM_MALCONFIG = true
+  lead_condition = (ABE_IVPHELM_STATE = MALCONFIG) or (TEST_EVAL_READY = true)
+  pass_condition = ABE_IVPHELM_STATE = MALCONFIG
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
-  pass_flag   = SAY_MOOS = pass
-  fail_flag   = SAY_MOOS = fail
-
+  pass_flag = SAY_MOOS = pass
+  fail_flag = SAY_MOOS = fail
   mission_form = shadow_behavior_tests
-  mission_mod  = $(MMOD:=helm_malconfig_fail)
-
-  report_file   = results.txt
+  report_file = results.txt
   report_column = grade=$[GRADE]
   report_column = form=$[MISSION_FORM]
-  report_column = mmod=$[MMOD]
-  report_column = eval=$[HELM_MALCONFIG]
-  report_column = expected=helm_malconfig
-  report_column = helm_malconfig=$[HELM_MALCONFIG]
+  report_column = expected=invalid_shadow_config_rejected
+  report_column = armed=$[EVAL_ARMED]
   report_column = helm_state=$[ABE_IVPHELM_STATE]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = mhash=$[MHASH_SHORT]
 }

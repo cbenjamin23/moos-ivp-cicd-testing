@@ -16,6 +16,7 @@ ProcessConfig = pMissionEval
 
   lead_condition = (BHV_ERROR_SEEN = true) or (TEST_EVAL_READY = true)
   pass_condition = BHV_ERROR_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
 
   result_flag = MISSION_EVALUATED = true
   pass_flag   = SAY_MOOS = pass
@@ -29,6 +30,7 @@ ProcessConfig = pMissionEval
   report_column = form=$[MISSION_FORM]
   report_column = mmod=$[MMOD]
   report_column = eval=$[BHV_ERROR_SEEN]
+  report_column = deadline=$[TEST_EVAL_READY]
   report_column = expected=bhv_error
   report_column = relevance=$[SHADOW_RELEVANCE]
   report_column = bhv_error=$[BHV_ERROR_SEEN]

@@ -22,6 +22,7 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
   Run = uTimerScript     @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pMissionEval     @ NewConsole = false
   Run = pAutoPoke        @ NewConsole = false
 #ifdef LAUNCH_GUI yes
@@ -36,6 +37,50 @@ ProcessConfig = ANTLER
 #include plugs.moos <uProcessWatch>
 
 //----------------------------------------------------
+// pEchoVar Config Block
+
+// Preserve the exact update value as well as its result so ordered recovery
+// cases cannot pass on an unrelated warning or later generic success.
+
+ProcessConfig = pEchoVar
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  FLIP:bad_pwt = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:bad_pwt = dest_variable   = SHADOW_BAD_PWT_REJECTED
+  FLIP:bad_pwt = bhv == shadow_contact
+  FLIP:bad_pwt = var == SHADOW_UPDATES
+  FLIP:bad_pwt = result == param_error
+  FLIP:bad_pwt = val == pwt_outer_dist=-5
+  FLIP:bad_pwt = result -> result
+
+  FLIP:pwt_120 = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:pwt_120 = dest_variable   = SHADOW_PWT_120_ACCEPTED
+  FLIP:pwt_120 = bhv == shadow_contact
+  FLIP:pwt_120 = var == SHADOW_UPDATES
+  FLIP:pwt_120 = result == success
+  FLIP:pwt_120 = val == pwt_outer_dist=120
+  FLIP:pwt_120 = result -> result
+
+  FLIP:ghost = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:ghost = dest_variable   = SHADOW_GHOST_ACCEPTED
+  FLIP:ghost = bhv == shadow_contact
+  FLIP:ghost = var == SHADOW_UPDATES
+  FLIP:ghost = result == success
+  FLIP:ghost = val == contact=ghost
+  FLIP:ghost = result -> result
+
+  FLIP:ben = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:ben = dest_variable   = SHADOW_BEN_ACCEPTED
+  FLIP:ben = bhv == shadow_contact
+  FLIP:ben = var == SHADOW_UPDATES
+  FLIP:ben = result == success
+  FLIP:ben = val == contact=ben
+  FLIP:ben = result -> result
+}
+
+//----------------------------------------------------
 // pAutoPoke Config Block
 
 ProcessConfig = pAutoPoke
@@ -48,6 +93,10 @@ ProcessConfig = pAutoPoke
   flag = TEST_EVAL_READY=false
   flag = BHV_ERROR_SEEN=false
   flag = BHV_WARNING_SEEN=false
+  flag = SHADOW_BAD_PWT_REJECTED_SEEN=false
+  flag = SHADOW_PWT_120_ACCEPTED_SEEN=false
+  flag = SHADOW_GHOST_ACCEPTED_SEEN=false
+  flag = SHADOW_BEN_ACCEPTED_SEEN=false
   flag = SHADOW_CONTACT_X=0
   flag = SHADOW_CONTACT_Y=0
   flag = SHADOW_CONTACT_SPEED=0
@@ -148,7 +197,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = SHADOW_CONTACT_SPEED, SHADOW_CONTACT_HEADING, SHADOW_RELEVANCE
   qbridge  = ABE_NAV_SPEED, ABE_NAV_HEADING, ABE_NAV_X, ABE_NAV_Y
   qbridge  = BEN_NAV_SPEED, BEN_NAV_HEADING, BEN_NAV_X, BEN_NAV_Y
-  qbridge  = BHV_WARNING, BHV_ERROR
+  qbridge  = IVPHELM_UPDATE_RESULT, BHV_WARNING, BHV_ERROR
 }
 
 //----------------------------------------------------
@@ -192,6 +241,11 @@ ProcessConfig = pLogger
   Log = BEN_NAV_HEADING @ 0 nosync
   Log = BEN_NAV_X @ 0 nosync
   Log = BEN_NAV_Y @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
+  Log = SHADOW_BAD_PWT_REJECTED @ 0 nosync
+  Log = SHADOW_PWT_120_ACCEPTED @ 0 nosync
+  Log = SHADOW_GHOST_ACCEPTED @ 0 nosync
+  Log = SHADOW_BEN_ACCEPTED @ 0 nosync
   Log = BHV_WARNING @ 0 nosync
   Log = BHV_ERROR @ 0 nosync
   Log = BHV_ERROR_SEEN @ 0 nosync

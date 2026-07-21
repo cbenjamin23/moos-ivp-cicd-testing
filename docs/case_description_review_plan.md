@@ -2,7 +2,7 @@
 
 ## Goal
 
-Review the case descriptions for all 67 configured harness targets and 1,502
+Review the case descriptions for all 67 configured harness targets and 1,495
 cases so each description states:
 
 1. the unique input, configuration, event, or code path under test; and
@@ -121,6 +121,28 @@ gap one of these dispositions:
 Use the Status column to record `Triaged: strengthen`, `Triaged: CTest`,
 `Triaged: merge/remove`, `Triaged: keep`, or `Deferred`, followed by `Resolved`
 only after the chosen change and its validation are complete.
+
+### Current Gap Accounting (2026-07-20)
+
+The table contains 276 gap rows:
+
+- **215 handled (77.9%)**: the appropriate local contract is resolved,
+  oracle-hardened, moved to direct coverage, or removed as false, redundant, or
+  non-discriminating. No further local action is currently required.
+- **14 partially resolved (5.1%)**: useful local strengthening is complete, but
+  part of the row's named contract remains unproven and still has an actionable
+  or explicitly upstream-dependent follow-up.
+- **19 intentionally deferred (6.9%)**: inspection found no reliable local
+  oracle without new upstream telemetry, evaluator support, direct seams, or a
+  deterministic fixture. The deferred aspect was not disguised with a timing
+  or outcome proxy.
+- **28 open (10.1%)**: these rows have not yet received their Pass 2
+  disposition and mutation-backed strengthening review.
+
+Thus 248 of 276 rows (89.9%) have received a Pass 2 disposition. A locally
+complete contract belongs in handled even when a separate deeper opportunity
+is recorded elsewhere; `partially resolved` is reserved for a remaining part
+of the row's actual named claim.
 
 Track ordinary expected-negative work separately from behavioral gap closure.
 Requiring the exact rejection state, error, or payload is **oracle hardening**:
@@ -434,6 +456,32 @@ invariants.
   `DRIVE` and fails. The deadline is only a missing-state fallback.
 - Both 33-case StationKeep matrices pass under minimal and full logging, and
   all 214 focused `behaviors-marine` CTests pass.
+- Shadow's duplicate startup case and two live outer-distance cases were
+  removed. Direct CTest now proves the strict relevance boundary: a contact at
+  range 119 is relevant for `pwt_outer_dist=120`, while range 120 is not;
+  shifting the configured boundary to 121 fails the boundary assertion.
+- Two motion-only width cases were replaced with direct objective checks.
+  Nondefault heading widths change utility at two course samples, and the
+  canonical and short aliases produce identical utilities over the complete
+  course/speed sample grid; restoring the default widths fails.
+- Runtime recovery cases now require ordered, exact update-result evidence for
+  rejection and acceptance, the expected warning, and only then active
+  relevance and motion. Changing the recovery distance to an inactive value or
+  omitting the ghost-contact phase produces a clean mission-owned failure.
+- Missing-contact warning/error policy is event-led in the live harness and
+  exact in direct CTest, including the full
+  `shadow_contact: ghost x/y/heading/speed info not found` payload. Selecting
+  warning policy where the error path is required fails directly.
+- Shadow's twelve genuine malformed startup values now require armed,
+  pre-deadline literal `MALCONFIG` in the live harness and exact parser
+  rejection in CTest. The omitted-contact case was removed because the shared
+  contact behavior deliberately defaults it to `unset_ok`; it is not malformed
+  configuration. Repairing `pwt_outer_dist=-1` reaches `DRIVE` and fails.
+- The no-extrapolation live case was removed because the current shared
+  extrapolation block is compiled out; `ACOL-UP-001` retains the upstream
+  contract rather than claiming a distinction that does not execute.
+- Both 28-case Shadow matrices pass under minimal and full logging, and all
+  218 focused `behaviors-marine` CTests pass.
 
 ### Wave 5 Progress (2026-07-19–20)
 
@@ -812,12 +860,12 @@ They are intentionally deferred to the case-strengthening pass.
 | p01_obstacle | `baseline_field_pass`, `dense_field_pass` | The baseline case stages the exact six-obstacle file and the dense case stages the exact distinct eight-obstacle file. | `launch.sh` derives count and a short SHA-256 fingerprint from the actual staged `obstacles.txt`; `pMissionEval` reports both and requires `6/sha256_4e5a4b8c6149` or `8/sha256_d5c642b45d1d` before accepting the existing motion and performance evidence. | Resolved: substituting the baseline file into the dense case fails with count six, and a one-vertex dense mutation retains count eight and ordinary completion but fails on the changed fingerprint. | Retain input-identity checks independently of the performance bands; they prove fixture wiring, not obstacle-avoidance quality by themselves. | Resolved; fixture identity |
 | p03_colregs | `mixed_speed_circle_pass`, `endurance_circle_pass` | The five helm communities use configured stock speeds `1.55,1.67,1.79,1.91,2.03` while all five keep avoidance enabled. | Each helm initializes `TRAFFIC_STOCK_SPEED` from its `STOCK_SPD`; node brokers alias the five stock-speed and live `AVOID` values shoreside, and both evaluators require the exact profile before accepting their traffic-window evidence. | Resolved: five equal `1.75` values complete a collision-free short traffic window with acceptable timing but produce mission-owned `grade=fail` from the five reported values. | Retain configuration identity separately from traffic-quality metrics; the existing 300/900-second leads remain justified by the performance exposure contract. | Resolved; scenario identity |
 | p03_colregs | `noncoop_circle_pass` | `eve` is the selected non-cooperative vehicle and actually runs with `AVOID=false` while Abe through Deb remain enabled. | The evaluator requires `DUMB_VNAME=eve`, all five exact `1.50` stock-speed values, `TRAFFIC_AVOID_EVE=false`, and the other four live avoidance states true before accepting the traffic-window evidence. | Resolved: redirecting only `AVOID=false` to Ben preserves `DUMB_VNAME=eve`, collision-free completion, batches, and timing but fails with `avoid_ben=false,avoid_eve=true`. | Retain every vehicle's live state so a fully cooperative ring, the wrong disabled participant, or multiple disabled participants fail. | Resolved; participant identity |
-| shadow_h01 | `startup_no_warning_pass`, `static_shadow_pass` | The startup case uniquely demonstrates that delaying `contact=ben` and Shadow activation avoids a premature missing-contact warning. | Both cases use the same stem events (`contact=ben` at 30 seconds and `SHADOW=true` at 32 seconds); the startup evaluator merely lowers Abe's minimum speed from `1.0` to `0.8`. | There is no distinct startup fixture or pre-activation observation, so the two cases can pass for the same reason. | Activate Shadow before contact data in a paired control, or explicitly observe the pre-activation interval and then retain the warning-free delayed case. | Open |
-| shadow_h01 | `pwt_outer_active_pass`, `pwt_outer_edge_pass` | `pwt_outer_dist=120` and `100` keep Shadow relevant because the contact is inside each configured boundary. | Final positive relevance and broad motion bounds. | The stem uses unrestricted `pwt_outer_dist=0`; an implementation that ignores both case patches can satisfy both grades, and the actual range is not compared with the boundary. | Grade `SHADOW_CONTACT_RANGE` or equivalent against the threshold and add just-inside/just-outside paired geometry that fails when the parameter is ignored. | Open |
-| shadow_h01 | `runtime_bad_update_recover_warn_pass`, `runtime_missing_contact_recover_warn_pass` | Each invalid runtime update emits its expected warning before a later valid update restores active shadowing. | Any `BHV_WARNING` sets the warning latch; final relevance and speed evidence proves only the recovered state. | The warning payload is not tied to the invalid value or missing contact, and no observation proves the intermediate state. | Compare the warning text and latch the inactive/missing-contact interval before checking final recovery. | Open |
-| shadow_h01 | `heading_widths_pass`, `speed_width_aliases_pass`, `no_extrapolate_pass` | Nondefault objective widths, accepted width aliases, and disabled extrapolation each affect their intended Shadow code path. | Each uses the unchanged default positive-relevance, heading, speed, and no-warning evaluator. | Ignoring the changed parameters can produce the same result. | Add objective/debug telemetry or discriminating contact maneuvers where each setting changes a measurable heading/speed response; confirm with parameter-ignored mutations. | Open |
-| shadow_h01 | `missing_contact_warn_pass`, `missing_contact_fail` | The unavailable `ghost` contact produces the policy-specific Shadow warning or error. | Any `BHV_WARNING` or `BHV_ERROR` publication satisfies the respective latch. | An unrelated warning or error passes, so neither payload is tied to the missing-contact policy. | Compare the exact missing-contact warning/error payload and retain the absence of `BHV_ERROR` in the warning-only case. | Open |
-| shadow_h01 | `missing_contact_param_fail`, `bad_pwt_outer_dist_fail`, `bad_heading_peakwidth_fail`, `bad_heading_basewidth_fail`, `bad_speed_peakwidth_fail`, `bad_speed_basewidth_fail`, `bad_decay_fail`, `bad_decay_order_fail`, `bad_extrapolate_fail`, `bad_on_no_contact_ok_fail`, `bad_time_on_leg_fail`, `bad_cnflag_fail`, `bad_post_per_contact_info_fail` | Each malformed value causes its parameter-specific helm `MALCONFIG` rejection. | `mailflag=@ABE_IVPHELM_STATE#HELM_MALCONFIG=true` sets the latch on any helm-state publication; the raw state is report-only. | A normal helm-state publication can pass every negative case, and no evidence identifies the rejected parameter. | Require `ABE_IVPHELM_STATE=MALCONFIG` and compare a parameter-specific `BHV_ERROR` or warning payload for every fixture. | Open |
+| shadow_h01 | Removed `startup_no_warning_pass`; retained `static_shadow_pass` | The removed case claimed that delayed contact assignment and activation avoided a premature warning. | It used the same stem events as `static_shadow_pass` and differed only by a looser final speed threshold, with no pre-activation observation. | The two cases could pass for the same reason, so the duplicate supplied no distinct contract. | Retain the ordinary static integration case without a second name for identical startup sequencing. | Removed; duplicate |
+| shadow_h01 | Removed `pwt_outer_active_pass`, `pwt_outer_edge_pass`; CTest `OuterDistanceIsRelevantOnlyInsideStrictBoundary` | `pwt_outer_dist=120` uses a strict less-than comparison for contact relevance. | The direct test holds all contact state fixed, requires an objective and relevance 1 at range 119, then no objective and relevance 0 at the exact 120-meter boundary. | Resolved: shifting the configured boundary to 121 makes the boundary sample relevant and fails; the removed live cases could both pass if their patches were ignored because the stem default was unrestricted. | Keep the deterministic just-inside/exact-boundary CTest and the distinct live inactive/runtime-transition cases. | Removed; CTest strengthened |
+| shadow_h01 | `runtime_bad_update_recover_warn_pass`, `runtime_missing_contact_recover_warn_pass` | The first case rejects `pwt_outer_dist=-5` before accepting `120`; the second accepts `contact=ghost`, observes its warning, then accepts `contact=ben` and `pwt_outer_dist=120`. | Ordered evaluator phases require each exact `IVPHELM_UPDATE_RESULT` value and the expected warning before final positive relevance and moving Shadow/Abe/Ben evidence. | Resolved: changing the recovery distance to inactive `20` or omitting the ghost phase prevents the corresponding exact phase and produces a mission-owned deadline failure. | Retain exact ordered update identity before broad recovery motion. | Resolved |
+| shadow_h01 | Removed `heading_widths_pass`, `speed_width_aliases_pass`, `no_extrapolate_pass`; CTest `WidthParametersShapeObjectiveAndAliasesMatchCanonical` | Nondefault heading widths change Shadow's objective shape, and short width aliases produce the same objective as canonical parameter names. | Direct tests compare nondefault versus default utility at courses 130 and 170, then compare canonical and alias objectives at every integer course and speed sample. Source inspection confirms the shared extrapolation block is compiled out. | Resolved locally: restoring default widths fails the shape assertions; live width cases were non-discriminating, and the extrapolation setting currently has no executable effect. | Keep objective-shape and alias equivalence in CTest; restore paired extrapolation coverage only after `ACOL-UP-001` is implemented. | Removed; CTest strengthened; upstream extrapolation deferred |
+| shadow_h01 | `missing_contact_warn_pass`, `missing_contact_fail`; CTest `MissingContactPolicyPostsExactWarningOrError` | The same absent `ghost` contact is a warning when `on_no_contact_ok=true` and a behavior error when it is false. | Live evaluators lead on the policy-specific event before their deadline and forbid an error in the warning case; direct CTest requires the exact `shadow_contact: ghost x/y/heading/speed info not found` payload on the correct variable. | Resolved: selecting warning policy for the required-error assertion leaves `BHV_ERROR` absent and fails directly. | Retain the live policy integration and direct exact-payload identity. | Resolved |
+| shadow_h01 | Removed `missing_contact_param_fail`; twelve retained `bad_*_fail` cases; CTest `RejectsEveryMalformedHarnessParameter` | Each retained malformed startup value is rejected by its exact Shadow or inherited parameter parser and causes helm configuration failure. Omitting `contact` is not malformed because the shared behavior defaults it to `unset_ok`. | Direct CTest requires rejection of all twelve exact fixture values; every live case requires a two-second arm barrier followed by literal `ABE_IVPHELM_STATE=MALCONFIG` before the missing-state deadline. | Resolved: repairing `pwt_outer_dist=-1` to valid `1` reaches `DRIVE` and fails; the omitted-contact case was removed after its strengthened evaluator correctly exposed the false premise. | Retain direct parameter identity plus live helm integration only for actual malformed values. | Resolved; false case removed |
 | stationkeep_h01 | Removed `center_activate_swing_pass`; CTest `SwingTimeFollowsOwnshipThenFreezesStation` | With `center_activate=true` and `swing_time=8`, the station follows ownship during the swing interval and then freezes at the last swing position. | The direct test moves ownship from x=0 to 10 during the interval, closes the swing at x=20, then moves to x=30 and requires the posted station to remain x=20. | Resolved: changing `swing_time` to zero freezes at the initial position and fails; the removed live case's ordinary final hold could not distinguish either implementation. | Keep the deterministic state sequence in CTest and omit the non-discriminating motion case. | Removed; CTest strengthened |
 | stationkeep_h01 | `wide_radius_pass`, `tight_radius_pass`, `inner_gt_outer_pass`, `radius_update_expand_pass`, `radius_update_shrink_pass`; CTest `PromotesOuterRadiusToInnerRadiusOnRun` | Each static or accepted runtime update installs its named inner/outer radii, including the policy for inner 18 greater than outer 8. | `pEchoVar` normalizes the exact reported radii; each evaluator requires settings before later distance evidence, and the direct test requires the effective outer ring to become 18. | Resolved: ignored or wrong radius inputs fail the exact settings phase, while the direct test distinguishes the promotion policy without simulator geometry. | Retain ordered settings-then-motion evidence and the direct effective-radius assertion. | Resolved |
 | stationkeep_h01 | `outer_speed_slow_pass`, `outer_speed_update_slow_pass` | Static or accepted runtime `outer_speed=0.35` produces a roughly 0.2 m/s correction while the vehicle is 9–11 meters from the station. | Exact normalized settings (`outer_speed=0.3`) are required first; inside the outer ring both cases require `0.15<DESIRED_SPEED<0.25`, seeking state, and no error. | Resolved: restoring `outer_speed=1.2` reports the wrong setting and commands roughly 0.4 m/s at evaluation, producing a clean mission-owned failure. | Retain direct commanded-speed evidence in a broad ring band rather than an exact trajectory checkpoint. | Resolved |
