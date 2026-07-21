@@ -1,9 +1,0 @@
-ProcessConfig = uTimerScript
-{
-  AppTick   = 2
-  CommsTick = 2
-
-  condition = DEPLOY = true
-
-  event = var=ALLOW_LEAD, val=true, time=2
-}

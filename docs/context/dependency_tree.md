@@ -10,7 +10,7 @@ repo files should be opened next?
 
 - Harness targets: `67`
 - Harness launchers: `67` under `harnesses/**/zlaunch.sh`
-- Harness patch/config files: `1726` under configured targets
+- Harness patch/config files: `1705` under configured targets
 - Mission launch/config files: `477` under `missions/`
 - C++ test sources: `215`
 
@@ -135,7 +135,7 @@ jq '.cpp_tests.families.mbutil' docs/context/dependency_tree.json
 | `shadow_h01` | `shadow_behavior` | `harnesses/shadow_behavior_harnesses/H01-shadow_behavior_motion/zlaunch.sh` | `missions/shadow_behavior_missions/shadow_behavior_motion` | 28 | `pEchoVar`, `pContactMgrV20` | `shadow-behavior-motion` |
 | `stationkeep_h01` | `stationkeep_behavior` | `harnesses/stationkeep_behavior_harnesses/H01-stationkeep_behavior_motion/zlaunch.sh` | `missions/stationkeep_behavior_missions/stationkeep_behavior_motion` | 33 | `pEchoVar` | `stationkeep-behavior-motion` |
 | `trail_h01` | `trail_behavior` | `harnesses/trail_behavior_harnesses/H01-trail_behavior_motion/zlaunch.sh` | `missions/trail_behavior_missions/trail_behavior_motion` | 20 | `pEchoVar`, `pContactMgrV20` | `trail-behavior-motion` |
-| `waypoint_h01` | `waypoint_behavior` | `harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion/zlaunch.sh` | `missions/waypoint_behavior_missions/waypoint_behavior_motion` | 43 | - | `waypoint-behavior-motion` |
+| `waypoint_h01` | `waypoint_behavior` | `harnesses/waypoint_behavior_harnesses/H01-waypoint_behavior_motion/zlaunch.sh` | `missions/waypoint_behavior_missions/waypoint_behavior_motion` | 25 | `pEchoVar` | `waypoint-behavior-motion` |
 | `p02_colregs` | `colregs`, `performance` | `harnesses/performance_harnesses/P02-colregs_joust/zlaunch.sh` | `missions/performance_missions/P02-colregs_joust` | 3 | `iM300`, `iM300Health`, `uFldCollisionDetect`, `pContactMgrV20` | `performance-colregs-joust` |
 | `p03_colregs` | `colregs`, `performance` | `harnesses/performance_harnesses/P03-colregs_traffic_ring/zlaunch.sh` | `missions/performance_missions/P03-colregs_traffic_ring` | 4 | `pTrafficManager`, `iM300`, `iM300Health`, `uFldCollisionDetect` | `performance-traffic-ring` |
 | `ufld_pathcheck_h01` | `ufld_pathcheck` | `harnesses/ufld_pathcheck_harnesses/H01-ufld_pathcheck_unit/zlaunch.sh` | `missions/ufield_app_missions/ufield_app_unit` | 17 | `uFldPathCheck`, `pMissionEvalAlpha` | `ufld-pathcheck-unit` |
@@ -172,7 +172,7 @@ the full `ProcessConfig` map is in `docs/context/dependency_tree.json`.
 - `iM300Health`: `p02_colregs`, `p03_colregs`
 - `pContactMgrV20`: `cmgr_h01`, `cmgr_h02`, `collision_h01`, `colregs_h01`, `colregs_h02`, `colregs_h03`, `colregs_h04`, `convoy_h01`, `cutrange_h01`, `p02_colregs`, `p03_colregs`, `shadow_h01`, `trail_h01`
 - `pDeadManPost`: `pdeadmanpost_h01`
-- `pEchoVar`: `legrun_h01`, `loiter_h01`, `opregion_h01`, `pechovar_h01`, `processwatch_h01`, `shadow_h01`, `stationkeep_h01`, `trail_h01`, `ufld_obstacle_sim_h01`, `utermcommand_h01`
+- `pEchoVar`: `legrun_h01`, `loiter_h01`, `opregion_h01`, `pechovar_h01`, `processwatch_h01`, `shadow_h01`, `stationkeep_h01`, `trail_h01`, `ufld_obstacle_sim_h01`, `utermcommand_h01`, `waypoint_h01`
 - `pGapLatch`: `testfailure_h01`
 - `pMediator`: `ufield_comms_h02`
 - `pMissionEvalAlpha`: `ufld_beacon_range_sensor_h01`, `ufld_collision_detect_h01`, `ufld_pathcheck_h01`

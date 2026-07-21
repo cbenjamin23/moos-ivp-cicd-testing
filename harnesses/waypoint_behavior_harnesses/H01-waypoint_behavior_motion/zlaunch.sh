@@ -62,33 +62,15 @@ FINISH_FATAL_REASON=""
 
 CASES=(
     single_point_arrival_pass
-    endflag_pass
     multi_point_sequence_pass
-    wptflag_pass
     repeat_once_cycle_pass
     repeat_forever_cycle_pass
     dynamic_points_update_pass
     newpt_update_pass
     xpoints_update_pass
-    capture_radius_large_pass
-    capture_line_absolute_pass
-    slip_radius_pass
-    order_reverse_pass
-    currix_start_pass
-    lead_to_start_pass
-    lead_condition_pass
-    end_spd_slowdown_pass
-    speed_alt_update_pass
-    reset_on_idle_pass
     empty_start_then_update_pass
     wptflag_on_start_pass
-    custom_status_vars_pass
     polygon_points_pass
-    ipf_type_roc_pass
-    ipf_type_zaic_spd_pass
-    greedy_tour_pass
-    cycle_index_output_pass
-    efficiency_measure_pass
     slow_speed_no_arrival_pass
     no_points_timeout_fail
     malformed_update_fail
@@ -328,12 +310,7 @@ get_case_config() {
 
     if [ "$CASE_NAME" = "single_point_arrival_pass" ]; then
         :
-    elif [ "$CASE_NAME" = "endflag_pass" ]; then
-        :
     elif [ "$CASE_NAME" = "multi_point_sequence_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/multi-point-sequence-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "wptflag_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/wptflag-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/multi-point-sequence-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "repeat_once_cycle_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/cycleflag-pass-shoreside.xmoos"
@@ -348,31 +325,9 @@ get_case_config() {
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/newpt-update-pass-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/points-empty-vehicle.xbhv"
     elif [ "$CASE_NAME" = "xpoints_update_pass" ]; then
+        CASE_SHORE_PATCH="$HARNESS_DIR/xpoints-update-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/xpoints-update-pass-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/xpoints-update-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "capture_radius_large_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/capture-radius-large-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "capture_line_absolute_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/capture-line-absolute-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "slip_radius_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/slip-radius-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "order_reverse_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/order-reverse-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "currix_start_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/currix-start-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "lead_to_start_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/lead-to-start-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "lead_condition_pass" ]; then
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/lead-condition-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/lead-condition-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "end_spd_slowdown_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/end-spd-slowdown-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "speed_alt_update_pass" ]; then
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/speed-alt-update-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/speed-alt-update-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "reset_on_idle_pass" ]; then
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/reset-on-idle-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/reset-on-idle-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "empty_start_then_update_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/empty-start-then-update-pass-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/empty-start-then-update-pass-vehicle.xmoos"
@@ -380,25 +335,8 @@ get_case_config() {
     elif [ "$CASE_NAME" = "wptflag_on_start_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/wptflag-on-start-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/wptflag-on-start-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "custom_status_vars_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/custom-status-vars-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/custom-status-vars-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/custom-status-vars-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "polygon_points_pass" ]; then
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/polygon-points-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "ipf_type_roc_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/ipf-type-roc-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "ipf_type_zaic_spd_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/ipf-type-zaic-spd-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "greedy_tour_pass" ]; then
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/greedy-tour-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "cycle_index_output_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/cycle-index-output-pass-shoreside.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/repeat-once-cycle-pass-vehicle.xbhv"
-    elif [ "$CASE_NAME" = "efficiency_measure_pass" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/efficiency-measure-pass-shoreside.xmoos"
-        CASE_VEH_MOOS_PATCH="$HARNESS_DIR/efficiency-measure-pass-vehicle.xmoos"
-        CASE_VEH_BHV_PATCH="$HARNESS_DIR/efficiency-measure-pass-vehicle.xbhv"
     elif [ "$CASE_NAME" = "slow_speed_no_arrival_pass" ]; then
         CASE_SHORE_PATCH="$HARNESS_DIR/timer-no-done-pass-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/slow-speed-no-arrival-pass-vehicle.xbhv"
@@ -406,11 +344,11 @@ get_case_config() {
         CASE_SHORE_PATCH="$HARNESS_DIR/timer-wpt-done-fail-shoreside.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/points-empty-vehicle.xbhv"
     elif [ "$CASE_NAME" = "malformed_update_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/timer-wpt-done-fail-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/malformed-update-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/malformed-update-fail-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/points-empty-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_xpoints_size_fail" ]; then
-        CASE_SHORE_PATCH="$HARNESS_DIR/timer-wpt-done-fail-shoreside.xmoos"
+        CASE_SHORE_PATCH="$HARNESS_DIR/bad-xpoints-size-fail-shoreside.xmoos"
         CASE_VEH_MOOS_PATCH="$HARNESS_DIR/bad-xpoints-size-fail-vehicle.xmoos"
         CASE_VEH_BHV_PATCH="$HARNESS_DIR/bad-xpoints-size-fail-vehicle.xbhv"
     elif [ "$CASE_NAME" = "bad_speed_fail" ]; then

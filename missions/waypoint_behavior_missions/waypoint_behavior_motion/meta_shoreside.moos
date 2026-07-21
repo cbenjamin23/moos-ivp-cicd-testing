@@ -22,6 +22,7 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker  @ NewConsole = false
   Run = uFldNodeComms    @ NewConsole = false
   Run = uTimerScript     @ NewConsole = false
+  Run = pEchoVar         @ NewConsole = false
   Run = pMissionEval     @ NewConsole = false
   Run = pAutoPoke        @ NewConsole = false
 #ifdef LAUNCH_GUI yes
@@ -34,6 +35,33 @@ ProcessConfig = ANTLER
 #include plugs.moos <pHostInfo>
 #include plugs.moos <pShare>
 #include plugs.moos <uProcessWatch>
+
+//----------------------------------------------------
+// pEchoVar Config Block
+
+// Preserve the exact rejected update payload so a no-motion result cannot
+// stand in for parser rejection.
+
+ProcessConfig = pEchoVar
+{
+  AppTick = 10
+  CommsTick = 10
+
+  FLIP:bad_points = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:bad_points = dest_variable = WPT_BAD_POINTS_REJECTED
+  FLIP:bad_points = bhv == waypoint
+  FLIP:bad_points = var == WPT_UPDATES
+  FLIP:bad_points = result == param_error
+  FLIP:bad_points = val == points=not_a_point
+  FLIP:bad_points = result -> result
+
+  FLIP:bad_xpoints = source_variable = IVPHELM_UPDATE_RESULT
+  FLIP:bad_xpoints = dest_variable = WPT_BAD_XPOINTS_REJECTED
+  FLIP:bad_xpoints = bhv == waypoint
+  FLIP:bad_xpoints = var == WPT_UPDATES
+  FLIP:bad_xpoints = result == param_error
+  FLIP:bad_xpoints = result -> result
+}
 
 //----------------------------------------------------
 // pAutoPoke Config Block
@@ -51,9 +79,14 @@ ProcessConfig = pAutoPoke
   flag = WAYPOINT_END=false
   flag = TEST_EVAL_READY=false
   flag = BHV_ERROR_SEEN=false
+  flag = WPT_BAD_POINTS_REJECTED_SEEN=false
+  flag = WPT_BAD_XPOINTS_REJECTED_SEEN=false
   flag = WPT_INDEX=-1
   flag = CYCLE_INDEX=0
   flag = WPT_DIST_TO_NEXT=-1
+  flag = ABE_NAV_X=-18
+  flag = ABE_NAV_Y=-121
+  flag = ABE_NAV_SPEED=0
 
   required_nodes = 1
 }
@@ -123,6 +156,8 @@ ProcessConfig = uFldShoreBroker
   qbridge  = WPT_UPDATES, WPT_DONE, WPT_HIT, CYCLE_HIT
   qbridge  = WAYPOINT_END, TEST_EVAL_READY, BHV_ERROR
   qbridge  = WPT_STAT, WPT_INDEX, CYCLE_INDEX, WPT_DIST_TO_NEXT
+  qbridge  = IVPHELM_UPDATE_RESULT
+  qbridge  = ABE_NAV_X, ABE_NAV_Y, ABE_NAV_SPEED
 }
 
 //----------------------------------------------------

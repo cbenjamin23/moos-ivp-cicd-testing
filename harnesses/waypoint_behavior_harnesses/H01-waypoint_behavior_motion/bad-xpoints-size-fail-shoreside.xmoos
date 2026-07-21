@@ -1,0 +1,39 @@
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+  condition = DEPLOY_ALL = true
+  event = var=TEST_EVAL_READY, val=true, time=12
+}
+
+ProcessConfig = pMissionEval
+{
+  AppTick = 4
+  CommsTick = 4
+
+  mailflag = @BHV_ERROR#BHV_ERROR_SEEN=true
+  mailflag = @WPT_BAD_XPOINTS_REJECTED#WPT_BAD_XPOINTS_REJECTED_SEEN=true
+
+  lead_condition = (WPT_BAD_XPOINTS_REJECTED_SEEN = true) or (TEST_EVAL_READY = true)
+  pass_condition = WPT_BAD_XPOINTS_REJECTED_SEEN = true
+  pass_condition = TEST_EVAL_READY = false
+  pass_condition = WPT_DONE = false
+  pass_condition = WPT_INDEX = 0
+  pass_condition = WPT_DIST_TO_NEXT > 70
+  pass_condition = BHV_ERROR_SEEN = false
+
+  result_flag = MISSION_EVALUATED = true
+  pass_flag = SAY_MOOS = pass
+  fail_flag = SAY_MOOS = fail
+  mission_form = waypoint_behavior_tests
+  report_file = results.txt
+  report_column = grade=$[GRADE]
+  report_column = form=$[MISSION_FORM]
+  report_column = expected=reject_xpoints_size_change
+  report_column = rejected=$[WPT_BAD_XPOINTS_REJECTED_SEEN]
+  report_column = wpt_index=$[WPT_INDEX]
+  report_column = wpt_dist=$[WPT_DIST_TO_NEXT]
+  report_column = deadline=$[TEST_EVAL_READY]
+  report_column = bhv_error=$[BHV_ERROR_SEEN]
+  report_column = mhash=$[MHASH_SHORT]
+}

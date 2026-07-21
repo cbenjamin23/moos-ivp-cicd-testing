@@ -102,6 +102,10 @@ ProcessConfig = uFldNodeBroker
   bridge = src=WPT_UPDATES
   bridge = src=BHV_WARNING
   bridge = src=BHV_ERROR
+  bridge = src=IVPHELM_UPDATE_RESULT
+  bridge = src=NAV_X, alias=ABE_NAV_X
+  bridge = src=NAV_Y, alias=ABE_NAV_Y
+  bridge = src=NAV_SPEED, alias=ABE_NAV_SPEED
   bridge = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
   bridge = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
 }
@@ -149,6 +153,7 @@ ProcessConfig = pLogger
   Log = IVPHELM_LIFE_EVENT @ 0 nosync
   Log = BHV_WARNING @ 0 nosync
   Log = BHV_ERROR @ 0 nosync
+  Log = IVPHELM_UPDATE_RESULT @ 0 nosync
   Log = WPT_DONE @ 0 nosync
   Log = WPT_HIT @ 0 nosync
   Log = CYCLE_HIT @ 0 nosync
