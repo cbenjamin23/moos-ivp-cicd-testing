@@ -2775,16 +2775,11 @@ def render_ctest_coverage() -> str:
         <p class="eyebrow">Current Snapshot</p>
         <h2>Unit test coverage at a glance</h2>
       </div>
-      <div class="stats-grid stats-grid--three">
+      <div class="stats-grid stats-grid--two">
         <article class="stat-card">
           <strong>{ctest_total_case_count()}</strong>
           <span>Test Cases</span>
           <p>Individual C++ unit tests covering expected and edge-case behavior.</p>
-        </article>
-        <article class="stat-card">
-          <strong>{ctest_total_target_count(targets)}</strong>
-          <span>Test Executables</span>
-          <p>Focused executables that group related component checks.</p>
         </article>
         <article class="stat-card">
           <strong>{len(areas)}</strong>
@@ -2796,8 +2791,7 @@ def render_ctest_coverage() -> str:
 
     <section id="buckets" class="content-section">
       <div class="section-heading">
-        <p class="eyebrow">Component Families</p>
-        <h2>Unit test coverage by component family</h2>
+        <h2>Component Family Catalog</h2>
         <p>Line coverage includes only source files compiled directly into each test target.</p>
       </div>
       <div class="table-wrap">
