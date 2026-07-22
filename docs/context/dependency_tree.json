@@ -6956,7 +6956,7 @@
   },
   "repo": {
     "file_counts_by_suffix": {
-      ".bhv": 32,
+      ".bhv": 31,
       ".cpp": 221,
       ".css": 3,
       ".gif": 1,
@@ -6964,23 +6964,23 @@
       ".html": 75,
       ".js": 1,
       ".json": 2,
-      ".md": 147,
+      ".md": 146,
       ".mjo": 1,
-      ".moos": 155,
+      ".moos": 152,
       ".mp4": 149,
       ".out": 3,
       ".png": 4,
       ".py": 38,
-      ".sh": 365,
+      ".sh": 360,
       ".txt": 302,
       ".xbhv": 449,
       ".xmoos": 1347,
-      "[none]": 7
+      "[none]": 6
     },
     "harness_patch_count": 1691,
     "harness_target_count": 67,
     "harness_zlaunch_count": 67,
-    "mission_config_count": 477,
+    "mission_config_count": 468,
     "root": "."
   },
   "schema": "moos-ivp-cicd-context-graph.v1",

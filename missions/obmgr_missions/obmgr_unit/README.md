@@ -2,10 +2,10 @@
 
 Fast obstacle-manager stem mission for `pObstacleMgr`.
 
-This mission is the source stem for the obstacle-manager CI suite. Unlike the
-older `first_draft` mission, this stem is deliberately unit-test-like: the
-ownship stays stationary in the lower band of the map and the obstacle-manager
-behavior is driven almost entirely by timer-scripted obstacle mail.
+This mission is the source stem for the obstacle-manager CI suite. It is
+deliberately unit-test-like: the ownship stays stationary in the lower band of
+the map and the obstacle-manager behavior is driven almost entirely by
+timer-scripted obstacle mail.
 
 ## Default Stem Behavior
 
