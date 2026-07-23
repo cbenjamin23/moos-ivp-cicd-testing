@@ -80,6 +80,15 @@ double wrappedLongitudeDifference(double lhs, double rhs)
   return difference;
 }
 
+bool usesProjBackend()
+{
+#if defined(MOOSGEODESY_IMPL) && defined(MOOSGEODESY_IMPL_PROJ)
+  return MOOSGEODESY_IMPL == MOOSGEODESY_IMPL_PROJ;
+#else
+  return false;
+#endif
+}
+
 }  // namespace
 
 // Covers datum initialization: stores the WGS-84 origin and derives its UTM zone.
@@ -492,12 +501,13 @@ TEST(MOOSGeodesyLocalGridTest, RejectsOffsetsOutsideInverseTrigonometricDomain)
   EXPECT_DOUBLE_EQ(longitude, 0);
 }
 
-// Migration contract: a local frame must stay in its datum's fixed UTM zone.
-// The handwritten implementation currently reselects a zone for each point,
-// so enable this test with the PROJ-backed fixed-zone implementation.
+// PROJ migration contract: a local frame stays in its datum's fixed UTM zone.
 TEST(MOOSGeodesyMigrationContractTest,
-     DISABLED_RemainsContinuousAcrossAdjacentUTMZones)
+     RemainsContinuousAcrossAdjacentUTMZones)
 {
+  if(!usesProjBackend())
+    GTEST_SKIP() << "Requires the PROJ-backed fixed-zone implementation";
+
   CMOOSGeodesy geodesy;
   ASSERT_TRUE(geodesy.Initialise(0.0, -0.0001));
 
@@ -509,8 +519,11 @@ TEST(MOOSGeodesyMigrationContractTest,
 
 // Migration contract: longitude wrapping must not introduce a zone-width jump.
 TEST(MOOSGeodesyMigrationContractTest,
-     DISABLED_RemainsContinuousAcrossAntimeridian)
+     RemainsContinuousAcrossAntimeridian)
 {
+  if(!usesProjBackend())
+    GTEST_SKIP() << "Requires the PROJ-backed fixed-zone implementation";
+
   CMOOSGeodesy geodesy;
   ASSERT_TRUE(geodesy.Initialise(0.0, 179.999));
 
@@ -527,8 +540,11 @@ TEST(MOOSGeodesyMigrationContractTest,
 // Migration contract: UTM initialization accepts only finite coordinates in
 // the supported UTM domain and leaves an existing datum unchanged on failure.
 TEST(MOOSGeodesyMigrationContractTest,
-     DISABLED_RejectsInvalidInitializationWithoutChangingDatum)
+     RejectsInvalidInitializationWithoutChangingDatum)
 {
+  if(!usesProjBackend())
+    GTEST_SKIP() << "Requires the PROJ-backed validated implementation";
+
   CMOOSGeodesy geodesy;
   ASSERT_TRUE(geodesy.Initialise(43.8253, -70.3304));
 
@@ -545,11 +561,14 @@ TEST(MOOSGeodesyMigrationContractTest,
   EXPECT_EQ(utmZone(geodesy), "19T");
 }
 
-// Migration contract: failed forward conversions return false without
-// replacing caller-owned output values or the last valid projection state.
+// Migration contract: failed forward conversions return false, mark caller
+// outputs invalid, and preserve the last valid projection state.
 TEST(MOOSGeodesyMigrationContractTest,
-     DISABLED_RejectsNonFiniteProjectionWithoutChangingOutputs)
+     RejectsNonFiniteProjectionWithoutChangingState)
 {
+  if(!usesProjBackend())
+    GTEST_SKIP() << "Requires the PROJ-backed validated implementation";
+
   CMOOSGeodesy geodesy;
   ASSERT_TRUE(geodesy.Initialise(43.8253, -70.3304));
   const LocalFix valid = projectUTM(geodesy, {43.82536, -70.33046});
@@ -558,8 +577,8 @@ TEST(MOOSGeodesyMigrationContractTest,
   double east = 456;
   EXPECT_FALSE(geodesy.LatLong2LocalUTM(
       std::numeric_limits<double>::quiet_NaN(), -70.3304, north, east));
-  EXPECT_DOUBLE_EQ(north, 123);
-  EXPECT_DOUBLE_EQ(east, 456);
+  EXPECT_TRUE(std::isnan(north));
+  EXPECT_TRUE(std::isnan(east));
   EXPECT_DOUBLE_EQ(geodesy.GetMetersNorth(), valid.north);
   EXPECT_DOUBLE_EQ(geodesy.GetMetersEast(), valid.east);
 }
