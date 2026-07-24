@@ -213,7 +213,7 @@
 
         <article class="case-row">
           <code>dbtime_utc_macro_pass</code>
-          <p>Publishes $[DBTIME] and $[UTC] in the same iteration and currently requires both values to be positive; this is smoke coverage only because the tested upstream build reports the same epoch-like value for both macros when its DB_UPTIME baseline remains unset.</p>
+          <p>Publishes $[DBTIME] and $[UTC] at 0.2 MOOS seconds, before MOOSDB&#x27;s normal two-second uptime update, to test startup baseline recovery; passes when DB time is between 0 and 30 seconds while UTC remains an epoch timestamp above one billion.</p>
         </article>
 
 

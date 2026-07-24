@@ -34,6 +34,7 @@ class TestableTimerScript : public TS_MOOSApp {
   {
     return m_block_apps.count(app) > 0;
   }
+  double dbStartTime() const { return m_connect_tstamp; }
 
   void setEventPosted(unsigned int ix, bool posted) { m_poked[ix] = posted; }
   void setEventTime(unsigned int ix, double ptime) { m_ptime[ix] = ptime; }
@@ -317,4 +318,19 @@ TEST(TS_MOOSAppUtilityTest, CheckBlockAppsRemovesExactClientNamesOnly)
 
   app.checkBlockApps("uTimerScript,pHostInfo,pMarineViewer");
   EXPECT_EQ(app.blockAppCount(), 0u);
+}
+
+TEST(TS_MOOSAppClockTest, DbUptimeUsesMessageTimestampForDatabaseStart)
+{
+  TestableTimerScript app;
+  MOOSMSG_LIST mail;
+  mail.emplace_back(MOOS_NOTIFY, "DB_UPTIME", 12.5, 1012.5);
+
+  EXPECT_TRUE(app.OnNewMail(mail));
+  EXPECT_DOUBLE_EQ(app.dbStartTime(), 1000);
+
+  MOOSMSG_LIST later_mail;
+  later_mail.emplace_back(MOOS_NOTIFY, "DB_UPTIME", 20.0, 2020.0);
+  EXPECT_TRUE(app.OnNewMail(later_mail));
+  EXPECT_DOUBLE_EQ(app.dbStartTime(), 1000);
 }

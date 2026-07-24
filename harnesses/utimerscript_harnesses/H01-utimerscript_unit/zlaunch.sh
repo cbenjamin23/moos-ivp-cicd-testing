@@ -556,7 +556,7 @@ get_case_config() {
                 "event = var=UTS_UTC, val=\$[UTC], time=0.2"
                 "event = var=TEST_EVAL_READY, val=true, time=0.5"
             )
-            PASS_CONDITIONS=("UTS_DBTIME > 0" "UTS_UTC > 0")
+            PASS_CONDITIONS=("UTS_DBTIME > 0" "UTS_DBTIME < 30" "UTS_UTC > 1000000000")
             REPORT_COLUMNS=("dbtime=\$[UTS_DBTIME]" "utc=\$[UTS_UTC]")
             ;;
         upon_awake_reset_pass)

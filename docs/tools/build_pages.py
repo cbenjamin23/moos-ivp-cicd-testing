@@ -2163,7 +2163,7 @@ def ctest_area_description(area: str) -> str:
         "ufldcollisiondetect": "uFldCollisionDetect CPA monitor state, NODE_REPORT admission, group filters, range thresholds, contact density, and CPA event emission.",
         "uflddelve": "uFldDelve transmission records, message counters, latest-source tracking, rate-window math, and pruning boundaries.",
         "uplotviewer": "uPlotViewer partition records, histogram bucket boundaries, running averages, range filtering, and color/name helpers.",
-        "utimerscript": "uTimerScript random variables, random pairs, event parsing, scheduling helpers, math macro expansion, and block-app handling.",
+        "utimerscript": "uTimerScript random variables, random pairs, event parsing, scheduling helpers, DB-time baseline handling, math macro expansion, and block-app handling.",
         "zaicview": "ZAIC viewer models and GUI-adjacent support code.",
     }
     if area in explicit:

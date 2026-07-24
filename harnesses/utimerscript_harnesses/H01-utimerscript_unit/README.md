@@ -58,7 +58,7 @@ Run one case:
 - `delay_reset_pass`: Sets all-posted reset, `reset_max=1`, and `delay_reset=1.0`; exactly two `UTS_DELAY_RESET` posts must occur 1.0–1.6 MOOS seconds apart.
 - `reset_max_one_limit_pass`: Sets `reset_time=all-posted` and `reset_max=1` with a `TCOUNT` payload; passes when final `UTS_LIMITED_REPEAT=1` and status reports `resets=1/1`.
 - `amount_multiple_posts_pass`: Sets `amt=3` on `UTS_AMOUNT=burst`; passes when the final value is `burst` and status reports `posted=4`, comprising three amount posts plus readiness.
-- `dbtime_utc_macro_pass`: Publishes `$[DBTIME]` and `$[UTC]` in the same iteration and currently requires both values to be positive; this is smoke coverage only because the tested upstream build reports the same epoch-like value for both macros when its `DB_UPTIME` baseline remains unset.
+- `dbtime_utc_macro_pass`: Publishes `$[DBTIME]` and `$[UTC]` at 0.2 MOOS seconds, before MOOSDB's normal two-second uptime update, to test startup baseline recovery; passes when DB time is between 0 and 30 seconds while UTC remains an epoch timestamp above one billion.
 - `upon_awake_reset_pass`: Gates the script, sets `upon_awake=reset`, then performs true-false-true gate transitions; passes when final `UTS_AWAKE_RESET=1` and status reports one reset.
 - `upon_awake_restart_pass`: Repeats the gate transition with `upon_awake=restart`; passes when final `UTS_AWAKE_RESTART=1` and status reports zero resets.
 - `math_expression_pass`: Schedules `{{3+2}*4}` as an event value, testing nested runtime math expansion; passes when pMissionEval observes `UTS_MATH=20`.

@@ -36,6 +36,7 @@ add_moos_cpp_test(test_utimerscript_random_script
     RandomVariableSetTest=RandomVariableSet
     RandVarGaussianTest=RandVarGaussian
     RandVarUniformTest=RandVarUniform
+    TS_MOOSAppClockTest=TS_MOOSApp
     TS_MOOSAppEventTest=TS_MOOSApp
     TS_MOOSAppMathTest=TS_MOOSApp
     TS_MOOSAppUtilityTest=TS_MOOSApp
