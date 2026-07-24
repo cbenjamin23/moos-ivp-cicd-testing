@@ -19,10 +19,13 @@ behavior, while pMissionEval writes a passing harness verdict only after
 
 The burn/hang patches additionally wait for the first ordinary
 `PHELMIVP_ITER_GAP` sample before activating, so their completion stall occurs
-while pHelmIvP load reporting is already live. An auxiliary evaluator latches
-only gaps above 10 normalized iteration periods, and `uGapDeadline` supplies a
-short post-completion absence deadline so a missing stall becomes a normal
-mission failure.
+while pHelmIvP load reporting is already live. `uLoadWatch` caches every
+iteration-gap message and compares the maximum against broad two- or
+three-second bands scaled by the selected time warp. An auxiliary evaluator
+retains the exact transient sample when scheduler timing permits; it is
+diagnostic rather than required evidence. `uGapDeadline` supplies a short
+post-completion absence deadline so a missing stall becomes a normal mission
+failure.
 
 ## Running
 

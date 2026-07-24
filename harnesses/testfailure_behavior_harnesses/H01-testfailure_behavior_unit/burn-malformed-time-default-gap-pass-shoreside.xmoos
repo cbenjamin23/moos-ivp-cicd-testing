@@ -8,10 +8,11 @@ ProcessConfig = pMissionEval
   AppTick   = 4
   CommsTick = 4
 
-  lead_condition = (TEST_GAP_SEEN = true) or (TEST_GAP_DEADLINE = true)
+  lead_condition = (ULW_NEAR_BREACH_COUNT > 0) or (TEST_GAP_DEADLINE = true)
   pass_condition = TEST_EVAL_READY = true
   pass_condition = PROC_WATCH_ALL_OK = true
-  pass_condition = TEST_GAP_SEEN = true
+  pass_condition = ULW_NEAR_BREACH_COUNT > 0
+  pass_condition = ULW_BREACH_COUNT = 0
   pass_condition = TEST_FAILURE_DONE = true
 
   result_flag  = MISSION_EVALUATED = true
@@ -25,7 +26,10 @@ ProcessConfig = pMissionEval
   report_column    = proc_ok=$[PROC_WATCH_ALL_OK]
   report_column    = helm_present=$[HELM_PRESENT]
   report_column    = done=$[TEST_FAILURE_DONE]
-  report_column    = gap_seen=$[TEST_GAP_SEEN]
+  report_column    = gap_near=$[ULW_NEAR_BREACH_COUNT]
+  report_column    = gap_over=$[ULW_BREACH_COUNT]
+  report_column    = gap_min=$(GAP_MIN)
+  report_column    = gap_max=$(GAP_MAX)
   report_column    = gap_deadline=$[TEST_GAP_DEADLINE]
   report_column    = mhash=$[MHASH_SHORT]
   report_file      = results.txt

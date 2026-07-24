@@ -51,7 +51,7 @@
         </div>
         <div class="gif-meta">
           <h3>Burn Gap Detection</h3>
-          <p>Description: Sets failure_type=burn,2.0, waits until pHelmIvP is publishing monitored iteration gaps, then completes the behavior and enters its busy loop; passes when a normalized PHELMIVP_ITER_GAP&gt;10 is latched before the observation deadline, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
+          <p>Description: Sets failure_type=burn,2.0, waits until pHelmIvP is publishing monitored iteration gaps, then completes the behavior and enters its busy loop; passes when the cached gap is between 16 and 24 times the selected warp before the observation deadline, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
         </div>
       </article>
 
@@ -85,25 +85,25 @@
 
         <article class="case-row">
           <code>burn_gap_detected_pass</code>
-          <p>Sets failure_type=burn,2.0, waits until pHelmIvP is publishing monitored iteration gaps, then completes the behavior and enters its busy loop; passes when a normalized PHELMIVP_ITER_GAP&gt;10 is latched before the observation deadline, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
+          <p>Sets failure_type=burn,2.0, waits until pHelmIvP is publishing monitored iteration gaps, then completes the behavior and enters its busy loop; passes when the cached gap is between 16 and 24 times the selected warp before the observation deadline, TEST_FAILURE_DONE=true, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>hang_alias_gap_detected_pass</code>
-          <p>Uses failure_type=hang,2.0 under the same monitored completion fixture, testing that hang selects the burn loop rather than the crash path; passes on a normalized gap above 10, the completion endflag, and preserved process health.</p>
+          <p>Uses failure_type=hang,2.0 under the same monitored completion fixture, testing that hang selects the burn loop rather than the crash path; passes on the same two-second gap band, the completion endflag, and preserved process health.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_default_time_gap_pass</code>
-          <p>Uses failure_type=burn with no time field, leaving the constructor&#x27;s burn target at 3; passes when the monitored completion produces a normalized gap above 10, the endflag fires, and all watched processes remain present.</p>
+          <p>Uses failure_type=burn with no time field, leaving the constructor&#x27;s burn target at 3; passes when the cached gap is between 26 and 36 times the selected warp, the endflag fires, and all watched processes remain present.</p>
         </article>
 
 
         <article class="case-row">
           <code>burn_malformed_time_default_gap_pass</code>
-          <p>Uses failure_type=burn,not_a_number, which leaves the three-second default target unchanged because the suffix is not numeric; passes on the same monitored gap, completion, and process-health evidence as the omitted-time case.</p>
+          <p>Uses failure_type=burn,not_a_number, which leaves the three-second default target unchanged because the suffix is not numeric; passes on the same three-second gap band, completion, and process-health evidence as the omitted-time case.</p>
         </article>
 
 

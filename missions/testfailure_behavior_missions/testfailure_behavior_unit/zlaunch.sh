@@ -31,6 +31,9 @@ Options:
   --max_time=<secs>    Maximum time passed to xlaunch
   --shore_mport=<n>    Shoreside MOOSDB port
   --shore_pshare=<n>   Reserved shoreside pShare port
+  --gap_min=<n>        Minimum normalized helm iteration gap
+  --gap_max=<n>        Maximum normalized helm iteration gap
+  --gap_near_ratio=<n> uLoadWatch near-breach ratio
   --mmod=<name>        Mission modification label
 EOF
 }
@@ -56,7 +59,9 @@ for arg in "$@"; do
         --nogui|-ng) DISPLAY_ARGS=(--nogui) ;;
         --gui) DISPLAY_ARGS=() ;;
         --max_time=*) MAX_TIME="${arg#--max_time=}" ;;
-        --shore_mport=*|--shore_pshare=*|--mmod=*) FLOW_ARGS+=("$arg") ;;
+        --shore_mport=*|--shore_pshare=*|--gap_min=*|--gap_max=*|--gap_near_ratio=*|--mmod=*)
+            FLOW_ARGS+=("$arg")
+            ;;
         *)
             is_uint "$arg" || die "bad argument: $arg"
             TIME_WARP="$arg"

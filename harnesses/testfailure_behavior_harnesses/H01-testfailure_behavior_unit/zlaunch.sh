@@ -326,6 +326,29 @@ get_case_config() {
     esac
 }
 
+get_case_gap_bounds() {
+    local case_name="$1"
+
+    CASE_GAP_MIN=1
+    CASE_GAP_MAX=1.5
+    CASE_GAP_NEAR_RATIO=0.8
+    case "$case_name" in
+        burn_gap_detected_pass|hang_alias_gap_detected_pass)
+            CASE_GAP_MIN=$((16 * TIME_WARP))
+            CASE_GAP_MAX=$((24 * TIME_WARP))
+            ;;
+        burn_default_time_gap_pass|burn_malformed_time_default_gap_pass)
+            CASE_GAP_MIN=$((26 * TIME_WARP))
+            CASE_GAP_MAX=$((36 * TIME_WARP))
+            ;;
+    esac
+
+    if [ "$CASE_GAP_MIN" -gt 1 ]; then
+        CASE_GAP_NEAR_RATIO=$(awk -v min="$CASE_GAP_MIN" -v max="$CASE_GAP_MAX" \
+            'BEGIN {printf "%.8f", (min - 1) / (max - 1)}')
+    fi
+}
+
 apply_case_overlays() {
     local case_name="$1"
     local workdir="$2"
@@ -451,6 +474,7 @@ run_case() {
         printf 'case=%s grade=fail reason=prepare_error\n' "$case_name" > "$result_file"
         return 1
     }
+    get_case_gap_bounds "$case_name"
 
     (
         cd "$workdir" || exit 1
@@ -460,6 +484,9 @@ run_case() {
             "${DISPLAY_ARGS[@]}"
             --shore_mport="$((case_base + 0))"
             --shore_pshare="$((case_base + PSHARE_OFFSET))"
+            --gap_min="$CASE_GAP_MIN"
+            --gap_max="$CASE_GAP_MAX"
+            --gap_near_ratio="$CASE_GAP_NEAR_RATIO"
             "$TIME_WARP"
         )
         [ "$JUST_MAKE" = yes ] && launch_args+=(--just_make)

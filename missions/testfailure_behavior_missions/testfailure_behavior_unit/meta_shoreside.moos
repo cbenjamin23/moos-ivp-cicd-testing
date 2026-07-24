@@ -108,7 +108,8 @@ ProcessConfig = pGapLatch
   lead_condition = PHELMIVP_ITER_GAP > 10
   pass_condition = PHELMIVP_ITER_GAP > 10
 
-  pass_flag   = TEST_GAP_SEEN = true
+  result_flag = TEST_GAP_SEEN = true
+  result_flag = TEST_GAP_VALUE = $[PHELMIVP_ITER_GAP]
   result_flag = TEST_GAP_LATCHED = true
   mission_form = testfailure_behavior_gap_latch
 }

@@ -37,10 +37,11 @@ ProcessConfig = uLoadWatch
   AppTick   = 4
   CommsTick = 4
 
-  thresh = app=pHelmIvP, gapthresh=1.5
-  thresh = app=any,      gapthresh=4.0
+  // Mixed case requests pHelmIvP loadcasts; uppercase matches its source key.
+  thresh = app=pHelmIvP, gapthresh=$(GAP_MAX:=1.5)
+  thresh = app=PHELMIVP, gapthresh=$(GAP_MAX:=1.5)
 
-  near_breach_thresh = 0.8
+  near_breach_thresh = $(GAP_NEAR_RATIO:=0.8)
   breach_trigger     = 0
 }
 
@@ -72,6 +73,7 @@ ProcessConfig = pLogger
   Log = TEST_FAILURE_DONE @ 0 nosync
   Log = TEST_GAP_DEADLINE @ 0 nosync
   Log = TEST_GAP_SEEN @ 0 nosync
+  Log = TEST_GAP_VALUE @ 0 nosync
   Log = TEST_LOADCAST_READY @ 0 nosync
 
   LogAuxSrc = true

@@ -28,6 +28,9 @@ fi
 MOOS_PORT="9000"
 PSHARE_PORT="9200"
 MMOD=""
+GAP_MIN="1"
+GAP_MAX="1.5"
+GAP_NEAR_RATIO="0.8"
 XLAUNCHED="no"
 NOGUI=""
 SHORE_MOOS="meta_shoreside.moos"
@@ -51,6 +54,9 @@ for ARGI; do
         echo "  --pshare=N           pShare port"
         echo "  --shore_mport=N      MOOSDB port alias for xlaunch"
         echo "  --shore_pshare=N     pShare port alias for xlaunch"
+        echo "  --gap_min=N          Minimum normalized iteration gap"
+        echo "  --gap_max=N          Maximum normalized iteration gap"
+        echo "  --gap_near_ratio=N   uLoadWatch near-breach ratio"
         echo "  --mmod=<mod>         Mission variation/mod"
         echo "  --xlaunched, -x      Launched by xlaunch"
         echo "  --nogui, -ng         Headless launch"
@@ -73,6 +79,12 @@ for ARGI; do
         MOOS_PORT="${ARGI#--shore_mport=*}"
     elif [ "${ARGI:0:15}" = "--shore_pshare=" ]; then
         PSHARE_PORT="${ARGI#--shore_pshare=*}"
+    elif [ "${ARGI:0:10}" = "--gap_min=" ]; then
+        GAP_MIN="${ARGI#--gap_min=*}"
+    elif [ "${ARGI:0:10}" = "--gap_max=" ]; then
+        GAP_MAX="${ARGI#--gap_max=*}"
+    elif [ "${ARGI:0:17}" = "--gap_near_ratio=" ]; then
+        GAP_NEAR_RATIO="${ARGI#--gap_near_ratio=*}"
     elif [ "${ARGI:0:12}" = "--veh_mport=" ]; then
         true
     elif [ "${ARGI:0:13}" = "--veh_pshare=" ]; then
@@ -118,6 +130,9 @@ if [ "${VERBOSE}" != "" ]; then
     echo "JUST_MAKE =    [${JUST_MAKE}]"
     echo "MOOS_PORT =    [${MOOS_PORT}]"
     echo "PSHARE_PORT =  [${PSHARE_PORT}]"
+    echo "GAP_MIN =      [${GAP_MIN}]"
+    echo "GAP_MAX =      [${GAP_MAX}]"
+    echo "GAP_NEAR_RATIO = [${GAP_NEAR_RATIO}]"
     echo "MMOD =         [${MMOD}]"
     echo "XLAUNCHED =    [${XLAUNCHED}]"
     echo "NOGUI =        [${NOGUI}]"
@@ -143,7 +158,9 @@ fi
 nsplug "$BEHAVIOR_BHV" targ_testfailure.bhv $NSFLAGS
 nsplug "$SHORE_MOOS" targ_shoreside.moos $NSFLAGS \
        WARP=$TIME_WARP MOOS_PORT=$MOOS_PORT PSHARE_PORT=$PSHARE_PORT \
-       MMOD=${MMOD:=baseline_armed_no_trigger_pass}
+       MMOD=${MMOD:=baseline_armed_no_trigger_pass} \
+       GAP_MIN="$GAP_MIN" GAP_MAX="$GAP_MAX" \
+       GAP_NEAR_RATIO="$GAP_NEAR_RATIO"
 
 if [ "${JUST_MAKE}" != "" ]; then
     echo "$ME: Targ files made; exiting without launch."
